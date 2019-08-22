@@ -16,58 +16,58 @@ data class MoneyInKeroGetAddressResponse(
     ) {
         data class KeroGetAddress(
                 @SerializedName("data")
-                val data: List<Data?>?,
+                val data: List<Data>,
                 @SerializedName("config")
-                val config: String?,
+                val config: String,
                 @SerializedName("server_process_time")
-                val serverProcessTime: String?,
+                val serverProcessTime: String,
                 @SerializedName("status")
-                val status: String?,
+                val status: String,
                 @SerializedName("token")
                 val token: Token
         ) {
             @Parcelize
             data class Data(
                     @SerializedName("addr_id")
-                    val addrId: Int?,
+                    val addrId: Int,
                     @SerializedName("addr_name")
-                    val addrName: String?,
+                    val addrName: String,
                     @SerializedName("address_1")
-                    val address1: String?,
+                    val address1: String,
                     @SerializedName("address_2")
-                    val address2: String?,
+                    val address2: String,
                     @SerializedName("city")
-                    val city: Int?,
+                    val city: Int,
                     @SerializedName("city_name")
-                    val cityName: String?,
+                    val cityName: String,
                     @SerializedName("country")
-                    val country: String?,
+                    val country: String,
                     @SerializedName("district")
-                    val district: Int?,
+                    val district: Int,
                     @SerializedName("district_name")
-                    val districtName: String?,
+                    val districtName: String,
                     @SerializedName("is_active")
-                    val isActive: Boolean?,
+                    val isActive: Boolean,
                     @SerializedName("is_primary")
-                    val isPrimary: Boolean?,
+                    val isPrimary: Boolean,
                     @SerializedName("is_whitelist")
-                    val isWhitelist: Boolean?,
+                    val isWhitelist: Boolean,
                     @SerializedName("latitude")
-                    val latitude: String?,
+                    val latitude: String,
                     @SerializedName("longitude")
-                    val longitude: String?,
+                    val longitude: String,
                     @SerializedName("phone")
-                    val phone: String?,
+                    val phone: String,
                     @SerializedName("postal_code")
-                    val postalCode: String?,
+                    val postalCode: String,
                     @SerializedName("province")
-                    val province: Int?,
+                    val province: Int,
                     @SerializedName("province_name")
-                    val provinceName: String?,
+                    val provinceName: String,
                     @SerializedName("receiver_name")
-                    val receiverName: String?,
+                    val receiverName: String,
                     @SerializedName("status")
-                    val status: Int?
+                    val status: Int
             ) : Parcelable
         }
     }

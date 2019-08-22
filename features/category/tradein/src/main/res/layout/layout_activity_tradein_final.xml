@@ -44,7 +44,7 @@
         android:text="@string/price_valid_until"
         android:textColor="@color/tradein_black"
         android:textSize="@dimen/sp_12"
-        android:visibility=""
+        android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title" />

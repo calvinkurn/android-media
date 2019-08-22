@@ -91,7 +91,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
                 try {
                     Toaster.Companion.showErrorWithAction(this.findViewById(android.R.id.content),
                             message,
-                            Snackbar.LENGTH_LONG, getString(R.string.close), (v) -> retryOnError());
+                            Snackbar.LENGTH_LONG, getButtonStringOnError(), (v) -> retryOnError());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -107,6 +107,10 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
 
     protected void retryOnError() {
 
+    }
+
+    protected String getButtonStringOnError() {
+        return getString(R.string.close);
     }
 
     protected BaseLifeCycleObserver getLifeCycleObserver(BaseViewModel viewModel) {

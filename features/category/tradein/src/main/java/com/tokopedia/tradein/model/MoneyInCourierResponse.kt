@@ -1,11 +1,13 @@
 package com.tokopedia.tradein.model
 
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 data class MoneyInCourierResponse(
     @SerializedName("data")
-    val data: ResponseData?
+    val data: ResponseData 
 ) {
     data class ResponseData(
         @SerializedName("ratesV4")
@@ -17,163 +19,164 @@ data class MoneyInCourierResponse(
         ) {
             data class Data(
                 @SerializedName("error")
-                val error: Error?,
+                val error: Error,
                 @SerializedName("id")
-                val id: String?,
+                val id: String,
                 @SerializedName("rates_id")
-                val ratesId: String?,
+                val ratesId: String,
                 @SerializedName("services")
-                val services: List<Service?>?,
+                val services: List<Service>,
                 @SerializedName("type")
-                val type: String?
+                val type: String 
             ) {
                 data class Error(
                     @SerializedName("id")
-                    val id: String?,
+                    val id: String,
                     @SerializedName("message")
-                    val message: String?,
+                    val message: String,
                     @SerializedName("status")
-                    val status: Int?
+                    val status: Int 
                 )
 
                 data class Service(
                     @SerializedName("error")
-                    val error: Error?,
+                    val error: Error,
                     @SerializedName("etd")
-                    val etd: Etd?,
+                    val etd: Etd,
                     @SerializedName("id")
-                    val id: Int?,
+                    val id: Int,
                     @SerializedName("index")
-                    val index: Int?,
+                    val index: Int,
                     @SerializedName("name")
-                    val name: String?,
+                    val name: String,
                     @SerializedName("price")
-                    val price: Price?,
+                    val price: Price,
                     @SerializedName("products")
-                    val products: List<Product?>?,
+                    val products: List<Product>,
                     @SerializedName("status")
-                    val status: Int?
+                    val status: Int
                 ) {
                     data class Product(
                         @SerializedName("error")
-                        val error: Error?,
+                        val error: Error,
                         @SerializedName("etd")
-                        val etd: Etd?,
+                        val etd: Etd,
                         @SerializedName("features")
-                        val features: Features?,
+                        val features: Features,
                         @SerializedName("is_show_map")
-                        val isShowMap: Boolean?,
+                        val isShowMap: Boolean,
                         @SerializedName("price")
-                        val price: Price?,
+                        val price: Price,
                         @SerializedName("priority")
-                        val priority: Int?,
+                        val priority: Int,
                         @SerializedName("shipper")
-                        val shipper: Shipper?,
+                        val shipper: Shipper,
                         @SerializedName("status")
-                        val status: Int?
+                        val status: Int 
                     ) {
                         data class Price(
                             @SerializedName("text")
-                            val text: String?,
+                            val text: String,
                             @SerializedName("value")
-                            val value: Int?
+                            val value: Int 
                         )
 
                         data class Features(
                             @SerializedName("money_in")
-                            val moneyIn: MoneyIn?
+                            val moneyIn: MoneyIn 
                         ) {
+                            @Parcelize
                             data class MoneyIn(
                                 @SerializedName("shipper_name")
-                                val shipperName: String?,
+                                val shipperName: String,
                                 @SerializedName("text_price")
-                                val textPrice: String?,
+                                val textPrice: String,
                                 @SerializedName("value_price")
-                                val valuePrice: Int?
-                            )
+                                val valuePrice: Int 
+                            ) : Parcelable
                         }
 
                         data class Error(
                             @SerializedName("id")
-                            val id: String?,
+                            val id: String,
                             @SerializedName("message")
-                            val message: String?,
+                            val message: String,
                             @SerializedName("status")
-                            val status: Int?
+                            val status: Int 
                         )
 
                         data class Etd(
                             @SerializedName("range")
-                            val range: Range?,
+                            val range: Range,
                             @SerializedName("text")
-                            val text: String?,
+                            val text: String,
                             @SerializedName("value")
-                            val value: Int?
+                            val value: Int 
                         ) {
                             data class Range(
                                 @SerializedName("max")
-                                val max: Int?,
+                                val max: Int,
                                 @SerializedName("min")
-                                val min: Int?,
+                                val min: Int,
                                 @SerializedName("text")
-                                val text: String?
+                                val text: String 
                             )
                         }
 
                         data class Shipper(
                             @SerializedName("id")
-                            val id: Int?,
+                            val id: Int,
                             @SerializedName("name")
-                            val name: String?,
+                            val name: String,
                             @SerializedName("shipper_product")
-                            val shipperProduct: ShipperProduct?
+                            val shipperProduct: ShipperProduct
                         ) {
                             data class ShipperProduct(
                                 @SerializedName("description")
-                                val description: String?,
+                                val description: String,
                                 @SerializedName("id")
-                                val id: Int?,
+                                val id: Int,
                                 @SerializedName("name")
-                                val name: String?
+                                val name: String 
                             )
                         }
                     }
 
                     data class Price(
                         @SerializedName("range")
-                        val range: Range?
+                        val range: Range 
                     ) {
                         data class Range(
                             @SerializedName("max")
-                            val max: Int?,
+                            val max: Int,
                             @SerializedName("min")
-                            val min: Int?,
+                            val min: Int,
                             @SerializedName("text")
-                            val text: String?
+                            val text: String 
                         )
                     }
 
                     data class Etd(
                         @SerializedName("range")
-                        val range: Range?
+                        val range: Range 
                     ) {
                         data class Range(
                             @SerializedName("max")
-                            val max: Int?,
+                            val max: Int,
                             @SerializedName("min")
-                            val min: Int?,
+                            val min: Int,
                             @SerializedName("text")
-                            val text: String?
+                            val text: String 
                         )
                     }
 
                     data class Error(
                         @SerializedName("id")
-                        val id: String?,
+                        val id: String,
                         @SerializedName("message")
-                        val message: String?,
+                        val message: String,
                         @SerializedName("status")
-                        val status: Int?
+                        val status: Int 
                     )
                 }
             }

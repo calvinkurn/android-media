@@ -2,10 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/light_grey">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/dp_4"
+        android:theme="@style/Toolbar.White"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:subtitleTextAppearance="@style/SubTitleTextAppearance"
+        app:titleTextAppearance="@style/TitleTextAppearance" />
 
     <android.support.constraint.ConstraintLayout
+        android:layout_below="@id/toolbar"
         android:id="@+id/price_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,14 +33,13 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_1"
-            tools:text="Harga HP kamu" />
+            android:text="@string/price_of_cellphone" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/price_amount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:text="@string/checkout_module_title_shipping_dest"
             android:textColor="@color/clr_f531353b"
             app:layout_constraintLeft_toRightOf="@id/price_label"
             app:layout_constraintRight_toRightOf="parent"

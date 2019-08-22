@@ -1,15 +1,112 @@
 package com.tokopedia.tradein.view.viewcontrollers
 
+import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import com.tokopedia.design.component.BottomSheets
+import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.NumberPicker
+import com.tokopedia.profilecompletion.addbod.view.widget.numberpicker.OnValueChangeListener
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.adapter.DateAdapter
+import com.tokopedia.tradein.adapter.TimeAdapter
+import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
 
-class MoneyInScheduledTimeBottomSheet : BottomSheets(){
-    override fun getLayoutResourceId(): Int {
-        return R.layout.money_in_bottom_sheet_scheduled_time
+class MoneyInScheduledTimeBottomSheet : BottomSheets() {
+    private var scheduleDate: ArrayList<ScheduleDate> = arrayListOf()
+    private val dateAdapter = DateAdapter()
+    private val timeAdapter = TimeAdapter()
+    private var currentTime: String? = null
+    private var currentDate: String? = null
+    private var timeSpinner: NumberPicker? = null
+    private var dateSpinner: NumberPicker? = null
+    private var actionListener: ActionListener? = null
+
+    companion object {
+        private const val KEY_SCHEDULE_DATA = "KEY_SCHEDULE_DATA"
+
+        @JvmStatic
+        fun newInstance(scheduleDate: ArrayList<ScheduleDate>): MoneyInScheduledTimeBottomSheet {
+            return MoneyInScheduledTimeBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(KEY_SCHEDULE_DATA, scheduleDate)
+                }
+            }
+        }
     }
 
-    override fun initView(view: View?) {
+    override fun title(): String = getString(R.string.select_fetch_time)
 
+    override fun state(): BottomSheetsState = BottomSheetsState.FLEXIBLE
+
+    override fun getLayoutResourceId(): Int = R.layout.money_in_bottom_sheet_scheduled_time
+
+    override fun initView(view: View?) {
+        if (arguments != null) {
+            scheduleDate = arguments!!.getParcelableArrayList(KEY_SCHEDULE_DATA)
+        }
+        for (date in scheduleDate) {
+            dateAdapter.date.add(date.dateFmt)
+        }
+        dateSpinner = view?.findViewById(R.id.date_spinner)
+        timeSpinner = view?.findViewById(R.id.time_spinner)
+        dateSpinner?.setAdapter(dateAdapter)
+        timeSpinner?.setAdapter(timeAdapter)
+        currentDate = dateSpinner?.getCurrentItem()
+        changeTimeByDate()
+        currentTime = timeSpinner?.getCurrentItem()
+        dateSpinner?.setOnValueChangedListener(object : OnValueChangeListener {
+            override fun onValueChange(oldVal: String, newVal: String) {
+                currentDate = newVal
+                changeTimeByDate()
+            }
+
+        })
+        timeSpinner?.setOnValueChangedListener(object : OnValueChangeListener {
+            override fun onValueChange(oldVal: String, newVal: String) {
+                currentTime = newVal
+            }
+        })
+        val courierButton = view?.findViewById<Button>(R.id.courier_btn)
+        courierButton?.setOnClickListener {
+            scheduleDate.forEach {
+                if(it.dateFmt == currentDate) {
+                    it.scheduleTime.forEach { time ->
+                        if (time.timeFmt == currentTime) {
+                            actionListener?.onCourierButtonClick(time)
+                            dismiss()
+                        }
+                    }
+                }
+            }
+        }
+        updateHeight()
+    }
+
+    private fun changeTimeByDate() {
+        scheduleDate.forEach {
+            if (it.dateFmt == currentDate) {
+                timeAdapter.time.clear()
+                for (time in it.scheduleTime)
+                    timeAdapter.time.add(time.timeFmt)
+            }
+        }
+        timeSpinner?.setMaxValue(timeAdapter.getMaxIndex())
+        timeSpinner?.setMinValue(timeAdapter.getMinIndex())
+        if (timeAdapter.time.size < 3) {
+            timeSpinner?.setWheelItemCount(timeAdapter.time.size)
+            timeSpinner?.setWrapSelectorWheel(false)
+        } else {
+            timeSpinner?.setWrapSelectorWheel(true)
+            timeSpinner?.setWheelItemCount(3)
+        }
+        timeAdapter.notifyDataSetChanged()
+    }
+
+    fun setActionListener(actionListener: ActionListener?){
+        this.actionListener = actionListener
+    }
+
+    interface ActionListener {
+        fun onCourierButtonClick(scheduleTime: ScheduleDate.ScheduleTime)
     }
 }
