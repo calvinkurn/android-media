@@ -33,6 +33,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
     private val title: TextView
     private val body: TextView
     private val contentImage: ImageView
+    private val contentImageBanner: ImageView
     private val type: TextView
     private val time: TextView
     private val label: TextView
@@ -43,6 +44,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
         title = itemView.findViewById(R.id.title)
         body = itemView.findViewById(R.id.body)
         contentImage = itemView.findViewById(R.id.image)
+        contentImageBanner = itemView.findViewById(R.id.image_banner)
         type = itemView.findViewById(R.id.type)
         time = itemView.findViewById(R.id.time)
         label = itemView.findViewById(R.id.label)
@@ -54,9 +56,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
                 else MethodChecker.getColor(container.context, R.color.Green_G100)
 
         container.setBackgroundColor(color)
-        if (element.contentUrl.isNotBlank()) {
-            ImageHandler.loadImage2(contentImage, element.contentUrl, R.drawable.ic_loading_toped_new)
-        }
+        showImageBannerIfExist(element)
         ImageHandler.loadImage2(icon, element.iconUrl, R.drawable.ic_loading_toped_new)
         title.text = element.title
         body.text = element.body
@@ -71,6 +71,34 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
             element.isRead = true
             RouteManager.route(itemView.context, element.appLink)
         }
+    }
+
+    private fun showImageBannerIfExist(element: NotificationUpdateItemViewModel) {
+        val imageUrl = element.contentUrl
+        val imageType = element.typeLink
+
+        if (imageUrl.isEmpty()) {
+            return hideContentImage()
+        }
+
+        when (imageType) {
+            NotificationUpdateItemViewModel.TYPE_BANNER_1X1 -> {
+                contentImageBanner.visibility = View.GONE
+                contentImage.visibility = View.VISIBLE
+                ImageHandler.loadImage2(contentImage, imageUrl, R.drawable.ic_loading_toped_new)
+            }
+            NotificationUpdateItemViewModel.TYPE_BANNER_2X1 -> {
+                contentImageBanner.visibility = View.VISIBLE
+                contentImage.visibility = View.GONE
+                ImageHandler.loadImage2(contentImageBanner, imageUrl, R.drawable.ic_loading_toped_new)
+            }
+            else -> hideContentImage()
+        }
+    }
+
+    private fun hideContentImage() {
+        contentImageBanner.visibility = View.GONE
+        contentImage.visibility = View.GONE
     }
 
     private fun convertTypeUser(element: NotificationUpdateItemViewModel) {
