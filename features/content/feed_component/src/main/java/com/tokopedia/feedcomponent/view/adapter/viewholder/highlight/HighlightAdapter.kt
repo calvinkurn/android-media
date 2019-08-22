@@ -85,12 +85,15 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             itemView.userName.text = item.header.avatarTitle
             bindLike(item.footer.like)
             bindComment(item.footer.comment)
-
+            if (item.type.equals(TYPE_VIDEO)) {
+                itemView.layout_video_duration.visibility = View.VISIBLE
+                itemView.text_video_duration.text = item.videoDuration
+            }
         }
 
         private fun getBadgeId(item: HighlightCardViewModel): Int {
             when (item.type) {
-                TYPE_YOUTUBE, TYPE_VIDEO -> return R.drawable.ic_affiliate_video
+                TYPE_YOUTUBE -> return R.drawable.ic_affiliate_video
                 TYPE_MULTI -> return R.drawable.ic_affiliate_multi
                 else -> return 0
             }

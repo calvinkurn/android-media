@@ -17,5 +17,6 @@ data class HighlightCardViewModel (
         val header: Header = Header(),
         val footer: Footer = Footer(),
         val template: Template = Template(),
-        val tracking: MutableList<TrackingViewModel> = ArrayList()
+        val tracking: MutableList<TrackingViewModel> = ArrayList(),
+        val videoDuration: String = ""
         )
