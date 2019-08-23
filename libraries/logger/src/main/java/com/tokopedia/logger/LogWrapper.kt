@@ -36,13 +36,13 @@ class LogWrapper(val application: Application) : CoroutineScope {
         launch {
             val messageWithUser =
                 logToString(logPriority) + " " +
-                    buildUserMessage() + "\n" +
+                    buildUserMessage() + " - " +
                     message
             val truncatedMessage: String
             if (message.length > MAX_BUFFER) {
-                truncatedMessage = messageWithUser.substring(0, MAX_BUFFER)
+                truncatedMessage = messageWithUser.substring(0, MAX_BUFFER).replace("\n",  " - ")
             } else {
-                truncatedMessage = messageWithUser
+                truncatedMessage = messageWithUser.replace("\n",  " - ")
             }
             val token = TOKEN[serverSeverity - 1]
             var urlConnection: HttpURLConnection? = null

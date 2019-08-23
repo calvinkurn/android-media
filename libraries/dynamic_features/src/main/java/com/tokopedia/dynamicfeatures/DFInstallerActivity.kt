@@ -88,6 +88,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
+                Timber.w("P3Download Module {$moduleName}")
                 loadAndLaunchModule(moduleName)
             } else {
                 hideProgress()
@@ -173,9 +174,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
-//        if (!GlobalConfig.DEBUG) {
-            Timber.w("P3Installed Module {$moduleName}")
-//        }
+        Timber.w("P3Installed Module {$moduleName}")
         progressGroup.visibility = View.INVISIBLE
         if (launch && manager.installedModules.contains(moduleName)) {
             RouteManager.getIntentNoFallback(this, applink)?.let {
@@ -230,9 +229,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun showFailedMessage(message: String) {
-//        if (!GlobalConfig.DEBUG && ::moduleName.isInitialized) {
-            Timber.w("P3Failed Module {$moduleName}")
-//        }
+        Timber.w("P3Failed Module {$moduleName}")
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
             message,
             Snackbar.LENGTH_INDEFINITE,
@@ -245,9 +242,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     /** Display a loading state to the user. */
     private fun displayLoadingState(state: SplitInstallSessionState, message: String) {
-//        if (!GlobalConfig.DEBUG && ::moduleName.isInitialized) {
-            Timber.w("P3Download Module {$moduleName}")
-//        }
         val totalBytesToDowload = state.totalBytesToDownload().toInt()
         val bytesDownloaded = state.bytesDownloaded().toInt()
         progressBar.max = totalBytesToDowload
