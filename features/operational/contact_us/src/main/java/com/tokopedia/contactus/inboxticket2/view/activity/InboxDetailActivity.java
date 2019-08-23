@@ -103,6 +103,8 @@ public class InboxDetailActivity extends InboxBaseActivity
     private CloseableBottomSheetDialog helpFullBottomSheet, closeComplainBottomSheet,servicePrioritiesBottomSheet;
     List<CommentsItem> commentsItems = new ArrayList<>();
 
+    private boolean isSendButtonEnabled = false;
+
     @DeepLink(ApplinkConst.TICKET_DETAIL)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
@@ -577,7 +579,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void setSubmitButtonEnabled(boolean enabled) {
-        ivSendButton.setClickable(enabled);
+        isSendButtonEnabled = enabled;
         if (enabled) {
             ivSendButton.setColorFilter(getResources().getColor(R.color.green_nob));
         } else {
@@ -666,7 +668,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         } else if (id == R.id.btn_inactive_1 || id == R.id.btn_inactive_2 || id == R.id.btn_inactive_3 || id == R.id.btn_inactive_4 || id == R.id.btn_inactive_5) {
             onEmojiClick(view);
         } else if (id == R.id.iv_send_button) {
-            sendMessage();
+            sendMessage(isSendButtonEnabled);
         } else if (id == R.id.txt_hyper || id == R.id.tv_view_transaction) {
             onClickListener(view);
         } else if (id == R.id.iv_next_down || id == R.id.iv_previous_up) {
@@ -773,6 +775,16 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void onClickClose() {
         servicePrioritiesBottomSheet.dismiss();
+    }
+
+    private void sendMessage(boolean isSendButtonEnabled) {
+
+        if (isSendButtonEnabled){
+            sendMessage();
+        }else{
+            Toaster.Companion.showErrorWithAction(getRootView(),this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK,v1 -> {
+            });
+        }
     }
 }
 
