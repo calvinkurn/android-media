@@ -75,7 +75,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
                 if (it.dateFmt == currentDate) {
                     it.scheduleTime.forEach { time ->
                         if (time.timeFmt == currentTime) {
-                            actionListener?.onCourierButtonClick(time)
+                            actionListener?.onScheduleButtonClick(time, it.dateFmt)
                             dismiss()
                         }
                     }
@@ -128,6 +128,6 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
     }
 
     interface ActionListener {
-        fun onCourierButtonClick(scheduleTime: ScheduleDate.ScheduleTime)
+        fun onScheduleButtonClick(scheduleTime: ScheduleDate.ScheduleTime, dateFmt:String)
     }
 }

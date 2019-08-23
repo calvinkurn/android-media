@@ -4,7 +4,7 @@
     <string name="label_button_change_address_new">Ganti Alamat</string>
     <string name="label_main_address">Utama</string>
     <string name="select_payment">Pilih Pembayaran</string>
-    <string name="label_wording_payment_total">Total Harga</string>
+    <string name="trade_in_label_wording_payment_total">Total Harga</string>
     <string name="choose_courier">Pilih Kurir</string>
     <string name="choose">Pilih</string>
     <string name="retrieval_time">Waktu Pengambilan</string>
@@ -15,4 +15,6 @@
     <string name="exchange_default_text">Kurir tukar tambah akan menelfon untuk menukarkan HP di tujuan pengiriman dalam 1 - 2 hari.</string>
     <string name="price_of_cellphone">Harga HP kamu</string>
     <string name="checkout_terms_and_conditions_text">Saya menyetujui syarat dan ketentuan yang berlaku.</string>
+    <string name="change_time">Ubah Waktu</string>
+    <string name="change_courier">Ubah Kurir</string>
 </resources>

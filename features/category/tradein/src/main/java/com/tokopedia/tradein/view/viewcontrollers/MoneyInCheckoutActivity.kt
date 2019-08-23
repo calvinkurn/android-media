@@ -1,15 +1,20 @@
 package com.tokopedia.tradein.view.viewcontrollers
 
 import android.arch.lifecycle.Observer
+import android.graphics.Typeface
 import android.support.v4.app.Fragment
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.Utils
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
@@ -21,14 +26,10 @@ import com.tokopedia.tradein.viewmodel.MutationCheckoutError
 import com.tokopedia.tradein.viewmodel.ScheduleTimeError
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.payment.activity.TopPayActivity
-import com.tokopedia.common.payment.model.PaymentPassData
 
 
-
-class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBottomSheet.ActionListener {
+class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBottomSheet.ActionListener, MoneyInCourierBottomSheet.ActionListener {
 
     private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
     private lateinit var scheduleTime: ScheduleDate.ScheduleTime
@@ -37,6 +38,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     private var spId : Int = -1
     private var addrId: Int = -1
     private lateinit var destination: String
+    private var isCourierSet: Boolean = false
 
     companion object {
         const val MONEY_IN_DEFAULT_ADDRESS = "MONEY_IN_DEFAULT_ADDRESS"
@@ -61,19 +63,21 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         }
         moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
         setObservers()
-        val notElligible = getString(R.string.checkout_terms_and_conditions_text)
-        val spannableString = SpannableString(notElligible)
+        val terms = getString(R.string.checkout_terms_and_conditions_text)
+        val spannableString = SpannableString(terms )
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 showtnc()
             }
+
+            override fun updateDrawState(ds: TextPaint) {
+                ds.color = MethodChecker.getColor(this@MoneyInCheckoutActivity, R.color.g_500)
+                ds.isUnderlineText = false
+                ds.typeface = Typeface.DEFAULT_BOLD
+            }
         }
         val mTvTnc = findViewById<TextView>(R.id.terms_text) as TextView
-
-        val greenColor = resources.getColor(R.color.green_nob)
-        val foregroundColorSpan = ForegroundColorSpan(greenColor)
         spannableString.setSpan(clickableSpan, 16, 36, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(foregroundColorSpan, 16, 36, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         mTvTnc.text = spannableString
         mTvTnc.isClickable = true
         mTvTnc.movementMethod = LinkMovementMethod.getInstance()
@@ -145,6 +149,22 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         courierBtn.setOnClickListener {
             moneyInCourierBottomSheet.show(supportFragmentManager, "")
         }
+        moneyInCourierBottomSheet.setActionListener(this)
+        val totalPaymentValue = findViewById<TextView>(R.id.tv_total_payment_value) as TextView
+        totalPaymentValue.text = data.services[0].products[0].price.text
+    }
+
+    override fun onCourierButtonClick(shipperName: String?, price: String?) {
+        val courierLabel = findViewById<Typography>(R.id.courier_label) as Typography
+        val courierPrice = findViewById<Typography>(R.id.courier_price) as Typography
+        val courierButton = findViewById<Button>(R.id.courier_btn) as Button
+        courierLabel.text = shipperName
+        courierPrice.show()
+        courierPrice.text = price
+        MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
+        courierButton.text = getString(R.string.change_courier)
+        courierButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
+        isCourierSet = true
     }
 
     private fun setScheduleBottomSheet(scheduleDate: ArrayList<ScheduleDate>) {
@@ -156,8 +176,17 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         moneyInScheduledTimeBottomSheet.setActionListener(this)
     }
 
-    override fun onCourierButtonClick(scheduleTime: ScheduleDate.ScheduleTime) {
+    override fun onScheduleButtonClick(scheduleTime: ScheduleDate.ScheduleTime, dateFmt: String) {
         this.scheduleTime = scheduleTime
+        val retrieverTimeLabel = findViewById<Typography>(R.id.retriever_time_label) as Typography
+        val retrieverTime = findViewById<Typography>(R.id.retriever_time) as Typography
+        val retrieverTimeButton = findViewById<Button>(R.id.retrival_time_btn) as Button
+        retrieverTimeLabel.text = dateFmt
+        retrieverTime.show()
+        retrieverTime.text = scheduleTime.timeFmt
+        MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
+        retrieverTimeButton.text = getString(R.string.change_time)
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
     }
 
     private fun setAddressView(recipientAddress: KeroGetAddress.Data) {
@@ -168,7 +197,6 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         val tvRecipientPhone = findViewById<Typography>(R.id.tv_recipient_phone) as Typography
         val tvChangeRecipientAddress = findViewById<Typography>(R.id.tv_change_recipient_address) as Typography
         val priceAmount = findViewById<Typography>(R.id.price_amount) as Typography
-        val totalPaymentValue = findViewById<TextView>(R.id.tv_total_payment_value) as TextView
 
         if (recipientAddress.status == 2) {
             tvAddressStatus.visibility = View.VISIBLE
@@ -180,7 +208,6 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         tvRecipientPhone.text = recipientAddress.phone
         tvRecipientAddress.text = Utils.getHtmlFormat(getFullAddress(recipientAddress))
         priceAmount.text = orderValue
-        totalPaymentValue.text = orderValue
 
         tvChangeRecipientAddress.setOnClickListener {
             //TODO change address activity
@@ -191,9 +218,11 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
         val btBuy = findViewById<Button>(R.id.bt_buy)
         btBuy.setOnClickListener {
-            if(::scheduleTime.isInitialized) {
+            if(::scheduleTime.isInitialized && isCourierSet) {
                 moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.maxTimeUnix, scheduleTime.minTimeUnix)
-            } else {
+            } else if (!isCourierSet){
+                showMessage(getString(R.string.select_shipping))
+            }else if(!::scheduleTime.isInitialized){
                 showMessage(getString(R.string.select_fetch_time))
             }
         }
