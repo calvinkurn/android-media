@@ -167,7 +167,6 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
             mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getNewPrice(), true));
         }
         mTvModelName.setText(deviceDataResponse.getDeviceAttr().getModel());
-        mTvPriceExchange.setText(String.valueOf(deviceDataResponse.getOldPrice()));
         orderValue = deviceDataResponse.getOldPrice().toString();
         deviceId = deviceDataResponse.getDeviceAttr().getImei().get(0);
         mTvSellingPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true));

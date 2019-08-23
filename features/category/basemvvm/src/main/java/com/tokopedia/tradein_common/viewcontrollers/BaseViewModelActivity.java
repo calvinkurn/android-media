@@ -58,12 +58,6 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
         initView();
         if (getSupportActionBar() != null)
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_icon_back_black);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
         bVM.getProgBarVisibility().observe(this, (visibility) -> {
             if (visibility != null) {
                 if (visibility)
@@ -97,6 +91,11 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
                 }
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private void setViewModel() {

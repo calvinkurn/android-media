@@ -332,7 +332,7 @@
         android:id="@+id/group_tradein"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:constraint_referenced_ids="tv_price,divider2,divider1,tv_model_name,tv_model_new,tv_tnc,
     tv_final_price,tv_price_new,tv_final_amount,tv_selling_price,tv_exchange,tv_valid_till,
     divider_model,tv_price_exchange,space,carc_background_white,tv_model,tv_button_pay_or_ktp,

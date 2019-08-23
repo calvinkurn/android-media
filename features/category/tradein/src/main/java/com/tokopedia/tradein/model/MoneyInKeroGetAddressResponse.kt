@@ -11,7 +11,7 @@ data class MoneyInKeroGetAddressResponse(
         val data: ResponseData
 ) {
     data class ResponseData(
-            @SerializedName("kero_get_address")
+            @SerializedName("keroAddressCorner")
             val keroGetAddress: KeroGetAddress
     ) {
         data class KeroGetAddress(
