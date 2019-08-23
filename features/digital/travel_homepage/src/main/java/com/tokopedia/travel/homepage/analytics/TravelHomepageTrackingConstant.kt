@@ -3,11 +3,11 @@ package com.tokopedia.travel.homepage.analytics
 /**
  * @author by furqan on 23/08/2019
  */
-class TravelHomepageTrackingCategoryConstant {
+object TravelHomepageTrackingCategoryConstant {
     val TRAVEL_HOMEPAGE_CATEGORY = "digital - subhomepage - travel&entertainment"
 }
 
-class TravelHomepageTrackingActionConstant {
+object TravelHomepageTrackingActionConstant {
     val BANNER_IMPRESSION = "banner impression"
     val BANNER_CLICK = "click banner"
     val BANNER_CLICK_ALL = "click view all on banner"
@@ -21,12 +21,11 @@ class TravelHomepageTrackingActionConstant {
     val POPULAR_DESTINATION_CLICK = "click on dynamic banner"
 }
 
-class TravelHomepageTrackingLabelConstant {
+object TravelHomepageTrackingLabelConstant {
     val CLICK = "click"
-    val OTHERS = "%s - %s"
 }
 
-class TravelHomepageTrackingEventNameConstant {
+object TravelHomepageTrackingEventNameConstant {
     val PROMO_VIEW = "promoView"
     val PROMO_CLICK = "promoClick"
     val CLICK_HOMEPAGE = "clickHomepage"

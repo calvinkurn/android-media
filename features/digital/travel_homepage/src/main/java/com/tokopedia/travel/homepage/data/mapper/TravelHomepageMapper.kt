@@ -4,6 +4,9 @@ import com.tokopedia.travel.homepage.data.TravelHomepageOrderListModel
 import com.tokopedia.travel.homepage.data.TravelHomepageRecentSearchModel
 import com.tokopedia.travel.homepage.data.TravelHomepageRecommendationModel
 import com.tokopedia.travel.homepage.data.TravelHomepageSectionViewModel
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
 
 /**
  * @author by jessica on 2019-08-14
@@ -18,10 +21,10 @@ class TravelHomepageMapper {
         viewModel.list = model.orders.map {
             TravelHomepageSectionViewModel.Item(title = it.title,
                     subtitle = it.subtitle, prefix = it.prefix, value = it.value,
-                    appUrl = it.appUrl, imageUrl = it.imageUrl
+                    appUrl = it.appUrl, imageUrl = it.imageUrl, product = it.product
                     )
         }
-        viewModel.type = TravelHomepageSectionViewModel.TYPE_ORDER_LIST
+        viewModel.type = TYPE_ORDER_LIST
         return viewModel
     }
 
@@ -33,10 +36,10 @@ class TravelHomepageMapper {
             TravelHomepageSectionViewModel.Item(title = it.title,
                     subtitle = it.subtitle, prefix = it.prefix,
                     prefixStyling = it.prefixStyling, value = it.value,
-                    appUrl = it.appUrl, imageUrl = it.imageUrl
+                    appUrl = it.appUrl, imageUrl = it.imageUrl, product = it.product
                     )
         }
-        viewModel.type = TravelHomepageSectionViewModel.TYPE_RECENT_SEARCH
+        viewModel.type = TYPE_RECENT_SEARCH
         return viewModel
     }
 
@@ -48,10 +51,10 @@ class TravelHomepageMapper {
             TravelHomepageSectionViewModel.Item(title = it.title,
                     subtitle = it.subtitle, prefix = it.prefix,
                     prefixStyling = it.prefixStyling, value = it.value,
-                    appUrl = it.appUrl, imageUrl = it.imageUrl
+                    appUrl = it.appUrl, imageUrl = it.imageUrl, product = it.product
             )
         }
-        viewModel.type = TravelHomepageSectionViewModel.TYPE_RECOMMENDATION
+        viewModel.type = TYPE_RECOMMENDATION
         return viewModel
     }
 }

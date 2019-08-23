@@ -8,6 +8,7 @@ import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageSectionViewModel
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
 import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.view.*
 
@@ -27,21 +28,21 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list.get(position), position, listener)
+        holder.bind(list[position], position, listener, type)
     }
 
     override fun getItemViewType(position: Int): Int {
         val item = list.get(position)
-        if (type == TravelHomepageSectionViewModel.TYPE_ORDER_LIST) {
-            return if (item.subtitle.isBlank()) ViewHolder.ORDER_LAYOUT_WITHOUT_SUBTITLE else ViewHolder.ORDER_LAYOUT
+        return if (type == TYPE_ORDER_LIST) {
+            if (item.subtitle.isBlank()) ViewHolder.ORDER_LAYOUT_WITHOUT_SUBTITLE else ViewHolder.ORDER_LAYOUT
         } else {
-            return if (item.subtitle.isBlank()) ViewHolder.LAYOUT_WITHOUT_SUBTITLE else ViewHolder.LAYOUT
+            if (item.subtitle.isBlank()) ViewHolder.LAYOUT_WITHOUT_SUBTITLE else ViewHolder.LAYOUT
         }
     }
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
-        fun bind(item: TravelHomepageSectionViewModel.Item, position: Int, listener: OnItemClickListener) {
+        fun bind(item: TravelHomepageSectionViewModel.Item, position: Int, listener: OnItemClickListener, type: Int) {
             with(itemView) {
                 image.loadImage(item.imageUrl)
                 title.text = item.title
@@ -54,6 +55,7 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
                 }
             }
             if (listener != null) itemView.setOnClickListener {
+                listener.onTrackEventClick(type, position, item.product)
                 listener.onItemClick(item.appUrl)
             }
         }

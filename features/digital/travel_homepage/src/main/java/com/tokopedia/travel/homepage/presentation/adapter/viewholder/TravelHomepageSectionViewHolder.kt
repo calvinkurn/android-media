@@ -8,6 +8,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageSectionViewModel
 import com.tokopedia.travel.homepage.presentation.adapter.TravelHomepageSectionAdapter
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ALL_ORDER_LIST
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 import kotlinx.android.synthetic.main.travel_homepage_travel_destination_list.view.*
@@ -33,6 +37,7 @@ class TravelHomepageSectionViewHolder(itemView: View,
                     if (element.seeAllUrl.isNotBlank()) {
                         section_see_all.show()
                         section_see_all.setOnClickListener {
+                            if (element.type == TYPE_ORDER_LIST) onItemClickListener.onTrackEventClick(TYPE_ALL_ORDER_LIST)
                             onItemClickListener.onItemClick(element.seeAllUrl)
                         }
                     } else section_see_all.hide()
@@ -52,10 +57,10 @@ class TravelHomepageSectionViewHolder(itemView: View,
         } else {
             itemView.shimmering.visibility = View.VISIBLE
             itemView.section_layout.visibility = View.GONE
-            when(element.type) {
-                TravelHomepageSectionViewModel.TYPE_ORDER_LIST -> onItemBindListener.onOrderListVHBind()
-                TravelHomepageSectionViewModel.TYPE_RECENT_SEARCH -> onItemBindListener.onRecentSearchVHBind()
-                TravelHomepageSectionViewModel.TYPE_RECOMMENDATION -> onItemBindListener.onRecommendationVHBind()
+            when (element.type) {
+                TYPE_ORDER_LIST -> onItemBindListener.onOrderListVHBind()
+                TYPE_RECENT_SEARCH -> onItemBindListener.onRecentSearchVHBind()
+                TYPE_RECOMMENDATION -> onItemBindListener.onRecommendationVHBind()
             }
         }
     }

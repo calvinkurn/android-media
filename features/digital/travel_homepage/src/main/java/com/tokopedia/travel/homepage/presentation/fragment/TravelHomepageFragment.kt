@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel.homepage.R
+import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingUtil
 import com.tokopedia.travel.homepage.data.TravelHomepageItemModel
 import com.tokopedia.travel.homepage.di.TravelHomepageComponent
 import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
@@ -31,6 +32,9 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var travelHomepageViewModel: TravelHomepageViewModel
+
+    @Inject
+    lateinit var travelHomepageTrackingUtil: TravelHomepageTrackingUtil
 
     private var searchBarTransitionRange = 0
 
@@ -138,7 +142,29 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         else if (webUrl.isNotEmpty()) RouteManager.route(context, webUrl)
     }
 
+    override fun onTrackEventClick(type: Int, position: Int, categoryName: String) {
+        when (type) {
+            TYPE_ALL_PROMO -> travelHomepageTrackingUtil.travelHomepageClickAllBanner()
+            TYPE_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickOrder(position.toString(), categoryName)
+            TYPE_ALL_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickAllOrder()
+            TYPE_RECENT_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickRecentSearch(position.toString(), categoryName)
+            TYPE_RECOMMENDATION -> travelHomepageTrackingUtil.travelHomepageClickPopularSearch(position.toString(), categoryName)
+            TYPE_ALL_DEALS -> travelHomepageTrackingUtil.travelHomepageClickAllDeals()
+        }
+    }
+
     companion object {
         fun getInstance(): TravelHomepageFragment = TravelHomepageFragment()
+
+        const val TYPE_ORDER_LIST = 1
+        const val TYPE_RECENT_SEARCH = 2
+        const val TYPE_RECOMMENDATION = 3
+        const val TYPE_PROMO = 4
+        const val TYPE_DEALS = 5
+        const val TYPE_POPULAR_DESTINATION = 6
+        const val TYPE_ALL_PROMO = 7
+        const val TYPE_ALL_ORDER_LIST = 8
+        const val TYPE_ALL_DEALS = 9
+
     }
 }

@@ -6,6 +6,7 @@ import com.tokopedia.design.banner.BannerView
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageBannerModel
 import com.tokopedia.travel.homepage.presentation.customview.TravelHomepageBannerViewDynamicBackground
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment
 import com.tokopedia.travel.homepage.presentation.listener.ActivityStateListener
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
@@ -65,6 +66,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     }
 
     override fun onPromoAllClick() {
+        onItemClickListener.onTrackEventClick(TravelHomepageFragment.TYPE_ALL_PROMO)
         onItemClickListener.onItemClick(showAllUrl)
     }
 
