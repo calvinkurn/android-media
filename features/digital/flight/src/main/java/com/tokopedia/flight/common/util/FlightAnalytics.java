@@ -4,7 +4,6 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.common.travel.utils.TravelDateUtil;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
@@ -255,8 +254,8 @@ public class FlightAnalytics {
 
         Object product = DataLayer.mapOf(
                 EnhanceEccomerce.NAME, journeyViewModel.getDepartureAirportCity() + "-" + journeyViewModel.getArrivalAirportCity(),
-                EnhanceEccomerce.PRICE, (journeyViewModel.getFare().getAdultNumericCombo()>0) ? journeyViewModel.getFare().getAdultNumericCombo() : journeyViewModel.getFare().getAdultNumeric(),
-                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, TravelDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
+                EnhanceEccomerce.PRICE, (journeyViewModel.getFare().getAdultNumericCombo() > 0) ? journeyViewModel.getFare().getAdultNumericCombo() : journeyViewModel.getFare().getAdultNumeric(),
+                EnhanceEccomerce.DIMENSION66, FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.YYYYMMDD, journeyViewModel.getRouteList().get(0).getDepartureTimestamp()),
                 EnhanceEccomerce.DIMENSION67, searchPassDataViewModel.isOneWay() ? "oneway" : "roundtrip",
                 EnhanceEccomerce.DIMENSION68, searchPassDataViewModel.getFlightClass().getTitle().toLowerCase(),
                 EnhanceEccomerce.DIMENSION70, isRefundable,
