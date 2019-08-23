@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -94,7 +95,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     private fun initView() {
         searchInputView.setResetListener(this)
 
-        recycler_view.addItemDecoration(VoucherGameListDecorator(8, resources))
+        recycler_view.addItemDecoration(VoucherGameListDecorator(ITEM_DECORATOR_SIZE, resources))
 
 //        promo_banner.setPagerAdapter(object: BannerViewPagerAdapter())
     }
@@ -151,6 +152,13 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        val model = EmptyModel()
+        model.title = "Data kosong"
+        model.description = "Tidak ada data yang ditemukan :("
+        return model
+    }
+
     override fun onSearchSubmitted(text: String?) {
         text?.run {
             if (text.isNotEmpty()) searchVoucherGame(text)
@@ -172,6 +180,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
         const val EXTRA_MENU_ID = "EXTRA_MENU_ID"
         const val EXTRA_PLATFORM_ID = "EXTRA_PLATFORM_ID"
+
+        const val ITEM_DECORATOR_SIZE = 9
 
         const val REQUEST_VOUCHER_GAME_DETAIL = 300
 

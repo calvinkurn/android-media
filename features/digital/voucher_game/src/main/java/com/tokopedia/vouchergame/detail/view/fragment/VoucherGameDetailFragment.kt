@@ -24,6 +24,7 @@ import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapterFac
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameProductDecorator
 import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductViewHolder
 import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewModel
+import com.tokopedia.vouchergame.detail.widget.VoucherGameBottomSheets
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
 import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
@@ -112,7 +113,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     }
 
     private fun initView() {
-        recycler_view.addItemDecoration(VoucherGameProductDecorator(8, resources))
+        recycler_view.addItemDecoration(VoucherGameProductDecorator(ITEM_DECORATOR_SIZE, resources))
 
         // Enquire when all required input fields are filled
         input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener{
@@ -180,6 +181,23 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                 }
             }
             renderList(listData)
+        }
+    }
+
+    private fun setupProductInfo() {
+        // TODO: Add menu detail data
+//        product_image.setOnClickListener { showProductInfo() }
+//        help_label.setOnClickListener { showProductInfo() }
+//        info_icon.setOnClickListener { showProductInfo() }
+    }
+
+    private fun showProductInfo(imageUrl: String, title: String, desc: String) {
+        activity?.let {
+            val voucherGameBottomSheets = VoucherGameBottomSheets()
+            voucherGameBottomSheets.imageUrl = imageUrl
+            voucherGameBottomSheets.title = title
+            voucherGameBottomSheets.description = desc
+            voucherGameBottomSheets.show(it.supportFragmentManager, TAG_VOUCHER_GAME_INFO)
         }
     }
 
@@ -258,6 +276,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         const val EXTRA_MENU_ID = "EXTRA_MENU_ID"
         const val EXTRA_PLATFORM_ID = "EXTRA_PLATFORM_ID"
         const val EXTRA_OPERATOR_ID = "EXTRA_OPERATOR_ID"
+
+        const val ITEM_DECORATOR_SIZE = 8
+
+        const val TAG_VOUCHER_GAME_INFO = "voucherGameInfo"
 
         fun createInstance(menuId: Int, platformId: Int, operator: String): VoucherGameDetailFragment {
             return VoucherGameDetailFragment().also {
