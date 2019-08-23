@@ -3,6 +3,8 @@ package com.tokopedia.digital_deals.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 public class CategoriesModel implements Parcelable {
 
     private int position = -1;
@@ -10,6 +12,7 @@ public class CategoriesModel implements Parcelable {
     private String title;
     private String name;
     private String categoryUrl;
+    private List<ProductItem> items;
     public final static Parcelable.Creator<CategoriesModel> CREATOR = new Creator<CategoriesModel>() {
 
 
@@ -32,7 +35,7 @@ public class CategoriesModel implements Parcelable {
         this.categoryUrl = in.readString();
         this.position = in.readInt();
         this.categoryId = in.readInt();
-
+        in.readList(this.items, ProductItem.class.getClassLoader());
     }
 
     public CategoriesModel() {
@@ -78,6 +81,13 @@ public class CategoriesModel implements Parcelable {
         this.categoryId = categoryId;
     }
 
+    public List<ProductItem> getItems() {
+        return items;
+    }
+
+    public void setItems(List<ProductItem> items) {
+        this.items = items;
+    }
 
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(title);
@@ -85,6 +95,7 @@ public class CategoriesModel implements Parcelable {
         dest.writeString(categoryUrl);
         dest.writeInt(position);
         dest.writeInt(categoryId);
+        dest.writeList(items);
     }
 
     public int describeContents() {

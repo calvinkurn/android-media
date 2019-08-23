@@ -210,9 +210,12 @@ class ImagePreviewActivity : BaseSimpleActivity() {
                 showFailedDownload(notificationId, notificationBuilder)
             }
         };
-        ImageHandler.loadImageBitmap2(this@ImagePreviewActivity,
-                fileLocations?.get(viewPager.getCurrentItem()),
-                targetListener);
+        fileLocations?.getOrNull(viewPager.currentItem)?.let {
+            ImageHandler.loadImageBitmap2(
+                    this@ImagePreviewActivity,
+                    it,
+                    targetListener)
+        }
     }
 
     fun showFailedDownload(notificationId: Int, notificationBuilder: NotificationCompat.Builder) {

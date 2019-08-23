@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.domain.model.scanticket.ScanTicketResponse;
 import com.tokopedia.events.view.contractor.ScanCodeContract;
 import com.tokopedia.events.view.presenter.ScanCodeDataPresenter;
@@ -56,6 +55,10 @@ public class ScanQRCodeActivity extends EventBaseActivity implements ScanCodeCon
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    void setupVariables() {
         divider1 = findViewById(R.id.divider1);
         divider2 = findViewById(R.id.divider2);
         userName = findViewById(R.id.user_name);

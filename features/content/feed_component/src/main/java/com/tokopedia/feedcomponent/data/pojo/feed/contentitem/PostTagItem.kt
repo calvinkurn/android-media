@@ -56,7 +56,10 @@ data class PostTagItem(
 
         @SerializedName("tags")
         @Expose
-        val tags: List<PostTagItemTag> = ArrayList()
+        val tags: List<PostTagItemTag> = ArrayList(),
+
+        @SerializedName("rating")
+        val rating: Int = 0
 
 
 )

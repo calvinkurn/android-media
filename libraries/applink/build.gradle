@@ -23,7 +23,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
+    implementation project(rootProject.ext.libraries.config)
     implementation project(rootProject.ext.libraries.remoteConfig)
+
+    implementation rootProject.ext.playServicesDependencies.core
+
+    implementation (rootProject.ext.serviceDependencies.crashlytics)
 }
 
 apply from: '../../publish_local.gradle'

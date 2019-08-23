@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/dp_16"
     android:orientation="vertical"
@@ -57,7 +58,7 @@
                     android:layout_marginLeft="@dimen/dp_8"
                     android:layout_marginStart="@dimen/dp_8"
                     android:tint="@color/green_250"
-                    android:src="@drawable/ic_arrow_down_grey"
+                    app:srcCompat="@drawable/ic_arrow_down_grey"
                     tools:src="@drawable/ic_arrow_up_grey"/>
 
             </LinearLayout>

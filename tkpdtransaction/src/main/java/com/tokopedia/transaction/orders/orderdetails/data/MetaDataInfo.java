@@ -44,6 +44,18 @@ public class MetaDataInfo {
     @Expose
     private int totalTicketPrice;
 
+    @SerializedName("entity_passengers")
+    @Expose
+    private List<EntityPessenger> entityPessengers;
+
+    @SerializedName("is_hiburan")
+    @Expose
+    private int isHiburan;
+
+    @SerializedName("seo_url")
+    @Expose
+    private String seoUrl;
+
     public String getEndDate() {
         return endDate;
     }
@@ -148,4 +160,23 @@ public class MetaDataInfo {
         this.entityAddress = entityaddress;
     }
 
+    public List<EntityPessenger> getEntityPessengers() {
+        return entityPessengers;
+    }
+
+    public void setEntityPessengers(List<EntityPessenger> entityPessengers) {
+        this.entityPessengers = entityPessengers;
+    }
+
+    public int getIsHiburan() {
+        return isHiburan;
+    }
+
+    public void setIsHiburan(int isHiburan) {
+        this.isHiburan = isHiburan;
+    }
+
+    public String getSeoUrl() {
+        return seoUrl;
+    }
 }

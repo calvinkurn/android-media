@@ -1,12 +1,21 @@
 package com.tokopedia.iris
 
 import android.content.Context
+import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.model.Configuration
 
 /**
  * @author okasurya on 10/9/18.
  */
 interface Iris {
+
+    /**
+     * set custom configuration by json
+     * param:
+     * config, ex: {"row_limit":25,"interval":1}
+     * isEnabled, ex: true
+     */
+    fun setService(config: String, isEnabled: Boolean)
 
     fun setService(config: Configuration)
 
@@ -28,7 +37,4 @@ interface Iris {
 
     fun setDeviceId(deviceId: String)
 
-    companion object {
-        fun init(context: Context): Iris = IrisAnalytics(context)
-    }
 }

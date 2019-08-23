@@ -1,5 +1,8 @@
 package com.tokopedia.logisticaddaddress.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.logisticaddaddress.data.AddAddressRetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.data.AddressRepository;

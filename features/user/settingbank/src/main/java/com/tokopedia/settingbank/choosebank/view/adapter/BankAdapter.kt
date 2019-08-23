@@ -15,11 +15,13 @@ class BankAdapter(adapterTypeFactory: BankTypeFactoryImpl,
     var emptyModel = EmptySearchBankViewModel()
 
     fun setSelected(adapterPosition: Int) {
-        for (visitable in visitables) {
-            (visitable as BankViewModel).isSelected = false
+        if(adapterPosition >= 0){
+            for (visitable in visitables) {
+                (visitable as BankViewModel).isSelected = false
+            }
+            (this.visitables[adapterPosition] as BankViewModel).isSelected = true
+            this.notifyDataSetChanged()
         }
-        (this.visitables[adapterPosition] as BankViewModel).isSelected = true
-        this.notifyDataSetChanged()
     }
 
     fun setList(listBank: ArrayList<BankViewModel>) {

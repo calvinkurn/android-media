@@ -138,7 +138,7 @@
                 <ImageView
                     android:layout_width="@dimen/dp_18"
                     android:layout_height="@dimen/dp_18"
-                    android:src="@drawable/ic_af_dashboard_click_grey"/>
+                    app:srcCompat="@drawable/ic_af_dashboard_click_grey"/>
 
                 <TextView
                     android:id="@+id/tv_click_count"
@@ -153,7 +153,7 @@
                     android:layout_width="@dimen/dp_18"
                     android:layout_height="@dimen/dp_18"
                     android:layout_marginLeft="@dimen/dp_6"
-                    android:src="@drawable/ic_af_dashboard_cart"/>
+                    app:srcCompat="@drawable/ic_af_dashboard_cart"/>
 
                 <TextView
                     android:id="@+id/tv_buy_count"

@@ -5,10 +5,10 @@ import com.google.gson.Gson
 import com.tokopedia.common.network.data.model.*
 import com.tokopedia.common.network.data.source.cloud.api.RestApi
 import com.tokopedia.common.network.util.*
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.Dispatchers
-import kotlinx.coroutines.experimental.coroutineScope
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import retrofit2.Response
 import java.io.File
@@ -200,7 +200,7 @@ class RestCloudDataStore(
         return try {
             if (response.code() == RestConstant.HTTP_SUCCESS) {
                 //For success case saving the data into cache
-                cachedData(request, response.body())
+                cachedData(request, response.body()?:"")
 
                 RestResponse(Gson().fromJson(response.body(), request.typeOfT), response.code(), false)
                         .apply {
@@ -212,7 +212,7 @@ class RestCloudDataStore(
                 //E.g. error response like HTTP error code = 400,401,410 or 500 etc.
                 RestResponse(Unit, response.code(), false).apply {
                     type = request.typeOfT
-                    errorBody = if (response.body() == null) response.errorBody().string() else response.body()
+                    errorBody = if (response.body() == null) response.errorBody()?.string() else response.body()
                     isError = true
                 }
             }

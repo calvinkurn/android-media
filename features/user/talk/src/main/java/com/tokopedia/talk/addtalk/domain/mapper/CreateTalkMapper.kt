@@ -8,7 +8,7 @@ import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import retrofit2.Response
 import rx.functions.Func1
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -16,15 +16,20 @@ import javax.inject.Inject
  */
 
 class CreateTalkMapper @Inject constructor() : Func1<Response<DataResponse<CreateTalkPojo>>,
-        TalkThreadViewModel>{
+        TalkThreadViewModel> {
     override fun call(response: Response<DataResponse<CreateTalkPojo>>): TalkThreadViewModel {
-        if ((response.body() != null) && (response.body().header == null ||
-                        (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                        (response.body().header != null && response.body().header.messages[0].isBlank()))) {
-            val pojo: CreateTalkPojo = response.body().data
-            return mapToViewModel(pojo)
+        val body = response.body()
+        if (body != null) {
+            if ((body != null) && (body.header == null ||
+                            (body.header != null && body.header.messages.isEmpty()) ||
+                            (body.header != null && body.header.messages[0].isBlank()))) {
+                val pojo: CreateTalkPojo = body.data
+                return mapToViewModel(pojo)
+            } else {
+                throw MessageErrorException(body.header.messages[0])
+            }
         } else {
-            throw MessageErrorException(response.body().header.messages[0])
+            throw MessageErrorException("")
         }
     }
 

@@ -9,9 +9,9 @@ import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.shop.BBInfo
 import com.tokopedia.product.detail.data.model.shop.BlackBoxShipmentHolder
-import com.tokopedia.product.detail.data.model.shop.ShopShipment
+import com.tokopedia.product.detail.data.model.shop.ProductShopBBInfo
+import com.tokopedia.product.detail.data.model.shop.ProductShopShipment
 import kotlinx.android.synthetic.main.item_shop_shipment.view.*
 
 class CourierTypeFactory: BaseAdapterTypeFactory(){
@@ -33,18 +33,18 @@ class CourierTypeFactory: BaseAdapterTypeFactory(){
         override fun bind(element: BlackBoxShipmentHolder) {
             with(itemView){
                 when(element){
-                    is BBInfo -> {
+                    is ProductShopBBInfo -> {
                         courier_item_image.gone()
                         courier_item_name.setFontSize(TextViewCompat.FontSize.SMALL)
                         courier_item_name.text = element.name
                         courier_item_info.text = if (element.desc.isNotBlank()) "(${element.desc})" else ""
                     }
-                    is ShopShipment -> {
+                    is ProductShopShipment -> {
                         courier_item_image.visible()
                         courier_item_name.setFontSize(TextViewCompat.FontSize.TITLE)
                         courier_item_name.text = element.name
                         courier_item_info.text = element.product.map { it.name }.joinToString(", ")
-                        ImageHandler.loadImage(context, courier_item_image, element.image, -1)
+                        ImageHandler.loadImage(context, courier_item_image, element.image, R.drawable.ic_loading_image)
                     }
                     else -> {}
                 }

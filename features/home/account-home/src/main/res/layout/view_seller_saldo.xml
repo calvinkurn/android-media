@@ -24,7 +24,7 @@
             android:id="@+id/ss_image_view"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
-            android:src="@drawable/ic_saldo_green"
+            app:srcCompat="@drawable/ic_saldo_green"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ss_text_view_title"

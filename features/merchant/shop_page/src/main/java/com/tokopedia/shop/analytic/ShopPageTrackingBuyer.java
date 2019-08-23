@@ -11,6 +11,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
 import com.tokopedia.shop.analytic.model.ListTitleTypeDef;
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOW_FROM_ZERO_FOLLOWER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_MESSAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_PRODUCT_PICTURE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SEND_CHAT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_MESSAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_WISHLIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.FOLLOW;
@@ -32,6 +35,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_OF
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_VIEW;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.REMOVE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
@@ -227,4 +231,8 @@ public class ShopPageTrackingBuyer extends ShopPageTrackingUser {
                 customDimensionShopPage);
     }
 
+    public void eventShopSendChat() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(CLICK_SHOP_MESSAGE,
+                SHOP_PAGE, CLICK_SEND_CHAT, "");
+    }
 }

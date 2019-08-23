@@ -14,14 +14,14 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.viewholder.Sear
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.SearchEmptyViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 
 /**
  * Created by hangnadi on 10/8/17.
  */
 
-public class HotlistAdapterTypeFactory extends SearchSectionTypeFactoryImpl implements HotlistTypeFactory {
+public class HotlistAdapterTypeFactory extends BrowseSectionTypeFactoryImpl implements HotlistTypeFactory {
 
     private final HotlistListener mHotlistListener;
     private final String searchQuery;

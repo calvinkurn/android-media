@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="host_discovery" translatable="false">discovery</string>
+
+    <string name="path_filter" translatable="false">/filter</string>
+    <string name="path_sort" translatable="false">/sort</string>
+    <string name="path_catalog" translatable="false">/catalog</string>
+
+</resources>

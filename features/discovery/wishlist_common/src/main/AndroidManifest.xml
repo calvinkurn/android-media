@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.wishlist.common" >
     <application>
-        <meta-data android:name="android.support.VERSION" android:value="26.1.0"
-            tools:replace="android:value" />
+
     </application>
 </manifest>

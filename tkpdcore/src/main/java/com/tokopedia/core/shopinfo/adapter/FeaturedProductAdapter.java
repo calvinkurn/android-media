@@ -11,17 +11,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.FlowLayout;
 import com.tokopedia.core.helper.IndicatorViewHelper;
 import com.tokopedia.core.product.model.goldmerchant.FeaturedProductItem;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Created by HenryPri on 15/06/17.
@@ -73,17 +68,11 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProduct
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R2.id.product_image)
         ImageView productImage;
-        @BindView(R2.id.title)
         TextView title;
-        @BindView(R2.id.price)
         TextView price;
-        @BindView(R2.id.label_container)
         FlowLayout labelContainer;
-        @BindView(R2.id.badges_container)
         LinearLayout badgesContainer;
-        @BindView(R2.id.container)
         View container;
 
         private final OnItemClickListener onItemClickListener;
@@ -93,7 +82,13 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProduct
             super(itemView);
             this.onItemClickListener = onItemClickListener;
             this.context = context;
-            ButterKnife.bind(this, itemView);
+
+            productImage = (ImageView) itemView.findViewById(R.id.product_image);
+            title = (TextView) itemView.findViewById(R.id.title);
+            price = (TextView) itemView.findViewById(R.id.price);
+            labelContainer = (FlowLayout) itemView.findViewById(R.id.label_container);
+            badgesContainer = (LinearLayout) itemView.findViewById(R.id.badges_container);
+            container = (View) itemView.findViewById(R.id.container);
         }
 
         public void bindData(final FeaturedProductItem data, final int position) {

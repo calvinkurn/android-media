@@ -36,8 +36,8 @@ import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingR
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
-import kotlinx.coroutines.experimental.CoroutineDispatcher
-import kotlinx.coroutines.experimental.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import javax.inject.Named
@@ -185,11 +185,11 @@ class TopAdsDashboardModule {
 
     @TopAdsDashboardScope
     @Provides
-    fun provideDeleteTopAdsStatisticsUseCase() = DeleteTopAdsStatisticsUseCase()
+    fun provideDeleteTopAdsStatisticsUseCase(@ApplicationContext context: Context) = DeleteTopAdsStatisticsUseCase(context)
 
     @TopAdsDashboardScope
     @Provides
-    fun provideDeleteTopAdsTotalAdUseCase() = DeleteTopAdsTotalAdUseCase()
+    fun provideDeleteTopAdsTotalAdUseCase(@ApplicationContext context: Context) = DeleteTopAdsTotalAdUseCase(context)
 
     @TopAdsDashboardScope
     @Provides

@@ -6,7 +6,7 @@ import android.content.Context
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.topads.auto.view.viewmodel.DailyBudgetViewModel
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
-import kotlinx.coroutines.experimental.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 /**

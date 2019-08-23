@@ -18,22 +18,4 @@
         android:layout_marginBottom="1px"
         android:orientation="vertical" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/guidedSearchRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/quickFilterListView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        tools:orientation="horizontal"
-        tools:layoutManager="android.support.v7.widget.GridLayoutManager"
-        tools:listitem="@layout/quick_filter_item"
-        tools:itemCount="10"
-        />
-
 </LinearLayout>

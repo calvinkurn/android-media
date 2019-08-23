@@ -21,18 +21,19 @@ import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
 import com.tokopedia.instantloan.data.model.response.PhoneDataEntity
 import com.tokopedia.instantloan.data.model.response.UserProfileLoanEntity
+import com.tokopedia.instantloan.network.InstantLoanUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.WEB_LINK_OTP
 import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity
 import com.tokopedia.instantloan.view.adapter.InstantLoanIntroViewPagerAdapter
-import com.tokopedia.instantloan.view.contractor.InstantLoanContractor
-import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter
+import com.tokopedia.instantloan.view.contractor.DanaInstanLoanContractor
+import com.tokopedia.instantloan.view.presenter.DanaInstanLoanPresenter
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.content_instant_loan_home_page.*
 import javax.inject.Inject
 
 
-class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
+class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View {
 
     private var mDialogIntro: Dialog? = null
 
@@ -40,7 +41,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
     private var mContext: Context? = null
 
     @Inject
-    lateinit var presenter: InstantLoanPresenter
+    lateinit var presenter: DanaInstanLoanPresenter
     @Inject
     lateinit var instantLoanAnalytics: InstantLoanAnalytics
 
@@ -56,11 +57,6 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
         mCurrentTab = arguments?.getInt(TAB_POSITION) ?: 0
     }
 
-    override fun onResume() {
-        super.onResume()
-        presenter.attachView(this)
-    }
-
     override fun initInjector() {
         val daggerInstantLoanComponent = InstantLoanComponentInstance.get(activity!!.application)
         daggerInstantLoanComponent!!.inject(this)
@@ -73,25 +69,15 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(view)
+        initView()
     }
 
-    private fun initView(view: View) {
-
-        text_value_amount.text = resources.getStringArray(R.array.values_amount)[mCurrentTab]
-        text_value_duration.text = resources.getStringArray(R.array.values_duration)[mCurrentTab]
-        text_value_processing_time.text = resources.getStringArray(R.array.values_processing_time)[mCurrentTab]
-        text_value_interest_rate.text = resources.getStringArray(R.array.values_interest_rate)[mCurrentTab]
-        text_form_description.text = resources.getStringArray(R.array.values_description)[mCurrentTab]
-
+    private fun initView() {
         button_search_pinjaman.setOnClickListener { view1 -> searchLoanOnline() }
+        il_learn_more.setOnClickListener {
+            openWebView(InstantLoanUrl.COMMON_URL.INSTANT_LOAN_LEARN_MORE)
+        }
     }
-
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
 
     override fun onAttachActivity(context: Context) {
         this.mContext = context
@@ -232,7 +218,7 @@ class DanaInstantFragment : BaseDaggerFragment(), InstantLoanContractor.View {
             }
         }
 
-        mDialogIntro = Dialog(getContext()!!)
+        mDialogIntro = Dialog(context!!)
 
 
         mDialogIntro!!.requestWindowFeature(Window.FEATURE_NO_TITLE)

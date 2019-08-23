@@ -8,9 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.color.ColorSampleView;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdynamicfilter.view.BottomSheetDynamicFilterView;
 
 import java.util.ArrayList;
@@ -58,6 +58,7 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
         private BottomSheetExpandableItemSelectedListAdapter adapter;
         private String filterTitle;
         private View ratingIcon;
+        private View filterNewIcon;
 
         public ViewHolder(View itemView,
                           BottomSheetDynamicFilterView filterView,
@@ -77,9 +78,12 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
             ratingIcon = itemView.findViewById(R.id.rating_icon);
             colorIcon = itemView.findViewById(R.id.color_icon);
             itemContainer = itemView.findViewById(R.id.filter_item_container);
+            filterNewIcon = itemView.findViewById(R.id.filter_new_icon);
         }
 
         public void bind(final Option option, final int position) {
+            bindFilterNewIcon(option);
+
             bindRatingOption(option);
 
             bindColorOption(option);
@@ -90,6 +94,14 @@ public class BottomSheetExpandableItemSelectedListAdapter extends
                 bindCategoryOption(option);
             } else {
                 bindGeneralOption(option, position);
+            }
+        }
+
+        private void bindFilterNewIcon(Option option) {
+            if (option.isNew()) {
+                filterNewIcon.setVisibility(View.VISIBLE);
+            } else {
+                filterNewIcon.setVisibility(View.GONE);
             }
         }
 

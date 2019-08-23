@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Attributes;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.Field;
@@ -26,6 +25,7 @@ import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
+import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
@@ -42,7 +42,7 @@ import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.exception.ResponseDataNullException;
 import com.tokopedia.network.exception.ResponseErrorException;
-import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -70,7 +70,6 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private DigitalPostPaidLocalCache digitalPostPaidLocalCache;
     private String PROMO_CODE = "promoCode";
-    public static final String CACHE_PROMO_CODE = "CACHE_PROMO_CODE";
     public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
 
 
@@ -300,9 +299,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     }
 
     private void branchAutoApplyCouponIfAvailable() {
-        PersistentCacheManager persistentCacheManager =
-                new PersistentCacheManager(getView().getActivity(), CACHE_PROMO_CODE);
-        String savedCoupon = persistentCacheManager.getString(KEY_CACHE_PROMO_CODE, "");
+        String savedCoupon = PersistentCacheManager.instance.getString(KEY_CACHE_PROMO_CODE, "");
         applyPromoCode(savedCoupon);
         if (savedCoupon != null && savedCoupon.length() > 0) {
             getView().hideCartView();
@@ -551,7 +548,9 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setUserAgent(checkoutData.getUserAgent());
         attributes.setIdentifier(getView().getDigitalIdentifierParam());
         attributes.setClientId(digitalModuleRouter.getTrackingClientId());
-        attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam(digitalModuleRouter.getAfUniqueId(), digitalModuleRouter.getAdsId()));
+        attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam(
+                TrackApp.getInstance().getAppsFlyer().getUniqueId(),
+                TrackApp.getInstance().getAppsFlyer().getGoogleAdId()));
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(
@@ -564,7 +563,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     @Override
     public void onPaymentSuccess(String categoryId) {
         if (categoryId != null && categoryId.length() > 0) {
-            digitalModuleRouter.getGlobalCacheManager().delete(DigitalCache.INSTANCE.getNEW_DIGITAL_CATEGORY_AND_FAV() + "/" + categoryId);
+            PersistentCacheManager.instance.delete(DigitalCache.INSTANCE.getNEW_DIGITAL_CATEGORY_AND_FAV() + "/" + categoryId);
         }
     }
 

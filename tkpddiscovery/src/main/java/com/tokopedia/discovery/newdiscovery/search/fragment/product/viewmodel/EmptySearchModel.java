@@ -1,20 +1,16 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 
-import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 /**
  * Created by henrypriyono on 10/31/17.
  */
 
-public class EmptySearchModel implements Visitable<SearchSectionTypeFactory> {
+public class EmptySearchModel implements Visitable<BrowseSectionTypeFactory> {
 
     @DrawableRes
     private int imageRes;
@@ -64,7 +60,7 @@ public class EmptySearchModel implements Visitable<SearchSectionTypeFactory> {
     }
 
     @Override
-    public int type(SearchSectionTypeFactory typeFactory) {
+    public int type(BrowseSectionTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

@@ -8,8 +8,10 @@ data class TrackingPostModel (
         val activityName: String = "",
         val trackingType: String = "",
         val mediaType: String = "",
+        val mediaUrl: String = "",
         val tagsType: String = "",
         val redirectUrl: String = "",
+        val authorId: String = "",
         val postId: Int = 0,
         val totalContent: Int = 0
 )

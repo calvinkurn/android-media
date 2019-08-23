@@ -4,8 +4,8 @@ import android.view.View;
 import android.widget.CheckBox;
 
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
 

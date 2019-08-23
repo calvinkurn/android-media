@@ -10,6 +10,9 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 
+/**
+ * Deeplink: SHOP_SETTINGS_ADDRESS
+ */
 class ShopSettingsAddressActivity : BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
     override fun getComponent() = DaggerShopSettingsComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()

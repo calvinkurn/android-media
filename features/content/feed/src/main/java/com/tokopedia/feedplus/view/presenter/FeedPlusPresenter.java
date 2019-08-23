@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.view.presenter;
 
-import android.support.annotation.RestrictTo;
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -15,10 +13,6 @@ import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase;
-import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
-import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
-import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
-import com.tokopedia.feedplus.view.analytics.FeedAnalytics;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
@@ -27,7 +21,6 @@ import com.tokopedia.feedplus.view.subscriber.SendVoteSubscriber;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
-import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.profile.view.subscriber.TrackPostClickSubscriber;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -42,6 +35,8 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID;
+
 /**
  * @author by nisie on 5/15/17.
  */
@@ -51,15 +46,10 @@ public class FeedPlusPresenter
         implements FeedPlus.Presenter {
 
     private final UserSessionInterface userSession;
-    private final GetFeedsUseCase getFeedsUseCase;
-    private final GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private final ToggleFavouriteShopUseCase doFavoriteShopUseCase;
-    private final FeedAnalytics analytics;
-    private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final SendVoteUseCase sendVoteUseCase;
-    private final GetWhitelistUseCase getWhitelistUseCase;
     private final GetDynamicFeedFirstPageUseCase getDynamicFeedFirstPageUseCase;
     private final GetDynamicFeedUseCase getDynamicFeedUseCase;
     private final TrackAffiliateClickUseCase trackAffiliateClickUseCase;
@@ -69,42 +59,22 @@ public class FeedPlusPresenter
 
     @Inject
     FeedPlusPresenter(UserSessionInterface userSession,
-                      GetFeedsUseCase getFeedsUseCase,
-                      GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
                       ToggleFavouriteShopUseCase favoriteShopUseCase,
-                      GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase,
                       LikeKolPostUseCase likeKolPostUseCase,
                       FollowKolPostGqlUseCase followKolPostGqlUseCase,
                       SendVoteUseCase sendVoteUseCase,
-                      GetWhitelistUseCase whitelistUseCase,
                       GetDynamicFeedFirstPageUseCase getDynamicFeedFirstPageUseCase,
                       GetDynamicFeedUseCase getDynamicFeedUseCase,
-                      TrackAffiliateClickUseCase trackAffiliateClickUseCase,
-                      FeedAnalytics analytics) {
+                      TrackAffiliateClickUseCase trackAffiliateClickUseCase) {
         this.userSession = userSession;
         this.pagingHandler = new PagingHandler();
-        this.getFeedsUseCase = getFeedsUseCase;
-        this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
         this.doFavoriteShopUseCase = favoriteShopUseCase;
-        this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
-        this.getWhitelistUseCase = whitelistUseCase;
         this.getDynamicFeedFirstPageUseCase = getDynamicFeedFirstPageUseCase;
         this.getDynamicFeedUseCase = getDynamicFeedUseCase;
         this.trackAffiliateClickUseCase = trackAffiliateClickUseCase;
-        this.analytics = analytics;
-    }
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setGetFirstPageFeedsCloudUseCase(GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase) {
-        this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
-    }
-
-    @RestrictTo(RestrictTo.Scope.TESTS)
-    public GetFirstPageFeedsCloudUseCase getGetFirstPageFeedsCloudUseCase() {
-        return getFirstPageFeedsCloudUseCase;
     }
 
     @Override
@@ -116,14 +86,10 @@ public class FeedPlusPresenter
     @Override
     public void detachView() {
         super.detachView();
-        getFeedsUseCase.unsubscribe();
-        getFirstPageFeedsUseCase.unsubscribe();
         doFavoriteShopUseCase.unsubscribe();
-        getFirstPageFeedsCloudUseCase.unsubscribe();
         likeKolPostUseCase.unsubscribe();
         followKolPostGqlUseCase.unsubscribe();
         sendVoteUseCase.unsubscribe();
-        getWhitelistUseCase.unsubscribe();
     }
 
     @Override
@@ -312,8 +278,8 @@ public class FeedPlusPresenter
         );
     }
 
-    public String getUserId() {
-        return userSession.getUserId();
+    private String getUserId() {
+        return userSession.isLoggedIn() ? userSession.getUserId() : NON_LOGIN_USER_ID;
     }
 
     private void getFirstPageFeed() {
@@ -321,14 +287,8 @@ public class FeedPlusPresenter
         viewListener.showRefresh();
         currentCursor = "";
 
-
-        if (userSession == null || !userSession.isLoggedIn()) {
-            viewListener.onUserNotLogin();
-            return;
-        }
-
         getDynamicFeedFirstPageUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS),
+                GetDynamicFeedFirstPageUseCase.Companion.createRequestParams(getUserId(), "", GetDynamicFeedUseCase.SOURCE_FEEDS, userSession.isLoggedIn()),
                 new Subscriber<DynamicFeedFirstPageDomainModel>() {
                     @Override
                     public void onCompleted() {
@@ -360,20 +320,19 @@ public class FeedPlusPresenter
                         DynamicFeedDomainModel model = firstPageDomainModel
                                 .getDynamicFeedDomainModel();
 
-                        if (firstPageDomainModel.getWhitelistDomain() != null
-                                && firstPageDomainModel.getWhitelistDomain().isWhitelist()) {
 
-                            addWhitelistData(
-                                    model.getPostList(),
-                                    firstPageDomainModel.getWhitelistDomain()
-                            );
-                        }
 
                         if (hasFeed(model)) {
                             getView().updateCursor(model.getCursor());
                             getView().setLastCursorOnFirstPage(model.getCursor());
+                            WhitelistDomain whitelistDomain = new WhitelistDomain();
+                            if (firstPageDomainModel.getWhitelistDomain() != null
+                                    && firstPageDomainModel.getWhitelistDomain().isWhitelist()) {
+                                whitelistDomain = firstPageDomainModel.getWhitelistDomain();
+                            }
                             getView().onSuccessGetFeedFirstPage(
-                                    new ArrayList<>(model.getPostList())
+                                    new ArrayList<>(model.getPostList()),
+                                    new WhitelistViewModel(whitelistDomain)
                             );
 
                             if (model.getHasNext()) {
@@ -412,7 +371,7 @@ public class FeedPlusPresenter
         }
 
         getDynamicFeedUseCase.execute(
-                GetDynamicFeedUseCase.Companion.createRequestParams(userSession.getUserId(), currentCursor, GetDynamicFeedUseCase.SOURCE_FEEDS),
+                GetDynamicFeedUseCase.Companion.createRequestParams(getUserId(), currentCursor, GetDynamicFeedUseCase.SOURCE_FEEDS),
                 new Subscriber<DynamicFeedDomainModel>() {
                     @Override
                     public void onCompleted() {

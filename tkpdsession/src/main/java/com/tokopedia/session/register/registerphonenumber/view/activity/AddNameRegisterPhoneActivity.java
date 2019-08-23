@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.session.R;
 import com.tokopedia.session.register.registerphonenumber.view.fragment.AddNameRegisterPhoneFragment;
@@ -27,10 +28,11 @@ public class AddNameRegisterPhoneActivity extends BasePresenterActivity implemen
     public static final String PARAM_PHONE = "phone";
     private RegisterAnalytics analytics;
 
-    public static Intent newInstance(Context context, String phoneNumber) {
+    public static Intent newInstance(Context context, String phoneNumber, String uuid) {
         Intent intent = new Intent(context, AddNameRegisterPhoneActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_PHONE, phoneNumber);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_PHONE, phoneNumber);
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, uuid);
         intent.putExtras(bundle);
         return intent;
     }
@@ -39,7 +41,8 @@ public class AddNameRegisterPhoneActivity extends BasePresenterActivity implemen
     public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         UserSessionInterface userSession = new UserSession(context);
-        String phone = bundle.getString(PARAM_PHONE, "0");
+        String phone = bundle.getString(ApplinkConstInternalGlobal.PARAM_PHONE, "0");
+        String uuid = bundle.getString(ApplinkConstInternalGlobal.PARAM_UUID, "");
 
         if (userSession.isLoggedIn()) {
             if (context.getApplicationContext() instanceof ApplinkRouter) {
@@ -49,7 +52,7 @@ public class AddNameRegisterPhoneActivity extends BasePresenterActivity implemen
                 throw new RuntimeException("Applinks intent unsufficient");
             }
         } else {
-            Intent intent = newInstance(context, phone);
+            Intent intent = newInstance(context, phone, uuid);
             return intent.setData(uri.build());
         }
     }

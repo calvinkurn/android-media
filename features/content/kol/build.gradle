@@ -30,6 +30,7 @@ dependencies {
         transitive = true
     }
 
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.applink)
@@ -40,10 +41,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.network)
-    implementation project(rootProject.ext.libraries.sharecontent)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.userSession)
-    implementation project(rootProject.ext.libraries.useCase)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.libraries.youtubeutil)
 

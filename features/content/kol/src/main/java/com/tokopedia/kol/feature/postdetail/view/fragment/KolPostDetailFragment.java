@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -33,6 +32,7 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
+import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -45,11 +45,11 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionVie
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.KolComponentInstance;
-import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
-import com.tokopedia.kol.analytics.PostTagAnalytics;
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
 import com.tokopedia.kol.common.util.PostMenuListener;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
@@ -64,6 +64,7 @@ import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity;
 import com.tokopedia.kol.feature.postdetail.view.adapter.KolPostDetailAdapter;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactory;
 import com.tokopedia.kol.feature.postdetail.view.adapter.typefactory.KolPostDetailTypeFactoryImpl;
+import com.tokopedia.kol.feature.postdetail.view.analytics.KolPostDetailAnalytics;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
@@ -94,7 +95,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         YoutubeViewHolder.YoutubePostListener,
         PollAdapter.PollOptionListener,
         GridPostAdapter.GridItemListener,
-        VideoViewHolder.VideoViewListener {
+        VideoViewHolder.VideoViewListener,
+        FeedMultipleImageView.FeedMultipleImageViewListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -108,7 +110,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private ImageView likeButton, commentButton, shareButton;
     private TextView likeCount, commentCount, shareText;
     private View footer;
-    private KolRouter kolRouter;
     private PerformanceMonitoring performanceMonitoring;
 
     private DynamicPostViewModel dynamicPostViewModel;
@@ -123,6 +124,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Inject
     PostTagAnalytics postTagAnalytics;
+
+    @Inject
+    KolPostDetailAnalytics analytics;
 
     KolPostDetailAdapter adapter;
 
@@ -175,22 +179,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        if (getActivity().getApplicationContext() instanceof KolRouter) {
-            kolRouter = (KolRouter) getActivity().getApplicationContext();
-        } else {
-            throw new IllegalStateException("Application must be an instance of "
-                    + KolRouter.class.getSimpleName());
-        }
-
         initVar();
 
         swipeToRefresh.setOnRefreshListener(this);
 
         KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,this, this, this, this, this, this
-                , this, this, this, userSession);
+                , this, this, this, this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
         presenter.attachView(this);
@@ -253,26 +248,33 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             trackImpression(dynamicPostViewModel);
         }
         setFooter(postDetailViewModel);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    FeedScrollListener.onFeedScrolled(recyclerView, list);
+                }
+            }
+        });
     }
 
     private void trackImpression(DynamicPostViewModel dynamicPostViewModel) {
         if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
-            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
-                if (isOwner()) {
-                    postTagAnalytics.trackViewPostTagProfileDetailSelf(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                } else {
-                    postTagAnalytics.trackViewPostTagProfileDetailOther(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                }
+            if (isOwner()) {
+                postTagAnalytics.trackViewPostTagProfileDetailSelf(
+                        dynamicPostViewModel.getId(),
+                        dynamicPostViewModel.getPostTag().getItems(),
+                        dynamicPostViewModel.getTrackingPostModel());
+            } else {
+                postTagAnalytics.trackViewPostTagProfileDetailOther(
+                        dynamicPostViewModel.getId(),
+                        dynamicPostViewModel.getPostTag().getItems(),
+                        dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
+                        dynamicPostViewModel.getTrackingPostModel());
             }
         }
+        onAffiliateTrackClicked(dynamicPostViewModel.getTracking(), false);
     }
 
     private boolean isOwner() {
@@ -425,7 +427,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.followKol(id, rowNumber);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -433,39 +435,42 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unfollowKol(id, rowNumber);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
     public void onLikeKolClicked(int rowNumber, int id) {
+        analytics.eventClickLike(userSession.getUserId());
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.likeKol(id, rowNumber, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
     public void onUnlikeKolClicked(int adapterPosition, int id) {
+        analytics.eventClickLike(userSession.getUserId());
         if (userSession != null && userSession.isLoggedIn()) {
             presenter.unlikeKol(id, adapterPosition, this);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
     @Override
     public void onGoToKolComment(int rowNumber, int id) {
+        analytics.eventClickComment(userSession.getUserId());
         if (userSession != null && userSession.isLoggedIn()) {
             Intent intent = KolCommentActivity.getCallingIntent(getContext(), id, rowNumber);
             startActivityForResult(intent, OPEN_KOL_COMMENT);
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
     @Override
     public void onGoToProfile(String url) {
-        kolRouter.openRedirectUrl(getActivity(), url);
+        onGoToLink(url);
     }
 
     @Override
@@ -681,12 +686,6 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         onGoToLink(redirectUrl);
     }
 
-    public void onGoToLink(String link) {
-        if (!TextUtils.isEmpty(link)) {
-            kolRouter.openRedirectUrl(getActivity(), link);
-        }
-    }
-
     @Override
     public void onHeaderActionClick(int positionInFeed, @NotNull String id, @NotNull String type, boolean isFollow) {
 
@@ -710,7 +709,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             }
 
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
     }
 
@@ -729,7 +728,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                             if (userSession != null && userSession.isLoggedIn()) {
                                 goToContentReport(postId);
                             } else {
-                                startActivity(kolRouter.getLoginIntent(getActivity()));
+                                RouteManager.route(getActivity(), ApplinkConst.LOGIN);
                             }
                         }
 
@@ -807,22 +806,20 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onPostTagItemClick(int positionInFeed, @NotNull String redirectUrl, @NotNull PostTagItem postTagItem, int itemPosition) {
         onGoToLink(redirectUrl);
-        if (dynamicPostViewModel.getPostTag().getTotalItems() != 0 && !dynamicPostViewModel.getPostTag().getItems().isEmpty()) {
-            for (int i = 0; i < dynamicPostViewModel.getPostTag().getTotalItems(); i++) {
-                if (isOwner()) {
-                    postTagAnalytics.trackClickPostTagProfileDetailSelf(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                } else {
-                    postTagAnalytics.trackClickPostTagProfileDetailOther(
-                            dynamicPostViewModel.getId(),
-                            dynamicPostViewModel.getPostTag().getItems().get(i),
-                            i,
-                            dynamicPostViewModel.getTrackingPostModel());
-                }
-            }
+
+        if (isOwner()) {
+            postTagAnalytics.trackClickPostTagProfileDetailSelf(
+                    dynamicPostViewModel.getId(),
+                    postTagItem,
+                    itemPosition,
+                    dynamicPostViewModel.getTrackingPostModel());
+        } else {
+            postTagAnalytics.trackClickPostTagProfileDetailOther(
+                    dynamicPostViewModel.getId(),
+                    postTagItem,
+                    itemPosition,
+                    dynamicPostViewModel.getHeader().getFollowCta().getAuthorType(),
+                    dynamicPostViewModel.getTrackingPostModel());
         }
     }
 
@@ -849,9 +846,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList) {
+    public void onAffiliateTrackClicked(@NotNull List<TrackingViewModel> trackList, boolean isClick) {
         for (TrackingViewModel track : trackList) {
-            presenter.trackAffiliate(track.getClickURL());
+            if (isClick) {
+                presenter.trackAffiliate(track.getClickURL());
+            } else {
+                presenter.trackAffiliate(track.getViewURL());
+            }
         }
     }
 
@@ -880,18 +881,32 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 presenter.sendVote(0, pollId, optionId);
             }
         } else {
-            startActivity(kolRouter.getLoginIntent(getActivity()));
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
         }
 
     }
 
     @Override
-    public void onGridItemClick(int positionInFeed, int contentPosition, @NotNull String redirectLink) {
+    public void onGridItemClick(int positionInFeed, int contentPosition, int productPosition,
+                                @NotNull String redirectLink) {
         onGoToLink(redirectLink);
     }
 
     @Override
     public void onVideoPlayerClicked(int positionInFeed, int contentPosition, @NotNull String postId) {
         startActivityForResult(VideoDetailActivity.Companion.getInstance(getActivity(), postId), OPEN_VIDEO_DETAIL);
+    }
+
+    private void onGoToLink(String link) {
+        if (getActivity() != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(getActivity(), link)) {
+                RouteManager.route(getActivity(), link);
+            } else {
+                RouteManager.route(
+                        getActivity(),
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                );
+            }
+        }
     }
 }

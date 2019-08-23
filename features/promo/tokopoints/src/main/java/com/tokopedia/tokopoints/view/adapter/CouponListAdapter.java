@@ -149,11 +149,36 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                 holder.progressTimer.setVisibility(View.GONE);
                 holder.value.setPadding(0, 0, 0, 0);
                 holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
+
             }
         } else {
             holder.progressTimer.setVisibility(View.GONE);
             holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.black_70));
         }
+        enableOrDisableImages(holder, item);
+    }
+
+    private void enableOrDisableImages(ViewHolder holder, CouponValueEntity item) {
+        if(item.getUsage()!=null) {
+            if (item.getUsage().getActiveCountDown() > 0
+                    || item.getUsage().getExpiredCountDown() <= 0) {
+                disableImages(holder);
+            } else {
+                enableImages(holder);
+            }
+        }else{
+            disableImages(holder);
+        }
+    }
+
+    private void disableImages(ViewHolder holder) {
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.tp_coupon_disable), android.graphics.PorterDuff.Mode.SRC_IN);
+    }
+
+    private void enableImages(ViewHolder holder) {
+        holder.imgLabel.setColorFilter(ContextCompat.getColor(holder.imgLabel.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
+        holder.ivMinTxn.setColorFilter(ContextCompat.getColor(holder.ivMinTxn.getContext(), R.color.medium_green), android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     @Override

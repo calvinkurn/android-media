@@ -15,6 +15,7 @@ import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.MessageViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import rx.Observable
@@ -29,7 +30,8 @@ import java.util.concurrent.TimeUnit
 open class BaseChatViewStateImpl(
         @NonNull open val view: View,
         open val toolbar: Toolbar,
-        private val typingListener: TypingListener
+        private val typingListener: TypingListener,
+        private val chatMenuListener: BaseChatMenuViewHolder.ChatMenuListener
 ) : BaseChatViewState {
 
     protected lateinit var recyclerView: RecyclerView
@@ -39,10 +41,7 @@ open class BaseChatViewStateImpl(
     protected lateinit var actionBox: LinearLayout
     protected lateinit var sendButton: View
     protected lateinit var notifier: View
-
-    protected lateinit var pickerButton: View
-    protected lateinit var maximizeButton: View
-    protected lateinit var attachProductButton: View
+    protected lateinit var chatMenuButton: ImageView
 
     protected lateinit var replyWatcher: Observable<String>
     protected lateinit var replyIsTyping: Observable<Boolean>
@@ -56,10 +55,7 @@ open class BaseChatViewStateImpl(
         actionBox = view.findViewById(R.id.add_comment_area)
         sendButton = view.findViewById(R.id.send_but)
         notifier = view.findViewById(R.id.notifier)
-
-        pickerButton = view.findViewById(R.id.image_picker)
-        maximizeButton = view.findViewById(R.id.maximize)
-        attachProductButton = view.findViewById(R.id.add_url)
+        chatMenuButton = view.findViewById(R.id.iv_chat_menu)
 
         (recyclerView.layoutManager as LinearLayoutManager).stackFromEnd = false
         (recyclerView.layoutManager as LinearLayoutManager).reverseLayout = true
@@ -72,20 +68,26 @@ open class BaseChatViewStateImpl(
 
         replyIsTyping = replyWatcher.map { t -> t.isNotEmpty() }
 
+        val onError = Action1<Throwable> { it.printStackTrace() }
 
         replyIsTyping.subscribe(Action1 {
             if (it && !isTyping) {
                 typingListener.onStartTyping()
                 isTyping = true
             }
-        })
+        }, onError)
 
+        val onChatDeBounceSubscriber = Action1<Boolean>{
+            typingListener.onStopTyping()
+            isTyping = false
+        }
         replyIsTyping.debounce(2, TimeUnit.SECONDS)
                 .skip(1)
-                .subscribe {
-                    typingListener.onStopTyping()
-                    isTyping = false
-                }
+                .subscribe(onChatDeBounceSubscriber, onError)
+
+        chatMenuButton.setOnClickListener {
+            chatMenuListener.showChatMenu()
+        }
     }
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
@@ -184,11 +186,11 @@ open class BaseChatViewStateImpl(
     }
 
     open fun scrollToBottom() {
+        val onNext = Action1<Long> { recyclerView.scrollToPosition(0) }
+        val onError = Action1<Throwable> { it.printStackTrace() }
         Observable.timer(250, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    recyclerView.scrollToPosition(0)
-                }
+                .subscribe (onNext, onError)
     }
 
     open fun checkLastCompletelyVisibleItemIsFirst(): Boolean {

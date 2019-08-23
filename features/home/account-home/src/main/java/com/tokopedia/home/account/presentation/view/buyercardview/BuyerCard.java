@@ -11,14 +11,14 @@ public class BuyerCard implements Parcelable {
     private int progress;
     private String username;
     private String tokopointAmount;
-    private int couponAmount;
+    private String couponAmount;
     private boolean isAffiliate;
 
     public BuyerCard() {
 
     }
 
-    BuyerCard(String avatar, String username, int progress, String tokopointAmount, int couponAmount, boolean isAffiliate) {
+    BuyerCard(String avatar, String username, int progress, String tokopointAmount, String couponAmount, boolean isAffiliate) {
         this.avatar = avatar;
         this.progress = progress;
         this.username = username;
@@ -67,11 +67,11 @@ public class BuyerCard implements Parcelable {
         this.tokopointAmount = tokopointAmount;
     }
 
-    public int getCouponAmount() {
+    public String getCouponAmount() {
         return couponAmount;
     }
 
-    public void setCouponAmount(int couponAmount) {
+    public void setCouponAmount(String couponAmount) {
         this.couponAmount = couponAmount;
     }
 
@@ -81,7 +81,7 @@ public class BuyerCard implements Parcelable {
         private String username;
         private int progress;
         private String tokopoint;
-        private int coupon;
+        private String coupon;
         private boolean isAffiliate;
 
         public Builder avatar(String avatar) {
@@ -104,7 +104,7 @@ public class BuyerCard implements Parcelable {
             return this;
         }
 
-        public Builder coupons(int coupon) {
+        public Builder coupons(String coupon) {
             this.coupon = coupon;
             return this;
         }
@@ -130,7 +130,7 @@ public class BuyerCard implements Parcelable {
         dest.writeInt(this.progress);
         dest.writeString(this.username);
         dest.writeString(this.tokopointAmount);
-        dest.writeInt(this.couponAmount);
+        dest.writeString(this.couponAmount);
         dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
     }
 
@@ -139,7 +139,7 @@ public class BuyerCard implements Parcelable {
         this.progress = in.readInt();
         this.username = in.readString();
         this.tokopointAmount = in.readString();
-        this.couponAmount = in.readInt();
+        this.couponAmount = in.readString();
         this.isAffiliate = in.readByte() != 0;
     }
 

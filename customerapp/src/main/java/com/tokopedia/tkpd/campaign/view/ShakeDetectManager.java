@@ -13,10 +13,10 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.tkpd.campaign.configuration.ShakeDetector;
@@ -122,8 +122,8 @@ public class ShakeDetectManager implements ShakeDetector.Listener {
     }
 
     private boolean isReactNativeOnReleaseMode() {
-        SharedPreferences reactSharedPreferences = mContext.getSharedPreferences(DeveloperOptions.SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
-        return reactSharedPreferences.getBoolean(DeveloperOptions.IS_ENABLE_SHAKE_REACT, true);
+        SharedPreferences reactSharedPreferences = mContext.getSharedPreferences(DeveloperOptionActivity.SP_REACT_ENABLE_SHAKE, Context.MODE_PRIVATE);
+        return reactSharedPreferences.getBoolean(DeveloperOptionActivity.IS_ENABLE_SHAKE_REACT, true);
     }
 
     @Override

@@ -37,18 +37,23 @@ public interface AffiliateEventTracking {
 
     interface Action {
         String SEARCH_NOT_FOUND = "search not found";
+        String SEARCH_NOT_FOUND_NON_EE = "search - no result";
         String CLICK_SIMPAN = "click simpan";
         String CLICK_SYARAT_KETENTUAN = "click syarat dan ketentuan by.me";
         String CLICK_REKOMENDASIKAN = "click rekomendasikan";
         String CLICK_LIHAT_PRODUK_LAINNYA = "click lihat produk lainnya";
         String CLICK_LIHAT_PILIHAN_PRODUK = "click lihat pilihan produk";
         String IMPRESSION_ONBOARD = "impression onboard";
+        String IMPRESSION_PRODUCT = "impression product affiliate";
+        String CLICK_PRODUCT = "click product affiliate";
         String CLICK_LIHAT_CONTOH = "click lihat contoh";
         String CLICK_TOKOPEDIA_SALDO = "cta tokopedia saldo";
+        String CLICK_SEARCH_SUGGESTION = "click search suggestion";
         String CLICK_PROFILE = "click profile";
         String OTHERS = "others";
     }
 
     interface EventLabel {
+        String SEARCH_RESULT_PRODUCT_ID = "search result-";
     }
 }

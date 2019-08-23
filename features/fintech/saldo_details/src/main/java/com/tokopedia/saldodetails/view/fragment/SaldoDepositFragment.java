@@ -26,7 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
+import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
@@ -229,7 +229,7 @@ public class SaldoDepositFragment extends BaseDaggerFragment
         saldoTypeLL = view.findViewById(R.id.saldo_type_ll);
         merchantDetailLL = view.findViewById(R.id.merchant_details_ll);
         merchantStatusLL = view.findViewById(R.id.merchant_status_ll);
-        saldoDepositExpandIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_arrow_up_grey));
+        saldoDepositExpandIV.setImageDrawable(MethodChecker.getDrawable(getActivity(),R.drawable.ic_arrow_up_grey));
 
         if (expandLayout) {
             saldoTypeLL.setVisibility(View.VISIBLE);

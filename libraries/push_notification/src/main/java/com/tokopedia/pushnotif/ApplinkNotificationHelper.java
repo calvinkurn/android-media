@@ -46,6 +46,7 @@ public class ApplinkNotificationHelper {
         model.setToUserId(data.getString("to_user_id", ""));
         model.setTitle(data.getString("title", ""));
         model.setTargetApp(data.getString("target_app", ""));
+        model.setTransactionId(data.getString("trans_id", ""));
 
         return model;
     }

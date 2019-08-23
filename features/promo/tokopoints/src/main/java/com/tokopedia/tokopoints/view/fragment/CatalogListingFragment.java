@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -40,6 +41,7 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogBannerPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.CatalogSortTypePagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
@@ -54,6 +56,7 @@ import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.List;
 import java.util.Locale;
@@ -140,6 +143,8 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         mPresenter.attachView(this);
         mTvFlashTimer = view.findViewById(R.id.tv_flash_time);
         mTvFlashTimerLabel = view.findViewById(R.id.tv_timer_label);
+        mTvFlashTimerLabel.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_tp_flash_green), null, null , null);
         mProgressFlash = view.findViewById(R.id.progress_timer);
         mContainerFlashTimer = view.findViewById(R.id.cl_flash_container);
         initListener();
@@ -252,7 +257,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 || filters.getCategories() == null
                 || filters.getCategories().isEmpty()) {
             //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             //TODO please replace with
             mPresenter.setCurrentCategoryId(0);
@@ -261,7 +266,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
             mTabSortType.setVisibility(View.GONE);
         } else if (filters.getCategories().get(0) != null
                 && (filters.getCategories().get(0).isHideSubCategory() || filters.getCategories().get(0).getSubCategory() == null || filters.getCategories().get(0).getSubCategory().isEmpty())) {
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), null);
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), null);
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
@@ -278,7 +283,7 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                 && filters.getCategories().get(0).getSubCategory() != null) {
             mTabSortType.setVisibility(View.VISIBLE);
             updateToolbarTitle(filters.getCategories().get(0).getName());
-            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getSubCategory());
+            mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getCategories().get(0).getId(), filters.getCategories().get(0).getSubCategory());
             mViewPagerAdapter.setPointsAvailable(isPointsAvailable);
             mPagerSortType.setAdapter(mViewPagerAdapter);
             mTabSortType.setupWithViewPager(mPagerSortType);
@@ -452,9 +457,13 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
                     "");
         } else if (source.getId() == R.id.view_point_saya
                 || source.getId() == R.id.text_my_points_value_bottom) {
-            ((TokopointRouter) getAppContext()).openTokopointWebview(getContext(), CommonConstant.WebLink.HISTORY, getString(R.string.tp_history));
+            startActivity(new Intent(getActivityContext(), PointHistoryActivity.class));
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
+                    "");
         }
-
     }
 
     private void initViews(@NonNull View view) {

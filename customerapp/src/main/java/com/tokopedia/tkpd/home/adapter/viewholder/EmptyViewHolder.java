@@ -28,8 +28,6 @@ import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.tkpd.R;
 
-import butterknife.ButterKnife;
-
 /**
  * Author errysuprayogi on 25,November,2018
  */
@@ -46,7 +44,7 @@ public class EmptyViewHolder extends RecyclerView.ViewHolder implements
         topAdsView = (TopAdsView) itemView.findViewById(R.id.topads);
         actionBtn = (Button) itemView.findViewById(R.id.action_btn);
         context = itemView.getContext();
-        ButterKnife.bind(this, itemView);
+
         TopAdsParams params = new TopAdsParams();
         params.getParam().put(TopAdsParams.KEY_SRC, WISHLISH_SRC);
         Config topAdsconfig = new Config.Builder()

@@ -15,6 +15,8 @@ import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.Utils;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
@@ -45,6 +47,8 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         this.submissionsResult = challengesResult;
         tvTitle.setText(challengesResult.getTitle());
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
+        tvPoints.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_buzz_points), null, null , null);
         ImageHandler.loadImageWithoutPlaceholder(imgChallenge, Utils.getImageUrlForSubmission(challengesResult.getThumbnailUrl()), R.color.grey_1100);
         Utils.setTextViewBackground(context, tvStatus, submissionsResult.getStatus());
         imgLikes.setVisibility(View.GONE);
@@ -57,9 +61,9 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         } else if (Utils.STATUS_APPROVED.equalsIgnoreCase(submissionsResult.getStatus())) {
             imgLikes.setVisibility(View.VISIBLE);
             if (submissionsResult.getMe().isLiked()) {
-                imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
+                imgLikes.setImageDrawable(MethodChecker.getDrawable(imgLikes.getContext(), R.drawable.ic_wishlist_checked));
             } else {
-                imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
+                imgLikes.setImageDrawable(MethodChecker.getDrawable(imgLikes.getContext(), R.drawable.ic_wishlist_unchecked));
             }
         }
 
@@ -86,11 +90,11 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
             ISubmissionsViewHolderListner.onLikeClick(submissionsResult);
             if (submissionsResult.getMe().isLiked()) {
-                imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
+                imgLikes.setImageDrawable(MethodChecker.getDrawable(imgLikes.getContext(), R.drawable.ic_wishlist_unchecked));
                 action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
                 submissionsResult.getMe().setLiked(false);
             } else {
-                imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
+                imgLikes.setImageDrawable(MethodChecker.getDrawable(imgLikes.getContext(), R.drawable.ic_wishlist_checked));
                 action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
                 submissionsResult.getMe().setLiked(true);
             }

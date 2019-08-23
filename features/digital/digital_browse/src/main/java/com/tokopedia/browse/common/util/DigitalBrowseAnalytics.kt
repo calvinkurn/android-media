@@ -21,6 +21,9 @@ constructor() {
     private val GENERIC_CATEGORY = "homepage"
     private val EVENT_ACTION_LAYANAN_CLICK = "click on %s"
     private val EVENT_ACTION_LAYANAN_IMPRESSION = "impression on %s"
+    private val CLICK_TOP_NAV = "clickTopNav"
+    private val TOP_NAV = "top nav"
+    private val CLICK_SEARCH_BOX = "click search box"
 
 
     fun eventClickBackOnBelanjaPage() {
@@ -115,5 +118,14 @@ constructor() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    fun eventClickOnSearchTopNav(pageName: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                CLICK_TOP_NAV,
+                TOP_NAV + " - " + pageName,
+                CLICK_SEARCH_BOX,
+                ""
+        ))
     }
 }

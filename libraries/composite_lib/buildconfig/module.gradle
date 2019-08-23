@@ -1,0 +1,87 @@
+apply from: "$rootProject.projectDir/buildconfig/jacoco.gradle"
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        println "vectorDrawableConfig"
+        println vectorDrawable
+        vectorDrawables.useSupportLibrary=vectorDrawable.toBoolean()
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+
+    buildTypes {
+        debug{
+            testCoverageEnabled (project.hasProperty('coverage')? true : false)
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+}
+
+dependencies {
+
+    implementation rootProject.ext.supportLibDependencies.recyclerViewV7
+    implementation rootProject.ext.supportLibDependencies.supportV4
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
+    implementation rootProject.ext.supportLibDependencies.supportV13
+    implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.supportLibDependencies.cardViewV7
+
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+
+    implementation rootProject.ext.miscDependencies.rxAndroid
+    implementation rootProject.ext.miscDependencies.rxJava
+    implementation rootProject.ext.miscDependencies.rxJavaMath
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.converterGson
+    implementation rootProject.ext.networkDependencies.adapterRxJava
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation rootProject.ext.miscDependencies.gson
+
+    androidTestImplementation(rootProject.ext.testDependencies.androidTestRunner) {
+        exclude module: 'support-annotations'
+    }
+    androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    androidTestImplementation rootProject.ext.testDependencies.mockitorCore,     { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker
+    // androidTestImplementation rootProject.ext.testDependencies.dexMakerMockito, { exclude group: 'net.bytebuddy' } // DexMaker has it"s own MockMaker
+    androidTestImplementation 'org.mockito:mockito-android:2.6.3'
+
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation 'org.assertj:assertj-core:3.8.0'
+
+    testImplementation rootProject.ext.testDependencies.powerMock
+    testImplementation rootProject.ext.testDependencies.powerMockJUnit
+    testImplementation rootProject.ext.testDependencies.powerMockJUnitRule
+    testImplementation rootProject.ext.testDependencies.powerMockito
+    testImplementation rootProject.ext.testDependencies.powerMockXstream
+}

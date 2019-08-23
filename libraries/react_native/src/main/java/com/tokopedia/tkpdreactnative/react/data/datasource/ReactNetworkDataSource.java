@@ -3,13 +3,6 @@ package com.tokopedia.tkpdreactnative.react.data.datasource;
 import com.tokopedia.core.base.common.service.CommonService;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
-import java.io.IOException;
-
-import javax.annotation.Nullable;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import okio.BufferedSink;
 import rx.Observable;
 
 /**

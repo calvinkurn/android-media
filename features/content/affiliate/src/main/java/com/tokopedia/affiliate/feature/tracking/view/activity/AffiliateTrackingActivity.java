@@ -101,8 +101,8 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
     private void startHomeActivity(String applink) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
 
-        Intent homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME);
-        taskStackBuilder.addNextIntent(homeIntent);
+        Intent feedIntent = RouteManager.getIntent(this, ApplinkConst.FEED);
+        taskStackBuilder.addNextIntent(feedIntent);
 
         Intent intent = RouteManager.getIntent(this, applink);
         taskStackBuilder.addNextIntent(intent);

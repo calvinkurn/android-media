@@ -27,7 +27,6 @@ import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketReplyDa
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketDetailFragmentPresenterImpl;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -37,8 +36,6 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
-
-import butterknife.BindView;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
@@ -58,45 +55,24 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     private String commentId;
     private View noTView;
     private View yesTView;
-
-    public interface DoActionInboxTicketListener {
-        void sendRating(Bundle param);
-    }
-
-    @BindView(R2.id.ticket_list)
-    RecyclerView listTicket;
-
-    @BindView(R2.id.swipe_refresh_layout)
-    SwipeToRefresh swipeToRefresh;
-
-    @BindView(R2.id.list_image_upload)
-    RecyclerView listImage;
-
-    @BindView(R2.id.attach_but)
-    ImageView attachButton;
-
-    @BindView(R2.id.send_but)
-    ImageView sendButton;
-
-    @BindView(R2.id.new_comment)
-    EditText comment;
-
-    @BindView(R2.id.add_comment_area)
-    View commentView;
-
-    @BindView(R2.id.menu_help)
-    View helpfulView;
-
-    @BindView(R2.id.loading_layout)
-    View loading;
-
-    @BindView(R2.id.ticket_notice)
-    TextView ticketNotice;
-
+    private RecyclerView listTicket;
+    private SwipeToRefresh swipeToRefresh;
+    private RecyclerView listImage;
+    private ImageView attachButton;
+    private ImageView sendButton;
+    private EditText comment;
+    private View commentView;
+    private View helpfulView;
+    private View loading;
+    private TextView ticketNotice;
     InboxTicketDetailAdapter adapter;
     ImageUploadAdapter imageAdapter;
     RefreshHandler refreshHandler;
     TkpdProgressDialog progressDialog;
+
+    public interface DoActionInboxTicketListener {
+        void sendRating(Bundle param);
+    }
 
     public static Fragment createInstance(Bundle data) {
         InboxTicketDetailFragment fragment = new InboxTicketDetailFragment();
@@ -156,11 +132,8 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     @Override
     protected void initView(View view) {
-        noView = view.findViewById(R.id.icon_dislike);
-        yesView = view.findViewById(R.id.icon_like);
-        noTView = view.findViewById(R.id.counter_dislike);
-        yesTView = view.findViewById(R.id.counter_like);
 
+        findingViewsId(view);
         adapter = InboxTicketDetailAdapter.createAdapter(getActivity(), presenter);
         listTicket.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         listTicket.setAdapter(adapter);
@@ -175,6 +148,23 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
             }
         });
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+    }
+
+    private void findingViewsId(View view) {
+        noView = view.findViewById(R.id.icon_dislike);
+        yesView = view.findViewById(R.id.icon_like);
+        noTView = view.findViewById(R.id.counter_dislike);
+        yesTView = view.findViewById(R.id.counter_like);
+        listTicket = view.findViewById(R.id.ticket_list);
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        listImage = view.findViewById(R.id.list_image_upload);
+        attachButton = view.findViewById(R.id.attach_but);
+        sendButton = view.findViewById(R.id.send_but);
+        comment = view.findViewById(R.id.new_comment);
+        commentView = view.findViewById(R.id.add_comment_area);
+        helpfulView = view.findViewById(R.id.menu_help);
+        loading = view.findViewById(R.id.loading_layout);
+        ticketNotice = view.findViewById(R.id.ticket_notice);
     }
 
     private ImageUploadAdapter.ProductImageListener onProductImageActionListener() {

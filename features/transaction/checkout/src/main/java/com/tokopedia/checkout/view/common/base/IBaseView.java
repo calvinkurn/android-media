@@ -1,10 +1,6 @@
 package com.tokopedia.checkout.view.common.base;
 
-import android.app.Dialog;
-import android.app.IntentService;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -25,17 +21,7 @@ public interface IBaseView extends CustomerView {
 
     void showToastMessage(String message);
 
-    void showDialog(Dialog dialog);
-
-    void dismissDialog(Dialog dialog);
-
-    void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz);
-
-    String getStringFromResource(@StringRes int resId);
-
     TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
     );
-
-    void closeView();
 }

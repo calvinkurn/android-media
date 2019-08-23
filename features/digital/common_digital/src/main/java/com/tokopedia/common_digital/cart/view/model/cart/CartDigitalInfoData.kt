@@ -7,80 +7,78 @@ import android.os.Parcelable
  * @author anggaprasetiyo on 2/27/17.
  */
 
-class CartDigitalInfoData : Parcelable {
+class CartDigitalInfoData(
+        var type: String? = null,
 
-    var type: String? = null
+        var id: String? = null,
 
-    var id: String? = null
+        var attributes: AttributesDigital? = null,
 
-    var attributes: AttributesDigital? = null
+        var title: String? = null,
 
-    var title: String? = null
+        var isInstantCheckout: Boolean = false,
 
-    var isInstantCheckout: Boolean = false
+        var isNeedOtp: Boolean = false,
 
-    var isNeedOtp: Boolean = false
+        var smsState: String? = null,
 
-    var smsState: String? = null
+        var mainInfo: List<CartItemDigital>? = null,
 
-    var mainInfo: List<CartItemDigital>? = null
+        var additionalInfos: List<CartAdditionalInfo>? = null,
 
-    var additionalInfos: List<CartAdditionalInfo>? = null
+        var relationships: Relationships? = null,
 
-    var relationships: Relationships? = null
+        var isForceRenderCart: Boolean = false,
 
-    var isForceRenderCart: Boolean = false
+        var crossSellingType: Int = 0,
 
-    var crossSellingType: Int = 0
-
-    var crossSellingConfig: CrossSellingConfig? = null
-
-    protected constructor(`in`: Parcel) {
-        type = `in`.readString()
-        id = `in`.readString()
-        attributes = `in`.readParcelable(AttributesDigital::class.java.classLoader)
-        title = `in`.readString()
-        isInstantCheckout = `in`.readByte().toInt() != 0
-        isNeedOtp = `in`.readByte().toInt() != 0
-        smsState = `in`.readString()
-        mainInfo = `in`.createTypedArrayList(CartItemDigital.CREATOR)
-        additionalInfos = `in`.createTypedArrayList(CartAdditionalInfo.CREATOR)
-        relationships = `in`.readParcelable(Relationships::class.java.classLoader)
-        isForceRenderCart = `in`.readByte().toInt() != 0
-        crossSellingType = `in`.readInt()
-        crossSellingConfig = `in`.readParcelable(CrossSellingConfig::class.java.classLoader)
+        var crossSellingConfig: CrossSellingConfig? = null
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString(),
+            parcel.readParcelable(AttributesDigital::class.java.classLoader),
+            parcel.readString(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.createTypedArrayList(CartItemDigital),
+            parcel.createTypedArrayList(CartAdditionalInfo),
+            parcel.readParcelable(Relationships::class.java.classLoader),
+            parcel.readByte() != 0.toByte(),
+            parcel.readInt(),
+            parcel.readParcelable(CrossSellingConfig::class.java.classLoader)) {
     }
 
-    constructor() {}
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(type)
+        parcel.writeString(id)
+        parcel.writeParcelable(attributes, flags)
+        parcel.writeString(title)
+        parcel.writeByte(if (isInstantCheckout) 1 else 0)
+        parcel.writeByte(if (isNeedOtp) 1 else 0)
+        parcel.writeString(smsState)
+        parcel.writeTypedList(mainInfo)
+        parcel.writeTypedList(additionalInfos)
+        parcel.writeParcelable(relationships, flags)
+        parcel.writeByte(if (isForceRenderCart) 1 else 0)
+        parcel.writeInt(crossSellingType)
+        parcel.writeParcelable(crossSellingConfig, flags)
+    }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(type)
-        dest.writeString(id)
-        dest.writeParcelable(attributes, flags)
-        dest.writeString(title)
-        dest.writeByte((if (isInstantCheckout) 1 else 0).toByte())
-        dest.writeByte((if (isNeedOtp) 1 else 0).toByte())
-        dest.writeString(smsState)
-        dest.writeTypedList(mainInfo)
-        dest.writeTypedList(additionalInfos)
-        dest.writeParcelable(relationships, flags)
-        dest.writeByte((if (isForceRenderCart) 1 else 0).toByte())
-        dest.writeInt(crossSellingType)
-        dest.writeParcelable(crossSellingConfig, flags)
-    }
-
     companion object CREATOR : Parcelable.Creator<CartDigitalInfoData> {
-        override fun createFromParcel(`in`: Parcel): CartDigitalInfoData {
-            return CartDigitalInfoData(`in`)
+        override fun createFromParcel(parcel: Parcel): CartDigitalInfoData {
+            return CartDigitalInfoData(parcel)
         }
 
         override fun newArray(size: Int): Array<CartDigitalInfoData?> {
             return arrayOfNulls(size)
         }
-
     }
+
+
 }

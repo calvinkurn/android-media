@@ -2,7 +2,7 @@ package com.tokopedia.discovery.newdynamicfilter.adapter.viewholder;
 
 import android.view.View;
 
-import com.tokopedia.core.discovery.model.Filter;
+import com.tokopedia.discovery.common.data.Filter;
 
 /**
  * Created by henrypriyono on 8/11/17.

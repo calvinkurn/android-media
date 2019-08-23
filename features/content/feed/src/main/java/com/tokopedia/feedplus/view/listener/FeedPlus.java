@@ -6,10 +6,8 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollOptionViewModel;
-import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
+import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
-import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
@@ -32,8 +30,6 @@ public interface FeedPlus {
 
         Resources getResources();
 
-        void eventTrackingEEGoToProduct(Integer shopId, String feedId, int totalProduct, int positionInFeed, String category);
-
         void sendMoEngageOpenFeedEvent();
 
         void stopTracePerformanceMon();
@@ -41,10 +37,6 @@ public interface FeedPlus {
         interface Kol {
 
             UserSessionInterface getUserSession();
-
-            void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId);
-
-            void onGoToListKolRecommendation(int page, int rowNumber, String url);
 
             void onErrorFollowKol(String errorMessage, int id, int status, int rowNumber);
 
@@ -75,49 +67,19 @@ public interface FeedPlus {
             void onVoteOptionClicked(int rowNumber, String pollId, String optionId);
 
             void onGoToLink(String link);
-
-            void trackEEPoll(PollOptionViewModel element, String trackingPromoCode, int rowNumber, PollViewModel pollViewModel);
         }
 
         void setLastCursorOnFirstPage(String lastCursor);
-
-        void onGoToProductDetail(int rowNumber, int page, String id, String imageSourceSingle, String name, String productId);
-
-        void onGoToProductDetailFromProductUpload(
-                int rowNumber,
-                int positionFeedCard,
-                int page,
-                int itemPosition,
-                String productId,
-                String imageSourceSingle,
-                String name,
-                String price,
-                String priceInt,
-                String productUrl,
-                String eventLabel
-        );
-
-        void onGoToProductDetailFromRecentView(String productID, String imgUri, String name, String price);
-
-        void onGoToProductDetailFromInspiration(int page, int rowNumber, String productId,
-                                                String imageSource, String name, String price, String priceInt,
-                                                String productUrl, String source, int positionFeedCard, int itemPosition, String eventLabel);
-
-        void onGoToFeedDetail(int page, int rowNumber, String feedId);
-
-        void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url);
 
         void onOpenVideo(String videoUrl, String subtitle);
 
         void onInfoClicked();
 
-        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed);
+        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed, WhitelistViewModel whitelistViewModel);
 
         void onErrorGetFeedFirstPage(String errorMessage);
 
         void onSearchShopButtonClicked();
-
-        void onFavoritedClicked(int adapterPosition);
 
         void showSnackbar(String s);
 
@@ -159,31 +121,12 @@ public interface FeedPlus {
 
         void updateFavoriteFromEmpty(String shopId);
 
-        void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel);
-
-        void onSeeAllOfficialStoresFromCampaign(int page, int rowNumber, String redirectUrl);
-
-        void onGoToCampaign(int page, int rowNumber, String redirectUrl, String title);
-
-        void onSeeAllOfficialStoresFromBrands(int page, int rowNumber);
-
-        void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId,
-                                             String imageSourceSingle, String name, String price);
-
-        void onGoToShopDetailFromCampaign(int page, int rowNumber, String shopUrl);
-
-        void onContentProductLinkClicked(String url);
-
-        void onUserNotLogin();
-
         void onGoToLogin();
 
         void onSuccessSendVote(int rowNumber, String optionId,
                                VoteStatisticDomainModel voteStatisticDomainModel);
 
         void onErrorSendVote(String message);
-
-        int getAdapterListSize();
 
         void onWhitelistClicked(WhitelistViewModel element);
 

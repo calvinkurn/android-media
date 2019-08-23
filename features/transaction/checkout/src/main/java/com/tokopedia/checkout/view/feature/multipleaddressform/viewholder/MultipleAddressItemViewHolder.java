@@ -1,14 +1,10 @@
 package com.tokopedia.checkout.view.feature.multipleaddressform.viewholder;
 
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -21,6 +17,8 @@ import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
 import com.tokopedia.checkout.view.feature.multipleaddressform.MultipleAddressItemAdapter;
+import com.tokopedia.checkout.view.feature.shipment.util.Utils;
+import com.tokopedia.unifyprinciples.Typography;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,20 +49,20 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private TextView shippingIndex;
     private ImageView deleteButton;
-    private TextView addressTitle;
-    private TextView addressReceiverName;
-    private TextView address;
+    private Typography addressTitle;
+    private Typography addressReceiverName;
+    private Typography address;
     private TextView addressStatus;
     private View borderLine;
-    private TextView phoneNumber;
+    private Typography phoneNumber;
     private TextView tvChangeRecipientAddress;
     private EditText etNotesForSeller;
     private ImageView btnQtyMin;
     private ImageView btnQtyPlus;
     private EditText etQty;
-    private TextView tvErrorQtyValidation;
-    private TextView tvErrorNoteValidation;
-    private TextView tvNoteCharCounter;
+    private Typography tvErrorQtyValidation;
+    private Typography tvErrorNoteValidation;
+    private Typography tvNoteCharCounter;
 
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
@@ -274,24 +272,24 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
                         qty >= cartItemHolderData.getMaxQuantity()))) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(false);
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_disabled));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));
         } else if (qty <= QTY_MIN || qty <= cartItemHolderData.getMinQuantity()) {
             btnQtyMin.setEnabled(false);
             btnQtyPlus.setEnabled(true);
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_disabled));
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout_disabled));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout));
         } else if (qty >= QTY_MAX || (cartItemHolderData.getMaxQuantity() != 0 &&
                 qty >= cartItemHolderData.getMaxQuantity())) {
             btnQtyPlus.setEnabled(false);
             btnQtyMin.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_disabled));
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout_disabled));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout));
         } else {
             btnQtyPlus.setEnabled(true);
             btnQtyMin.setEnabled(true);
-            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus));
-            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus));
+            btnQtyPlus.setImageDrawable(ContextCompat.getDrawable(btnQtyPlus.getContext(), R.drawable.bg_button_counter_plus_checkout));
+            btnQtyMin.setImageDrawable(ContextCompat.getDrawable(btnQtyMin.getContext(), R.drawable.bg_button_counter_minus_checkout));
         }
     }
 
@@ -306,31 +304,21 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
             }
         });
 
-        // addressTitle.setVisibility(View.GONE);
         String addressName = itemData.getRecipientAddressModel().getAddressName();
         String recipientName = itemData.getRecipientAddressModel().getRecipientName();
-        /*addressName = " (" + addressName + ")";
-        recipientName += addressName;
-        int startSpan = recipientName.indexOf(addressName);
-        int endSpan = recipientName.indexOf(addressName) + addressName.length();
-        Spannable formattedPromoMessage = new SpannableString(recipientName);
-        final int color = ContextCompat.getColor(addressReceiverName.getContext(), R.color.black_38);
-        formattedPromoMessage.setSpan(new ForegroundColorSpan(color), startSpan, endSpan,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        addressReceiverName.setTypeface(Typeface.create(FONT_FAMILY_SANS_SERIF_MEDIUM, Typeface.NORMAL));*/
         if (itemData.getRecipientAddressModel().getAddressStatus() == 2) {
             addressStatus.setVisibility(View.VISIBLE);
         } else {
             addressStatus.setVisibility(View.GONE);
         }
-        addressTitle.setText(addressName);
-        addressReceiverName.setText(recipientName);
+        addressTitle.setText(Utils.getHtmlFormat(addressName));
+        addressReceiverName.setText(Utils.getHtmlFormat(recipientName));
         String fullAddress = itemData.getRecipientAddressModel().getStreet() + ", "
                 + itemData.getRecipientAddressModel().getDestinationDistrictName() + ", "
                 + itemData.getRecipientAddressModel().getCityName() + ", "
                 + itemData.getRecipientAddressModel().getProvinceName() + ", "
                 + itemData.getRecipientAddressModel().getRecipientPhoneNumber();
-        address.setText(fullAddress);
+        address.setText(Utils.getHtmlFormat(fullAddress));
 
     }
 

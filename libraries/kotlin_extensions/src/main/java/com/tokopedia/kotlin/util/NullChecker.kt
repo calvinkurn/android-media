@@ -3,6 +3,7 @@ package com.tokopedia.kotlin.util
 import android.util.Log
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import timber.log.Timber
 
 /**
  * @author by milhamj on 29/01/19.
@@ -66,4 +67,5 @@ private fun printDebug(errorMessage: String) {
     if (GlobalConfig.isAllowDebuggingTools()) {
         Log.e("NullChecker", errorMessage)
     }
+    Timber.e(errorMessage)
 }

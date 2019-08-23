@@ -14,7 +14,7 @@ data class ChatRoomHeaderViewModel(
         var mode: Int = 1,
         var keyword: String = "",
         var image: String = "",
-        var lastTimeOnline : Long = 0,
+        var lastTimeOnline : String = "",
         var isOnline : Boolean = false,
         var shopId : Int = 0) : Parcelable {
 
@@ -41,6 +41,8 @@ data class ChatRoomHeaderViewModel(
     override fun describeContents(): Int {
         return 0
     }
+
+    fun isOfficialStore(): Boolean = label == Companion.TAG_OFFICIAL
 
     companion object CREATOR : Parcelable.Creator<ChatRoomHeaderViewModel> {
 

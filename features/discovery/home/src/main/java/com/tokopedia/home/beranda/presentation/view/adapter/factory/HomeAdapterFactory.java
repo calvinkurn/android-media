@@ -16,7 +16,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicCh
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelSprintViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.EmptyBlankViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.GeolocationPromptViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
@@ -30,19 +32,22 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.TopAdsVie
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.UseCaseIconSectionViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessUnitViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SearchPlaceholderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
 
@@ -85,6 +90,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     }
 
     @Override
+    public int type(SearchPlaceholderViewModel searchPlaceholderViewModel) {
+        return SearchPlaceholderViewModel.SEARCH_PLACE_HOLDER;
+    }
+
+    @Override
     public int type(DigitalsViewModel digitalsViewModel) {
         return DigitalsViewHolder.Companion.getLAYOUT();
     }
@@ -124,6 +134,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         return InspirationViewHolder.LAYOUT;
     }
 
+    @Override
+    public int type(HomeRecommendationFeedViewModel homeRecommendationFeedViewModel) {
+        return HomeRecommendationFeedViewHolder.LAYOUT;
+    }
+
     public int type(RetryModel retryModel) {
         return RetryViewHolder.LAYOUT;
     }
@@ -131,6 +146,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
     @Override
     public int type(TopAdsViewModel topAdsViewModel) {
         return TopAdsViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(GeolocationPromptViewModel geolocationPromptViewModel) {
+        return GeolocationPromptViewHolder.Companion.getLAYOUT();
     }
 
     @Override
@@ -201,6 +221,10 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new EmptyBlankViewHolder(view);
         else if (type == InspirationHeaderViewHolder.LAYOUT)
             viewHolder = new InspirationHeaderViewHolder(view);
+        else if (type == HomeRecommendationFeedViewHolder.LAYOUT)
+            viewHolder = new HomeRecommendationFeedViewHolder(view, listener);
+        else if (type == GeolocationPromptViewHolder.Companion.getLAYOUT())
+            viewHolder = new GeolocationPromptViewHolder(view, listener);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

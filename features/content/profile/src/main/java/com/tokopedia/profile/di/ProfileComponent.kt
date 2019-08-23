@@ -3,6 +3,7 @@ package com.tokopedia.profile.di
 import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.profile.view.fragment.ProfileEmptyFragment
 import com.tokopedia.profile.view.fragment.ProfileFragment
+import com.tokopedia.profile.view.util.ShareBottomSheets
 import dagger.Component
 
 /**
@@ -17,4 +18,6 @@ interface ProfileComponent {
     fun inject(fragment: ProfileFragment)
 
     fun inject(fragment: ProfileEmptyFragment)
+
+    fun inject(bottomSheets: ShareBottomSheets)
 }

@@ -14,10 +14,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
@@ -36,12 +36,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
     public static final String TIMEZONE_ERROR = "com.tokopedia.tkpd.TIMEZONE_ERROR";
     public static final String INAPP_UPDATE = "inappupdate";
-
     private static final long DISMISS_TIME = 10000;
 
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
-    private LocalCacheHandler cache;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,12 +101,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
         TrackApp.getInstance().getGTM().sendScreenAuthenticated( getScreenName());
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        cache = null;
-    }
-
     private void registerForceLogoutReceiver() {
         logoutNetworkReceiver.setReceiver(this);
         IntentFilter filter = new IntentFilter();
@@ -141,7 +133,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     public void onServerError() {
         final Snackbar snackBar = SnackbarManager.make(this,
-                getString(R.string.msg_server_error_2), Snackbar.LENGTH_INDEFINITE)
+                getString(R.string.msg_server_error_2),Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.action_report, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -172,7 +164,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     }
 
     public void showForceLogoutDialog() {
-        DialogForceLogout.createShow(this,
+        DialogForceLogout.createShow(this, getScreenName(),
                 new DialogForceLogout.ActionListener() {
                     @Override
                     public void onDialogClicked() {
@@ -201,7 +193,12 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        ((AbstractionRouter) getApplication()).instabugCaptureUserStep(this, ev);
         return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void attachBaseContext(Context newBase) {
+        super.attachBaseContext(newBase);
+        SplitCompat.install(this);
     }
 }

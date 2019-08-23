@@ -6,14 +6,18 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.contactus.ContactUsModuleRouter;
+import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.home.view.fragment.ContactUsHomeFragment;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.home.fragment.SimpleWebViewWithFilePickerFragment;
 
 /**
@@ -69,5 +73,21 @@ public class ContactUsHomeActivity extends BaseSimpleActivity {
             }
         } else
             super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.contactus_menu_home, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+            if(id==R.id.action_inbox){
+                startActivity(InboxListActivity.getCallingIntent(this));
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
     }
 }

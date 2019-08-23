@@ -46,7 +46,7 @@
                 android:layout_height="@dimen/image_height"
                 android:layout_marginTop="@dimen/dp_8"
                 android:background="@drawable/bg_fill_grey_dashed"
-                android:src="@drawable/ic_upload_image"
+                app:srcCompat="@drawable/ic_upload_image"
                 android:scaleType="center"/>
 
             <TextView style="@style/TextView.Micro.BlackDisabled"

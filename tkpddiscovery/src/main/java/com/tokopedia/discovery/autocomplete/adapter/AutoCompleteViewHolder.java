@@ -69,7 +69,7 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
                         tabName
                 );
 
-                listener.onItemSearchClicked(element.getApplink());
+                listener.onItemClicked(element.getApplink(), element.getUrl());
             }
         });
 

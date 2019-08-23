@@ -18,6 +18,9 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.item_label_view;
 
+    private long lastClickTime = System.currentTimeMillis();
+    private static final long CLICK_TIME_INTERVAL = 1000;
+
     private View layout;
     private LabelView labelView;
     private AccountItemListener listener;
@@ -33,10 +36,14 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
     @Override
     public void bind(MenuListViewModel element) {
         layout.setOnClickListener(v -> {
-            if (element.getApplink().equalsIgnoreCase(AccountConstants.Navigation.TOPADS)){
-                listener.onTopAdsMenuClicked();
-            } else {
-                listener.onMenuListClicked(element);
+            long now = System.currentTimeMillis();
+            if (now - lastClickTime >= CLICK_TIME_INTERVAL) {
+                if (element.getApplink().equalsIgnoreCase(AccountConstants.Navigation.TOPADS)){
+                    listener.onTopAdsMenuClicked();
+                } else {
+                    listener.onMenuListClicked(element);
+                }
+                lastClickTime = now;
             }
         });
         labelView.setTitle(element.getMenu());

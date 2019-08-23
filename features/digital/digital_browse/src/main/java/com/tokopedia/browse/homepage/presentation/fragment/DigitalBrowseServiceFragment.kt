@@ -149,7 +149,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
                 if (tab.text != "") {
                     digitalBrowseAnalytics.eventClickHeaderTabLayanan(tab.text!!.toString())
 
-                    rvCategory.removeOnScrollListener(scrollSelected)
+                    scrollSelected?.let { rvCategory.removeOnScrollListener(it) }
 
                     currentScrollIndex = viewModel.titleMap!![tab.text]!!.indexPositionInList
                     currentTitlePosition = currentScrollIndex
@@ -242,7 +242,7 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
     private fun setRecyclerViewListener() {
         scrollSelected = object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
                 currentScrollIndex = layoutManager.findFirstVisibleItemPosition()
@@ -287,16 +287,18 @@ class DigitalBrowseServiceFragment : BaseDaggerFragment(), DigitalBrowseServiceC
 
         rvCategory.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (currentTitlePosition == layoutManager.findFirstVisibleItemPosition()) {
-                    rvCategory.removeOnScrollListener(scrollSelected)
-                    rvCategory.addOnScrollListener(scrollSelected)
+                    scrollSelected?.let {
+                        rvCategory.removeOnScrollListener(it)
+                        rvCategory.addOnScrollListener(it)
+                    }
                 }
             }
         })
 
-        rvCategory.addOnScrollListener(scrollSelected)
+        scrollSelected?.let { rvCategory.addOnScrollListener(it) }
     }
 
     override fun onCategoryItemClicked(viewModel: DigitalBrowseServiceCategoryViewModel?, itemPosition: Int) {

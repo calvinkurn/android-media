@@ -36,6 +36,16 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
     private String checksum;
     private String ut;
     private String blackboxInfo;
+    private Boolean isNow;
+    private int priorityPrice;
+    private String priorityInnactiveMessage;
+    private String priorityFormattedPrice;
+    private String priorityInactiveMessage;
+    private String priorityDurationMessage;
+    private String priorityCheckboxMessage;
+    private String priorityWarningboxMessage;
+    private String priorityFeeMessage;
+    private String priorityPdpMessage;
 
     public CourierItemData() {
     }
@@ -260,6 +270,86 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.logPromoMsg = logPromoMsg;
     }
 
+    public Boolean getNow() {
+        return isNow;
+    }
+
+    public void setNow(Boolean now) {
+        isNow = now;
+    }
+
+    public int getPriorityPrice() {
+        return priorityPrice;
+    }
+
+    public void setPriorityPrice(int priorityPrice) {
+        this.priorityPrice = priorityPrice;
+    }
+
+    public String getPriorityInnactiveMessage() {
+        return priorityInnactiveMessage;
+    }
+
+    public void setPriorityInnactiveMessage(String priorityInnactiveMessage) {
+        this.priorityInnactiveMessage = priorityInnactiveMessage;
+    }
+
+    public String getPriorityFormattedPrice() {
+        return priorityFormattedPrice;
+    }
+
+    public void setPriorityFormattedPrice(String priorityFormattedPrice) {
+        this.priorityFormattedPrice = priorityFormattedPrice;
+    }
+
+    public String getPriorityInactiveMessage() {
+        return priorityInactiveMessage;
+    }
+
+    public void setPriorityInactiveMessage(String priorityInactiveMessage) {
+        this.priorityInactiveMessage = priorityInactiveMessage;
+    }
+
+    public String getPriorityDurationMessage() {
+        return priorityDurationMessage;
+    }
+
+    public void setPriorityDurationMessage(String priorityDurationMessage) {
+        this.priorityDurationMessage = priorityDurationMessage;
+    }
+
+    public String getPriorityCheckboxMessage() {
+        return priorityCheckboxMessage;
+    }
+
+    public void setPriorityCheckboxMessage(String priorityCheckboxMessage) {
+        this.priorityCheckboxMessage = priorityCheckboxMessage;
+    }
+
+    public String getPriorityWarningboxMessage() {
+        return priorityWarningboxMessage;
+    }
+
+    public void setPriorityWarningboxMessage(String priorityWarningboxMessage) {
+        this.priorityWarningboxMessage = priorityWarningboxMessage;
+    }
+
+    public String getPriorityFeeMessage() {
+        return priorityFeeMessage;
+    }
+
+    public void setPriorityFeeMessage(String priorityFeeMessage) {
+        this.priorityFeeMessage = priorityFeeMessage;
+    }
+
+    public String getPriorityPdpMessage() {
+        return priorityPdpMessage;
+    }
+
+    public void setPriorityPdpMessage(String priorityPdpMessage) {
+        this.priorityPdpMessage = priorityPdpMessage;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -295,6 +385,15 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
         dest.writeString(this.blackboxInfo);
+        dest.writeByte(this.isNow ?(byte) 1 : (byte) 0);
+        dest.writeInt(this.priorityPrice);
+        dest.writeString(this.priorityInnactiveMessage);
+        dest.writeString(this.priorityFormattedPrice);
+        dest.writeString(this.priorityDurationMessage);
+        dest.writeString(this.priorityCheckboxMessage);
+        dest.writeString(this.priorityWarningboxMessage);
+        dest.writeString(this.priorityFeeMessage);
+        dest.writeString(this.priorityPdpMessage);
     }
 
     protected CourierItemData(Parcel in) {
@@ -326,6 +425,15 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.checksum = in.readString();
         this.ut = in.readString();
         this.blackboxInfo = in.readString();
+        this.isNow = in.readByte() != 0;
+        this.priorityPrice = in.readInt();
+        this.priorityInnactiveMessage = in.readString();
+        this.priorityFormattedPrice = in.readString();
+        this.priorityDurationMessage = in.readString();
+        this.priorityCheckboxMessage = in.readString();
+        this.priorityWarningboxMessage = in.readString();
+        this.priorityFeeMessage = in.readString();
+        this.priorityPdpMessage = in.readString();
     }
 
     public static final Creator<CourierItemData> CREATOR = new Creator<CourierItemData>() {

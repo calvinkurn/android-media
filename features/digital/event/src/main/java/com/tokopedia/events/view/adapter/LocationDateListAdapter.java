@@ -8,16 +8,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.contractor.EventBookTicketContract;
-import com.tokopedia.events.view.presenter.EventBookTicketPresenter;
 import com.tokopedia.events.view.viewmodel.LocationDateModel;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by pranaymohapatra on 16/01/18.
@@ -59,11 +53,8 @@ public class LocationDateListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     public class LocationDateHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R2.id.tv_location_bts)
         TextView tvLocation;
-        @BindView(R2.id.tv_day_time)
         TextView tvDayTime;
-        @BindView(R2.id.location_date_item)
         View locationDateItem;
 
         LocationDateModel valueItem;
@@ -71,7 +62,16 @@ public class LocationDateListAdapter extends RecyclerView.Adapter<RecyclerView.V
 
         private LocationDateHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
+            tvLocation = itemView.findViewById(R.id.tv_location_bts);
+            tvDayTime = itemView.findViewById(R.id.tv_day_time);
+            locationDateItem = itemView.findViewById(R.id.location_date_item);
+            locationDateItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mPresenter.onClickLocationDate(valueItem, mPosition);
+                    notifyItemChanged(mPosition);
+                }
+            });
         }
 
         private void setLocationDate(int position, LocationDateModel value) {
@@ -82,12 +82,6 @@ public class LocationDateListAdapter extends RecyclerView.Adapter<RecyclerView.V
                 tvDayTime.setText(valueItem.getDate());
             else
                 tvDayTime.setVisibility(View.GONE);
-        }
-
-        @OnClick(R2.id.location_date_item)
-        void onClickFilterItem() {
-            mPresenter.onClickLocationDate(valueItem, mPosition);
-            notifyItemChanged(mPosition);
         }
     }
 }

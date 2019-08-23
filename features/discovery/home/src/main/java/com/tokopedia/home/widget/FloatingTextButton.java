@@ -51,6 +51,7 @@ public class FloatingTextButton extends FrameLayout {
     private ViewPropertyAnimatorCompat animation = null;
     private boolean forceHide = false;
     private boolean animationStart;
+    private boolean floatingIsShown;
 
     public FloatingTextButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -215,35 +216,38 @@ public class FloatingTextButton extends FrameLayout {
     }
 
     private void show(final int visibility) {
-        if (forceHide)
-            return;
-        animate().translationY(0).setInterpolator(new DecelerateInterpolator(2))
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-                        animationStart = true;
-                        if (visibility >= 0) {
-                            FloatingTextButton.super.setVisibility(visibility);
+        if (!floatingIsShown) {
+            floatingIsShown = true;
+            if (forceHide)
+                return;
+            animate().translationY(0).setInterpolator(new DecelerateInterpolator(2))
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+                            animationStart = true;
+                            if (visibility >= 0) {
+                                FloatingTextButton.super.setVisibility(visibility);
+                            }
                         }
-                    }
 
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        animationStart = false;
-                    }
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            animationStart = false;
+                        }
 
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-                        animationStart = false;
-                    }
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+                            animationStart = false;
+                        }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
 
-                    }
-                })
-                .setDuration(DURATION)
-                .start();
+                        }
+                    })
+                    .setDuration(DURATION)
+                    .start();
+        }
     }
 
     public void hide() {
@@ -251,35 +255,38 @@ public class FloatingTextButton extends FrameLayout {
     }
 
     private void hide(final int visibility) {
-        CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) getLayoutParams();
-        int fab_bottomMargin = layoutParams.bottomMargin;
-        animate().translationY(getHeight() + fab_bottomMargin).setInterpolator(new AccelerateInterpolator(2))
-                .setListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animator) {
-                        animationStart = true;
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animator) {
-                        animationStart = false;
-                        if (visibility >= 0) {
-                            FloatingTextButton.super.setVisibility(visibility);
+        if (floatingIsShown) {
+            floatingIsShown = false;
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
+            int fab_bottomMargin = layoutParams.bottomMargin;
+            animate().translationY(getHeight() + fab_bottomMargin).setInterpolator(new AccelerateInterpolator(2))
+                    .setListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animator) {
+                            animationStart = true;
                         }
-                    }
 
-                    @Override
-                    public void onAnimationCancel(Animator animator) {
-                        animationStart = false;
-                    }
+                        @Override
+                        public void onAnimationEnd(Animator animator) {
+                            animationStart = false;
+                            if (visibility >= 0) {
+                                FloatingTextButton.super.setVisibility(visibility);
+                            }
+                        }
 
-                    @Override
-                    public void onAnimationRepeat(Animator animator) {
+                        @Override
+                        public void onAnimationCancel(Animator animator) {
+                            animationStart = false;
+                        }
 
-                    }
-                })
-                .setDuration(DURATION)
-                .start();
+                        @Override
+                        public void onAnimationRepeat(Animator animator) {
+
+                        }
+                    })
+                    .setDuration(DURATION)
+                    .start();
+        }
     }
 
     public boolean isAnimationStart() {

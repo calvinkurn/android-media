@@ -1,6 +1,0 @@
-query setMembershipData($subscription_type:Int!) {
-    goldSetSubscription(subscription_type:$subscription_type) {
-       status
-       error_message
-    }
-}

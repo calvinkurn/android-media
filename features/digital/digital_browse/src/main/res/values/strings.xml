@@ -6,4 +6,7 @@
     <string name="digital_browse_lihat_semua">Lihat Semua</string>
     <string name="digital_browse_new_label">BARU</string>
     <string name="search_hint">Cari produk atau Toko</string>
+    <string name="error_text1">Oops, Kategori Ini</string>
+    <string name="error_text2">Gagal Dimuat</string>
+    <string name="text_coba_lagi">Coba Lagi</string>
 </resources>

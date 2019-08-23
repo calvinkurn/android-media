@@ -603,7 +603,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
     }
 
     @Override
-    public void showErrorSnackBarOnCrackError(String errorMessage) {
+    public void showErrorSnackBarOnCrackError(String errorMessage, boolean resetEggForUnknownErrorCodes) {
 
         initCrackTokenErrorHandler();
         crackTokenErrorhandler.post(new Runnable() {
@@ -612,6 +612,12 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 if (getContext() != null) {
                     if (widgetTokenView.isCrackPercentageFull()) {
                         NetworkErrorHelper.showErrorSnackBar(errorMessage, getContext(), rootView, true);
+                        if(resetEggForUnknownErrorCodes){
+                            widgetTokenView.clearTokenAnimation();
+                            widgetTokenView.resetForUnlimitedCrack(tokenData.getTokensUser());
+                            widgetTokenView.stopMediaPlayer();
+                            return;
+                        }
                         if (tokenData != null
                                 && TapTapConstants.TokenState.STATE_CRACK_UNLIMITED.equalsIgnoreCase(tokenData.getTokensUser().getState())) {
                             widgetTokenView.resetForUnlimitedCrack(tokenData.getTokensUser());
@@ -878,6 +884,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
         }
     }
 
+    @Override
     public void clearViewAndAnimations() {
         widgetTokenView.releaseResourcesOnDestroy();
         widgetCrackResult.clearCrackResult();

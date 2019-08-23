@@ -21,7 +21,7 @@ import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.Video
 import com.tokopedia.product.detail.common.data.model.constant.ProductConditionTypeDef
-import com.tokopedia.product.detail.data.model.shop.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.view.activity.ProductFullDescriptionActivity
 import com.tokopedia.product.detail.view.activity.ProductYoutubePlayerActivity
@@ -57,7 +57,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
                     ?: mutableListOf()) { _, index ->
                     productInfo?.videos?.run { gotoVideoPlayer(this, index) }
                 }
-                view.youtube_scroll.adapter.notifyDataSetChanged()
+                view.youtube_scroll.adapter?.notifyDataSetChanged()
             } else {
                 view.youtube_scroll.gone()
             }
@@ -152,7 +152,7 @@ class PartialProductDescrFullView private constructor(private val view: View,
             view.context.startActivity(ProductYoutubePlayerActivity.createIntent(view.context, videos.map { it.url }, index))
         } else {
             view.context.startActivity(Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http://www.youtube.com/watch?v=" + videos[index].url)));
+                    Uri.parse("https://www.youtube.com/watch?v=" + videos[index].url)));
         }
     }
 }

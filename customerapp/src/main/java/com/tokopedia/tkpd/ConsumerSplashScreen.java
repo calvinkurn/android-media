@@ -9,7 +9,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.bumptech.glide.Glide;
@@ -30,6 +32,7 @@ import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.tkpd.timber.TimberWrapper;
 
 /**
  * Created by ricoharisin on 11/22/16.
@@ -46,6 +49,8 @@ public class ConsumerSplashScreen extends SplashScreen {
     private PerformanceMonitoring warmTrace;
     private PerformanceMonitoring splashTrace;
 
+    private boolean isApkTempered;
+
     @DeepLink(ApplinkConst.CONSUMER_SPLASH_SCREEN)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
@@ -58,10 +63,23 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        isApkTempered = false;
+        try {
+            getResources().getDrawable(R.drawable.launch_screen);
+        } catch (Exception e) {
+            isApkTempered = true;
+            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+        }
+
         startWarmStart();
         startSplashTrace();
 
         super.onCreate(savedInstanceState);
+
+        if (isApkTempered) {
+            startActivity(new Intent(this, FallbackActivity.class));
+            finish();
+        }
 
         renderDynamicImage();
 
@@ -75,6 +93,10 @@ public class ConsumerSplashScreen extends SplashScreen {
 
     @Override
     public void finishSplashScreen() {
+        if (isApkTempered) {
+            return;
+        }
+
         Intent homeIntent = MainParentActivity.start(this);
         startActivity(homeIntent);
         finishSplashTrace();
@@ -136,5 +158,20 @@ public class ConsumerSplashScreen extends SplashScreen {
                         super.onLoadStarted(placeholder);
                     }
                 });
+    }
+
+    @Override
+    protected RemoteConfig.Listener getRemoteConfigListener() {
+        return new RemoteConfig.Listener() {
+            @Override
+            public void onComplete(RemoteConfig remoteConfig) {
+                TimberWrapper.initByConfig(remoteConfig);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        };
     }
 }

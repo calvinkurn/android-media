@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/header_bottom_sheet_rounded_white"
         android:gravity="center"
-        android:padding="@dimen/dp_10"
+        android:padding="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">

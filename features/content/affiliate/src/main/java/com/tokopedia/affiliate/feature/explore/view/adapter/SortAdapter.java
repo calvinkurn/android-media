@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -80,7 +81,7 @@ public class SortAdapter extends RecyclerView.Adapter<SortAdapter.Holder> {
     public class Holder extends RecyclerView.ViewHolder {
         TextView tvText;
         ImageView ivCheck;
-        ConstraintLayout layout;
+        RelativeLayout layout;
 
         public Holder(View itemView) {
             super(itemView);

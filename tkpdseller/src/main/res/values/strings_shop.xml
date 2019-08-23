@@ -8,6 +8,9 @@
     <string name="shop_open_error_shop_name_or_domain_has_been_reserved">Nama atau domain toko sudah terpakai</string>
     <string name="shop_open_label_shop_domain">Domain Toko</string>
     <string name="shop_open_info_shop_domain_definition">Domain Toko adalah nama unik untuk membedakan toko Anda dengan toko lainnya.</string>
+    <string name="shop_open_helper_shop_name_cant_change">Nama Toko tidak dapat diubah kembali</string>
+    <string name="shop_open_error_address">Toko asal wajib diisi</string>
+    <string name="shop_open_error_postal">Kode pos wajib diisi</string>
 
     <string name="shop_open_complete_shop_information">Lengkapi Informasi Toko</string>
     <string name="shop_open_shop_reserve_success_title">Lengkapi Informasi <![CDATA[<b>]]>%1$s<![CDATA[</b>]]> dan mulai berjualan sekarang!</string>

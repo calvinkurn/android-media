@@ -88,7 +88,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
     private static final int DEFAULT_INITIAL_PAGE = 1;
     private BaseListAdapter<T, F> adapter;
-    private SwipeRefreshLayout swipeToRefresh;
+    protected SwipeRefreshLayout swipeToRefresh;
     private Snackbar snackBarRetry;
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private RecyclerView recyclerView;

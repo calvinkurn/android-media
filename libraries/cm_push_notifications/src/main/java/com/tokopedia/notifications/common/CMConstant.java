@@ -14,6 +14,9 @@ public interface CMConstant {
     String GADSID_CACHE_KEY = "gadsid_cache";
     String UNIQUE_APP_ID_CACHE_KEY = "unique_app_id__cache";
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
+    String EXTRA_CAMPAIGN_ID = "extra_campaign_id";
+    String EXTRA_PRE_DEF_ACTION = "extra_pre_def_action";
+
 
 
     interface NotificationType {
@@ -23,12 +26,13 @@ public interface CMConstant {
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
         String DELETE_NOTIFICATION = "Delete";
-        String CAROUSAL_NOTIFICATION = "Carousal";
+        String CAROUSEL_NOTIFICATION = "Carousel";
         String SILENT_PUSH = "Silent";
+        String VISUAL_NOTIIFICATION = "Visual";
     }
 
 
-    interface PayloadKeys{
+    interface PayloadKeys {
         String ICON = "icon";
         String SOUND = "sound";
         String NOTIFICATION_ID = "notificationId";
@@ -49,41 +53,51 @@ public interface CMConstant {
         String ACTION_BUTTON = "actionButtons";
         String PERSISTENT_DATA = "persistentButtons";
         String TEXT = "text";
+        String TYPE = "type";
+
 
         String CUSTOM_VALUE = "customValues";
 
         String VIDEO_DATA = "videoData";
-        String CAROUSAL_DATA =  "carousal";
-        String CAROUSAL_INDEX =  "carousalIndex";
-        String IMG =  "img";
+        String CAROUSEL_DATA = "carousel";
+        String CAROUSEL_INDEX = "carouselIndex";
+        String IMG = "img";
         String VIBRATE = "vibrate";
         String UPDATE = "update";
         String GRID_DATA = "gridData";
         String SUB_TEXT = "subText";
 
 
+        String VISUAL_COLLAPSED_IMAGE = "collapsedImg";
+        String VISUAL_EXPANDED_IMAGE = "expandedImg";
+        String ACTION_BUTTON_ICON = "icon";
+        String CAMPAIGN_ID = "campaignId";
+        String PD_ACTION = "pdAction";
+        String NOTIFICATION_PRIORITY = "priorityPreOreo";
     }
 
     interface ReceiverExtraData {
         String ACTION_BUTTON_APP_LINK = "action_button_app_link";
         String PERSISTENT_BUTTON_DATA = "persistent_data";
         String ACTION_APP_LINK = "action_app_link";
-        String CAROUSAL_DATA = "carousal_data";
-        String CAROUSAL_DATA_ITEM = "carousal_data_item";
+        String CAROUSEL_DATA = "carousel_data";
+        String CAROUSEL_DATA_ITEM = "carousel_data_item";
 
 
         String GRID_APP_LINK = "GRID_APP_LINK";
     }
 
-    interface NotificationGroup {
-        String CHANNEL = "Digital";
-        String CHANNEL_DESCRIPTION = "Digital";
-        String CHANNEL_ID = "Digital";
-        String CHANNEL_GROUP_ID = "marketing_group_01";
-        String CHANNEL_GROUP_NAME = "Marketing";
+    interface NotificationChannel {
+        String CHANNEL = "General";
+        String CHANNEL_ID = "General";
+        String CHANNEL_DESCRIPTION = "General";
+
+        String Channel_DefaultSilent_Id = "Default_Channel";
+        String Channel_DefaultSilent_Name = "Default";
+        String Channel_DefaultSilent_DESCRIPTION = "Dafault Silent";
     }
 
-    interface ReceiverAction{
+    interface ReceiverAction {
         String ACTION_BUTTON = "com.tokopedia.notification.ACTION_BUTTON";
         String ACTION_CANCEL_PERSISTENT = "com.tokopedia.notification.ACTION_CANCEL_PERSISTENT";
         String ACTION_ON_NOTIFICATION_DISMISS = "com.tokopedia.notification.ACTION_ON_NOTIFICATION_DISMISS";
@@ -92,7 +106,7 @@ public interface CMConstant {
         String ACTION_NOTIFICATION_CLICK = "com.tokopedia.notification.ACTION_NOTIFICATION_CLICK";
         String ACTION_RIGHT_ARROW_CLICK = "com.tokopedia.notification.ACTION_RIGHT_ARROW_CLICK";
         String ACTION_LEFT_ARROW_CLICK = "com.tokopedia.notification.ACTION_LEFT_ARROW_CLICK";
-        String ACTION_CAROUSAL_IMAGE_CLICK = "com.tokopedia.notification.ACTION_CAROUSAL_IMAGE_CLICK";
+        String ACTION_CAROUSEL_IMAGE_CLICK = "com.tokopedia.notification.ACTION_CAROUSEL_IMAGE_CLICK";
         String ACTION_GRID_CLICK = "com.tokopedia.notification.GRID_CLICK";
     }
 

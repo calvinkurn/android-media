@@ -86,7 +86,11 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
 
     private void fetchRemoteConfig() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
-        remoteConfig.fetch(null);
+        remoteConfig.fetch(getRemoteConfigListener());
+    }
+
+    protected RemoteConfig.Listener getRemoteConfigListener(){
+        return null;
     }
 
     @Override
@@ -218,8 +222,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                 linkerDeeplinkData, new DefferedDeeplinkCallback() {
                     @Override
                     public void onDeeplinkSuccess(LinkerDeeplinkResult linkerDefferedDeeplinkData) {
-                        PersistentCacheManager persistentCacheManager = new PersistentCacheManager(getApplicationContext(), TkpdCache.CACHE_PROMO_CODE);
-                        persistentCacheManager.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, linkerDefferedDeeplinkData.getPromoCode() != null ?
+                        PersistentCacheManager.instance.put(TkpdCache.Key.KEY_CACHE_PROMO_CODE, linkerDefferedDeeplinkData.getPromoCode() != null ?
                                 linkerDefferedDeeplinkData.getPromoCode() : "");
                         String deeplink = linkerDefferedDeeplinkData.getDeeplink();
                         if (!TextUtils.isEmpty(deeplink)) {

@@ -37,6 +37,7 @@ import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -278,11 +279,11 @@ public class ImagePickerCameraFragment extends TkpdBaseV4Fragment implements Ima
 
     private void setUIFlashCamera(int flashEnum) {
         if (flashEnum == Flash.AUTO.ordinal()) {
-            flashImageButton.setImageResource(R.drawable.ic_auto_flash);
+            flashImageButton.setImageDrawable(MethodChecker.getDrawable(flashImageButton.getContext(), R.drawable.ic_auto_flash));
         } else if (flashEnum == Flash.ON.ordinal()) {
-            flashImageButton.setImageResource(R.drawable.ic_on_flash);
+            flashImageButton.setImageDrawable(MethodChecker.getDrawable(flashImageButton.getContext(), R.drawable.ic_on_flash));
         } else if (flashEnum == Flash.OFF.ordinal()) {
-            flashImageButton.setImageResource(R.drawable.ic_off_flash);
+            flashImageButton.setImageDrawable(MethodChecker.getDrawable(flashImageButton.getContext(), R.drawable.ic_off_flash));
         }
     }
 

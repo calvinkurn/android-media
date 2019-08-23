@@ -9,9 +9,6 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
-
 /**
  *
  * Created by Angga.Prasetiyo on 30/10/2015.
@@ -27,7 +24,6 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
     protected P presenter;
 
     protected Bundle savedState;
-    protected Unbinder unbinder;
 
     @Override
     public void onAttach(Activity activity) {
@@ -134,11 +130,9 @@ public abstract class BasePresenterFragment<P> extends TkpdFragment {
         super.onDestroyView();
         saveStateToArguments();
         Log.d(TAG, "ON DESTROY VIEW");
-        unbinder.unbind();
     }
 
     private void injectView(View view) {
-        unbinder = ButterKnife.bind(this, view);
     }
 
     @Override

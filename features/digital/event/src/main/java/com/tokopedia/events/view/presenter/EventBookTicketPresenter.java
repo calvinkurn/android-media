@@ -105,13 +105,14 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
         hasSeatLayout = mView.getActivity().getIntent().getIntExtra(EventsDetailsPresenter.EXTRA_SEATING_PARAMETER, 0);
         generateLocationDateModels();
         mView.renderFromDetails(dataModel);
-        if (dataModel.getTimeRange() != null && dataModel.getTimeRange().length() > 1)
+        if (dataModel.getSchedulesViewModels() != null && dataModel.getSchedulesViewModels().size() > 0) {
             selectedPackageDate = Utils.getSingletonInstance().convertEpochToString(dataModel.getSchedulesViewModels().get(0).getStartDate());
+            schedulesList = dataModel.getSchedulesViewModels();
+        }
         if (dataModel.getSeatMapImage() != null && !dataModel.getSeatMapImage().isEmpty())
             mView.renderSeatmap(dataModel.getSeatMapImage());
         else
             mView.hideSeatmap();
-        schedulesList = dataModel.getSchedulesViewModels();
     }
 
     @Override
@@ -134,7 +135,7 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
             @Override
             public void onNext(ValidateResponse objectResponse) {
                 if (objectResponse.getStatus() != 400) {
-                    if (hasSeatLayout == 1 && seatLayoutViewModel.getArea() != null) {
+                    if (hasSeatLayout == 1 && seatLayoutViewModel.getArea() != null && seatLayoutViewModel.getLayoutDetail() != null && seatLayoutViewModel.getLayoutDetail().size() > 0) {
                         Intent reviewTicketIntent = new Intent(mView.getActivity(), SeatSelectionActivity.class);
                         reviewTicketIntent.putExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL, selectedPackageViewModel);
                         reviewTicketIntent.putExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL, seatLayoutViewModel);

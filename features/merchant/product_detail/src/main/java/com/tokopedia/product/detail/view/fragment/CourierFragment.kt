@@ -1,6 +1,5 @@
 package com.tokopedia.product.detail.view.fragment
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +10,11 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.data.model.shop.BBInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
 import com.tokopedia.product.detail.data.model.shop.BlackBoxShipmentHolder
-import com.tokopedia.product.detail.data.model.shop.ShopShipment
+import com.tokopedia.product.detail.data.model.shop.ProductShopBBInfo
+import com.tokopedia.product.detail.data.model.shop.ProductShopShipment
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.product.detail.view.adapter.CourierTypeFactory
 import kotlinx.android.synthetic.main.fragment_courier_list_detail.view.*
 
@@ -44,16 +45,20 @@ class CourierFragment: BaseListFragment<BlackBoxShipmentHolder, CourierTypeFacto
         arguments?.let {
             val shipments: List<ShopShipment> = it.getParcelableArrayList(ARGS_PRODUCT_LIST) ?: listOf()
             val bbInfos: List<BBInfo> = it.getParcelableArrayList(ARGS_BBINFO_LIST) ?: listOf()
+            val shopShipments = shipments.map { shipment -> ProductShopShipment(shipment.isAvailable,
+                    shipment.code, shipment.shipmentID, shipment.image, shipment.name, shipment.isPickup,
+                    shipment.maxAddFee, shipment.awbStatus, shipment.product) }
+            val productBBInfos = bbInfos.map { bb -> ProductShopBBInfo(bb.name, bb.desc, bb.nameEN, bb.descEN) }
             val rv = getRecyclerView(view)
             if (bbInfos.isNotEmpty()){
                 (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.product_detail_courier))
-                super.renderList(bbInfos, false)
+                super.renderList(productBBInfos, false)
                 view.title_bbinfo.visible()
                 if (rv.itemDecorationCount > 0)
                     rv.removeItemDecorationAt(rv.itemDecorationCount - 1)
             } else {
                 (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.courier_title))
-                super.renderList(shipments, false)
+                super.renderList(shopShipments, false)
                 view.title_bbinfo.gone()
                 rv.addItemDecoration(DividerItemDecoration(activity))
             }

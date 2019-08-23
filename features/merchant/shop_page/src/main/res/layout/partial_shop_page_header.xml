@@ -75,18 +75,18 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <com.tokopedia.design.reputation.ShopReputationView
+                <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/shopReputationView"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/dp_12"
                     android:layout_gravity="center_vertical"
-                    android:visibility="gone"
-                    app:srv_medal_width="@dimen/shop_page_sub_info_medal_width" />
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/shopLabel"
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:text="@string/official_store_label"/>
+                    android:text="@string/official_store_label"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/shopFollower"

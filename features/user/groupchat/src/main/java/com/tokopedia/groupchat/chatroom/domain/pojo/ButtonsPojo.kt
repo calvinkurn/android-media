@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  * @author by StevenFredian .
  */
 
-class ButtonsPojo() {
+class ButtonsPojo {
 
     @SerializedName("floating_button")
     @Expose
@@ -16,6 +16,10 @@ class ButtonsPojo() {
     @SerializedName("dynamic_buttons")
     @Expose
     var listDynamicButton: List<Button> = arrayListOf()
+
+    @SerializedName("interactive_button")
+    @Expose
+    var interactiveButton: InteractiveButton = InteractiveButton()
 
     class Button() {
 
@@ -61,5 +65,16 @@ class ButtonsPojo() {
 
     }
 
+    class InteractiveButton {
+
+        @SerializedName("is_enabled")
+        @Expose
+        var isEnabled: Boolean = false
+
+        @SerializedName("balloon_urls")
+        @Expose
+        var listBalloon: ArrayList<String> = arrayListOf()
+
+    }
 }
 

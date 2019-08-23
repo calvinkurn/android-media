@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.deeplink.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.TaskStackBuilder;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,14 +20,13 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.discovery.catalog.listener.ICatalogActionFragment;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -45,18 +46,9 @@ import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
-import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepositoryImpl;
-import com.tokopedia.tkpd.deeplink.domain.interactor.MapUrlUseCase;
 import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenter;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkPresenterImpl;
-
-import rx.Observable;
-import rx.Observer;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 import static com.raizlabs.android.dbflow.config.FlowManager.getContext;
 
@@ -82,7 +74,6 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     private boolean isNeedToUseToolbarWithOptions;
     private View mainView;
 
-
     @Override
     public String getScreenName() {
         return AppScreen.SCREEN_DEEP_LINK;
@@ -91,9 +82,22 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startAnalytics().subscribe(getObserver());
+        TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
+        checkUrlMapToApplink();
         isAllowFetchDepartmentView = true;
         presenter.sendAuthenticatedEvent(uriData, getScreenName());
+    }
+
+    private void checkUrlMapToApplink() {
+        String applink = DeeplinkMapper.getRegisteredNavigation(this, uriData.toString());
+        if (!TextUtils.isEmpty(applink) && RouteManager.isSupportApplink(this, applink)) {
+            String screenName = AppScreen.SCREEN_NATIVE_RECHARGE;
+            presenter.sendCampaignGTM(this, applink, screenName);
+            RouteManager.route(this, applink);
+            finish();
+        } else {
+            initDeepLink();
+        }
     }
 
     @Override
@@ -108,9 +112,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     @Override
     protected void initialPresenter() {
-        DeeplinkRepository deeplinkRepository = new DeeplinkRepositoryImpl(this, new GlobalCacheManager());
-        MapUrlUseCase mapUrlUseCase = new MapUrlUseCase(deeplinkRepository);
-        presenter = new DeepLinkPresenterImpl(this, mapUrlUseCase);
+        presenter = new DeepLinkPresenterImpl(this);
     }
 
     @Override
@@ -241,7 +243,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     @Override
     public void jumpOtherProductDetail(ProductPass productPass) {
         if (getApplication() instanceof PdpRouter) {
-            RouteManager.route(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId());
+            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productPass.getProductId());
         }
     }
 
@@ -341,6 +343,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         progressDialog.showDialog();
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
     }
@@ -402,36 +405,4 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         ((FragmentDetailParent) fragment).onSuccessAction(resultData, resultCode);
     }
 
-    private Observable<Void> startAnalytics() {
-        return Observable.just(true).subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Boolean, Void>() {
-                    @Override
-                    public Void call(Boolean aBoolean) {
-                        TrackingUtils.sendAppsFlyerDeeplink(DeepLinkActivity.this);
-                        return null;
-                    }
-                });
-    }
-
-    private Observer<Void> getObserver() {
-        return new Observer<Void>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(Void aVoid) {
-                if (uriData != null) {
-                    presenter.mapUrlToApplink(uriData);
-                }
-            }
-        };
-    }
 }

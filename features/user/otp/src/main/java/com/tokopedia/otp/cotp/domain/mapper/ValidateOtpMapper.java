@@ -31,7 +31,9 @@ public class ValidateOtpMapper implements Func1<Response<WsResponse<ValidateOtpP
 
             ValidateOtpPojo pojo = response.body().getData();
             return convertToDomain(pojo.getIsSuccess() == IS_SUCCESS,
-                    pojo.getUuid() != null ? pojo.getUuid() : "");
+                    pojo.getUuid() != null ? pojo.getUuid() : "",
+                    pojo.getMsisdn() != null ? pojo.getMsisdn() : ""
+                    );
 
         } else if (response.body() != null && response.body().getMessageError() != null) {
             throw new OtpErrorException(response.body().getMessageError().get(0));
@@ -40,7 +42,7 @@ public class ValidateOtpMapper implements Func1<Response<WsResponse<ValidateOtpP
         }
     }
 
-    private ValidateOtpDomain convertToDomain(boolean isSuccess, String uuid) {
-        return new ValidateOtpDomain(isSuccess, uuid);
+    private ValidateOtpDomain convertToDomain(boolean isSuccess, String uuid, String msisdn) {
+        return new ValidateOtpDomain(isSuccess, uuid, msisdn);
     }
 }
