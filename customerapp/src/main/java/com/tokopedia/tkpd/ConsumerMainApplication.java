@@ -148,7 +148,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         if (!com.tokopedia.config.GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         } else {
-            tetraDebugger = new TetraDebugger(this);
+            tetraDebugger = TetraDebugger.Companion.instance(context);
             tetraDebugger.init();
         }
 

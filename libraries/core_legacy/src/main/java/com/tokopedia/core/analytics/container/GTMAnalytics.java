@@ -62,7 +62,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public GTMAnalytics(Context context) {
         super(context);
-        tetraDebugger = new TetraDebugger(context);
+        tetraDebugger = TetraDebugger.Companion.instance(context);
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
@@ -242,7 +242,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     /**
-     * look identical with {@link #eventCheckout(Checkout, String)}
+     * look identical with {@link #eventCheckout(Checkout)}
      * @param checkout
      * @return
      */
@@ -436,7 +436,7 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent("openScreen", bundle, context);
     }
 
-    public static void logEvent(String eventName, Bundle bundle,Context context){
+    public void logEvent(String eventName, Bundle bundle,Context context){
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             log(context, eventName, bundle);
