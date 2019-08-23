@@ -61,7 +61,7 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
     @Override
     public void onGetRetryAvailability(String orderId) {
         retryAvailUsecase.execute(orderId)
-                .subscribe(new Observer<RetryAvailabilityResponse>() {
+                .subscribe(new Subscriber<RetryAvailabilityResponse>() {
                     @Override
                     public void onCompleted() {
 
@@ -88,7 +88,7 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
     @Override
     public void onRetryPickup(String orderId) {
         retryPickupUsecase.execute(orderId)
-                .subscribe(new Observer<RetryBookingResponse>() {
+                .subscribe(new Subscriber<RetryBookingResponse>() {
                     @Override
                     public void onCompleted() {
 
@@ -101,7 +101,7 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
                     @Override
                     public void onNext(RetryBookingResponse retryBookingResponse) {
-
+                        view.startSuccessCountdown();
                     }
                 });
     }

@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.tracking.adapter.TrackingHistoryAdapter;
@@ -66,7 +67,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private ViewGroup liveTrackingButton;
     private ViewGroup rootView;
     private LinearLayout descriptionLayout;
-    private View retryButton;
+    private ButtonCompat retryButton;
     private TextView retryStatus;
 
     @Inject
@@ -199,6 +200,11 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
                 retryStatus.setVisibility(View.GONE);
             }
         }
+    }
+
+    @Override
+    public void startSuccessCountdown() {
+        retryButton.setText("Mencari driver baru...");
     }
 
     private void initialHistoryView() {

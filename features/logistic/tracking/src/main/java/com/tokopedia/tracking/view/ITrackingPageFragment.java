@@ -22,4 +22,6 @@ public interface ITrackingPageFragment {
 
     void setRetryButton(boolean active, long deadline);
 
+    void startSuccessCountdown();
+
 }
