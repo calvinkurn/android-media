@@ -305,6 +305,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
             rv_hotel_homepage_promo.setHasFixedSize(true)
             rv_hotel_homepage_promo.isNestedScrollingEnabled = false
             rv_hotel_homepage_promo.adapter = promoAdapter
+            if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(promoDataList.first(), 0)
             rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
