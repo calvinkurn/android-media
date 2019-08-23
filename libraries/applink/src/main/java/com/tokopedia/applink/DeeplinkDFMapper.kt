@@ -32,7 +32,7 @@ object DeeplinkDFMapper {
     private val MODULE_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val MODULE_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val MODULE_HOTEL_TRAVEL = "hotel_travel"
-    private val MODULE_USER_PROFILE_COMPLETION = "profile_completion"
+    private val MODULE_USER_PROFILE_COMPLETION = "profilecompletion"
 
     private var manager: SplitInstallManager? = null
 

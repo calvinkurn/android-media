@@ -48,7 +48,7 @@ include "features:discovery:search"
 include "features:fintech:mitra_toppers"
 
 include "dynamic-features:travel:hotel_travel"
-include "dynamic-features:user:profile_completion"
+include "dynamic-features:user:profilecompletion"
 include "dynamic-features:merchant:shop_settings"
 
 include "features:fintech:home_credit"
