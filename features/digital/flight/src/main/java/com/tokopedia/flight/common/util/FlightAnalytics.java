@@ -211,12 +211,13 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventProductViewEnchanceEcommerce(FlightSearchPassDataViewModel searchPassDataViewModel, List<FlightJourneyViewModel> listJourneyViewModel, int lastPosition) {
+    public void eventProductViewEnchanceEcommerce(FlightSearchPassDataViewModel searchPassDataViewModel, List<FlightJourneyViewModel> listJourneyViewModel) {
 
         List<Object> products = new ArrayList<>();
+        int position = 0;
         for (FlightJourneyViewModel item : listJourneyViewModel) {
-            lastPosition++;
-            products.add(transformSearchProductView(searchPassDataViewModel, item, lastPosition));
+            position++;
+            products.add(transformSearchProductView(searchPassDataViewModel, item, position));
         }
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(

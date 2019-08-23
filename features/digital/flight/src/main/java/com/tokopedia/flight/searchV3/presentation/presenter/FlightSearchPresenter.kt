@@ -304,7 +304,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         )
     }
 
-    override fun fetchSortAndFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean, excludedAirlines: MutableList<String>) {
+    override fun fetchSortAndFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean, fromCombo: Boolean) {
         flightSortAndFilterUseCase.execute(
                 flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
                 object : Subscriber<List<FlightJourneyViewModel>>() {
@@ -334,8 +334,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         }
 
                         // filter journey that not tracked yet
-                        val newJourneyList = flightJourneyViewModelList.filter { !excludedAirlines.contains(it.routeList[0].airline) }
-                        if (newJourneyList.isNotEmpty()) onProductViewImpression(newJourneyList, lastPosition)
+                        if (lastPosition != flightJourneyViewModelList.size || fromCombo) onProductViewImpression(flightJourneyViewModelList)
                         lastPosition = flightJourneyViewModelList.size
                     }
                 }
@@ -399,8 +398,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         )
     }
 
-    private fun onProductViewImpression(listJourneyViewModel: List<FlightJourneyViewModel>, lastPosition: Int) {
-        flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), listJourneyViewModel, lastPosition)
+    private fun onProductViewImpression(listJourneyViewModel: List<FlightJourneyViewModel>) {
+        flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), listJourneyViewModel)
     }
 
     override fun unsubscribeAll() {
