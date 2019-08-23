@@ -143,12 +143,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         super.onCreate();
 
+        TokopediaUrl.Companion.init(this);
+
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
         GraphqlClient.init(this);
         NetworkClient.init(this);
-        TokopediaUrl.Companion.init(this);
     }
 
     @Override
