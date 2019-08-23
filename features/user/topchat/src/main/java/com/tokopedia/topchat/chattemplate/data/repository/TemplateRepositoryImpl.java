@@ -26,7 +26,7 @@ public class TemplateRepositoryImpl implements TemplateRepository {
     }
 
     @Override
-    public Observable<GetTemplateViewModel> setAvailabilityTemplate(JsonObject parameters) {
-        return templateChatFactory.createCloudSetTemplateDataSource().setTemplate(parameters);
+    public Observable<GetTemplateViewModel> setAvailabilityTemplate(JsonObject parameters, boolean isSeller) {
+        return templateChatFactory.createCloudSetTemplateDataSource().setTemplate(parameters, isSeller);
     }
 }
