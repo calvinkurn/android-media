@@ -5,5 +5,5 @@ package com.tokopedia.travel.homepage.presentation.listener
  */
 
 interface OnItemClickListener {
-    fun onItemClick(appUrl: String)
+    fun onItemClick(appUrl: String, webUrl: String = "")
 }

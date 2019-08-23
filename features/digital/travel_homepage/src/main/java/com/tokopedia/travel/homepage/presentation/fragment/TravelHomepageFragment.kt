@@ -21,7 +21,6 @@ import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 import com.tokopedia.travel.homepage.presentation.viewmodel.TravelHomepageViewModel
 import kotlinx.android.synthetic.main.travel_homepage_fragment.*
-import kotlinx.android.synthetic.main.travel_homepage_fragment.view.*
 import javax.inject.Inject
 
 /**
@@ -134,8 +133,9 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         travelHomepageViewModel.getRecommendation(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation))
     }
 
-    override fun onItemClick(appUrl: String) {
-        RouteManager.route(context, appUrl)
+    override fun onItemClick(appUrl: String, webUrl: String) {
+        if (RouteManager.isSupportApplink(context, appUrl)) RouteManager.route(context, appUrl)
+        else if (webUrl.isNotEmpty()) RouteManager.route(context, webUrl)
     }
 
     companion object {
