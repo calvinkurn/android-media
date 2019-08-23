@@ -3,9 +3,11 @@ package com.tokopedia.vouchergame.list.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.common.topupbills.view.viewholder.TopupBillsEmptyViewHolder
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListShimmeringViewHolder
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
@@ -17,10 +19,11 @@ import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListVie
 class VoucherGameListAdapterFactory(val callback: BaseEmptyViewHolder.Callback, val listener: VoucherGameListViewHolder.OnClickListener): BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        when (type) {
-            VoucherGameListViewHolder.LAYOUT -> return VoucherGameListViewHolder(parent, listener)
-            VoucherGameListShimmeringViewHolder.LAYOUT -> return VoucherGameListShimmeringViewHolder(parent)
-            else -> return super.createViewHolder(parent, type)
+        return when (type) {
+            VoucherGameListViewHolder.LAYOUT -> VoucherGameListViewHolder(parent, listener)
+            VoucherGameListShimmeringViewHolder.LAYOUT -> VoucherGameListShimmeringViewHolder(parent)
+            TopupBillsEmptyViewHolder.LAYOUT -> TopupBillsEmptyViewHolder(parent)
+            else -> super.createViewHolder(parent, type)
         }
     }
 
@@ -30,6 +33,10 @@ class VoucherGameListAdapterFactory(val callback: BaseEmptyViewHolder.Callback, 
 
     override fun type(viewModel: LoadingModel): Int {
         return VoucherGameListShimmeringViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: EmptyModel): Int {
+        return TopupBillsEmptyViewHolder.LAYOUT
     }
 
 }

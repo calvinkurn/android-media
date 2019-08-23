@@ -16,6 +16,6 @@ class VoucherGameProductShimmeringViewHolder(itemView: View) : AbstractViewHolde
 
     companion object {
         @LayoutRes
-        var LAYOUT = R.layout.item_voucher_game_shimmering
+        var LAYOUT = R.layout.item_voucher_game_detail_shimmering
     }
 }

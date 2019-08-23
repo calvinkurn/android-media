@@ -12,7 +12,9 @@ import com.tokopedia.vouchergame.R
 
 class VoucherGameListShimmeringViewHolder(itemView: View) : AbstractViewHolder<LoadingModel>(itemView) {
 
-    override fun bind(element: LoadingModel) {}
+    override fun bind(element: LoadingModel) {
+
+    }
 
     companion object {
         @LayoutRes
