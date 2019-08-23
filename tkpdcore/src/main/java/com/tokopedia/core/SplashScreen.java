@@ -42,6 +42,9 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
 
     public static final int DAYS_IN_SECONDS = 86400;
+    public static final int STATUS_FINISHED = 1;
+    public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
+
     private PasswordGenerator Pgenerator;
     String id = null;
     protected View decorView;
