@@ -184,8 +184,9 @@ class TxnSucsOvoUser : BaseDaggerFragment(), View.OnClickListener {
                     }
                 }
                 R.id.back_to_app -> {
-                    activity?.finish()
                     context?.let {
+                        startActivity(OvoP2pUtil.getDiscoveryPageIntent(it))
+                        activity?.finish()
                         AnalyticsUtil.sendEvent(it, AnalyticsUtil.EventName.CLICK_OVO,
                                 AnalyticsUtil.EventCategory.OVO_SUMRY_TRNSFR_SUCS, "", AnalyticsUtil.EventAction.CLK_KMBL_TKPD)
                     }

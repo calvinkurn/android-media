@@ -222,7 +222,7 @@
                 android:layout_marginRight="@dimen/dp_30"
                 android:background="@drawable/btn_bg_rounded_corners"
                 android:gravity="center"
-                android:text="@string/ovop2p_kemke"
+                android:text="@string/ovop2p_chk_rcom"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintBottom_toBottomOf="parent"
