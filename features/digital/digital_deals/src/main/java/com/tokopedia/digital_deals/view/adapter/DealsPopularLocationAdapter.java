@@ -28,8 +28,6 @@ import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -38,17 +36,18 @@ import rx.Subscriber;
 public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
 
     private Context context;
-    private List<Location> locations = new ArrayList<>();
     private SelectPopularLocationListener actionListener;
     private String url = "";
     private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
     private String searchText = "";
     private Location location;
+    private AdapterCallback callback;
 
     public DealsPopularLocationAdapter(Context context, SelectPopularLocationListener selectPopularLocationListener, AdapterCallback callback, Location location) {
         super(callback);
         this.context = context;
         this.actionListener = selectPopularLocationListener;
+        this.callback = callback;
         this.location = location;
         getSearchLocationListRequestUseCase = new GetLocationListRequestUseCase();
     }
@@ -58,6 +57,9 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
         super.loadData(pageNumber);
         RequestParams requestParams = RequestParams.create();
         if (pageNumber > 1) {
+            if (TextUtils.isEmpty(url)) {
+                return;
+            }
             requestParams.putString("url", url);
         } else if (pageNumber == 1 && !TextUtils.isEmpty(searchText)) {
             requestParams.putString("name", searchText);
@@ -93,13 +95,19 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
                 if (pageNumber == 1 && locationResponse.getLocations() != null && locationResponse.getLocations().size() > 0) {
                     clear();
                 }
-                loadCompleted(locationResponse.getLocations(), locationResponse);
-                locations.addAll(locationResponse.getLocations());
-                if (locationResponse.getPage() == null || !URLUtil.isValidUrl(locationResponse.getPage().getUriNext())) {
+                if (locationResponse.getLocations() == null) {
                     setLastPage(true);
+                    callback.onEmptyList(locationResponse.getLocations());
                 } else {
-                    url = locationResponse.getPage().getUriNext();
+                    loadCompleted(locationResponse.getLocations(), locationResponse);
+                    if (locationResponse.getPage() == null || !URLUtil.isValidUrl(locationResponse.getPage().getUriNext())) {
+                        setLastPage(true);
+                        url = "";
+                    } else {
+                        url = locationResponse.getPage().getUriNext();
+                    }
                 }
+
             }
         });
 
@@ -183,8 +191,8 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
 
         @Override
         public void onClick(View v) {
-            Location location = Utils.getSingletonInstance().getLocation(context);
-            Utils.getSingletonInstance().updateLocation(context, locations.get(getIndex()));
+            Utils.getSingletonInstance().updateLocation(context, getItems().get(getIndex()));
+            Location location = getItems().get(getIndex());
             actionListener.onPopularLocationSelected(location != null);
         }
     }

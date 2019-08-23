@@ -203,8 +203,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
 
         @Override
         public void onEmptyList(Object rawObject) {
-            popularCityTitle.setVisibility(View.GONE);
-            rvSearchResults.setVisibility(View.GONE);
+            popularLocationTitle.setVisibility(View.VISIBLE);
             noLocationLayout.setVisibility(View.VISIBLE);
         }
 
@@ -230,6 +229,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         @Override
         public void onError(int pageNumber) {
             popularCityTitle.setVisibility(View.GONE);
+            popularLocationTitle.setVisibility(View.VISIBLE);
             rvSearchResults.setVisibility(View.GONE);
             noLocationLayout.setVisibility(View.VISIBLE);
         }
@@ -243,8 +243,8 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
 
     @Override
     public void onPopularLocationSelected(boolean locationUpdated) {
-        selectedLocationListener.onLocationItemUpdated(locationUpdated);
         getFragmentManager().popBackStack();
+        selectedLocationListener.onLocationItemUpdated(locationUpdated);
     }
 
     @Override

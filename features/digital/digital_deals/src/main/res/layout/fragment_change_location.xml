@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true">
 
     <RelativeLayout
         android:id="@+id/mainContent"
@@ -56,6 +57,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
+                android:clickable="true"
                 android:hint="@string/search_input_hint_deals_location" />
 
             <View
@@ -73,19 +75,22 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp_8"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/popular_city_heading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_8"
                         android:text="Kota Populer"
                         android:textStyle="bold"
                         android:textAllCaps="true"
                         android:textColor="#313531"
                         android:textSize="@dimen/sp_12"
-                        tools:visibility="gone" />
+                        tools:visibility="visible" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_city_results"
@@ -98,7 +103,7 @@
                         app:layoutManager="android.support.v7.widget.GridLayoutManager"
                         app:spanCount="@integer/int_3"
                         tools:listitem="@layout/location_item"
-                        tools:visibility="gone" />
+                        tools:visibility="visible" />
 
                     <include
                         android:id="@+id/no_location"
@@ -112,7 +117,9 @@
                         android:id="@+id/popular_location_heading"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginBottom="@dimen/dp_8"
                         android:text="Lokasi populer"
                         android:textStyle="bold"
                         android:textAllCaps="true"
@@ -124,7 +131,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_16"
                         android:layout_marginBottom="@dimen/dp_20"
                         android:clipToPadding="false"
