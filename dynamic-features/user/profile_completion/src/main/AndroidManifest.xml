@@ -4,7 +4,7 @@
     <dist:module
         dist:instant="false"
         dist:onDemand="true"
-        dist:title="@string/setting_profile_title">
+        dist:title="@string/app_name_setting_profile">
         <dist:fusing dist:include="true" />
     </dist:module>
 </manifest>
