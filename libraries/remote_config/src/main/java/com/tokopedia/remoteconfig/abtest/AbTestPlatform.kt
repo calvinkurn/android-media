@@ -127,7 +127,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                         editor.putInt(REVISION, globalRevision).commit()
                     }
 
-                    return@map RolloutFeatureVariants(featureVariants)
+                    return@map RolloutFeatureVariants(responseData.dataRollout.featureVariants)
                 }
                 .doOnError { error ->
                     Log.d("doOnError", error.toString())
