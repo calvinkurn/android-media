@@ -31,7 +31,7 @@ class AutoAdsWidgetViewModel(
         launchCatchError(block = {
             val data = withContext(Dispatchers.IO) {
                 val request = GraphqlRequest(rawQueries[RawQueryKeyObject.QUERY_GET_AUTO_ADS],
-                        TopAdsAutoAds.Response::class.java, mapOf(SHOP_ID to shopId))
+                        TopAdsAutoAds.Response::class.java, mapOf(SHOP_ID to shopId), false)
                 val cacheStrategy = GraphqlCacheStrategy
                         .Builder(CacheType.ALWAYS_CLOUD).build()
                 repository.getReseponse(listOf(request), cacheStrategy)
