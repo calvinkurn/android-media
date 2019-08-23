@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageSectionViewModel
 import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
 import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.view.*
 
@@ -18,7 +19,7 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_section_list_item.v
 
 class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionViewModel.Item>,
                                    private var type: Int,
-                                   var listener: OnItemClickListener):
+                                   var listener: OnItemClickListener) :
         RecyclerView.Adapter<TravelHomepageSectionAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, itemViewType: Int): ViewHolder {
@@ -40,7 +41,7 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
         }
     }
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(item: TravelHomepageSectionViewModel.Item, position: Int, listener: OnItemClickListener, type: Int) {
             with(itemView) {
@@ -55,7 +56,11 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
                 }
             }
             if (listener != null) itemView.setOnClickListener {
-                listener.onTrackEventClick(type, position, item.product)
+                if (type == TYPE_RECOMMENDATION) {
+                    listener.onTrackDealsClick(item, position)
+                } else {
+                    listener.onTrackEventClick(type, position, item.product)
+                }
                 listener.onItemClick(item.appUrl)
             }
         }

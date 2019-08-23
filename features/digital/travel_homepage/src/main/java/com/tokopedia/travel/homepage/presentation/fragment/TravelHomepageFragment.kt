@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.analytics.TravelHomepageTrackingUtil
-import com.tokopedia.travel.homepage.data.TravelHomepageItemModel
+import com.tokopedia.travel.homepage.data.*
 import com.tokopedia.travel.homepage.di.TravelHomepageComponent
 import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travel.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
@@ -148,9 +148,29 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
             TYPE_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickOrder(position.toString(), categoryName)
             TYPE_ALL_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickAllOrder()
             TYPE_RECENT_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickRecentSearch(position.toString(), categoryName)
-            TYPE_RECOMMENDATION -> travelHomepageTrackingUtil.travelHomepageClickPopularSearch(position.toString(), categoryName)
+            TYPE_POPULAR_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickPopularSearch(position.toString(), categoryName)
             TYPE_ALL_DEALS -> travelHomepageTrackingUtil.travelHomepageClickAllDeals()
         }
+    }
+
+    override fun onTrackBannerImpression(banner: TravelHomepageBannerModel.Banner, position: Int) {
+        travelHomepageTrackingUtil.travelHomepageImpressionBanner(banner, position)
+    }
+
+    override fun onTrackBannerClick(banner: TravelHomepageBannerModel.Banner, position: Int) {
+        travelHomepageTrackingUtil.travelHomepageClickBanner(banner, position)
+    }
+
+    override fun onTrackCategoryClick(category: TravelHomepageCategoryListModel.Category, position: Int) {
+        travelHomepageTrackingUtil.travelHomepageClickCategory(category, position)
+    }
+
+    override fun onTrackDealsClick(deal: TravelHomepageSectionViewModel.Item, position: Int) {
+        travelHomepageTrackingUtil.travelHomepageClickDeal(deal, position)
+    }
+
+    override fun onTrackPopularDestinationClick(destination: TravelHomepageDestinationModel.Destination, position: Int) {
+        travelHomepageTrackingUtil.travelHomepageClickPopularDestination(destination, position)
     }
 
     companion object {
@@ -159,12 +179,12 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         const val TYPE_ORDER_LIST = 1
         const val TYPE_RECENT_SEARCH = 2
         const val TYPE_RECOMMENDATION = 3
-        const val TYPE_PROMO = 4
-        const val TYPE_DEALS = 5
-        const val TYPE_POPULAR_DESTINATION = 6
-        const val TYPE_ALL_PROMO = 7
-        const val TYPE_ALL_ORDER_LIST = 8
-        const val TYPE_ALL_DEALS = 9
+        const val TYPE_POPULAR_SEARCH = 4
+        const val TYPE_ALL_PROMO = 5
+        const val TYPE_ALL_ORDER_LIST = 6
+        const val TYPE_ALL_DEALS = 7
+
+        const val TYPE_POPULAR_SEARCH_CATEGORY = "popularDestination"
 
     }
 }

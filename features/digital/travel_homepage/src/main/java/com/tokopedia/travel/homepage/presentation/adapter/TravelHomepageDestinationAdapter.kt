@@ -26,13 +26,13 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: DestinationViewHolder, position: Int) {
-        holder.bind(list.get(position).attributes, position, listener)
+        holder.bind(list[position], position, listener)
     }
 
 
     class DestinationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(destination: TravelHomepageDestinationModel.Attribute, position: Int, listener: OnItemClickListener) {
+        fun bind(destination: TravelHomepageDestinationModel.Destination, position: Int, listener: OnItemClickListener) {
             with(itemView) {
 
                 val layoutParams = destination_container.layoutParams
@@ -44,11 +44,14 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
                 destination_container.layoutParams = layoutParams
                 destination_container.minimumHeight = resources.getDimensionPixelSize(R.dimen.dp_140)
 
-                image.loadImage(destination.imageUrl)
-                title.text = destination.title
-                subtitle.text = destination.subtitle
+                image.loadImage(destination.attributes.imageUrl)
+                title.text = destination.attributes.title
+                subtitle.text = destination.attributes.subtitle
             }
-            if (listener != null) itemView.setOnClickListener { listener.onItemClick(destination.appUrl) }
+            if (listener != null) itemView.setOnClickListener {
+                listener.onTrackPopularDestinationClick(destination, position)
+                listener.onItemClick(destination.attributes.appUrl)
+            }
         }
 
         companion object {

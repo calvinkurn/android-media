@@ -22,7 +22,7 @@ class TravelHomepageMapper {
             TravelHomepageSectionViewModel.Item(title = it.title,
                     subtitle = it.subtitle, prefix = it.prefix, value = it.value,
                     appUrl = it.appUrl, imageUrl = it.imageUrl, product = it.product
-                    )
+            )
         }
         viewModel.type = TYPE_ORDER_LIST
         return viewModel
@@ -37,9 +37,10 @@ class TravelHomepageMapper {
                     subtitle = it.subtitle, prefix = it.prefix,
                     prefixStyling = it.prefixStyling, value = it.value,
                     appUrl = it.appUrl, imageUrl = it.imageUrl, product = it.product
-                    )
+            )
         }
         viewModel.type = TYPE_RECENT_SEARCH
+        viewModel.categoryType = model.meta.type
         return viewModel
     }
 

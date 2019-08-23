@@ -10,7 +10,8 @@ data class TravelHomepageSectionViewModel(
         var title: String = "",
         var seeAllUrl: String = "",
         var list: List<Item> = listOf(),
-        var type: Int = 0
+        var type: Int = 0,
+        var categoryType: String = ""
 ): TravelHomepageItemModel() {
 
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)

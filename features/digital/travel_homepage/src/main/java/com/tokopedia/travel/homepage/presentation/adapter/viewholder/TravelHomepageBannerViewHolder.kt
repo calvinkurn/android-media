@@ -58,11 +58,12 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     }
 
     override fun onPromoClick(position: Int) {
+        onItemClickListener.onTrackBannerClick(bannerList[position], position)
         onItemClickListener.onItemClick(bannerList[position].attribute.appUrl, bannerList[position].attribute.webUrl)
     }
 
     override fun onPromoScrolled(position: Int) {
-
+        onItemClickListener.onTrackBannerImpression(bannerList[position], position)
     }
 
     override fun onPromoAllClick() {

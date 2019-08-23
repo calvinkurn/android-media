@@ -14,4 +14,7 @@ class MetaModel(@SerializedName("title")
                 val webUrl: String = "",
                 @SerializedName("appURL")
                 @Expose
-                val appUrl: String = "")
+                val appUrl: String = "",
+                @SerializedName("type")
+                @Expose
+                val type: String = "")

@@ -37,7 +37,10 @@ class TravelHomepageCategoryListAdapter(private var list: List<TravelHomepageCat
                 category_image.loadImage(category.attributes.imageUrl)
                 category_name.text = category.attributes.title
             }
-            itemView.setOnClickListener { listener.onItemClick(category.attributes.appUrl) }
+            itemView.setOnClickListener {
+                listener.onTrackCategoryClick(category, position)
+                listener.onItemClick(category.attributes.appUrl)
+            }
         }
 
         companion object {

@@ -8,8 +8,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageSectionViewModel
 import com.tokopedia.travel.homepage.presentation.adapter.TravelHomepageSectionAdapter
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ALL_DEALS
 import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ALL_ORDER_LIST
 import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_POPULAR_SEARCH
+import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_POPULAR_SEARCH_CATEGORY
 import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
 import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
 import com.tokopedia.travel.homepage.presentation.listener.OnItemBindListener
@@ -38,6 +41,9 @@ class TravelHomepageSectionViewHolder(itemView: View,
                         section_see_all.show()
                         section_see_all.setOnClickListener {
                             if (element.type == TYPE_ORDER_LIST) onItemClickListener.onTrackEventClick(TYPE_ALL_ORDER_LIST)
+                            else if (element.type == TYPE_RECOMMENDATION) onItemClickListener.onTrackEventClick(TYPE_ALL_DEALS)
+                            else if (element.type == TYPE_RECENT_SEARCH && element.categoryType == TYPE_POPULAR_SEARCH_CATEGORY) onItemClickListener.onTrackEventClick(TYPE_POPULAR_SEARCH)
+                            else if (element.type == TYPE_RECENT_SEARCH && element.categoryType != TYPE_POPULAR_SEARCH_CATEGORY) onItemClickListener.onTrackEventClick(TYPE_RECENT_SEARCH)
                             onItemClickListener.onItemClick(element.seeAllUrl)
                         }
                     } else section_see_all.hide()

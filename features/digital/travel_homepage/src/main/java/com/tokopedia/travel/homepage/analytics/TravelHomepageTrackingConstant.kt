@@ -31,3 +31,22 @@ object TravelHomepageTrackingEventNameConstant {
     val CLICK_HOMEPAGE = "clickHomepage"
     val PRODUCT_CLICK = "productClick"
 }
+
+object TravelHomepageTrackingEEConstant {
+    val NAME = "name"
+    val POSITION = "position"
+    val ID = "id"
+    val CREATIVE = "creative"
+    val CREATIVE_URL = "creative_url"
+    val PRICE = "price"
+    val BRAND = "brand"
+    val CATEGORY = "category"
+    val VARIANT = "variant"
+
+    val CREATIVE_PREFIX = "DG_SUBHOME_"
+
+    val ECOMMERCE = "ecommerce"
+    val PROMOTIONS = "promotions"
+    val ACTION_FIELD = "actionField"
+    val PRODUCTS = "products"
+}

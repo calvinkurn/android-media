@@ -15,6 +15,7 @@ query{
       title
       webURL
       appURL
+      type
     }
   }
 }
