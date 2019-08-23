@@ -50,6 +50,7 @@ public class TimberReportingTree extends Timber.DebugTree {
                 message = message.replaceFirst(P2, "");
                 serverSeverity = SEVERITY_MEDIUM;
             } else if (priorityList.get(2) && message.startsWith(P3)) {
+                message = message.replaceFirst(P3, "");
                 serverSeverity = SEVERITY_LOW;
             } else {
                 serverSeverity = NO_SEVERITY;
