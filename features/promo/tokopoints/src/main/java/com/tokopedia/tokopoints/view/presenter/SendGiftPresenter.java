@@ -24,6 +24,8 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
         implements SendGiftContract.Presenter {
     private GraphqlUseCase mRedeemCouponUseCase;
     private GraphqlUseCase mStartSendGift;
+    private int success = 0;
+
 
     @Inject
     public SendGiftPresenter(GraphqlUseCase startSendGift,
@@ -82,6 +84,7 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
                 if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem() != null) {
                     title = getView().getAppContext().getString(R.string.tp_send_gift_success_title);
                     message = getView().getAppContext().getString(R.string.tp_send_gift_success_message);
+                    success = 1;
                 } else {
 
                     //show error
@@ -89,6 +92,7 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
 
                     title = getView().getAppContext().getString(R.string.tp_send_gift_failed_title);
                     message = getView().getAppContext().getString(R.string.tp_send_gift_failed_message);
+                    success = 0;
 
                     if (errors != null && errors.size() > 0) {
                         String[] mesList = errors.get(0).getMessage().split("|");
@@ -101,7 +105,7 @@ public class SendGiftPresenter extends BaseDaggerPresenter<SendGiftContract.View
                     }
                 }
 
-                getView().showPopup(title, message);
+                getView().showPopup(title, message, success);
             }
         });
     }

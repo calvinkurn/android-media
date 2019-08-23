@@ -21,21 +21,33 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
-import kotlin.collections.HashMap
+import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
-class ProductDetailTracking() {
+class ProductDetailTracking @Inject constructor(private val trackingQueue: TrackingQueue) {
 
-    val currencyLable = "IDR"
+    private val currencyLable = "IDR"
+    private val screenName = PRODUCT_DETAIL_SCREEN_NAME
 
     fun sendScreen(shopID: String, shopType: String, productId: String) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(
-                PRODUCT_DETAIL_SCREEN_NAME,
-                shopID, shopType, "/product", productId)
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, shopID,
+                shopType, "/product", productId)
+    }
+
+    fun sendScreenV5(shopId: String, shopType: String, productId: String, categoryId: String) {
+        val params = hashMapOf<String, String>().apply {
+            put("shopId", shopId)
+            put("shopType", shopType)
+            put("productId", productId)
+            put("categoryId", categoryId)
+            put("pageType", "/product")
+        }
+        TrackApp.getInstance().gtm.sendScreenV5(screenName, params)
     }
 
     fun eventTalkClicked() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK,
@@ -73,7 +85,7 @@ class ProductDetailTracking() {
     private fun eventClickBuyOrAddToCart(productId: String, isVariant: Boolean,
                                          action: String) {
         if (productId.isEmpty()) return
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 action,
@@ -85,35 +97,35 @@ class ProductDetailTracking() {
     }
 
     fun eventReviewClicked() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK,
                 ProductTrackingConstant.ProductReview.REVIEW)
     }
 
     fun eventReportLogin() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.Report.EVENT,
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(ProductTrackingConstant.Report.EVENT,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK,
                 ProductTrackingConstant.Report.EVENT_LABEL)
     }
 
     fun eventReportNoLogin() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.Report.EVENT,
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(ProductTrackingConstant.Report.EVENT,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK,
                 ProductTrackingConstant.Report.NOT_LOGIN_EVENT_LABEL)
     }
 
     fun eventCartMenuClicked(variant: String?) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT,
                 variant ?: "")
     }
 
     fun eventClickMerchantVoucherUse(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(createEventMVCClick(ProductTrackingConstant.MerchantVoucher.EVENT,
                 ProductTrackingConstant.Category.PDP,
                 listOf(ProductTrackingConstant.MerchantVoucher.ACTION,
                         ProductTrackingConstant.Action.CLICK).joinToString(" "),
@@ -128,21 +140,21 @@ class ProductDetailTracking() {
                 "use voucher",
                 merchantVoucherViewModelList)
         map?.run {
-            TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(this)
+            TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(this)
         }
     }
 
     private fun createMvcImpressionMap(event: String, category: String, action: String, label: String,
                                        viewModelList: List<MerchantVoucherViewModel>): MutableMap<String, Any>? {
         val mvcListMap = createMvcListMap(viewModelList, 0)
-        if (mvcListMap.isNotEmpty()) {
+        return if (mvcListMap.isNotEmpty()) {
             val eventMap = createMap(event, category, action, label)
-            eventMap.put(KEY_ECOMMERCE, DataLayer.mapOf(
+            eventMap[KEY_ECOMMERCE] = DataLayer.mapOf(
                     "promoView", DataLayer.mapOf(
-                    "promotions", mvcListMap)))
-            return eventMap
+                    "promotions", mvcListMap))
+            eventMap
         } else {
-            return null
+            null
         }
     }
 
@@ -184,21 +196,20 @@ class ProductDetailTracking() {
     }
 
     private fun createMVCMap(vouchers: List<MerchantVoucherViewModel>, position: Int): List<Any> {
-        val list = vouchers.withIndex().filter { it.value.isAvailable() }.map {
+        return vouchers.withIndex().filter { it.value.isAvailable() }.map {
             DataLayer.mapOf(ID, it.value.voucherId,
                     PROMO_NAME, it.value.voucherName,
                     PROMO_POSITION, (position + it.index + 1).toString(),
                     PROMO_ID, it.value.voucherId,
                     PROMO_CODE, it.value.voucherCode)
         }
-        return list
     }
 
     fun eventAtcClickLihat(productId: String?) {
         if (productId.isNullOrEmpty()) {
             return
         }
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 "click - cek keranjang",
@@ -206,7 +217,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickVariant(eventLabel: String) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 "click - variants",
@@ -214,7 +225,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherSeeDetail(id: Int) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
                         ProductTrackingConstant.MerchantVoucher.DETAIL).joinToString(" - "),
@@ -222,7 +233,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickMerchantVoucherSeeAll(id: Int) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 listOf(ProductTrackingConstant.Action.CLICK, ProductTrackingConstant.MerchantVoucher.MERCHANT_VOUCHER,
                         ProductTrackingConstant.MerchantVoucher.SEE_ALL).joinToString(" - "),
@@ -323,8 +334,8 @@ class ProductDetailTracking() {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String, trackingQueue: TrackingQueue) {
-        val listValue = LIST_DEFAULT + pageName +
+    fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
+        val listValue = LIST_DEFAULT + pageName  +
                 (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
@@ -447,9 +458,13 @@ class ProductDetailTracking() {
     }
 
 
+    fun sendAllQueue() {
+        trackingQueue.sendAll()
+    }
+
     fun eventClickWishlistOnAffiliate(userId: String,
                                       productId: String) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 mutableMapOf<String, Any>(KEY_EVENT to ProductTrackingConstant.Affiliate.CLICK_AFFILIATE,
                         KEY_CATEGORY to ProductTrackingConstant.Affiliate.CATEGORY,
                         KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION_CLICK_WISHLIST,
@@ -469,7 +484,7 @@ class ProductDetailTracking() {
                     KEY_ACTION to ProductTrackingConstant.Affiliate.ACTION,
                     KEY_LABEL to productId)
         }
-        params.put(KEY_USER_ID, userId)
+        params[KEY_USER_ID] = userId
         TrackApp.getInstance().gtm.pushGeneralGtmV5(params)
     }
 
@@ -483,7 +498,7 @@ class ProductDetailTracking() {
     }
 
     fun eventSendChat() {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PRODUCT_PAGE.toLowerCase(),
                 ProductTrackingConstant.Action.CLICK,
@@ -493,7 +508,7 @@ class ProductDetailTracking() {
 
     fun eventPDPAddToWishlist(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 "add wishlist",
@@ -502,7 +517,7 @@ class ProductDetailTracking() {
 
     fun eventPDPAddToWishlistNonLogin(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 "add wishlist - non logged in",
@@ -511,7 +526,7 @@ class ProductDetailTracking() {
 
     fun eventPDPRemoveToWishlist(productId: String?) {
         if (productId.isNullOrEmpty()) return
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 "remove wishlist",
@@ -519,7 +534,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickReviewOnSeeAllImage(productId: Int) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.ImageReview.ACTION_SEE_ALL,
@@ -528,7 +543,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickReviewOnBuyersImage(productId: Int, reviewId: String?) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.ImageReview.ACTION_SEE_ITEM,
@@ -537,7 +552,7 @@ class ProductDetailTracking() {
     }
 
     fun eventClickReviewOnMostHelpfulReview(productId: Int?, reviewId: String?) {
-        TrackApp.getInstance()?.gtm?.sendGeneralEvent(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 "click - review gallery on most helpful review",
@@ -549,19 +564,17 @@ class ProductDetailTracking() {
         val list = ArrayList<String>()
         if (detail != null) {
             for (i in 0 until detail.size) {
-                list.add(detail.get(i).name)
+                list.add(detail[i].name)
             }
         }
         return TextUtils.join("/", list)
     }
 
     private fun getEnhanceShopType(goldOS: ShopInfo.GoldOS?): String {
-        return if (goldOS?.isOfficial == 1) {
-            "official_store"
-        } else if (goldOS?.isGold == 1) {
-            "gold_merchant"
-        } else {
-            "regular"
+        return when {
+            goldOS?.isOfficial == 1 -> "official_store"
+            goldOS?.isGold == 1 -> "gold_merchant"
+            else -> "regular"
         }
     }
 
@@ -573,8 +586,10 @@ class ProductDetailTracking() {
         return ""
     }
 
-    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?, shopInfo: ShopInfo?, trackerAttribution: String?,
-                                           isTradeIn: Boolean, isDiagnosed: Boolean, multiOrigin: Boolean) {
+    fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: ProductInfo?,
+                                           shopInfo: ShopInfo?, trackerAttribution: String?,
+                                           isTradeIn: Boolean, isDiagnosed: Boolean,
+                                           multiOrigin: Boolean) {
         val dimension55 = if (isTradeIn && isDiagnosed)
             "true diagnostic"
         else if (isTradeIn && !isDiagnosed)
@@ -582,7 +597,7 @@ class ProductDetailTracking() {
         else
             "false"
 
-        TrackApp.getInstance()?.gtm?.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 "event", "viewProduct",
                 "eventCategory", "product page",
                 "eventAction", "view product page",
@@ -616,8 +631,49 @@ class ProductDetailTracking() {
                 "url", productInfo?.basic?.url,
                 "shopType", getEnhanceShopType(shopInfo?.goldOS)
         ))
+
+        eventEnhanceEcommerceProductDetailV5(productInfo, shopInfo,
+                trackerAttribution, isTradeIn,
+                isDiagnosed, multiOrigin)
     }
 
+    fun eventEnhanceEcommerceProductDetailV5(productInfo: ProductInfo?, shopInfo: ShopInfo?,
+                                             trackerAttribution: String?, isTradeIn: Boolean,
+                                             isDiagnosed: Boolean, multiOrigin: Boolean) {
+        val dimension55 = if (isTradeIn && isDiagnosed)
+            "true diagnostic"
+        else if (isTradeIn && !isDiagnosed)
+            "true non diagnostic"
+        else
+            "false"
+
+        val ecommerce = Bundle().apply {
+            putString(FirebaseAnalytics.Param.ITEM_ID, productInfo?.basic?.id.toString())
+            putString(FirebaseAnalytics.Param.ITEM_NAME, productInfo?.basic?.name)
+            putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other")
+            putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getEnhanceCategoryFormatted(productInfo?.category?.detail))
+            putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other")
+            putDouble(FirebaseAnalytics.Param.PRICE, productInfo?.basic?.price?.toDouble() ?: 0.toDouble())
+            putLong(FirebaseAnalytics.Param.INDEX, 1)
+            putString("dimension38", trackerAttribution ?: "none / other")
+            putString("dimension54", getMultiOriginAttribution(multiOrigin))
+            putString("dimension55", dimension55)
+        }
+
+        val event = Bundle().apply {
+            putString("eventCategory", "product page")
+            putString("eventAction", "view product page")
+            putString("eventLabel", getEnhanceShopType(shopInfo?.goldOS) + " - " + shopInfo?.shopCore?.name + " - " + productInfo?.basic?.name)
+            putString("screenName", screenName)
+            putString("shopId", productInfo?.basic?.shopID.toString())
+            putString("shopName", shopInfo?.shopCore?.name)
+            putString("shopType", getEnhanceShopType(shopInfo?.goldOS))
+            putString("categoryId", productInfo?.category?.id)
+            putBundle("items", ecommerce)
+        }
+
+        TrackApp.getInstance().gtm.pushEECommerce("viewProduct", event)
+    }
 
     ///////////////////////////////////////////////////////////////
     //BRANCH START
@@ -635,8 +691,8 @@ class ProductDetailTracking() {
         }
     }
 
-    private fun createLinkerData(productInfo: ProductInfo, userId: String?): LinkerData {
-        var linkerData = LinkerData()
+    private fun createLinkerData(productInfo: ProductInfo, userId: String?): LinkerData{
+        val linkerData = LinkerData()
         linkerData.id = productInfo.basic.id.toString()
         linkerData.price = productInfo.basic.price.toInt().toString()
         linkerData.description = productInfo.basic.description
@@ -662,10 +718,10 @@ class ProductDetailTracking() {
         eventAppsFyler(productInfo, "af_content_view")
     }
 
-    private fun eventAppsFyler(productInfo: ProductInfo, eventName: String) {
-        TrackApp.getInstance()?.appsFlyer?.run {
+    private fun eventAppsFyler(productInfo: ProductInfo, eventName:String) {
+        TrackApp.getInstance().appsFlyer.run {
             sendEvent(eventName,
-                    mutableMapOf<String, Any>(
+                    mutableMapOf(
                             "af_description" to "productView",
                             "af_content_id" to productInfo.basic.id,
                             "af_content_type" to "product",
@@ -676,8 +732,8 @@ class ProductDetailTracking() {
                         if (productInfo.category.detail.isNotEmpty()) {
                             val size = productInfo.category.detail.size
                             for (i in 1..size) {
-                                put("level" + i + "_name", productInfo.category.detail.get(size - i).name)
-                                put("level" + i + "_id", productInfo.category.detail.get(size - i).id)
+                                put("level" + i + "_name", productInfo.category.detail[size - i].name)
+                                put("level" + i + "_id", productInfo.category.detail[size - i].id)
                             }
                         }
                     }
@@ -694,7 +750,7 @@ class ProductDetailTracking() {
     // MOENGAGE START
     ////////////////////////////////////////////////////////////////
     fun sendMoEngagePDPReferralCodeShareEvent() {
-        TrackApp.getInstance()?.moEngage?.sendEvent("Share_Event",
+        TrackApp.getInstance().moEngage.sendEvent("Share_Event",
                 mutableMapOf<String, Any>(
                         "channel" to "lainnya",
                         "source" to "pdp_share"
@@ -719,7 +775,7 @@ class ProductDetailTracking() {
                              shopName: String,
                              eventName: String) {
         productInfo.category.breadcrumbUrl
-        TrackApp.getInstance()?.moEngage?.sendEvent(
+        TrackApp.getInstance().moEngage.sendEvent(
                 eventName,
                 mutableMapOf<String, Any>().apply {
                     if (productInfo.category.detail.isNotEmpty()) {
@@ -746,7 +802,7 @@ class ProductDetailTracking() {
     }
 
     fun sendGeneralEvent(event: String, category: String, action: String, label: String) {
-        TrackApp.getInstance()?.gtm?.pushGeneralGtmV5(event,
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(event,
                 category,
                 action,
                 label)

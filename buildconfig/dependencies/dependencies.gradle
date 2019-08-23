@@ -81,7 +81,7 @@ ext {
     unifyComponentsVersion = '0.0.7'
     unifyCoachMarkVersion = '1.0.0'
     unifyCalendarVersion = '0.0.2'
-    unifyBannerVersion = '0.0.3'
+    unifyBannerVersion = '0.0.4'
 
 
     gradlePlugin = [
@@ -181,7 +181,9 @@ ext {
             moengagePushbase    : "com.moengage:pushbase:3.2.00",
             moengageInapp   : "com.moengage:inapp:3.2.02",
             moengageMSG: "com.moengage:addon-messaging:3.2.01",
-            branch     : "io.branch.sdk.android:library:3.0.4+"
+            branch     : "io.branch.sdk.android:library:3.0.4+",
+            rapid7     : "com.rapid7:r7insight_java:1.1.39",
+            cashshield : "com.cashshield.android:cashshield:1.0@aar"
     ]
 
     deeplinkDispatchDependencies = [

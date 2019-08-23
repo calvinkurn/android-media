@@ -11,6 +11,7 @@ public interface AffiliateEventTracking {
         String BYME_ADD_RECOMMENDATION = "add recommendation tokopedia by.me";
         String BYME_EXPLORE = "/explore-byme-socialcommerce";
         String BYME_CREATE_POST = "/create-post-socialcommerce";
+        String BYME_CONTENT_DETAIL = "/user-profile-socialcommerce-content-detail";
         String BYME_USER_PROFILE = "user profile page";
         String BYME_MY_PROFILE = "my profile page";
         String BYME_PDP = "product detail page";
@@ -33,6 +34,7 @@ public interface AffiliateEventTracking {
         String BYME_CREATE_POST = "create post by.me socialcommerce";
         String BYME_AFFILIATE_TRAFFIC = "affiliate traffic";
         String BYME_MY_PROFILE = "my profile page";
+        String BYME_AFFILIATE_CDP_EXTERNAL = "content detail page traffic - external";
     }
 
     interface Action {
@@ -51,6 +53,7 @@ public interface AffiliateEventTracking {
         String CLICK_SEARCH_SUGGESTION = "click search suggestion";
         String CLICK_PROFILE = "click profile";
         String OTHERS = "others";
+        String CLICK_AFFILIATE_CDP_EXTERNAL = "external";
     }
 
     interface EventLabel {

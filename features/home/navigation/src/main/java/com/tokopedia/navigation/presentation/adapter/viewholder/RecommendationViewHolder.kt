@@ -89,7 +89,7 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
 
     private fun showSuccessAddWishlist(view: View, message: String){
         Toaster.showNormalWithAction(view, message, Snackbar.LENGTH_LONG,
-                view.context.getString(R.string.recom_go_to_wishlist), View.OnClickListener {
+            view.context.getString(R.string.recom_go_to_wishlist), View.OnClickListener {
             RouteManager.route(view.context, ApplinkConst.WISHLIST)
         })
     }
@@ -99,7 +99,8 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
     }
 
     private fun showError(view: View, throwable: Throwable?){
-        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
+        Toaster.showError(view,
+            ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
     }
 
     companion object {
