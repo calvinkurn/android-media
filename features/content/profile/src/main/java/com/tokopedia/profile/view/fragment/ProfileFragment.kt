@@ -1,5 +1,6 @@
 package com.tokopedia.profile.view.fragment
 
+import android.animation.LayoutTransition
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -822,7 +823,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            linkerData = ShareBottomSheets.constructShareData("", "", url, String.format("%s %s", description, "%s"), title)
+            linkerData = ShareBottomSheets.constructShareData("", "", url, description, title)
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
             checkShouldChangeUsername(url)
@@ -1068,6 +1069,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showFooterOthers() {
+        parentView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        footer.show()
         footerOthers.show()
         if (profileHeader?.isFollowed == true) {
             footerOthersText.text = getString(R.string.sticky_footer_following)
@@ -1098,6 +1101,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun hideFootersOthers() {
+        parentView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        footer.hide()
         footerOthers.hide()
     }
 

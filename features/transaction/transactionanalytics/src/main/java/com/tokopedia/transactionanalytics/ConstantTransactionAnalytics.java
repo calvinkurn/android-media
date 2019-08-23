@@ -178,6 +178,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ADD_TO_CART_ON_PRIMARY_PRODUCT = "click add to cart on primary product";
         String IMPRESSION_ERROR_COURIER_NO_AVAILABLE = "impression error courier no available";
         String CLICK_MORE_LIKE_THIS = "click more like this";
+        String CLICK_PRODUCT_WISHLIST_ON_CART_LIST = "click product wishlist on cart list";
+        String CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST = "click product last seen on cart list";
 
         String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
         String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
