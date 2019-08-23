@@ -164,15 +164,17 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (hasCategoryIdParam()) {
             goToExplore()
         }
-        viewModel.getWhitelist(object: FeedPlusContainerViewModel.OnGetWhitelistData {
-            override fun onSuccessGetWhitelistData(whitelistDomain: WhitelistDomain) {
-                renderFab(whitelistDomain)
-            }
+        if (userSession.isLoggedIn) {
+            viewModel.getWhitelist(object : FeedPlusContainerViewModel.OnGetWhitelistData {
+                override fun onSuccessGetWhitelistData(whitelistDomain: WhitelistDomain) {
+                    renderFab(whitelistDomain)
+                }
 
-            override fun onErrorGetWhitelistData(errString: String) {
-                error(errString)
-            }
-        })
+                override fun onErrorGetWhitelistData(errString: String) {
+                    error(errString)
+                }
+            })
+        }
     }
 
     private fun renderFab(whitelistDomain: WhitelistDomain) {
