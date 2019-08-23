@@ -33,8 +33,8 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         TRADEIN_TYPE = getIntent().getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, 1);
+        super.onCreate(savedInstanceState);
         if (TRADEIN_TYPE == 2) {
             toolbar.setTitle(R.string.money_in);
         }
