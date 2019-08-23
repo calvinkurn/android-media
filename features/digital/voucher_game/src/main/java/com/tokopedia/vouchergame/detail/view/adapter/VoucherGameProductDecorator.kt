@@ -5,12 +5,15 @@ import android.graphics.Rect
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.View
+import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductCategoryViewHolder
 import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductViewHolder
 
 /**
  * Created by resakemal on 14/08/19.
  */
 class VoucherGameProductDecorator(val space: Int, val resources: Resources) : RecyclerView.ItemDecoration() {
+
+    var addHorizontalOffsetTracker: Boolean = true
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect.run {
@@ -26,7 +29,12 @@ class VoucherGameProductDecorator(val space: Int, val resources: Resources) : Re
                 it.adapter?.run {
                     if (getItemViewType(childPosition) == VoucherGameProductViewHolder.LAYOUT) {
                         bottom = offset
-                        if (childPosition % 2 == 0) right = offset
+                        if (addHorizontalOffsetTracker) {
+                            right = offset
+                        }
+                        addHorizontalOffsetTracker = !addHorizontalOffsetTracker
+                    } else if (getItemViewType(childPosition) == VoucherGameProductCategoryViewHolder.LAYOUT) {
+                        addHorizontalOffsetTracker = true
                     }
                 }
             }
