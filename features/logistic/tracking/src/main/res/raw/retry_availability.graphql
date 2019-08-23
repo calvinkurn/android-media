@@ -1,4 +1,4 @@
-query RetryAvailability($id: String){
+query RetryAvailability($id: String!){
   retryAvailability(orderID:$id){
     awbnum
     order_id

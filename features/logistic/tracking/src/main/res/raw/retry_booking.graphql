@@ -1,4 +1,4 @@
-mutation RetryBooking($id: String){
+mutation RetryBooking($id: String!){
   retryBooking(orderID: $id){
     order_id
     order_tx_id
