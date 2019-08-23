@@ -122,12 +122,11 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:maxWidth="@dimen/dp_288"
         android:scaleType="fitCenter"
         app:borderRadius="@dimen/dp_4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/body"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@drawable/test" />
 
 </android.support.constraint.ConstraintLayout>
