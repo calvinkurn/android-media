@@ -104,7 +104,11 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             ThreeGridChannelViewHolder.LAYOUT
         } else if (DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL == dynamicChannelViewModel.channel.layout) {
             SprintSaleCarouselViewHolder.LAYOUT
-        } else {
+        } else if(DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC == dynamicChannelViewModel.getChannel().getLayout()
+                || DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL == dynamicChannelViewModel.getChannel().getLayout()) {
+            BannerOrganicViewHolder.LAYOUT
+        }
+        else {
             EmptyBlankViewHolder.LAYOUT
         }
     }
@@ -138,6 +142,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             InspirationHeaderViewHolder.LAYOUT -> InspirationHeaderViewHolder(view)
             HomeRecommendationFeedViewHolder.LAYOUT -> HomeRecommendationFeedViewHolder(view, listener)
             GeolocationPromptViewHolder.LAYOUT -> GeolocationPromptViewHolder(view, listener)
+            BannerOrganicViewHolder.LAYOUT -> BannerOrganicViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

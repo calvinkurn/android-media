@@ -32,7 +32,6 @@ class PartialButtonActionView private constructor(private val view: View,
     var isExpressCheckout = false
     var isWarehouseProduct: Boolean = false
     var hasShopAuthority: Boolean = false
-    var isSpecialPrize: Boolean = false
     var preOrder: PreOrder? = PreOrder()
 
     companion object {
@@ -86,8 +85,6 @@ class PartialButtonActionView private constructor(private val view: View,
                     }
                 })
             btn_buy_now.visibility = View.VISIBLE
-            if (isSpecialPrize) btn_add_to_cart.gone()
-            else btn_add_to_cart.visible()
 
             btn_buy_now.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener

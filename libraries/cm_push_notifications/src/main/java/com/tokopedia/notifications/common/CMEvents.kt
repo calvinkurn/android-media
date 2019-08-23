@@ -56,7 +56,7 @@ object IrisAnalyticsEvents {
             values[IS_SILENT] = CMConstant.NotificationType.SILENT_PUSH == baseNotificationModel.type
 
         }
-       //todo irisAnalytics.sendEvent(values)
+       irisAnalytics.sendEvent(values)
 
     }
 
@@ -74,7 +74,7 @@ object IrisAnalyticsEvents {
             values[PUSH_TYPE] = pushType?.let { pushType } ?: ""
             values[IS_SILENT] = false
         }
-       //todo irisAnalytics.saveEvent(values)
+       irisAnalytics.saveEvent(values)
 
     }
 }
