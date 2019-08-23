@@ -13,6 +13,10 @@ import com.tokopedia.hotel.hoteldetail.presentation.model.HotelDetailAllFacility
  */
 class HotelDetailAllFacilityActivity : HotelBaseActivity() {
 
+    override fun getParentViewResourceID(): Int = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
+
     override fun shouldShowOptionMenu(): Boolean = false
 
     override fun getNewFragment(): Fragment =
