@@ -84,7 +84,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 getView().displayLoadMore(false);
                 RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
                 List<Visitable> visitables = new ArrayList<>();
-                if (isFirstTime && recommendationWidgets.size() > 0) {
+                if (isFirstTime && recommendationWidget.getRecommendationItemList().size() > 0) {
                     visitables.add(new OrderListRecomTitleViewModel(
                             !TextUtils.isEmpty(recommendationWidget.getTitle())
                                     ? recommendationWidget.getTitle()

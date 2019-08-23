@@ -2,7 +2,9 @@ package com.tokopedia.transaction.orders.orderdetails.view;
 
 import javax.inject.Inject;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
@@ -184,5 +186,47 @@ public class OrderListAnalytics {
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
 
+    }
+
+    public void eventEmptyBOMRecommendationProductClick(RecommendationItem item, int position) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                "event", "productClick",
+                "eventCategory", "my purchase list - mp - bom_empty",
+                "eventAction", "click - product recommendation",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "click", DataLayer.mapOf("actionField",
+                                DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                        "products", DataLayer.listOf(DataLayer.mapOf(
+                                                "name", item.getName(),
+                                                "id", item.getProductId(),
+                                                "price", item.getPrice().replaceAll("[^0-9]", ""),
+                                                "brand", "none/other",
+                                                "category", item.getCategoryBreadcrumbs(),
+                                                "variant", "none/other",
+                                                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                                "position", String.valueOf(position)))))
+                )));
+    }
+
+    public void eventRecommendationProductImpression(RecommendationItem item, int position){
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent((HashMap<String, Object>) DataLayer.mapOf(
+                "event", "productView",
+                "eventCategory", "my purchase list - mp - bom_empty",
+                "eventAction", "impression - product recommendation",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                DataLayer.mapOf(
+                                        "name", item.getName(),
+                                        "id", item.getProductId(),
+                                        "price", item.getPrice().replaceAll("[^0-9]", ""),
+                                        "brand", "none/other",
+                                        "category", item.getCategoryBreadcrumbs(),
+                                        "variant", "none/other",
+                                        "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                        "position", String.valueOf(position)))
+                )));
     }
 }

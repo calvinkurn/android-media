@@ -25,18 +25,18 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
     }
 
     override fun onImpressionTopAds(item: RecommendationItem) {
-
+        orderListAnalytics.eventRecommendationProductImpression(item, item.position)
     }
 
     override fun onImpressionOrganic(item: RecommendationItem) {
-
+        orderListAnalytics.eventRecommendationProductImpression(item, item.position)
     }
 
     override fun onClickTopAds(item: RecommendationItem) {
-
+        orderListAnalytics.eventEmptyBOMRecommendationProductClick(item, item.position)
     }
 
     override fun onClickOrganic(item: RecommendationItem) {
-
+        orderListAnalytics.eventEmptyBOMRecommendationProductClick(item, item.position)
     }
 }
