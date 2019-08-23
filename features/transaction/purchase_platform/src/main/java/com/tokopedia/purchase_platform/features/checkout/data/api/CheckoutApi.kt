@@ -12,21 +12,21 @@ import rx.Observable
 interface CheckoutApi {
 
     @FormUrlEncoded
-    @POST(CheckoutCommonPurchaseApiUrl.PATH_CART_LIST_MULTIPLE_ADDRESS)
+    @POST(CheckoutApiUrl.PATH_CART_LIST_MULTIPLE_ADDRESS)
     fun getCartList(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
 
     @FormUrlEncoded
-    @POST(CheckoutCommonPurchaseApiUrl.PATH_SHIPPING_ADDRESS)
+    @POST(CheckoutApiUrl.PATH_SHIPPING_ADDRESS)
     fun postSetShippingAddress(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
 
-    @GET(CheckoutCommonPurchaseApiUrl.PATH_SHIPMENT_ADDRESS_FORM_DIRECT)
+    @GET(CheckoutApiUrl.PATH_SHIPMENT_ADDRESS_FORM_DIRECT)
     fun getShipmentAddressForm(@QueryMap params: Map<String, String>): Observable<Response<CartResponse>>
 
-    @GET(CheckoutCommonPurchaseApiUrl.PATH_SHIPMENT_ADDRESS_ONE_CLICK_CHECKOUT)
+    @GET(CheckoutApiUrl.PATH_SHIPMENT_ADDRESS_ONE_CLICK_CHECKOUT)
     fun getShipmentAddressFormOneClickCheckout(@QueryMap params: Map<String, String>): Observable<Response<CartResponse>>
 
     @FormUrlEncoded
-    @POST(CheckoutCommonPurchaseApiUrl.PATH_SAVE_SHIPMENT)
+    @POST(CheckoutApiUrl.PATH_SAVE_SHIPMENT)
     fun postSaveShipmentState(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
 
 }

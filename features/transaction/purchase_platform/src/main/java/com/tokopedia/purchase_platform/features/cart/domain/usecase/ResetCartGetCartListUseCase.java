@@ -3,11 +3,11 @@ package com.tokopedia.purchase_platform.features.cart.domain.usecase;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository;
 import com.tokopedia.purchase_platform.features.cart.domain.model.ResetAndRefreshCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.CartDataListResponse;
-import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

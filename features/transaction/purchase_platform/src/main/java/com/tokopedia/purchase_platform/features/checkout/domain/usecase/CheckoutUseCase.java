@@ -7,12 +7,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ICheckoutMapper;
+import com.tokopedia.purchase_platform.common.data.common.repository.ICommonPurchaseRepository;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
-import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil;
+import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -40,17 +40,17 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
     public static final String PARAM_IS_TRADEIN = "is_trade_in";
     public static final String PARAM_DEVICE_ID = "dev_id";
 
-    private final ICartRepository cartRepository;
+    private final ICommonPurchaseRepository commonPurchaseRepository;
     private final ICheckoutMapper checkoutMapper;
     private final ICheckoutModuleRouter checkoutModuleRouter;
     private final Context context;
 
     @Inject
     public CheckoutUseCase(@ApplicationContext Context context,
-                           ICartRepository cartRepository,
+                           ICommonPurchaseRepository commonPurchaseRepository,
                            ICheckoutMapper checkoutMapper,
                            ICheckoutModuleRouter checkoutModuleRouter) {
-        this.cartRepository = cartRepository;
+        this.commonPurchaseRepository = commonPurchaseRepository;
         this.checkoutMapper = checkoutMapper;
         this.checkoutModuleRouter = checkoutModuleRouter;
         this.context = context;
@@ -74,7 +74,7 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
             param.putAll((Map<String, String>) requestParams.getObject(PARAM_TRADE_IN_DATA));
         }
         param = createParamFingerprint(param);
-        return cartRepository.checkout(param)
+        return commonPurchaseRepository.checkout(param)
                 .map(checkoutMapper::convertCheckoutData);
     }
 

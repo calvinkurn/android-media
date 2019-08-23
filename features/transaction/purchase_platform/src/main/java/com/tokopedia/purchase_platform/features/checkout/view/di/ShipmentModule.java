@@ -10,7 +10,6 @@ import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutQualifier;
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase;
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
@@ -24,8 +23,6 @@ import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;
 import com.tokopedia.purchase_platform.common.di.module.UtilModule;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.data.AddressRepository;
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ICheckoutMapper;
@@ -123,14 +120,6 @@ public class ShipmentModule {
     GetShipmentAddressFormOneClickShipementUseCase provideGetShipmentAddressFormOneClickShipmentUseCase(
             ICartRepository cartRepository, IShipmentMapper shipmentMapper) {
         return new GetShipmentAddressFormOneClickShipementUseCase(cartRepository, shipmentMapper);
-    }
-
-    @Provides
-    @ShipmentScope
-    CheckPromoCodeCartListUseCase provideCheckPromoCodeCartListUseCase(ICartRepository cartRepository,
-                                                                       IVoucherCouponMapper voucherCouponMapper,
-                                                                       @PromoCheckoutQualifier CheckPromoCodeUseCase checkPromoCodeUseCase) {
-        return new CheckPromoCodeCartListUseCase(cartRepository, voucherCouponMapper, checkPromoCodeUseCase);
     }
 
     @Provides

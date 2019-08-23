@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.features.checkout.domain.usecase;
 
+import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.saveshipmentstate.SaveShipmentStateData;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.SaveShipmentStateResponse;
-import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -21,11 +21,11 @@ public class SaveShipmentStateUseCase extends UseCase<SaveShipmentStateData> {
     public static final String PARAM_CART_DATA_OBJECT = "PARAM_CART_DATA_OBJECT";
     public static final String PARAM_CARTS = "carts";
 
-    private final ICartRepository cartRepository;
+    private final ICheckoutRepository checkoutRepository;
 
     @Inject
-    public SaveShipmentStateUseCase(ICartRepository cartRepository) {
-        this.cartRepository = cartRepository;
+    public SaveShipmentStateUseCase(ICheckoutRepository checkoutRepository) {
+        this.checkoutRepository = checkoutRepository;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class SaveShipmentStateUseCase extends UseCase<SaveShipmentStateData> {
         TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_CART_DATA_OBJECT);
 
-        return cartRepository.saveShipmentState(param)
+        return checkoutRepository.saveShipmentState(param)
                 .map(new Func1<SaveShipmentStateResponse, SaveShipmentStateData>() {
                     @Override
                     public SaveShipmentStateData call(SaveShipmentStateResponse saveShipmentStateResponse) {

@@ -1,10 +1,10 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository;
 import com.tokopedia.purchase_platform.features.cart.domain.model.DeleteAndRefreshCartListData;
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase;
-import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -15,7 +15,7 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-//import static com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART;
+import static com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART;
 
 /**
  * @author anggaprasetiyo on 30/04/18.

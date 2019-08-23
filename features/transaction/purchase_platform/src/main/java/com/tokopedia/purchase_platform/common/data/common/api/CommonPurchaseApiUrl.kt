@@ -10,6 +10,7 @@ open class CommonPurchaseApiUrl {
 
     companion object {
 
+        val HMAC_KEY = "web_service_v4"
         var BASE_URL = TokopediaUrl.getInstance().API
 
         const val BASE_PATH = "cart/"

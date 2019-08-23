@@ -11,15 +11,15 @@ import rx.Observable
 
 interface CartApi {
 
-    @GET(CartCommonPurchaseApiUrl.PATH_SHOP_GROUP_LIST)
+    @GET(CartApiUrl.PATH_SHOP_GROUP_LIST)
     fun getShopGroupList(@QueryMap params: Map<String, String>): Observable<Response<CartResponse>>
 
     @FormUrlEncoded
-    @POST(CartCommonPurchaseApiUrl.PATH_REMOVE_FROM_CART)
+    @POST(CartApiUrl.PATH_REMOVE_FROM_CART)
     fun postDeleteCart(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
 
     @FormUrlEncoded
-    @POST(CartCommonPurchaseApiUrl.PATH_UPDATE_CART)
+    @POST(CartApiUrl.PATH_UPDATE_CART)
     fun postUpdateCart(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
 
 }

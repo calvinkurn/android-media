@@ -228,13 +228,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     protected void initInjector() {
-        ShipmentComponent component = DaggerShipmentComponent.builder()
-                .cartComponent(getComponent(CartComponent.class))
-                .shipmentModule(new ShipmentModule(this))
-                .trackingAnalyticsModule(new TrackingAnalyticsModule())
-                .promoCheckoutModule(new PromoCheckoutModule())
-                .build();
-        component.inject(this);
+//        ShipmentComponent component = DaggerShipmentComponent.builder()
+//                .cartComponent(getComponent(CartComponent.class))
+//                .shipmentModule(new ShipmentModule(this))
+//                .trackingAnalyticsModule(new TrackingAnalyticsModule())
+//                .promoCheckoutModule(new PromoCheckoutModule())
+//                .build();
+//        component.inject(this);
     }
 
     @Override

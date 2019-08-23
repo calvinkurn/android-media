@@ -6,7 +6,7 @@ import com.tokopedia.purchase_platform.common.data.common.api.CommonPurchaseApiU
  * Created by Irfan Khoirul on 2019-08-15.
  */
 
-class CheckoutCommonPurchaseApiUrl: CommonPurchaseApiUrl() {
+class CheckoutApiUrl: CommonPurchaseApiUrl() {
 
     companion object {
 

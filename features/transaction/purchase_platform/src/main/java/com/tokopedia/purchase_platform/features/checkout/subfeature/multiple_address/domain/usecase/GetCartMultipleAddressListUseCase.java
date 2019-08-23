@@ -2,11 +2,11 @@ package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_ad
 
 import android.content.Context;
 
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
 import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.model.response.CartMultipleAddressDataListResponse;
-import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -20,12 +20,12 @@ import rx.functions.Func1;
  */
 public class GetCartMultipleAddressListUseCase extends UseCase<CartListData> {
     public static final String PARAM_REQUEST_AUTH_MAP_STRING = "PARAM_REQUEST_AUTH_MAP_STRING";
-    private final ICartRepository cartRepository;
+    private final ICheckoutRepository cartRepository;
     private final ICartMapper cartMapper;
     private final Context context;
 
     @Inject
-    public GetCartMultipleAddressListUseCase(Context context, ICartRepository cartRepository, ICartMapper cartMapper) {
+    public GetCartMultipleAddressListUseCase(Context context, ICheckoutRepository cartRepository, ICartMapper cartMapper) {
         this.context = context;
         this.cartRepository = cartRepository;
         this.cartMapper = cartMapper;
