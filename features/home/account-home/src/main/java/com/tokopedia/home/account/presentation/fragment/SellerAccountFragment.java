@@ -57,7 +57,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Inject
     SellerAccount.Presenter presenter;
     private boolean isLoaded = false;
-//    private RemoteConfig remoteConfig;
 
     public static SellerAccountFragment newInstance() {
         SellerAccountFragment fragment = new SellerAccountFragment();
@@ -117,7 +116,8 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         }
     }
 
-    private void getData() {
+    @Override
+    void getData() {
         String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
                 .new_query_saldo_balance);
         presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),
@@ -164,27 +164,30 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
 
     @Override
     public void showError(String message) {
-        if (getView() != null) {
-            ToasterError.make(getView(), message)
-                    .setAction(getString(R.string.title_try_again), view -> getData())
-                    .show();
-        }
+        super.showError(message);
+//        if (getView() != null) {
+//            ToasterError.make(getView(), message)
+//                    .setAction(getString(R.string.title_try_again), view -> getData())
+//                    .show();
+//        }
         fpmSeller.stopTrace();
     }
 
     @Override
     public void showError(Throwable e) {
-        if (getView() != null && getContext() != null) {
-            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
-                    .setAction(getString(R.string.title_try_again), view -> getData())
-                    .show();
-        }
+        super.showError(e);
+//        if (getView() != null && getContext() != null) {
+//            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
+//                    .setAction(getString(R.string.title_try_again), view -> getData())
+//                    .show();
+//        }
         fpmSeller.stopTrace();
     }
 
     @Override
     public void showErroNoConnection() {
-        showError(getString(R.string.error_no_internet_connection));
+        super.showErroNoConnection();
+//        showError(getString(R.string.error_no_internet_connection));
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
@@ -22,6 +23,7 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
+import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
@@ -32,11 +34,13 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
@@ -60,7 +64,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_M
  * @author okasurya on 7/26/18.
  */
 public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
-        AccountItemListener {
+        AccountItemListener, BaseAccountView {
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     public static final int OPEN_SHOP_SUCCESS = 100;
@@ -75,6 +79,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     private AffiliatePreference affiliatePreference;
 
     abstract void notifyItemChanged(int position);
+    abstract void getData();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -435,7 +440,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onTopAdsMenuClicked() {
-        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+        if (getContext() != null && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             ((AccountHomeRouter) getContext().getApplicationContext()).
                     gotoTopAdsDashboard(getContext());
         }
@@ -471,4 +476,34 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
     }
 
+    @Override
+    public void showError(String message) {
+        if (getView() != null) {
+            Toaster.Companion.showErrorWithAction(
+                    getView(),
+                    message,
+                    Snackbar.LENGTH_INDEFINITE,
+                    getString(R.string.title_try_again),
+                    view -> getData()
+            );
+        }
+    }
+
+    @Override
+    public void showError(Throwable e) {
+        if (getView() != null && getContext() != null) {
+            Toaster.Companion.showErrorWithAction(
+                    getView(),
+                    ErrorHandler.getErrorMessage(getContext(), e),
+                    Snackbar.LENGTH_INDEFINITE,
+                    getString(R.string.title_try_again),
+                    view -> getData()
+            );
+        }
+    }
+
+    @Override
+    public void showErroNoConnection() {
+        showError(getString(R.string.error_no_internet_connection));
+    }
 }

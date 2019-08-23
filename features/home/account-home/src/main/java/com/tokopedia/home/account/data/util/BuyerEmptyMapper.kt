@@ -18,6 +18,8 @@ import javax.inject.Inject
 class BuyerEmptyMapper @Inject constructor(@ApplicationContext val context: Context) :
         Func1<Throwable, BuyerViewModel> {
 
+    private val homeRouter: AccountHomeRouter = context.applicationContext as AccountHomeRouter
+
     override fun call(throwable: Throwable): BuyerViewModel {
         return getEmptyBuyerModel()
     }
@@ -64,7 +66,7 @@ class BuyerEmptyMapper @Inject constructor(@ApplicationContext val context: Cont
             title = context.getString(R.string.title_menu_favorites)
         })
 
-        if ((context.applicationContext as AccountHomeRouter).isEnableInterestPick) {
+        if (homeRouter.isEnableInterestPick) {
             viewItems.add(MenuListViewModel().apply {
                 menu = context.getString(R.string.title_menu_favorite_topic)
                 menuDescription = context.getString(R.string.label_menu_favorite_topic)
@@ -106,14 +108,14 @@ class BuyerEmptyMapper @Inject constructor(@ApplicationContext val context: Cont
             sectionTrack = context.getString(R.string.title_menu_mybills)
         })
 
-        if ((context.applicationContext as AccountHomeRouter).getBooleanRemoteConfig(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON, false)) {
+        if (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON, false)) {
             viewItems.add(InfoCardViewModel().apply {
                 iconRes = R.drawable.ic_tokocash_big
-                mainText = (context.applicationContext as AccountHomeRouter).getStringRemoteConfig(
+                mainText = homeRouter.getStringRemoteConfig(
                         RemoteConfigKey.APP_REFERRAL_TITLE,
                         context.getString(R.string.title_menu_wallet_referral)
                 )
-                secondaryText = (context.applicationContext as AccountHomeRouter).getStringRemoteConfig(
+                secondaryText = homeRouter.getStringRemoteConfig(
                         RemoteConfigKey.APP_REFERRAL_SUBTITLE,
                         context.getString(R.string.label_menu_wallet_referral)
                 )
@@ -123,7 +125,7 @@ class BuyerEmptyMapper @Inject constructor(@ApplicationContext val context: Cont
             })
         }
 
-        if ((context.applicationContext as AccountHomeRouter).getBooleanRemoteConfig(RemoteConfigKey.APP_ENABLE_INDI_CHALLENGES, true)) {
+        if (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_ENABLE_INDI_CHALLENGES, true)) {
             viewItems.add(InfoCardViewModel().apply {
                 iconRes = R.drawable.ic_challenge_trophy
                 mainText = context.getString(R.string.title_menu_challenge)
@@ -131,7 +133,7 @@ class BuyerEmptyMapper @Inject constructor(@ApplicationContext val context: Cont
                 applink = ApplinkConst.CHALLENGE
                 titleTrack = AccountConstants.Analytics.PEMBELI
                 sectionTrack = AccountConstants.Analytics.CLICK_CHALLENGE
-                isNewTxtVisiblle = if ((context.applicationContext as AccountHomeRouter).getBooleanRemoteConfig(
+                isNewTxtVisiblle = if (homeRouter.getBooleanRemoteConfig(
                                 RemoteConfigKey.APP_ENTRY_CHALLENGE_BARU,
                                 true)
                 ) View.VISIBLE else View.GONE
@@ -159,7 +161,7 @@ class BuyerEmptyMapper @Inject constructor(@ApplicationContext val context: Cont
         val gridItems = arrayListOf<MenuGridItemViewModel>()
         val gridItem: MenuGridItemViewModel
 
-        if ((context.applicationContext as AccountHomeRouter).getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
+        if (homeRouter.getBooleanRemoteConfig(RemoteConfigKey.APP_GLOBAL_NAV_NEW_DESIGN, true)) {
             gridItem = MenuGridItemViewModel(
                     R.drawable.ic_belanja,
                     context.getString(R.string.title_menu_market_place),

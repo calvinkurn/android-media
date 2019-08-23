@@ -75,8 +75,8 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .doOnNext(this::savePhoneVerified)
                 .doOnNext(this::saveIsAffiliateStatus)
                 .doOnNext(this::saveDebitInstantData)
-                .map(mapper)
-                .onErrorReturn(emptyBuyerMapper);
+                .map(mapper);
+//                .onErrorReturn(emptyBuyerMapper);
     }
 
     private Observable<AccountModel> getAccountData(RequestParams requestParams) {

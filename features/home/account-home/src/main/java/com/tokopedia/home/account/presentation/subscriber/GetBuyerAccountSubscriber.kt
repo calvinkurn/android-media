@@ -13,12 +13,5 @@ class GetBuyerAccountSubscriber(val view: BuyerAccount.View?) :
         }
     }
 
-    override fun onError(e: Throwable) {
-        view?.let {
-//            it.loadBuyerData()
-            it.hideLoading()
-        }
-    }
-
     override fun onCompleted() { }
 }

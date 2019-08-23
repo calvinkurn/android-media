@@ -88,7 +88,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         }
     }
 
-    private fun getData() {
+    override fun getData() {
         scrollToTop()
         endlessRecyclerViewScrollListener?.resetState()
 
@@ -97,6 +97,11 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
                     .new_query_saldo_balance)
             presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
                     .query_buyer_account_home), saldoQuery)
+        }
+
+        view?.let {
+            it.invalidate()
+            it.requestLayout()
         }
     }
 
@@ -140,29 +145,32 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     }
 
     override fun showError(message: String) {
-        if (view != null) {
-            ToasterError.make(view, message)
-                    .setAction(getString(R.string.title_try_again)) { view -> getData() }
-                    .show()
-        }
+        super.showError(message)
+//        if (view != null) {
+//            ToasterError.make(view, message)
+//                    .setAction(getString(R.string.title_try_again)) { view -> getData() }
+//                    .show()
+//        }
         fpmBuyer?.run {
             stopTrace()
         }
     }
 
     override fun showError(e: Throwable) {
-        if (view != null && context != null) {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(context, e))
-                    .setAction(getString(R.string.title_try_again)) { view -> getData() }
-                    .show()
-        }
+        super.showError(e)
+//        if (view != null && context != null) {
+//            ToasterError.make(view, ErrorHandler.getErrorMessage(context, e))
+//                    .setAction(getString(R.string.title_try_again)) { view -> getData() }
+//                    .show()
+//        }
         fpmBuyer?.run {
             stopTrace()
         }
     }
 
     override fun showErroNoConnection() {
-        showError(getString(R.string.error_no_internet_connection))
+        super.showErroNoConnection()
+//        showError(getString(R.string.error_no_internet_connection))
     }
 
     override fun onScrollToTop() {
