@@ -11,6 +11,7 @@ import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4.D
 class MoneyInCourierBottomSheet : BottomSheets() {
     private var moneyIn: MoneyIn? = null
     private var description: String? = null
+    private var actionListener: ActionListener? = null
 
     companion object {
         private const val KEY_MONEY_IN = "KEY_MONEY_IN"
@@ -47,7 +48,16 @@ class MoneyInCourierBottomSheet : BottomSheets() {
         price?.text = moneyIn?.textPrice
         exchangeText?.text = description
         parentLayout?.setOnClickListener {
+            actionListener?.onCourierButtonClick(moneyIn?.shipperName, moneyIn?.textPrice)
             dismiss()
         }
+    }
+
+    fun setActionListener(actionListener: ActionListener?){
+        this.actionListener = actionListener
+    }
+
+    interface ActionListener {
+        fun onCourierButtonClick(shipperName:String?, price: String?)
     }
 }
