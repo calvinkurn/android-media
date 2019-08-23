@@ -31,7 +31,7 @@ ext {
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             usecase               : "com.tokopedia.usecase:usecase:2.24",
             cachemanager          : "com.tokopedia.cachemanager:cachemanager:2.24",
-            globalconfig          : "com.tokopedia.config:global_config:1",
+            globalconfig          : "com.tokopedia.config:global_config:1.0.1",
             graphql               : "com.tokopedia.graphql:graphql:1.0.1",
             network               : "com.tokopedia.network:network:1.0.1",
             url                   : "com.tokopedia.url:url:1",
