@@ -175,11 +175,11 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneral(map);
     }
 
-    private static void log(Context context, String eventName, Bundle bundle) {
+    private void log(Context context, String eventName, Bundle bundle) {
         log(context, eventName, bundleToMap(bundle));
     }
 
-    private static void log(Context context, String eventName, Map<String, Object> values) {
+    private void log(Context context, String eventName, Map<String, Object> values) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         GtmLogger.getInstance(context).save(name, values);
         tetraDebugger.send(values);
