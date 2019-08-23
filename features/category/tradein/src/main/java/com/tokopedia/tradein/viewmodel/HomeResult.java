@@ -10,6 +10,10 @@ public class HomeResult {
         return displayMessage;
     }
 
+    public String getDeviceDisplayName() {
+        return deviceDisplayName;
+    }
+
     public boolean isSuccess() {
         return isSuccess;
     }

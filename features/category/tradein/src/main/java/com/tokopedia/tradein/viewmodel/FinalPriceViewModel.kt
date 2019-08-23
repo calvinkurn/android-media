@@ -7,6 +7,7 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Intent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -39,6 +40,7 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
         params.productId = productid
         params.deviceId = deviceid
         params.newPrice = newprice
+        params.tradeInType = intent.getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE,1)
         val variables1 = HashMap<String, Any>()
         variables1["params"] = params
         val gqlDeviceDiagInput = GraphqlUseCase()

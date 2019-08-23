@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -16,16 +15,17 @@ public class TradeInVMFactory extends ViewModelProvider.AndroidViewModelFactory 
     private Application application;
     private Intent intent;
 
-    private TradeInVMFactory(@NonNull Application application, Intent intent) {
+    private TradeInVMFactory(@NonNull Application application) {
         super(application);
         this.application = application;
-        this.intent = intent;
     }
 
     @NotNull
     public static TradeInVMFactory getInstance(@NotNull Application application, Intent intent) {
-        if (sInstance == null)
-            sInstance = new TradeInVMFactory(application,intent);
+        if (sInstance == null) {
+            sInstance = new TradeInVMFactory(application);
+        }
+        sInstance.intent = intent;
         return sInstance;
     }
 

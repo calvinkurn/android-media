@@ -31,7 +31,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
 
     init {
         tradeInParams = if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
-            val parcelable = intent.getParcelableExtra (TradeInParams::class.java.simpleName) as TradeInParams?
+            val parcelable = intent.getParcelableExtra(TradeInParams::class.java.simpleName) as TradeInParams?
             parcelable ?: TradeInParams()
         } else
             TradeInParams()
@@ -94,7 +94,6 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
                                 result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnostics.tradeInPrice!!, true)
                                 homeResultData.value = result
                                 errorMessage.setValue(deviceDiagInputResponse.deviceDiagInputRepsponse.message)
-                                //ToasterError.showClose(activityWeakReference.get(), deviceDiagInputResponse.getDeviceDiagInputRepsponse().getMessage());
                             }
                         }
                     }
@@ -146,10 +145,6 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-    }
-
     override fun onFinished(jsonObject: JSONObject) {
         progBarVisibility.value = false
         var modelId = 0
@@ -181,13 +176,16 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         val result = HomeResult()
         result.isSuccess = true
         if (diagnosedPrice > 0) {
-            if (diagnosedPrice > tradeInParams.newPrice) {
-                result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
-                result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
+            if (tradeInType != 2) {
+                if (diagnosedPrice > tradeInParams.newPrice) {
+                    result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
+                } else {
+                    result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
+                }
             } else {
                 result.priceStatus = HomeResult.PriceState.DIAGNOSED_VALID
-
             }
+            result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
             result.displayMessage = String.format("%1\$s - %2\$s",
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
@@ -196,6 +194,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
 
         }
         result.deviceDisplayName = devicedisplayname
+        progBarVisibility.value = false
         homeResultData.value = result
     }
 

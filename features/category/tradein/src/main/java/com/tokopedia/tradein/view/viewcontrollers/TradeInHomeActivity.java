@@ -174,13 +174,15 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvPriceElligible.setClickable(true);
                         mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
                         mTvNotUpto.setVisibility(View.GONE);
+                        mTvModelName.setText(homeResult.getDeviceDisplayName());
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         break;
                     case DIAGNOSED_VALID:
-                        Intent finalPriceIntent = new Intent(this, FinalPriceActivity.class);
-                        finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), tradeInHomeViewModel.getTradeInParams());
-                        finalPriceIntent.putExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE,TRADEIN_TYPE);
-                        navigateToActivityRequest(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
+                        tvIndicateive.setVisibility(View.GONE);
+                        mTvModelName.setText(homeResult.getDeviceDisplayName());
+                        mTvInitialPrice.setText(homeResult.getDisplayMessage());
+                        mTvGoToProductDetails.setText(R.string.sell_now);
+                        mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal());
                         break;
                     case NOT_DIAGNOSED:
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
@@ -203,6 +205,14 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
             }
         }));
         getPriceFromSDK(this);
+    }
+
+    private void goToHargaFinal() {
+        Intent finalPriceIntent = new Intent(this, FinalPriceActivity.class);
+        TradeInParams params = tradeInHomeViewModel.getTradeInParams();
+        finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), params);
+        finalPriceIntent.putExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_TYPE);
+        navigateToActivityRequest(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
     }
 
     private void getPriceFromSDK(Context context) {
