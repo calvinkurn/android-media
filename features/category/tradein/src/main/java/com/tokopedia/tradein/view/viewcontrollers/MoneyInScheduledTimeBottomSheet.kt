@@ -1,6 +1,9 @@
 package com.tokopedia.tradein.view.viewcontrollers
 
+import android.app.Dialog
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
+import android.support.design.widget.BottomSheetDialog
 import android.view.View
 import android.widget.Button
 import com.tokopedia.design.component.BottomSheets
@@ -69,7 +72,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         val courierButton = view?.findViewById<Button>(R.id.courier_btn)
         courierButton?.setOnClickListener {
             scheduleDate.forEach {
-                if(it.dateFmt == currentDate) {
+                if (it.dateFmt == currentDate) {
                     it.scheduleTime.forEach { time ->
                         if (time.timeFmt == currentTime) {
                             actionListener?.onCourierButtonClick(time)
@@ -102,7 +105,25 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         timeAdapter.notifyDataSetChanged()
     }
 
-    fun setActionListener(actionListener: ActionListener?){
+    override fun setupDialog(dialog: Dialog?, style: Int) {
+        super.setupDialog(dialog, style)
+        val myDialog: BottomSheetDialog = dialog as BottomSheetDialog
+        val dField = myDialog.javaClass.getDeclaredField("behavior") //This is the correct name of the variable in the BottomSheetDialog class
+        dField.isAccessible = true
+        val behavior = dField.get(dialog) as BottomSheetBehavior<*>
+        behavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onSlide(p0: View, p1: Float) {
+            }
+
+            override fun onStateChanged(view: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                }
+            }
+        })
+    }
+
+    fun setActionListener(actionListener: ActionListener?) {
         this.actionListener = actionListener
     }
 

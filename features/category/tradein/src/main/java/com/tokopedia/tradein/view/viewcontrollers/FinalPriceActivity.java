@@ -61,6 +61,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
      * buy_now
      */
     private TextView mTvButtonPayOrKtp;
+    private TextView tvTitle;
+    private int tradeInStringId = R.string.tukar_tambah;
 
     public static Intent getHargaFinalIntent(Context context) {
         return new Intent(context, FinalPriceActivity.class);
@@ -84,7 +86,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         View tvexchange = findViewById(R.id.tv_exchange);
         View tvfinalprice = findViewById(R.id.tv_final_price);
         View tvprice = findViewById(R.id.tv_price);
-        View tvTitle = findViewById(R.id.tv_title);
+        tvTitle = findViewById(R.id.tv_title);
         View divider1 = findViewById(R.id.divider1);
         View divider2 = findViewById(R.id.divider2);
         View dividerModel = findViewById(R.id.divider_model);
@@ -126,6 +128,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
             checkoutString = R.string.sell_now;
             hargeTncString = R.string.harga_tnc_moneyin;
             tncStringId = R.string.money_in_tnc;
+            tradeInStringId = R.string.money_in;
         }
         viewModel.getDeviceDiagData().observe(this, this);
         viewModel.getAddressLiveData().observe(this, result -> {
@@ -196,6 +199,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
 
     private void renderDetails(DeviceDataResponse deviceDataResponse) {
         TradeInParams tradeInData = viewModel.getTradeInParams();
+        tvTitle.setText(String.format(getString(R.string.price_elligible), getString(tradeInStringId)));
         if (tradeInData != null && TRADEIN_TYPE != 2) {
             mTvModelNew.setText(tradeInData.getProductName());
             mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getNewPrice(), true));
