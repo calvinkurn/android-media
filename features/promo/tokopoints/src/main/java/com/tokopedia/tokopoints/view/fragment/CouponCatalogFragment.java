@@ -655,7 +655,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 giftSectionMainLayout.setVisibility(View.VISIBLE);
                 bottomSeparator.setVisibility(View.VISIBLE);
                 giftButton.setText(R.string.tp_label_send);
-                giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr()));
+                giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(),data.getImageUrlMobile()));
             }
         } else {
             giftSectionMainLayout.setVisibility(View.GONE);
