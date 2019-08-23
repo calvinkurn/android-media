@@ -20,7 +20,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.linker.LinkerManager;
