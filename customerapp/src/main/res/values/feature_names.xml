@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_hotel_travel">Hotel</string>
-    <string name="title_setting_profile">Data Diri</string>
+    <string name="setting_profile_title">Data Diri</string>
     <string name="hotel_app_name">Hotel</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
