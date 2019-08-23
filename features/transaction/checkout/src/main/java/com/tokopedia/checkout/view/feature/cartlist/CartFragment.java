@@ -1319,7 +1319,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
         cardFooter.setVisibility(View.VISIBLE);
-//        cardHeader.setVisibility(View.VISIBLE);
     }
 
     public void showErrorContainer() {
