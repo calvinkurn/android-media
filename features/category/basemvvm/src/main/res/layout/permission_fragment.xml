@@ -74,6 +74,7 @@
         android:textColor="@color/white"
         android:textSize="@dimen/sp_16"
         android:textStyle="bold"
+        app:layout_goneMarginTop="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/button_deny"
         app:layout_constraintRight_toRightOf="parent"
