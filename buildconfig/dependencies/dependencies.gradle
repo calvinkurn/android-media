@@ -90,12 +90,13 @@ ext {
     ]
 
     networkDependencies = [
-            retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
-            converterGson     : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
-            adapterRxJava     : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
-            okHttp            : "com.squareup.okhttp3:okhttp:${okHttpVersion}",
-            loggingInterceptor: "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
-            glide             : "com.github.bumptech.glide:glide:${glideVersion}"
+            retrofit                : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
+            converterGson           : "com.squareup.retrofit2:converter-gson:${retrofitVersion}",
+            adapterRxJava           : "com.squareup.retrofit2:adapter-rxjava:${retrofitVersion}",
+            okHttp                  : "com.squareup.okhttp3:okhttp:${okHttpVersion}",
+            loggingInterceptor      : "com.squareup.okhttp3:logging-interceptor:${okHttpVersion}",
+            glide                   : "com.github.bumptech.glide:glide:${glideVersion}",
+            retrofitKotlinCoroutine : "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
     ]
 
     dbDependencies = [
