@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterApi;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.data.GetProfileApi;
 import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.TokenApi;
@@ -67,5 +68,7 @@ public interface LoginRegisterComponent {
     RegisterAnalytics provideRegisterAnalytics();
 
     Resources provideResources();
+
+    PermissionCheckerHelper providePermissionCheckerHelper();
 
 }

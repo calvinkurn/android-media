@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
-import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -53,7 +52,7 @@ import kotlin.math.roundToLong
  * @author by jessica on 15/04/19
  */
 
-class HotelRoomListFragment : BaseListDFFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
+class HotelRoomListFragment : BaseListFragment<HotelRoom, RoomListTypeFactory>(), ChipAdapter.OnClickListener,
         HotelRoomAndGuestBottomSheets.HotelGuestListener, BaseEmptyViewHolder.Callback,
         RoomListViewHolder.OnClickBookListener {
 
@@ -319,7 +318,7 @@ class HotelRoomListFragment : BaseListDFFragment<HotelRoom, RoomListTypeFactory>
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_room_listing
+        emptyModel.urlRes = getString(R.string.hotel_url_empty_room_listing)
         if (roomListViewModel.isFilter) {
             emptyModel.title = getString(R.string.hotel_room_not_found_title_after_filter)
             emptyModel.content = getString(R.string.hotel_room_not_found_subtitle_after_filter)

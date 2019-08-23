@@ -119,8 +119,8 @@ buildscript {
 android {
 
     project.ext {
-        defaultVersionCode = 322001101;
-        defaultVersionName = "3.22";
+        defaultVersionCode = 341001101;
+        defaultVersionName = "3.41";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -203,21 +203,6 @@ android {
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
 
-//            if (allowSplit()) {
-//                applicationVariants.all { variant ->
-//                    variant.outputs.each { output ->
-//                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-//                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
-//                    }
-//                    variant.assemble.doLast {
-//                        variant.outputs.each { output ->
-//                            if (output.zipAlign) {
-//                                archiveAPK(variant, output);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
             applicationVariants.all { variant ->
                 variant.outputs.each { output ->
                     output.versionCodeOverride = (getTkpdVersionCode() * 100);
@@ -225,16 +210,6 @@ android {
             }
         }
     }
-
-//    splits {
-//        density {
-//            enable allowSplit()
-//            reset()
-//            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
-//            compatibleScreens 'small', 'normal', 'large', 'xlarge'
-//        }
-//
-//    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -285,8 +260,7 @@ android {
         }
     }
 
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.hotelTravel,
-                       rootProject.ext.dynamicFeatures.shopSettings]
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
 
 }
 
@@ -319,6 +293,7 @@ dependencies {
     implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
+    implementation project(rootProject.ext.features.hotel)
     implementation project(rootProject.ext.features.imagePreviewSlider)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
@@ -361,6 +336,7 @@ dependencies {
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
@@ -373,6 +349,7 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
+    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.browse)
     implementation project(rootProject.ext.features.notifCenter)

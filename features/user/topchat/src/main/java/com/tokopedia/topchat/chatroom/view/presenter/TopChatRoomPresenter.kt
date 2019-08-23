@@ -1,5 +1,7 @@
 package com.tokopedia.topchat.chatroom.view.presenter
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
@@ -92,7 +96,7 @@ class TopChatRoomPresenter @Inject constructor(
     private var isUploading: Boolean = false
     private var dummyList: ArrayList<Visitable<*>>
     var thisMessageId: String = ""
-    private lateinit var addToCardSubscriber : Subscriber<AddToCartDataModel>
+    private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
 
     private var attachmentsPreview: ArrayList<PreviewViewModel> = arrayListOf()
 
@@ -480,7 +484,7 @@ class TopChatRoomPresenter @Inject constructor(
                                        startTime: String, opponentId: String) {
 
         RxWebSocket.send(SendWebsocketParam.generateParamSendProductAttachment(messageId, item, startTime,
-                        opponentId), listInterceptor
+                opponentId), listInterceptor
         )
     }
 
@@ -518,7 +522,7 @@ class TopChatRoomPresenter @Inject constructor(
         changeChatBlockSettingUseCase.unsubscribe()
         getShopFollowingUseCase.unsubscribe()
         addToCartUseCase.unsubscribe()
-        if(::addToCardSubscriber.isInitialized) {
+        if (::addToCardSubscriber.isInitialized) {
             addToCardSubscriber.unsubscribe()
         }
         super.detachView()
@@ -619,5 +623,22 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun clearAttachmentPreview() {
         attachmentsPreview.clear()
+    }
+
+    override fun getAtcPageIntent(context: Context?, element: ProductAttachmentViewModel): Intent {
+        val quantity = "1"
+        val atcAndBuyAction = "1"
+        val needRefresh = true
+        val shopName = view?.getShopName()
+        return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.shopId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, element.productId.toString())
+            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
+            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
+            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+        }
     }
 }

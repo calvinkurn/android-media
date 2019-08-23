@@ -135,8 +135,12 @@ public class RemoteConfigKey {
 
     //feed section
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
+    public static final String APP_ENABLE_SALDO_LOCK = "app_enable_saldo_lock";
 
     public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
 
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
+
+    public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
+    public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
 }

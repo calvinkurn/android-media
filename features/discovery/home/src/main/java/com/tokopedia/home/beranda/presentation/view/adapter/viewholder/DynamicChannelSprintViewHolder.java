@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.R;
@@ -102,7 +103,9 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
                 countDownView.setVisibility(View.GONE);
             }
         } catch (Exception e) {
-            Crashlytics.log(0, TAG, e.getLocalizedMessage());
+            if (!GlobalConfig.DEBUG) {
+                Crashlytics.log(0, TAG, e.getLocalizedMessage());
+            }
         }
     }
     private void setupClickListeners(final DynamicHomeChannel.Channels channel) {
@@ -110,13 +113,14 @@ public class DynamicChannelSprintViewHolder extends AbstractViewHolder<DynamicCh
             @Override
             public void onClick(View view) {
                 if (isSprintSale(channel)) {
-                    HomePageTracking.eventClickSeeAllProductSprint(context);
-                } else if (isSprintSaleLego(channel)) {
-                    HomePageTracking.eventClickSeeAllLegoProduct(context, channel.getHeader().getName());
+                    HomePageTracking.eventClickSeeAllProductSprint(context, channel.getId());
+                } else if (isSprintSaleLego(channel) || isOrganicLego(channel)) {
+                    HomePageTracking.eventClickSeeAllLegoProduct(context, channel.getHeader().getName(), channel.getId());
                 } else {
                     HomePageTracking.eventClickSeeAllDynamicChannel(
                             context,
-                            DynamicLinkHelper.getActionLink(channel.getHeader()));
+                            DynamicLinkHelper.getActionLink(channel.getHeader()),
+                            channel.getId());
                 }
                 listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.getHeader()), channel.getHomeAttribution());
             }

@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v4.view.ViewCompat
@@ -18,7 +19,6 @@ import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.beloo.widget.chipslayoutmanager.SpacingItemDecoration
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.tokopedia.abstraction.base.view.fragment.BaseListDFFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -39,6 +39,7 @@ import com.tokopedia.hotel.destination.view.adapter.PopularSearchTypeFactory
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchAdapter
 import com.tokopedia.hotel.destination.view.adapter.RecentSearchListener
 import com.tokopedia.hotel.destination.view.viewmodel.HotelDestinationViewModel
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_recommendation.*
@@ -48,7 +49,7 @@ import javax.inject.Inject
  * @author by jessica on 25/03/19
  */
 
-class HotelRecommendationFragment : BaseListDFFragment<PopularSearch, PopularSearchTypeFactory>(), RecentSearchListener {
+class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearchTypeFactory>(), RecentSearchListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -60,6 +61,8 @@ class HotelRecommendationFragment : BaseListDFFragment<PopularSearch, PopularSea
     lateinit var recentSearchLayout: View
 
     lateinit var recentSearchAdapter: RecentSearchAdapter
+
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -80,6 +83,9 @@ class HotelRecommendationFragment : BaseListDFFragment<PopularSearch, PopularSea
 
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         }
+
+        permissionCheckerHelper = PermissionCheckerHelper()
+        destinationViewModel.setPermissionChecker(permissionCheckerHelper)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -291,6 +297,18 @@ class HotelRecommendationFragment : BaseListDFFragment<PopularSearch, PopularSea
         when(requestCode) {
             REQUEST_CODE_GPS -> {
                 destinationViewModel.getCurrentLocation(activity as HotelBaseActivity, fusedLocationProviderClient)
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        context?.let {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                permissionCheckerHelper.onRequestPermissionsResult(it,
+                        requestCode, permissions,
+                        grantResults)
             }
         }
     }

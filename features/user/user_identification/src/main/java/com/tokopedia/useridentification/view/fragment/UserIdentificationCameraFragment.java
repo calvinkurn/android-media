@@ -219,6 +219,8 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
             }
         };
 
+        cameraView.addCameraListener(cameraListener);
+
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -389,7 +391,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
 
     private void destroyCamera() {
         try {
-            cameraView.destroy();
+            cameraView.close();
         } catch (Throwable e) {
             // no-op
         }

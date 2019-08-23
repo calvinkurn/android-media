@@ -4,12 +4,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleDFActivity
+import android.support.v4.content.ContextCompat
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.util.CommonParam
 import com.tokopedia.hotel.search.presentation.fragment.HotelSearchFilterFragment
 
-class HotelSearchFilterActivity : BaseSimpleDFActivity() {
+class HotelSearchFilterActivity: BaseSimpleActivity() {
     lateinit var currentTag: String
 
     override fun getLayoutRes(): Int = R.layout.activity_hotel_search_filter
