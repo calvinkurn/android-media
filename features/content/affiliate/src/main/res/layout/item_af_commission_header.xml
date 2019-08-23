@@ -143,8 +143,8 @@
                 android:fontFamily="sans-serif-light"
                 android:lineSpacingExtra="6sp"
                 android:textColor="@color/font_black_secondary_54"
-                app:typographyType="body_3"
-                tools:text="@string/text_af_clicked" />
+                android:text="@string/text_af_clicked"
+                app:typographyType="body_3"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/clickNumber"

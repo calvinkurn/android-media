@@ -492,8 +492,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         showCaseObjects.add(new ShowCaseObject(
                 saldoTypeCV,
-                getString(R.string.show_case_title),
-                getString(R.string.show_case_desc),
+                getString(R.string.saldo_withdraw_show_case_title),
+                getString(R.string.saldo_withdraw_show_case_desc),
                 ShowCaseContentPosition.BOTTOM,
                 Color.WHITE));
 

@@ -47,6 +47,10 @@ include "features:discovery:wishlist_common"
 include "features:discovery:search"
 
 include "features:fintech:mitra_toppers"
+
+include "dynamic-features:travel:hotel_travel"
+include "dynamic-features:merchant:shop_settings"
+
 include "features:fintech:home_credit"
 include "features:fintech:reksa_dana"
 include "features:digital:instant_debit_bca"
@@ -166,6 +170,7 @@ include "features:user:otp"
 include "features:user:phoneverification"
 include 'features:user:profilecompletion'
 include "features:user:settingbank"
+include "features:user:settingnotif"
 include "features:user:sessioncommon"
 include "features:user:talk"
 include "features:user:topchat"

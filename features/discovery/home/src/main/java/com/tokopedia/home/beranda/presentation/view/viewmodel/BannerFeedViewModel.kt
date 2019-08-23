@@ -24,6 +24,8 @@ class BannerFeedViewModel(
     val DATA_POSITION = "position"
     val DATA_PROMO_ID = "promo_id"
     val DATA_PROMO_CODE = "promo_code"
+    val VALUE_BANNER_NAME = "/ - banner inside recom tab - %s - "
+
     override fun type(typeFactory: HomeFeedTypeFactory): Int {
         return typeFactory.type(this)
     }
@@ -32,10 +34,10 @@ class BannerFeedViewModel(
         val LAYOUT = R.layout.home_feed_banner
     }
 
-    fun convertBannerFeedModelToDataLayer(): Any {
+    fun convertBannerFeedModelToDataLayer(tabName: String): Any {
         return DataLayer.mapOf(
                 DATA_ID, id.toString(),
-                DATA_NAME, name,
+                DATA_NAME, String.format(VALUE_BANNER_NAME, tabName),
                 DATA_CREATIVE, buAttribution+"_"+creativeName,
                 DATA_CREATIVE_URL, imageUrl,
                 DATA_POSITION, position.toString(),

@@ -129,7 +129,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewSlashedPrice"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="@dimen/dp_20"
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
@@ -137,10 +137,12 @@
             android:textColor="@color/product_card_slashed_price_text_color"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@id/labelDiscount"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/labelDiscount"
             app:layout_constraintTop_toTopOf="@id/labelDiscount"
             app:typographyType="small"
             tools:text="95000"
+            android:ellipsize="end"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography

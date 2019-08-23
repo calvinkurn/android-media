@@ -3,6 +3,9 @@ package com.tokopedia.product.detail.view.widget
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import android.os.Build
+import android.support.v7.content.res.AppCompatResources
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -24,6 +27,7 @@ class StickyTextView : FrameLayout {
     private lateinit var imageViewRight: ImageView
     private lateinit var textContent: TextView
 
+    private lateinit var leftImage: Drawable
     private var spannable: SpannableString? = null
 
     constructor(context: Context) : super(context) {
@@ -65,10 +69,6 @@ class StickyTextView : FrameLayout {
         imageViewRight = view.findViewById(R.id.layout_sticky_image_right)
     }
 
-    private fun initView() {
-        textContent.text = spannable
-    }
-
     private fun initAttributeSet(attributeSet: AttributeSet) {
         val styleable = context!!.obtainStyledAttributes(attributeSet, R.styleable.StickyTextView, 0, 0)
         try {
@@ -76,13 +76,11 @@ class StickyTextView : FrameLayout {
             val textHighlight = styleable.getString(R.styleable.StickyTextView_sticky_text_highlight)
             val highlightColor = styleable.getColor(R.styleable.StickyTextView_sticky_highlight_color, -1)
 
+            spannable = SpannableString("")
             if (text != null) {
                 if (textHighlight != null) {
                     text += " $textHighlight"
-                }
-
-                spannable = SpannableString(text)
-                if (textHighlight != null) {
+                    spannable = SpannableString(text)
                     if (highlightColor != -1) {
                         spannable!!.setSpan(ForegroundColorSpan(highlightColor), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     }
@@ -90,13 +88,22 @@ class StickyTextView : FrameLayout {
                 }
             }
 
-            val imageLeft = styleable.getDrawable(R.styleable.StickyTextView_sticky_left_icon)
-            if (imageLeft != null) run {
-                imageViewLeft.setImageDrawable(imageLeft)
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                leftImage = styleable.getDrawable(R.styleable.StickyTextView_sticky_left_icon)!!
+            } else {
+                val leftImageId = styleable.getResourceId(R.styleable.StickyTextView_sticky_left_icon, -1)
+                if (leftImageId != -1) {
+                    leftImage = AppCompatResources.getDrawable(context, leftImageId)!!
+                }
             }
         } finally {
             styleable.recycle()
         }
+    }
+
+    private fun initView() {
+        textContent.text = spannable
+        imageViewLeft.setImageDrawable(leftImage)
     }
 
     fun show() {
