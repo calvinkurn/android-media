@@ -327,18 +327,20 @@
                 android:text="@string/find_new_driver"
                 android:visibility="gone"
                 app:buttonCompatSize="medium"
-                app:buttonCompatType="secondary" />
+                app:buttonCompatType="secondary"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_retry_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:text="Tunggu untuk mencari driver baru"
+                android:gravity="center"
+                tools:text="Tunggu xx:xx untuk mencari driver baru"
                 android:textStyle="bold"
-                android:gravity="center" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

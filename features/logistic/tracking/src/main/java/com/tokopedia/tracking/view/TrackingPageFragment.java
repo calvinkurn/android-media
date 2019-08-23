@@ -2,12 +2,14 @@ package com.tokopedia.tracking.view;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +71,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private LinearLayout descriptionLayout;
     private ButtonCompat retryButton;
     private TextView retryStatus;
+    private long remainingTime = 0L;
 
     @Inject
     ITrackingPagePresenter presenter;
@@ -195,7 +198,24 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         } else {
             retryButton.setVisibility(View.GONE);
             if (deadline > 0) {
+                // when retry button available but need to wait until deadline
+                remainingTime = deadline - System.currentTimeMillis();
                 retryStatus.setVisibility(View.VISIBLE);
+                new CountDownTimer(remainingTime, 1000) {
+                    @Override
+                    public void onTick(long millsUntilFinished) {
+                        remainingTime -= 1000;
+                        retryStatus.setText(
+                                String.format("Tunggu %s untuk mencari driver baru",
+                                        DateUtils.formatElapsedTime(remainingTime)));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
+                        presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+                    }
+                }.start();
             } else {
                 retryStatus.setVisibility(View.GONE);
             }
@@ -205,6 +225,20 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     @Override
     public void startSuccessCountdown() {
         retryButton.setText("Mencari driver baru...");
+        new CountDownTimer(5 * 1000, 1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+//                retryButton.setVisibility(View.GONE);
+//                retryStatus.setVisibility(View.GONE);
+                presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
+                presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+            }
+        }.start();
     }
 
     private void initialHistoryView() {
