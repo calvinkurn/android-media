@@ -2,17 +2,17 @@ ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
     local {
-        enabled = !isCiServer
+        enabled = false
     }
-    remote(HttpBuildCache) {
-        url = "${ci_url}"
-        push = isCiServer
+//    remote(HttpBuildCache) {
+//        url = "${ci_url}"
+//        push = isCiServer
 //        allowUntrustedServer = true
-        credentials {
-            username = "${ci_username}"
-            password = "${ci_password}"
-        }
-    }
+//        credentials {
+//            username = "${ci_username}"
+//            password = "${ci_password}"
+//        }
+//    }
 }
 include ":cache_manager"
 include ":use_case"
