@@ -1,0 +1,21 @@
+query GetUserSetting {
+    notifier_notificationGetUserAllSettings {
+    email {
+      section
+      list_settings {
+        name
+        icon
+        key
+        status
+        description
+        list_settings {
+          name
+          icon
+          key
+          status
+          description
+        }
+      }
+    }
+  }
+}
