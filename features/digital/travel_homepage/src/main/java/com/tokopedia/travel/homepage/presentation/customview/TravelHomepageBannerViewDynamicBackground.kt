@@ -45,14 +45,18 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
 
     override fun init() {
         val view = View.inflate(context, R.layout.travel_homepage_card_banner_dynamic_background, this)
-        view.findViewById<View>(R.id.overlay_round)
-                .setBackground(MethodChecker.getDrawable(
-                        view.getContext(), R.drawable.background_banner_image_mask))
+        view.findViewById<View>(R.id.overlay_round).background = MethodChecker.getDrawable(
+                view.context, R.drawable.background_banner_image_mask)
         bannerRecyclerView = view.findViewById(R.id.banner_recyclerview)
         bannerIndicator = view.findViewById(R.id.banner_indicator_container)
         bannerSeeAll = view.findViewById(R.id.banner_see_all)
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
         cardBannerView = view.findViewById(R.id.card_banner_view)
+
+        bannerSeeAll.setMargin(resources.getDimensionPixelSize(R.dimen.dp_5), resources.getDimensionPixelSize(R.dimen.dp_5),
+                resources.getDimensionPixelSize(R.dimen.dp_16), resources.getDimensionPixelSize(R.dimen.dp_5))
+        bannerIndicator.setMargin(resources.getDimensionPixelSize(R.dimen.dp_16), resources.getDimensionPixelSize(R.dimen.dp_5),
+                resources.getDimensionPixelSize(R.dimen.dp_5), resources.getDimensionPixelSize(R.dimen.dp_5))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (::cardBannerView.isInitialized) {

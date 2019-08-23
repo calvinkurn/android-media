@@ -42,6 +42,7 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
                     layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 }
                 destination_container.layoutParams = layoutParams
+                destination_container.minimumHeight = resources.getDimensionPixelSize(R.dimen.dp_140)
 
                 image.loadImage(destination.imageUrl)
                 title.text = destination.title
