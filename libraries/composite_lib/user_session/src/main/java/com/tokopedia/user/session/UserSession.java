@@ -72,6 +72,9 @@ public class UserSession implements UserSessionInterface {
     /**
      * GETTER METHOD
      */
+    private static final String TWITTER_ACCESS_TOKEN = "TWITTER_ACCESS_TOKEN";
+    private static final String TWITTER_ACCESS_TOKEN_SECRET = "TWITTER_ACCESS_TOKEN_SECRET";
+    private static final String TWITTER_SHOULD_POST = "TWITTER_SHOULD_POST";
 
     public String getAccessToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
@@ -232,11 +235,12 @@ public class UserSession implements UserSessionInterface {
 
     @Override
     public boolean isPowerMerchantIdle() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(IS_POWER_MERCHANT_IDLE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(IS_POWER_MERCHANT_IDLE, false);
     }
 
-    public String getAutofillUserData(){
+    @Override
+    public String getAutofillUserData() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(AUTOFILL_USER_DATA, "");
     }
@@ -515,13 +519,14 @@ public class UserSession implements UserSessionInterface {
 
     @Override
     public void setIsPowerMerchantIdle(boolean powerMerchantIdle) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(IS_POWER_MERCHANT_IDLE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(IS_POWER_MERCHANT_IDLE, powerMerchantIdle);
         editor.apply();
     }
 
-    public void setAutofillUserData(String autofillUserData){
+    @Override
+    public void setAutofillUserData(String autofillUserData) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(AUTOFILL_USER_DATA, autofillUserData);
@@ -571,8 +576,11 @@ public class UserSession implements UserSessionInterface {
         editor.putString(PROFILE_PICTURE, null);
         editor.putString(GC_TOKEN, "");
         editor.putString(SHOP_AVATAR, "");
-        editor.putBoolean(IS_POWER_MERCHANT_IDLE,false);
-        editor.putString(LOGIN_METHOD,"");
+        editor.putBoolean(IS_POWER_MERCHANT_IDLE, false);
+        editor.putString(TWITTER_ACCESS_TOKEN, null);
+        editor.putString(TWITTER_ACCESS_TOKEN_SECRET, null);
+        editor.putBoolean(TWITTER_SHOULD_POST, false);
+        editor.putString(LOGIN_METHOD, "");
         editor.apply();
     }
 }

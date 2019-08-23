@@ -86,5 +86,11 @@
     <string name="tp_history_empty_title">Kamu belum punya riwayat TokoPoints</string>
     <string name="tp_history_empty_desc">Ayo lakukan transaksi dan dapatkan Lucky Egg</string>
     <string name="tp_history_btn_action">Yuk Belanja</string>
+    <string name="see_more_txt">Baca Selengkapnya</string>
+    <string name="points_saya">Points Saya:</string>
+    <string name="tnc_coupon_catalog"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="how_to_use_coupon_catalog">Cara Pakai</string>
+    <string name="tp_gift_btn_text">Hadiahin</string>
+    <string name="tp_default_gift_text">Hadiahin kupon ini ke temanmu!</string>
 
 </resources>

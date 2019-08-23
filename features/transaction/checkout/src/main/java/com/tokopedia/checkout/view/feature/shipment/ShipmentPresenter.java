@@ -1217,7 +1217,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             builder.hasPromoStacking(true);
         }
 
-        if (leasingId != null) {
+        if (leasingId != null && !leasingId.isEmpty()) {
             builder.setLeasingId(Integer.parseInt(leasingId));
         }
 

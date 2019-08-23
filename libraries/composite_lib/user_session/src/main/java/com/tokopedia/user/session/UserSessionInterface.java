@@ -67,6 +67,14 @@ public interface UserSessionInterface {
 
     String getAutofillUserData();
 
+    @Nullable
+    String getTwitterAccessToken();
+
+    @Nullable
+    String getTwitterAccessTokenSecret();
+
+    boolean getTwitterShouldPost();
+
     /**
      * @return method name from this class
      */
@@ -145,6 +153,10 @@ public interface UserSessionInterface {
     void setShopAvatar(String shopAvatar);
 
     void setIsPowerMerchantIdle(boolean powerMerchantIdle);
+
+    void setTwitterAccessTokenAndSecret(@NotNull String accessToken, @NotNull String accessTokenSecret);
+
+    void setTwitterShouldPost(boolean shouldPost);
 
     void setAutofillUserData(String autofillUserData);
 

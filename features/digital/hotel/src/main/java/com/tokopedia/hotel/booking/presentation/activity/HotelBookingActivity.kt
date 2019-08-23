@@ -13,6 +13,9 @@ import com.tokopedia.hotel.booking.presentation.fragment.HotelBookingFragment
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
 
 class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingComponent> {
+    override fun getParentViewResourceID(): Int = com.tokopedia.abstraction.R.id.parent_view
+
+    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
     override fun getComponent(): HotelBookingComponent =
         DaggerHotelBookingComponent.builder()

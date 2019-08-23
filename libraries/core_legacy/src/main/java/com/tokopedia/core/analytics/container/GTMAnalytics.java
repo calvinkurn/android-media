@@ -3,8 +3,8 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -15,14 +15,11 @@ import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.PurchaseTracking;
-import com.tokopedia.core.analytics.model.Hotlist;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.iris.Iris;
@@ -32,9 +29,11 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -42,7 +41,6 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.analytics.TrackingUtils.getAfUniqueId;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class GTMAnalytics extends ContextAnalytics {
     private static final String TAG = GTMAnalytics.class.getSimpleName();
@@ -143,13 +141,14 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     public void pushEvent(String eventName, Map<String, Object> values) {
-        Observable.just(values)
+        Map<String, Object> data = new HashMap<>(values);
+        Observable.just(data)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .map(uid -> {
-                    log(getContext(), eventName, values);
-                    getTagManager().getDataLayer().pushEvent(eventName, values);
-                    pushIris(eventName, values);
+                .map(it -> {
+                    log(getContext(), eventName, it);
+                    getTagManager().getDataLayer().pushEvent(eventName, it);
+                    pushIris(eventName, it);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());
@@ -173,9 +172,43 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneral(map);
     }
 
+    private static void log(Context context, String eventName, Bundle bundle) {
+        log(context, eventName, bundleToMap(bundle));
+    }
+
     private static void log(Context context, String eventName, Map<String, Object> values) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         GtmLogger.getInstance(context).save(name, values);
+    }
+
+    private static Map<String, Object> bundleToMap(Bundle extras) {
+        Map<String, Object> map = new HashMap<>();
+
+        Set<String> ks = extras.keySet();
+        for (String key : ks) {
+            Object object = extras.get(key);
+            if (object != null) {
+                if (object instanceof ArrayList) {
+                    object = convertAllBundleToMap((ArrayList) object);
+                } else if (object instanceof Bundle) {
+                    object = bundleToMap((Bundle) object);
+                }
+                map.put(key, object);
+            }
+        }
+        return map;
+    }
+
+    private static List<Object> convertAllBundleToMap(ArrayList list) {
+        List<Object> newList = new ArrayList<>();
+        for (Object object : list) {
+            if (object instanceof Bundle) {
+                newList.add(bundleToMap((Bundle) object));
+            } else {
+                newList.add(object);
+            }
+        }
+        return newList;
     }
 
     public GTMAnalytics sendCampaign(Campaign campaign) {
@@ -315,18 +348,26 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushClickEECommerce(Bundle bundle){
         // replace list
-        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
-        bundle.remove("list");
+        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
+                && !TextUtils.isEmpty(bundle.getString("list"))) {
+            bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
+            bundle.remove("list");
+        }
         logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle, context);
     }
 
     private static final String PRODUCTVIEW = "productview";
     private static final String PRODUCTCLICK = "productclick";
+    private static final String VIEWPRODUCT = "viewproduct";
+    private static final String ADDTOCART = "addtocart";
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
         // replace list
-        bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
-        bundle.remove("list");
+        if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
+                && !TextUtils.isEmpty(bundle.getString("list"))) {
+            bundle.putString(FirebaseAnalytics.Param.ITEM_LIST, bundle.getString("list"));
+            bundle.remove("list");
+        }
 
         switch (keyEvent.toLowerCase()){
             case PRODUCTVIEW:
@@ -334,6 +375,12 @@ public class GTMAnalytics extends ContextAnalytics {
                 break;
             case PRODUCTCLICK:
                 keyEvent = FirebaseAnalytics.Event.SELECT_CONTENT;
+                break;
+            case VIEWPRODUCT:
+                keyEvent = FirebaseAnalytics.Event.VIEW_ITEM;
+                break;
+            case ADDTOCART:
+                keyEvent = FirebaseAnalytics.Event.ADD_TO_CART;
                 break;
 
         }
@@ -344,11 +391,11 @@ public class GTMAnalytics extends ContextAnalytics {
         sendGeneralEvent(params);
 
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY)+"");
-        bundle.putString(KEY_ACTION, params.get(KEY_ACTION)+"");
-        bundle.putString(KEY_LABEL, params.get(KEY_LABEL)+"");
+        bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
+        bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
+        bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
 
-        logEvent(params.get(KEY_EVENT)+"", bundle, context);
+        logEvent(params.get(KEY_EVENT) + "", bundle, context);
     }
 
     public void pushGeneralGtmV5(String event, String category, String action, String label){
@@ -360,26 +407,49 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_LABEL, label);
 
         logEvent(event, bundle, context);
+    }
 
+    public void sendScreenV5(String screenName) {
+        sendScreenV5(screenName, new HashMap<>());
+    }
 
+    public void sendScreenV5(String screenName, Map<String, String> additionalParams) {
+        final SessionHandler sessionHandler = RouterUtils.getRouterFromContext(getContext()).legacySessionHandler();
+        final String afUniqueId = !TextUtils.isEmpty(getAfUniqueId(context)) ? getAfUniqueId(context) : "none";
+
+        Bundle bundle = new Bundle();
+        bundle.putString("screenName", screenName);
+        bundle.putString("appsflyerId", afUniqueId);
+        bundle.putString("userId", sessionHandler.getLoginID());
+        bundle.putString("clientId", getClientIDString());
+
+        for(String key : additionalParams.keySet()) {
+            if (additionalParams.get(key) != null) {
+                bundle.putString(key, additionalParams.get(key));
+            }
+        }
+
+        logEvent("openScreen", bundle, context);
     }
 
     public static void logEvent(String eventName, Bundle bundle,Context context){
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
+            log(context, eventName, bundle);
         }catch (Exception ex){
             ex.printStackTrace();
         }
     }
 
     private void pushGeneral(Map<String, Object> values) {
-        Observable.just(values)
+        Map<String, Object> data = new HashMap<>(values);
+        Observable.just(data)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .map(map -> {
-                    log(getContext(), null, values);
-                    TagManager.getInstance(getContext()).getDataLayer().push(values);
-                    pushIris("", values);
+                .map(it -> {
+                    log(getContext(), null, it);
+                    TagManager.getInstance(getContext()).getDataLayer().push(it);
+                    pushIris("", it);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());

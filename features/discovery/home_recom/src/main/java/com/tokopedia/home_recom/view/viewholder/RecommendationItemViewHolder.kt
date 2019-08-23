@@ -15,7 +15,11 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.productcard.v2.ProductCardView
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifycomponents.Toaster
-
+/**
+ * Created by lukas on 21/05/2019
+ *
+ * A class for holder view Recommendation Item
+ */
 class RecommendationItemViewHolder(
        private val view: View
 ) : AbstractViewHolder<RecommendationItemDataModel>(view){
@@ -99,7 +103,8 @@ class RecommendationItemViewHolder(
     }
 
     private fun showError(view: View, throwable: Throwable?){
-        Toaster.showError(view, ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
+        Toaster.showError(view,
+            ErrorHandler.getErrorMessage(view.context, throwable), Snackbar.LENGTH_LONG)
     }
 
 }
