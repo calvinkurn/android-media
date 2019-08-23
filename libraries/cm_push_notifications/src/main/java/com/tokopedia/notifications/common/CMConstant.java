@@ -4,7 +4,7 @@ package com.tokopedia.notifications.common;
  * Created by Ashwani Tyagi on 18/10/18.
  */
 public interface CMConstant {
-    String EXTRA_NOTIFICATION_ID = "notif_id";
+    String EXTRA_NOTIFICATION_ID = "notification_id";
     String EXTRA_BASE_MODEL = "extra_base_model";
     String EXTRA_PRODUCT_INFO = "extra_product_info";
     String EXTRA_CAROUSEL_ITEM = "extra_carousel_item";
@@ -24,6 +24,7 @@ public interface CMConstant {
     interface NotificationType {
         String GENERAL = "General";
         String GRID_NOTIFICATION = "Grid";
+        String BIG_IMAGE_BANNER = "Banner";
         String BIG_IMAGE = "Image";
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
@@ -80,6 +81,7 @@ public interface CMConstant {
         String NOTIFICATION_PRIORITY = "priorityPreOreo";
         String PRODUCT_INFO_LIST = "product_info_list";
         String PARENT_ID = "parentId";
+        String CAMPAIGN_USER_TOKEN = "campaignUserToken";
     }
 
     interface ReceiverExtraData {
@@ -124,6 +126,7 @@ public interface CMConstant {
         String ACTION_PRODUCT_CAROUSEL_LEFT_CLICK = "com.tokopedia.notification.product_carousel_left_click";
         String ACTION_PRODUCT_CAROUSEL_RIGHT_CLICK = "com.tokopedia.notification.product_carousel_right_click";
 
+        String ACTION_BANNER_CLICK ="com.tokopedia.notification.ACTION_BANNER_CLICK";
         String ACTION_NOTIFICATION_BLANK = "com.tokopedia.notification.action_notification_blank";
     }
 
