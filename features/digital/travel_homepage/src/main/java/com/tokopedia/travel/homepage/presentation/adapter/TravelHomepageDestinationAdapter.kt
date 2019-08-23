@@ -39,7 +39,7 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
                 if (position == 0) {
                     layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_145)
                 } else {
-                    layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_180)
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 }
                 destination_container.layoutParams = layoutParams
 
