@@ -168,11 +168,14 @@ class DFInstallerActivity : BaseSimpleActivity() {
             sessionId = null
             hideProgress()
             val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(moduleName, message)
+            showFailedMessage(message)
         }
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
+        if (!GlobalConfig.DEBUG) {
+            Timber.w("P3Installed Module {$moduleName}")
+        }
         progressGroup.visibility = View.INVISIBLE
         if (launch && manager.installedModules.contains(moduleName)) {
             RouteManager.getIntentNoFallback(this, applink)?.let {
@@ -184,7 +187,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
         }
         this.finish()
-        Timber.w("P3Installed Module {$moduleName}")
     }
 
     /** Listener used to handle changes in state for install requests. */
@@ -200,7 +202,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
             SplitInstallSessionStatus.DOWNLOADING -> {
                 //  In order to see this, the application has to be uploaded to the Play Store.
                 displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
-                Timber.w("P3Download Module {$names}")
             }
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                 /*
@@ -222,14 +223,14 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                showFailedMessage(names, message)
+                showFailedMessage(message)
                 hideProgress()
             }
         }
     }
 
-    private fun showFailedMessage(moduleName: String, message: String) {
-        if (!GlobalConfig.DEBUG) {
+    private fun showFailedMessage(message: String) {
+        if (!GlobalConfig.DEBUG && ::moduleName.isInitialized) {
             Timber.w("P3Failed Module {$moduleName}")
         }
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
@@ -244,6 +245,9 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     /** Display a loading state to the user. */
     private fun displayLoadingState(state: SplitInstallSessionState, message: String) {
+        if (!GlobalConfig.DEBUG && ::moduleName.isInitialized) {
+            Timber.w("P3Download Module {$moduleName}")
+        }
         val totalBytesToDowload = state.totalBytesToDownload().toInt()
         val bytesDownloaded = state.bytesDownloaded().toInt()
         progressBar.max = totalBytesToDowload
