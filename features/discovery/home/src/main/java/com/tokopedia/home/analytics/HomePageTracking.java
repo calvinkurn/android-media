@@ -916,7 +916,7 @@ public class HomePageTracking {
             String tabName
     ) {
         List<Object> objects = new ArrayList<>();
-        objects.add(bannerFeedViewModel.convertBannerFeedModelToDataLayer());
+        objects.add(bannerFeedViewModel.convertBannerFeedModelToDataLayer(tabName));
         return objects;
     }
 

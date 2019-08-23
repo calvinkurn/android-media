@@ -26,6 +26,7 @@ import android.support.v4.util.ArrayMap
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.text.TextUtils
+import android.util.TypedValue
 import android.view.*
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
@@ -101,7 +102,6 @@ import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.*
-import com.tokopedia.product.report.view.dialog.ReportDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -118,7 +118,6 @@ import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
@@ -175,12 +174,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationFourthView: PartialRecommendationFourthView
     lateinit var valuePropositionView: PartialValuePropositionView
     lateinit var stickyLoginTextView: StickyTextView
-    lateinit var trackingQueue: TrackingQueue
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var productInfoViewModel: ProductInfoViewModel
     lateinit var productWarehouseViewModel: ProductWarehouseViewModel
+
+    @Inject
+    lateinit var productDetailTracking: ProductDetailTracking
 
     lateinit var performanceMonitoringP1: PerformanceMonitoring
     lateinit var performanceMonitoringP2: PerformanceMonitoring
@@ -215,9 +216,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var shouldShowCartAnimation = false
 
     private lateinit var initToolBarMethod:()-> Unit
-    private val productDetailTracking: ProductDetailTracking by lazy {
-        ProductDetailTracking()
-    }
 
     var productInfo: ProductInfo? = null
     var shopInfo: ShopInfo? = null
@@ -324,7 +322,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productInfoViewModel = viewModelProvider.get(ProductInfoViewModel::class.java)
             productWarehouseViewModel = viewModelProvider.get(ProductWarehouseViewModel::class.java)
             remoteConfig = FirebaseRemoteConfigImpl(this)
-            trackingQueue = TrackingQueue(this)
             if (!remoteConfig.getBoolean(ENABLE_VARIANT))
                 useVariant = false
         }
@@ -333,7 +330,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     override fun onPause() {
         super.onPause()
-        if (::trackingQueue.isInitialized) { trackingQueue?.run { sendAll() }}
+        productDetailTracking.sendAllQueue()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -595,7 +592,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             onValuePropositionClick(R.id.layout_guarantee)
         }
 
-
         open_shop.setOnClickListener {
             activity?.let {
                 if (productInfoViewModel.isUserSessionActive()) {
@@ -608,17 +604,21 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
         }
+
         loadProductData()
 
         stickyLoginTextView = view.findViewById(R.id.sticky_login_text)
+        stickyLoginTextView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            updateStickyState()
+        }
         stickyLoginTextView.setOnClickListener {
             productDetailTracking.eventClickOnStickyLogin(true)
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         }
         stickyLoginTextView.setOnDismissListener(View.OnClickListener {
-            stickyLoginTextView.dismiss()
             productDetailTracking.eventClickOnStickyLogin(false)
-            ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
+            stickyLoginTextView.dismiss()
+            updateStickyState()
         })
 
         updateStickyState()
@@ -761,19 +761,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             latestTalkView = PartialLatestTalkView.build(base_latest_talk)
 
         if (!::recommendationSecondView.isInitialized) {
-            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this, trackingQueue)
+            recommendationSecondView = PartialRecommendationSecondView.build(base_recom_2, this, productDetailTracking)
         }
 
         if (!::recommendationFirstView.isInitialized) {
-            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this, trackingQueue)
+            recommendationFirstView = PartialRecommendationFirstView.build(base_recom_1, this, productDetailTracking)
         }
 
         if (!::recommendationThirdView.isInitialized) {
-            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this, trackingQueue)
+            recommendationThirdView = PartialRecommendationThirdView.build(base_recom_3, this, productDetailTracking)
         }
 
         if (!::recommendationFourthView.isInitialized) {
-            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this, trackingQueue)
+            recommendationFourthView = PartialRecommendationFourthView.build(base_recom_4, this, productDetailTracking)
         }
 
         if (!::valuePropositionView.isInitialized) {
@@ -1311,8 +1311,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     }
                 }
             }
-            productDetailTracking.sendScreen(shopInfo.shopCore.shopID, shopInfo.goldOS.shopTypeString,
+            productDetailTracking.sendScreen(
+                    shopInfo.shopCore.shopID,
+                    shopInfo.goldOS.shopTypeString,
                     productId ?: "")
+            productDetailTracking.sendScreenV5(
+                    shopInfo.shopCore.shopID,
+                    shopInfo.goldOS.shopTypeString,
+                    productId ?: "",
+                    productInfo?.category?.detail?.firstOrNull()?.id ?: "")
 
             if (delegateTradeInTracking) {
                 trackTradeIn(tradeInParams.isEligible == 1)
@@ -2156,9 +2163,17 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productDetailTracking.eventViewLoginStickyWidget()
         }
 
+        val tv = TypedValue()
+        var paddingBottom = 0
+        if (context!!.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            paddingBottom = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+        }
+
         if (stickyLoginTextView.isShowing()) {
             actionButtonView.setBackground(R.color.white)
+            nested_scroll.setPadding(0,0,0, paddingBottom + stickyLoginTextView.height)
         } else {
+            nested_scroll.setPadding(0,0,0, paddingBottom)
             ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
         }
     }
