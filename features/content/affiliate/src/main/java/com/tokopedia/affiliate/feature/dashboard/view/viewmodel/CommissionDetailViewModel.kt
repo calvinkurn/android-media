@@ -70,21 +70,15 @@ class CommissionDetailViewModel
 
             val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
             val requests = mutableListOf(productRequest, txRequest)
-            try {
-                val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
-                if (gqlResponse.getError(AffiliateProductDetailResponse::class.java)?.isNotEmpty() != true) {
-                    val result = (gqlResponse.getData(AffiliateProductDetailResponse::class.java) as AffiliateProductDetailResponse)
-                    resultData.commissionDetailHeaderViewModel = mapProductDetailData(result)
-                }
-
-                if (gqlResponse.getError(AffiliateProductTxResponse::class.java)?.isNotEmpty() != true) {
-                    val result = (gqlResponse.getData(AffiliateProductTxResponse::class.java) as AffiliateProductTxResponse)
-                    resultData.commissionTransactionViewModel = mapProductTransactionData(result)
-                }
-
+            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
+            if (gqlResponse.getError(AffiliateProductDetailResponse::class.java)?.isNotEmpty() != true) {
+                val result = (gqlResponse.getData(AffiliateProductDetailResponse::class.java) as AffiliateProductDetailResponse)
+                resultData.commissionDetailHeaderViewModel = mapProductDetailData(result)
             }
-            catch(t: Throwable) {
-                t.printStackTrace()
+
+            if (gqlResponse.getError(AffiliateProductTxResponse::class.java)?.isNotEmpty() != true) {
+                val result = (gqlResponse.getData(AffiliateProductTxResponse::class.java) as AffiliateProductTxResponse)
+                resultData.commissionTransactionViewModel = mapProductTransactionData(result)
             }
             resultData
         }

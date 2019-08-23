@@ -540,7 +540,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
         if (resultCode != RESULT_OK) return
         if (data == null) return
-        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
+        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE) ?: return
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
         }

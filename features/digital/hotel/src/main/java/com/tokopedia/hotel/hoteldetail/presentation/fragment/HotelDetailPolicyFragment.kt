@@ -1,6 +1,7 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,10 @@ class HotelDetailPolicyFragment : BaseListFragment<PropertyPolicyData, HotelDeta
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_hotel_detail_policy, container, false)
+
+    override fun getSwipeRefreshLayoutResourceId() = 0
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

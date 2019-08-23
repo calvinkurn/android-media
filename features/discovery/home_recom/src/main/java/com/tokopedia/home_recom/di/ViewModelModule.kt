@@ -10,6 +10,9 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
+/**
+ * A class dagger module for handling viewModel
+ */
 @Module
 @HomeRecommendationScope
 abstract class ViewModelModule {
