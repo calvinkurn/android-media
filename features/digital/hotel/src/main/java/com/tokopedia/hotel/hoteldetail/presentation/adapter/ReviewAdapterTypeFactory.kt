@@ -19,7 +19,6 @@ class ReviewAdapterTypeFactory : BaseAdapterTypeFactory() {
         when (type) {
             HotelReviewViewHolder.LAYOUT -> return HotelReviewViewHolder(parent)
             HotelReviewShimmeringViewHolder.LAYOUT -> return HotelReviewShimmeringViewHolder(parent)
-//            emptyLayout -> return EmptyViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
     }
@@ -27,11 +26,4 @@ class ReviewAdapterTypeFactory : BaseAdapterTypeFactory() {
     fun type(data: HotelReview): Int = HotelReviewViewHolder.LAYOUT
 
     override fun type(viewModel: LoadingModel) = HotelReviewShimmeringViewHolder.LAYOUT
-
-
-//    override fun type(viewModel: EmptyModel) = emptyLayout
-//
-//    companion object {
-//        val emptyLayout: Int = R.layout.item_hotel_room_empty_list
-//    }
 }

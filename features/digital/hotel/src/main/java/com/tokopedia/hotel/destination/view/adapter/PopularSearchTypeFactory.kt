@@ -16,7 +16,6 @@ class PopularSearchTypeFactory : BaseAdapterTypeFactory() {
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
             PopularSearchViewHolder.LAYOUT -> return PopularSearchViewHolder(parent)
-//            errorLayout -> return ErrorNetworkViewHolder(parent)
             else -> return super.createViewHolder(parent, type)
         }
     }
@@ -24,12 +23,4 @@ class PopularSearchTypeFactory : BaseAdapterTypeFactory() {
     fun type(popularSearch: PopularSearch): Int {
         return PopularSearchViewHolder.LAYOUT
     }
-
-//    override fun type(viewModel: ErrorNetworkModel): Int {
-//        return errorLayout
-//    }
-//
-//    companion object {
-//        val errorLayout: Int = R.layout.item_network_error_view
-//    }
 }
