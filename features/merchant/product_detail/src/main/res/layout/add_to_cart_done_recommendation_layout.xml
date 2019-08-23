@@ -37,7 +37,7 @@
             android:id="@+id/product_recom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:descendantFocusability="blocksDescendants"
             android:scrollbars="none"/>
 
