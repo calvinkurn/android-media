@@ -30,6 +30,7 @@ public class FlightDateUtil {
     private static final int DEFAULT_LAST_HOUR_IN_DAY = 23;
     private static final int DEFAULT_LAST_MIN_IN_DAY = 59;
     private static final int DEFAULT_LAST_SEC_IN_DAY = 59;
+    public static final String YYYYMMDD = "yyyyMMdd";
 
     public FlightDateUtil() {
 
