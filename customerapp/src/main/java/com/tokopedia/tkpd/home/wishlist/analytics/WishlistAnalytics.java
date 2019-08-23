@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.navigation.domain.model.Recommendation;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -20,17 +21,12 @@ import java.util.Map;
 public class WishlistAnalytics {
 
     private static final String WISHLIST_PAGE = "wishlist page";
-    private static final String CLICK_CART_WISHLIST = "click - cek keranjang on wishlist";
+    private static final String CLICK_CART_WISHLIST = "click lihat button on atc success toaster";
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     private static final String CLICK_WISHLIST = "Click Wishlist";
     private static final String LONG_PRESS_SHORTCUT_WISHLIST = "Share";
     private List<Object> dataLayerList = new ArrayList<>();
-    private static volatile WishlistAnalytics wishlistAnalytics = new WishlistAnalytics();
-
-    public static WishlistAnalytics getInstance() {
-        return wishlistAnalytics;
-    }
 
     public void trackEventAddToCardProductWishlist(Object dataItem) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
@@ -126,7 +122,7 @@ public class WishlistAnalytics {
 
     }
 
-    public void eventClickCartWishlist() {
+    public void     eventClickCartWishlist() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 AppEventTracking.Event.WISHLIST,
                 WISHLIST_PAGE,
@@ -193,9 +189,58 @@ public class WishlistAnalytics {
                                                 "price", item.getPrice().replaceAll("[^0-9]", ""),
                                                 "brand", "none/other",
                                                 "category", item.getCategoryBreadcrumbs(),
-                                                "varian", "none/other",
+                                                "variant", "none/other",
                                                 "position", String.valueOf(position)))))
                 )));
     }
 
+    public void eventRecommendationProductClick(RecommendationItem item, int position){
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                "event", "productClick",
+                "eventCategory", "wishlist page",
+                "eventAction", "click on product recommendation",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "click", DataLayer.mapOf("actionField",
+                                DataLayer.mapOf("list", "/wishlist - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                        "products", DataLayer.listOf(DataLayer.mapOf(
+                                                "name", item.getName(),
+                                                "id", item.getProductId(),
+                                                "price", item.getPrice().replaceAll("[^0-9]", ""),
+                                                "brand", "none/other",
+                                                "category", item.getCategoryBreadcrumbs(),
+                                                "variant", "none/other",
+                                                "position", String.valueOf(position)))))
+                )));
+    }
+
+    public void eventRecommendationProductImpression(RecommendationItem item, int position){
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent((HashMap<String, Object>) DataLayer.mapOf(
+                "event", "productView",
+                "eventCategory", "wishlist page",
+                "eventAction", "impression on product recommendation",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                DataLayer.mapOf(
+                                    "name", item.getName(),
+                                    "id", item.getProductId(),
+                                    "price", item.getPrice().replaceAll("[^0-9]", ""),
+                                    "brand", "none/other",
+                                    "category", item.getCategoryBreadcrumbs(),
+                                    "variant", "none/other",
+                                    "list", "/wishlist - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                    "position", String.valueOf(position)))
+                )));
+    }
+
+    public void eventRecommendationWishlistClick(boolean isAdded){
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                "event", "clickWishlist",
+                "eventCategory", "wishlist page",
+                "eventAction", "click" + (isAdded ? " add " : " remove ") + "wishlist on product recommendation",
+                "eventLabel", ""
+                ));
+    }
 }

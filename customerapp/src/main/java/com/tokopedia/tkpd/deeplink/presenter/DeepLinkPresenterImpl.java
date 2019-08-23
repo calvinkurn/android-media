@@ -548,7 +548,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openHomeRecommendation(final List<String> linkSegment, final Uri uriData) {
-        Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, linkSegment.size() > 1 ? linkSegment.get(1) : "");
+        String source = uriData.getQueryParameter("ref");
+        Intent intent = RouteManager.getIntent(context  , ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
+                linkSegment.size() > 1 ? linkSegment.get(1) : "",
+                source == null ? "" : source);
         context.startActivity(intent);
         context.finish();
     }
@@ -574,8 +577,17 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             public void onNext(ShopInfo shopInfo) {
                 viewListener.finishLoading();
                 if (shopInfo != null && shopInfo.getInfo() != null) {
-                    context.startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN,
-                            linkSegment.get(0), linkSegment.get(1)));
+                    //Add Affiliate string for tracking
+                    String affiliateString = "";
+                    if (!TextUtils.isEmpty(uriData.getQueryParameter("aff"))) {
+                        affiliateString = uriData.getQueryParameter("aff");
+                    }
+
+                    context.startActivity(RouteManager.getIntent(context,
+                            ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE,
+                            linkSegment.get(0),
+                            linkSegment.get(1),
+                            affiliateString));
                 } else {
                     if (!GlobalConfig.DEBUG) {
                         Crashlytics.logException(new ShopNotFoundException(linkSegment.get(0)));

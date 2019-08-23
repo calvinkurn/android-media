@@ -21,20 +21,26 @@ import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
-import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
-import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
-import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
-import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
-import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
+import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
+import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
+import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerResponse
+import com.tokopedia.chatbot.domain.subscriber.*
+import com.tokopedia.chatbot.domain.usecase.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ATTACHMENT_TYPE_FIFTEEN
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ATTACHMENT_TYPE_SIXTEEN
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ATTACHMENT_TYPE_THIRTEEN
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.TEXT_HIDE
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -51,7 +57,10 @@ import okio.ByteString
 import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
+import java.util.Calendar
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * @author by nisie on 05/12/18.
@@ -64,8 +73,24 @@ class ChatbotPresenter @Inject constructor(
         private val fingerprintInterceptor: FingerprintInterceptor,
         private val sendChatRatingUseCase: SendChatRatingUseCase,
         private val sendRatingReasonUseCase: SendRatingReasonUseCase,
-        private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>)
-    : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
+        private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
+        private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
+        private val leaveQueueUseCase: LeaveQueueUseCase
+) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter {
+
+
+    object companion{
+        const val ERROR_CODE ="400"
+        const val TEXT_HIDE = "hide"
+        const val ATTACHMENT_TYPE_THIRTEEN = 13
+        const val ATTACHMENT_TYPE_FIFTEEN = 15
+        const val ATTACHMENT_TYPE_SIXTEEN = 16
+    }
+
+    override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
+        submitCsatRatingUseCase.execute(SubmitCsatRatingUseCase.generateParam(inputItem
+        ), SubmitCsatRatingSubscriber(onError, onSuccess))
+    }
 
     override fun clearText() {
         view.clearChatText()
@@ -77,8 +102,9 @@ class ChatbotPresenter @Inject constructor(
 
     private var mSubscription: CompositeSubscription
     private var isUploading: Boolean = false
-
     private var listInterceptor: ArrayList<Interceptor>
+    private var isErrorOnLeaveQueue = false
+    private lateinit var dividerQueue:LiveChatDividerResponse
 
     init {
         mSubscription = CompositeSubscription()
@@ -111,11 +137,26 @@ class ChatbotPresenter @Inject constructor(
             override fun onMessage(webSocketResponse: WebSocketResponse) {
                 try {
                     if (GlobalConfig.isAllowDebuggingTools()) {
-                        Log.d("RxWebSocket Presenter", "item")
+                        Log.d("RxWebSocket Presenter", webSocketResponse.toString())
                     }
                     val pojo: ChatSocketPojo = Gson().fromJson(webSocketResponse.getData(), ChatSocketPojo::class.java)
                     if (pojo.msgId.toString() != messageId) return
                     mappingEvent(webSocketResponse, messageId)
+                    val csatResponse: WebSocketCsatResponse =Gson().fromJson(webSocketResponse.getData(),
+                            WebSocketCsatResponse::class.java)
+                    if (csatResponse.attachment?.type == ATTACHMENT_TYPE_THIRTEEN) {
+                        view.openCsat(csatResponse)
+                    }
+
+                    val liveChatDivider = Gson().fromJson(webSocketResponse.getData(), LiveChatDividerResponse::class.java)
+                    if (liveChatDivider?.attachment?.type == ATTACHMENT_TYPE_FIFTEEN) {
+                        val model = ConnectionDividerViewModel(liveChatDivider.attachment.attributes?.divider?.label, false,"show", null)
+                        view.onReceiveConnectionEvent(model)
+                    }
+                    if(liveChatDivider?.attachment?.type == ATTACHMENT_TYPE_SIXTEEN){
+                        mappingQueueDivider(webSocketResponse)
+                    }
+
                 } catch (e: JsonSyntaxException) {
                     e.printStackTrace()
                 }
@@ -149,6 +190,50 @@ class ChatbotPresenter @Inject constructor(
                 ?.subscribe(subscriber)
 
         mSubscription.add(subscription)
+    }
+
+    private fun mappingQueueDivider(webSocketResponse: WebSocketResponse) {
+        dividerQueue = Gson().fromJson(webSocketResponse.getData(), LiveChatDividerResponse::class.java)
+        if (!isErrorOnLeaveQueue) {
+            val agentQueue = dividerQueue.attachment?.attributes?.agentQueue
+            if (agentQueue?.type.equals(SHOW_TEXT)) {
+                view.isBackAllowed(false)
+            } else {
+                view.isBackAllowed(true)
+            }
+            val model = ConnectionDividerViewModel(agentQueue?.label, true,
+                    agentQueue?.type ?: SHOW_TEXT, leaveQueue(dividerQueue))
+            view.onReceiveConnectionEvent(model)
+        }
+
+    }
+
+    private fun leaveQueue(dividerQueue: LiveChatDividerResponse): () -> Unit {
+        return {
+            leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(dividerQueue.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess()))
+        }
+    }
+
+    private fun onError(): (Throwable) -> Unit {
+        return {
+            view.showErrorToast(it)
+        }
+    }
+
+    private fun onSuccess(): (String) -> Unit {
+        return { str ->
+            if (view!=null){
+                view.isBackAllowed(true)
+                if(str==ERROR_CODE){
+                    isErrorOnLeaveQueue = true
+                    val model = ConnectionDividerViewModel("",false, TEXT_HIDE, null)
+                    view.onReceiveConnectionEvent(model)
+                }else{
+                    val model = ConnectionDividerViewModel(view.context?.getString(R.string.cb_bot_you_left_the_queue),false, SHOW_TEXT, null)
+                    view.onReceiveConnectionEvent(model)
+                }
+            }
+        }
     }
 
     override fun showErrorSnackbar(stringId: Int) {
@@ -215,7 +300,8 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_END_TYPING -> view.onReceiveStopTypingEvent()
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
-                view.onReceiveMessageEvent(mapToVisitable(pojo))
+                if (!pojo.attachment?.fallbackAttachment?.message.equals(""))
+                    view.onReceiveMessageEvent(mapToVisitable(pojo))
             }
         }
     }
@@ -345,12 +431,20 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
+    fun OnClickLeaveQueue() {
+        leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(dividerQueue.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess()))
+    }
+
     override fun detachView() {
         destroyWebSocket()
         getExistingChatUseCase.unsubscribe()
         sendChatRatingUseCase.unsubscribe()
         sendRatingReasonUseCase.unsubscribe()
+        submitCsatRatingUseCase.unsubscribe()
+        leaveQueueUseCase.unsubscribe()
         super.detachView()
     }
+
+
 
 }

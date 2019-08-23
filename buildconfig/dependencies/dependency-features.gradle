@@ -267,6 +267,7 @@ ext {
             productManageList               : ":features:merchant:product_manage_list",
             productManageDetail             : ":features:merchant:product_detail",
             productShare                    : ":features:merchant:product_share",
+            report                          : ":features:merchant:report",
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
 
@@ -283,6 +284,7 @@ ext {
             officialStore                  : ":features:merchant:official_store",
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
+            csat_rating                       : ":features:operational:csat_rating",
 //            contactUs                       : ":features:operational:contact_us_no_op",
 
             payment                         : ":features:payment:payment",
@@ -343,6 +345,7 @@ ext {
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
             settingbank                     : ":features:user:settingbank",
+            settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
 //            topchat                         : ":features:user:topchat_no_op",

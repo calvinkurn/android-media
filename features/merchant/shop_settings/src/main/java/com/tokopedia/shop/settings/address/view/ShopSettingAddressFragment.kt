@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import android.view.*
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -97,14 +98,14 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
 
     override fun onSuccessDeleteAddress(string: String?) {
         ToasterNormal.make(view, getString(R.string.success_delete_shop_address), BaseToaster.LENGTH_SHORT)
-                .setAction(R.string.close) {}.show()
+                .setAction(com.tokopedia.abstraction.R.string.close) {}.show()
         loadInitialData()
     }
 
     override fun onErrorDeleteAddress(throwable: Throwable?) {
         throwable?.let {
             ToasterError.make(view, ErrorHandler.getErrorMessage(activity, it), BaseToaster.LENGTH_SHORT)
-                    .setAction(R.string.close) {}.show()
+                    .setAction(com.tokopedia.abstraction.R.string.close) {}.show()
         }
     }
 
@@ -144,7 +145,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         activity?.let {
             Menus(it).apply {
                 setItemMenuList(resources.getStringArray(R.array.shop_address_menu_more))
-                setActionText(getString(R.string.close))
+                setActionText(getString(com.tokopedia.abstraction.R.string.close))
                 setOnActionClickListener { dismiss() }
                 setOnItemMenuClickListener { _, pos ->
                     when (pos) {
@@ -169,7 +170,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
                 setTitle(getString(R.string.title_dialog_delete_shop_address))
                 setDesc(getString(R.string.desc_dialog_delete_shop_address, item.name))
                 setBtnOk(getString(R.string.action_delete))
-                setBtnCancel(getString(R.string.cancel))
+                setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
                 setOnOkClickListener { presenter.deleteItem(item); dismiss() }
                 setOnCancelClickListener { dismiss() }
                 show()
@@ -203,5 +204,9 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
 
     override fun onEmptyButtonClicked() {
         createAddress()
+    }
+
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
     }
 }
