@@ -13,11 +13,11 @@ abstract class BulkBottomSheetType(
     }
 
     data class EtalaseType(var etalaseValue: String,
-                           var etalaseId: Int? = SELECT_ALL_ETALASE) : BulkBottomSheetType(
+                           var etalaseId: Int = SELECT_ALL_ETALASE) : BulkBottomSheetType(
             R.string.product_bs_etalase_title, etalaseValue, false
     )
 
-    data class StockType(var stockValue: String, var totalStock: Int? = 0) : BulkBottomSheetType(
+    data class StockType(var stockValue: String, var totalStock: Int = 0) : BulkBottomSheetType(
             R.string.product_bs_stock_title, stockValue, false
     )
 

@@ -49,4 +49,9 @@
     <string name="product_bs_delete_title">Hapus produk</string>
     <string name="product_bs_title">Atur produk</string>
 
+
+    <string name="product_confirmation_bs_button_next">Ya, lanjutkan</string>
+    <string name="product_confirmation_title">Produk yang kamu pilih akan diubah bersamaan. Yakin ubah produk?</string>
+    <string name="product_confirmation_selected_product">Produk yang dipilih</string>
+
 </resources>

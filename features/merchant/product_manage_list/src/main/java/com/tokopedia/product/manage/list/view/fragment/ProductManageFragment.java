@@ -77,6 +77,7 @@ import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.constant.CashbackOption;
 import com.tokopedia.product.manage.list.constant.ManageTrackingConstant;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
+import com.tokopedia.product.manage.list.data.ConfirmationProductData;
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
@@ -84,6 +85,7 @@ import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivi
 import com.tokopedia.product.manage.list.view.activity.ProductManageSortActivity;
 import com.tokopedia.product.manage.list.view.adapter.ProductManageListAdapter;
 import com.tokopedia.product.manage.list.view.adapter.ProductManageListViewHolder;
+import com.tokopedia.product.manage.list.view.bottomsheets.ConfirmationUpdateProductBottomSheet;
 import com.tokopedia.product.manage.list.view.bottomsheets.EditProductBottomSheet;
 import com.tokopedia.product.manage.list.view.factory.ProductManageFragmentFactoryImpl;
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
@@ -145,6 +147,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
 
     private List<ProductManageViewModel> productManageViewModels = null;
+    private ArrayList<ConfirmationProductData> confirmationProductDataList = new ArrayList<>();
+    private BulkBottomSheetType.EtalaseType etalaseType = new BulkBottomSheetType.EtalaseType("", 0);
+    private BulkBottomSheetType.StockType stockType = new BulkBottomSheetType.StockType("", 0);
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -411,9 +416,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     private void setupBottomSheet() {
         bulkBottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(getContext(),
                 () -> editProductBottomSheet.clearAllData());
-        bulkBottomSheet.shouldFullScreen = true;
         if (getContext() != null) {
-            editProductBottomSheet = new EditProductBottomSheet(getContext(), this);
+            editProductBottomSheet = new EditProductBottomSheet(getContext(), this, getFragmentManager());
         }
         bulkBottomSheet.setCustomContentView(editProductBottomSheet, getString(R.string.product_bs_title), true);
     }
@@ -516,7 +520,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                 if (resultCode == Activity.RESULT_OK) {
                     int etalaseId = intent.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1);
                     String etalaseNameString = intent.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME);
-                    editProductBottomSheet.setResultValue(new BulkBottomSheetType.EtalaseType(etalaseNameString, etalaseId), null);
+                    etalaseType.setEtalaseId(etalaseId);
+                    etalaseType.setEtalaseValue(etalaseNameString);
+                    editProductBottomSheet.setResultValue(etalaseType, null);
                 }
                 break;
             case STOCK_EDIT_REQUEST_CODE:
@@ -528,7 +534,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                     } else {
                         stockValue = "Tersedia";
                     }
-                    editProductBottomSheet.setResultValue(null, new BulkBottomSheetType.StockType(stockValue, productStock.getStockCount()));
+
+                    stockType.setStockValue(stockValue);
+                    stockType.setTotalStock(productStock.getStockCount());
+                    editProductBottomSheet.setResultValue(null, stockType);
                 }
                 break;
             case ProductManageConstant.REQUEST_CODE_SORT:
@@ -1013,6 +1022,38 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_ETALASE_PICKER,
                 String.valueOf(etalaseId));
         startActivityForResult(intent, ETALASE_PICKER_REQUEST_CODE);
+    }
+
+    @Override
+    public void goToConfirmationBottomSheet() {
+        mappingUpdateProductModel();
+        ConfirmationUpdateProductBottomSheet confirmationUpdateProductBottomSheet = ConfirmationUpdateProductBottomSheet.newInstance(confirmationProductDataList);
+        confirmationUpdateProductBottomSheet.setListener(this);
+        confirmationUpdateProductBottomSheet.show(getFragmentManager(), "bs_update_product");
+    }
+
+    @Override
+    public void updateProduct() {
+
+    }
+
+    private void mappingUpdateProductModel() {
+        List<ProductManageViewModel> listChecked = adapter.getCheckedDataList();
+        confirmationProductDataList.clear();
+        if (etalaseType != null && stockType != null) {
+            for (ProductManageViewModel data : listChecked) {
+                ConfirmationProductData confirmationProductData = new ConfirmationProductData();
+                confirmationProductData.setProductId(data.getProductId());
+                confirmationProductData.setProductName(data.getProductName());
+                confirmationProductData.setProductImgUrl(data.getImageUrl());
+                confirmationProductData.setProductEtalaseId(etalaseType.getEtalaseId());
+                confirmationProductData.setProductEtalaseName(etalaseType.getEtalaseValue());
+                confirmationProductData.setProductStock(stockType.getTotalStock());
+                confirmationProductData.setStatusStock(stockType.getStockValue());
+
+                confirmationProductDataList.add(confirmationProductData);
+            }
+        }
     }
 
     @Override

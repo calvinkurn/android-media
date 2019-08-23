@@ -24,12 +24,23 @@ class EditProductBottomSheetAdapter(private var data: List<BulkBottomSheetType>,
         holder.bind(data[position])
     }
 
-    fun clearData(){
+    fun clearData() {
         data = listOf(BulkBottomSheetType.EtalaseType(""),
                 BulkBottomSheetType.StockType(""),
                 BulkBottomSheetType.DeleteType())
         notifyDataSetChanged()
     }
+
+    fun setDataResult(etalaseValue: BulkBottomSheetType.EtalaseType?, stockValue: BulkBottomSheetType.StockType?) {
+        if (etalaseValue != null) {
+            data.getOrNull(0)?.editValue = etalaseValue.etalaseValue
+            (data.getOrNull(0) as BulkBottomSheetType.EtalaseType).etalaseId = etalaseValue.etalaseId
+        } else if (stockValue != null) {
+            data.getOrNull(1)?.editValue = stockValue.stockValue
+        }
+        notifyDataSetChanged()
+    }
+
 
     inner class EditProductBottomSheetViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         private var imgDrawable = view.findViewById<ImageView>(R.id.img_bs_edit)
@@ -40,7 +51,7 @@ class EditProductBottomSheetAdapter(private var data: List<BulkBottomSheetType>,
         fun bind(data: BulkBottomSheetType) {
             view.setOnClickListener {
                 when (data) {
-                    is BulkBottomSheetType.EtalaseType -> listener.goToEtalasePicker(data.etalaseId ?: 0)
+                    is BulkBottomSheetType.EtalaseType -> listener.goToEtalasePicker(data.etalaseId)
                     is BulkBottomSheetType.DeleteType -> listener.goToEditStock()
                     else -> listener.goToEditStock()
                 }

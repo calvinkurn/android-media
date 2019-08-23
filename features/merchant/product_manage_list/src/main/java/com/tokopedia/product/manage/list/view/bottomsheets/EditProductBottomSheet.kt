@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.list.view.bottomsheets
 
 import android.content.Context
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,17 +11,19 @@ import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.list.view.adapter.EditProductBottomSheetAdapter
 
-class EditProductBottomSheet(context: Context, val listener: EditProductInterface) : FrameLayout(context) {
+class EditProductBottomSheet(context: Context, val listener: EditProductInterface, val fragmentManager: FragmentManager) : FrameLayout(context) {
 
     interface EditProductInterface {
         fun goToEtalasePicker(etalaseId: Int)
         fun goToEditStock()
+        fun goToConfirmationBottomSheet()
+        fun updateProduct()
     }
 
     var rvBulk: RecyclerView? = null
     var bulkData = listOf(
             BulkBottomSheetType.EtalaseType(""),
-            BulkBottomSheetType.StockType("",null),
+            BulkBottomSheetType.StockType(""),
             BulkBottomSheetType.DeleteType())
     private val editAdapter = EditProductBottomSheetAdapter(bulkData, listener)
     private var btnNext: Button? = null
@@ -34,17 +37,14 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
                 adapter = editAdapter
             }
         }
+        btnNext?.setOnClickListener {
+            listener.goToConfirmationBottomSheet()
+        }
     }
 
     fun setResultValue(etalaseValue: BulkBottomSheetType.EtalaseType?, stockValue: BulkBottomSheetType.StockType?) {
         btnNext?.isEnabled = true
-        if (etalaseValue != null) {
-            bulkData[0].editValue = etalaseValue.editValue
-            (bulkData[0] as BulkBottomSheetType.EtalaseType).etalaseId = etalaseValue.etalaseId
-        } else if (stockValue != null) {
-            bulkData[1].editValue = stockValue.editValue
-        }
-        editAdapter.notifyDataSetChanged()
+        editAdapter.setDataResult(etalaseValue, stockValue)
     }
 
     fun clearAllData() {
