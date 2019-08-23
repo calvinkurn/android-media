@@ -333,7 +333,6 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                             view.hideHorizontalProgress()
                         }
 
-                        // filter journey that not tracked yet
                         if (lastPosition != flightJourneyViewModelList.size || fromCombo) onProductViewImpression(flightJourneyViewModelList)
                         lastPosition = flightJourneyViewModelList.size
                     }
