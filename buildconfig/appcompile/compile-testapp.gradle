@@ -70,5 +70,8 @@ include "features:common:resources_common"
 //include "features:merchant:gold_merchant_common"
 //include "features:merchant:gold_merchant_resource"
 
+// FOR SELLER ORDER
+include "features:transaction:sellerorder"
+
 
 include 'testapp'

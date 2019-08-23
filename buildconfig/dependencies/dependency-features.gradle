@@ -77,6 +77,7 @@ ext {
     artifactIdTransactionAnalytics = 'transactionanalytics'
     artifactIdTransactionData = 'transactiondata'
     artifactIdTransactionInvoice = 'transactioninvoice'
+    artifactIdSellerOrder = 'sellerorder'
     transactionGroupVersion = '2.22'
 
     //SCOPE LOGISTIC
@@ -366,6 +367,7 @@ ext {
             commonPayment                   : ":features:payment:common_payment",
             ovo                             : ":features:fintech:ovo_pay_with_qr",
             agerestriction                  : ":features:category:age_restriction",
-            merchantLendingWidget           : ":features:fintech:merchant_lending_widget"
+            merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
+            sellerOrder                     : ":features:transaction:sellerorder"
     ]
 }

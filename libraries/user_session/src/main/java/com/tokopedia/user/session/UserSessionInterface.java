@@ -64,8 +64,6 @@ public interface UserSessionInterface {
     String getShopAvatar();
 
     boolean isPowerMerchantIdle();
-
-    boolean isPowerMerchantIdle();
   
     String getAutofillUserData();
 
@@ -144,8 +142,6 @@ public interface UserSessionInterface {
     void setGCToken(String gcToken);
 
     void setShopAvatar(String shopAvatar);
-
-    void setIsPowerMerchantIdle(boolean powerMerchantIdle);
 
     void setTwitterAccessTokenAndSecret(@NotNull String accessToken, @NotNull String accessTokenSecret);
 

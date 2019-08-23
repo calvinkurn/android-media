@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.Toast;
 
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -21,9 +19,7 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.cpm.CharacterPerMinuteInterface;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.tkpd.BuildConfig;
@@ -48,7 +44,7 @@ import okhttp3.Response;
 public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
-        ApplinkRouter, CharacterPerMinuteInterface {
+        ApplinkRouter {
 
     @Override
     public void onCreate() {
@@ -69,8 +65,6 @@ public class MyApplication extends BaseMainApplication
 
         PersistentCacheManager.init(this);
         super.onCreate();
-        FlowManager.init(new FlowConfig.Builder(this)
-                .build());
         initCacheApi();
 
         if (BuildConfig.DEBUG) {
@@ -196,21 +190,6 @@ public class MyApplication extends BaseMainApplication
     @Override
     public void refreshToken() throws IOException {
 
-    }
-
-    @Override
-    public void saveCPM(@NonNull String cpm) {
-
-    }
-
-    @Override
-    public String getCPM() {
-        return null;
-    }
-
-    @Override
-    public boolean isEnable() {
-        return false;
     }
 
     /**
