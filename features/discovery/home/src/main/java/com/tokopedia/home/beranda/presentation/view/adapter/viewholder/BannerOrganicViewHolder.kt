@@ -84,18 +84,24 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             homeCategoryListener.onSectionItemClicked(element.channel.banner.applink)
         }
 
-        titleDc.text = element.channel.header.name
-        if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(element.channel.header))) {
-            seeAllText.visibility = View.VISIBLE
-        } else {
+        if (element.channel.header.name.isEmpty()) {
+            titleDc.visibility = View.GONE
             seeAllText.visibility = View.GONE
+        } else {
+            titleDc.text = element.channel.header.name
+            if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(element.channel.header))) {
+                seeAllText.visibility = View.VISIBLE
+            } else {
+                seeAllText.visibility = View.GONE
+            }
+            seeAllText.setOnClickListener {
+                HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, element.channel.id, element.channel.header.name)
+                homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(
+                        element.channel.header
+                ), element.channel.homeAttribution)
+            }
         }
-        seeAllText.setOnClickListener {
-            HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, element.channel.id, element.channel.header.name)
-            homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(
-                    element.channel.header
-            ), element.channel.homeAttribution)
-        }
+
         bannerTitle.text = bannerItem.title
         bannerDescription.text = bannerItem.description
 
