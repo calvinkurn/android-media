@@ -23,10 +23,12 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
                 ratingValue = rating;
                 int ratingIndex = ((int) rating) - 1;
 
-                ratingLevelView.setText(ratingDetails[ratingIndex]);
-
-                if (buttonView != null && !buttonView.isEnabled()) {
+                if (ratingIndex >= 0) {
+                    ratingLevelView.setText(ratingDetails[ratingIndex]);
                     buttonView.setEnabled(true);
+                } else {
+                    ratingLevelView.setText("");
+                    buttonView.setEnabled(false);
                 }
             });
         }
