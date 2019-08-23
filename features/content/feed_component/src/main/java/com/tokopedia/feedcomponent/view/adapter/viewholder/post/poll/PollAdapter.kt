@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import com.bumptech.glide.request.animation.GlideAnimation
+//import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -72,27 +72,27 @@ class PollAdapter(private val contentPosition: Int,
 
             itemView.option.text = element.option
             itemView.percent.text = element.percentage.toString()
-            ImageHandler.loadImageWithTarget(
-                    itemView.imageView.context,
-                    element.imageUrl,
-                    object : SimpleTarget<Bitmap>() {
-                        override fun onResourceReady(arg0: Bitmap, arg1: GlideAnimation<in Bitmap>) {
-                            itemView.imageView.setImageBitmap(arg0)
-                            itemView.imageView.post {
-                                itemView.shadowLayer.layoutParams = RelativeLayout.LayoutParams(
-                                        itemView.imageView.height,
-                                        itemView.imageView.width)
-
-                                if (element.selected == PollContentOptionViewModel.DEFAULT) {
-                                    itemView.shadowLayer.visibility = View.GONE
-                                } else {
-                                    itemView.shadowLayer.visibility = View.VISIBLE
-                                }
-                            }
-
-                        }
-                    }
-            )
+//            ImageHandler.loadImageWithTarget(
+//                    itemView.imageView.context,
+//                    element.imageUrl,
+//                    object : SimpleTarget<Bitmap>() {
+//                        override fun onResourceReady(arg0: Bitmap, arg1: GlideAnimation<in Bitmap>) {
+//                            itemView.imageView.setImageBitmap(arg0)
+//                            itemView.imageView.post {
+//                                itemView.shadowLayer.layoutParams = RelativeLayout.LayoutParams(
+//                                        itemView.imageView.height,
+//                                        itemView.imageView.width)
+//
+//                                if (element.selected == PollContentOptionViewModel.DEFAULT) {
+//                                    itemView.shadowLayer.visibility = View.GONE
+//                                } else {
+//                                    itemView.shadowLayer.visibility = View.VISIBLE
+//                                }
+//                            }
+//
+//                        }
+//                    }
+//            )
 
             itemView.setOnClickListener {
                 listener?.onPollOptionClick(

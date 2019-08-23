@@ -17,7 +17,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.product.manage.item.main.base.data.model.BasePictureViewModel;
@@ -111,26 +111,26 @@ public class VariantImageView extends FrameLayout {
                     ImageHandler.loadImageFitCenter(getContext(), ivVariant,
                             basePictureViewModel.getUrlOriginal());
                 } else { // we want to load image, meanwhile also to know its width/height
-                    ImageHandler.loadImageWithTarget(getContext(), basePictureViewModel.getUrlOriginal(), new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onLoadStarted(Drawable placeholder) {
-                            super.onLoadStarted(placeholder);
-                            ivVariant.setImageDrawable(placeholder);
-                        }
-
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            ivVariant.setImageBitmap(resource);
-                            VariantImageView.this.basePictureViewModel.setX(resource.getWidth());
-                            VariantImageView.this.basePictureViewModel.setY(resource.getHeight());
-                        }
-
-                        @Override
-                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                            super.onLoadFailed(e, errorDrawable);
-                            ivVariant.setImageDrawable(errorDrawable);
-                        }
-                    });
+//                    ImageHandler.loadImageWithTarget(getContext(), basePictureViewModel.getUrlOriginal(), new SimpleTarget<Bitmap>() {
+//                        @Override
+//                        public void onLoadStarted(Drawable placeholder) {
+//                            super.onLoadStarted(placeholder);
+//                            ivVariant.setImageDrawable(placeholder);
+//                        }
+//
+//                        @Override
+//                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+//                            ivVariant.setImageBitmap(resource);
+//                            VariantImageView.this.basePictureViewModel.setX(resource.getWidth());
+//                            VariantImageView.this.basePictureViewModel.setY(resource.getHeight());
+//                        }
+//
+//                        @Override
+//                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+//                            super.onLoadFailed(e, errorDrawable);
+//                            ivVariant.setImageDrawable(errorDrawable);
+//                        }
+//                    });
                 }
             } else { // local Uri
                 ImageHandler.loadImageFromFileFitCenter(

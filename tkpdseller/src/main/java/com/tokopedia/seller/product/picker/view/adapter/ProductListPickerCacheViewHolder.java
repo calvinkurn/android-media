@@ -19,7 +19,7 @@ class ProductListPickerCacheViewHolder extends BaseItemPickerCacheViewHolder<Pro
     @Override
     public void bindObject(ProductListPickerViewModel productListPickerViewModel) {
         super.bindObject(productListPickerViewModel);
-        Glide.with(imageView.getContext()).load(productListPickerViewModel.getIcon())
-                .transform(new CircleTransform(imageView.getContext())).into(imageView);
+//        Glide.with(imageView.getContext()).load(productListPickerViewModel.getIcon())
+//                .transform(new CircleTransform(imageView.getContext())).into(imageView);
     }
 }

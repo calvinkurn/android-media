@@ -77,8 +77,8 @@ public class ProductVariantItemPickerSearchNewViewHolder extends BaseMultipleChe
         } else {
             if (!TextUtils.isEmpty(productVariantOption.getIcon())) {
                 imageView.clearColorFilter();
-                Glide.with(imageView.getContext()).load(productVariantOption.getIcon())
-                        .transform(new CircleTransform(imageView.getContext())).into(imageView);
+//                Glide.with(imageView.getContext()).load(productVariantOption.getIcon())
+//                        .transform(new CircleTransform(imageView.getContext())).into(imageView);
                 viewStroke.setVisibility(View.GONE);
                 imageView.setVisibility(View.VISIBLE);
             } else {
