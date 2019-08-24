@@ -45,5 +45,5 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     testImplementation 'junit:junit:4.12'
-    implementation "com.github.scottyab:rootbeer:${rootbeer}"
+    implementation rootProject.ext.miscDependencies.rootbeer
 }
