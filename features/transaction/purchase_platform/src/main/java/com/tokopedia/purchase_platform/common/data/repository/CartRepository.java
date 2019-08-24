@@ -12,7 +12,7 @@ public class CartRepository implements ICartRepository {
 
     private CartApi cartApi;
 
-    @Inject
+//    @Inject
     public CartRepository(CartApi cartApi) {
         this.cartApi = cartApi;
     }

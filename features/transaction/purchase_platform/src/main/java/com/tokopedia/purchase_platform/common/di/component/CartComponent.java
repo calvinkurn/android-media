@@ -42,25 +42,25 @@ import dagger.Component;
 )
 public interface CartComponent {
 
-    ICheckoutModuleRouter checkoutModuleRouter();
+//    ICheckoutModuleRouter checkoutModuleRouter();
 
-    ICartRepository cartRepository();
+//    ICartRepository cartRepository();
 
-    AddressRepository addressRepository();
+//    AddressRepository addressRepository();
 
-    ICartMapper cartMapper();
+//    ICartMapper cartMapper();
 
-    IVoucherCouponMapper voucherCouponMapper();
+//    IVoucherCouponMapper voucherCouponMapper();
 
-    ICheckoutMapper checkoutMapper();
+//    ICheckoutMapper checkoutMapper();
 
-    IShipmentMapper shipmentMapper();
+//    IShipmentMapper shipmentMapper();
 
-    AbstractionRouter abstractionRouter();
+//    AbstractionRouter abstractionRouter();
 
-    Context context();
+//    Context context();
 
-    CartApiRequestParamGenerator cartApiRequestParamGenerator();
+//    CartApiRequestParamGenerator cartApiRequestParamGenerator();
 
     void inject(CartComponentInjector cartApiServiceComponentInjector);
 }

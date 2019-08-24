@@ -24,15 +24,15 @@ import javax.inject.Inject;
 public class CartComponentInjector {
     private static CartComponentInjector instance;
 
-    @Inject
+//    @Inject
     UpdateCartUseCase updateCartUseCase;
-    @Inject
+//    @Inject
     CheckoutUseCase checkoutUseCase;
-    @Inject
+//    @Inject
     CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
-    @Inject
+//    @Inject
     EditAddressUseCase editAddressUseCase;
-    @Inject
+//    @Inject
     UserSessionInterface userSession;
 
     private CartComponent cartApiServiceComponent;

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.purchase_platform.common.di.component.CartComponent;
 import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
@@ -108,6 +109,7 @@ public abstract class BaseCheckoutActivity extends BaseSimpleActivity implements
 
     @Override
     public CartComponent getComponent() {
-        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
+        return (CartComponent) getApplicationContext();
+//        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
     }
 }

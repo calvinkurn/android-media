@@ -39,7 +39,7 @@ public class UpdateCartIntentService extends IntentService {
     protected void onHandleIntent(@Nullable Intent intent) {
         if (getApplication() != null) {
             if (updateCartUseCase == null) {
-                updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
+//                updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
             }
             if (userSession == null) {
                 userSession = new UserSession(getApplication());

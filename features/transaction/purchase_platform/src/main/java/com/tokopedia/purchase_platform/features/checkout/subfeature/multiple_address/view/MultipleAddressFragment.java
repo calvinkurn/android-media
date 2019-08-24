@@ -54,11 +54,11 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         implements IMultipleAddressView, MultipleAddressAdapter.MultipleAddressAdapterListener,
         AnalyticsActionMultipleAddressPageListener {
 
-    @Inject
+//    @Inject
     IMultipleAddressPresenter presenter;
-    @Inject
+//    @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    @Inject
+//    @Inject
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
@@ -102,12 +102,12 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     protected void initInjector() {
-        MultipleAddressComponent component = DaggerMultipleAddressComponent
-                .builder()
-                .cartComponent(getComponent(CartComponent.class))
-                .multipleAddressModule(new MultipleAddressModule(this))
-                .trackingAnalyticsModule(new TrackingAnalyticsModule()).build();
-        component.inject(this);
+//        MultipleAddressComponent component = DaggerMultipleAddressComponent
+//                .builder()
+//                .cartComponent(getComponent(CartComponent.class))
+//                .multipleAddressModule(new MultipleAddressModule(this))
+//                .trackingAnalyticsModule(new TrackingAnalyticsModule()).build();
+//        component.inject(this);
     }
 
     @Override

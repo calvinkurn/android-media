@@ -34,11 +34,11 @@ public class MultipleAddressModule {
         return new CompositeSubscription();
     }
 
-    @MultipleAddressScope
-    @Provides
-    ChangeShippingAddressUseCase provideMultipleAddressUseCase(ICartRepository repository) {
-        return new ChangeShippingAddressUseCase(repository);
-    }
+//    @MultipleAddressScope
+//    @Provides
+//    ChangeShippingAddressUseCase provideMultipleAddressUseCase(ICartRepository repository) {
+//        return new ChangeShippingAddressUseCase(repository);
+//    }
 
     @MultipleAddressScope
     @Provides

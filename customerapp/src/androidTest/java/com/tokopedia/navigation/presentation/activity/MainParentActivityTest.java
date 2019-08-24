@@ -263,7 +263,7 @@ public class MainParentActivityTest {
 
         // reset all inbox state
         TestCartListComponent navComponent = DaggerTestCartListComponent.builder()
-                .cartComponent(CartComponentInjector.newInstance(mIntentsRule.getActivity().getApplication()).getCartApiServiceComponent())
+//                .cartComponent(CartComponentInjector.newInstance(mIntentsRule.getActivity().getApplication()).getCartApiServiceComponent())
                 .testCartListModule(new TestCartListModule(fragment))
                 .testTrackingAnalyticsModule(new TestTrackingAnalyticsModule())
                 .build();

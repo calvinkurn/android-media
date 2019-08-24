@@ -60,13 +60,13 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
     private ImageView decreaseButton;
     private ImageView increaseButton;
 
-    @Inject
+//    @Inject
     IAddShipmentAddressPresenter presenter;
 
-    @Inject
+//    @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
-    @Inject
+//    @Inject
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
     private int formMode;
@@ -96,12 +96,12 @@ public class AddShipmentAddressFragment extends BaseCheckoutFragment {
 
     @Override
     protected void initInjector() {
-        AddShipmentAddressComponent component = DaggerAddShipmentAddressComponent
-                .builder()
-                .cartComponent(getComponent(CartComponent.class))
-                .addShipmentAddressModule(new AddShipmentAddressModule())
-                .build();
-        component.inject(this);
+//        AddShipmentAddressComponent component = DaggerAddShipmentAddressComponent
+//                .builder()
+//                .cartComponent(getComponent(CartComponent.class))
+//                .addShipmentAddressModule(new AddShipmentAddressModule())
+//                .build();
+//        component.inject(this);
     }
 
     @Override

@@ -80,15 +80,15 @@ public class ShipmentModule {
         return new CompositeSubscription();
     }
 
-    @Provides
-    @ShipmentScope
-    CheckoutUseCase provideCheckoutUseCase(
-            @ApplicationContext Context context,
-            ICheckoutModuleRouter checkoutModuleRouter,
-            ICartRepository cartRepository,
-            ICheckoutMapper checkoutMapper) {
-        return new CheckoutUseCase(context, cartRepository, checkoutMapper, checkoutModuleRouter);
-    }
+//    @Provides
+//    @ShipmentScope
+//    CheckoutUseCase provideCheckoutUseCase(
+//            @ApplicationContext Context context,
+//            ICheckoutModuleRouter checkoutModuleRouter,
+//            ICartRepository cartRepository,
+//            ICheckoutMapper checkoutMapper) {
+//        return new CheckoutUseCase(context, cartRepository, checkoutMapper, checkoutModuleRouter);
+//    }
 
     @Provides
     @ShipmentScope
@@ -108,25 +108,25 @@ public class ShipmentModule {
         return new ShipmentDataConverter();
     }
 
-    @Provides
-    @ShipmentScope
-    GetShipmentAddressFormUseCase provideGetShipmentAddressFormUseCase(ICartRepository cartRepository,
-                                                                       IShipmentMapper shipmentMapper) {
-        return new GetShipmentAddressFormUseCase(cartRepository, shipmentMapper);
-    }
+//    @Provides
+//    @ShipmentScope
+//    GetShipmentAddressFormUseCase provideGetShipmentAddressFormUseCase(ICartRepository cartRepository,
+//                                                                       IShipmentMapper shipmentMapper) {
+//        return new GetShipmentAddressFormUseCase(cartRepository, shipmentMapper);
+//    }
 
-    @Provides
-    @ShipmentScope
-    GetShipmentAddressFormOneClickShipementUseCase provideGetShipmentAddressFormOneClickShipmentUseCase(
-            ICartRepository cartRepository, IShipmentMapper shipmentMapper) {
-        return new GetShipmentAddressFormOneClickShipementUseCase(cartRepository, shipmentMapper);
-    }
+//    @Provides
+//    @ShipmentScope
+//    GetShipmentAddressFormOneClickShipementUseCase provideGetShipmentAddressFormOneClickShipmentUseCase(
+//            ICartRepository cartRepository, IShipmentMapper shipmentMapper) {
+//        return new GetShipmentAddressFormOneClickShipementUseCase(cartRepository, shipmentMapper);
+//    }
 
-    @Provides
-    @ShipmentScope
-    SaveShipmentStateUseCase provideSaveShipmentStateUseCase(ICartRepository iCartRepository) {
-        return new SaveShipmentStateUseCase(iCartRepository);
-    }
+//    @Provides
+//    @ShipmentScope
+//    SaveShipmentStateUseCase provideSaveShipmentStateUseCase(ICartRepository iCartRepository) {
+//        return new SaveShipmentStateUseCase(iCartRepository);
+//    }
 
     @Provides
     @ShipmentScope

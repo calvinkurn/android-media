@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -51,14 +52,12 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoC
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
+import com.tokopedia.purchase_platform.features.cart.view.di.DaggerNewCartComponent;
+import com.tokopedia.purchase_platform.features.cart.view.di.NewCartComponent;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveView;
 import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveWithBackView;
-import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
-import com.tokopedia.purchase_platform.common.di.component.CartListComponent;
 import com.tokopedia.purchase_platform.common.di.component.DaggerCartListComponent;
-import com.tokopedia.purchase_platform.common.di.module.CartListModule;
-import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartAdapter;
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter;
@@ -81,7 +80,6 @@ import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
@@ -109,7 +107,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
-import javax.inject.Inject;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -150,17 +147,17 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     private ProgressDialog progressDialog;
 
-    @Inject
+    //    @Inject
     ICartListPresenter dPresenter;
-    @Inject
+    //    @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
-    @Inject
+    //    @Inject
     CheckoutAnalyticsCart cartPageAnalytics;
-    @Inject
+    //    @Inject
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
-    @Inject
+    //    @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
-    @Inject
+    //    @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
 
     private CartAdapter cartAdapter;
@@ -261,6 +258,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     protected void initInjector() {
+        NewCartComponent newCartComponent = DaggerNewCartComponent.builder()
+                .baseAppComponent((BaseAppComponent) getActivity().getApplication())
+                .build();
+        newCartComponent.inject(this);
+
 //        CartListComponent cartListComponent = DaggerCartListComponent.builder()
 //                .cartComponent(CartComponentInjector.newInstance(getActivity().getApplication()).getCartApiServiceComponent())
 //                .cartListModule(new CartListModule(this))

@@ -9,7 +9,7 @@ import javax.inject.Inject
  * Created by Irfan Khoirul on 2019-08-15.
  */
 
-class CommonPurchaseRepository @Inject constructor(val commonPurchaseApi: CommonPurchaseApi) : ICommonPurchaseRepository {
+class CommonPurchaseRepository /*@Inject*/ constructor(val commonPurchaseApi: CommonPurchaseApi) : ICommonPurchaseRepository {
 
     override fun checkout(param: Map<String, String>): Observable<CheckoutDataResponse> {
         return commonPurchaseApi.checkout(param).map { cartResponseResponse ->

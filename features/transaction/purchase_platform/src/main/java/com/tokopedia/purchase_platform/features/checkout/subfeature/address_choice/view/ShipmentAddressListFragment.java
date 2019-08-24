@@ -91,13 +91,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private FirebaseRemoteConfigImpl remoteConfig;
 
     ShipmentAddressListAdapter mAdapter;
-    @Inject
+//    @Inject
     AddressListContract.Presenter mPresenter;
-    @Inject
+//    @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    @Inject
+//    @Inject
     CornerAnalytics mCornerAnalytics;
-    @Inject
+//    @Inject
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
     private Token token;
@@ -138,12 +138,12 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected void initInjector() {
-        ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
-                .cartComponent(getComponent(CartComponent.class))
-                .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(), this))
-                .trackingAnalyticsModule(new TrackingAnalyticsModule())
-                .build();
-        component.inject(this);
+//        ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
+//                .cartComponent(getComponent(CartComponent.class))
+//                .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(), this))
+//                .trackingAnalyticsModule(new TrackingAnalyticsModule())
+//                .build();
+//        component.inject(this);
     }
 
     @Override

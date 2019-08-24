@@ -86,23 +86,23 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     CheckoutVariantContract.View, CheckoutVariantActionListener, CheckoutProfileFragmentListener,
     ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
 
-    @Inject
+//    @Inject
     lateinit var presenter: CheckoutVariantContract.Presenter
-    @Inject
+//    @Inject
     lateinit var itemDecorator: CheckoutVariantItemDecorator
-    @Inject
+//    @Inject
     lateinit var fragmentViewModel: FragmentViewModel
-    @Inject
+//    @Inject
     lateinit var compositeSubscription: CompositeSubscription
-    @Inject
+//    @Inject
     lateinit var checkoutProfileBottomSheet: CheckoutProfileBottomSheet
-    @Inject
+//    @Inject
     lateinit var shippingDurationBottomsheet: ShippingDurationBottomsheet
-    @Inject
+//    @Inject
     lateinit var shippingCourierBottomsheet: ShippingCourierBottomsheet
-    @Inject
+//    @Inject
     lateinit var errorBottomsheets: ErrorBottomsheets
-    @Inject
+//    @Inject
     lateinit var analyticsTracker: ExpressCheckoutAnalyticsTracker
 
     private lateinit var router: ICheckoutModuleRouter
@@ -138,15 +138,15 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun initInjector() {
-        activity?.let {
-            val baseAppComponent = it.application
-            if (baseAppComponent is BaseMainApplication) {
-                DaggerCheckoutVariantComponent.builder()
-                    .baseAppComponent(baseAppComponent.baseAppComponent)
-                    .build()
-                    .inject(this)
-            }
-        }
+//        activity?.let {
+//            val baseAppComponent = it.application
+//            if (baseAppComponent is BaseMainApplication) {
+//                DaggerCheckoutVariantComponent.builder()
+//                    .baseAppComponent(baseAppComponent.baseAppComponent)
+//                    .build()
+//                    .inject(this)
+//            }
+//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -174,27 +174,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private String cornerId;
     private PromoNotEligibleBottomsheet promoNotEligibleBottomsheet;
 
-    @Inject
+//    @Inject
     ShipmentAdapter shipmentAdapter;
-    @Inject
+//    @Inject
     ShipmentContract.Presenter shipmentPresenter;
-    @Inject
+//    @Inject
     ShipmentDataConverter shipmentDataConverter;
-    @Inject
+//    @Inject
     RatesDataConverter ratesDataConverter;
-    @Inject
+//    @Inject
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
-    @Inject
+//    @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    @Inject
+//    @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
-    @Inject
+//    @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
-    @Inject
+//    @Inject
     CodAnalytics mTrackerCod;
-    @Inject
+//    @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
-    @Inject
+//    @Inject
     CornerAnalytics mTrackerCorner;
 
     SaveInstanceCacheManager saveInstanceCacheManager;

@@ -31,6 +31,7 @@ import dagger.Provides;
 @Module(includes = {PromoCheckoutModule.class})
 public class CartUseCaseModule {
 
+/*
     @Provides
     CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase(ICartRepository cartRepository,
                                                                 IVoucherCouponMapper iVoucherCouponMapper,
@@ -85,4 +86,5 @@ public class CartUseCaseModule {
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
+*/
 }

@@ -17,9 +17,9 @@ import dagger.Provides;
 @Module
 public class CheckoutUseCaseModule {
 
-    @Provides
-    CheckoutUseCase provideCheckoutUseCase(@ApplicationContext Context context, ICheckoutModuleRouter checkoutModuleRouter, ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
-        return new CheckoutUseCase(context, cartRepository, checkoutMapper, checkoutModuleRouter);
-    }
+//    @Provides
+//    CheckoutUseCase provideCheckoutUseCase(@ApplicationContext Context context, ICheckoutModuleRouter checkoutModuleRouter, ICartRepository cartRepository, ICheckoutMapper checkoutMapper) {
+//        return new CheckoutUseCase(context, cartRepository, checkoutMapper, checkoutModuleRouter);
+//    }
 
 }

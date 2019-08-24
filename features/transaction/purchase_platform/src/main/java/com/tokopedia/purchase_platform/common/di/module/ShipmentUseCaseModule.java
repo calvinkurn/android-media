@@ -12,9 +12,9 @@ import dagger.Provides;
 @Module
 public class ShipmentUseCaseModule {
 
-    @Provides
-    ChangeShippingAddressUseCase getetShippingAddressUseCase(ICartRepository iCartRepository) {
-        return new ChangeShippingAddressUseCase(iCartRepository);
-    }
+//    @Provides
+//    ChangeShippingAddressUseCase getetShippingAddressUseCase(ICartRepository iCartRepository) {
+//        return new ChangeShippingAddressUseCase(iCartRepository);
+//    }
 
 }

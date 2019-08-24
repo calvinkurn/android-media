@@ -43,16 +43,16 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
     private lateinit var mProgressBar: ProgressBar
     private lateinit var mErrorView: View
 
-    @Inject
+//    @Inject
     lateinit var mPresenter: CornerListPresenter
 
     override fun initInjector() {
-        val component = DaggerShipmentAddressListComponent.builder()
-                .cartComponent(getComponent<CartComponent>(CartComponent::class.java))
-                .shipmentAddressListModule(ShipmentAddressListModule(activity))
-                .trackingAnalyticsModule(TrackingAnalyticsModule())
-                .build()
-        component.inject(this)
+//        val component = DaggerShipmentAddressListComponent.builder()
+//                .cartComponent(getComponent<CartComponent>(CartComponent::class.java))
+//                .shipmentAddressListModule(ShipmentAddressListModule(activity))
+//                .trackingAnalyticsModule(TrackingAnalyticsModule())
+//                .build()
+//        component.inject(this)
     }
 
     override fun getScreenName(): String {

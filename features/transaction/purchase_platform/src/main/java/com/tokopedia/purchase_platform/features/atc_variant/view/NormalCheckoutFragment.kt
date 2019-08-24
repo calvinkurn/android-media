@@ -73,7 +73,7 @@ import javax.inject.Inject
 class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAdapterTypeFactory>(),
         NormalCheckoutContract.View, CheckoutVariantActionListener {
 
-    @Inject
+//    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
 
@@ -170,13 +170,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     override fun initInjector() {
-        activity?.run {
-            DaggerNormalCheckoutComponent.builder()
-                    .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
-                    .inject(this@NormalCheckoutFragment)
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            viewModel = viewModelProvider.get(NormalCheckoutViewModel::class.java)
-        }
+//        activity?.run {
+//            DaggerNormalCheckoutComponent.builder()
+//                    .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
+//                    .inject(this@NormalCheckoutFragment)
+//            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+//            viewModel = viewModelProvider.get(NormalCheckoutViewModel::class.java)
+//        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
