@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
 import com.tokopedia.travel.homepage.R
@@ -48,9 +50,15 @@ class TravelHomepageBannerPagerAdapter(bannerImageUrls: List<String>,
             )
         }
         try {
-            ImageHandler.loadImageAndCache(holder.bannerImage, bannerImageUrls[position])
+            Glide.with(holder.itemView.context)
+                    .load(bannerImageUrls[position])
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .centerCrop()
+                    .into(holder.bannerImage)
         } catch (e: Exception) {
-
+            e.printStackTrace()
         }
 
     }
