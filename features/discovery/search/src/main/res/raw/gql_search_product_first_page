@@ -105,7 +105,7 @@ query SearchProduct(
         }
     }
 
-    quick_filter(query: $query) {
+    quick_filter(query: $query, extraParams: $params) {
         filter {
             options {
                 name
