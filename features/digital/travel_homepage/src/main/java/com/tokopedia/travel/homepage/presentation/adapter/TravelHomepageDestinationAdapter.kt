@@ -39,17 +39,16 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
                 if (position == 0) {
                     layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_145)
                 } else {
-                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_180)
                 }
                 destination_container.layoutParams = layoutParams
-                destination_container.minimumHeight = resources.getDimensionPixelSize(R.dimen.dp_140)
 
                 image.loadImage(destination.attributes.imageUrl)
                 title.text = destination.attributes.title
                 subtitle.text = destination.attributes.subtitle
             }
             if (listener != null) itemView.setOnClickListener {
-                listener.onTrackPopularDestinationClick(destination, position+1)
+                listener.onTrackPopularDestinationClick(destination, position + 1)
                 listener.onItemClick(destination.attributes.appUrl)
             }
         }
