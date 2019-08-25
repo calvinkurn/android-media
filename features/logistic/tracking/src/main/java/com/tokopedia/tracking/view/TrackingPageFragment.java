@@ -41,7 +41,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.tracking.view.TrackingPageActivity.ORDER_ID_KEY;
@@ -55,6 +54,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         ITrackingPageFragment, ITransactionAnalyticsTrackingOrder {
 
     private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
+    private static final int PER_SECOND = 1000;
     private static final String INVALID_REFERENCE_STATUS = "resi tidak valid";
 
     private ProgressBar loadingScreen;
@@ -78,6 +78,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private LinearLayout descriptionLayout;
     private ButtonCompat retryButton;
     private TextView retryStatus;
+    private CountDownTimer mCountDownTimer;
 
     @Inject
     ITrackingPagePresenter presenter;
@@ -205,23 +206,10 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
             retryButton.setVisibility(View.GONE);
             if (deadline > 0) {
                 // when retry button available but need to wait until deadline
+                retryStatus.setVisibility(View.VISIBLE);
                 long now = System.currentTimeMillis() / 1000L;
                 long remainingTime = deadline - now;
-                retryStatus.setVisibility(View.VISIBLE);
-                new CountDownTimer(remainingTime, 1000) {
-                    @Override
-                    public void onTick(long millsUntilFinished) {
-                        retryStatus.setText(
-                                String.format("Tunggu %s untuk mencari driver baru",
-                                        DateUtils.formatElapsedTime(millsUntilFinished / 1000)));
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
-                        presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
-                    }
-                }.start();
+                initTimer(remainingTime);
             } else {
                 retryStatus.setVisibility(View.GONE);
             }
@@ -303,6 +291,24 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         component.inject(this);
     }
 
+    private void initTimer(long timeInMillis) {
+        mCountDownTimer = new CountDownTimer(timeInMillis, PER_SECOND) {
+            @Override
+            public void onTick(long millsUntilFinished) {
+                retryStatus.setText(
+                        String.format("Tunggu %s untuk mencari driver baru",
+                                DateUtils.formatElapsedTime(millsUntilFinished / 1000)));
+            }
+
+            @Override
+            public void onFinish() {
+                presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
+                presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+            }
+        };
+        mCountDownTimer.start();
+    }
+
     private View.OnClickListener onFurtherInformationClicked() {
         return view -> startActivity(SimpleWebViewActivity.createIntent(getActivity(), ADDITIONAL_INFO_URL));
     }
@@ -320,5 +326,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDetach();
+        if (mCountDownTimer != null) {
+            mCountDownTimer.cancel();
+        }
     }
 }
