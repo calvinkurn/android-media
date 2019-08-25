@@ -35,7 +35,14 @@ import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsTrackingOrder;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 import static com.tokopedia.tracking.view.TrackingPageActivity.ORDER_ID_KEY;
 import static com.tokopedia.tracking.view.TrackingPageActivity.URL_LIVE_TRACKING;
@@ -224,20 +231,13 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     @Override
     public void startSuccessCountdown() {
         retryButton.setText("Mencari driver baru...");
-        new CountDownTimer(5 * 1000, 1000) {
-            @Override
-            public void onTick(long l) {
-
-            }
-
-            @Override
-            public void onFinish() {
-//                retryButton.setVisibility(View.GONE);
-//                retryStatus.setVisibility(View.GONE);
-                presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
-                presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
-            }
-        }.start();
+        Observable.interval(5, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(aLong -> {
+                    presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
+                    presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+                });
     }
 
     private void initialHistoryView() {
