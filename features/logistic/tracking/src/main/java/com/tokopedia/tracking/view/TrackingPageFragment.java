@@ -198,14 +198,15 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
             retryButton.setVisibility(View.GONE);
             if (deadline > 0) {
                 // when retry button available but need to wait until deadline
-                long remainingTime = deadline - (System.currentTimeMillis() / 1000L);
+                long now = System.currentTimeMillis() / 1000L;
+                long remainingTime = deadline - now;
                 retryStatus.setVisibility(View.VISIBLE);
                 new CountDownTimer(remainingTime, 1000) {
                     @Override
                     public void onTick(long millsUntilFinished) {
                         retryStatus.setText(
                                 String.format("Tunggu %s untuk mencari driver baru",
-                                        DateUtils.formatElapsedTime(millsUntilFinished)));
+                                        DateUtils.formatElapsedTime(millsUntilFinished / 1000)));
                     }
 
                     @Override
