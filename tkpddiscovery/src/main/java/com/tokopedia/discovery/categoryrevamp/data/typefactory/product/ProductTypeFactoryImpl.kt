@@ -7,8 +7,9 @@ import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.ListP
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.SmallGridProductCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 
-class ProductTypeFactoryImpl : BaseProductTypeFactoryImpl(), ProductTypeFactory {
+class ProductTypeFactoryImpl(var productCardListener: ProductCardListener) : BaseProductTypeFactoryImpl(), ProductTypeFactory {
 
 
     override fun type(productsItem: ProductsItem): Int {
@@ -23,13 +24,13 @@ class ProductTypeFactoryImpl : BaseProductTypeFactoryImpl(), ProductTypeFactory 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         if (type == ListProductCardViewHolder.LAYOUT) {
-            viewHolder = ListProductCardViewHolder(view)
+            viewHolder = ListProductCardViewHolder(view,productCardListener)
 
         } else if (type == BigGridProductCardViewHolder.LAYOUT) {
-            viewHolder = BigGridProductCardViewHolder(view)
+            viewHolder = BigGridProductCardViewHolder(view,productCardListener)
 
         } else if (type == SmallGridProductCardViewHolder.LAYOUT) {
-            viewHolder = SmallGridProductCardViewHolder(view)
+            viewHolder = SmallGridProductCardViewHolder(view,productCardListener)
 
         } else {
             viewHolder = super.createViewHolder(view, type)

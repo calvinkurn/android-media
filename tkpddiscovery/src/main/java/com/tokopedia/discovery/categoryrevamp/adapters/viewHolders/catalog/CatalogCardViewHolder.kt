@@ -4,8 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.categoryrevamp.catalogcard.CatalogCardView
 import com.tokopedia.discovery.categoryrevamp.data.catalogModel.CatalogItem
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 
-abstract class CatalogCardViewHolder(itemView: View) : AbstractViewHolder<CatalogItem>(itemView) {
+abstract class CatalogCardViewHolder(itemView: View, var catalogCardListener: CatalogCardListener) : AbstractViewHolder<CatalogItem>(itemView) {
 
     protected val context = itemView.context!!
 
@@ -16,6 +17,13 @@ abstract class CatalogCardViewHolder(itemView: View) : AbstractViewHolder<Catalo
         initCatalogDescription(catalogItem)
         initCatalogPrice(catalogItem)
         setMulaiDariText()
+        initCatalogCardClick(catalogItem)
+    }
+
+    private fun initCatalogCardClick(catalogItem: CatalogItem) {
+        getCatalogCardView()?.setOnClickListener {
+            catalogCardListener.setOnCatalogClicked(catalogItem.id.toString(), catalogItem.name.toString())
+        }
     }
 
     private fun setMulaiDariText() {

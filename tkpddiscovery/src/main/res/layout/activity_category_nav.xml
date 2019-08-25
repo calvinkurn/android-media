@@ -5,100 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        app:elevation="0dp">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:navigationIcon="@drawable/icon_back"
-            app:titleTextColor="@color/black_70">
-
-            <android.support.constraint.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <LinearLayout
-                    android:id="@+id/layout_search"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/dp_4"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:layout_marginTop="@dimen/dp_10"
-                    android:background="@drawable/bg_corner"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toStartOf="@+id/img_display_button"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <ImageView
-                        android:layout_width="@dimen/dp_20"
-                        android:layout_height="@dimen/dp_20"
-                        android:layout_gravity="center"
-                        android:paddingLeft="@dimen/dp_8"
-                        app:srcCompat="@drawable/ic_category_filter" />
-
-                    <TextView
-                        android:id="@+id/et_search"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="@dimen/dp_4"
-                        android:layout_marginLeft="@dimen/dp_4"
-                        android:layout_weight="1"
-                        android:background="@null"
-                        android:enabled="true"
-                        android:focusable="false"
-                        android:gravity="center_vertical"
-                        android:inputType="none"
-                        android:maxLines="1"
-                        android:textColorHint="@android:color/black"
-                        android:textSize="@dimen/sp_16" />
-
-
-                    <ImageButton
-                        android:id="@+id/image_button_close"
-                        android:layout_width="@dimen/dp_24"
-                        android:layout_height="@dimen/dp_24"
-                        android:layout_marginTop="@dimen/dp_10"
-                        android:background="@null"
-                        android:padding="@dimen/dp_8"
-                        android:visibility="visible"
-                        app:srcCompat="@drawable/ic_close_search" />
-
-                </LinearLayout>
-
-                <ImageButton
-                    android:id="@+id/img_display_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/transparent"
-                    android:paddingLeft="@dimen/dp_16"
-                    android:paddingRight="@dimen/dp_16"
-                    app:layout_constraintBottom_toBottomOf="@+id/layout_search"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/layout_search"
-                    app:layout_constraintTop_toTopOf="@+id/layout_search"
-                    app:srcCompat="@drawable/ic_grid_display" />
-
-
-            </android.support.constraint.ConstraintLayout>
-
-        </android.support.v7.widget.Toolbar>
-
-    </android.support.design.widget.AppBarLayout>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="false" />
-
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -112,6 +18,11 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+           <!-- <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:background="@drawable/top_bar_shadow" />-->
+
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
@@ -122,11 +33,6 @@
                 app:tabMode="scrollable"
                 app:tabSelectedTextColor="@color/tkpd_green_header"
                 app:tabTextAppearance="@style/SearchTabWidgetText" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_1"
-                android:background="@drawable/top_bar_shadow" />
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/pager"
@@ -156,7 +62,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_category_sort" />
-
         <TextView
             android:id="@+id/button_sort"
             style="@style/TextView.Small.BlackPrimary"
@@ -164,7 +69,6 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_4"
             android:text="@string/sort" />
-
         <View
             android:id="@+id/search_nav_divider"
             android:layout_width="1px"
@@ -179,6 +83,7 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_category_filter" />
 
+
         <TextView
             android:id="@+id/button_filter"
             style="@style/TextView.Small.BlackPrimary"
@@ -187,6 +92,113 @@
             android:layout_marginLeft="@dimen/dp_4"
             android:text="@string/filter" />
 
+
+
     </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminate="false"
+        android:visibility="gone" />
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIcon="@drawable/icon_back"
+            app:titleTextColor="@color/black_70">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/img_display_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:paddingLeft="@dimen/dp_16"
+                    android:paddingRight="@dimen/dp_16"
+                    app:layout_constraintBottom_toBottomOf="@+id/layout_search"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/layout_search"
+                    app:layout_constraintTop_toTopOf="@+id/layout_search"
+                    app:srcCompat="@drawable/ic_grid_display" />
+
+                <LinearLayout
+                    android:id="@+id/layout_search"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/dp_4"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:background="@drawable/bg_corner"
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toStartOf="@+id/img_display_button"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+
+                    <ImageView
+                        android:layout_width="@dimen/dp_20"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_gravity="center"
+                        android:paddingLeft="@dimen/dp_8"
+                        app:srcCompat="@drawable/ic_category_filter" />
+
+
+                    <TextView
+                        android:id="@+id/et_search"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="@dimen/dp_4"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:enabled="true"
+                        android:focusable="false"
+                        android:gravity="center_vertical"
+                        android:inputType="none"
+                        android:maxLines="1"
+                        android:textColorHint="@android:color/black"
+                        android:textSize="@dimen/sp_16" />
+
+                    <ImageButton
+                        android:id="@+id/image_button_close"
+                        android:layout_width="@dimen/dp_24"
+                        android:layout_height="@dimen/dp_24"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:background="@null"
+                        android:padding="@dimen/dp_8"
+                        android:visibility="visible"
+                        app:srcCompat="@drawable/ic_close_search" />
+
+                </LinearLayout>
+
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView
+        android:id="@+id/bottomSheetFilter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:behavior_hideable="true"
+        app:layout_behavior="com.tokopedia.discovery.newdiscovery.widget.UserLockBottomSheetBehavior" />
 
 </android.support.design.widget.CoordinatorLayout>

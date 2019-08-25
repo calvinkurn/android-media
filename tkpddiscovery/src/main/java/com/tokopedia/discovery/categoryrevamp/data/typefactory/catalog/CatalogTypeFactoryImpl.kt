@@ -8,8 +8,9 @@ import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.catalog.Small
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.catalogModel.CatalogItem
 import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.BaseProductTypeFactoryImpl
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 
-class CatalogTypeFactoryImpl : BaseProductTypeFactoryImpl(), CatalogTypeFactory {
+class CatalogTypeFactoryImpl(val catalogCardListener: CatalogCardListener) : BaseProductTypeFactoryImpl(), CatalogTypeFactory {
 
     override fun type(catalogItem: CatalogItem): Int {
         when (getRecyclerViewItem()) {
@@ -25,13 +26,13 @@ class CatalogTypeFactoryImpl : BaseProductTypeFactoryImpl(), CatalogTypeFactory 
 
         val viewHolder: AbstractViewHolder<*>
         if (type == ListCatalogCardViewHolder.LAYOUT) {
-            viewHolder = ListCatalogCardViewHolder(view)
+            viewHolder = ListCatalogCardViewHolder(view,catalogCardListener)
 
         } else if (type == BigGridCatalogCardViewHolder.LAYOUT) {
-            viewHolder = BigGridCatalogCardViewHolder(view)
+            viewHolder = BigGridCatalogCardViewHolder(view,catalogCardListener)
 
         } else if (type == SmallGridCatalogCardViewHolder.LAYOUT) {
-            viewHolder = SmallGridCatalogCardViewHolder(view)
+            viewHolder = SmallGridCatalogCardViewHolder(view,catalogCardListener)
 
         } else {
             viewHolder = super.createViewHolder(view, type)

@@ -15,6 +15,7 @@ import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.data.productModel.BadgesItem
 import com.tokopedia.discovery.categoryrevamp.data.productModel.LabelGroupsItem
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.productcard.v2.ProductCardView
 
 
@@ -22,7 +23,8 @@ const val LABEL_GROUP_POSITION_PROMO = "promo"
 const val LABEL_GROUP_POSITION_CREDIBILITY = "credibility"
 const val LABEL_GROUP_POSITION_OFFERS = "offers"
 
-abstract class ProductCardViewHolder(itemView: View) : AbstractViewHolder<ProductsItem>(itemView) {
+abstract class ProductCardViewHolder(itemView: View,
+                                     var productListener: ProductCardListener) : AbstractViewHolder<ProductsItem>(itemView) {
 
     protected val context = itemView.context!!
 
@@ -31,7 +33,7 @@ abstract class ProductCardViewHolder(itemView: View) : AbstractViewHolder<Produc
 
         initProductCardContainer(productItem)
         initProductImage(productItem)
-        // initWishlistButton(productItem)
+        initWishlistButton(productItem)
         initPromoLabel(productItem)
         initShopName(productItem)
         initTitleTextView(productItem)
@@ -58,7 +60,7 @@ abstract class ProductCardViewHolder(itemView: View) : AbstractViewHolder<Produc
         }
 
         getProductCardView()?.setOnClickListener {
-            // productListener.onItemClicked(productItem, adapterPosition)
+            productListener.onItemClicked(productItem, adapterPosition)
         }
     }
 
@@ -67,9 +69,9 @@ abstract class ProductCardViewHolder(itemView: View) : AbstractViewHolder<Produc
 
         setImageProductUrl(productItem)
 
-      //  getProductCardView()?.setImageProductViewHintListener(productItem) {
-            // productListener.onProductImpressed(productItem, adapterPosition)
-       // }
+       /*   getProductCardView()?.setImageProductViewHintListener(productItem) {
+         productListener.onProductImpressed(productItem, adapterPosition)
+         }*/
     }
 
     protected fun setImageProductUrl(productItem: ProductsItem) {
@@ -83,7 +85,7 @@ abstract class ProductCardViewHolder(itemView: View) : AbstractViewHolder<Produc
         getProductCardView()?.setButtonWishlistImage(productItem.wishlist)
         getProductCardView()?.setButtonWishlistOnClickListener {
             if (productItem.wishlist) {
-                //productListener.onWishlistButtonClicked(productItem)
+                productListener.onWishlistButtonClicked(productItem)
             }
         }
     }
@@ -240,7 +242,7 @@ abstract class ProductCardViewHolder(itemView: View) : AbstractViewHolder<Produc
         getProductCardView()?.setImageRatingVisible(isImageRatingVisible)
 
         if (isImageRatingVisible) {
-            // getProductCardView()?.setRating(getStarCount(productItem))
+             getProductCardView()?.setRating(getStarCount(productItem))
         }
     }
 
@@ -248,12 +250,12 @@ abstract class ProductCardViewHolder(itemView: View) : AbstractViewHolder<Produc
         return productItem.rating != 0
     }
 
-    /* protected fun getStarCount(productItem: ProductsItem): Int {
-         return if (productItem.isTopAds)
+     protected fun getStarCount(productItem: ProductsItem): Int {
+        /* return if (productItem.isTopAds)
              Math.round(productItem.rating / 20f)
-         else
-             Math.round(productItem.rating.toFloat())
-     }*/
+         else*/
+            return Math.round(productItem.rating?.toFloat()?:0f)
+     }
 
     protected fun initReviewCount(productItem: ProductsItem) {
         val isReviewCountVisible = isReviewCountVisible(productItem)
@@ -311,8 +313,8 @@ abstract class ProductCardViewHolder(itemView: View) : AbstractViewHolder<Produc
 
     /* protected fun initTopAdsIcon(productItem: ProductsItem) {
          getProductCardView()?.setImageTopAdsVisible(productItem.isTopAds)
-     }
- */
+     }*/
+
     protected fun finishBindViewHolder() {
         getProductCardView()?.realignLayout()
     }

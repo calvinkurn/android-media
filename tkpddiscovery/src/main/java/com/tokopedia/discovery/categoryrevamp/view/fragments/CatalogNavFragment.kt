@@ -13,23 +13,42 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.CatalogNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
+import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_nav.*
 import javax.inject.Inject
 
-class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.OnItemChangeView {
+class CatalogNavFragment : BaseCategorySectionFragment(),
+        BaseCategoryAdapter.OnItemChangeView,
+        CatalogCardListener {
+
+    override fun setOnCatalogClicked(catalogID: String, catalogName: String) {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalDiscovery.CATALOG)
+        intent.putExtra(EXTRA_CATALOG_ID, catalogID)
+        startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL)
+    }
+
+    override fun getFilterRequestCode(): Int {
+        return REQUEST_ACTIVITY_FILTER_PRODUCT
+    }
+
+    override fun getSortRequestCode(): Int {
+        return REQUEST_ACTIVITY_SORT_PRODUCT
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -37,7 +56,6 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
     @Inject
     lateinit var catalogNavViewModel: CatalogNavViewModel
 
-    var categoryHeaderModel: CategoryHeaderModel? = null
 
     var list: ArrayList<Visitable<CatalogTypeFactory>> = ArrayList()
 
@@ -49,16 +67,29 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
 
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
 
+    private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
+    private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
+
+    var mDepartmentId: String = ""
+    var mDepartmentName: String = ""
+    val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
+    private val REQUEST_CODE_GOTO_CATALOG_DETAIL = 124
+
+
     companion object {
-        private val EXTRA_CATEGORY_HEADER_MODEL = "categoryheadermodel"
+        private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
+        private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+
         @JvmStatic
-        fun newInstance(categoryHeaderModel: CategoryHeaderModel): Fragment {
+        fun newInstance(departmentid: String, departmentName: String): Fragment {
             val fragment = CatalogNavFragment()
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_CATEGORY_HEADER_MODEL, categoryHeaderModel)
+            bundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, departmentid)
+            bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
             fragment.arguments = bundle
             return fragment
         }
+
     }
 
     override fun getAdapter(): BaseCategoryAdapter? {
@@ -70,7 +101,9 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
     }
 
     override fun initInjector() {
-        categoryNavComponent = DaggerCategoryNavComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent).build()
+        categoryNavComponent = DaggerCategoryNavComponent.builder()
+                .baseAppComponent((activity?.applicationContext as BaseMainApplication)
+                        .baseAppComponent).build()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -82,10 +115,12 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         categoryNavComponent.inject(this)
-        if (arguments != null && arguments!!.containsKey(EXTRA_CATEGORY_HEADER_MODEL)) {
-            categoryHeaderModel = arguments!!.getParcelable(EXTRA_CATEGORY_HEADER_MODEL)
+        arguments?.let {
+            if (it.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
+                mDepartmentId = it.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
+                mDepartmentName = it.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
+            }
         }
-
 
         initView()
         setUpAdapter()
@@ -96,19 +131,19 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
     private fun observeData() {
 
         catalogNavViewModel.mCatalog.observe(this, Observer {
-
-
             when (it) {
                 is Success -> {
                     catalogNavListAdapter?.removeLoading()
                     if (it.data.count > 0) {
+                        layout_no_data.visibility = View.GONE
                         list.addAll(it.data.items as ArrayList<Visitable<CatalogTypeFactory>>)
                         catalog_recyclerview.adapter?.notifyDataSetChanged()
+                        staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
                     } else {
                         layout_no_data.visibility = View.VISIBLE
-
                     }
                     hideRefreshLayout()
+                    reloadFilter(createFilterParam())
                 }
 
                 is Fail -> {
@@ -118,10 +153,44 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
             }
         })
 
+        catalogNavViewModel.mCatalogCount.observe(this@CatalogNavFragment, Observer {
+
+            it?.let {
+                setTotalSearchResultCount(it)
+                txt_catalog_count.text = activity?.getString(R.string.category_nav_catalog_count, it)
+            }
+        })
+
+        catalogNavViewModel.mDynamicFilterModel.observe(this@CatalogNavFragment, Observer {
+            when (it) {
+                is Success -> {
+                    renderDynamicFilter(it.data.data)
+                }
+
+                is Fail -> {
+                }
+            }
+        })
+
+
+    }
+
+
+    private fun createFilterParam(): RequestParams {
+        val paramMap = RequestParams()
+        val daFilterQueryType = DAFilterQueryType()
+        daFilterQueryType.sc = mDepartmentId
+        paramMap.putString(CategoryNavConstants.SOURCE, "search_catalog")
+        paramMap.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
+        return paramMap
+    }
+
+    private fun reloadFilter(param: RequestParams) {
+        catalogNavViewModel.fetchDynamicAttribute(param)
     }
 
     private fun setUpAdapter() {
-        catalogTypeFactory = CatalogTypeFactoryImpl()
+        catalogTypeFactory = CatalogTypeFactoryImpl(this)
         catalogNavListAdapter = CatalogNavListAdapter(catalogTypeFactory, list, this)
         catalog_recyclerview.adapter = catalogNavListAdapter
         catalog_recyclerview.layoutManager = getStaggeredGridLayoutManager()
@@ -158,8 +227,8 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
         catalogMap.putString(CategoryNavConstants.SOURCE, "directory")
         catalogMap.putString(CategoryNavConstants.ST, "catalog")
         catalogMap.putInt(CategoryNavConstants.ROWS, 10)
-        catalogMap.putObject("filter", AceFilterInput("", "", categoryHeaderModel?.departementId
-                ?: ""))
+        catalogMap.putObject("filter", AceFilterInput("", "", mDepartmentId))
+        catalogMap.putInt("ob", getSelectedSort()["ob"]?.toInt() ?: 23)
         return catalogMap
 
     }
@@ -184,7 +253,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(), BaseCategoryAdapter.On
         reloadData()
     }
 
-    private fun reloadData() {
+    override fun reloadData() {
         if (catalogNavListAdapter == null) {
             return
         }

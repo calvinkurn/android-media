@@ -97,7 +97,14 @@ abstract class CatalogCardView : BaseCustomView {
     }
 
     open fun setLabelCatalogDescriptionText(promoLabelText: String) {
-        catalogDescription?.text = promoLabelText
+        if (promoLabelText.isNotEmpty()) {
+            //  catalogDescription?.show()
+            catalogDescription?.visibility = View.VISIBLE
+            catalogDescription?.text = promoLabelText
+        } else {
+            //  catalogDescription?.hide()
+            catalogDescription?.visibility = View.GONE
+        }
     }
 
     open fun setLabelCatalogPriceText(promoLabelText: String) {

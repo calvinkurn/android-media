@@ -90,6 +90,7 @@
             android:layout_marginRight="@dimen/dp_8"
             android:ellipsize="end"
             android:maxLines="2"
+            android:maxLength="30"
             android:textColor="@color/charcoal_grey_88"
             android:textSize="@dimen/sp_12"
             app:layout_constraintLeft_toRightOf="@id/imageCatalog"

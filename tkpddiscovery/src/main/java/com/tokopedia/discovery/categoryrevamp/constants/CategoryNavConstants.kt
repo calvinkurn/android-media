@@ -27,6 +27,10 @@ class CategoryNavConstants {
         const val ST = "st"
 
 
+        const val FILTER = "filter"
+
+
+
     }
 
 

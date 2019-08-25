@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -8,6 +9,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+        <TextView
+
+            android:textSize="@dimen/sp_15"
+            android:padding="@dimen/dp_16"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:id="@+id/txt_catalog_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="9.9jt+ produk" />
+
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/catalog_recyclerview"
@@ -22,7 +35,7 @@
             layout="@layout/layout_nav_no_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible" />
+            android:visibility="gone" />
 
     </LinearLayout>
 

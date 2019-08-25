@@ -79,4 +79,6 @@
     <string name="no_support_application">Tidak ada aplikasi pendukung untuk membuka konten.</string>
     <string name="description_page_title">Deskripsi Produk</string>
     <string name="search_cancel_text">Cancel</string>
+
+    <string name="category_nav_catalog_count">%s Katalog</string>
 </resources>

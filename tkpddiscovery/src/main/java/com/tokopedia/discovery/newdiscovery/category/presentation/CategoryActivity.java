@@ -41,6 +41,9 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     private static final String EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL";
     private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
 
+    private static final String EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID";
+    private static final String EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME";
+
     public static final int TAB_SHOP_CATALOG = 1;
     public static final int TAB_PRODUCT = 0;
     private static final String PERFORMANCE_TRACE_CATEGORY = "mp_category_list";
@@ -93,12 +96,18 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
                               boolean removeAnimation,
                               String trackerAttribution) {
         if (context != null) {
-            //Intent intent = new Intent(context, CategoryActivity.class);
-            Intent intent = new Intent(context, CategoryNavActivity.class);
+           /* Intent intent = new Intent(context, CategoryActivity.class);
             intent.putExtra(EXTRA_CATEGORY_HEADER_VIEW_MODEL, categoryHeaderModel);
             intent.putExtra(EXTRA_TRACKER_ATTRIBUTION, trackerAttribution);
             if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            context.startActivity(intent);*/
+
+            Intent intent = new Intent(context, CategoryNavActivity.class);
+            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, categoryHeaderModel.getDepartementId());
+            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, categoryHeaderModel.getHeaderModel().getCategoryName());
+            if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             context.startActivity(intent);
+
         }
     }
 

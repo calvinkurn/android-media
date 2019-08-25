@@ -2,9 +2,7 @@ package com.tokopedia.discovery.categoryrevamp.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.CatalogUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.CategoryProductUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.SubCategoryUseCase
+import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import dagger.Module
 import dagger.Provides
@@ -64,5 +62,15 @@ class CategoryNavUseCaseModule {
         return CatalogUseCase(context, graphqlUseCase)
     }
 
+    @CategoryNavScope
+    @Provides
+    fun provideDynamicFilterUseCase(context: Context): DynamicFilterUseCase {
+        return DynamicFilterUseCase(context)
+    }
 
+    @CategoryNavScope
+    @Provides
+    fun provideQuickFilterUseCase(context: Context): QuickFilterUseCase {
+        return QuickFilterUseCase(context)
+    }
 }

@@ -19,11 +19,6 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
         holder.bind(visitables[position])
     }
 
-    fun appendList(visitables: ArrayList<Visitable<ProductTypeFactory>>) {
-        this.visitables.addAll(visitables)
-    }
-
-
     override fun getTypeFactory(): BaseProductTypeFactory {
         return productTypeFactory
     }

@@ -1,48 +1,133 @@
 package com.tokopedia.discovery.categoryrevamp.view.activity
 
+import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AppCompatActivity
+import android.view.MenuItem
+import android.view.View
 import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.view.CategoryNavigationListener
+import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
-import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
+import com.tokopedia.discovery.common.data.Filter
+import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener
 import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem
+import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView
 import kotlinx.android.synthetic.main.activity_category_nav.*
 
 
-class CategoryNavActivity : BaseActivity(), CategoryNavigationListener {
+class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSheetListener {
+
+    override fun hideBottomNavigation() {
+        searchNavContainer?.setVisibility(View.GONE)
+    }
+
+    fun showBottomNavigation() {
+        searchNavContainer?.setVisibility(View.VISIBLE)
+    }
+
+    override fun loadFilterItems(filters: java.util.ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
+        bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
+    }
+
+    override fun setFilterResultCount(formattedResultCount: String?) {
+        bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
+    }
+
+    override fun closeFilterBottomSheet() {
+        bottomSheetFilterView?.closeView()
+    }
+
+    override fun isBottomSheetShown(): Boolean {
+        return bottomSheetFilterView?.isBottomSheetShown() ?: false
+    }
+
+    override fun launchFilterBottomSheet() {
+        bottomSheetFilterView?.launchFilterBottomSheet()
+    }
 
     private var searchSectionPagerAdapter: SearchSectionPagerAdapter? = null
     private var isForceSwipeToShop: Boolean = false
     private var activeTabPosition: Int = 0
 
-    private val EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL"
-
-    private lateinit var categoryHeaderModel: CategoryHeaderModel
-
     val searchSectionItemList = ArrayList<SearchSectionItem>()
 
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
 
+    private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
+
     private val STATE_GRID = 1
     private val STATE_LIST = 2
     private val STATE_BIG = 3
+    private var bottomSheetFilterView: BottomSheetFilterView? = null
+    private var searchNavContainer: View? = null
+
+
+    private var searchParameter: SearchParameter? = null
+
+
+    private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
+    private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+
+    private var departmentId: String = ""
+    private var departmentName: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_nav)
+        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
+        searchNavContainer = findViewById(R.id.search_nav_container)
+
         prepareView()
+        handleIntent(intent)
+
 
     }
 
+    private fun handleIntent(intent: Intent) {
+        getExtrasFromIntent(intent)
+    }
+
+    private fun getExtrasFromIntent(intent: Intent) {
+        searchParameter = getSearchParameterFromIntentUri(intent)
+        // isForceSwipeToShop = intent.getBooleanExtra(EXTRA_FORCE_SWIPE_TO_SHOP, false)
+    }
+
+    private fun getSearchParameterFromIntentUri(intent: Intent): SearchParameter {
+        val uri = intent.data
+
+        return if (uri == null) SearchParameter() else SearchParameter(uri.toString())
+    }
+
+
     private fun initSwitchButton() {
+
+        icon_sort.setOnClickListener {
+            visibleFragmentListener?.onSortClick()
+
+        }
+        button_sort.setOnClickListener {
+            visibleFragmentListener?.onSortClick()
+        }
+
+        icon_filter.setOnClickListener {
+            visibleFragmentListener?.onFilterClick()
+        }
+
+        button_filter.setOnClickListener {
+            visibleFragmentListener?.onFilterClick()
+        }
+
+
         img_display_button.tag = STATE_GRID
         img_display_button.setOnClickListener {
 
@@ -74,12 +159,55 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener {
         initViewPager()
         loadSection()
         initSwitchButton()
+        initBottomSheetListener()
+
+        bottomSheetFilterView?.initFilterBottomSheet()
+
+    }
+
+    private fun initBottomSheetListener() {
+        bottomSheetFilterView?.setCallback(object : BottomSheetFilterView.Callback {
+            override fun onApplyFilter(filterParameter: Map<String, String>) {
+                applyFilter(filterParameter)
+            }
+
+            override fun onShow() {
+                hideBottomNavigation()
+            }
+
+            override fun onHide() {
+                showBottomNavigation()
+                //sendBottomSheetHideEventForProductList()
+            }
+
+            override fun isSearchShown(): Boolean {
+                return false
+            }
+
+            override fun hideKeyboard() {
+                KeyboardHandler.hideSoftKeyboard(this@CategoryNavActivity)
+            }
+
+            override fun getActivity(): AppCompatActivity {
+                return this@CategoryNavActivity
+            }
+        })
+    }
+
+    private fun applyFilter(filterParameter: Map<String, String>) {
+        val selectedFragment = searchSectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+
+        selectedFragment.applyFilterToSearchParameter(filterParameter)
+        selectedFragment.setSelectedFilter(HashMap<String, String>(filterParameter))
+        selectedFragment.clearDataFilterSort()
+        selectedFragment.reloadData()
     }
 
     private fun fetchBundle() {
         val bundle = intent.extras
-        if (bundle.getParcelable<Parcelable>(EXTRA_CATEGORY_HEADER_VIEW_MODEL) != null) run {
-            categoryHeaderModel = bundle.getParcelable<CategoryHeaderModel>(EXTRA_CATEGORY_HEADER_VIEW_MODEL)
+        if (bundle?.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID) != null) run {
+            departmentId = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
+            departmentName = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
         }
     }
 
@@ -101,8 +229,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener {
     }
 
     private fun addFragmentsToList(searchSectionItemList: ArrayList<SearchSectionItem>) {
-        searchSectionItemList.add(SearchSectionItem("Produk", ProductNavFragment.newInstance(categoryHeaderModel)))
-        searchSectionItemList.add(SearchSectionItem("Katalog", CatalogNavFragment.newInstance(categoryHeaderModel)))
+        searchSectionItemList.add(SearchSectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName)))
+        searchSectionItemList.add(SearchSectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
     }
 
     private fun initFragments() {
@@ -121,7 +249,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener {
         pager.offscreenPageLimit = 3
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                //  bottomSheetFilterView.closeView()
+                bottomSheetFilterView?.closeView()
             }
 
             override fun onPageSelected(position: Int) {
@@ -141,11 +269,44 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener {
     }
 
     private fun initToolbar() {
-        et_search.text = categoryHeaderModel.headerModel.categoryName;
+        et_search.text = departmentName
     }
 
     override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {
         navigationListenerList.add(clickListener)
+    }
+
+    override fun setUpVisibleFragmentListener(visibleClickListener: CategoryNavigationListener.VisibleClickListener) {
+        visibleFragmentListener = visibleClickListener
+    }
+
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item?.itemId == R.id.home) {
+            onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+
+    }
+
+    override fun onBackPressed() {
+        bottomSheetFilterView?.let {
+            if (!it.onBackPressed()) {
+                finish()
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (data != null) {
+            handleDefaultActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        bottomSheetFilterView?.onActivityResult(requestCode, resultCode, data)
     }
 
 }
