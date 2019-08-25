@@ -24,7 +24,7 @@
         android:layout_marginTop="@dimen/dp_16"
         app:corners="@integer/travel_subhomepage_shimmering_corner"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shimmeringTv" />
+        app:layout_constraintTop_toBottomOf="@+id/shimmeringTv" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_2"
@@ -34,10 +34,10 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         app:corners="@integer/travel_subhomepage_shimmering_corner"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_shimmering" />
+        app:layout_constraintTop_toBottomOf="@+id/image_shimmering" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_3"
@@ -48,10 +48,10 @@
         android:layout_marginTop="@dimen/dp_16"
         app:corners="@integer/travel_subhomepage_shimmering_corner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/guideline"
-        app:layout_constraintRight_toRightOf="@id/guideline"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/image_shimmering" />
+        app:layout_constraintLeft_toRightOf="@+id/guideline"
+        app:layout_constraintRight_toRightOf="@+id/guideline"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/image_shimmering" />
 
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
@@ -62,10 +62,10 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         app:corners="@integer/travel_subhomepage_shimmering_corner"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_shimmering_2" />
+        app:layout_constraintTop_toBottomOf="@+id/image_shimmering_2" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_5"
@@ -76,10 +76,10 @@
         android:layout_marginTop="@dimen/dp_16"
         app:corners="@integer/travel_subhomepage_shimmering_corner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/guideline"
-        app:layout_constraintRight_toRightOf="@id/guideline"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/image_shimmering_3" />
+        app:layout_constraintLeft_toRightOf="@+id/guideline"
+        app:layout_constraintRight_toRightOf="@+id/guideline"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/image_shimmering_3" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_6"
@@ -89,10 +89,10 @@
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         app:corners="@integer/travel_subhomepage_shimmering_corner"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/image_shimmering_4" />
+        app:layout_constraintTop_toBottomOf="@+id/image_shimmering_4" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/image_shimmering_7"
@@ -103,10 +103,10 @@
         android:layout_marginTop="@dimen/dp_16"
         app:corners="@integer/travel_subhomepage_shimmering_corner"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/guideline"
-        app:layout_constraintRight_toRightOf="@id/guideline"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintTop_toBottomOf="@id/image_shimmering_5" />
+        app:layout_constraintLeft_toRightOf="@+id/guideline"
+        app:layout_constraintRight_toRightOf="@+id/guideline"
+        app:layout_constraintStart_toEndOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/image_shimmering_5" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
