@@ -56,7 +56,6 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.playServicesDependencies.analytics
 
     testImplementation rootProject.ext.testDependencies.junit
