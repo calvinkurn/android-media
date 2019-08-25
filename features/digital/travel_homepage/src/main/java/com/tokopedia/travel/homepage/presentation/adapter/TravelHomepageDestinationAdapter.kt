@@ -49,7 +49,7 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
                 subtitle.text = destination.attributes.subtitle
             }
             if (listener != null) itemView.setOnClickListener {
-                listener.onTrackPopularDestinationClick(destination, position)
+                listener.onTrackPopularDestinationClick(destination, position+1)
                 listener.onItemClick(destination.attributes.appUrl)
             }
         }

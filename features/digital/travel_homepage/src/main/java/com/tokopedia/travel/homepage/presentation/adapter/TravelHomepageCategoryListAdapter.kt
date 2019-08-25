@@ -38,7 +38,7 @@ class TravelHomepageCategoryListAdapter(private var list: List<TravelHomepageCat
                 category_name.text = category.attributes.title
             }
             itemView.setOnClickListener {
-                listener.onTrackCategoryClick(category, position)
+                listener.onTrackCategoryClick(category, position+1)
                 listener.onItemClick(category.attributes.appUrl)
             }
         }
