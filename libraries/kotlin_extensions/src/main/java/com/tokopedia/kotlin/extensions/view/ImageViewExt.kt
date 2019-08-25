@@ -34,10 +34,6 @@ fun ImageView.loadImageDrawable(@DrawableRes drawableId: Int) {
     this.setImageDrawable(MethodChecker.getDrawable(context, drawableId))
 }
 
-fun ImageView.loadImageOriginal(url: String, resId: Int = R.drawable.ic_loading_image) {
-    ImageHandler.loadImageOriginal2(this, url, resId)
-}
-
 fun ImageView.clearImage() {
     ImageHandler.clearImage(this)
 }

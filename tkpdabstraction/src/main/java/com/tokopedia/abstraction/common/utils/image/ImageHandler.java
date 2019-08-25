@@ -184,6 +184,7 @@ public class ImageHandler {
     }
 
 
+
     public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
         Glide.with(context)
                 .load(url)
@@ -275,26 +276,6 @@ public class ImageHandler {
                     .load(url)
                     .placeholder(resId)
                     .error(error)
-                    .into(imageview);
-        }
-    }
-
-    public static void loadImageOriginal2(ImageView imageview, String url, int resId) {
-        Drawable error = AppCompatResources.getDrawable(imageview.getContext(), resId);
-        if (url != null && !TextUtils.isEmpty(url)) {
-            Glide.with(imageview.getContext())
-                    .load(url)
-                    .placeholder(R.drawable.loading_page)
-                    .dontAnimate()
-                    .error(error)
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-                    .into(imageview);
-        } else {
-            Glide.with(imageview.getContext())
-                    .load(url)
-                    .placeholder(resId)
-                    .error(error)
-                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                     .into(imageview);
         }
     }
@@ -441,7 +422,7 @@ public class ImageHandler {
                                                   int strokeColor,
                                                   int width,
                                                   int height
-    ) {
+                                                  ) {
         Glide.with(context)
                 .load(url)
                 .asBitmap()
@@ -694,7 +675,7 @@ public class ImageHandler {
     }
 
     public static void loadGif(ImageView imageView, int gifDrawable, int placeholder) {
-        if (placeholder < 0) {
+        if(placeholder < 0) {
             Glide.with(imageView.getContext()).load(gifDrawable)
                     .asGif()
                     .into(imageView);
@@ -708,7 +689,7 @@ public class ImageHandler {
     }
 
     public static void loadGifFromUrl(ImageView imageView, String url, int placeholder) {
-        if (placeholder < 0) {
+        if(placeholder < 0) {
             loadImageWithoutPlaceholder(imageView, url);
             return;
         }
@@ -720,7 +701,7 @@ public class ImageHandler {
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
-        if (placeholder < 0) {
+        if(placeholder < 0) {
             loadImageWithoutPlaceholder(imageview, url);
             return;
         }
@@ -736,7 +717,7 @@ public class ImageHandler {
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
-        if (placeholder < 0) {
+        if(placeholder < 0) {
             loadImageWithoutPlaceholder(imageview, url);
             return;
         }
@@ -788,8 +769,8 @@ public class ImageHandler {
     }
 
     public static void loadImageBlurWithViewTarget(final Context context,
-                                                   String imageUrl,
-                                                   SimpleTarget<Bitmap> simpleTarget) {
+                                     String imageUrl,
+                                     SimpleTarget<Bitmap> simpleTarget) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .load(imageUrl)
@@ -823,8 +804,7 @@ public class ImageHandler {
 
     private static RenderScript rs;
     private static ScriptIntrinsicBlur theIntrinsic;
-
-    private static RenderScript getRs(Context context) {
+    private static RenderScript getRs(Context context){
         if (rs == null) {
             synchronized (RenderScript.class) {
                 if (rs == null) {
@@ -835,7 +815,7 @@ public class ImageHandler {
         return rs;
     }
 
-    private static ScriptIntrinsicBlur getIntrinsic(Context context) {
+    private static ScriptIntrinsicBlur getIntrinsic(Context context){
         if (theIntrinsic == null) {
             synchronized (ScriptIntrinsicBlur.class) {
                 if (theIntrinsic == null) {
