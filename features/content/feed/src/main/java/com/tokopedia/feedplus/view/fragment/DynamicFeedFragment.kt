@@ -41,12 +41,9 @@ class DynamicFeedFragment:
 
     companion object {
         private const val KOL_COMMENT_CODE = 13
-        val KEY_FEED_KEY = ""
-
         fun newInstance(feedKey: String): DynamicFeedFragment {
             val fragment = DynamicFeedFragment()
             val bundle = Bundle()
-            bundle.putString(KEY_FEED_KEY, feedKey)
             fragment.arguments = bundle
             return fragment
         }
@@ -57,7 +54,6 @@ class DynamicFeedFragment:
 
     private var isLoading = false
     private var isForceRefresh = false
-    private var feedKey = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_dynamic_feed, container, false)
@@ -71,9 +67,6 @@ class DynamicFeedFragment:
 
     private fun initView() {
         presenter.attachView(this)
-        if (arguments != null) {
-            feedKey = arguments?.getString(KEY_FEED_KEY) ?: ""
-        }
         rv_dynamic_feed.adapter = adapter
         rv_dynamic_feed.layoutManager = LinearLayoutManager(activity)
     }
@@ -139,7 +132,6 @@ class DynamicFeedFragment:
 
 
     override fun onItemClicked(t: Visitable<*>?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getScreenName(): String {
@@ -192,7 +184,6 @@ class DynamicFeedFragment:
     }
 
     override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {

@@ -235,11 +235,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     companion object {
-        private const val TYPE_FEEDS = "feeds"
-        private const val TYPE_EXPLORE = "explore"
-        private const val TYPE_CUSTOM = "custom"
-        private const val KEY_TRENDING = "trending"
-
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
     }

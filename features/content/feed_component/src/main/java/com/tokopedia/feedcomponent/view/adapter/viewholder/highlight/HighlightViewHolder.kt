@@ -55,19 +55,6 @@ class HighlightViewHolder(val v: View,
         bindTitle(element.title, element.template.cardhighlight.title)
     }
 
-    override fun bind(element: HighlightViewModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-        if (element == null || payloads.isEmpty() || payloads[0] !is Int) {
-            return
-        }
-        val columnNumber = payloads[1] as Int
-        when (payloads[0] as Int) {
-            PAYLOAD_UPDATE_LIKE -> adapter.notifyItemChanged(columnNumber)
-            PAYLOAD_UPDATE_COMMENT -> adapter.notifyItemChanged(columnNumber)
-            else -> bind(element)
-        }
-    }
-
     private fun bindTitle(title: Title, template: TemplateTitle) {
         itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
             itemView.cardTitle.bind(title, template)

@@ -89,7 +89,6 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
                     }
 
                     override fun onCompleted() {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                     }
 
                     override fun onError(e: Throwable) {
@@ -131,6 +130,7 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
     override fun detachView() {
         super.detachView()
         getDynamicFeedUseCase.unsubscribe()
+        likeKolPostUseCase.unsubscribe()
     }
 
     private fun getUserId(): String {

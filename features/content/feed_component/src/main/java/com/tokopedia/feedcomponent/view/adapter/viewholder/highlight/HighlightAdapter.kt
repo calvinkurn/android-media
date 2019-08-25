@@ -50,13 +50,27 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         }
 
         private fun initViewListener(item: HighlightCardViewModel, positionInAdapter: Int) {
-            itemView.likeIcon.setOnClickListener{highlightListener.onLikeClick(item.positionInFeed, positionInAdapter, item.postId, item.footer.like.isChecked)}
-            itemView.likeText.setOnClickListener{highlightListener.onLikeClick(positionInAdapter, positionInAdapter, item.postId, item.footer.like.isChecked)}
-            itemView.commentIcon.setOnClickListener{highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)}
-            itemView.commentText.setOnClickListener{highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)}
-            itemView.userImage.setOnClickListener {highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink) }
-            itemView.userName.setOnClickListener {highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink) }
-            itemView.productImage.setOnClickListener { highlightListener.onHighlightItemClicked(item.positionInFeed, item.applink) }
+            itemView.likeIcon.setOnClickListener{
+                highlightListener.onLikeClick(item.positionInFeed, positionInAdapter, item.postId, item.footer.like.isChecked)
+            }
+            itemView.likeText.setOnClickListener{
+                highlightListener.onLikeClick(positionInAdapter, positionInAdapter, item.postId, item.footer.like.isChecked)
+            }
+            itemView.commentIcon.setOnClickListener{
+                highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)
+            }
+            itemView.commentText.setOnClickListener{
+                highlightListener.onCommentClick(item.positionInFeed, positionInAdapter, item.postId)
+            }
+            itemView.userImage.setOnClickListener {
+                highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink)
+            }
+            itemView.userName.setOnClickListener {
+                highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink)
+            }
+            itemView.productImage.setOnClickListener {
+                highlightListener.onHighlightItemClicked(item.positionInFeed, item.applink)
+            }
         }
 
         private fun initView(item: HighlightCardViewModel) {

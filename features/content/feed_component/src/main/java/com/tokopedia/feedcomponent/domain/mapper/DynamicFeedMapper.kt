@@ -475,7 +475,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
                         item.footer,
                         template,
                         mapTrackingData(convertTempTrackingToList(item.tracking)),
-                        media.videoList[0].durationFmt
+                        media.videoList.firstOrNull()?.durationFmt ?: ""
                 ))
             }
         }

@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.presenter
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
@@ -24,9 +25,9 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDispatcher,
-                                                     private val useCase: GraphqlUseCase<FeedTabs.Response>, private val getWhitelistUseCase: GetWhitelistUseCase)
+                                                     private val useCase: GraphqlUseCase<FeedTabs.Response>,
+                                                     private val getWhitelistUseCase: GetWhitelistUseCase)
     : BaseViewModel(baseDispatcher){
-    private val PARAM_IS_LOGIN = "isLogin"
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
 
@@ -64,7 +65,7 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
             }
 
             override fun onError(e: Throwable) {
-                listener.onErrorGetWhitelistData(e.localizedMessage)
+                Fail(e)
             }
         })
 

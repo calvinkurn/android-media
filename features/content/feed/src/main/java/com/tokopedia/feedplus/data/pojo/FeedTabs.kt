@@ -51,5 +51,6 @@ data class FeedTabs(
         const val TYPE_FEEDS = "feeds"
         const val TYPE_EXPLORE = "explore"
         const val TYPE_CUSTOM = "custom"
+        const val KEY_TRENDING = "trending";
     }
 }

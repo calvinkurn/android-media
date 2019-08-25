@@ -18,15 +18,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
+import static com.tokopedia.feedplus.data.pojo.FeedTabs.KEY_TRENDING;
+import static com.tokopedia.feedplus.data.pojo.FeedTabs.TYPE_CUSTOM;
+
 /**
  * @author by milhamj on 09/08/18.
  */
 
 public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
-    private static final String TYPE_FEEDS = "feeds";
-    private static final String TYPE_EXPLORE = "explore";
-    private static final String TYPE_CUSTOM = "custom";
-    private static final String KEY_TRENDING = "trending";
 
     private List<FeedTabs.FeedData> itemList;
     private Bundle bundle;

@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -163,7 +164,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
 
     @Override
     public int type(@NotNull HighlightViewModel highlightViewModel) {
-        return 0;
+        return HighlightViewHolder.Companion.getLAYOUT();
     }
 
     @Override
