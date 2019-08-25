@@ -60,23 +60,6 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         }
 
         private fun initView(item: HighlightCardViewModel) {
-//            itemView.viewTreeObserver.addOnGlobalLayoutListener(object: ViewTreeObserver.OnGlobalLayoutListener {
-//                override fun onGlobalLayout() {
-//                    val viewTreeObserver = itemView.viewTreeObserver
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                        viewTreeObserver.removeOnGlobalLayoutListener(this)
-//                    } else {
-//                        @Suppress("DEPRECATION")
-//                        viewTreeObserver.removeGlobalOnLayoutListener(this)
-//                    }
-//                    val displayMetrics = DisplayMetrics()
-//                    (itemView.context.getSystemService(Context.WINDOW_SERVICE) as? WindowManager)?.let {
-//                        it.defaultDisplay.getMetrics(displayMetrics)
-//                        itemView.layoutParams.width = (displayMetrics.widthPixels * VALUE_CARD_SIZE).toInt()
-//                        itemView.requestLayout()
-//                    }
-//                }
-//            })
             ImageHandler.loadImageFit2(itemView.context, itemView.productImage, item.thumbnail)
             if (getBadgeId(item) != 0) {
                 ImageHandler.loadImageWithId(itemView.productImage, getBadgeId(item))

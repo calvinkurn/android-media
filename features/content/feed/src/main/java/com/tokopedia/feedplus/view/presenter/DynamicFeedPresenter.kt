@@ -109,7 +109,6 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
                     }
 
                     override fun onCompleted() {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
                     }
 
                     override fun onError(e: Throwable) {
@@ -120,11 +119,9 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
     }
 
     override fun trackPostClick(uniqueTrackingId: String, redirectLink: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun trackPostClickUrl(url: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun attachView(view: DynamicFeedContract.View?) {
