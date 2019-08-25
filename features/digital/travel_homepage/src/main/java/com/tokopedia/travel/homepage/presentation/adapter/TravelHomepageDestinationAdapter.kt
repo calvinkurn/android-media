@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageOriginal
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageDestinationModel
 import com.tokopedia.travel.homepage.presentation.listener.OnItemClickListener
@@ -34,16 +34,7 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
 
         fun bind(destination: TravelHomepageDestinationModel.Destination, position: Int, listener: OnItemClickListener) {
             with(itemView) {
-
-                val layoutParams = destination_container.layoutParams
-                if (position == 0) {
-                    layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_145)
-                } else {
-                    layoutParams.height = resources.getDimensionPixelSize(R.dimen.dp_180)
-                }
-                destination_container.layoutParams = layoutParams
-
-                image.loadImage(destination.attributes.imageUrl)
+                image.loadImageOriginal(destination.attributes.imageUrl)
                 title.text = destination.attributes.title
                 subtitle.text = destination.attributes.subtitle
             }
