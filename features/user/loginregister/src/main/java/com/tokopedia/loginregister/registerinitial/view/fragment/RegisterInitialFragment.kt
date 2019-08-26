@@ -114,7 +114,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     lateinit var tickerAnnouncement: Ticker
 
     private var phoneNumber: String? = ""
-    private var source : String? = ""
+    private var source : String = ""
 
     @Inject
     lateinit var presenter: RegisterInitialPresenter
@@ -198,6 +198,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     .build()
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         }
+        analytics.onCreate(context)
 
         phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
@@ -358,7 +359,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         activity?.let {
             registerAnalytics.trackClickEmailSignUpButton()
             showProgressBar()
-            val intent = RegisterEmailActivity.getCallingIntentWithEmail(it, email)
+            val intent = RegisterEmailActivity.getCallingIntentWithEmail(it, email, source)
             startActivityForResult(intent, REQUEST_REGISTER_EMAIL)
         }
     }
@@ -745,7 +746,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onSuccessRegister() {
         activity?.let{
-            registerAnalytics.trackSuccessRegister(userSession.loginMethod)
+            registerAnalytics.trackSuccessRegister(context, userSession.loginMethod)
 
             if(isFromAccount()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)

@@ -34,7 +34,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Func1
-import rx.functions.Func2
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import java.util.*
@@ -430,26 +429,24 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         view.showFullPageLoading()
         compositeSubscription.add(
                 getDepartureDataObservable()
-                        .map(object : Func1<FlightJourneyViewModel, FlightBookingCartData> {
-                            override fun call(viewModel: FlightJourneyViewModel?): FlightBookingCartData {
-                                val flightBookingCartData = FlightBookingCartData()
-                                val flightDetailViewModel = FlightDetailViewModel().build(viewModel)
-                                flightDetailViewModel.build(view.getCurrentBookingParamViewModel().searchParam)
-                                val priceViewModel = view.getPriceViewModel()
+                        .map { viewModel ->
+                            val flightBookingCartData = FlightBookingCartData()
+                            val flightDetailViewModel = FlightDetailViewModel().build(viewModel)
+                            flightDetailViewModel.build(view.getCurrentBookingParamViewModel().searchParam)
+                            val priceViewModel = view.getPriceViewModel()
 
-                                if (priceViewModel.comboKey != null && priceViewModel.comboKey.isNotEmpty()) {
-                                    flightDetailViewModel.adultNumericPrice = priceViewModel.departurePrice.adultNumericCombo
-                                    flightDetailViewModel.childNumericPrice = priceViewModel.departurePrice.childNumericCombo
-                                    flightDetailViewModel.infantNumericPrice = priceViewModel.departurePrice.infantNumericCombo
-                                } else {
-                                    flightDetailViewModel.adultNumericPrice = priceViewModel.departurePrice.adultNumeric
-                                    flightDetailViewModel.childNumericPrice = priceViewModel.departurePrice.childNumeric
-                                    flightDetailViewModel.infantNumericPrice = priceViewModel.departurePrice.infantNumeric
-                                }
-                                flightBookingCartData.departureTrip = flightDetailViewModel
-                                return flightBookingCartData
+                            if (priceViewModel.departurePrice.adultNumericCombo > 0) {
+                                flightDetailViewModel.adultNumericPrice = priceViewModel.departurePrice.adultNumericCombo
+                                flightDetailViewModel.childNumericPrice = priceViewModel.departurePrice.childNumericCombo
+                                flightDetailViewModel.infantNumericPrice = priceViewModel.departurePrice.infantNumericCombo
+                            } else {
+                                flightDetailViewModel.adultNumericPrice = priceViewModel.departurePrice.adultNumeric
+                                flightDetailViewModel.childNumericPrice = priceViewModel.departurePrice.childNumeric
+                                flightDetailViewModel.infantNumericPrice = priceViewModel.departurePrice.infantNumeric
                             }
-                        }).onBackpressureDrop()
+                            flightBookingCartData.departureTrip = flightDetailViewModel
+                            flightBookingCartData
+                        }.onBackpressureDrop()
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -479,50 +476,45 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             compositeSubscription.add(
                     Observable.just(flightBookingCartData)
                             .flatMap(getRoundTripDataObservable())
-                            .flatMap(object : Func1<FlightBookingCartData, Observable<AddToCartEntity>> {
-                                override fun call(t: FlightBookingCartData): Observable<AddToCartEntity> {
-                                    val fares = arrayListOf<Fare>()
-                                    val departureFare = Fare("", "", "",
-                                            t.departureTrip.adultNumericPrice,
-                                            t.departureTrip.childNumericPrice,
-                                            t.departureTrip.infantNumericPrice)
-                                    fares.add(departureFare)
+                            .flatMap { t ->
+                                val fares = arrayListOf<Fare>()
+                                val departureFare = Fare("", "", "",
+                                        t.departureTrip.adultNumericPrice,
+                                        t.departureTrip.childNumericPrice,
+                                        t.departureTrip.infantNumericPrice)
+                                fares.add(departureFare)
 
-                                    if (t.returnTrip != null) {
-                                        val returnFare = Fare("", "", "",
-                                                t.returnTrip.adultNumericPrice,
-                                                t.returnTrip.childNumericPrice,
-                                                t.returnTrip.infantNumericPrice)
-                                        fares.add(returnFare)
-                                    }
-
-                                    val searchPassDataViewModel = view.getCurrentBookingParamViewModel().searchParam
-                                    val price = calculateTotalPassengerFare(
-                                            fares,
-                                            searchPassDataViewModel.flightPassengerViewModel.adult,
-                                            searchPassDataViewModel.flightPassengerViewModel.children,
-                                            searchPassDataViewModel.flightPassengerViewModel.infant
-                                    )
-
-                                    val newTotalPrice = actionCalculateCurrentTotalPrice(
-                                            t.departureTrip, t.returnTrip)
-                                    updateTotalPrice(newTotalPrice)
-
-                                    view.setCartData(t)
-
-                                    return flightAddToCartUseCase.createObservable(getRequestParams(price))
+                                if (t.returnTrip != null) {
+                                    val returnFare = Fare("", "", "",
+                                            t.returnTrip.adultNumericPrice,
+                                            t.returnTrip.childNumericPrice,
+                                            t.returnTrip.infantNumericPrice)
+                                    fares.add(returnFare)
                                 }
-                            })
-                            .zipWith(getDefaultPhoneDataObservable(),
-                                    object : Func2<AddToCartEntity, CountryPhoneCode, AddToCartEntity> {
-                                        override fun call(t1: AddToCartEntity, t2: CountryPhoneCode?): AddToCartEntity {
-                                            view.setCartId(t1.id)
-                                            view.getCurrentCartPassData().id = t1.id
-                                            view.getCurrentCartPassData().defaultPhoneCode = t2
-                                            return t1
-                                        }
 
-                                    })
+                                val searchPassDataViewModel = view.getCurrentBookingParamViewModel().searchParam
+                                val price = calculateTotalPassengerFare(
+                                        fares,
+                                        searchPassDataViewModel.flightPassengerViewModel.adult,
+                                        searchPassDataViewModel.flightPassengerViewModel.children,
+                                        searchPassDataViewModel.flightPassengerViewModel.infant
+                                )
+
+                                val newTotalPrice = actionCalculateCurrentTotalPrice(
+                                        t.departureTrip, t.returnTrip)
+                                updateTotalPrice(newTotalPrice)
+
+                                view.setCartData(t)
+
+                                flightAddToCartUseCase.createObservable(getRequestParams(price))
+                            }
+                            .zipWith(getDefaultPhoneDataObservable()
+                            ) { t1, t2 ->
+                                view.setCartId(t1.id)
+                                view.getCurrentCartPassData().id = t1.id
+                                view.getCurrentCartPassData().defaultPhoneCode = t2
+                                t1
+                            }
                             .onBackpressureDrop()
                             .subscribeOn(Schedulers.io())
                             .unsubscribeOn(Schedulers.io())
@@ -531,7 +523,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                 override fun onNext(t: AddToCartEntity?) {
                                     if (isViewAttached && t != null) {
                                         if (view.getCurrentBookingParamViewModel().passengerViewModels == null
-                                                || view.getCurrentBookingParamViewModel().passengerViewModels.size == 0){
+                                                || view.getCurrentBookingParamViewModel().passengerViewModels.size == 0) {
                                             val passengerViewModels = buildPassengerViewModel(view.getCurrentBookingParamViewModel().searchParam)
                                             view.getCurrentBookingParamViewModel().passengerViewModels = passengerViewModels
                                         }
@@ -574,26 +566,23 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 override fun call(it: FlightBookingCartData?): Observable<FlightBookingCartData> {
                     if (isRoundTrip() && it != null) {
                         return Observable.just(it).zipWith(flightSearchJourneyByIdUseCase.createObservable(
-                                flightSearchJourneyByIdUseCase.createRequestParams(view.getReturnTripId())),
-                                object : Func2<FlightBookingCartData, FlightJourneyViewModel, FlightBookingCartData> {
-                                    override fun call(t1: FlightBookingCartData, t2: FlightJourneyViewModel): FlightBookingCartData {
-
-                                        val flightDetailViewModel = FlightDetailViewModel().build(t2)
-                                        flightDetailViewModel.build(view.getCurrentBookingParamViewModel().searchParam)
-                                        val priceViewModel = view.getPriceViewModel()
-                                        if (priceViewModel.comboKey != null && priceViewModel.comboKey.isNotEmpty()) {
-                                            flightDetailViewModel.adultNumericPrice = priceViewModel.returnPrice.adultNumericCombo
-                                            flightDetailViewModel.childNumericPrice = priceViewModel.returnPrice.childNumericCombo
-                                            flightDetailViewModel.infantNumericPrice = priceViewModel.returnPrice.infantNumericCombo
-                                        } else {
-                                            flightDetailViewModel.adultNumericPrice = priceViewModel.returnPrice.adultNumeric
-                                            flightDetailViewModel.childNumericPrice = priceViewModel.returnPrice.childNumeric
-                                            flightDetailViewModel.infantNumericPrice = priceViewModel.returnPrice.infantNumeric
-                                        }
-                                        it.returnTrip = flightDetailViewModel
-                                        return it
-                                    }
-                                })
+                                flightSearchJourneyByIdUseCase.createRequestParams(view.getReturnTripId()))
+                        ) { t1, t2 ->
+                            val flightDetailViewModel = FlightDetailViewModel().build(t2)
+                            flightDetailViewModel.build(view.getCurrentBookingParamViewModel().searchParam)
+                            val priceViewModel = view.getPriceViewModel()
+                            if (priceViewModel.comboKey != null && priceViewModel.comboKey.isNotEmpty()) {
+                                flightDetailViewModel.adultNumericPrice = priceViewModel.returnPrice.adultNumericCombo
+                                flightDetailViewModel.childNumericPrice = priceViewModel.returnPrice.childNumericCombo
+                                flightDetailViewModel.infantNumericPrice = priceViewModel.returnPrice.infantNumericCombo
+                            } else {
+                                flightDetailViewModel.adultNumericPrice = priceViewModel.returnPrice.adultNumeric
+                                flightDetailViewModel.childNumericPrice = priceViewModel.returnPrice.childNumeric
+                                flightDetailViewModel.infantNumericPrice = priceViewModel.returnPrice.infantNumeric
+                            }
+                            it.returnTrip = flightDetailViewModel
+                            it
+                        }
                     } else {
                         return Observable.just(it)
                     }
