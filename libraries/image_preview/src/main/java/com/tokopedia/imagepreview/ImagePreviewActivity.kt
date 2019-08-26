@@ -1,7 +1,6 @@
 package com.tokopedia.imagepreview
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -13,17 +12,17 @@ import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.core.app.ActivityCompat
-import androidx.fragment.app.Fragment
-import androidx.core.app.NotificationCompat
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-//import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.fragment.app.Fragment
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
@@ -147,74 +146,74 @@ class ImagePreviewActivity : BaseSimpleActivity() {
                 .setAutoCancel(true)
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(notificationId, notificationBuilder.build())
-//        val targetListener: SimpleTarget<Bitmap> = object : SimpleTarget<Bitmap>() {
-//            @SuppressLint("Range")
-//            override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-//                if (resource == null) {
-//                    return;
-//                }
-//                var path: String?
-//                try {
-//                    path = saveImageFromBitmap(
-//                            this@ImagePreviewActivity,
-//                            resource,
-//                            filenameParam
-//                    );
-//                } catch (e: Throwable) {
-//                    showFailedDownload(notificationId, notificationBuilder)
-//                    return
-//                }
-//
-//                if (path == null) {
-//                    showFailedDownload(notificationId, notificationBuilder)
-//                } else {
-//                    val intent = Intent().apply {
-//                        action = Intent.ACTION_VIEW
-//                    }
-//                    val file = File(path);
-//                    val uri = getUri(this@ImagePreviewActivity, file);
-//                    intent.setDataAndType(uri, "image/*");
-//                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//
-//                    val pIntent = PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0);
-//
-//                    notificationBuilder.setContentText(getString(R.string.download_success))
-//                            .setProgress(0, 0, false)
-//                            .setContentIntent(pIntent);
-//
-//                    notificationBuilder.build().flags =
-//                            notificationBuilder.build().flags or Notification.FLAG_AUTO_CANCEL;
-//                    notificationManager.notify(notificationId, notificationBuilder.build());
-//                    this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                            WindowManager.LayoutParams.FLAG_FULLSCREEN)
-//
-//                    val snackbar = SnackbarManager.make(
-//                            findViewById<View>(android.R.id.content),
-//                            getString(R.string.download_success),
-//                            Snackbar.LENGTH_SHORT)
-//                    snackbar.setAction(getString(R.string.label_open)) {
-//                        openImageDownloaded(path)
-//                    }
-//                    snackbar.addCallback(object : Snackbar.Callback() {
-//                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-//                            this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                                    WindowManager.LayoutParams.FLAG_FULLSCREEN)
-//                        }
-//                    })
-//                    snackbar.show()
-//                }
-//            }
-//
-//            override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-//                super.onLoadFailed(e, errorDrawable)
-//                showFailedDownload(notificationId, notificationBuilder)
-//            }
-//        };
+        val targetListener: CustomTarget<Bitmap> = object : CustomTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                var path: String?
+                try {
+                    path = saveImageFromBitmap(
+                            this@ImagePreviewActivity,
+                            resource,
+                            filenameParam
+                    );
+                } catch (e: Throwable) {
+                    showFailedDownload(notificationId, notificationBuilder)
+                    return
+                }
+
+                if (path == null) {
+                    showFailedDownload(notificationId, notificationBuilder)
+                } else {
+                    val intent = Intent().apply {
+                        action = Intent.ACTION_VIEW
+                    }
+                    val file = File(path);
+                    val uri = getUri(this@ImagePreviewActivity, file);
+                    intent.setDataAndType(uri, "image/*");
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                    val pIntent = PendingIntent.getActivity(this@ImagePreviewActivity, 0, intent, 0);
+
+                    notificationBuilder.setContentText(getString(R.string.download_success))
+                            .setProgress(0, 0, false)
+                            .setContentIntent(pIntent);
+
+                    notificationBuilder.build().flags =
+                            notificationBuilder.build().flags or Notification.FLAG_AUTO_CANCEL;
+                    notificationManager.notify(notificationId, notificationBuilder.build());
+                    this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                            WindowManager.LayoutParams.FLAG_FULLSCREEN)
+
+                    val snackbar = SnackbarManager.make(
+                            findViewById<View>(android.R.id.content),
+                            getString(R.string.download_success),
+                            Snackbar.LENGTH_SHORT)
+                    snackbar.setAction(getString(R.string.label_open)) {
+                        openImageDownloaded(path)
+                    }
+                    snackbar.addCallback(object : Snackbar.Callback() {
+                        override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                            this@ImagePreviewActivity.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                    WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                        }
+                    })
+                    snackbar.show()
+                }
+            }
+
+            override fun onLoadFailed(errorDrawable: Drawable?) {
+                super.onLoadFailed(errorDrawable)
+                showFailedDownload(notificationId, notificationBuilder)
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+
+            }
+        }
         fileLocations?.getOrNull(viewPager.currentItem)?.let {
-//            ImageHandler.loadImageBitmap2(
-//                    this@ImagePreviewActivity,
-//                    it,
-//                    targetListener)
+            ImageHandler.loadImageBitmap2(
+                    this@ImagePreviewActivity,
+                    it,
+                    targetListener)
         }
     }
 

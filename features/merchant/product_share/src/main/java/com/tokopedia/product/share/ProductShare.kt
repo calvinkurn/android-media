@@ -4,8 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-//import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.imagepicker.common.util.ImageUtils
@@ -20,7 +20,6 @@ import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.io.File
-import java.lang.Exception
 
 class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
@@ -28,37 +27,38 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
     fun share(data: ProductData, preBuildImage: ()->Unit, postBuildImage: ()-> Unit){
         if (mode == MODE_IMAGE) {
             preBuildImage()
+            val target = object : CustomTarget<Bitmap>(DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT) {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    val sticker = ProductImageSticker(activity, resource, data)
+                    try {
+                        val bitmap = sticker.buildBitmapImage()
+                        val file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, bitmap, false)
+                        bitmap.recycle()
+                        generateBranchLink(file, data)
+                    } catch (t: Throwable){
+                        generateBranchLink(null, data)
+                    } finally {
+                        postBuildImage()
+                    }
+                }
 
-//            ImageHandler.loadImageWithTargetCenterCrop(activity, data.productImageUrl, object : SimpleTarget<Bitmap>(DEFAULT_IMAGE_WIDTH,
-//                    DEFAULT_IMAGE_HEIGHT){
-//                override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-//                    super.onLoadFailed(e, errorDrawable)
-//                    try {
-//                        generateBranchLink(null, data)
-//                    } catch (t: Throwable){
-//                    } finally {
-//                        postBuildImage()
-//                    }
-//                }
-//
-//                override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-//                    if (resource == null){
-//                        onLoadFailed(null, null)
-//                        return
-//                    }
-//                    val sticker = ProductImageSticker(activity, resource, data)
-//                    try {
-//                        val bitmap = sticker.buildBitmapImage()
-//                        val file = ImageUtils.writeImageToTkpdPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, bitmap, false)
-//                        bitmap.recycle()
-//                        generateBranchLink(file, data)
-//                    } catch (t: Throwable){
-//                        generateBranchLink(null, data)
-//                    } finally {
-//                        postBuildImage()
-//                    }
-//                }
-//            })
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+                    try {
+                        generateBranchLink(null, data)
+                    } catch (t: Throwable){
+                    } finally {
+                        postBuildImage()
+                    }
+                }
+
+                override fun onLoadCleared(placeholder: Drawable?) {
+
+                }
+
+            }
+
+            ImageHandler.loadImageWithTargetCenterCrop(activity, data.productImageUrl, target)
         } else {
             generateBranchLink(null, data)
         }
