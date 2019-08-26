@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -124,7 +125,7 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
     }
 
     override fun type(highlightViewModel: HighlightViewModel): Int {
-        return 0
+        return HighlightViewHolder.LAYOUT
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -173,6 +174,8 @@ class ProfileTypeFactoryImpl(private val viewListener : ProfileEmptyContract.Vie
                 OtherRelatedProfileViewHolder(parent, onOtherProfilePostItemClick) as AbstractViewHolder<Visitable<*>>
             OtherPostTitleViewHolder.LAYOUT ->
                 OtherPostTitleViewHolder(parent) as AbstractViewHolder<Visitable<*>>
+            HighlightViewHolder.LAYOUT ->
+                HighlightViewHolder(parent, highlightListener, cardTitleListener) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }
