@@ -263,14 +263,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 .baseAppComponent(baseMainApplication.getBaseAppComponent())
                 .build();
         newCartComponent.inject(this);
-
-//        CartListComponent cartListComponent = DaggerCartListComponent.builder()
-//                .cartComponent(CartComponentInjector.newInstance(getActivity().getApplication()).getCartApiServiceComponent())
-//                .cartListModule(new CartListModule(this))
-//                .trackingAnalyticsModule(new TrackingAnalyticsModule())
-//                .promoCheckoutModule(new PromoCheckoutModule())
-//                .build();
-//        cartListComponent.inject(this);
         cartAdapter = new CartAdapter(this, this, this);
     }
 
