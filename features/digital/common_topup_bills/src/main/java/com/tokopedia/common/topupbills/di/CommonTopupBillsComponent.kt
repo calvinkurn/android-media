@@ -4,8 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
+import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Created by resakemal on 12/08/19.
@@ -15,6 +17,10 @@ import dagger.Component
 interface CommonTopupBillsComponent {
 
     fun userSessionInterface(): UserSessionInterface
+
+    fun coroutineDispatcher(): CoroutineDispatcher
+
+    fun graphqlRepository(): GraphqlRepository
 
     fun inject(baseTopupBillsFragment: BaseTopupBillsFragment<Visitable<*>, AdapterTypeFactory>)
 

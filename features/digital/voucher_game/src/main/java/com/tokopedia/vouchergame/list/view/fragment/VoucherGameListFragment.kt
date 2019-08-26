@@ -49,7 +49,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)

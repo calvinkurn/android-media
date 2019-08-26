@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.vouchergame.common.view.VoucherGameBaseActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.list.di.DaggerVoucherGameListComponent
 import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
@@ -14,7 +15,7 @@ import com.tokopedia.vouchergame.list.view.fragment.VoucherGameListFragment
 /**
  * Created by resakemal on 12/08/19.
  */
-class VoucherGameListActivity : BaseSimpleActivity(), HasComponent<VoucherGameListComponent> {
+class VoucherGameListActivity : VoucherGameBaseActivity(), HasComponent<VoucherGameListComponent> {
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
@@ -29,9 +30,11 @@ class VoucherGameListActivity : BaseSimpleActivity(), HasComponent<VoucherGameLi
 
     override fun getComponent(): VoucherGameListComponent {
         return DaggerVoucherGameListComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .voucherGameComponent(getVoucherGameComponent())
                 .build()
     }
+
+    override fun shouldShowOptionMenu(): Boolean { return true }
 
     companion object {
 

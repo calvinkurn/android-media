@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">voucher_game</string>
     <string name="app_label">Voucher Game</string>
+    <string name="voucher_game_menu_promo">Promo</string>
+    <string name="voucher_game_menu_help">Bantuan</string>
+    <string name="voucher_game_menu_transaction_list">Daftar Transaksi</string>
+
+    <string name="input_field_label_message">Masukkan nomor ID</string>
     <string name="input_field_error_message">Masukkan nomor ID terlebih dahulu</string>
 </resources>

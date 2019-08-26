@@ -3,9 +3,8 @@ package com.tokopedia.vouchergame.detail.view.activity
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
+import com.tokopedia.vouchergame.common.view.VoucherGameBaseActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.di.DaggerVoucherGameDetailComponent
 import com.tokopedia.vouchergame.detail.di.VoucherGameDetailComponent
@@ -14,7 +13,7 @@ import com.tokopedia.vouchergame.detail.view.fragment.VoucherGameDetailFragment
 /**
  * Created by resakemal on 16/08/19.
  */
-class VoucherGameDetailActivity : BaseSimpleActivity(), HasComponent<VoucherGameDetailComponent> {
+class VoucherGameDetailActivity : VoucherGameBaseActivity(), HasComponent<VoucherGameDetailComponent> {
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
@@ -29,9 +28,11 @@ class VoucherGameDetailActivity : BaseSimpleActivity(), HasComponent<VoucherGame
 
     override fun getComponent(): VoucherGameDetailComponent {
         return DaggerVoucherGameDetailComponent.builder()
-                .commonTopupBillsComponent(CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application))
+                .voucherGameComponent(getVoucherGameComponent())
                 .build()
     }
+
+    override fun shouldShowOptionMenu(): Boolean { return true }
 
     companion object {
 
