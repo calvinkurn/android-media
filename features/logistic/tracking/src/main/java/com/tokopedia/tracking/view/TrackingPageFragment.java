@@ -207,7 +207,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     public void setRetryButton(boolean active, long deadline) {
         if (active) {
             retryButton.setVisibility(View.VISIBLE);
-            retryButton.setText("Cari Driver Baru");
+            retryButton.setText(getContext().getString(R.string.find_new_driver));
             retryButton.setEnabled(true);
             retryButton.setOnClickListener(view -> {
                         retryButton.setEnabled(false);
@@ -231,7 +231,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
     @Override
     public void startSuccessCountdown() {
-        retryButton.setText("Mencari driver baru...");
+        retryButton.setText(getContext().getString(R.string.finding_new_driver));
         Observable.timer(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
