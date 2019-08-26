@@ -3,7 +3,6 @@ package com.tokopedia.home.account.presentation.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 
@@ -15,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -40,7 +40,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
@@ -63,8 +62,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_M
 /**
  * @author okasurya on 7/26/18.
  */
-public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
-        AccountItemListener, BaseAccountView {
+public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener {
+
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     public static final int OPEN_SHOP_SUCCESS = 100;
@@ -72,9 +71,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public static final String OVO = "OVO";
     public Boolean isOpenShop = false;
 
-    private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
-    private RemoteConfig remoteConfig;
     UserSession userSession;
     private AffiliatePreference affiliatePreference;
 
@@ -99,7 +96,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         if (RouteManager.isSupportApplink(getContext(), applink)) {
             return true;
         } else if (applink.equals(AccountConstants.Navigation.SEE_ALL)) {
-            seeAllView = new SeeAllView();
+            SeeAllView seeAllView = new SeeAllView();
             seeAllView.setListener(this);
             seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
         } else if (applink.equals(AccountConstants.Navigation.TOPADS)
@@ -312,7 +309,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     private void openSladoPage(String applink) {
-        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
             if (userSession.hasShownSaldoIntroScreen()) {
                 openApplink(applink);
@@ -476,34 +474,26 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
     }
 
-    @Override
-    public void showError(String message) {
-        if (getView() != null) {
-            Toaster.Companion.showErrorWithAction(
-                    getView(),
-                    message,
-                    Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.title_try_again),
-                    view -> getData()
-            );
-        }
-    }
-
-    @Override
-    public void showError(Throwable e) {
-        if (getView() != null && getContext() != null) {
-            Toaster.Companion.showErrorWithAction(
-                    getView(),
-                    ErrorHandler.getErrorMessage(getContext(), e),
-                    Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.title_try_again),
-                    view -> getData()
-            );
-        }
-    }
-
-    @Override
-    public void showErroNoConnection() {
-        showError(getString(R.string.error_no_internet_connection));
-    }
+//    @Override
+//    public void showError(String message) {
+//        if (getView() != null && getUserVisibleHint()) {
+//            ToasterError.make(getView(), message)
+//                    .setAction(getString(R.string.title_try_again), view -> getData())
+//                    .show();
+//        }
+//    }
+//
+//    @Override
+//    public void showError(Throwable e) {
+//        if (getView() != null && getContext() != null && getUserVisibleHint()) {
+//            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
+//                    .setAction(getString(R.string.title_try_again), view -> getData())
+//                    .show();
+//        }
+//    }
+//
+//    @Override
+//    public void showErrorNoConnection() {
+//        showError(getString(R.string.error_no_internet_connection));
+//    }
 }
