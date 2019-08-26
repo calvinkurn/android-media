@@ -23,7 +23,7 @@ import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment.InputNumberActionType
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
-import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.topupbills.telco.view.viewmodel.DigitalTelcoEnquiryViewModel
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
@@ -140,7 +140,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         var clientNumber = ""
         if (savedInstanceState == null) {
             arguments?.run {
-                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as DigitalTelcoExtraParam
+                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
                 clientNumber = digitalTelcoExtraParam.clientNumber
             }
         } else {
@@ -351,7 +351,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         const val KEY_PRODUCT_ID = "productId"
 
 
-        fun newInstance(telcoExtraParam: DigitalTelcoExtraParam): Fragment {
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoPostpaidFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)

@@ -33,7 +33,7 @@ import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.fragment.DigitalSearchNumberFragment.InputNumberActionType
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
-import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.topupbills.telco.view.viewmodel.SharedProductTelcoViewModel
 import com.tokopedia.topupbills.telco.view.widget.DigitalClientNumberWidget
 import com.tokopedia.unifycomponents.Toaster
@@ -164,7 +164,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         var clientNumber = ""
         if (savedInstanceState == null) {
             arguments?.run {
-                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as DigitalTelcoExtraParam
+                val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM) as TopupBillsExtraParam
                 clientNumber = digitalTelcoExtraParam.clientNumber
                 selectedProductId = digitalTelcoExtraParam.productId
                 if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
@@ -442,7 +442,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
         private const val EXTRA_PARAM = "extra_param"
 
-        fun newInstance(telcoExtraParam: DigitalTelcoExtraParam): Fragment {
+        fun newInstance(telcoExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM, telcoExtraParam)
