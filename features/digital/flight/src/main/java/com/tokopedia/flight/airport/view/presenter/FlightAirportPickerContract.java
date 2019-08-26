@@ -20,6 +20,8 @@ public interface FlightAirportPickerContract {
         Activity getActivity();
 
         void showLoading();
+
+        void showKeywordLessThanThreeError();
     }
 
     interface Presenter extends CustomerPresenter<View> {

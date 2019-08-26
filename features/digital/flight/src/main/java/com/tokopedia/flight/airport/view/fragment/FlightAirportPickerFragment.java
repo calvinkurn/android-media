@@ -139,6 +139,11 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     }
 
     @Override
+    public void showKeywordLessThanThreeError() {
+        showGetListError(new Throwable(getString(R.string.flight_airport_less_than_three_keyword_error)));
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }

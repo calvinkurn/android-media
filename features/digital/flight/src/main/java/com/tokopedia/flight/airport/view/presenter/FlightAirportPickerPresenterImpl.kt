@@ -103,7 +103,9 @@ class FlightAirportPickerPresenterImpl
                             override fun onError(e: Throwable) {
                                 if (isViewAttached) {
                                     view.hideGetAirportListLoading()
-                                    view.showGetListError(e)
+
+                                    if (keyword.length < 3) view.showKeywordLessThanThreeError()
+                                    else view.showGetListError(e)
                                 }
                             }
 
