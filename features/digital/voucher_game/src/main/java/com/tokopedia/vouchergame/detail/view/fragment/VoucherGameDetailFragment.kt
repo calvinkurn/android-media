@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -174,12 +175,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
 
         if (isValid) {
             // Reset error label
-            setInputFieldsError("")
+            setInputFieldsError(false)
 
             // TODO: Add enquiry api call
         } else {
             // Set error message
-            setInputFieldsError(getString(R.string.input_field_error_message))
+            setInputFieldsError(true)
         }
     }
 
@@ -193,12 +194,15 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         return true
     }
 
-    private fun setInputFieldsError(message: String) {
-        if (message.isNotEmpty()) {
-            input_field_error_label.visibility = View.VISIBLE
-            input_field_error_label.text = message
-        } else {
-            input_field_error_label.visibility = View.GONE
+    private fun setInputFieldsError(value: Boolean) {
+        context?.run {
+            if (value) {
+                input_field_label.text = getString(R.string.input_field_error_message)
+                input_field_label.setTextColor(ContextCompat.getColor(this, R.color.red_600))
+            } else {
+                input_field_label.text = getString(R.string.input_field_label_message)
+                input_field_label.setTextColor(ContextCompat.getColor(this, R.color.black_70))
+            }
         }
     }
 
@@ -274,6 +278,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                     val product = adapter.data[i] as VoucherGameProduct
                     if (product.id == voucherGameExtraParam.productId) {
                         selectProduct(product, i)
+
+                        // Show error to notify the user to fill in the fields
+                        setInputFieldsError(true)
                     }
                 }
             }

@@ -111,21 +111,19 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/input_field_error_label"
+                    android:id="@+id/input_field_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginLeft="5dp"
                     android:paddingBottom="@dimen/dp_4"
-                    android:text="@string/title_empty_stock"
-                    android:textColor="@color/red_600"
+                    android:text="@string/input_field_label_message"
                     android:textSize="@dimen/sp_14"
-                    android:visibility="gone"
+                    android:textColor="@color/black_70"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/input_field_1"
-                    app:typographyType="body_3"
-                    tools:visibility="visible" />
+                    app:typographyType="body_3" />
 
             </android.support.constraint.ConstraintLayout>
 
