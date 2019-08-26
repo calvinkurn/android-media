@@ -1466,7 +1466,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 showMainContainer();
             }
             dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
-//            String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
+            String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
 //            if (!TextUtils.isEmpty(promo)) {
 //                dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
 //            }

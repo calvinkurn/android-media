@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -52,6 +53,8 @@ import com.tokopedia.purchase_platform.features.checkout.view.converter.Shipment
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerShipmentComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.di.ShipmentComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.di.ShipmentModule;
+import com.tokopedia.purchase_platform.features.checkout.view.di2.CheckoutComponent;
+import com.tokopedia.purchase_platform.features.checkout.view.di2.DaggerCheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
@@ -228,6 +231,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     protected void initInjector() {
+        BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
+        CheckoutComponent checkoutComponent = DaggerCheckoutComponent.builder()
+                .baseAppComponent(baseMainApplication.getBaseAppComponent())
+                .build();
+        checkoutComponent.inject(this);
+
 //        ShipmentComponent component = DaggerShipmentComponent.builder()
 //                .cartComponent(getComponent(CartComponent.class))
 //                .shipmentModule(new ShipmentModule(this))
