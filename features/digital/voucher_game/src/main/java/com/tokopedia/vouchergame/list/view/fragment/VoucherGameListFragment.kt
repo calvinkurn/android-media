@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,10 +15,12 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_TELCO
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
+import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
@@ -42,8 +45,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var voucherGameViewModel: VoucherGameListViewModel
 
-    var menuId: Int = 0
-    var platformId: Int = 0
+    lateinit var voucherGameExtraParam: VoucherGameExtraParam
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,8 +57,9 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         }
 
         arguments?.let {
-            menuId = it.getInt(EXTRA_MENU_ID, 0)
-            platformId = it.getInt(EXTRA_PLATFORM_ID, 0)
+            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_TELCO)
+
+            checkAutoSelectProduct()
         }
     }
 
@@ -88,8 +91,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(EXTRA_MENU_ID, menuId)
-        outState.putInt(EXTRA_PLATFORM_ID, platformId)
+        if (::voucherGameExtraParam.isInitialized) outState.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+    }
+
+    private fun checkAutoSelectProduct() {
+        if (voucherGameExtraParam.operatorId.isNotEmpty() && voucherGameExtraParam.productId.isNotEmpty()) navigateToProduct()
     }
 
     private fun initView() {
@@ -116,15 +122,26 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun loadData(page: Int) {
-        voucherGameViewModel.getVoucherGameList(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
-                voucherGameViewModel.createParams(menuId, platformId), "", true)
+        voucherGameExtraParam.menuId.toIntOrNull()?.let {
+            voucherGameViewModel.getVoucherGameList(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
+                    voucherGameViewModel.createParams(it), "", true)
+        }
     }
 
     override fun onItemClicked(item: Visitable<*>) { }
 
     override fun onItemClicked(operator: VoucherGameOperator) {
+        voucherGameExtraParam.operatorId = operator.id.toString()
+        navigateToProduct()
+    }
+
+    private fun navigateToProduct() {
         context?.run {
-            val intent = VoucherGameDetailActivity.newInstance(this, menuId, platformId, operator.id.toString())
+            val intent = VoucherGameDetailActivity.newInstance(this,
+                    voucherGameExtraParam.categoryId,
+                    voucherGameExtraParam.menuId,
+                    voucherGameExtraParam.operatorId,
+                    voucherGameExtraParam.productId)
             startActivityForResult(intent, REQUEST_VOUCHER_GAME_DETAIL)
         }
     }
@@ -173,25 +190,21 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     private fun searchVoucherGame(query: String) {
         voucherGameViewModel.getVoucherGameList(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
-                voucherGameViewModel.createParams(menuId, platformId), query)
+                voucherGameViewModel.createParams(voucherGameExtraParam.menuId.toInt()), query)
     }
 
     companion object {
-
-        const val EXTRA_MENU_ID = "EXTRA_MENU_ID"
-        const val EXTRA_PLATFORM_ID = "EXTRA_PLATFORM_ID"
 
         const val ITEM_DECORATOR_SIZE = 9
 
         const val REQUEST_VOUCHER_GAME_DETAIL = 300
 
-        fun createInstance(menuId: Int, platformId: Int): VoucherGameListFragment {
-            return VoucherGameListFragment().also {
-                it.arguments = Bundle().apply {
-                    putInt(EXTRA_MENU_ID, menuId)
-                    putInt(EXTRA_PLATFORM_ID, platformId)
-                }
-            }
+        fun newInstance(voucherGameExtraParam: VoucherGameExtraParam): Fragment {
+            val fragment = VoucherGameListFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+            fragment.arguments = bundle
+            return fragment
         }
     }
 }
