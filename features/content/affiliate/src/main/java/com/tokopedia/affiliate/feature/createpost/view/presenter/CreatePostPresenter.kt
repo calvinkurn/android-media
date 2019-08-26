@@ -130,13 +130,9 @@ class CreatePostPresenter @Inject constructor(
     }
 
     private fun getShareHeaderText(): String {
-        val activeShareOptions = getShareOptions().filter { it.isActivated }
-        val shareHeaderText = activeShareOptions
-                .map { view?.getContext()?.getString(it.keyRes) }
-                .joinToString()
-
-        return if (activeShareOptions.size == 1) "$shareHeaderText aja" else shareHeaderText
-
+        val activeShareOptions = getShareOptions().filter(ShareType::isActivated)
+        val context = view?.getContext()
+        return if (context == null) "" else activeShareOptions.joinToString { context.getString(it.keyRes) }
     }
 
     override fun getFeedDetail(postId: String, isAffiliate: Boolean) {
