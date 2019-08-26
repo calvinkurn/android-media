@@ -38,15 +38,18 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 //import com.bumptech.glide.load.engine.DiskCacheStrategy;
 //import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 //import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 //import com.bumptech.glide.request.RequestListener;
 //import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 //import com.bumptech.glide.signature.StringSignature;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -290,14 +293,14 @@ public class ImageHandler {
 //                .into(imageview);
     }
 
-//    public static void loadImageWithSignature(ImageView imageview, String url, StringSignature stringSignature) {
-//        Glide.with(imageview.getContext())
-//                .load(url)
-//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .dontAnimate()
-//                .signature(stringSignature)
-//                .into(imageview);
-//    }
+    public static void loadImageWithSignature(ImageView imageview, String url, ObjectKey signature) {
+        Glide.with(imageview.getContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .dontAnimate()
+                .signature(signature)
+                .into(imageview);
+    }
 
 //    public static void downloadOriginalSizeImageWithSignature(Context context, String url, StringSignature stringSignature,
 //                                                              RequestListener<String, GlideDrawable> backgroundImgRequestListener) {
