@@ -76,6 +76,11 @@ SearchDestinationListener{
         return view
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = 0
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+
     override fun getAdapterTypeFactory(): SearchDestinationTypeFactory {
         return SearchDestinationTypeFactory(this)
     }
