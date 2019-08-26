@@ -43,7 +43,6 @@ import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
@@ -121,13 +120,13 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         super.onViewCreated(view, savedInstanceState)
         if(productId.isEmpty()) {
             RecommendationPageTracking.sendScreenRecommendationPage(
-                    "/rekomendasi",
+                    screenName,
                     null,
                     ref)
         }
         else {
             RecommendationPageTracking.sendScreenRecommendationPage(
-                    "/rekomendasi",
+                    screenName,
                     productId,
                     ref)
         }
@@ -205,7 +204,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     override fun onItemClicked(dataModel: HomeRecommendationDataModel) {
     }
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = getString(R.string.home_recom_screen_name)
 
     override fun initInjector() {
         getComponent(HomeRecommendationComponent::class.java).inject(this)
