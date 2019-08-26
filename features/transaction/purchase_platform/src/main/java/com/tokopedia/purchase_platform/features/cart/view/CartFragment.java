@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
@@ -258,8 +259,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     protected void initInjector() {
+        BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
         NewCartComponent newCartComponent = DaggerNewCartComponent.builder()
-                .baseAppComponent((BaseAppComponent) getActivity().getApplication())
+                .baseAppComponent(baseMainApplication.getBaseAppComponent())
                 .build();
         newCartComponent.inject(this);
 

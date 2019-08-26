@@ -138,15 +138,15 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun initInjector() {
-//        activity?.let {
-//            val baseAppComponent = it.application
-//            if (baseAppComponent is BaseMainApplication) {
-//                DaggerCheckoutVariantComponent.builder()
-//                    .baseAppComponent(baseAppComponent.baseAppComponent)
-//                    .build()
-//                    .inject(this)
-//            }
-//        }
+        activity?.let {
+            val baseAppComponent = it.application
+            if (baseAppComponent is BaseMainApplication) {
+                DaggerCheckoutVariantComponent.builder()
+                    .baseAppComponent(baseAppComponent.baseAppComponent)
+                    .build()
+                    .inject(this)
+            }
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
