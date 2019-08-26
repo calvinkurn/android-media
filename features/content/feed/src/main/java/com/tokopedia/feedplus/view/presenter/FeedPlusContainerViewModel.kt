@@ -32,7 +32,6 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
     val tabResp = MutableLiveData<Result<FeedTabs>>()
 
     init {
-        useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
     }
 
     fun getDynamicTabs() {
