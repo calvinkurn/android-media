@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.features.cart.domain.usecase;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.purchase_platform.features.cart.data.repository.ICartRepository;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
@@ -33,7 +34,7 @@ public class UpdateAndReloadCartUseCase extends UseCase<UpdateAndRefreshCartList
     private final Context context;
 
     @Inject
-    public UpdateAndReloadCartUseCase(Context context,
+    public UpdateAndReloadCartUseCase(@ApplicationContext Context context,
                                       ICartRepository cartRepository,
                                       ICartMapper cartMapper) {
         this.context = context;

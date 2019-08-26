@@ -108,6 +108,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nullable;
+import javax.inject.Inject;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -148,17 +149,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     private ProgressDialog progressDialog;
 
-    //    @Inject
+    @Inject
     ICartListPresenter dPresenter;
-    //    @Inject
+    @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
-    //    @Inject
+    @Inject
     CheckoutAnalyticsCart cartPageAnalytics;
-    //    @Inject
-    CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
-    //    @Inject
+    @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
-    //    @Inject
+    @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
 
     private CartAdapter cartAdapter;
@@ -1475,10 +1474,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 showMainContainer();
             }
             dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
-            String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
-            if (!TextUtils.isEmpty(promo)) {
-                dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
-            }
+//            String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
+//            if (!TextUtils.isEmpty(promo)) {
+//                dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
+//            }
         }
     }
 
@@ -2117,7 +2116,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         if (stringObjectMap != null) {
-            checkoutAnalyticsCourierSelection.sendEnhancedECommerceAddToCart(stringObjectMap, eventCategory, eventAction, eventLabel);
+            cartPageAnalytics.sendEnhancedECommerceAddToCart(stringObjectMap, eventCategory, eventAction, eventLabel);
         }
     }
 

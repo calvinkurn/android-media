@@ -10,6 +10,11 @@ open class CommonPurchaseApiUrl {
 
     companion object {
 
+        const val NET_READ_TIMEOUT = 60
+        const val NET_WRITE_TIMEOUT = 60
+        const val NET_CONNECT_TIMEOUT = 60
+        const val NET_RETRY = 0
+
         val HMAC_KEY = "web_service_v4"
         var BASE_URL = TokopediaUrl.getInstance().API
 

@@ -52,6 +52,7 @@ import rx.subscriptions.CompositeSubscription;
 @Module(includes = {ConverterDataModule.class, TrackingAnalyticsModule.class, PromoCheckoutModule.class})
 public class CartListModule {
 
+/*
     private final ICartListView cartListView;
     private final ActionListener cartActionListener;
     private final PromoActionListener promoActionListener;
@@ -187,4 +188,5 @@ public class CartListModule {
     Context provideContextAbstraction(Context context) {
         return context;
     }
+*/
 }

@@ -13,6 +13,6 @@ import dagger.Component;
 @Component(modules = CartListModule.class, dependencies = CartComponent.class)
 public interface CartListComponent {
 
-    void inject(CartFragment cartFragment);
+//    void inject(CartFragment cartFragment);
 
 }

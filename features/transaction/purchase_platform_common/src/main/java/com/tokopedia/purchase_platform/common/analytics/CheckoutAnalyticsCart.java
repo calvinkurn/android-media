@@ -726,4 +726,19 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 productId
         );
     }
+
+    public void sendEnhancedECommerceAddToCart(Map<String, Object> atcMap,
+                                               String eventCategory,
+                                               String eventAction,
+                                               String eventLabel) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.EVENT, EventName.ADD_TO_CART,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
+                ConstantTransactionAnalytics.Key.E_COMMERCE, atcMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
 }
