@@ -23,7 +23,9 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
+import com.tokopedia.vouchergame.detail.data.VoucherGameEnquiryFields
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
+import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
 import com.tokopedia.vouchergame.detail.di.VoucherGameDetailComponent
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapterFactory
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameProductDecorator
@@ -32,6 +34,7 @@ import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewMode
 import com.tokopedia.vouchergame.detail.widget.VoucherGameBottomSheets
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 /**
@@ -100,34 +103,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     private fun initView() {
         recycler_view.addItemDecoration(VoucherGameProductDecorator(ITEM_DECORATOR_SIZE, resources))
 
-        // Enquire when all required input fields are filled
-        input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener{
-            override fun onEditorActionDone() {
-                val input1 = input_field_1.getInputText()
-                val input2 = input_field_2.getInputText()
-
-                // If first input field is filled, check if second input field is required (and is filled)
-                if (input1.isNotEmpty()) {
-                    if (input_field_2.visibility == View.VISIBLE && input2.isNotEmpty()) {
-                        enquireFields(input1, input2)
-                    } else {
-                        enquireFields(input1)
-                    }
-                }
-            }
-        })
-        input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener{
-            override fun onEditorActionDone() {
-                val input1 = input_field_1.getInputText()
-                val input2 = input_field_2.getInputText()
-
-                // Both input fields are required, check if both are filled
-                if (input1.isNotEmpty() && input2.isNotEmpty()) {
-                    enquireFields(input1, input2)
-                }
-            }
-        })
-
         checkout_view.setVisibilityLayout(false)
         checkout_view.setListener(this)
     }
@@ -152,6 +127,79 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                 input_field_2.setHint(secondField.name)
             }
         }
+
+        // Enquire when all required input fields are filled
+        if (input_field_1.visibility == View.VISIBLE) {
+            input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
+                override fun onEditorActionDone() {
+                    val input1 = input_field_1.getInputText()
+                    val input2 = input_field_2.getInputText()
+
+                    // If first input field is filled, check if second input field is required (and is filled)
+                    if (input1.isNotEmpty()) {
+                        if (input_field_2.visibility == View.VISIBLE && input2.isNotEmpty()) {
+                            enquireFields(data.enquiryFields, input1, input2)
+                        } else {
+                            enquireFields(data.enquiryFields, input1)
+                        }
+                    }
+                }
+            })
+        }
+        if (input_field_2.visibility == View.VISIBLE) {
+            input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener {
+                override fun onEditorActionDone() {
+                    val input1 = input_field_1.getInputText()
+                    val input2 = input_field_2.getInputText()
+
+                    // Both input fields are required, check if both are filled
+                    if (input1.isNotEmpty() && input2.isNotEmpty()) {
+                        enquireFields(data.enquiryFields, input1, input2)
+                    }
+                }
+            })
+        }
+    }
+
+    private fun enquireFields(enquiryData: List<VoucherGameEnquiryFields>,
+                              input1: String,
+                              input2: String? = null) {
+
+        // Verify fields
+        var isValid: Boolean
+        isValid = verifyField(enquiryData[0].validations, input1)
+        if (isValid && input2 != null) {
+            isValid = verifyField(enquiryData[1].validations, input2)
+        }
+
+        if (isValid) {
+            // Reset error label
+            setInputFieldsError("")
+
+            // TODO: Add enquiry api call
+        } else {
+            // Set error message
+            setInputFieldsError(getString(R.string.input_field_error_message))
+        }
+    }
+
+    private fun verifyField(fieldValidation: List<VoucherGameEnquiryFields.Validation>,
+                            input: String): Boolean {
+        for (validation in fieldValidation) {
+            if (!Pattern.matches(validation.rule, input)) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun setInputFieldsError(message: String) {
+        if (message.isNotEmpty()) {
+            input_field_error_label.visibility = View.VISIBLE
+            input_field_error_label.text = message
+        } else {
+            input_field_error_label.visibility = View.GONE
+        }
     }
 
     private fun renderProducts(data: VoucherGameDetailData) {
@@ -162,7 +210,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         else {
             val listData = mutableListOf<Visitable<*>>()
             for (productList in dataCollection) {
-                listData.add(productList)
+                // Create new instance to prevent adding copy of products
+                // to adapter data (set products to empty list)
+                val categoryItem = VoucherGameProductData.DataCollection(productList.name, listOf())
+                listData.add(categoryItem)
+
                 if (productList.products.isNotEmpty())  {
                     listData.addAll(productList.products)
                 }
@@ -188,15 +240,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         }
     }
 
-    private fun enquireFields(input1: String, input2: String = "") {
-
-    }
-
     override fun getAdapterTypeFactory(): VoucherGameDetailAdapterFactory {
         return VoucherGameDetailAdapterFactory(this, this)
     }
 
-    override fun getScreenName(): String = "Voucher Game"
+    override fun getScreenName(): String = getString(R.string.app_label)
 
     override fun initInjector() {
         getComponent(VoucherGameDetailComponent::class.java).inject(this)
