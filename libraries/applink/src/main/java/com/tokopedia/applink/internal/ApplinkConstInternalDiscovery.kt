@@ -8,7 +8,7 @@ object ApplinkConstInternalDiscovery {
     val HOST_DISCOVERY = "discovery"
 
     @JvmField
-    val INTERNAL_DISCOVERY = "${DeeplinkConstant.SCHEME_INTERNAL}://${ApplinkConstInternalDiscovery.HOST_DISCOVERY}"
+    val INTERNAL_DISCOVERY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_DISCOVERY"
 
     @JvmField
     val FILTER = "$INTERNAL_DISCOVERY/filter"
@@ -18,4 +18,7 @@ object ApplinkConstInternalDiscovery {
 
     @JvmField
     val CATALOG = "$INTERNAL_DISCOVERY/catalog"
+
+    @JvmField
+    val SEARCH_RESULT = "$INTERNAL_DISCOVERY/search-result"
 }

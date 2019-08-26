@@ -11,6 +11,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.SimilarProduct;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
@@ -95,7 +96,7 @@ public class CartMapper implements ICartMapper {
         cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
 
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();
-        boolean isDisableAllProducts = false;
+        boolean isDisableAllProducts = true;
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             ShopGroupData shopGroupData = new ShopGroupData();
 
@@ -103,13 +104,9 @@ public class CartMapper implements ICartMapper {
 
             if (!shopGroupData.isError()) {
                 int errorItemCountPerShop = 0;
-                String defaultErrorMessage = "";
                 for (CartDetail cartDetail : shopGroup.getCartDetails()) {
                     if (cartDetail.getErrors() != null && cartDetail.getErrors().size() > 0) {
                         errorItemCountPerShop++;
-                        if (TextUtils.isEmpty(defaultErrorMessage) && cartDetail.getErrors().size() > 0) {
-                            defaultErrorMessage = cartDetail.getErrors().get(0);
-                        }
                     }
                 }
 
@@ -117,7 +114,6 @@ public class CartMapper implements ICartMapper {
                 if (errorItemCountPerShop == shopGroup.getCartDetails().size()) {
                     shopError = true;
                     isDisableAllProducts = true;
-                    shopGroupData.setErrorTitle(defaultErrorMessage);
                 } else {
                     isDisableAllProducts = false;
                 }
@@ -267,6 +263,10 @@ public class CartMapper implements ICartMapper {
                 if (data.getErrors() != null && data.getErrors().size() > 0) {
                     cartItemData.setError(true);
                     cartItemData.setErrorMessageTitle(data.getErrors().get(0));
+                    com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.SimilarProduct dataSimilarProduct = data.getSimilarProduct();
+                    if (dataSimilarProduct != null && !TextUtils.isEmpty(dataSimilarProduct.getText()) && !TextUtils.isEmpty(dataSimilarProduct.getUrl())) {
+                        cartItemData.setSimilarProduct(new SimilarProduct(dataSimilarProduct.getText(), dataSimilarProduct.getUrl()));
+                    }
 
                     if (data.getErrors().size() > 1) {
                         cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
@@ -284,24 +284,12 @@ public class CartMapper implements ICartMapper {
                     }
                 }
 
-                // if (cartItemData.isSingleChild()) {
                 if (!shopGroupData.isError() && !shopGroupData.isWarning()) {
                     cartItemData.setParentHasErrorOrWarning(false);
                 } else {
                     cartItemData.setParentHasErrorOrWarning(true);
                 }
-                // if (cartItemData.isError()) {
-                if (isDisableAllProducts) {
-                    shopGroupData.setError(true);
-                    shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
-                    shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
-                } else if (cartItemData.isWarning()) {
-                    shopGroupData.setWarning(true);
-                    shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
-                    shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
-                }
                 cartItemData.setDisableAllProducts(isDisableAllProducts);
-                // }
 
                 if (!cartItemData.isError() && shopGroupData.isError()) {
                     cartItemData.setError(true);
