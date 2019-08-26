@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="host_content" translatable="false">content</string>
+    <string name="path_edit_post_affiliate" translatable="false">/affiliate/.*\\/edit</string>
+    <string name="path_edit_post_shop" translatable="false">/content-shop/.*\\/edit</string>
+    <string name="path_hashtag_page_landing" translatable="false">/explore-hashtag/.*\\/</string>
+</resources>

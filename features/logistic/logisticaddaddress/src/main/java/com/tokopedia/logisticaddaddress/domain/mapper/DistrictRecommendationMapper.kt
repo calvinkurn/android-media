@@ -1,10 +1,10 @@
 package com.tokopedia.logisticaddaddress.domain.mapper
 
-import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.logisticaddaddress.domain.model.Address
+import com.tokopedia.logisticaddaddress.domain.model.AddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictItem
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictRecommendationResponse
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationResponseUiModel
+import java.util.ArrayList
 import javax.inject.Inject
 
 /**
@@ -12,26 +12,25 @@ import javax.inject.Inject
  */
 class DistrictRecommendationMapper @Inject constructor() {
 
-    fun map(response: GraphqlResponse?): DistrictRecommendationResponseUiModel {
-        var listDistrict = mutableListOf<DistrictRecommendationItemUiModel>()
-        val responseDistrictRecommendation: DistrictRecommendationResponse? = response?.getData(DistrictRecommendationResponse::class.java)
-        responseDistrictRecommendation?.keroDistrictRecommendation.let { keroDistrictRecommendation ->
-            keroDistrictRecommendation?.district?.forEach {
-                mapDistrictItem(it).let(listDistrict::add)
-            }
+    fun transform(response: DistrictRecommendationResponse): AddressResponse {
+        return AddressResponse().apply {
+            addresses = response.keroDistrictRecommendation.district.mapToAddressResponse()
+            isNextAvailable = response.keroDistrictRecommendation.nextAvailable
         }
-        return DistrictRecommendationResponseUiModel(listDistrict)
     }
 
-    private fun mapDistrictItem(district: DistrictItem): DistrictRecommendationItemUiModel {
-        return DistrictRecommendationItemUiModel(
-                districtId = district.districtId,
-                cityId = district.cityId,
-                cityName = district.cityName,
-                provinceId = district.provinceId,
-                provinceName = district.provinceName,
-                zipCodes = district.zipCode,
-                districtName = district.districtName
-        )
+    private fun List<DistrictItem>.mapToAddressResponse(): ArrayList<Address> {
+        return this.map {
+            Address().apply {
+                districtId = it.districtId
+                districtName = it.districtName
+                cityId = it.cityId
+                cityName = it.cityName
+                provinceId = it.provinceId
+                provinceName = it.provinceName
+                zipCodes = it.zipCode as ArrayList<String>
+            }
+        } as ArrayList<Address>
     }
+
 }

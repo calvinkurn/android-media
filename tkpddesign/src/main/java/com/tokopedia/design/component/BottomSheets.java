@@ -3,16 +3,14 @@ package com.tokopedia.design.component;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -29,16 +27,31 @@ import com.tokopedia.design.R;
 
 public abstract class BottomSheets extends BottomSheetDialogFragment {
 
+    private View inflatedView;
+    private BottomSheetDismissListener dismissListener;
+    private BottomSheetBehavior bottomSheetBehavior;
+
     public abstract int getLayoutResourceId();
+    public abstract void initView(View view);
+
+    public interface BottomSheetDismissListener {
+        void onDismiss();
+    }
+
+    public enum BottomSheetsState {
+        NORMAL, FULL, FLEXIBLE
+    }
 
     public int getBaseLayoutResourceId() {
         return R.layout.widget_bottomsheet;
     }
 
-    public abstract void initView(View view);
+    public BottomSheetBehavior getBottomSheetBehavior() {
+        return bottomSheetBehavior;
+    }
 
-    public enum BottomSheetsState {
-        NORMAL, FULL
+    public void setDismissListener(BottomSheetDismissListener dismissListener) {
+        this.dismissListener = dismissListener;
     }
 
     protected String title() {
@@ -51,62 +64,6 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
     protected BottomSheetsState state() {
         return BottomSheetsState.NORMAL;
-    }
-
-    private BottomSheetBehavior bottomSheetBehavior;
-    private View inflatedView;
-
-    public interface BottomSheetDismissListener {
-        void onDismiss();
-    }
-
-    private BottomSheetDismissListener dismissListener;
-
-    @SuppressLint("RestrictedApi")
-    @Override
-    public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
-        inflatedView = View.inflate(getContext(), getBaseLayoutResourceId(), null);
-
-        configView(inflatedView);
-
-        dialog.setContentView(inflatedView);
-
-        View parent = (View) inflatedView.getParent();
-        parent.setFitsSystemWindows(true);
-
-        inflatedView.measure(0, 0);
-        int height = inflatedView.getMeasuredHeight();
-
-        try {
-            bottomSheetBehavior = BottomSheetBehavior.from(parent);
-        } catch (IllegalArgumentException e) {
-            Log.d(BottomSheets.class.getName(), e.getMessage());
-        }
-      
-        try {
-            ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) ((View) inflatedView.getParent()).getLayoutParams();
-
-            inflatedView.measure(0, 0);
-            DisplayMetrics displaymetrics = new DisplayMetrics();
-            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            int screenHeight = displaymetrics.heightPixels;
-
-            if (state() == BottomSheetsState.FULL) {
-                height = screenHeight;
-            }
-
-            if (bottomSheetBehavior != null)
-                bottomSheetBehavior.setPeekHeight(height);
-
-            params.height = screenHeight;
-            parent.setLayoutParams(params);
-        } catch (Exception ignored) { }
-
-    }
-
-    public BottomSheetBehavior getBottomSheetBehavior() {
-        return bottomSheetBehavior;
     }
 
     protected void configView(final View parentView) {
@@ -125,6 +82,9 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         View layoutTitle = parentView.findViewById(R.id.layout_title);
         layoutTitle.setOnClickListener(v -> onCloseButtonClick());
 
+        View closeButton = parentView.findViewById(R.id.btn_close);
+        closeButton.setOnClickListener(view -> BottomSheets.this.dismiss());
+
         FrameLayout frameParent = parentView.findViewById(R.id.bottomsheet_container);
         View subView = View.inflate(getContext(), getLayoutResourceId(), null);
         initView(subView);
@@ -132,8 +92,10 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     }
 
     protected void onCloseButtonClick() {
-        if (bottomSheetBehavior == null)
+        if (bottomSheetBehavior == null) {
             return;
+        }
+
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         } else if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
@@ -145,8 +107,66 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
     }
 
-    public void setDismissListener(BottomSheetDismissListener dismissListener) {
-        this.dismissListener = dismissListener;
+    protected void updateHeight() {
+        inflatedView.invalidate();
+        inflatedView.measure(0, 0);
+        if (bottomSheetBehavior != null)
+            bottomSheetBehavior.setPeekHeight(inflatedView.getMeasuredHeight());
+    }
+
+    protected void updateHeight(int height) {
+        ViewGroup.LayoutParams params = inflatedView.getLayoutParams();
+        params.height = height;
+
+        inflatedView.setLayoutParams(params);
+        inflatedView.setMinimumHeight(height);
+        inflatedView.invalidate();
+        inflatedView.measure(0, 0);
+
+        if (bottomSheetBehavior != null)
+            bottomSheetBehavior.setPeekHeight(height);
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void setupDialog(Dialog dialog, int style) {
+        super.setupDialog(dialog, style);
+
+        inflatedView = View.inflate(getContext(), getBaseLayoutResourceId(), null);
+        configView(inflatedView);
+        dialog.setContentView(inflatedView);
+
+        View parent = (View) inflatedView.getParent();
+        parent.setFitsSystemWindows(true);
+
+        inflatedView.measure(0, 0);
+        int height = inflatedView.getMeasuredHeight();
+
+        if (state() != BottomSheetsState.FLEXIBLE) {
+            try {
+                bottomSheetBehavior = BottomSheetBehavior.from(parent);
+
+                ViewGroup.LayoutParams params = ((View) inflatedView.getParent()).getLayoutParams();
+
+                inflatedView.measure(0, 0);
+                DisplayMetrics displaymetrics = new DisplayMetrics();
+                getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+                int screenHeight = displaymetrics.heightPixels;
+
+                if (state() == BottomSheetsState.FULL) {
+                    height = screenHeight;
+                }
+
+                if (bottomSheetBehavior != null)
+                    bottomSheetBehavior.setPeekHeight(height);
+
+                params.height = screenHeight;
+                parent.setLayoutParams(params);
+            } catch (IllegalArgumentException illegalEx) {
+                Log.d(BottomSheets.class.getName(), illegalEx.getMessage());
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     @Override
@@ -181,28 +201,27 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         super.onDetach();
     }
 
-    protected void updateHeight() {
-        inflatedView.invalidate();
-        inflatedView.measure(0, 0);
-        if (bottomSheetBehavior != null)
-            bottomSheetBehavior.setPeekHeight(inflatedView.getMeasuredHeight());
-    }
-
-    protected void updateHeight(int height) {
-        ViewGroup.LayoutParams params = inflatedView.getLayoutParams();
-        params.height = height;
-        inflatedView.setLayoutParams(params);
-        inflatedView.setMinimumHeight(height);
-        inflatedView.invalidate();
-        inflatedView.measure(0, 0);
-        if (bottomSheetBehavior != null)
-            bottomSheetBehavior.setPeekHeight(height);
-    }
-
     @Override
     public void show(FragmentManager manager, String tag) {
         try {
             super.show(manager, tag);
-        } catch (IllegalStateException e) { /*ignore*/ }
+        } catch (IllegalStateException e) { }
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        final BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+
+        bottomSheetDialog.setOnShowListener(dialog -> {
+            FrameLayout bottomSheet = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+
+            if (bottomSheet != null) {
+                BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+                behavior.setSkipCollapsed(true);
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+
+        return bottomSheetDialog;
     }
 }

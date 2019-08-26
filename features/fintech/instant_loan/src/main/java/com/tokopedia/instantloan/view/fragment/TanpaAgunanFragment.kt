@@ -109,6 +109,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         }
 
         loanPeriodValueTV.text = getString(R.string.il_loan_period_value_label)
+        loanPeriodValueTV.tag = ""
 
         spinner_value_nominal.setOnClickListener {
             if (!::selectedLoanPeriodType.isInitialized) {

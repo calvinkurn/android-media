@@ -13,6 +13,18 @@ public class PaymentGraphql {
     @Expose
     PaymentData payment;
 
+    @SerializedName("new_buyer_flag")
+    @Expose
+    private boolean newBuyerFlag;
+
+    public boolean isNewBuyerFlag() {
+        return newBuyerFlag;
+    }
+
+    public void setNewBuyerFlag(boolean newBuyerFlag) {
+        this.newBuyerFlag = newBuyerFlag;
+    }
+
     public PaymentData getPayment() {
         return payment;
     }

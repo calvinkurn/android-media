@@ -4,14 +4,19 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.IrisBroadcastReceiver
+import com.tokopedia.iris.worker.IrisExecutor
+import com.tokopedia.iris.worker.IrisExecutor.handler
+import com.tokopedia.iris.worker.IrisService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
@@ -22,11 +27,13 @@ import kotlin.coroutines.CoroutineContext
  */
 class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.IO
-    private val trackingRepository: TrackingRepository = TrackingRepository(context)
     private val session: Session = IrisSession(context)
     private var cache: Cache = Cache(context)
+
+
+    override val coroutineContext: CoroutineContext by lazy {
+        IrisExecutor.executor + handler
+    }
 
     override fun setService(config: String, isEnabled: Boolean) {
         try {
@@ -61,27 +68,24 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     override fun saveEvent(map: Map<String, Any>) {
         if (cache.isEnabled()) {
-            launchCatchError(block = {
+            launch(coroutineContext + Dispatchers.IO) {
+                val trackingRepository = TrackingRepository(context)
                 // convert map to json then save as string
                 val event = JSONObject(map).toString()
                 val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
                 trackingRepository.saveEvent(resultEvent.toString(), session)
-            }) {
-                // no-op
-            } 
+            }
         }
     }
 
     override fun sendEvent(map: Map<String, Any>) {
-         if (cache.isEnabled()) {
-             launchCatchError(block = {
-                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(),
-                        session)
+        if (cache.isEnabled()) {
+            launch(coroutineContext + Dispatchers.IO) {
+                val trackingRepository = TrackingRepository(context)
+                val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
                 if (isSuccess && BuildConfig.DEBUG) {
-                    Log.e("Iris", "Success Send Single Event")
+                    Log.d("Iris", "Success Send Single Event")
                 }
-            }) {
-                // no-op
             }
          }
     }
@@ -95,11 +99,21 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     private fun setWorkManager(config: Configuration) {
-        val intent = Intent(context, IrisBroadcastReceiver::class.java)
-        intent.putExtra(MAX_ROW, config.maxRow)
-        val pintent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pintent)
+        val pendingIntent: PendingIntent?
+        pendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            val intent = Intent(context, IrisService::class.java)
+            intent.putExtra(MAX_ROW, config.maxRow)
+            PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        } else{
+            val intent = Intent(context, IrisBroadcastReceiver::class.java)
+            intent.putExtra(MAX_ROW, config.maxRow)
+            PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        pendingIntent?.let {
+            val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pendingIntent)
+        }
     }
 
     companion object {

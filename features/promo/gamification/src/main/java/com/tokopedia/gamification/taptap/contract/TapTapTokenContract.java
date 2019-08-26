@@ -58,7 +58,7 @@ public interface TapTapTokenContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void crackToken(long tokenUserId, long campaignId);
+        void crackToken(String tokenUserId, long campaignId);
 
         void getGetTokenTokopoints(boolean showLoading, boolean isRefetchEgg);
 

@@ -14,9 +14,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_address_name"
-            style="@style/TextSmallNormalBlack38"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:maxWidth="180dp"
@@ -24,63 +23,63 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:lineSpacingExtra="4sp"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             tools:ignore="SmallSp"
             tools:text="Alamat Maximum Chars 350 karakter Jika Bisa" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_address_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_4"
             android:background="@drawable/bg_outline_address_identifier"
-            android:fontFamily="sans-serif"
             android:paddingBottom="@dimen/dp_4"
             android:paddingLeft="@dimen/dp_10"
             android:paddingRight="@dimen/dp_10"
             android:paddingTop="@dimen/dp_4"
             android:text="@string/label_main_address"
             android:textColor="@color/bottom_label_color"
-            android:textSize="@dimen/sp_10"
-            android:textStyle="bold"
             android:visibility="gone"
+            app:typographyType="small"
+            app:typographyWeight="reguler"
             tools:ignore="SmallSp"
             tools:visibility="visible" />
 
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_recipient_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/ll_address_name"
         android:layout_marginBottom="@dimen/dp_3"
         android:lineSpacingExtra="@dimen/dp_3"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/sp_12"
-        android:textStyle="bold"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         tools:ignore="SmallSp"
         tools:text="Agus Maulana" />
 
-    <TextView
-        android:id="@+id/tv_recipient_address"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_recipient_name"
-        android:lineSpacingExtra="6sp"
-        android:textColor="@color/black_54"
-        android:textSize="12sp"
-        tools:ignore="SmallSp"
-        tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta" />
-
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_recipient_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_recipient_address"
+        android:layout_below="@+id/tv_recipient_name"
         android:layout_marginTop="@dimen/dp_3"
         android:lineSpacingExtra="@dimen/dp_3"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/sp_12"
+        app:typographyType="body_3"
+        app:typographyWeight="reguler"
         tools:text="080989999" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_recipient_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_recipient_phone"
+        android:lineSpacingExtra="6sp"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
+        tools:ignore="SmallSp"
+        tools:text="Jl. Letjen S. Parman Kav.77, Wisma 77 Tower 2,\nTokopedia Lt. 2, Jakarta" />
 
 </RelativeLayout>

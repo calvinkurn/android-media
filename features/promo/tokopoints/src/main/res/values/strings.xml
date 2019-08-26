@@ -2,6 +2,7 @@
     <string name="tp_title_tokopoints">TokoPoints</string>
     <string name="tp_title_detail">Detail Kupon</string>
     <string name="tp_title_send_coupon">Kirim Kupon</string>
+    <string name="tp_title_history">Riwayat</string>
     <string name="tp_label_coupon">Kupon</string>
     <string name="tp_mes_coupon_part_2">akan digunakan pada transaksi selanjutnya.</string>
     <string name="tp_label_later">Nanti Saja</string>
@@ -46,13 +47,13 @@
     <string name="tp_label_min_exchange">Minimal transaksi:</string>
     <string name="tp_label_min_exchange_sort">Min. transaksi:</string>
     <string name="tp_label_refresh_repeat">Refresh Ulang</string>
-    <string name="tp_label_send">Kirim</string>
+    <string name="tp_label_send">Lanjut</string>
     <string name="tp_label_email">Email Penerima</string>
     <string name="tp_label_notes">Tulis Pesan (Opsional)</string>
-    <string name="tp_label_send_coupon_as_gift">Kirim Kupon sebagai Hadiah</string>
+    <string name="tp_label_send_coupon_as_gift">Kirim Kupon</string>
     <string name="tp_label_for">Untuk :</string>
     <string name="tp_label_message">Pesan :</string>
-    <string name="tp_label_send_now">Kirim Sekarang</string>
+    <string name="tp_label_send_now">Kirim </string>
     <string name="tp_send_gift_success_title">Kupon Berhasil Terkirim</string>
     <string name="tp_send_gift_success_message">Hore, hadiah Kupon yang kamu kirim sudah sampai di penerima!</string>
     <string name="tp_send_gift_failed_title">Kupon Gagal Dikirim</string>
@@ -71,5 +72,30 @@
     <string name="tp_history">Riwayat</string>
     <string name="tp_leader">Leaderboard</string>
     <string name="moreCouponCount">99+</string>
+    <string name="tp_btn_exp_help">Selengkapnya tentang Points dan Loyalty</string>
+    <string name="tp_exp_info">Points dan Loyalty memiliki masa berlaku yang berbeda:</string>
+    <string name="tp_loyalty_info"><b>Loyalty</b> tidak dapat ditukarkan, tetapi dapat meningkatkan status Membership Anda. Semakin tinggi status Membership, semakin banyak keuntungan yang bisa Anda dapatkan.</string>
+    <string name="tp_point_info"><b>Points</b> dapat Anda tukarkan dengan berbagai Kupon di halaman TokoPoints.</string>
+    <string name="tp_history_header"><b>Points dan Loyalty</b> adalah hadiah yang Anda peroleh dari memecahkan Lucky Egg.</string>
+    <string name="tp_title_history_bottomshet">Beda Points dan Loyalty</string>
+    <string name="tp_btn_history_bottomshet">Cek Info Points &amp; Loyalty</string>
+    <string name="tp_ph_point">Points: </string>
+    <string name="tp_ph_loyalty">Loyalty: </string>
+    <string name="tp_title_err_history">Ada gangguan di rumah Toped</string>
+    <string name="tp_desc_err_history">Kami akan bereskan secepatnya. Klik tombol di bawah atau balik lagi nanti.</string>
+    <string name="tp_history_empty_title">Kamu belum punya riwayat TokoPoints</string>
+    <string name="tp_history_empty_desc">Ayo lakukan transaksi dan dapatkan Lucky Egg</string>
+    <string name="tp_history_btn_action">Yuk Belanja</string>
+    <string name="see_more_txt">Baca Selengkapnya</string>
+    <string name="points_saya">Points Saya:</string>
+    <string name="tnc_coupon_catalog"><![CDATA[Syarat & Ketentuan]]></string>
+    <string name="how_to_use_coupon_catalog">Cara Pakai</string>
+    <string name="tp_gift_btn_text">Hadiahin</string>
+    <string name="tp_default_gift_text">Hadiahin kupon ini ke temanmu!</string>
+    <string name="tp_title_kirim_coupon">Kirim Kupon</string>
+    <string name="tp_coupon_name">Kupon Travel Cashback hingga Rp300.000</string>
+    <string name="tp_pesan">Pesan:</string>
+    <string name="tp_okay">Oke</string>
+    <string name="tp_try_again">Coba Lagi</string>
 
 </resources>

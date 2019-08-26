@@ -43,6 +43,8 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER;
+
 /**
  * Created by stevenfredian on 12/22/17.
  */
@@ -63,10 +65,12 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
     private String message;
     private Observable<Integer> counterObservable;
     private int allowDelete;
+    private Boolean isSeller;
 
     public static EditTemplateChatFragment createInstance(Bundle extras) {
         EditTemplateChatFragment fragment = new EditTemplateChatFragment();
         fragment.setArguments(extras);
+        fragment.isSeller = extras.getBoolean(PARAM_IS_SELLER);
         return fragment;
     }
 
@@ -155,6 +159,7 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
         editText = rootView.findViewById(R.id.edittext);
 
         presenter.attachView(this);
+        presenter.setMode(isSeller);
         return rootView;
     }
 
@@ -178,18 +183,14 @@ public class EditTemplateChatFragment extends BaseDaggerFragment
             }
         });
 
-        counterObservable.subscribe(new Action1<Integer>() {
-            @Override
-            public void call(final Integer integer) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        showErrorAndProceed(integer, submit);
-                        counter.setText(String.format("%d/%d", integer, MAX_CHAR));
-                    }
-                });
-            }
+        Action1<Integer> onNextAction = integer -> getActivity().runOnUiThread(() -> {
+            showErrorAndProceed(integer, submit);
+            counter.setText(String.format("%d/%d", integer, MAX_CHAR));
         });
+
+        Action1<Throwable> onError = throwable -> throwable.printStackTrace();
+
+        counterObservable.subscribe(onNextAction, onError);
 
 
         submit.setOnClickListener(new View.OnClickListener() {

@@ -43,6 +43,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -72,6 +73,7 @@ import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDet
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -91,6 +93,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public static final String NO_SALIN = "No. Resi";
     public static final String NO_SANIN_NEXT_LINE = "\n\nSalin No. Resi";
     public static final String BELI_LAGI = "Beli Lagi";
+    public static final String INVOICE_URL = "invoiceUrl";
+    public static final String TX_ASK_SELLER = "tx_ask_seller";
+    public static final String STATUS_CODE_220 = "220";
+    public static final String STATUS_CODE_400 = "400";
+    public static final String STATUS_CODE_11 = "11";
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
     public static final int CANCEL_BUYER_REQUEST = 103;
@@ -453,6 +460,11 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
+    public void showSuccessMessageWithAction(String message) {
+        Toaster.Companion.showNormalWithAction(mainView, message, Snackbar.LENGTH_LONG, getString(R.string.bom_check_cart), v -> RouteManager.route(getContext(), ApplinkConst.CART));
+    }
+
+    @Override
     public void showErrorMessage(String message) {
         ToasterError.make(getView(), message, Snackbar.LENGTH_LONG).show();
     }
@@ -503,7 +515,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgain(getAppContext().getResources());
+                        presenter.onBuyAgainAllItems();
                     }
                 });
             } else {
@@ -593,8 +605,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                                             getArguments().getString(KEY_ORDER_ID));
                                     startActivityForResult(newIntent, TransactionPurchaseRouter.CREATE_RESCENTER_REQUEST_CODE);
                                     dialog.dismiss();
-                                } else
-                                    RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                } else {
+                                    if (actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri().contains("askseller")) {
+                                        startSellerAndAddInvoice(actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                    } else
+                                        RouteManager.route(getContext(), actionButton.getActionButtonPopUp().getActionButtonList().get(1).getUri());
+                                }
                             } else {
                                 dialog.dismiss();
                             }
@@ -615,27 +631,20 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 dialog.show();
             } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                 if (actionButton.getUri().contains("askseller")) {
-                    if (shopInfo != null) {
-                        String shopId = String.valueOf(this.shopInfo.getShopId());
-                        String shopName = this.shopInfo.getShopName();
-                        String shopLogo = this.shopInfo.getShopLogo();
-                        String shopUrl = this.shopInfo.getShopUrl();
-                        String invoiceUrl;
-                        Uri uri = Uri.parse(actionButton.getUri());
-                        invoiceUrl = uri.getQueryParameter("invoiceUrl");
-                        String applink = "tokopedia://topchat/askseller/" + shopId;
-                        Intent intent = RouteManager.getIntent(getContext(), applink);
-                        intent.putExtra(ApplinkConst.Chat.CUSTOM_MESSAGE, invoiceUrl);
-                        intent.putExtra(ApplinkConst.Chat.SOURCE, "tx_ask_seller");
-                        startActivity(intent);
-                    }
+                    startSellerAndAddInvoice(actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);
                     intent.putExtra(KEY_ORDER_ID, getArguments().getString(KEY_ORDER_ID));
                     intent.putExtra(ACTION_BUTTON_URL, actionButton.getUri());
-                    if (this.status.status().equals("220") || this.status.status().equals("400")) {
-                        startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
-                    } else if (this.status.status().equals("11")) {
+                    if (this.status.status().equals(STATUS_CODE_220) || this.status.status().equals(STATUS_CODE_400)) {
+                        if (presenter.shouldShowTimeForCancellation()) {
+                            Toaster.Companion.showErrorWithAction(mainView,
+                                            presenter.getCancelTime(),
+                                    Snackbar.LENGTH_LONG,
+                                    getResources().getString(R.string.title_ok), v -> {});
+                        } else
+                            startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 1), REQUEST_CANCEL_ORDER);
+                    } else if (this.status.status().equals(STATUS_CODE_11)) {
                         startActivityForResult(RequestCancelActivity.getInstance(getContext(), getArguments().getString(KEY_ORDER_ID), actionButton.getUri(), 0), REQUEST_CANCEL_ORDER);
                     } else if (actionButton.getLabel().equalsIgnoreCase("Lacak")) {
                         String routingAppLink;
@@ -657,6 +666,23 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 }
             }
         };
+    }
+
+    private void startSellerAndAddInvoice(String uriString) {
+        if (shopInfo != null) {
+            String shopId = String.valueOf(this.shopInfo.getShopId());
+            String shopName = this.shopInfo.getShopName();
+            String shopLogo = this.shopInfo.getShopLogo();
+            String shopUrl = this.shopInfo.getShopUrl();
+            String invoiceUrl;
+            Uri uri = Uri.parse(uriString);
+            invoiceUrl = uri.getQueryParameter(INVOICE_URL);
+            String applink = "tokopedia://topchat/askseller/" + shopId;
+            Intent intent = RouteManager.getIntent(getContext(), applink);
+            presenter.assignInvoiceDataTo(intent);
+            intent.putExtra(ApplinkConst.Chat.SOURCE, TX_ASK_SELLER);
+            startActivity(intent);
+        }
     }
 
     @Override

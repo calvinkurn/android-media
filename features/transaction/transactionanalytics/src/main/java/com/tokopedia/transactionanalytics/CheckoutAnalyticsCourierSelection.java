@@ -201,15 +201,6 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickAtcCourierSelectionClickPilihMetodePembayaranSuccess() {
-        sendEventCategoryActionLabel(
-                EventName.CLICK_ATC,
-                EventCategory.COURIER_SELECTION,
-                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
-                EventLabel.SUCCESS
-        );
-    }
-
     public void eventClickAtcCourierSelectionClickPilihMetodePembayaranNotSuccess(String errorMessage) {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
@@ -308,6 +299,19 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void sendEnhancedECommerceAddToCart(Map<String, Object> atcMap,
+                                               String eventCategory,
+                                               String eventAction,
+                                               String eventLabel) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                ConstantTransactionAnalytics.Key.EVENT, EventName.ADD_TO_CART,
+                ConstantTransactionAnalytics.Key.EVENT_CATEGORY, eventCategory,
+                ConstantTransactionAnalytics.Key.EVENT_ACTION, eventAction,
+                ConstantTransactionAnalytics.Key.EVENT_LABEL, eventLabel,
+                ConstantTransactionAnalytics.Key.E_COMMERCE, atcMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
 
     public void sendEnhancedECommerceCheckout(Map<String, Object> cartMap,
                                               String transactionId,
@@ -855,4 +859,19 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventViewPromoLogisticTicker(String promoCode) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_LOGISTIC_TICKER,
+                promoCode
+        );
+    }
+    public void eventViewCourierImpressionErrorCourierNoAvailable() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.IMPRESSION_ERROR_COURIER_NO_AVAILABLE
+        );
+    }
 }

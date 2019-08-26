@@ -17,7 +17,7 @@ import com.tokopedia.feedcomponent.R
 
 class RatingBarReview : BaseCustomView {
     private var numstars: Int = 0
-    var rating: Int = 0
+    private var rating: Int = 0
 
     private var ratingBar: RatingBar? = null
 
@@ -61,17 +61,16 @@ class RatingBarReview : BaseCustomView {
 
     fun setNumstars(numstars: Int) {
         this.numstars = numstars
-        ratingBar!!.numStars = numstars
+        ratingBar?.numStars = numstars
     }
 
     fun updateRating(rating: Int) {
         this.rating = rating
-        ratingBar!!.rating = rating.toFloat()
+        ratingBar?.rating = rating.toFloat()
     }
 
     companion object {
-
-        private val DEFAULT_INPUT_VALUE_NUM_STARS = 5
-        val DEF_VALUE_EMPTY = 0
+        private const val DEFAULT_INPUT_VALUE_NUM_STARS = 5
+        private const val DEF_VALUE_EMPTY = 0
     }
 }

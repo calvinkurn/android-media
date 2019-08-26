@@ -154,6 +154,52 @@ public class TopAdsDetailProductActivity extends BaseSimpleActivity implements T
     }
 
     @Override
+    public void startShowCaseAutoAds() {
+        final String showCaseTag = TopAdsDetailProductActivity.class.getName();
+        if (ShowCasePreference.hasShown(this, showCaseTag)) {
+            return;
+        }
+        if (showCaseDialog != null) {
+            return;
+        }
+
+        final TopAdsDetailProductFragment topAdsDetailProductFragment =
+                (TopAdsDetailProductFragment) getSupportFragmentManager().findFragmentByTag(TopAdsDetailProductFragment.class.getSimpleName());
+
+        if (topAdsDetailProductFragment == null) {
+            return;
+        }
+
+        final ArrayList<ShowCaseObject> showCaseList = new ArrayList<>();
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        if (toolbar.getHeight() > 0) {
+            View statisticView = topAdsDetailProductFragment.getStatisticView();
+            if (statisticView != null) {
+                showCaseList.add(
+                        new ShowCaseObject(
+                                statisticView,
+                                getString(R.string.topads_showcase_detail_statistic_title),
+                                getString(R.string.topads_showcase_detail_statistic_desc),
+                                ShowCaseContentPosition.UNDEFINED,
+                                Color.WHITE));
+            }
+            showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase();
+            showCaseDialog.show(TopAdsDetailProductActivity.this, showCaseTag, showCaseList);
+        } else {
+            toolbar.getViewTreeObserver().addOnGlobalLayoutListener(new OneUseGlobalLayoutListener(
+                    toolbar,
+                    new OneUseGlobalLayoutListener.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            startShowCase();
+                        }
+                    }
+            ));
+        }
+    }
+
+    @Override
     public void startShowCase() {
         final String showCaseTag = TopAdsDetailProductActivity.class.getName();
         if (ShowCasePreference.hasShown(this, showCaseTag)) {

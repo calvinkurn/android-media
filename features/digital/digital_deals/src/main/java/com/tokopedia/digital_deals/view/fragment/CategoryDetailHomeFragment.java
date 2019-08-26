@@ -92,9 +92,10 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     private CategoriesModel categoriesModel;
     private String locationName;
     private DealsCategoryAdapter dealsAdapter;
+    private DealsBrandAdapter dealsBrandAdapter;
     private int adapterPosition = -1;
     private boolean forceRefresh;
-    public static final String SEARCH_TEXT = "search_text";
+    public static final String SEARCH_TEXT = "search_name";
     private TextView toolbarTitle;
     private TextView searchInputView;
     private ImageView backArrow;
@@ -168,7 +169,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         recyclerViewDeals.setAdapter(dealsAdapter);
         searchText = getArguments().getString(SEARCH_TEXT);
         if (!TextUtils.isEmpty(searchText)) {
-            searchInputView.setText(searchText);
+            searchInputView.setText(String.format(getContext().getResources().getString(R.string.search_input_hint_category), searchText.toLowerCase()));
         }
         toolbarTitle.setOnClickListener(this);
         KeyboardHandler.DropKeyboard(getContext(), searchInputView);
@@ -298,6 +299,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         int maxBrands = Math.min(brandList.size(), itemCount);
         recyclerViewBrands.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
+        dealsBrandAdapter = new DealsBrandAdapter(brandList.subList(0, maxBrands), DealsBrandAdapter.ITEM_BRAND_HOME);
+        dealsBrandAdapter.setPageType("category");
         recyclerViewBrands.setAdapter(new DealsBrandAdapter(brandList.subList(0, maxBrands), DealsBrandAdapter.ITEM_BRAND_HOME));
     }
 

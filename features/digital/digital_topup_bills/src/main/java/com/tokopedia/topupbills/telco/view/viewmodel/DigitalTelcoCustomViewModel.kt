@@ -1,0 +1,62 @@
+package com.tokopedia.topupbills.telco.view.viewmodel
+
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topupbills.telco.data.TelcoCustomComponentData
+import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+
+/**
+ * Created by nabillasabbaha on 10/05/19.
+ */
+class DigitalTelcoCustomViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                      val dispatcher: CoroutineDispatcher)
+    : BaseViewModel(dispatcher) {
+
+    fun getCustomDataPrepaid(rawQuery: String,
+                             onSuccess: (TelcoCustomComponentData) -> Unit,
+                             onError: (Throwable) -> Unit) {
+        launchCatchError(block = {
+            var mapParam = HashMap<String, kotlin.Any>()
+            mapParam.put(KEY_COMPONENT_ID, TelcoComponentType.CLIENT_NUMBER_PREPAID)
+
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TelcoCustomComponentData::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TelcoCustomComponentData>()
+
+            onSuccess(data)
+        }) {
+            onError(it)
+        }
+    }
+
+    fun getCustomDataPostpaid(rawQuery: String,
+                              onSuccess: (TelcoCustomComponentData) -> Unit,
+                              onError: (Throwable) -> Unit) {
+        launchCatchError(block = {
+            var mapParam = HashMap<String, kotlin.Any>()
+            mapParam.put(KEY_COMPONENT_ID, TelcoComponentType.CLIENT_NUMBER_PROSTPAID)
+
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TelcoCustomComponentData::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TelcoCustomComponentData>()
+
+            onSuccess(data)
+        }) {
+            onError(it)
+        }
+    }
+
+    companion object {
+        const val KEY_COMPONENT_ID = "componentID"
+    }
+
+}

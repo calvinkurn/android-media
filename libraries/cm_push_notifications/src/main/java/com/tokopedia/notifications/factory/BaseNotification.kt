@@ -1,9 +1,11 @@
 package com.tokopedia.notifications.factory
 
-import android.app.*
+import android.app.Notification
 import android.app.Notification.BADGE_ICON_SMALL
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -17,6 +19,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
@@ -31,17 +34,21 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
+const val IMAGE_DOWNLOAD_TIME_OUT_SECOND  = 10L
+
 abstract class BaseNotification internal constructor(protected var context: Context, var baseNotificationModel: BaseNotificationModel) {
+
     private var cacheHandler: CMNotificationCacheHandler? = null
+    val NOTIFICATION_NUMBER = 1
 
     protected val builder: NotificationCompat.Builder
         get() {
-            val builder: NotificationCompat.Builder
-            if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
-                builder = NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
-            } else {
-                builder = NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
-            }
+            val builder: NotificationCompat.Builder =
+                    if (baseNotificationModel.channelName != null && baseNotificationModel.channelName!!.isNotEmpty()) {
+                        NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
+                    } else {
+                        NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
+                    }
 
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
                 builder.setSubText(baseNotificationModel.subText)
@@ -61,7 +68,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     createNotificationChannel()
                     builder.setBadgeIconType(BADGE_ICON_SMALL)
-                    builder.setNumber(1)
+                    builder.setNumber(NOTIFICATION_NUMBER)
                 } else {
                     setNotificationSound(builder)
                     setNotificationPriorityPreOreo(builder, baseNotificationModel.priorityPreOreo)
@@ -79,12 +86,13 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     protected val notificationBuilder: NotificationCompat.Builder
         get() {
-            val builder: NotificationCompat.Builder
-            if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
-                builder = NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
+
+            val builder: NotificationCompat.Builder = if (baseNotificationModel.channelName != null && !baseNotificationModel.channelName!!.isEmpty()) {
+                NotificationCompat.Builder(context, baseNotificationModel.channelName!!)
             } else {
-                builder = NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
+                NotificationCompat.Builder(context, CMConstant.NotificationChannel.CHANNEL_ID)
             }
+
             if (!TextUtils.isEmpty(baseNotificationModel.subText)) {
                 builder.setSubText(baseNotificationModel.subText)
             }
@@ -92,15 +100,25 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             builder.setSmallIcon(drawableIcon)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                createNotificationChannel()
-                builder.setBadgeIconType(BADGE_ICON_SMALL)
-                builder.setNumber(1)
-            } else {
-                setNotificationSound(builder)
-                setNotificationPriorityPreOreo(builder, baseNotificationModel.priorityPreOreo)
-            }
 
+            if (baseNotificationModel.isUpdateExisting) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    silentChannel()
+                    builder.setChannelId(CMConstant.NotificationChannel.Channel_DefaultSilent_Id)
+                } else {
+                    builder.setSound(null)
+                    builder.setVibrate(null)
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    createNotificationChannel()
+                    builder.setBadgeIconType(BADGE_ICON_SMALL)
+                    builder.setNumber(1)
+                } else {
+                    setNotificationSound(builder)
+                    setNotificationPriorityPreOreo(builder, baseNotificationModel.priorityPreOreo)
+                }
+            }
             builder.setSmallIcon(drawableIcon)
             return builder
         }
@@ -229,7 +247,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             Glide.with(context).load(url)
                     .asBitmap()
                     .into(imageWidth, imageHeight)
-                    .get(3, TimeUnit.SECONDS)
+                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
@@ -239,7 +257,6 @@ abstract class BaseNotification internal constructor(protected var context: Cont
         } catch (e: IllegalArgumentException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         }
-
     }
 
     internal fun getActionButtonBitmap(url: String): Bitmap {
@@ -248,7 +265,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             Glide.with(context).load(url)
                     .asBitmap()
                     .into(wh, wh)
-                    .get(3, TimeUnit.SECONDS)
+                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
@@ -261,64 +278,83 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     }
 
-    internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, requestCode: Int): PendingIntent {
-        var intent = Intent(context, CMBroadcastReceiver::class.java)
+    internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, reqCode: Int): PendingIntent {
+        var intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-        intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
-        intent.putExtra(CMConstant.ReceiverExtraData.ACTION_APP_LINK, baseNotificationModel.appLink)
         intent.putExtras(getBundle(baseNotificationModel))
-        intent = getCouponCode(intent)
-        return PendingIntent.getBroadcast(
-                    context,
-                    requestCode,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-            )
+        intent = updateIntentWithCouponCode(baseNotificationModel, intent)
+        return getPendingIntent(context, intent, reqCode)
     }
 
     internal fun createDismissPendingIntent(notificationId: Int, requestCode: Int): PendingIntent {
-        val intent = Intent(context, CMBroadcastReceiver::class.java)
+        val intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS
-        intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, notificationId)
-        return PendingIntent.getBroadcast(context, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return getPendingIntent(context, intent, requestCode)
     }
 
-    protected fun getBundle(baseNotificationModel: BaseNotificationModel): Bundle {
-        var bundle = Bundle()
-        if (baseNotificationModel.videoPushModel != null) {
-            bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
-        }
-        if (baseNotificationModel.customValues != null) {
-            bundle = jsonToBundle(bundle, baseNotificationModel.customValues)
-        }
-        return bundle
-    }
-
-    private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
-        try {
-            val iterator = jsonObject!!.keys()
-            while (iterator.hasNext()) {
-                val key = iterator.next() as String
-                val value = jsonObject.getString(key)
-                bundle.putString(key, value)
-            }
-        } catch (e: Exception) {
-
-        }
-
-        return bundle
-    }
-
-    private fun getCouponCode(intent: Intent): Intent {
-
-        if (baseNotificationModel.customValues != null)
-            intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE, baseNotificationModel.customValues!!.optString(CMConstant.CustomValuesKeys.COUPON_CODE))
-        return intent
-    }
 
     companion object {
         private const val CM_REQUEST_CODE = "cm_request_code"
+
+        fun getBaseBroadcastIntent(context: Context, baseNotificationModel: BaseNotificationModel): Intent {
+            val intent = Intent(context, CMBroadcastReceiver::class.java)
+            intent.putExtra(CMConstant.EXTRA_BASE_MODEL,baseNotificationModel)
+            intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
+            intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
+            intent.putExtras(getBundle(baseNotificationModel))
+            return intent
+        }
+
+        /**
+         * getBundle will return a Bundle
+         * it bill create Bundle only if VideoPushModel or CustomValues
+         *
+         **/
+        private fun getBundle(baseNotificationModel: BaseNotificationModel): Bundle {
+            var bundle = Bundle()
+            baseNotificationModel.videoPushModel?.let {
+                bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
+            }
+            baseNotificationModel.customValues?.let {
+                if (it.isNotEmpty())
+                    bundle = jsonToBundle(bundle, JSONObject(it))
+            }
+            return bundle
+        }
+
+        /**
+         *
+         *
+         * */
+        private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
+            jsonObject?.let {
+                val iterator = it.keys()
+                while (iterator.hasNext()) {
+                    val key = iterator.next() as String
+                    val value = it.getString(key)
+                    bundle.putString(key, value)
+                }
+            }
+            return bundle
+        }
+
+        fun getPendingIntent(context: Context, intent: Intent, reqCode: Int): PendingIntent =
+                PendingIntent.getBroadcast(
+                        context,
+                        reqCode,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+        fun updateIntentWithCouponCode(baseNotificationModel: BaseNotificationModel, intent: Intent): Intent {
+            baseNotificationModel.customValues?.let {
+                if (it.isNotEmpty()) {
+                    intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE,
+                            (JSONObject(it)).optString(CMConstant.CustomValuesKeys.COUPON_CODE))
+                }
+            }
+            return intent
+        }
     }
 
 }

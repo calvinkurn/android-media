@@ -23,6 +23,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder;
@@ -67,6 +68,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     private final PollAdapter.PollOptionListener pollOptionListener;
     private final GridPostAdapter.GridItemListener gridItemListener;
     private final VideoViewHolder.VideoViewListener videoViewListener;
+    private final FeedMultipleImageView.FeedMultipleImageViewListener feedMultipleImageViewListener;
     private final FeedAnalytics analytics;
     private final UserSessionInterface userSession;
 
@@ -84,6 +86,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
         this.pollOptionListener = context;
         this.gridItemListener = context;
         this.videoViewListener = context;
+        this.feedMultipleImageViewListener = context;
         this.analytics = analytics;
         this.userSession = userSession;
     }
@@ -185,6 +188,7 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
                     pollOptionListener,
                     gridItemListener,
                     videoViewListener,
+                    feedMultipleImageViewListener,
                     userSession
             );
         }

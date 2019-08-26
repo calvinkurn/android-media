@@ -3,12 +3,9 @@ package com.tokopedia.checkout.data.mapper;
 import android.text.TextUtils;
 
 import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.CornerBranch;
 import com.tokopedia.checkout.domain.datamodel.addresscorner.Datum;
-import com.tokopedia.checkout.domain.datamodel.addresscorner.TokopediaCornerDatum;
-import com.tokopedia.checkout.domain.datamodel.addressoptions.CornerAddressModel;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.RecipientAddressModel;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +16,6 @@ import rx.functions.Func1;
  * Created by fajarnuha on 09/02/19.
  */
 public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleAddressModel> {
-
-    private static final String ADDRESS_NAME_SAMPAI = "Tokopedia Corner";
 
     @Override
     public PeopleAddressModel call(AddressCornerResponse addressCornerResponse) {
@@ -52,33 +47,7 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
                 recipientAddressModelList.add(recipientAddress);
             }
 
-            if (addressCornerResponse.getTokopediaCornerData() != null &&
-                    !addressCornerResponse.getTokopediaCornerData().isEmpty()) {
-                TokopediaCornerDatum cornerDatum = addressCornerResponse.getTokopediaCornerData().get(0);
-                List<CornerAddressModel> cornerAddressModels = new ArrayList<>();
-                for (CornerBranch cornerBranch : cornerDatum.getCornerBranch()) {
-                    CornerAddressModel cornerAddressModel = new CornerAddressModel();
-                    cornerAddressModel.setCornerId(cornerBranch.getCornerId());
-                    cornerAddressModel.setCornerName(cornerDatum.getCornerName());
-                    cornerAddressModel.setCornerBranchName(cornerBranch.getCornerBranchName());
-                    cornerAddressModel.setCornerBranchDesc(cornerBranch.getDistrictName() + ", " + cornerBranch.getCityName());
-                    cornerAddressModel.setDistrictName(cornerBranch.getDistrictName());
-                    cornerAddressModel.setDistrictId(String.valueOf(cornerBranch.getDistrictId()));
-                    cornerAddressModel.setPostalCode(cornerBranch.getPostcode());
-                    cornerAddressModel.setCityName(cornerBranch.getCityName());
-                    cornerAddressModel.setRecipientFullName(cornerDatum.getUserFullname());
-                    cornerAddressModel.setUserCornerId(cornerDatum.getUserCornerId());
-                    cornerAddressModel.setCityId(String.valueOf(cornerBranch.getCityId()));
-                    cornerAddressModel.setProvinceId(String.valueOf(cornerBranch.getProvinceId()));
-
-                    String[] latlong = cornerBranch.getGeoloc().split(",");
-                    cornerAddressModel.setLatitude(latlong[0]);
-                    cornerAddressModel.setLongitude(latlong[1]);
-
-                    cornerAddressModels.add(cornerAddressModel);
-                }
-                result.setCornerAddressModelsList(cornerAddressModels);
-            }
+            /* Retrieving Corner Data from here is deprecated see GetCornerList usecase */
 
             result.setRecipientAddressModelList(recipientAddressModelList);
         }
@@ -86,26 +55,4 @@ public class AddressCornerMapper implements Func1<AddressCornerResponse, PeopleA
         return result;
     }
 
-    public static RecipientAddressModel converToCartModel(CornerAddressModel cornerModel, String defaultId) {
-        return new RecipientAddressModel.Builder()
-                .id(defaultId)
-                .cornerId(String.valueOf(cornerModel.getCornerId()))
-                .addressName(ADDRESS_NAME_SAMPAI)
-                .cityName(cornerModel.getDistrictName())
-                .street(cornerModel.getCornerBranchName())
-                .recipientName(cornerModel.getRecipientFullName())
-                .destinationDistrictName(cornerModel.getCornerName())
-                .recipientPhoneNumber("")
-                .provinceName(cornerModel.getCityName())
-                .cityId(cornerModel.getCityId())
-                .destinationDistrictId(cornerModel.getDistrictId())
-                .provinceId(cornerModel.getProvinceId())
-                .postalCode(cornerModel.getPostalCode())
-                .latitude(cornerModel.getLatitude())
-                .longitude(cornerModel.getLongitude())
-                .userCornerId(cornerModel.getUserCornerId())
-                .isCornerAddress(true)
-                .isDisableMultipleAddress(true)
-                .build();
-    }
 }

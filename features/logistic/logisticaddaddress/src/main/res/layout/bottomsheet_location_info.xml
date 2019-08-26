@@ -21,8 +21,8 @@
             android:layout_width="@dimen/dp_200"
             android:layout_height="@dimen/dp_140"
             android:layout_marginTop="@dimen/dp_24"
-            android:src="@drawable/ic_invalid_location"
-            android:contentDescription="@string/invalid_description"
+            app:srcCompat="@drawable/ic_location_not_detected"
+            android:contentDescription="@string/invalid_img_description"
             android:layout_gravity="center_horizontal"/>
         
         <TextView
@@ -41,7 +41,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_24"
-            android:layout_marginBottom="@dimen/dp_60"
+            android:layout_marginBottom="@dimen/dp_24"
             android:foreground="?selectableItemBackground"
             android:text="@string/activate_location_service"
             android:textAllCaps="false"

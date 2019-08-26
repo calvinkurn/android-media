@@ -41,7 +41,6 @@ import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -52,22 +51,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 /**
  * Use image_preview library instead
  * ImagePreviewActivity
  */
 @Deprecated
 public class PreviewProductImage extends TActivity {
-
-    @BindView(R2.id.view_pager)
     public TouchViewPager vpImage;
-    @BindView(R2.id.desc)
     public TextView tvDescription;
-    @BindView(R2.id.download_image)
     public TextView tvDownload;
+
     private TouchImageAdapter adapter;
     private ArrayList<String> fileLocations;
     private ArrayList<String> imageDescriptions;
@@ -83,7 +76,10 @@ public class PreviewProductImage extends TActivity {
         super.onCreate(savedInstanceState);
         hideActionBar();
         inflateView(R.layout.activity_preview_product_image);
-        ButterKnife.bind(this);
+        vpImage = (TouchViewPager) findViewById(R.id.view_pager);
+        tvDescription = (TextView) findViewById(R.id.desc);
+        tvDownload = (TextView) findViewById(R.id.download_image);
+
         Bundle extras;
 
         if (getIntent().getExtras() != null) {

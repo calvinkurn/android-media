@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.network.NetworkErrorHelper;
@@ -37,40 +36,28 @@ import com.tokopedia.inbox.rescenter.create.presenter.ChooseSolutionPresenter;
 import com.tokopedia.inbox.rescenter.create.util.LocalCacheManager;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import butterknife.BindView;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
-@RuntimePermissions
 public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolutionPresenter>
         implements ChooseSolutionListener, AttachmentAdapter.AttachmentAdapterListener {
 
     private static final String KEY_PARAM_PASS_DATA = "pass_data";
-
-    @BindView(R2.id.invoice)
-    TextView invoice;
-    @BindView(R2.id.shop_name)
-    TextView shopName;
-    @BindView(R2.id.view_solution_section)
-    SolutionSectionCreateResCenterView solutionSectionView;
-    @BindView(R2.id.view_attachment_section)
-    AttachmentSectionCreateResCenterView attachmenSectionView;
-    @BindView(R2.id.action_submit)
-    View submitButton;
-    @BindView(R2.id.action_abort)
-    View actionAbort;
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.include_loading)
-    View loading;
+    private PermissionCheckerHelper permissionCheckerHelper;
+    private TextView invoice;
+    private TextView shopName;
+    private SolutionSectionCreateResCenterView solutionSectionView;
+    private AttachmentSectionCreateResCenterView attachmenSectionView;
+    private View submitButton;
+    private View actionAbort;
+    private View mainView;
+    private View loading;
 
     private ActionParameterPassData passData;
     private List<AttachmentResCenterVersion2DB> attachmentData;
@@ -155,8 +142,20 @@ public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolution
 
     @Override
     protected void initView(View view) {
+        settingUpVariables(view);
         renderInvoiceData(passData.getFormData().getForm());
         renderShopData(passData.getFormData().getForm());
+    }
+
+    private void settingUpVariables(View view) {
+        invoice = view.findViewById(R.id.invoice);
+        shopName = view.findViewById(R.id.shop_name);
+        solutionSectionView = view.findViewById(R.id.view_solution_section);
+        attachmenSectionView = view.findViewById(R.id.view_attachment_section);
+        submitButton = view.findViewById(R.id.action_submit);
+        actionAbort = view.findViewById(R.id.action_abort);
+        mainView = view.findViewById(R.id.main_view);
+        loading = view.findViewById(R.id.include_loading);
     }
 
     private void renderShopData(CreateResCenterFormData.FormValueData form) {
@@ -271,12 +270,55 @@ public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolution
         builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                ChooseSolutionFragmentPermissionsDispatcher.actionImagePickerWithCheck(ChooseSolutionFragment.this);
+                String permission = Manifest.permission.READ_EXTERNAL_STORAGE;
+                if(null == permissionCheckerHelper ){
+                    permissionCheckerHelper = new PermissionCheckerHelper();
+                }
+                permissionCheckerHelper.checkPermission(getActivity(), permission, new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        uploadImageDialog.openImagePicker();
+                    }
+                },permission);
             }
         }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                ChooseSolutionFragmentPermissionsDispatcher.actionCameraWithCheck(ChooseSolutionFragment.this);
+                String[] listOfPermission = {PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE};
+
+                if(null == permissionCheckerHelper ){
+                    permissionCheckerHelper = new PermissionCheckerHelper();
+                }
+
+                permissionCheckerHelper.checkPermissions(getActivity(), listOfPermission, new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        permissionCheckerHelper.onPermissionDenied(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+                        permissionCheckerHelper.onNeverAskAgain(getActivity(), permissionText);
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        uploadImageDialog.openCamera();
+                    }
+                }, Arrays.toString(listOfPermission));
             }
         });
 
@@ -284,17 +326,6 @@ public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolution
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
     }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        uploadImageDialog.openCamera();
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        uploadImageDialog.openImagePicker();
-    }
-
 
     @Override
     public void onClickOpenAttachment(View view, final int position) {
@@ -422,62 +453,8 @@ public class ChooseSolutionFragment extends BasePresenterFragment<ChooseSolution
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ChooseSolutionFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                ChooseSolutionFragment.this, requestCode, grantResults);
-    }
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            permissionCheckerHelper.onRequestPermissionsResult(getActivity(), requestCode, permissions, grantResults);
+        }
     }
 }

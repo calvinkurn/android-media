@@ -66,6 +66,9 @@ public final class Option implements Parcelable {
     @SerializedName("is_popular")
     @Expose
     boolean isPopular;
+    @SerializedName("is_new")
+    @Expose
+    boolean isNew;
     @SerializedName("child")
     @Expose
     List<LevelTwoCategory> levelTwoCategoryList;
@@ -192,6 +195,14 @@ public final class Option implements Parcelable {
         isPopular = popular;
     }
 
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
+    }
+
     public List<LevelTwoCategory> getLevelTwoCategoryList() {
         return levelTwoCategoryList;
     }
@@ -226,6 +237,7 @@ public final class Option implements Parcelable {
         dest.writeString(this.valMax);
         dest.writeString(this.iconUrl);
         dest.writeByte(this.isPopular ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isNew ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.levelTwoCategoryList);
         dest.writeString(this.inputState);
     }
@@ -244,6 +256,7 @@ public final class Option implements Parcelable {
         this.valMax = in.readString();
         this.iconUrl = in.readString();
         this.isPopular = in.readByte() != 0;
+        this.isNew = in.readByte() != 0;
         this.levelTwoCategoryList = in.createTypedArrayList(LevelTwoCategory.CREATOR);
         this.inputState = in.readString();
     }

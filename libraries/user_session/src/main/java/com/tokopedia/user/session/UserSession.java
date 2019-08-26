@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -43,6 +44,7 @@ public class UserSession implements UserSessionInterface {
     private static final String SHOP_NAME = "SHOP_NAME";
     private static final String SHOP_AVATAR = "SHOP_AVATAR";
     private static final String IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT";
+    private static final String IS_POWER_MERCHANT_IDLE = "IS_POWER_MERCHANT_IDLE";
     private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
     private static final String KEY_IV = "tokopedia1234567";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
@@ -51,8 +53,12 @@ public class UserSession implements UserSessionInterface {
     private static final String HAS_PASSWORD = "HAS_PASSWORD";
     private static final String HAS_SHOWN_SALDO_WARNING = "HAS_SHOWN_SALDO_WARNING";
     private static final String HAS_SHOWN_SALDO_INTRO_PAGE = "HAS_SHOWN_SALDO_INTRO_PAGE";
-
     private static final String AUTOFILL_USER_DATA = "AUTOFILL_USER_DATA";
+    private static final String LOGIN_METHOD = "LOGIN_METHOD";
+
+    /**
+     * Twitter Prefs
+     */
 
     private Context context;
 
@@ -63,11 +69,20 @@ public class UserSession implements UserSessionInterface {
     /**
      * GETTER METHOD
      */
+    private static final String TWITTER_ACCESS_TOKEN = "TWITTER_ACCESS_TOKEN";
+    private static final String TWITTER_ACCESS_TOKEN_SECRET = "TWITTER_ACCESS_TOKEN_SECRET";
+    private static final String TWITTER_SHOULD_POST = "TWITTER_SHOULD_POST";
 
     public String getAccessToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
+    }
+
+    public String getTokenType() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TOKEN_TYPE, "Bearer").trim();
     }
 
     public String getFreshToken() {
@@ -216,9 +231,41 @@ public class UserSession implements UserSessionInterface {
     }
 
     @Override
-    public String getAutofillUserData(){
+    public boolean isPowerMerchantIdle() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(IS_POWER_MERCHANT_IDLE, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_POWER_MERCHANT_IDLE, false);
+    }
+
+    @Override
+    public String getAutofillUserData() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(AUTOFILL_USER_DATA, "");
+    }
+
+    @Override
+    public String getLoginMethod() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(LOGIN_METHOD, "");
+    }
+
+    @Nullable
+    @Override
+    public String getTwitterAccessToken() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TWITTER_ACCESS_TOKEN, null);
+    }
+
+    @Nullable
+    @Override
+    public String getTwitterAccessTokenSecret() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getString(TWITTER_ACCESS_TOKEN_SECRET, null);
+    }
+
+    @Override
+    public boolean getTwitterShouldPost() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(TWITTER_SHOULD_POST, false);
     }
 
     /**
@@ -356,6 +403,14 @@ public class UserSession implements UserSessionInterface {
     }
 
     @Override
+    public void setRefreshToken(String refreshToken) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(REFRESH_TOKEN, refreshToken);
+        editor.apply();
+    }
+
+    @Override
     public void setLoginSession(boolean isLogin, String userId, String fullName,
                                 String shopId, boolean isMsisdnVerified, String shopName,
                                 String email, boolean isGoldMerchant, String phoneNumber) {
@@ -460,10 +515,43 @@ public class UserSession implements UserSessionInterface {
     }
 
     @Override
-    public void setAutofillUserData(String autofillUserData){
+    public void setIsPowerMerchantIdle(boolean powerMerchantIdle) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(IS_POWER_MERCHANT_IDLE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(IS_POWER_MERCHANT_IDLE, powerMerchantIdle);
+        editor.apply();
+    }
+
+    @Override
+    public void setAutofillUserData(String autofillUserData) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(AUTOFILL_USER_DATA, autofillUserData);
+        editor.apply();
+    }
+
+    @Override
+    public void setLoginMethod(@NotNull String loginMethod) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(LOGIN_METHOD, loginMethod);
+        editor.apply();
+    }
+
+    @Override
+    public void setTwitterAccessTokenAndSecret(@NotNull String accessToken, @NotNull String accessTokenSecret) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(TWITTER_ACCESS_TOKEN, accessToken);
+        editor.putString(TWITTER_ACCESS_TOKEN_SECRET, accessTokenSecret);
+        editor.apply();
+    }
+
+    @Override
+    public void setTwitterShouldPost(boolean shouldPost) {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(TWITTER_SHOULD_POST, shouldPost);
         editor.apply();
     }
 
@@ -471,7 +559,6 @@ public class UserSession implements UserSessionInterface {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, null);
-        editor.putString(FULL_NAME, null);
         editor.putString(SHOP_ID, null);
         editor.putString(SHOP_NAME, null);
         editor.putBoolean(IS_LOGIN, false);
@@ -485,6 +572,10 @@ public class UserSession implements UserSessionInterface {
         editor.putString(PROFILE_PICTURE, null);
         editor.putString(GC_TOKEN, "");
         editor.putString(SHOP_AVATAR, "");
+        editor.putBoolean(IS_POWER_MERCHANT_IDLE, false);
+        editor.putString(TWITTER_ACCESS_TOKEN, null);
+        editor.putString(TWITTER_ACCESS_TOKEN_SECRET, null);
+        editor.putBoolean(TWITTER_SHOULD_POST, false);
         editor.apply();
     }
 }

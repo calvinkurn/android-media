@@ -15,4 +15,8 @@ public class OrderDetailConstant {
 
     public static final String VALUE_EMPTY = "";
 
+    public static final String VALUE_CLICK_ASK_BUYER = "clickTabMessage";
+    public static final String VALUE_SHOP_ORDER_PAGE = "shoporder page";
+    public static final String VALUE_CLICK_BUTTON_ASK_BUYER = "click chat pembeli on list of transaction";
+
 }

@@ -7,7 +7,6 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.goldmerchant.GoldMerchantService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.utils.NetworkCalculator;
 import com.tokopedia.core.network.v4.NetworkConfig;
@@ -38,6 +37,9 @@ import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantR
 import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepositoryImpl;
 import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.product.manage.item.video.data.source.FetchVideoEditProductDataSource;
+import com.tokopedia.url.TokopediaUrl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -119,7 +121,7 @@ public class AddProductserviceModule {
     @Provides
     NetworkCalculator provideNetworkCalculator(@ApplicationContext Context context,
                                                UploadImageDataSource uploadImageDataSource) {
-        return new NetworkCalculator(NetworkConfig.POST, context, TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL).setIdentity().compileAllParam().finish();
+        return new NetworkCalculator(NetworkConfig.POST, context, TokopediaUrl.Companion.getInstance().getWEB()).setIdentity().compileAllParam().finish();
     }
 
     @AddProductServiceScope
@@ -132,5 +134,11 @@ public class AddProductserviceModule {
     @Provides
     FetchDraftProductUseCase provideFetchDraftProductUseCase(ProductDraftRepository productDraftRepository) {
         return new FetchDraftProductUseCase(productDraftRepository);
+    }
+
+    @AddProductServiceScope
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }

@@ -55,10 +55,15 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
         }
     }
 
-    fun saveAddress(saveAddressDataModel: SaveAddressDataModel?) {
+    fun saveAddress(saveAddressDataModel: SaveAddressDataModel?, typeForm: String) {
         saveAddressDataModel?.let {
             addAddressUseCase.setParams(it)
-            addAddressUseCase.execute(RequestParams.create(), AddAddressSubscriber(view, addAddressMapper, it))
+            addAddressUseCase.execute(RequestParams.create(), AddAddressSubscriber(view, addAddressMapper, it, typeForm))
         }
+    }
+
+    override fun detachView() {
+        super.detachView()
+        addAddressUseCase.unsubscribe()
     }
 }

@@ -46,7 +46,7 @@ public class MoengageAnalytics extends ContextAnalytics {
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)
                         .optOutTokenRegistration()
-                        .setNotificationType(R.integer.notification_type_multiple)
+                        //.setNotificationType(R.integer.notification_type_multiple)
                         .build();
         MoEngage.initialise(moEngage);
         sendExistingUserAndInstallTrackingEvent();
@@ -63,11 +63,11 @@ public class MoengageAnalytics extends ContextAnalytics {
         value.put(SHOP_ID, shopId);
         setUserData(value, "LOGIN");
 
-        Map<String, Object> value2 = new HashMap<>();
-        value.put(AppEventTracking.MOENGAGE.USER_ID, userId);
-        value.put(AppEventTracking.MOENGAGE.MEDIUM, loginMethod);
-        value.put(AppEventTracking.MOENGAGE.EMAIL, email);
-        sendTrackEvent(value2, AppEventTracking.EventMoEngage.LOGIN);
+        Map<String, Object> loginValue = new HashMap<>();
+        loginValue.put(AppEventTracking.MOENGAGE.USER_ID, userId);
+        loginValue.put(AppEventTracking.MOENGAGE.MEDIUM, loginMethod);
+        loginValue.put(AppEventTracking.MOENGAGE.EMAIL, email);
+        sendTrackEvent(loginValue, AppEventTracking.EventMoEngage.LOGIN);
     }
 
     @Override

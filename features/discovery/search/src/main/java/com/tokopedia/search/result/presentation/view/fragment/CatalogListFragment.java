@@ -37,6 +37,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -270,19 +271,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onBannerAdsClicked(String appLink) {
-        if(getActivity() == null) return;
-
-        DiscoveryRouter router = ((DiscoveryRouter) getActivity().getApplicationContext());
-
-        if (router.isSupportApplink(appLink)) {
-            router.goToApplinkActivity(getActivity(), appLink);
-        } else if (!TextUtils.isEmpty(appLink)) {
-            router.actionOpenGeneralWebView(getActivity(), appLink);
-        }
-    }
-
-    @Override
     public void onSelectedFilterRemoved(String uniqueId) {
         removeSelectedFilter(uniqueId);
     }
@@ -378,8 +366,11 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        catalogAdapter.onRestoreInstanceState(savedInstanceState);
         setShareUrl(savedInstanceState.getString(EXTRA_SHARE_URL));
+
+        if(catalogAdapter != null) {
+            catalogAdapter.onRestoreInstanceState(savedInstanceState);
+        }
     }
 
     @Override

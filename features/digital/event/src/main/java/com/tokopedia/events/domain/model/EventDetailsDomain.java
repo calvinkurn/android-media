@@ -55,6 +55,7 @@ public class EventDetailsDomain {
     private Boolean dateRange;
     private String cityName;
     private String seatMapImage;
+    private int customText1;
     private List<ScheduleDomain> schedules = null;
     private List<Form> forms = null;
 
@@ -449,5 +450,13 @@ public class EventDetailsDomain {
 
     public void setCatalog(Catalog catalog) {
         this.catalog = catalog;
+    }
+
+    public int getCustomText1() {
+        return customText1;
+    }
+
+    public void setCustomText1(int customText1) {
+        this.customText1 = customText1;
     }
 }

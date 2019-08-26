@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
@@ -33,6 +35,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
     private val title: TextView
     private val body: TextView
     private val contentImage: ImageView
+    private val contentImageBanner: ImageView
     private val type: TextView
     private val time: TextView
     private val label: TextView
@@ -43,6 +46,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
         title = itemView.findViewById(R.id.title)
         body = itemView.findViewById(R.id.body)
         contentImage = itemView.findViewById(R.id.image)
+        contentImageBanner = itemView.findViewById(R.id.image_banner)
         type = itemView.findViewById(R.id.type)
         time = itemView.findViewById(R.id.time)
         label = itemView.findViewById(R.id.label)
@@ -54,9 +58,8 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
                 else MethodChecker.getColor(container.context, R.color.Green_G100)
 
         container.setBackgroundColor(color)
-        if (element.contentUrl.isNotBlank()) {
-            ImageHandler.loadImage2(contentImage, element.contentUrl, R.drawable.ic_loading_toped_new)
-        }
+        showImageBannerIfExist(element)
+        extendTitle()
         ImageHandler.loadImage2(icon, element.iconUrl, R.drawable.ic_loading_toped_new)
         title.text = element.title
         body.text = element.body
@@ -64,7 +67,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
 
         type.text = element.sectionTitle
 
-        convertTypeUser(element.label)
+        convertTypeUser(element)
 
         container.setOnClickListener {
             listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
@@ -73,11 +76,67 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
         }
     }
 
-    private fun convertTypeUser(labelIndex: Int) {
-        label.visibility = View.GONE
+    private fun extendTitle() {
+        var marginRight = 24f.toPx()
+        if (!contentImage.isVisible) {
+            marginRight = 0f
+        }
 
-        if (labelIndex == BUYER_TYPE) {
+        val layoutParam = title.layoutParams
+        if (layoutParam is ConstraintLayout.LayoutParams) {
+            layoutParam.apply {
+                setMargins(leftMargin, topMargin, marginRight.toInt(), bottomMargin)
+            }
+        }
+        title.layoutParams = layoutParam
+    }
+
+    private fun showImageBannerIfExist(element: NotificationUpdateItemViewModel) {
+        val imageUrl = element.contentUrl
+        val imageType = element.typeLink
+
+        if (imageUrl.isEmpty()) {
+            return hideContentImage()
+        }
+
+        when (imageType) {
+            NotificationUpdateItemViewModel.TYPE_BANNER_1X1 -> {
+                contentImageBanner.visibility = View.GONE
+                contentImage.visibility = View.VISIBLE
+                ImageHandler.loadImage2(contentImage, imageUrl, R.drawable.ic_loading_toped_new)
+            }
+            NotificationUpdateItemViewModel.TYPE_BANNER_2X1 -> {
+                contentImageBanner.visibility = View.VISIBLE
+                contentImage.visibility = View.GONE
+                ImageHandler.loadImage2(contentImageBanner, imageUrl, R.drawable.ic_loading_toped_new)
+            }
+            else -> hideContentImage()
+        }
+    }
+
+    private fun hideContentImage() {
+        contentImageBanner.visibility = View.GONE
+        contentImage.visibility = View.GONE
+    }
+
+    private fun convertTypeUser(element: NotificationUpdateItemViewModel) {
+        label.visibility = View.GONE
+        val labelIndex = element.label
+
+        if (labelIndex == BUYER_TYPE && element.hasShop) {
             getStringResource(R.string.buyer_label)?.apply {
+                label.text = this
+                label.setTextColor(getColorResource(R.color.Neutral_N200))
+                label.visibility = View.VISIBLE
+            }
+
+            label.background.let {
+                if (it is GradientDrawable) {
+                    it.setColor(getColorResource(R.color.Neutral_N50))
+                }
+            }
+        } else if (labelIndex == SELLER_TYPE) {
+            getStringResource(R.string.seller_label)?.apply {
                 label.text = this
                 label.setTextColor(getColorResource(R.color.Green_G500))
                 label.visibility = View.VISIBLE
@@ -86,18 +145,6 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
             label.background.let {
                 if (it is GradientDrawable) {
                     it.setColor(getColorResource(R.color.Green_G200))
-                }
-            }
-        } else if (labelIndex == SELLER_TYPE) {
-            getStringResource(R.string.seller_label)?.apply {
-                label.text = this
-                label.setTextColor(getColorResource(R.color.Blue_B500))
-                label.visibility = View.VISIBLE
-            }
-
-            label.background.let {
-                if (it is GradientDrawable) {
-                    it.setColor(getColorResource(R.color.Blue_B200))
                 }
             }
         }

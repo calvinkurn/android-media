@@ -2,7 +2,7 @@ package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.res.Resources;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -33,6 +34,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
@@ -51,7 +53,6 @@ import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
-import kotlin.jvm.functions.Function0;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -81,9 +82,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     OrderListAnalytics orderListAnalytics;
     String fromPayment = null;
     String orderId;
+    RequestCancelInfo requestCancelInfo;
 
-    private String Insurance_File_Name = "E-policy Asuransi";
+    private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
+    private boolean isdownloadable = false;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -191,6 +194,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                         view.setActionButton(position, actionButtonList);
                                     }
                             }
+                        } else {
+                            if (response != null) {
+                                ActionButtonList data = response.getData(ActionButtonList.class);
+                                actionButtonList = data.getActionButtonList();
+                                if (actionButtonList != null && actionButtonList.size() > 0)
+                                getView().setActionButtons(actionButtonList);
+                            }
                         }
                     }
                 });
@@ -202,10 +212,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public static final String SHOP_ID = "shop_id";
 
 
-    private JsonArray generateInputQueryBuyAgain(OrderDetails data) {
-        List<Items> orderDetailItemData = data.getItems();
+    private JsonArray generateInputQueryBuyAgain(List<Items> items) {
         JsonArray jsonArray = new JsonArray();
-        for (Items item : orderDetailItemData) {
+        for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
             int productId = 0;
@@ -215,7 +224,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             try {
                 productId = item.getId();
                 quantity = item.getQuantity();
-                shopId = data.getShopInfo().getShopId();
+                shopId = orderDetails.getShopInfo().getShopId();
                 notes = item.getDescription();
             } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
@@ -234,16 +243,21 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return actionButtonList;
     }
 
+    @Override
+    public void onBuyAgainAllItems() {
+        onBuyAgainItems(orderDetails.getItems());
+    }
+
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-    public void onBuyAgain(Resources resources) {
+    public void onBuyAgainItems(List<Items> items) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
+        variables.put(PARAM, generateInputQueryBuyAgain(items));
 
-        variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.buy_again), ResponseBuyAgain.class, variables, false);
 
         buyAgainUseCase = new GraphqlUseCase();
@@ -270,14 +284,39 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     getView().hideProgressBar();
                     ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
                     if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1);
                 }
 
             }
         });
+    }
+
+    @Override
+    public void assignInvoiceDataTo(Intent intent) {
+        if (orderDetails == null) return;
+        String id = orderDetails.getInvoiceId();
+        String invoiceCode = orderDetails.getInvoiceCode();
+        String productName = orderDetails.getProductName();
+        String date = orderDetails.getBoughtDate();
+        String imageUrl = orderDetails.getProductImageUrl();
+        String invoiceUrl = orderDetails.getInvoiceUrl();
+        String statusId = orderDetails.getStatusId();
+        String status = orderDetails.getStatusInfo();
+        String totalPriceAmount = orderDetails.getTotalPriceAmount();
+
+        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, id);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, date);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, imageUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
     }
 
     private void setDetailsData(OrderDetails details) {
@@ -363,10 +402,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setActionButtons(details.actionButtons());
         }
         getView().setMainViewVisible(View.VISIBLE);
+        this.requestCancelInfo = details.getRequestCancelInfo();
     }
 
 
-    public void updateOrderCancelReason(String cancelReason, String orderId, int cancelOrReplacement, String url) {
+    public void updateOrderCancelReason(String cancelReason, String orderId,
+                                        int cancelOrReplacement, String url) {
         if (getView() == null || getView().getAppContext() == null)
             return;
 
@@ -494,7 +535,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (isdownloadable(uri)) {
             getView().askPermission();
         } else {
-            ((UnifiedOrderListRouter) getView().getAppContext().getApplicationContext()).actionOpenGeneralWebView((Activity) getView().getAppContext(), uri);
+            if (getView() != null && getView().getAppContext() != null && getView().getAppContext().getApplicationContext() != null && getView().getActivity() != null) {
+                ((UnifiedOrderListRouter) getView().getAppContext().getApplicationContext()).actionOpenGeneralWebView((Activity) getView().getActivity(), uri);
+            }
         }
     }
 
@@ -506,16 +549,34 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         });
         downloadHelper.downloadFile(this::isdownloadable);
     }
-
-    private Boolean isdownloadable(String uri ){
+    private Boolean isdownloadable(String uri ) {
         Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
         Matcher matcher = pattern.matcher(uri);
-        return matcher.find();
+        return (matcher.find() || this.isdownloadable);
     }
 
     public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
         if ("true".equalsIgnoreCase(this.fromPayment)) {
-            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), orderId);
+            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId);
         }
+    }
+
+    public void setDownloadableFlag(boolean isdownloadable) {
+        this.isdownloadable = isdownloadable;
+    }
+
+    public void setDownloadableFileName(String fileName) {
+        if (!TextUtils.isEmpty(fileName)) {
+            Insurance_File_Name = fileName;
+        }
+    }
+
+    public String getCancelTime() {
+        return requestCancelInfo.getRequestCancelNote();
+    }
+
+    public boolean shouldShowTimeForCancellation(){
+        return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
+                && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
 }

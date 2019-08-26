@@ -114,7 +114,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
 
         add_account_button.setOnClickListener { addNewAccount() }
         account_list_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 val index = linearLayoutManager.findLastVisibleItemPosition()
                 if (adapter.checkLoadMore(index)) {

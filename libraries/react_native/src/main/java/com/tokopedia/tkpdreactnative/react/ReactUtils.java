@@ -15,7 +15,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 
 public class ReactUtils {
     private static
-    @javax.annotation.Nullable
+    @Nullable
     ReactUtils reactUtils;
     private ReactInstanceManager reactInstanceManager;
 

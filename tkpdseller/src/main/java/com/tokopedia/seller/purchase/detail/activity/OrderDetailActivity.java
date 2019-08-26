@@ -649,13 +649,11 @@ public class OrderDetailActivity extends TActivity
                         id,
                         name,
                         orderData.getInvoiceNumber(),
-                        MethodChecker.fromHtml(
-                                getString(R.string.dialog_message_ask_seller)
-                                        .replace("XXX",
-                                                orderData.getInvoiceUrl())
-                        ).toString(),
+                        "",
                         TkpdInboxRouter.TX_ASK_BUYER, logoUrl);
+        presenter.assignInvoiceDataTo(intent, orderData);
         startActivity(intent);
+        orderDetailAnalytics.sendAnalyticsClickAskBuyer(OrderDetailConstant.VALUE_CLICK_BUTTON_ASK_BUYER,"");
     }
 
     @Override

@@ -10,19 +10,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
+import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.ManageAddressConstant;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.district_recommendation.domain.model.Address;
-import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationContract;
 import com.tokopedia.product.manage.item.common.util.TomeException;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.R;
@@ -55,9 +52,10 @@ import javax.inject.Inject;
 public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implements ShopOpenLocView {
 
     public static final int REQUEST_CODE_ADDRESS = 1234;
-    public static final int REQUEST_CODE__EDIT_ADDRESS = 1235;
+    public static final int REQUEST_CODE_DISTRICTRECOMMENDATION = 1235;
     public static final int REQUEST_CODE_GOOGLE_MAP = 1236;
     public static final String CONST_PINPOINT = "pinpoint";
+    private final String RESULT_INTENT_DISTRICT_RECOMMENDATION = "district_recommendation_address";
 
     protected ShopOpenStepperModel stepperModel;
     protected StepperListener<ShopOpenStepperModel> stepperListener;
@@ -218,16 +216,12 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
 
     @Override
     public void navigateToDistrictRecommendation(Token token) {
-        logisticRouter.navigateToEditAddressActivityRequest(
-                ShopOpenMandatoryLocationFragment.this,
-                REQUEST_CODE__EDIT_ADDRESS,
-                token
-        );
+        Intent intent = logisticRouter.getDistrictRecommendationIntent(getActivity(), token);
+        startActivityForResult(intent, REQUEST_CODE_DISTRICTRECOMMENDATION);
     }
 
     @Override
     public void navigateToGoogleMap(String generatedMap, LocationPass locationPass) {
-
         if (!TextUtils.isEmpty(locationShippingViewHolder.getDistrictName())
                 && !TextUtils.isEmpty(locationShippingViewHolder.getCityName())) {
 
@@ -237,7 +231,7 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
             locationPass.setDistrictName(locationShippingViewHolder.getDistrictName());
             locationPass.setCityName(locationShippingViewHolder.getCityName());
         }
-        Intent intent = logisticRouter.navigateToGeoLocationActivityRequest(getContext(), locationPass);
+        Intent intent = logisticRouter.getGeoLocationActivityIntent(getContext(), locationPass);
         startActivityForResult(intent, REQUEST_CODE_GOOGLE_MAP);
     }
 
@@ -300,8 +294,8 @@ public class ShopOpenMandatoryLocationFragment extends BaseDaggerFragment implem
                         trackingOpenShop.eventOpenShopLocationForm(address.getAddressDetail());
                     }
                     break;
-                case REQUEST_CODE__EDIT_ADDRESS:
-                    Address address = data.getParcelableExtra(DistrictRecommendationContract.Constant.INTENT_DATA_ADDRESS);
+                case REQUEST_CODE_DISTRICTRECOMMENDATION:
+                    DistrictRecommendationAddress address = data.getParcelableExtra(RESULT_INTENT_DISTRICT_RECOMMENDATION);
                     if (address != null) {
                         locationShippingViewHolder.initializeZipCodes(address.getZipCodes());
                         locationShippingViewHolder.updateDistrictId(address.getDistrictId() + "");

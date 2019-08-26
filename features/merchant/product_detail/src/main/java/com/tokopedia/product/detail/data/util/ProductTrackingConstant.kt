@@ -6,15 +6,31 @@ object ProductTrackingConstant {
     object Category {
         const val PDP = "product detail page"
         const val PRODUCT_PAGE = "Product Page"
+        const val PDP_AFTER_ATC = "product detail page after atc"
+
     }
 
     object Action {
         const val CLICK = "click"
         const val CLICK_CART_BUTTON_VARIANT = "click - cart button on sticky header"
         const val PRODUCT_CLICK = "productClick"
+        const val PRODUCT_VIEW = "productView"
+        const val RECOMMENDATION_CLICK = "clickRecommendation"
         const val TOPADS_CLICK = "click - product recommendation"
         const val TOPADS_IMPRESSION = "impression - product recommendation"
         const val CLICK_BY_ME = "click - by.me"
+        const val CLICK_SHIPPING = "click - shipping"
+        const val CLICK_SHIPPING_RATE_ESTIMATION = "click - shipping rate estimation"
+        const val ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION = " - wishlist on product recommendation"
+        const val CLICK_ON_LOGIN_STICKY_WIDGET = "click on login sticky widget"
+        const val CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET = "click on button close login sticky widget"
+        const val VIEW_LOGIN_STICKY_WIDGET = "view login sticky widget"
+
+    }
+
+    object Label {
+        const val EMPTY_LABEL = ""
+        const val CLICK = "click"
     }
 
     object Report {
@@ -25,6 +41,8 @@ object ProductTrackingConstant {
 
     object PDP {
         const val EVENT_CLICK_PDP = "clickPDP"
+        const val EVENT_VIEW_PDP = "viewPDP"
+
     }
 
     object Affiliate {
@@ -62,5 +80,12 @@ object ProductTrackingConstant {
     object Message {
         const val EVENT = "clickMessageShop"
         const val LABEL = "Message Shop"
+    }
+
+    object PageNameRecommendation {
+        const val PDP_1 = "pdp_1"
+        const val PDP_2 = "pdp_2"
+        const val PDP_3 = "pdp_3"
+        const val PDP_4 = "pdp_4"
     }
 }

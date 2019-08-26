@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * @author rizkyfadillah on 10/16/2017.
@@ -26,7 +24,6 @@ public abstract class BasePresenterFragmentV4<P> extends Fragment {
     protected P presenter;
 
     protected Bundle savedState;
-    protected Unbinder unbinder;
 
     @Override
     public void onAttach(Activity activity) {
@@ -129,11 +126,9 @@ public abstract class BasePresenterFragmentV4<P> extends Fragment {
         super.onDestroyView();
         saveStateToArguments();
         Log.d(TAG, "ON DESTROY VIEW");
-        unbinder.unbind();
     }
 
     private void injectView(View view) {
-        unbinder = ButterKnife.bind(this, view);
     }
 
     /**

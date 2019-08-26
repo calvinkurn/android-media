@@ -7,10 +7,12 @@ import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.design.image.ImageLoader;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.common.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
@@ -26,6 +28,8 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     public final static int LAYOUT = R.layout.item_top_ads_ad;
 
     private TextView titleProduct;
+    private TextView totalSoldTxt;
+    private TextView profitTxt;
     private View statusActiveDot;
     private TextView statusActive;
     private TextView promoPriceUsed;
@@ -37,10 +41,16 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     private TextView groupNameView;
     private View optionImageButton;
     private CheckBox checkBox;
+    private ImageView thumb;
+    private View promoPerClickContainer;
+    private View promoPriceUsedContainer;
+    private View statusActiveContainer;
 
     public TopAdsAdViewHolder(View view) {
         super(view);
         titleProduct = (TextView) view.findViewById(R.id.title_product);
+        totalSoldTxt = (TextView) view.findViewById(R.id.total_sold);
+        profitTxt = (TextView) view.findViewById(R.id.profit);
         statusActiveDot = view.findViewById(R.id.status_active_dot);
         statusActive = (TextView) view.findViewById(R.id.status_active);
         promoPriceUsed = (TextView) view.findViewById(R.id.promo_price_used);
@@ -52,10 +62,14 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         groupNameView = (TextView) view.findViewById(R.id.group_name);
         optionImageButton = view.findViewById(R.id.image_button_option);
         checkBox = (CheckBox) view.findViewById(R.id.check_box_product);
+        thumb = (ImageView) view.findViewById(R.id.thumb);
+        promoPerClickContainer = (View) view.findViewById(R.id.promo_per_click_container);
+        promoPriceUsedContainer = (View) view.findViewById(R.id.promo_price_used_container);
+        statusActiveContainer = (View) view.findViewById(R.id.status_active_container);
 
         // programmatically styling for ProgressBar
         // http://stackoverflow.com/questions/16893209/how-to-customize-a-progress-bar-in-android
-        Drawable draw=view.getContext().getResources().getDrawable(R.drawable.top_ads_progressbar);
+        Drawable draw = view.getContext().getResources().getDrawable(R.drawable.top_ads_progressbar);
         progressBarPromo.setProgressDrawable(draw);
     }
 
@@ -63,6 +77,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     public void bind(final T ad) {
         titleProduct.setText(ad.getName());
         statusActive.setText(ad.getStatusDesc());
+        ImageLoader.LoadImage(thumb, ad.getProductImageUrl());
         switch (ad.getStatus()) {
             case TopAdsConstant.STATUS_AD_ACTIVE:
                 statusActiveDot.setBackgroundResource(R.drawable.ic_status_green);
@@ -76,17 +91,17 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
 
         long groupId = -1;
         String groupName = "";
-        if(ad instanceof ProductAd){
+        if (ad instanceof ProductAd) {
             groupId = ((ProductAd) ad).getGroupId();
             groupName = ((ProductAd) ad).getGroupName();
         }
         if (TextUtils.isEmpty(ad.getPriceDailyBar()) || groupId > 0) {
             progressBarLayout.setVisibility(View.GONE);
-            if(groupId > 0){
+            if (groupId > 0) {
                 groupNameView.setVisibility(View.VISIBLE);
                 groupNameView.setText(promoPriceUsed.getContext().getString(R.string.top_ads_group_name_format_text,
                         promoPriceUsed.getContext().getString(R.string.label_top_ads_groups), groupName));
-            }else{
+            } else {
                 groupNameView.setVisibility(View.GONE);
             }
         } else {
@@ -100,11 +115,29 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         optionImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (optionMoreCallback != null){
+                if (optionMoreCallback != null) {
                     optionMoreCallback.onClickMore(ad);
                 }
             }
         });
+        if(ad.isAutoAds()){
+            totalSoldTxt.setVisibility(View.VISIBLE);
+            profitTxt.setVisibility(View.VISIBLE);
+            totalSoldTxt.setText(String.format(getString(R.string.label_total_gross_profit), ad.getStatTotalSold()));
+            profitTxt.setText(String.format(getString(R.string.label_total_sold), ad.getStatTotalGrossProfit()));
+            groupNameView.setVisibility(View.GONE);
+            promoPerClickContainer.setVisibility(View.GONE);
+            promoPriceUsedContainer.setVisibility(View.GONE);
+            statusActiveContainer.setVisibility(View.GONE);
+            progressBarLayout.setVisibility(View.GONE);
+        } else {
+            totalSoldTxt.setVisibility(View.GONE);
+            profitTxt.setVisibility(View.GONE);
+            promoPerClickContainer.setVisibility(View.VISIBLE);
+            promoPriceUsedContainer.setVisibility(View.VISIBLE);
+            statusActiveContainer.setVisibility(View.VISIBLE);
+            progressBarLayout.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -119,20 +152,20 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
     }
 
     @Override
-    public void showCheckButton(boolean isInActionMode) {
+    public void showCheckButton(boolean isInActionMode, boolean isAutoAds) {
         if (isInActionMode) {
-            checkBox.setVisibility(View.VISIBLE);
+            checkBox.setVisibility(isAutoAds ? View.GONE : View.VISIBLE);
             optionImageButton.setVisibility(View.GONE);
         } else {
             checkBox.setVisibility(View.GONE);
-            optionImageButton.setVisibility(View.VISIBLE);
+            optionImageButton.setVisibility(isAutoAds ? View.GONE : View.VISIBLE);
         }
     }
 
     public void setBackground(boolean isChecked) {
         if (isChecked) {
-            if (itemView instanceof CardView){
-                ((CardView)itemView).setCardBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
+            if (itemView instanceof CardView) {
+                ((CardView) itemView).setCardBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
             } else {
                 itemView.setBackgroundColor(ContextCompat.getColor(itemView.getContext(), R.color.light_green));
             }
@@ -152,7 +185,7 @@ public class TopAdsAdViewHolder<T extends Ad & Visitable> extends BaseMultipleCh
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (checkedCallback != null){
+                if (checkedCallback != null) {
                     checkedCallback.onItemChecked(item, checkBox.isChecked());
                 }
                 setChecked(checkBox.isChecked());

@@ -1,12 +1,14 @@
 package com.tokopedia.otp.cotp.data;
 
+import com.tokopedia.url.TokopediaUrl;
+
 /**
  * @author by nisie on 4/25/18.
  */
 
 public class CotpUrl {
 
-    public static String BASE_URL =  "https://accounts.tokopedia.com";
+    public static String BASE_URL = TokopediaUrl.Companion.getInstance().getACCOUNTS();
 
     private static final String BASE_OTP = "/otp";
     static final String REQUEST_OTP = BASE_OTP + "/request";

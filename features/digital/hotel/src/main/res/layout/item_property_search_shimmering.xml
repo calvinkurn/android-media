@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_180"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_3"
+    app:cardPreventCornerOverlap="false"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginStart="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16"
+    android:layout_marginEnd="@dimen/dp_16"
+    app:cardBackgroundColor="@color/cardview_light_background">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.elyeproj.loaderviewlibrary.LoaderImageView
+            android:id="@+id/image_shimmer"
+            android:layout_width="@dimen/dp_88"
+            android:layout_height="0dp"
+            app:use_gradient="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/title_shimmer"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toRightOf="@+id/image_shimmer"
+            app:layout_constraintStart_toEndOf="@+id/image_shimmer"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:use_gradient="true"
+            app:width_weight="0.6"
+            app:corners="8"/>
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/type_shimmer"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            android:textSize="@dimen/sp_10"
+            app:use_gradient="true"
+            app:layout_constraintLeft_toLeftOf="@+id/title_shimmer"
+            app:layout_constraintStart_toStartOf="@+id/title_shimmer"
+            app:layout_constraintTop_toBottomOf="@+id/title_shimmer"
+            app:layout_constraintRight_toRightOf="@+id/title_shimmer"
+            app:layout_constraintEnd_toEndOf="@+id/title_shimmer"
+            app:width_weight="0.3"
+            app:corners="8"/>
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/location_shimmer"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_8"
+            app:use_gradient="true"
+            app:layout_constraintLeft_toLeftOf="@+id/title_shimmer"
+            app:layout_constraintStart_toStartOf="@+id/title_shimmer"
+            app:layout_constraintTop_toBottomOf="@+id/type_shimmer"
+            app:layout_constraintRight_toRightOf="@+id/title_shimmer"
+            app:layout_constraintEnd_toEndOf="@+id/title_shimmer"
+            app:width_weight="0.3"
+            app:corners="8"/>
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/price_shimmer"
+            android:layout_width="@dimen/dp_120"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            app:use_gradient="true"
+            app:layout_constraintRight_toRightOf="@+id/title_shimmer"
+            app:layout_constraintEnd_toEndOf="@+id/title_shimmer"
+            app:layout_constraintLeft_toLeftOf="@+id/title_shimmer"
+            app:layout_constraintStart_toStartOf="@+id/title_shimmer"
+            app:layout_constraintTop_toBottomOf="@+id/location_shimmer"
+            app:layout_constraintBottom_toTopOf="@+id/feature_shimmer"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintVertical_bias="1"
+            app:corners="8"/>
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/feature_shimmer"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_12"
+            app:use_gradient="true"
+            app:layout_constraintRight_toRightOf="@+id/title_shimmer"
+            app:layout_constraintEnd_toEndOf="@+id/title_shimmer"
+            app:layout_constraintLeft_toLeftOf="@+id/title_shimmer"
+            app:layout_constraintStart_toStartOf="@+id/title_shimmer"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:corners="8"/>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

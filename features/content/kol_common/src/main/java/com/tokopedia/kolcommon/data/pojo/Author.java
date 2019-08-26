@@ -8,6 +8,9 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Author {
 
+    public static String TYPE_AFFILIATE = "affiliate";
+    public static String TYPE_SHOP = "content-shop";
+
     @SerializedName("id")
     @Expose
     private String id = "";
@@ -32,8 +35,9 @@ public class Author {
     @Expose
     private String badge = "";
 
-    public static String KEY_POST_TOKO = "Post Toko";
-
+    @SerializedName("type")
+    @Expose
+    private String type = "";
 
     public String getId() {
         return id;
@@ -57,5 +61,9 @@ public class Author {
 
     public String getBadge() {
         return badge;
+    }
+
+    public String getType() {
+        return type;
     }
 }

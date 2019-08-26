@@ -90,15 +90,27 @@ public class SearchProductModel {
         @SerializedName("isFilter")
         @Expose
         private boolean isFilter;
+        @SerializedName("isQuerySafe")
+        @Expose
+        private boolean isQuerySafe;
         @SerializedName("count")
         @Expose
         private int count;
+        @SerializedName("response_code")
+        @Expose
+        private String responseCode;
         @SerializedName("count_text")
         @Expose
         private String countText;
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
+        @SerializedName("autocomplete_applink")
+        @Expose
+        private String autocompleteApplink;
+        @SerializedName("redirection")
+        @Expose
+        private Redirection redirection = new Redirection();
         @SerializedName("suggestion")
         @Expose
         private Suggestion suggestion = new Suggestion();
@@ -107,7 +119,7 @@ public class SearchProductModel {
         private Related related = new Related();
         @SerializedName("products")
         @Expose
-        private List<Product> products = null;
+        private List<Product> products = new ArrayList<>();
 
         public String getQuery() {
             return query;
@@ -125,8 +137,16 @@ public class SearchProductModel {
             return isFilter;
         }
 
+        public boolean isQuerySafe() {
+            return isQuerySafe;
+        }
+
         public int getCount() {
             return count;
+        }
+
+        public String getResponseCode() {
+            return responseCode;
         }
 
         public String getCountText() {
@@ -135,6 +155,14 @@ public class SearchProductModel {
 
         public String getAdditionalParams() {
             return additionalParams;
+        }
+
+        public String getAutocompleteApplink() {
+            return autocompleteApplink;
+        }
+
+        public Redirection getRedirection() {
+            return this.redirection;
         }
 
         public Suggestion getSuggestion() {
@@ -147,6 +175,17 @@ public class SearchProductModel {
 
         public Related getRelated() {
             return related;
+        }
+    }
+
+    public static class Redirection {
+
+        @SerializedName("redirect_applink")
+        @Expose
+        private String redirectApplink;
+
+        public String getRedirectApplink() {
+            return this.redirectApplink;
         }
     }
 
@@ -344,6 +383,9 @@ public class SearchProductModel {
         @SerializedName("id")
         @Expose
         private String id;
+        @SerializedName("warehouse_id_default")
+        @Expose
+        private String warehouseId = "";
         @SerializedName("name")
         @Expose
         private String name;
@@ -398,6 +440,9 @@ public class SearchProductModel {
         @SerializedName("labels")
         @Expose
         private List<Label> labels = null;
+        @SerializedName("label_groups")
+        @Expose
+        private List<LabelGroup> labelGroups = new ArrayList<>();
         @SerializedName("badges")
         @Expose
         private List<Badge> badges = null;
@@ -443,6 +488,10 @@ public class SearchProductModel {
 
         public String getId() {
             return id;
+        }
+
+        public String getWarehouseId() {
+            return warehouseId;
         }
 
         public String getName() {
@@ -503,6 +552,10 @@ public class SearchProductModel {
 
         public List<Label> getLabels() {
             return labels;
+        }
+
+        public List<LabelGroup> getLabelGroupList() {
+            return labelGroups;
         }
 
         public List<Badge> getBadges() {
@@ -574,6 +627,32 @@ public class SearchProductModel {
         }
     }
 
+    public static class LabelGroup {
+        @SerializedName("position")
+        @Expose
+        private String position;
+
+        public String getPosition() {
+            return position;
+        }
+
+        @SerializedName("type")
+        @Expose
+        private String type;
+
+        public String getType() {
+            return type;
+        }
+
+        @SerializedName("title")
+        @Expose
+        private String title;
+
+        public String getTitle() {
+            return title;
+        }
+    }
+
     public static class WholeSalePrice {
         @SerializedName("quantity_min")
         @Expose
@@ -639,31 +718,6 @@ public class SearchProductModel {
         }
     }
 
-    public static class Redirection {
-
-        @SerializedName("redirect_url")
-        @Expose
-        private String redirectUrl;
-        @SerializedName("department_id")
-        @Expose
-        private String departmentId;
-        @SerializedName("redirect_applink")
-        @Expose
-        private String redirectApplink;
-
-        public String getRedirectUrl() {
-            return redirectUrl;
-        }
-
-        public String getDepartmentId() {
-            return departmentId;
-        }
-
-        public String getRedirectApplink() {
-            return redirectApplink;
-        }
-    }
-
     public static class Shop {
 
         @SerializedName("id")
@@ -692,7 +746,10 @@ public class SearchProductModel {
         private boolean goldmerchant;
         @SerializedName("is_official")
         @Expose
-        private boolean official;
+        private boolean isOfficial;
+        @SerializedName("is_power_badge")
+        @Expose
+        private boolean isPowerBadge;
 
         public String getId() {
             return id;
@@ -727,7 +784,11 @@ public class SearchProductModel {
         }
 
         public boolean isOfficial() {
-            return official;
+            return isOfficial;
+        }
+
+        public boolean isPowerBadge() {
+            return isPowerBadge;
         }
     }
 

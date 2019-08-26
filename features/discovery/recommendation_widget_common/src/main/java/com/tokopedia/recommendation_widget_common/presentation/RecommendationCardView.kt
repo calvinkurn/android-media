@@ -5,9 +5,11 @@ package com.tokopedia.recommendation_widget_common.presentation
  */
 
 import android.content.Context
+import android.support.v7.widget.CardView
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -19,8 +21,9 @@ import com.tokopedia.recommendation_widget_common.R
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 
-class RecommendationCardView : ProductCardView {
-    private val reviewContainer by lazy { this.findViewById<View>(R.id.rating_review_container) }
+@Deprecated("RecommendationCardView replaced with ProductCardView v2")
+open class RecommendationCardView : ProductCardView {
+
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
@@ -34,9 +37,10 @@ class RecommendationCardView : ProductCardView {
         setTopAdsVisible(item.isTopAds)
         setSlashedPrice(item.slashedPrice)
         setDiscount(item.discountPercentage)
-        setWishlistButtonVisible(TextUtils.isEmpty(item.wishlistUrl))
         setWishlistButtonVisible(false)
         setRatingReviewCount(item.rating, item.countReview)
+        setBadges(item.badgesUrl)
+        setLocation(item.location)
         imageView.addOnImpressionListener(item,
                 object: ViewHintListener {
                     override fun onViewHint() {
@@ -69,11 +73,9 @@ class RecommendationCardView : ProductCardView {
 
     override fun setRatingReviewCount(rating: Int, reviewCount: Int) {
         if (rating in 1..5) {
+            setRatingVisible()
             ratingView.setImageResource(getRatingDrawable(rating))
             reviewCountView.text = "($reviewCount)"
-            if (fixedHeight && !reviewContainer.isVisible) {
-                reviewContainer.show()
-            }
         } else {
             if (fixedHeight) {
                 ratingView.visibility = View.INVISIBLE
@@ -82,6 +84,14 @@ class RecommendationCardView : ProductCardView {
                 ratingView.visibility = View.GONE
                 reviewCountView.visibility = View.GONE
             }
+        }
+    }
+
+    private fun setRatingVisible(){
+        ratingView.visibility = View.VISIBLE
+        reviewCountView.visibility = View.VISIBLE
+        if (ratingContainer != null) {
+            ratingContainer.visibility = View.VISIBLE
         }
     }
 

@@ -8,10 +8,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.network.BuildConfig;
 import com.tokopedia.core.constant.ConstantCoreNetwork;
 import com.tokopedia.core.network.CoreNetworkApplication;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.GeneratedHostConverter;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
 import com.tokopedia.core.network.retrofit.coverters.TkpdResponseConverter;
@@ -53,7 +53,7 @@ public abstract class KeroService<T> {
             String path = baseUrl.substring(baseUrl.indexOf("v4"));
             SharedPreferences pref = CoreNetworkApplication.getAppContext()
                     .getSharedPreferences("DOMAIN_WS_4", Context.MODE_PRIVATE);
-            baseUrl = pref.getString("DOMAIN_WS4", TkpdBaseURL.BASE_DOMAIN) + path;
+            baseUrl = pref.getString("DOMAIN_WS4", TokopediaUrl.Companion.getInstance().getWS()) + path;
         }
         return baseUrl;
     }

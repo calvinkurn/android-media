@@ -13,10 +13,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.di.ProductDetailComponent
 import com.tokopedia.product.detail.view.fragment.ProductDetailFragment
-import com.tokopedia.product.detail.R
 
 
 /**
@@ -32,7 +32,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     private var productId: String? = null
     private var trackerAttribution: String? = null
     private var trackerListName: String? = null
-    private var isSpecialPrize: Boolean = false
+    private var affiliateString: String? = null
 
     companion object {
         private const val PARAM_PRODUCT_ID = "product_id"
@@ -42,7 +42,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         private const val IS_FROM_EXPLORE_AFFILIATE = "is_from_explore_affiliate"
         private const val PARAM_TRACKER_ATTRIBUTION = "tracker_attribution"
         private const val PARAM_TRACKER_LIST_NAME = "tracker_list_name"
-        private const val PARAM_IS_SPECIAL_PRIZE = "is_special_prize"
+        private const val PARAM_AFFILIATE_STRING = "aff"
 
         private const val AFFILIATE_HOST = "affiliate"
 
@@ -90,9 +90,11 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
         return "" // need only on success load data? (it needs custom dimension)
     }
 
-    override fun getNewFragment(): Fragment = ProductDetailFragment
-        .newInstance(productId, shopDomain, productKey, isFromDeeplink, isFromAffiliate, isSpecialPrize,
-                trackerAttribution, trackerListName)
+    override fun getNewFragment(): Fragment =
+            ProductDetailFragment.newInstance(productId, shopDomain,
+                    productKey, isFromDeeplink,
+                    isFromAffiliate, trackerAttribution,
+                    trackerListName, affiliateString)
 
     override fun getComponent(): ProductDetailComponent = DaggerProductDetailComponent.builder()
         .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent).build()
@@ -124,34 +126,32 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
             }
             trackerAttribution = uri.getQueryParameter(PARAM_TRACKER_ATTRIBUTION)
             trackerListName = uri.getQueryParameter(PARAM_TRACKER_LIST_NAME)
-//            if (PARAM_IS_SPECIAL_PRIZE in uri.queryParameterNames){
-//                isSpecialPrize = uri.getBooleanQueryParameter(PARAM_IS_SPECIAL_PRIZE, false)
-//            }
+            affiliateString = uri.getQueryParameter(PARAM_AFFILIATE_STRING)
         }
         bundle?.let {
-            if (productId.isNullOrEmpty()) {
+            if (productId.isNullOrBlank()) {
                 productId = it.getString(PARAM_PRODUCT_ID)
             }
-            if (shopDomain.isNullOrEmpty()) {
+            if (shopDomain.isNullOrBlank()) {
                 shopDomain = it.getString(PARAM_SHOP_DOMAIN)
             }
-            if (productKey.isNullOrEmpty()) {
+            if (productKey.isNullOrBlank()) {
                 productKey = it.getString(PARAM_PRODUCT_KEY)
             }
-            if (trackerAttribution.isNullOrEmpty()) {
+            if (trackerAttribution.isNullOrBlank()) {
                 trackerAttribution = it.getString(PARAM_TRACKER_ATTRIBUTION)
             }
-            if (trackerListName.isNullOrEmpty()) {
+            if (trackerListName.isNullOrBlank()) {
                 trackerListName = it.getString(PARAM_TRACKER_LIST_NAME)
             }
-//            if (it.containsKey(PARAM_IS_SPECIAL_PRIZE)){
-//                isSpecialPrize = it.getString(PARAM_IS_SPECIAL_PRIZE, "").toLowerCase() == "true"
-//            }
+            if (affiliateString.isNullOrBlank()) {
+                affiliateString = it.getString(PARAM_AFFILIATE_STRING)
+            }
         }
-        if (uri != null && uri.host == AFFILIATE_HOST) {
-            isFromAffiliate = true
+        isFromAffiliate = if (uri != null && uri.host == AFFILIATE_HOST) {
+            true
         } else {
-            isFromAffiliate = intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
+            intent.getBooleanExtra(IS_FROM_EXPLORE_AFFILIATE, false)
         }
 
         super.onCreate(savedInstanceState)

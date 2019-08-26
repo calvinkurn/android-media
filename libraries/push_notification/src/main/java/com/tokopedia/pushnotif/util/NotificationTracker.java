@@ -1,13 +1,14 @@
 package com.tokopedia.pushnotif.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.pushnotif.domain.pojo.TrackPushNotificationEntity;
 import com.tokopedia.pushnotif.domain.usecase.TrackPushNotificationUseCase;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Subscriber;
 
@@ -22,7 +23,7 @@ public class NotificationTracker {
     private NotificationTracker(Context context) {
         this.context = context;
         this.gqlUseCase = new GraphqlUseCase();
-        this.useCase =  new TrackPushNotificationUseCase(this.context, this.gqlUseCase);
+        this.useCase = new TrackPushNotificationUseCase(this.context, this.gqlUseCase);
     }
 
     public static NotificationTracker getInstance(Context context) {
@@ -37,15 +38,19 @@ public class NotificationTracker {
 
         useCase.createObservable(requestParams)
                 .take(1)
+                .timeout(10, TimeUnit.SECONDS)
                 .subscribe(new Subscriber<TrackPushNotificationEntity>() {
                     @Override
-                    public void onCompleted() { }
+                    public void onCompleted() {
+                    }
 
                     @Override
-                    public void onError(Throwable e) { }
+                    public void onError(Throwable e) {
+                    }
 
                     @Override
-                    public void onNext(TrackPushNotificationEntity trackPushNotificationEntity) { }
+                    public void onNext(TrackPushNotificationEntity trackPushNotificationEntity) {
+                    }
                 });
     }
 }

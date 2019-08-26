@@ -8,31 +8,59 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/map_view"
+        <RelativeLayout
+            android:id="@+id/rl_map_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dp_80">
+
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/map_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/pointer_0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/pointer" />
+
+            <ImageView
+                android:id="@+id/icon_pointer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/pointer_0"
+                android:layout_centerHorizontal="true"
+                android:contentDescription="@string/pointer"
+                app:srcCompat="@drawable/ic_green_pointer" />
+
+        </RelativeLayout>
+
+        <android.support.design.widget.CoordinatorLayout
+            android:id="@+id/cl_bottomsheet_getdistrict"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <include layout="@layout/bottomsheet_getdistrict" />
+
+        </android.support.design.widget.CoordinatorLayout>
 
         <ImageView
-            android:id="@+id/pointer_0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:contentDescription="@string/pointer" />
-
-        <ImageView
-            android:id="@+id/icon_pointer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/pointer_0"
-            android:layout_centerHorizontal="true"
-            android:contentDescription="@string/pointer"
-            android:src="@drawable/ic_green_pointer" />
+            android:id="@+id/ic_current_location"
+            android:layout_width="@dimen/dp_60"
+            android:layout_height="@dimen/dp_60"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@+id/cl_bottomsheet_getdistrict"
+            app:srcCompat="@drawable/ic_gps_enable" />
 
     </RelativeLayout>
-
-    <include layout="@layout/bottomsheet_getdistrict" />
 
     <ImageButton
         android:id="@+id/back_button"
@@ -41,6 +69,6 @@
         android:layout_gravity="start|top"
         android:background="?selectableItemBackgroundBorderless"
         android:contentDescription="@string/navigate_up"
-        android:src="@drawable/ic_arrow_back" />
+        app:srcCompat="@drawable/ic_arrow_back" />
 
 </android.support.design.widget.CoordinatorLayout>

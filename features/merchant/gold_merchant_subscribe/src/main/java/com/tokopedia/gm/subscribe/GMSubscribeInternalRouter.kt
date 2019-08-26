@@ -1,14 +1,16 @@
 package com.tokopedia.gm.subscribe
 
 import android.content.Context
-import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipActivity
-import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 
 object GMSubscribeInternalRouter {
 
     @JvmStatic
-    fun getGMMembershipIntent(context: Context) = GmMembershipActivity.createIntent(context)
+    fun getGMMembershipIntent(context: Context) =
+        RouteManager.getIntent(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
 
     @JvmStatic
-    fun getGMSubscribeHomeIntent(context: Context) = GmSubscribeHomeActivity.getCallingIntent(context)
+    fun getGMSubscribeHomeIntent(context: Context) =
+        RouteManager.getIntent(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
 }

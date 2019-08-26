@@ -26,5 +26,7 @@
 
     <color name="black_70_new">#b3000000</color>
     <color name="xco_button_color_disable">#B7C2C9</color>
+    <color name="title_gray_color">#f531353b</color>
+    <color name="subtitle_gray_color">#ae31353b</color>
 
 </resources>
