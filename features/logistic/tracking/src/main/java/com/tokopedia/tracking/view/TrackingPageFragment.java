@@ -197,15 +197,23 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         String message = ErrorHandler.getErrorMessage(getContext(), error);
         // currently, message is not being used
         NetworkErrorHelper.showEmptyState(getActivity(), rootView,
-                () -> presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY)));
+                () -> {
+                    presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
+                    presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+                });
     }
 
     @Override
     public void setRetryButton(boolean active, long deadline) {
         if (active) {
             retryButton.setVisibility(View.VISIBLE);
-            retryButton.setOnClickListener(view ->
-                    presenter.onRetryPickup(getArguments().getString(ORDER_ID_KEY)));
+            retryButton.setText("Cari Driver Baru");
+            retryButton.setEnabled(true);
+            retryButton.setOnClickListener(view -> {
+                        retryButton.setEnabled(false);
+                        presenter.onRetryPickup(getArguments().getString(ORDER_ID_KEY));
+                    }
+            );
             retryStatus.setVisibility(View.GONE);
         } else {
             retryButton.setVisibility(View.GONE);
@@ -224,7 +232,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     @Override
     public void startSuccessCountdown() {
         retryButton.setText("Mencari driver baru...");
-        Observable.interval(5, TimeUnit.SECONDS)
+        Observable.timer(5, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
