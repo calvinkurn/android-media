@@ -291,7 +291,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         component.inject(this);
     }
 
-    private void initTimer(long timeInMillis) {
+    private void initTimer(long remainingSeconds) {
+        if (remainingSeconds <= 0) return;
+        long timeInMillis = remainingSeconds * 1000;
         mCountDownTimer = new CountDownTimer(timeInMillis, PER_SECOND) {
             @Override
             public void onTick(long millsUntilFinished) {
