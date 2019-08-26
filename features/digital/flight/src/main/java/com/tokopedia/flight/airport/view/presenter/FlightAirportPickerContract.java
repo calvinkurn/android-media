@@ -21,7 +21,6 @@ public interface FlightAirportPickerContract {
 
         void showLoading();
 
-        void showKeywordLessThanThreeError();
     }
 
     interface Presenter extends CustomerPresenter<View> {
