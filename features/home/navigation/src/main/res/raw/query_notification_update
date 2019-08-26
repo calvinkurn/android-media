@@ -23,6 +23,7 @@ query get_notification_update($page: Int!, $typeId: Int!, $tagId: Int!, $lastNot
       update_time_unix
       status
       read_status
+      type_link
       data_notification {
         app_link
         desktop_link

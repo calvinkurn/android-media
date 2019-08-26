@@ -11,9 +11,9 @@ import rx.Observable;
  */
 
 public interface EditTemplateRepository {
-    Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object> object);
+    Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object> object, boolean isSeller);
 
     Observable<EditTemplateViewModel> createTemplate(HashMap<String, Object> object);
 
-    Observable<EditTemplateViewModel> deleteTemplate(int index);
+    Observable<EditTemplateViewModel> deleteTemplate(int index, boolean isSeller);
 }

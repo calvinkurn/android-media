@@ -11,6 +11,7 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.BaseChatViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
@@ -18,7 +19,6 @@ import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.BaseChatMenuViewHolder
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel

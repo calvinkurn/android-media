@@ -146,7 +146,7 @@ import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationActivity;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -1657,7 +1657,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
-        return DistrictRecommendationActivity.newInstance(activity, token);
+        return DiscomActivity.newInstance(activity, token);
     }
 
     @Override
