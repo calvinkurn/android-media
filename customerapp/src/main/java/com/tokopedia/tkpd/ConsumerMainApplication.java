@@ -82,6 +82,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
 
+    private final String[] LOGENTRIES_TOKEN = new String[]
+            {"08fcd148-14aa-4d89-ac67-4f70fefd2f37",
+            "60664ea7-4d61-4df1-b39c-365dc647aced",
+            "33acc8e7-1b5c-403e-bd31-7c1e61bbef2c"};
+
     CharacterPerMinuteActivityLifecycleCallbacks callback;
 
     // Used to load the 'native-lib' library on application startup.
@@ -152,10 +157,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         LogWrapper.init(this);
         if (LogWrapper.instance != null) {
-            LogWrapper.instance.setLogentriesToken(
-                    new String[]{"08fcd148-14aa-4d89-ac67-4f70fefd2f37",
-                            "60664ea7-4d61-4df1-b39c-365dc647aced",
-                            "33acc8e7-1b5c-403e-bd31-7c1e61bbef2c"});
+            LogWrapper.instance.setLogentriesToken(LOGENTRIES_TOKEN);
         }
         TimberWrapper.init(this);
     }
