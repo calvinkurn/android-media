@@ -11,11 +11,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -27,10 +22,16 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-//import com.bumptech.glide.Glide;
-//import com.bumptech.glide.request.animation.GlideAnimation;
-//import com.bumptech.glide.request.target.SimpleTarget;
-//import com.bumptech.glide.signature.StringSignature;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -46,22 +47,20 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResul
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenOnBoarding;
 import com.tokopedia.gamification.cracktoken.compoundview.WidgetTokenView;
 import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
-import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.List;
 
 import javax.inject.Inject;
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 
 /**
@@ -304,8 +303,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         infoTitlePage.setText(tokenData.getHome().getTokensUser().getTitle());
 
-//        ImageHandler.loadImageWithSignature(ivContainer, tokenUser.getBackgroundAsset().getBackgroundImgUrl(),
-//                new StringSignature(tokenUser.getBackgroundAsset().getVersion()));
+        String backgroundUrl = tokenUser.getBackgroundAsset().getBackgroundImgUrl();
+        ObjectKey signature = new ObjectKey(tokenUser.getBackgroundAsset().getVersion());
+        ImageHandler.loadImageWithSignature(ivContainer, backgroundUrl, signature);
 
         widgetTokenView.setToken(tokenUser.getTokenAsset());
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
@@ -533,24 +533,27 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     public void onSuccessCrackToken(final CrackResultEntity crackResult) {
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
-//            Glide.with(getContext())
-//                    .load(crackResult.getImageUrl())
-//                    .asBitmap()
-//                    .into(new SimpleTarget<Bitmap>() {
-//                        @Override
-//                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                            crackResult.setImageBitmap(resource);
-//                            showCrackWidgetSuccess(crackResult);
-//                        }
-//
-//                        @Override
-//                        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                            super.onLoadFailed(e, errorDrawable);
-//                            crackResult.setImageBitmap(null);
-//                            // image load is failed, but we need to show the text instead.
-//                            showCrackWidgetSuccess(crackResult);
-//                        }
-//                    });
+            Glide.with(getContext())
+                    .asBitmap()
+                    .load(crackResult.getImageUrl())
+                    .into(new CustomTarget<Bitmap>() {
+                        @Override
+                        public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                            crackResult.setImageBitmap(resource);
+                            showCrackWidgetSuccess(crackResult);
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) { }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            super.onLoadFailed(errorDrawable);
+                            crackResult.setImageBitmap(null);
+                            // image load is failed, but we need to show the text instead.
+                            showCrackWidgetSuccess(crackResult);
+                        }
+                    });
         } else {
             showCrackWidgetSuccess(crackResult);
         }

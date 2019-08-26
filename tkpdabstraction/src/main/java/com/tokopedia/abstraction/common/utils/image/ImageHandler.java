@@ -14,18 +14,12 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
 import android.os.Build;
 import android.renderscript.Allocation;
-import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.appcompat.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.TypedValue;
@@ -33,22 +27,18 @@ import android.view.View;
 import android.view.Window;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 
 import com.bumptech.glide.Glide;
-//import com.bumptech.glide.load.engine.DiskCacheStrategy;
-//import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-//import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-//import com.bumptech.glide.request.RequestListener;
-//import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-//import com.bumptech.glide.signature.StringSignature;
 import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.R;
 
@@ -57,8 +47,14 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+
+//import com.bumptech.glide.load.engine.DiskCacheStrategy;
+//import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+//import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+//import com.bumptech.glide.request.RequestListener;
+//import com.bumptech.glide.request.animation.GlideAnimation;
+//import com.bumptech.glide.signature.StringSignature;
 
 
 public class ImageHandler {
@@ -302,14 +298,18 @@ public class ImageHandler {
                 .into(imageview);
     }
 
-//    public static void downloadOriginalSizeImageWithSignature(Context context, String url, StringSignature stringSignature,
-//                                                              RequestListener<String, GlideDrawable> backgroundImgRequestListener) {
-//        Glide.with(context)
-//                .load(url)
-//                .signature(stringSignature)
-//                .listener(backgroundImgRequestListener)
-//                .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
-//    }
+    public static void downloadOriginalSizeImageWithSignature(
+            Context context,
+            String url,
+            ObjectKey stringSignature,
+            RequestListener<Drawable> backgroundImgRequestListener
+    ) {
+        Glide.with(context)
+                .load(url)
+                .signature(stringSignature)
+                .listener(backgroundImgRequestListener)
+                .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL);
+    }
 
     public static void loadImageCover2(ImageView imageview, String url) {
 //        Glide.with(imageview.getContext())
@@ -880,19 +880,21 @@ public class ImageHandler {
 //                .into(getCircleImageViewTarget(imageView));
     }
 
-//    public static void loadImageWithListener(ImageView imageview, String url,
-//                                             RequestListener<String,
-//                                                     GlideDrawable> requestListener) {
-//        if (url != null) {
-//            Glide.with(imageview.getContext())
-//                    .load(url)
-//                    .dontAnimate()
-//                    .listener(requestListener)
-//                    .fitCenter()
-//                    .placeholder(R.drawable.loading_page)
-//                    .into(imageview);
-//        }
-//    }
+    public static void loadImageWithListener(
+            ImageView imageview,
+            String url,
+            RequestListener<Drawable> requestListener
+    ) {
+        if (url != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .listener(requestListener)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
+                    .into(imageview);
+        }
+    }
 
     public static void clearImage(ImageView imageView) {
         if (imageView != null) {
@@ -900,19 +902,23 @@ public class ImageHandler {
         }
     }
 
-//    public static void loadImageBlurredWithListener(ImageView imageView, String url, int
-//            blurWidth, int blurHeight, RequestListener<String, GlideDrawable> listener) {
-//        if (url != null) {
-//            Glide.with(imageView.getContext())
-//                    .load(url)
-//                    .dontAnimate()
-//                    .override(blurWidth, blurHeight)
-//                    .listener(listener)
-//                    .fitCenter()
-//                    .placeholder(R.drawable.loading_page)
-//                    .into(imageView);
-//        }
-//    }
+    public static void loadImageBlurredWithListener(
+            ImageView imageView,
+            String url,
+            int blurWidth,
+            int blurHeight,
+            RequestListener<Drawable> listener) {
+        if (url != null) {
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .override(blurWidth, blurHeight)
+                    .listener(listener)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
+                    .into(imageView);
+        }
+    }
 
     public static void loadBackgroundImage(@Nullable Window window, @NotNull String backgroundUrl) {
         if (window != null && window.getContext() != null) {

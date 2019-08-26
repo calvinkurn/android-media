@@ -1,13 +1,17 @@
 package com.tokopedia.gamification.taptap.presenter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Pair;
 
-//import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-//import com.bumptech.glide.request.RequestListener;
-//import com.bumptech.glide.request.target.Target;
-//import com.bumptech.glide.signature.StringSignature;
+import androidx.annotation.Nullable;
+
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.signature.ObjectKey;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -277,12 +281,16 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
         assetUrls.add(new Pair<>(imageLeftUrl, tokenAssetVersion));
         assetUrls.add(new Pair<>(imageRightUrl, tokenAssetVersion));
 
-//        RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
-//        for (Pair<String, String> assetUrlPair : assetUrls) {
-//            ImageHandler.downloadOriginalSizeImageWithSignature(
-//                    context, assetUrlPair.first, new StringSignature(assetUrlPair.second),
-//                    tokenAssetRequestListener);
-//        }
+        RequestListener<Drawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
+        for (Pair<String, String> assetUrlPair : assetUrls) {
+            ObjectKey signature = new ObjectKey(assetUrlPair.second);
+            ImageHandler.downloadOriginalSizeImageWithSignature(
+                    context,
+                    assetUrlPair.first,
+                    signature,
+                    tokenAssetRequestListener
+            );
+        }
     }
 
     public void downloadEmptyAssets(Context context, GamiTapEggHome tokenData) {
@@ -308,12 +316,16 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
         String tokenAssetVersion = String.valueOf(1);
         assetUrls.add(new Pair<>(empty, tokenAssetVersion));
 
-//        RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
-//        for (Pair<String, String> assetUrlPair : assetUrls) {
-//            ImageHandler.downloadOriginalSizeImageWithSignature(
-//                    context, assetUrlPair.first, new StringSignature(assetUrlPair.second),
-//                    tokenAssetRequestListener);
-//        }
+        RequestListener<Drawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
+        for (Pair<String, String> assetUrlPair : assetUrls) {
+            ObjectKey signature = new ObjectKey(assetUrlPair.second);
+            ImageHandler.downloadOriginalSizeImageWithSignature(
+                    context,
+                    assetUrlPair.first,
+                    signature,
+                    tokenAssetRequestListener
+            );
+        }
 
     }
 
@@ -378,41 +390,42 @@ public class TapTapTokenPresenter extends BaseDaggerPresenter<TapTapTokenContrac
 
     }
 
-//    public class ImageRequestListener implements RequestListener<String, GlideDrawable> {
-//
-//        private int size;
-//
-//        ImageRequestListener(int size) {
-//            this.size = size;
-//        }
-//
-//        int counter = 0;
-//
-//        @Override
-//        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-//            counter++;
-//            if (counter == size) {
-//                onAllResourceDownloaded();
-//            }
-//            return false;
-//        }
-//
-//        @Override
-//        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-//            counter++;
-//            if (counter == size) {
-//                onAllResourceDownloaded();
-//            }
-//            return false;
-//        }
-//
-//        void onAllResourceDownloaded() {
-//            if (isViewAttached()) {
-//                getView().hideLoading();
-//                getView().onSuccessDownloadAllAsset();
-//            }
-//        }
-//    }
+    public class ImageRequestListener implements RequestListener<Drawable> {
+
+        private int size;
+
+        ImageRequestListener(int size) {
+            this.size = size;
+        }
+
+        int counter = 0;
+
+        @Override
+        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+            counter++;
+            if (counter == size) {
+                onAllResourceDownloaded();
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+            counter++;
+            if (counter == size) {
+                onAllResourceDownloaded();
+            }
+            return false;
+        }
+
+
+        void onAllResourceDownloaded() {
+            if (isViewAttached()) {
+                getView().hideLoading();
+                getView().onSuccessDownloadAllAsset();
+            }
+        }
+    }
 
     @Override
     public void detachView() {
