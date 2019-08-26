@@ -1,5 +1,6 @@
 package com.tokopedia.tradein.view.viewcontrollers
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.graphics.Typeface
@@ -285,8 +286,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     private fun onResultFromPayment(resultCode: Int) {
         when (resultCode) {
             TopPayActivity.PAYMENT_SUCCESS -> {
-                showMessage(getString(R.string.alert_payment_successful_money_in))
-                setResult(TopPayActivity.PAYMENT_SUCCESS)
+                setResult(Activity.RESULT_OK, null)
                 finish()
             }
             TopPayActivity.PAYMENT_FAILED -> {
