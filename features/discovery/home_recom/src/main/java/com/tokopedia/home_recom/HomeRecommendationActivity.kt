@@ -43,59 +43,6 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         }
     }
 
-//    object DeeplinkIntents{
-//        /**
-//         * [getDefaultCallingIntent] for handling deeplink without product id with pattern "tokopedia://rekomendasi/?ref={ref}"
-//         * @param context the default context
-//         * @param extras the default extras
-//         */
-//        @JvmStatic
-//        @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE)
-//        fun getDefaultCallingIntent(context: Context, extras: Bundle): Intent{
-//            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-//            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", "")
-//        }
-//
-//        /**
-//         * [getDefaultCallingIntent] for handling deeplink with product id with pattern "tokopedia://rekomendasi/{product_id}/?ref={ref}"
-//         * @param context the default context
-//         * @param extras the default extras
-//         */
-//        @JvmStatic
-//        @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
-//        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-//            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-//            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, uri.lastPathSegment, "") ?: Intent()
-//        }
-//
-//        /**
-//         * [getDefaultCallingIntent] for handling deeplink without product id with pattern "tokopedia://rekomendasi/?ref={ref}"
-//         * @param context the default context
-//         * @param extras the default extras
-//         */
-//        @JvmStatic
-//        @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE_WITH_REF)
-//        fun getDefaultCallingIntentWithRef(context: Context, extras: Bundle): Intent{
-//            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-//            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", uri.getQueryParameter(REF) ?: "")
-//        }
-//
-//        /**
-//         * [getDefaultCallingIntent] for handling deeplink with product id with pattern "tokopedia://rekomendasi/{product_id}/?ref={ref}"
-//         * @param context the default context
-//         * @param extras the default extras
-//         */
-//        @JvmStatic
-//        @DeepLink(ApplinkConst.RECOMMENDATION_PAGE_WITH_REF)
-//        fun getCallingIntentWithRef(context: Context, extras: Bundle): Intent {
-//            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-//            return RouteManager.getIntent(context,
-//                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
-//                    uri.lastPathSegment,
-//                    uri.getQueryParameter(REF) ?: "") ?: Intent()
-//        }
-//    }
-
     /**
      * [getNewFragment] is override from [BaseSimpleActivity]
      * @return default fragment it will shown at activity
