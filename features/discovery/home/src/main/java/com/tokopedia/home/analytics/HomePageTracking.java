@@ -7,6 +7,8 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.home.beranda.data.model.Promotion;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.BannerFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel;
@@ -114,6 +116,7 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_CLICK_ON_GEOLOCATION_COMPONENT = "click on geolocation component";
     public static final String EVENT_ACTION_CLICK_CLOSE_ON_GEOLOCATION_COMPONENT = "click close on geolocation component";
     public static final String EVENT_ACTION_CLICK_ON_ATUR = "click on atur";
+    public static final String ACTION_CLICK_VIEW_ALL_ON_DYNAMIC_CHANNEL_MIX = "click view all on dynamic channel mix";
 
     public static final String CHANNEL_ID = "channelId";
 
@@ -324,6 +327,18 @@ public class HomePageTracking {
         map.put(EVENT_LABEL, headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker(context).sendGeneralEvent(map);
+    }
+
+    public static void eventClickSeeAllBannerMixChannel(Context context, String channelId, String headerName) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendGeneralEvent(
+                    EVENT_CLICK_HOME_PAGE,
+                    CATEGORY_HOME_PAGE,
+                    ACTION_CLICK_VIEW_ALL_ON_DYNAMIC_CHANNEL_MIX,
+                    headerName
+            );
+        }
     }
 
     public static void eventClickExplorerItem(Context context, String action, String label) {
@@ -901,7 +916,7 @@ public class HomePageTracking {
             String tabName
     ) {
         List<Object> objects = new ArrayList<>();
-        objects.add(bannerFeedViewModel.convertBannerFeedModelToDataLayer());
+        objects.add(bannerFeedViewModel.convertBannerFeedModelToDataLayer(tabName));
         return objects;
     }
 
@@ -925,6 +940,44 @@ public class HomePageTracking {
                 )
         );
         tracker.sendEnhanceEcommerceEvent(data);
+    }
+
+    public static void eventEnhanceImpressionBanner(Context context, DynamicHomeChannel.Channels bannerChannel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    bannerChannel.getEnhanceImpressionBannerChannelMix()
+                    );
+        }
+    }
+
+    public static void eventClickProductChannelMix(Context context,
+                                                   DynamicHomeChannel.Channels bannerChannel,
+                                                   int gridPosition) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    bannerChannel.getEnhanceClickProductChannelMix(gridPosition)
+            );
+        }
+    }
+
+    public static void eventClickBannerChannelMix(Context context, DynamicHomeChannel.Channels bannerChannel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    bannerChannel.getEnhanceClickBannerChannelMix()
+            );
+        }
+    }
+
+    public static void eventClickBannerButtonChannelMix(Context context, DynamicHomeChannel.Channels bannerChannel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    bannerChannel.getEnhanceClickBannerButtonChannelMix()
+            );
+        }
     }
 
     public static void eventClickOnStickyLogin(boolean isOnSticky) {

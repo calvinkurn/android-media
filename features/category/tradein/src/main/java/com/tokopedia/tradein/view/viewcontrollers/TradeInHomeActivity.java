@@ -197,7 +197,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         });
                         break;
                     case MONEYIN_ERROR:
-                        showDialogFragment(0, "Money In Error", homeResult.getDisplayMessage(),
+                        showDialogFragment(0, getString(R.string.money_in), homeResult.getDisplayMessage(),
                                 getString(R.string.tradein_return), null);
                     default:
                         break;
@@ -240,88 +240,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     @Override
     protected void onStart() {
         super.onStart();
-//        tradeInHomeViewModel.getMinPriceData().observe(this, jsonObject -> {
-//            if (!isAlreadySet) {
-//                try {
-//                    hideProgressBar();
-//                    mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
-//                    mTvGoToProductDetails.setOnClickListener(v -> {
-//                        laku6TradeIn.startGUITest();
-//                        sendGeneralEvent("clickTradeIn",
-//                                "trade in start page",
-//                                "click mulai cek fungsi",
-//                                "");
-//
-//                    });
-//                    int maxPrice = jsonObject.getInt("max_price");
-//                    int minPrice = jsonObject.getInt("min_price");
-//                    TradeInParams tradeInParams = tradeInHomeViewModel.getTradeInParams();
-//                    int diagnosedPrice = tradeInParams.getUsedPrice();
-//                    if (diagnosedPrice > 0)
-//                        minPrice = diagnosedPrice;
-//                    if (!errorPriceNotElligible(minPrice)) {
-//                        mTvNotUpto.setVisibility(View.VISIBLE);
-//                        if (diagnosedPrice <= 0)
-//                            mTvInitialPrice.setText(String.format("%1$s - %2$s",
-//                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
-//                                    CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true)));
-//                        else
-//                            mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true));
-//                    } else {
-//                        mTvNotUpto.setVisibility(View.GONE);
-//                        mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true));
-//                    }
-//                    isAlreadySet = true;
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//        tradeInHomeViewModel.getPriceFailData().observe(this, jsonObject -> {
-//            hideProgressBar();
-//            try {
-//                mTvInitialPrice.setText(jsonObject.getString("message"));
-//                mTvPriceElligible.setText(getString(R.string.not_elligible));
-//                mTvPriceElligible.setVisibility(View.VISIBLE);
-//                tvIndicateive.setVisibility(View.GONE);
-//                mTvGoToProductDetails.setText(R.string.go_to_product_details);
-//                mTvGoToProductDetails.setOnClickListener(v -> {
-//                    sendGeneralEvent("clickTradeIn",
-//                            "trade in start page",
-//                            "click kembali ke detail produk",
-//                            "");
-//
-//                    finish();
-//                });
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            } catch (NullPointerException e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        tradeInHomeViewModel.getInsertResult().observe(this, price -> {
-//            try {
-//                if (price != null && price > 0) {
-//                    errorPriceNotElligible(price);
-//                    mTvNotUpto.setVisibility(View.GONE);
-//                    mTvInitialPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true));
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
-//        tradeInHomeViewModel.getFinalPriceData().observe(this, tradeInParams -> {
-//            Intent finalPriceIntent = new Intent(this, FinalPriceActivity.class);
-//            finalPriceIntent.putExtra(TradeInParams.class.getSimpleName(), tradeInParams);
-//            navigateToActivityRequest(finalPriceIntent, FinalPriceActivity.FINAL_PRICE_REQUEST_CODE);
-//            tradeInHomeViewModel.getFinalPriceData().removeObservers(this);
-//        });
         LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(this);
         localBroadcastManager.registerReceiver(mMessageReceiver, new IntentFilter("laku6-test-end"));
         localBroadcastManager.registerReceiver(mBackReceiver, new IntentFilter("laku6-back-action"));
         localBroadcastManager.registerReceiver(laku6GTMReceiver, new IntentFilter("laku6-gtm"));
-
-
     }
 
     @Override

@@ -169,6 +169,7 @@ include "features:user:otp"
 include "features:user:phoneverification"
 include 'features:user:profilecompletion'
 include "features:user:settingbank"
+include "features:user:settingnotif"
 include "features:user:sessioncommon"
 include "features:user:talk"
 include "features:user:topchat"

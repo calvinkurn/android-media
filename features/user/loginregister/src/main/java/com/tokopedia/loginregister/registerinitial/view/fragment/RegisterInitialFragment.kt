@@ -198,6 +198,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     .build()
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         }
+        analytics.onCreate(context)
 
         phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
@@ -745,7 +746,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onSuccessRegister() {
         activity?.let{
-            registerAnalytics.trackSuccessRegister(userSession.loginMethod)
+            registerAnalytics.trackSuccessRegister(context, userSession.loginMethod)
 
             if(isFromAccount()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)

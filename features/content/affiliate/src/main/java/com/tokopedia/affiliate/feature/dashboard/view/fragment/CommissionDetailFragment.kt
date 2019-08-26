@@ -15,7 +15,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
@@ -24,6 +26,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetail
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionTransactionViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyCommissionViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.coroutinedata.CommissionData
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -33,7 +36,7 @@ import javax.inject.Inject
 /**
  * @author by yoasfs on 2019-08-12
  */
-class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>() {
+class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), NetworkErrorHelper.RetryClickedListener {
 
     companion object {
         val PARAM_AFF_ID = "AFF_ID"
@@ -136,6 +139,10 @@ class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFa
         }
     }
 
+    override fun onRetryClicked() {
+        loadInitialData()
+    }
+
     fun onSuccessGetFirstData(commissionData: CommissionData) {
         adapter.clearAllElements()
         val dataList: MutableList<Visitable<*>> = ArrayList()
@@ -151,11 +158,13 @@ class CommissionDetailFragment: BaseListFragment<Visitable<*>, BaseAdapterTypeFa
     }
 
     fun onErrorGetFirstData(throwable: Throwable) {
-        view?.let {
-            Toaster.showErrorWithAction(it, throwable.localizedMessage, Snackbar.LENGTH_LONG, "Coba Lagi", View.OnClickListener {
-                loadInitialData()
-            })
-        }
+        adapter.clearAllElements()
+        val dataList: MutableList<Visitable<*>> = ArrayList()
+        val errorNetworkModel = ErrorNetworkModel()
+        errorNetworkModel.errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        errorNetworkModel.onRetryListener = this
+        dataList.add(ErrorNetworkModel())
+        renderList(dataList)
     }
 
     fun onSuccessGetLoadMoreData(commissionTransactionViewModel: CommissionTransactionViewModel) {

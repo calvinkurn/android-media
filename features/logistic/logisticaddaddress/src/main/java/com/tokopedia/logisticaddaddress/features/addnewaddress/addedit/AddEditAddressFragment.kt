@@ -463,7 +463,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = ""
-        if (et_detail_address.text!!.isEmpty()) {
+        if (et_detail_address?.text.isNullOrEmpty()) {
             validated = false
             rl_detail_address_info_counter.visibility = View.GONE
             setWrapperError(et_detail_address_wrapper, getString(R.string.validate_detail_alamat))
@@ -483,31 +483,31 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = ""
-        if (et_kota_kecamatan_mismatch.text!!.isEmpty()) {
+        if (et_kota_kecamatan_mismatch?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_kota_kecamatan_mismatch_wrapper, getString(R.string.validate_kota_kecamatan))
             if (field.isNotEmpty()) field += ", "
             field += "kota kecamatan"
         }
-        if (et_kode_pos_mismatch.text!!.isEmpty()) {
+        if (et_kode_pos_mismatch?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos))
             if (field.isNotEmpty()) field += ", "
             field += "kode pos"
         }
-        if (et_kode_pos_mismatch.text!!.length < 5) {
+        if (et_kode_pos_mismatch?.text?.length ?: 0 < 5) {
             validated = false
             setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos_length))
             if (field.isNotEmpty()) field += ", "
             field += "kode pos"
         }
-        if (et_alamat_mismatch.text!!.isEmpty()) {
+        if (et_alamat_mismatch?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat))
             if (field.isNotEmpty()) field += ", "
             field += "alamat"
         }
-        if (et_alamat_mismatch.text!!.length < 5) {
+        if (et_alamat_mismatch?.text?.length ?: 0 < 5) {
             validated = false
             setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat_length))
             if (field.isNotEmpty()) field += ", "
@@ -526,21 +526,22 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = errorField
-        if (et_label_address.text!!.isEmpty()) {
+        if (et_label_address?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_label_address_wrapper, getString(R.string.validate_label_alamat))
             if (field.isNotEmpty()) field += ", "
             field += "label alamat"
 
         }
-        if (et_receiver_name.text!!.isEmpty()) {
+
+        if (et_receiver_name?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_receiver_name_wrapper, getString(R.string.validate_nama_penerima))
             if (field.isNotEmpty()) field += ", "
             field += "nama penerima"
 
         }
-        if (et_phone.text!!.isEmpty()) {
+        if (et_phone.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel))
             if (field.isNotEmpty()) field += ", "
@@ -714,7 +715,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             btn_map.layoutParams = params
             setOnClickListener {
                 hideKeyboard()
-                if (et_kota_kecamatan_mismatch.text!!.isEmpty()) {
+                if (et_kota_kecamatan_mismatch?.text.isNullOrEmpty()) {
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
@@ -998,7 +999,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         rv_label_alamat_chips.visibility = View.GONE
         et_label_address.run {
             setText(labelAlamat)
-            setSelection(et_label_address.text!!.length)
+            setSelection(et_label_address?.text?.length ?: 0)
         }
         if (!isMismatch && !isMismatchSolved) {
             AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive()

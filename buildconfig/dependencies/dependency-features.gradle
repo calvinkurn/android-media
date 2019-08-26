@@ -345,6 +345,7 @@ ext {
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
             settingbank                     : ":features:user:settingbank",
+            settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
 //            topchat                         : ":features:user:topchat_no_op",
