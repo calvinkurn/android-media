@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tracking.R;
@@ -297,12 +298,16 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private void initTimer(long remainingSeconds) {
         if (remainingSeconds <= 0) return;
         long timeInMillis = remainingSeconds * 1000;
+        String strFormat = (getContext() != null) ?
+                getContext().getString(R.string.retry_dateline_info) : "";
         mCountDownTimer = new CountDownTimer(timeInMillis, PER_SECOND) {
             @Override
             public void onTick(long millsUntilFinished) {
-                retryStatus.setText(
-                        String.format("Tunggu %s untuk mencari driver baru",
-                                DateUtils.formatElapsedTime(millsUntilFinished / 1000)));
+                if (getContext() != null) {
+                    String info = String.format(strFormat,
+                            DateUtils.formatElapsedTime(millsUntilFinished / 1000));
+                    retryStatus.setText(MethodChecker.fromHtml(info));
+                }
             }
 
             @Override
