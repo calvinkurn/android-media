@@ -10,11 +10,11 @@ class SomListActivity: BaseSimpleActivity() {
     override fun getLayoutRes(): Int = R.layout.activity_som_list
 
     override fun getNewFragment(): SomListFragment? {
-        var fragment: SomListFragment? = null
+        /*var fragment: SomListFragment? = null
         if (intent.extras != null) {
             // val bundle = intent.extras
             fragment = SomListFragment.newInstance()
-        }
-        return fragment
+        }*/
+        return SomListFragment.newInstance()
     }
 }

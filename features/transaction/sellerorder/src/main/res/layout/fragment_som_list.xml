@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">-->
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <com.tokopedia.design.text.SearchInputView
+        android:id="@+id/search_input_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="true"
+        app:siv_search_hint="@string/hint_search_product"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/ticker_info"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView
+        android:id="@+id/quick_filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/search_input_view"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/quick_filter"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <!--<FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">-->
+
+            <!--<include
+                android:id="@+id/empty_state_order_list"
+                layout="@layout/empty_state_normal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />-->
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/order_list_rv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@android:color/transparent"
+                android:listSelector="@android:color/transparent"
+                android:layout_marginBottom="@dimen/dp_20"/>
+        <!--</FrameLayout>-->
+        </android.support.design.widget.CoordinatorLayout>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+</android.support.constraint.ConstraintLayout>
+
+<!--
+</LinearLayout>-->

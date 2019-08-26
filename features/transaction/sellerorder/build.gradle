@@ -29,5 +29,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
 }
 apply from: "$rootProject.projectDir/publish_local.gradle"
