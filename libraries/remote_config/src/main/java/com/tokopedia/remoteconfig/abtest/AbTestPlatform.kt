@@ -3,6 +3,7 @@ package com.tokopedia.remoteconfig.abtest
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import android.widget.Toast
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -117,9 +118,11 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     val globalRevision = responseData.dataRollout.globalRev
                     val status = responseData.dataRollout.status
 
-                    if (featureVariants != null) {  // Save response to sharedPref
+                    if (featureVariants != null) {
                         for (a in featureVariants) {
                             setString(a.feature, a.variant)
+                            // ===== For testing purpose ===== //
+                            Toast.makeText(context, "${a.feature} :: ${a.variant}", Toast.LENGTH_SHORT).show()
                         }
                     }
 
