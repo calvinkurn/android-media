@@ -65,7 +65,7 @@ public abstract class BaseNotificationFactory {
                 return R.drawable.ic_status_bar_notif_customerapp;
             }
         } catch (Exception e) {
-            return R.drawable.ic_status_bar_notif_sellerapp;
+            return R.drawable.ic_status_bar_notif_customerapp;
         }
     }
 
