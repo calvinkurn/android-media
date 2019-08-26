@@ -26,15 +26,22 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = subCategoryList[position]
 
-        ImageHandler.loadImage(holder.itemView.context,
-                holder.img_sub_category,
-                item.thumbnailImage,
-                R.drawable.loading_page)
-
+        if (item.is_default) {
+            holder.img_sub_category.setImageResource(R.drawable.ic_default_category_icon)
+        } else {
+            ImageHandler.loadImage(holder.itemView.context,
+                    holder.img_sub_category,
+                    item.thumbnailImage,
+                    R.drawable.loading_page)
+        }
         holder.txt_sub_category.text = item.name
 
         holder.parent_view.setOnClickListener {
-            subCategoryListener.OnSubCategoryClicked(item.id.toString(), item.name ?: "")
+            if (item.is_default) {
+                subCategoryListener.OnDefaultItemClicked()
+            } else {
+                subCategoryListener.OnSubCategoryClicked(item.id.toString(), item.name ?: "")
+            }
         }
     }
 

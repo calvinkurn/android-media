@@ -10,6 +10,8 @@ import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
@@ -27,11 +29,11 @@ import kotlinx.android.synthetic.main.activity_category_nav.*
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSheetListener {
 
     override fun hideBottomNavigation() {
-        searchNavContainer?.setVisibility(View.GONE)
+        searchNavContainer?.visibility = View.GONE
     }
 
     fun showBottomNavigation() {
-        searchNavContainer?.setVisibility(View.VISIBLE)
+        searchNavContainer?.visibility = View.VISIBLE
     }
 
     override fun loadFilterItems(filters: java.util.ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
@@ -47,7 +49,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     override fun isBottomSheetShown(): Boolean {
-        return bottomSheetFilterView?.isBottomSheetShown() ?: false
+        return bottomSheetFilterView?.isBottomSheetShown ?: false
     }
 
     override fun launchFilterBottomSheet() {
@@ -198,7 +200,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         val selectedFragment = searchSectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
 
         selectedFragment.applyFilterToSearchParameter(filterParameter)
-        selectedFragment.setSelectedFilter(HashMap<String, String>(filterParameter))
+        selectedFragment.setSelectedFilter(HashMap(filterParameter))
         selectedFragment.clearDataFilterSort()
         selectedFragment.reloadData()
     }
@@ -269,7 +271,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     private fun initToolbar() {
+        action_up_btn.setOnClickListener {
+            onBackPressed()
+        }
         et_search.text = departmentName
+
+        layout_search.setOnClickListener {
+            moveToAutoCompleteActivity()
+        }
+    }
+
+    private fun moveToAutoCompleteActivity() {
+        RouteManager.route(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + departmentName)
     }
 
     override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {

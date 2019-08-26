@@ -115,13 +115,23 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:navigationIcon="@drawable/icon_back"
             app:titleTextColor="@color/black_70">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <ImageView
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:id="@+id/action_up_btn"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:paddingRight="@dimen/dp_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@drawable/discovery_ic_back"
+                    />
                 <ImageButton
                     android:id="@+id/img_display_button"
                     android:layout_width="wrap_content"
@@ -145,7 +155,7 @@
                     android:background="@drawable/bg_corner"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toStartOf="@+id/img_display_button"
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/action_up_btn"
                     app:layout_constraintTop_toTopOf="parent">
 
 

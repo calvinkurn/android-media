@@ -61,8 +61,8 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
 
     fun fetchSubCategoriesList(params: RequestParams) {
 
-        subCategoryUseCase.execute(params, object : Subscriber<List<SubCategoryItem?>?>() {
-            override fun onNext(subCategoryList: List<SubCategoryItem?>?) {
+        subCategoryUseCase.execute(params, object : Subscriber<ArrayList<SubCategoryItem?>?>() {
+            override fun onNext(subCategoryList: ArrayList<SubCategoryItem?>?) {
 
                 subCategoryList?.let {
                     if (subCategoryList.isNotEmpty()) {

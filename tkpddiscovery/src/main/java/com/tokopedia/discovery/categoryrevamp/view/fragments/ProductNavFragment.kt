@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.core.gcm.GCMHandler
@@ -56,83 +57,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         ProductCardListener,
         SubCategoryListener {
 
-    override fun OnSubCategoryClicked(id: String, categoryName: String) {
-        activity?.let {
-            val intent = Intent(it, CategoryNavActivity::class.java)
-            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, id)
-            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, categoryName)
-//            if (removeAnimation) intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            it.startActivity(intent)
-        }
-    }
-
-
-    override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
-        val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
-
-        if (intent != null) {
-            intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
-            startActivityForResult(intent, 1002)
-        }
-    }
-
-    override fun onLongClick(item: ProductsItem, adapterPosition: Int) {
-        Log.d("ProductNavFragment", "onLongClick")
-    }
-
-    override fun onWishlistButtonClicked(productItem: ProductsItem) {
-        Log.d("ProductNavFragment", "onWishlistButtonClicked")
-    }
-
-    override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {
-        Log.d("ProductNavFragment", "onProductImpressed")
-    }
-
-
-    private fun getProductIntent(productId: String, warehouseId: String): Intent? {
-        if (context == null) {
-            return null
-        }
-
-        return if (!TextUtils.isEmpty(warehouseId)) {
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId)
-        } else {
-            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
-        }
-    }
-
-
-    override fun onQuickFilterSelected(option: Option) {
-        if (!isQuickFilterSelected(option)) {
-            val filter = getSelectedFilter()
-            filter[option.key] = option.value
-            applyFilterToSearchParameter(filter)
-            setSelectedFilter(filter)
-            reloadData()
-        } else {
-            val filter = getSelectedFilter()
-            filter.remove(option.key)
-            applyFilterToSearchParameter(filter)
-            setSelectedFilter(filter)
-            reloadData()
-        }
-
-    }
-
-    override fun isQuickFilterSelected(option: Option): Boolean {
-        return getSelectedFilter().containsKey(option.key)
-    }
-
-    override fun getFilterRequestCode(): Int {
-        return REQUEST_ACTIVITY_FILTER_PRODUCT
-    }
-
-
-    override fun getSortRequestCode(): Int {
-        return REQUEST_ACTIVITY_SORT_PRODUCT
-    }
-
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -155,20 +79,22 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
 
+    var quickFilterList = ArrayList<Filter>()
+
+
+
     var mDepartmentId: String = ""
     var mDepartmentName: String = ""
 
-    var start = 0
+    var pageCount = 0
+    var isPagingAllowed: Boolean = true
 
     private val REQUEST_ACTIVITY_SORT_PRODUCT = 102
     private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
     companion object {
-        // private val EXTRA_CATEGORY_HEADER_MODEL = "categoryheadermodel"
         private val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
-
-
         @JvmStatic
         fun newInstance(departmentid: String, departmentName: String): Fragment {
             val fragment = ProductNavFragment()
@@ -177,6 +103,18 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             bundle.putString(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
             fragment.arguments = bundle
             return fragment
+        }
+    }
+
+    private fun getProductIntent(productId: String, warehouseId: String): Intent? {
+        if (context == null) {
+            return null
+        }
+
+        return if (!TextUtils.isEmpty(warehouseId)) {
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL_WITH_WAREHOUSE_ID, productId, warehouseId)
+        } else {
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
         }
     }
 
@@ -239,25 +177,15 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         productNavListAdapter = ProductNavListAdapter(productTypeFactory, list, this)
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
-        /* getStaggeredGridLayoutManager()?.let {
-             staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(it)
-         }*/
-        /* staggeredGridLayoutLoadMoreTriggerListener?.let {
-             product_recyclerview.addOnScrollListener(it)
-         }*/
+
+        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this)
+        quickfilter_recyclerview.adapter = quickFilterAdapter
+        quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
+                RecyclerView.HORIZONTAL, false)
+
     }
 
-    /* private fun getEndlessRecyclerViewListener(recyclerViewLayoutManager: RecyclerView.LayoutManager):
-             EndlessRecyclerViewScrollListener {
-         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
-             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                 fetchProductData(getParamMap(page))
-                 productNavListAdapter?.addLoading()
-             }
-         }
-     }*/
-
-    private fun adc() {
+    private fun attachScrollListener() {
 
         nested_recycler_view.setOnScrollChangeListener { v: NestedScrollView,
                                                          scrollX: Int,
@@ -268,24 +196,17 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             if (v.getChildAt(v.childCount - 1) != null) {
                 if ((scrollY >= (v.getChildAt(v.childCount - 1).measuredHeight - v.measuredHeight)) &&
                         scrollY > oldScrollY) {
-                    start++
-                    Log.d("setOnScrollChangeListener", start.toString())
-                    fetchProductData(getParamMap(start))
-                    productNavListAdapter?.addLoading()
+                    if (isPagingAllowed) {
+                        incrementpage()
+                        fetchProductData(getParamMap(getPage()))
+                        productNavListAdapter?.addLoading()
+                        isPagingAllowed = false
+                    }
 
                 }
             }
 
         }
-
-        /* nested_recycler_view.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener)(v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-             if (v.getChildAt(v.getChildCount() - 1) != null) {
-                 if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
-                         scrollY > oldScrollY) {
-                     //code to fetch more data for endless scrolling
-                 }
-             }
-         });*/
     }
 
 
@@ -302,15 +223,16 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                     list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                     productNavListAdapter?.removeLoading()
                     product_recyclerview.adapter?.notifyDataSetChanged()
-                    // staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
                     hideRefreshLayout()
                     reloadFilter(createFilterParam())
+                    isPagingAllowed = true
                 }
 
                 is Fail -> {
                     productNavListAdapter?.removeLoading()
                     hideRefreshLayout()
                     layout_no_data.visibility = View.VISIBLE
+                    isPagingAllowed = true
                 }
 
             }
@@ -370,11 +292,11 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
     }
 
-    private fun initQuickFilter(quickFilterList: ArrayList<Filter>) {
-        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this)
-        quickfilter_recyclerview.adapter = quickFilterAdapter
-        quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
-                RecyclerView.HORIZONTAL, false)
+    private fun initQuickFilter(list: ArrayList<Filter>) {
+        quickFilterList.clear()
+        quickFilterList.addAll(list)
+        quickfilter_recyclerview.adapter?.notifyDataSetChanged()
+
     }
 
 
@@ -399,11 +321,11 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
-            fetchProductData(getParamMap(start))
+            fetchProductData(getParamMap(getPage()))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
             productNavViewModel.fetchQuickFilters(getQuickFilterParams())
         }
-        adc()
+        attachScrollListener()
     }
 
     private fun getQuickFilterParams(): RequestParams {
@@ -454,12 +376,89 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         }
         showRefreshLayout()
         productNavListAdapter?.clearData()
-        // staggeredGridLayoutLoadMoreTriggerListener?.resetState()
-        start = 0
-        fetchProductData(getParamMap(start))
+        resetPage()
+        fetchProductData(getParamMap(getPage()))
 
-        quickFilterAdapter.clearData()
         productNavViewModel.fetchQuickFilters(getQuickFilterParams())
 
+    }
+
+    override fun OnDefaultItemClicked() {
+        RouteManager.route(activity, ApplinkConst.CATEGORY_BELANJA)
+    }
+
+    override fun OnSubCategoryClicked(id: String, categoryName: String) {
+        activity?.let {
+            val intent = Intent(it, CategoryNavActivity::class.java)
+            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, id)
+            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, categoryName)
+            it.startActivity(intent)
+        }
+    }
+
+
+    override fun onItemClicked(item: ProductsItem, adapterPosition: Int) {
+        val intent = getProductIntent(item.id.toString(), item.categoryID.toString())
+
+        if (intent != null) {
+            intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
+            startActivityForResult(intent, 1002)
+        }
+    }
+
+    override fun onLongClick(item: ProductsItem, adapterPosition: Int) {
+        Log.d("ProductNavFragment", "onLongClick")
+    }
+
+    override fun onWishlistButtonClicked(productItem: ProductsItem) {
+        Log.d("ProductNavFragment", "onWishlistButtonClicked")
+    }
+
+    override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {
+        Log.d("ProductNavFragment", "onProductImpressed")
+    }
+
+
+    override fun onQuickFilterSelected(option: Option) {
+        if (!isQuickFilterSelected(option)) {
+            val filter = getSelectedFilter()
+            filter[option.key] = option.value
+            applyFilterToSearchParameter(filter)
+            setSelectedFilter(filter)
+            reloadData()
+        } else {
+            val filter = getSelectedFilter()
+            filter.remove(option.key)
+            applyFilterToSearchParameter(filter)
+            setSelectedFilter(filter)
+            reloadData()
+        }
+
+    }
+
+    override fun isQuickFilterSelected(option: Option): Boolean {
+        return getSelectedFilter().containsKey(option.key)
+    }
+
+    override fun getFilterRequestCode(): Int {
+        return REQUEST_ACTIVITY_FILTER_PRODUCT
+    }
+
+
+    override fun getSortRequestCode(): Int {
+        return REQUEST_ACTIVITY_SORT_PRODUCT
+    }
+
+    private fun getPage(): Int {
+        return pageCount
+    }
+
+    private fun incrementpage() {
+        pageCount += 1
+    }
+
+    private fun resetPage() {
+        isPagingAllowed = true
+        pageCount = 0
     }
 }

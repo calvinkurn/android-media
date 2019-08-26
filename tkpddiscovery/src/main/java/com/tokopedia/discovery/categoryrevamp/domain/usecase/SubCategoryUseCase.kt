@@ -12,9 +12,9 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 
-class SubCategoryUseCase @Inject constructor(private val context: Context, private val graphqlUseCase: GraphqlUseCase) : UseCase<List<SubCategoryItem?>?>() {
+class SubCategoryUseCase @Inject constructor(private val context: Context, private val graphqlUseCase: GraphqlUseCase) : UseCase<ArrayList<SubCategoryItem?>?>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<List<SubCategoryItem?>?> {
+    override fun createObservable(requestParams: RequestParams?): Observable<ArrayList<SubCategoryItem?>?> {
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
                 R.raw.gql_nav_category_detail), SubCategoryResponse::class.java, requestParams?.parameters, false)
@@ -23,7 +23,14 @@ class SubCategoryUseCase @Inject constructor(private val context: Context, priva
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(requestParams).map {
-            (it.getData(SubCategoryResponse::class.java) as SubCategoryResponse).categoryDetailQuery?.data?.child
+            val list = ((it.getData(SubCategoryResponse::class.java) as SubCategoryResponse).categoryDetailQuery?.data?.child) as ArrayList
+            if (list.isNotEmpty()) {
+                val item = SubCategoryItem()
+                item.name = "Semua"
+                item.is_default = true
+                list.add(0, item)
+            }
+            list
         }
 
     }
