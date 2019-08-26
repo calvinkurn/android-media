@@ -23,11 +23,10 @@ import java.util.*
 import kotlin.collections.HashMap
 
 class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteConfig {
-
     private val graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
+
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCE_AB_TEST_PLATFORM, Context.MODE_PRIVATE)
     var editor = sharedPreferences.edit()
-
     override fun getBoolean(key: String?): Boolean {
         return getBoolean(key, false)
     }
@@ -49,6 +48,10 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     }
 
     override fun getDouble(key: String?): Double {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
