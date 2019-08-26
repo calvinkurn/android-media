@@ -92,6 +92,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
 
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         presenter.requestUpdateUserSetting(notificationType, updatedSettingIds)
+        presenter.requestUpdateMoengageUserSetting(updatedSettingIds)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {

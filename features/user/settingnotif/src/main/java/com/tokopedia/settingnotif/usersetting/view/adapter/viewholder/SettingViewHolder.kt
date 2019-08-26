@@ -13,12 +13,6 @@ abstract class SettingViewHolder<T : BaseSetting>(
 
     protected val settingSwitch: Switch? = getSwitchView(itemView)
 
-    private val PARAM_SETTING_KEY = "name"
-    private val PARAM_SETTING_VALUE = "value"
-
-    private val SETTING_EMAIL_BULLETIN = "bulletin_newsletter"
-    private val SETTING_PUSH_NOTIFICATION_PROMO = "promo"
-
     abstract fun getSwitchView(itemView: View?): Switch?
 
     interface SettingListener {
@@ -26,8 +20,6 @@ abstract class SettingViewHolder<T : BaseSetting>(
         fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>?
         fun getNotificationType(): String
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
-        fun setMoengageEmailPreference(checked: Boolean)
-        fun setMoengagePushNotificationPromoPreference(checked: Boolean)
     }
 
     override fun bind(element: T?) {
@@ -63,11 +55,6 @@ abstract class SettingViewHolder<T : BaseSetting>(
         val notificationType: String = settingListener.getNotificationType()
         val updatedSettingIds: List<Map<String, Any>> = getUpdatedSettingIds(element, checked)
         settingListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
-
-        when (element.key) {
-            SETTING_EMAIL_BULLETIN -> settingListener.setMoengageEmailPreference(checked)
-            SETTING_PUSH_NOTIFICATION_PROMO -> settingListener.setMoengagePushNotificationPromoPreference(checked)
-        }
     }
 
     protected fun getMapSettingToChange(element: BaseSetting, checked: Boolean) : Map<String, Any> {
@@ -81,6 +68,8 @@ abstract class SettingViewHolder<T : BaseSetting>(
 
     companion object {
         val PAYLOAD_SWITCH = "payload_switch"
+        val PARAM_SETTING_KEY = "name"
+        val PARAM_SETTING_VALUE = "value"
     }
 
 }

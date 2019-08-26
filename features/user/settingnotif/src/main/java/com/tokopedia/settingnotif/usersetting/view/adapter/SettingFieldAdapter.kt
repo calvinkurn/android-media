@@ -63,12 +63,4 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
     override fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>) {
         settingFieldAdapterListener.requestUpdateUserSetting(notificationType, updatedSettingIds)
     }
-
-    override fun setMoengageEmailPreference(checked: Boolean) {
-        TrackApp.getInstance().moEngage.setNewsletterEmailPref(checked)
-    }
-
-    override fun setMoengagePushNotificationPromoPreference(checked: Boolean) {
-        TrackApp.getInstance().moEngage.setPushPreference(checked)
-    }
 }
