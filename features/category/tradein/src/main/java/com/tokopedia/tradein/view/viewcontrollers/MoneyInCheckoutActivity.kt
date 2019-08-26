@@ -286,6 +286,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         when (resultCode) {
             TopPayActivity.PAYMENT_SUCCESS -> {
                 showMessage(getString(R.string.alert_payment_successful_money_in))
+                setResult(TopPayActivity.PAYMENT_SUCCESS)
                 finish()
             }
             TopPayActivity.PAYMENT_FAILED -> {
