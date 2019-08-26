@@ -36,6 +36,7 @@ import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsTrackingOrder;
+import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.concurrent.TimeUnit;
 
@@ -75,10 +76,10 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private LinearLayout emptyUpdateNotification;
     private TextView notificationText;
     private RecyclerView notificationHelpStep;
-    private ViewGroup liveTrackingButton;
+    private UnifyButton liveTrackingButton;
     private ViewGroup rootView;
     private LinearLayout descriptionLayout;
-    private ButtonCompat retryButton;
+    private UnifyButton retryButton;
     private TextView retryStatus;
     private CountDownTimer mCountDownTimer;
 

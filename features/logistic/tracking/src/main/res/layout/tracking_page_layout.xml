@@ -302,32 +302,30 @@
 
             </LinearLayout>
 
-            <LinearLayout
+
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/live_tracking_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16"
-                android:background="@color/tkpd_main_green"
-                android:gravity="center">
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="@string/label_live_tracking"
+                android:visibility="gone"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="filled" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/dp_16"
-                    android:gravity="center"
-                    android:text="@string/label_live_tracking"
-                    android:textColor="@color/white" />
-
-            </LinearLayout>
-
-            <com.tokopedia.design.component.ButtonCompat
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/retry_pickup_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginRight="16dp"
                 android:text="@string/find_new_driver"
                 android:visibility="gone"
-                app:buttonCompatSize="medium"
-                app:buttonCompatType="secondary"
+                app:unifyButtonSize="medium"
+                app:unifyButtonVariant="ghost"
                 tools:visibility="visible" />
 
             <TextView
@@ -337,8 +335,8 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
-                tools:text="Tunggu xx:xx untuk mencari driver baru"
                 android:visibility="gone"
+                tools:text="Tunggu xx:xx untuk mencari driver baru"
                 tools:visibility="visible" />
 
         </LinearLayout>
