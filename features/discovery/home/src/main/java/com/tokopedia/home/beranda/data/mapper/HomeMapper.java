@@ -155,7 +155,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                             case DynamicHomeChannel.Channels.LAYOUT_SPRINT:
                                 list.add(mappingDynamicChannel(
                                         channel,
-                                        channel.getEnhanceImpressionSprintSaleHomePage(),
+                                        null,
                                         null,
                                         false,
                                         homeData.isCache()));

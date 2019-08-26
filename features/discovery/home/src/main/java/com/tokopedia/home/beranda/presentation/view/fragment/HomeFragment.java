@@ -68,7 +68,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerW
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeRecommendationFeedViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
@@ -112,6 +112,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -1536,6 +1537,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDynamicIconScrollEnd() {
 
+    }
+
+    @Override
+    public void putEEToTrackingQueue(HashMap<String, Object> data) {
+        if (trackingQueue!=null) {
+            trackingQueue.putEETracking(data);
+        }
     }
 
     private void updateStickyState() {

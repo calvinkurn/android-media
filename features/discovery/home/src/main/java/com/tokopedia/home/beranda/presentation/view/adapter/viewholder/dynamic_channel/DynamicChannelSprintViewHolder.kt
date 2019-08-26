@@ -22,6 +22,9 @@ import com.tokopedia.home.beranda.helper.TextViewHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import java.util.HashMap
 
 /**
  * Created by devarafikry on 12/08/19.
@@ -49,7 +52,6 @@ class DynamicChannelSprintViewHolder(sprintView: View,
     private fun getSprintType(channels: DynamicHomeChannel.Channels): Int {
         when(channels.layout) {
             DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
-            DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> return TYPE_SPRINT_SALE
             DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
             DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC
         }
@@ -68,11 +70,13 @@ class DynamicChannelSprintViewHolder(sprintView: View,
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         when(getSprintType(channel)) {
-            TYPE_SPRINT_SALE -> HomePageTracking.eventClickSeeAllProductSprint(context)
-            TYPE_SPRINT_LEGO -> HomePageTracking.eventClickSeeAllLegoProduct(context, channel.header.name)
+            TYPE_SPRINT_SALE -> HomePageTracking.eventClickSeeAllProductSprint(context, channel.id)
+            TYPE_SPRINT_LEGO -> HomePageTracking.eventClickSeeAllLegoProduct(context, channel.header.name, channel.id)
+            TYPE_ORGANIC -> HomePageTracking.eventClickSeeAllLegoProduct(context, channel.header.name, channel.id)
             else -> HomePageTracking.eventClickSeeAllDynamicChannel(
                     context,
-                    DynamicLinkHelper.getActionLink(channel.header))
+                    DynamicLinkHelper.getActionLink(channel.header),
+                    channel.id)
         }
     }
 
@@ -96,6 +100,12 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             try {
                 val grid = grids[position]
                 ImageHandler.loadImageThumbs(holder.context, holder.channelImage1, grid.imageUrl)
+                holder.channelImage1.addOnImpressionListener(grid, OnProductImpressedListener(
+                        grid,
+                        listener,
+                        channels.getHomeAttribution(position + 1, grid.id),
+                        position))
+
                 TextViewHelper.displayText(holder.channelName, grid.name)
                 TextViewHelper.displayText(holder.channelPrice1, grid.price)
                 TextViewHelper.displayText(holder.channelDiscount1, grid.discount)
@@ -151,5 +161,18 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         val itemContainer1: RelativeLayout = view.findViewById(R.id.channel_item_container_1)
         val context: Context
             get() = itemView.context
+    }
+
+    class OnProductImpressedListener(val grid: DynamicHomeChannel.Grid,
+                                     val listener: HomeCategoryListener,
+                                     val channelAttribution: String,
+                                     val position: Int) : ViewHintListener {
+        override fun onViewHint() {
+            listener.putEEToTrackingQueue(
+                    HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
+                            grid, channelAttribution, position
+                    )
+            )
+        }
     }
 }

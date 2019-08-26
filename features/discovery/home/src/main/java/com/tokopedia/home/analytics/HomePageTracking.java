@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.data.model.Promotion;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
@@ -1009,5 +1010,48 @@ public class HomePageTracking {
                 EVENT_VIEW_STICKY_LOGIN_AT_HOME,
                 LABEL_EMPTY
         );
+    }
+
+    private static String getHomeAttribution(int position, String creativeName, String homeAttribution) {
+        if (homeAttribution != null)
+            return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
+        return "";
+    }
+
+    public static HashMap<String, Object> getEnhanceImpressionSprintSaleHomePage(DynamicHomeChannel.Grid grid, String channelAttribution, int position) {
+        List<Object> list = convertProductEnhanceSprintSaleDataLayer(grid, position);
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                "event", "productView",
+                "eventCategory", "homepage",
+                "eventAction", "sprint sale impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                list.toArray(new Object[list.size()])
+
+                        )),
+                "attribution", getHomeAttribution(position + 1, "", channelAttribution)
+        );
+    }
+
+    private static List<Object> convertProductEnhanceSprintSaleDataLayer(DynamicHomeChannel.Grid grid, int position) {
+        List<Object> list = new ArrayList<>();
+
+        list.add(
+                DataLayer.mapOf(
+                        "name", grid.getName(),
+                        "id", grid.getId(),
+                        "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                grid.getPrice()
+                        )),
+                        "brand", "none / other",
+                        "category", "none / other",
+                        "variant", "none / other",
+                        "list", "/ - p1 - sprint sale",
+                        "position", String.valueOf(position + 1)
+                )
+        );
+        return list;
     }
 }

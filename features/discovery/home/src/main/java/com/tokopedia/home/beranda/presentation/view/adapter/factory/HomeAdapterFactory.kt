@@ -11,10 +11,12 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.listener.HomeFeedsListener
 import com.tokopedia.home.beranda.listener.HomeInspirationListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicLegoBannerViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.inspiration.InspirationViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.BusinessUnitViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessUnitViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.HeaderViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel
@@ -31,7 +33,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightV
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SearchPlaceholderViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel
 import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel
 
 import java.util.Arrays
@@ -103,11 +104,9 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
     }
 
     override fun type(headerViewModel: HeaderViewModel): Int {
-        return HeaderViewHolder.LAYOUT
-    }
-
-    override fun type(inspirationViewModel: InspirationViewModel): Int {
-        return InspirationViewHolder.LAYOUT
+        return if (headerViewModel.isUserLogin)
+            OvoViewHolder.LAYOUT
+        else OvoViewHolder.NON_LOGIN_LAYOUT
     }
 
     override fun type(homeRecommendationFeedViewModel: HomeRecommendationFeedViewModel): Int {
@@ -154,6 +153,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return when (layout) {
             /**
              * refer to hero product item layout {@link com.tokopedia.home.R.layout#layout_hero_product_item}
+             * no further development for this viewholder
+             * backend already not supporting this layout
              */
             DynamicHomeChannel.Channels.LAYOUT_HERO -> DynamicChannelHeroViewHolder.LAYOUT
 
@@ -165,6 +166,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
             /**
              * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
+             * no further development for this viewholder
+             * backend possibly return this layout for android version  >= 2.19
              */
             DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> SprintSaleCarouselViewHolder.LAYOUT
             else -> EmptyBlankViewHolder.LAYOUT
@@ -183,8 +186,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             SellViewHolder.LAYOUT -> viewHolder = SellViewHolder(view, listener)
-            HeaderViewHolder.LAYOUT -> viewHolder = HeaderViewHolder(view, listener)
-            InspirationViewHolder.LAYOUT -> viewHolder = InspirationViewHolder(view, inspirationListener)
+            OvoViewHolder.LAYOUT -> viewHolder = OvoViewHolder(view, listener)
             DynamicChannelHeroViewHolder.LAYOUT -> viewHolder = DynamicChannelHeroViewHolder(view, listener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             TopAdsViewHolder.LAYOUT -> viewHolder = TopAdsViewHolder(view)

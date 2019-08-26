@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.kotlin.model.ImpressHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -835,7 +836,7 @@ public class DynamicHomeChannel {
         }
     }
 
-    public class Grid {
+    public class Grid extends ImpressHolder {
         @Expose
         @SerializedName("id")
         private String id;
@@ -1103,7 +1104,7 @@ public class DynamicHomeChannel {
         }
     }
 
-    public class Banner {
+    public class Banner extends ImpressHolder{
         @Expose
         @SerializedName("id")
         private String id;
