@@ -18,7 +18,7 @@ public interface ITrackingPageFragment {
 
     void hideLoading();
 
-    void showError(String message);
+    void showError(Throwable error);
 
     void setRetryButton(boolean active, long deadline);
 

@@ -69,7 +69,7 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.showError(e);
                     }
 
                     @Override
@@ -96,7 +96,7 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
                     @Override
                     public void onError(Throwable e) {
-
+                        view.showError(e);
                     }
 
                     @Override
@@ -123,7 +123,7 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
             @Override
             public void onError(Throwable e) {
                 view.closeMainLoadingPage();
-                view.showError(e.getMessage());
+                view.showError(e);
             }
 
             @Override

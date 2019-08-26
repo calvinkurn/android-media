@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.ButtonCompat;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
 import com.tokopedia.tracking.adapter.TrackingHistoryAdapter;
@@ -190,7 +191,9 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void showError(String message) {
+    public void showError(Throwable error) {
+        String message = ErrorHandler.getErrorMessage(getContext(), error);
+        // currently, message is not being used
         NetworkErrorHelper.showEmptyState(getActivity(), rootView,
                 () -> presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY)));
     }
