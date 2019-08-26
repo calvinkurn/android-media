@@ -1,5 +1,5 @@
-query voucherGameProductList($menuID: Int!, $platformID: Int!){
-  rechargeCatalogOperatorSelect(menuID: $menuID, platformID: $platformID) {
+query voucherGameProductList($menuID: Int!){
+  rechargeCatalogOperatorSelect(menuID: $menuID, platformID: 5) {
     componentID
     name
     paramName
