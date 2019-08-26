@@ -16,7 +16,6 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-import rx.Observer;
 import rx.Subscriber;
 
 /**

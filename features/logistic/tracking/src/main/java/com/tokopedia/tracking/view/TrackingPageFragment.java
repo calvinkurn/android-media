@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tracking.R;
 import com.tokopedia.tracking.adapter.EmptyTrackingNotesAdapter;
@@ -248,8 +247,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     private void setHistoryView(TrackingViewModel model) {
-        if (model.isInvalid() || model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING ||
-                model.isInvalid() || model.getChange() == 0 || model.getHistoryList().isEmpty()) {
+        if (model.isInvalid() || model.getStatusNumber() == TrackingViewModel.ORDER_STATUS_WAITING
+                || model.getChange() == 0 || model.getHistoryList().isEmpty()) {
             trackingHistory.setVisibility(View.GONE);
         } else {
             trackingHistory.setVisibility(View.VISIBLE);
@@ -292,7 +291,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
     @Override
     protected void initInjector() {
-
         TrackingPageComponent component = DaggerTrackingPageComponent
                 .builder()
                 .baseAppComponent(
