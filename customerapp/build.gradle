@@ -260,9 +260,7 @@ android {
         }
     }
 
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
-//                       rootProject.ext.dynamicFeatures.hotelTravel
-    ]
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
 
 }
 
