@@ -36,6 +36,7 @@
                 android:layout_marginRight="@dimen/dp_4"
                 android:visibility="gone"
                 app:textAllCaps="true"
+                app:labelType="general_dark_red"
                 tools:labelTitle="test" />
 
             <com.tokopedia.unifyprinciples.Typography
