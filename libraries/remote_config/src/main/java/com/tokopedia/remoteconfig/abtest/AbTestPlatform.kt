@@ -124,8 +124,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     if (featureVariants != null) {
                         for (a in featureVariants) {
                             setString(a.feature, a.variant)
-                            // ===== For testing purpose ===== //
-                            Toast.makeText(context, "${a.feature} :: ${a.variant}", Toast.LENGTH_SHORT).show()
                         }
                     }
 
