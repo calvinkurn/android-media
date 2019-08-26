@@ -5,7 +5,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.tkpdreactnative.react.common.data.PreferenceRepository;
 import com.tokopedia.tkpdreactnative.react.common.data.PreferenceRepositoryImpl;
 import com.tokopedia.tkpdreactnative.react.common.data.source.DataSourcePreference;
@@ -133,20 +134,35 @@ public class FingerprintModule {
 
     @FingerprintScope
     @Provides
-    public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor){
+    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
+    @FingerprintScope
+    @Provides
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter) context;
+    }
+
+    @FingerprintScope
+    @Provides
+    TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                   NetworkRouter networkRouter,
+                                                   UserSessionInterface userSession) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSession);
+    }
+
+    @FingerprintScope
+    @Provides
+    public OkHttpClient provideOkHttpClient(HttpLoggingInterceptor httpLoggingInterceptor,
+                                            TkpdAuthInterceptor tkpdAuthInterceptor){
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(new TkpdAuthInterceptor())
+                .addInterceptor(tkpdAuthInterceptor)
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS);
         if(GlobalConfig.isAllowDebuggingTools()){
             builder.addInterceptor(httpLoggingInterceptor);
         }
         return builder.build();
-    }
-
-    @FingerprintScope
-    @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
-        return new UserSession(context);
     }
 }

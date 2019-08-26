@@ -25,7 +25,7 @@ class OtherRelatedProfileViewHolder(
     override fun bind(element: OtherRelatedProfileViewModel) {
         with(itemView) {
             val content = element.feedPostRelatedDatum.content
-            val firstMedia = content.body.media[0].thumbnail
+            val firstMedia = content.body.media.firstOrNull()?.thumbnail ?: ""
             if (firstMedia.isNotEmpty()) {
                 image.loadImage(firstMedia)
             }
@@ -41,7 +41,7 @@ class OtherRelatedProfileViewHolder(
             description.text = MethodChecker.fromHtml(content.body.caption.text)
 
             setOnClickListener {
-                val applink = content.body.media[0].applink
+                val applink = content.body.media.firstOrNull()?.applink ?: ""
                 if (applink.isNotEmpty()) {
                     onOtherProfilePostItemClick.invoke(applink, element.position, element.feedPostRelatedDatum)
                 }

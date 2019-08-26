@@ -138,7 +138,7 @@ open class DynamicPostViewHolder(v: View,
     }
 
     private fun shouldShowTitle(template: TemplateTitle): Boolean {
-        return template.ctaLink || template.textBadge || template.ctaLink
+        return template.text || template.textBadge || template.ctaLink
     }
 
     private fun bindHeader(postId: Int, header: Header, template: TemplateHeader) {

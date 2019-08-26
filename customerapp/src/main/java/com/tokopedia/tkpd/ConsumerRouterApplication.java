@@ -66,6 +66,7 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.logisticcart.cod.view.CodActivity;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
+import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -91,7 +92,6 @@ import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.product.detail.ProductDetailRouter;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.ovop2p.OvoP2pRouter;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
@@ -149,7 +149,7 @@ import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationActivity;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -1682,7 +1682,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
-        return DistrictRecommendationActivity.newInstance(activity, token);
+        return DiscomActivity.newInstance(activity, token);
     }
 
     @Override
@@ -2447,7 +2447,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     /**
      * Global Nav Router
      */
-
     @Override
     public Intent gotoWishlistPage(Context context) {
         Intent intent = new Intent(context, SimpleHomeActivity.class);

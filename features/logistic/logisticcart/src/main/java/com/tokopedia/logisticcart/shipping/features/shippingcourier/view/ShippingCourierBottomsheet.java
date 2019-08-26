@@ -71,6 +71,11 @@ public class ShippingCourierBottomsheet extends BottomSheets
         return new ShippingCourierBottomsheet();
     }
 
+    @Override
+    protected BottomSheetsState state() {
+        return BottomSheetsState.FLEXIBLE;
+    }
+
     public void setShippingCourierBottomsheetListener(ShippingCourierBottomsheetListener shippingCourierBottomsheetListener) {
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener;
     }

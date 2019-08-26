@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.webkit.URLUtil;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -95,7 +96,16 @@ public abstract class BaseNotificationFactory {
 
     protected PendingIntent createPendingIntent(String appLinks, int notificationType, int notificationId) {
         PendingIntent resultPendingIntent;
-        Intent intent = RouteManager.getIntent(context, appLinks);
+        Intent intent = new Intent();
+        // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
+        // because we need tracking UTM for those notification applink
+        if (URLUtil.isNetworkUrl(appLinks)) {
+            intent.setClassName(context.getPackageName(),
+                    com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
+        } else {
+            intent.setClassName(context.getPackageName(),
+                    com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
+        }
         intent.setData(Uri.parse(appLinks));
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constant.EXTRA_APPLINK_FROM_PUSH, true);

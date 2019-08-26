@@ -39,7 +39,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.design)
-    implementation rootProject.ext.playServicesDependencies.ads
+    implementation (rootProject.ext.playServicesDependencies.ads){
+        exclude group: 'com.android.support'
+    }
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -49,6 +51,17 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.common_promo)
+
+    /*Constraint dep for view creation*/
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    /*Json Parsing*/
+    implementation rootProject.ext.miscDependencies.gson
+
+    /*room lib*/
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../../publish_local.gradle'

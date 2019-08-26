@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.item_search_destination_result.view.*
 
 class SearchDestinationViewHolder(val view: View, val searchDestinationListener: SearchDestinationListener): AbstractViewHolder<SearchDestination>(view) {
 
-    val boldColor: ForegroundColorSpan = ForegroundColorSpan(ContextCompat.getColor(itemView.context, R.color.font_black_primary_70));
+    val boldColor: ForegroundColorSpan = ForegroundColorSpan(ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.font_black_primary_70));
 
     override fun bind(searchDestination: SearchDestination) {
         with(itemView) {

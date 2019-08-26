@@ -7,8 +7,6 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.widget.SwipeRefreshLayout
-import android.support.v7.widget.RecyclerView
 import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -36,6 +34,14 @@ import javax.inject.Inject
 
 class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNoteFactory>(), ShopSettingNoteListPresenter.View,
         ShopNoteViewHolder.OnShopNoteViewHolderListener {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_list, container, false)
+    }
+
+    override fun getRecyclerViewResourceId() = com.tokopedia.abstraction.R.id.recycler_view
+
+    override fun getSwipeRefreshLayoutResourceId() = com.tokopedia.abstraction.R.id.swipe_refresh_layout
+
     @Inject
     lateinit var shopSettingNoteListPresenter: ShopSettingNoteListPresenter
     private var shopNoteModels: ArrayList<ShopNoteViewModel>? = null
@@ -43,8 +49,6 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
     private var progressDialog: ProgressDialog? = null
     private var shopNoteIdToDelete: String? = null
     private var needReload: Boolean = false
-    private var recyclerView: RecyclerView? = null
-    private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     private var onShopSettingsNoteFragmentListener: OnShopSettingsNoteFragmentListener? = null
 
@@ -106,16 +110,6 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
         return super.onOptionsItemSelected(item)
     }
 
-    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
-        swipeRefreshLayout = super.getSwipeRefreshLayout(view)
-        return swipeRefreshLayout
-    }
-
-    override fun getRecyclerView(view: View): RecyclerView? {
-        recyclerView = super.getRecyclerView(view)
-        return recyclerView
-    }
-
     private fun onAddNoteButtonClicked() {
         val menus = Menus(context!!)
         menus.setItemMenuList(resources.getStringArray(R.array.shop_note_type))
@@ -132,7 +126,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_state
+        emptyModel.iconRes = com.tokopedia.design.R.drawable.ic_empty_state
         emptyModel.title = getString(R.string.shop_has_no_notes)
         emptyModel.content = getString(R.string.shop_notes_info)
         emptyModel.buttonTitleRes = R.string.add_note
@@ -191,7 +185,7 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
     override fun onIconMoreClicked(shopNoteViewModel: ShopNoteViewModel) {
         val menus = Menus(context!!)
         menus.setItemMenuList(resources.getStringArray(R.array.shop_note_menu_more))
-        menus.setActionText(getString(R.string.close))
+        menus.setActionText(getString(com.tokopedia.abstraction.R.string.close))
         menus.setOnActionClickListener { menus.dismiss() }
         menus.setOnItemMenuClickListener { _, pos ->
             if (pos == 0) {
@@ -202,10 +196,10 @@ class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNo
                         setTitle(getString(R.string.title_dialog_delete_shop_note))
                         setDesc(getString(R.string.desc_dialog_delete_shop_note, shopNoteViewModel.title))
                         setBtnOk(getString(R.string.action_delete))
-                        setBtnCancel(getString(R.string.cancel))
+                        setBtnCancel(getString(com.tokopedia.imagepicker.R.string.cancel))
                         setOnOkClickListener {
                             shopNoteIdToDelete = shopNoteViewModel.id
-                            showSubmitLoading(getString(R.string.title_loading))
+                            showSubmitLoading(getString(com.tokopedia.abstraction.R.string.title_loading))
                             shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete!!)
                             dismiss()
                         }
