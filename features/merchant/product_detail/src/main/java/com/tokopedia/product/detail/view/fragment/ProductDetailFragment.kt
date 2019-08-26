@@ -79,6 +79,7 @@ import com.tokopedia.product.detail.common.data.model.product.Wholesale
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE_7_DAYS
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_ORI
@@ -102,6 +103,7 @@ import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
 import com.tokopedia.product.detail.view.widget.*
+import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -366,7 +368,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfoViewModel.p2Login.observe(this, Observer {
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
-            it?.run{ renderProductInfoP2Login(this) }
+            it?.run { renderProductInfoP2Login(this) }
         })
 
         productInfoViewModel.productInfoP3resp.observe(this, Observer {
@@ -441,10 +443,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initView()
         tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
         refreshLayout = view.findViewById(R.id.swipeRefresh)
-         et_search.setOnClickListener { v ->
+        et_search.setOnClickListener { v ->
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
         }
-        et_search.hint = String.format(getString(R.string.pdp_search_hint),"")
+        et_search.hint = String.format(getString(R.string.pdp_search_hint), "")
 
         tradeInBroadcastReceiver = TradeInBroadcastReceiver()
         tradeInBroadcastReceiver.setBroadcastListener {
@@ -651,7 +653,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         context?.let {
             productInfo?.run {
                 val isOcsCheckoutType = (productInfoViewModel.p2Login.value)?.isOcsCheckoutType
-                    ?: false
+                        ?: false
                 val intent = NormalCheckoutActivity.getIntent(it,
                         basic.shopID.toString(),
                         parentProductId,
@@ -665,7 +667,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.goldOS?.shopTypeString,
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType)
-                if(::tradeInParams.isInitialized) {
+                if (::tradeInParams.isInitialized) {
                     intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,
@@ -702,7 +704,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun addLoadMoreImpression(){
+    private fun addLoadMoreImpression() {
         val impressionHolder = ImpressHolder()
         title_product_desc_label.addOnImpressionListener(impressionHolder, object : ViewHintListener {
             override fun onViewHint() {
@@ -876,9 +878,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun initView() {
         val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
-        if(appShowSearchPDP) {
+        if (appShowSearchPDP) {
             initShowSearchPDP()
-        }else {
+        } else {
             initCollapsingToolBar()
         }
         varToolbar.show()
@@ -915,11 +917,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         search_pdp_toolbar.show()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
-        initToolBarMethod  =  ::initToolbarLight
+        initToolBarMethod = ::initToolbarLight
         fab_detail.setAnchor(R.id.view_picture_search_bar)
         nested_scroll.viewTreeObserver.addOnScrollChangedListener {
             activity?.run {
-                if(isAdded) {
+                if (isAdded) {
                     if (isViewVisible(varPictureImage)) {
                         showFabDetailAfterLoadData()
                         label_cod?.visibility = if (shouldShowCod && userCod && shopCod) View.VISIBLE else View.GONE
@@ -937,7 +939,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         collapsing_toolbar.show()
         varToolbar = toolbar
         varPictureImage = view_picture
-        initToolBarMethod  =  ::initToolbarTransparent
+        initToolBarMethod = ::initToolbarTransparent
         fab_detail.setAnchor(R.id.view_picture)
 
     }
@@ -1087,7 +1089,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             selectedWarehouse?.let {
                                 productInfoViewModel.multiOrigin = it.warehouseInfo
                                 productInfoViewModel.p2ShopDataResp.value = productInfoViewModel.p2ShopDataResp.value?.copy(
-                                    nearestWarehouse = it
+                                        nearestWarehouse = it
                                 )
                             }
 
@@ -1099,10 +1101,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     }
                     userInputNotes = data.getStringExtra(ApplinkConst.Transaction.EXTRA_NOTES)
                     userInputQuantity = data.getIntExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, 0)
-
                     if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
                         val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
-                        showSnackbarSuccessAtc(successMessage)
+                        showAddToCartDoneBottomSheet(successMessage)
                         shouldShowCartAnimation = true
                         updateCartNotification()
                     }
@@ -1156,6 +1157,26 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun showAddToCartDoneBottomSheet(successMessage: String) {
+        productInfo?.let {
+            val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
+            val productName = it.basic.name
+            val productImageUrl = it.firstThumbnailPicture
+            val addedProductDataModel = AddToCartDoneAddedProductDataModel(
+                    it.basic.id.toString(),
+                    productName,
+                    productImageUrl,
+                    it.variant.isVariant
+            )
+            val bundleData = Bundle()
+            bundleData.putParcelable(KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
+            addToCartDoneBottomSheet.arguments = bundleData
+            addToCartDoneBottomSheet.show(
+                    fragmentManager, "TAG"
+            )
+        }
+    }
+
     override fun onDestroy() {
         productInfoViewModel.productInfoP1Resp.removeObservers(this)
         productInfoViewModel.p2ShopDataResp.removeObservers(this)
@@ -1179,23 +1200,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     }
                 }
             })
-        }
-    }
-
-    private fun showSnackbarSuccessAtc(message: String?) {
-        activity?.run {
-            val messageString: String = if (message.isNullOrEmpty()) {
-                getString(R.string.default_request_error_unknown_short)
-            } else {
-                message!!
-            }
-            ToasterNormal.make(view, messageString.replace("\n", " "), BaseToaster.LENGTH_LONG)
-                    .setAction(getString(R.string.label_atc_open_cart)) { v ->
-                        productDetailTracking.eventAtcClickLihat(productId)
-                        val intent = RouteManager.getIntent(this, ApplinkConst.CART)
-                        startActivity(intent)
-                    }
-                    .show()
         }
     }
 
@@ -1259,7 +1263,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun goToCourier(
-            productId : String,
+            productId: String,
             shipment: List<ShopShipment>,
             bbInfos: List<BBInfo>
     ) {
@@ -1279,7 +1283,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun renderProductInfo2Shop(p2ShopData: ProductInfoP2ShopData){
+    private fun renderProductInfo2Shop(p2ShopData: ProductInfoP2ShopData) {
         p2ShopData.shopInfo?.let { shopInfo ->
             this.shopInfo = shopInfo
             productDescrView.shopInfo = shopInfo
@@ -1303,7 +1307,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         gotoRateEstimation(true)
                     } else {
                         goToCourier(
-                                productInfo?.basic?.id?.toString()?: "",
+                                productInfo?.basic?.id?.toString() ?: "",
                                 shopInfo.shipments,
                                 shopInfo.bbInfo
                         )
@@ -1452,7 +1456,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val data = productInfoP1.productInfo
         productId = data.basic.id.toString()
         productInfo = data
-        et_search.hint = String.format(getString(R.string.pdp_search_hint),productInfo?.category?.name)
+        et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
         headerView.renderData(data)
         varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
@@ -1541,8 +1545,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                             "click trade in widget",
                             "before diagnostic")
 
-                }
             }
+        }
 
         // if when first time and the product is actually a variant product, then select the default variant
         if (userInputVariant == null && data.variant.isVariant && data.variant.parentID != productId) {
@@ -1806,8 +1810,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun generateVariantString(): String {
         return try {
-            productInfoViewModel.p2General.value?.variantResp?.
-                    variant?.map { it.name }?.joinToString(separator = ", ") ?: ""
+            productInfoViewModel.p2General.value?.variantResp?.variant?.map { it.name }?.joinToString(separator = ", ")
+                    ?: ""
         } catch (e: Throwable) {
             ""
         }
