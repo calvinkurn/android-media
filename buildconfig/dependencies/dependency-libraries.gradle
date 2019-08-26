@@ -67,6 +67,7 @@ ext {
             pushNotif         : ":libraries:push_notification",
             reactNative       : ":libraries:react_native",
             remoteConfig      : ":libraries:remote_config",
+            shareData         : ":libraries:sharedata",
             travelCalendar    : ":libraries:travel_calendar",
             trackingOptimizer : ":libraries:tracking_optimizer",
             videoRecorder     : ":libraries:video_recorder",

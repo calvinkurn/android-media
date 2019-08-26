@@ -49,6 +49,7 @@ import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.sharedata.DefaultShare
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
