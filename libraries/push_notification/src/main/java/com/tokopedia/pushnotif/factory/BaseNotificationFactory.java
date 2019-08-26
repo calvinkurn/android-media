@@ -58,17 +58,27 @@ public abstract class BaseNotificationFactory {
     }
 
     protected int getDrawableIcon() {
-        if (GlobalConfig.isSellerApp())
+        try {
+            if (GlobalConfig.isSellerApp()) {
+                return R.drawable.ic_status_bar_notif_sellerapp;
+            } else {
+                return R.drawable.ic_status_bar_notif_customerapp;
+            }
+        } catch (Exception e) {
             return R.drawable.ic_status_bar_notif_sellerapp;
-        else
-            return R.drawable.ic_status_bar_notif_customerapp;
+        }
     }
 
     protected int getDrawableLargeIcon() {
-        if (GlobalConfig.isSellerApp())
-            return R.drawable.ic_big_notif_sellerapp;
-        else
+        try {
+            if (GlobalConfig.isSellerApp()) {
+                return R.drawable.ic_big_notif_sellerapp;
+            } else {
+                return R.mipmap.ic_launcher;
+            }
+        } catch (Exception e) {
             return R.mipmap.ic_launcher;
+        }
     }
 
     protected Bitmap getBitmapLargeIcon() {
@@ -81,7 +91,7 @@ public abstract class BaseNotificationFactory {
                     .asBitmap()
                     .into(getImageWidth(), getImageHeight())
                     .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e ) {
+        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
         }
     }
