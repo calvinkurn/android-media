@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -11,12 +12,16 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
+import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_TELCO
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
+import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.di.VoucherGameDetailComponent
@@ -27,7 +32,6 @@ import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewMode
 import com.tokopedia.vouchergame.detail.widget.VoucherGameBottomSheets
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
-import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import javax.inject.Inject
 
 /**
@@ -45,9 +49,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
 
     lateinit var selectedProduct: VoucherGameProduct
 
-    var menuId: Int = 0
-    var platformId: Int = 0
-    var operator: String = ""
+    lateinit var voucherGameExtraParam: VoucherGameExtraParam
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,9 +60,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         }
 
         arguments?.let {
-            menuId = it.getInt(EXTRA_MENU_ID, 0)
-            platformId = it.getInt(EXTRA_PLATFORM_ID, 0)
-            operator = it.getString(EXTRA_OPERATOR_ID, "")
+            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_TELCO)
         }
     }
 
@@ -72,6 +72,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                     is Success -> {
                         renderEnquiryFields(it.data)
                         renderProducts(it.data)
+
+                        checkAutoSelectProduct()
                     }
                     is Fail -> {
                         showGetListError(it.throwable)
@@ -79,21 +81,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                 }
             }
         })
-//        checkoutPassData = DigitalCheckoutPassData.Builder()
-//                .action(DigitalCheckoutPassData.DEFAULT_ACTION)
-//                .categoryId(it.product.attributes.categoryId.toString())
-//                .clientNumber(telcoClientNumberWidget.getInputNumber())
-//                .instantCheckout("0")
-//                .isPromo(if (it.product.attributes.productPromo != null) "1" else "0")
-//                .operatorId(it.product.attributes.operatorId.toString())
-//                .productId(it.product.id)
-//                .utmCampaign(it.product.attributes.categoryId.toString())
-//                .utmContent(GlobalConfig.VERSION_NAME)
-//                .idemPotencyKey(userSession.userId.generateRechargeCheckoutToken())
-//                .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
-//                .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
-//                .voucherCodeCopied("")
-//                .build()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -107,9 +94,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(EXTRA_MENU_ID, menuId)
-        outState.putInt(EXTRA_PLATFORM_ID, platformId)
-        outState.putString(EXTRA_OPERATOR_ID, operator)
+        outState.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
     }
 
     private fun initView() {
@@ -170,6 +155,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     }
 
     private fun renderProducts(data: VoucherGameDetailData) {
+        product_name.text = data.product.text
+
         val dataCollection = data.product.dataCollections
         if (dataCollection.isEmpty()) showEmpty()
         else {
@@ -216,9 +203,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     }
 
     override fun loadData(page: Int) {
-        voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
-                R.raw.query_voucher_game_product_detail),
-                voucherGameViewModel.createParams(menuId, platformId, operator))
+        voucherGameExtraParam.menuId.toIntOrNull()?.let {
+            voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
+                    R.raw.query_voucher_game_product_detail),
+                    voucherGameViewModel.createParams(it, voucherGameExtraParam.operatorId))
+        }
     }
 
     override fun onItemClicked(item: Visitable<*>) {
@@ -226,6 +215,24 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     }
 
     override fun onItemClicked(product: VoucherGameProduct, position: Int) {
+        selectProduct(product, position)
+    }
+
+    private fun checkAutoSelectProduct() {
+        if (voucherGameExtraParam.productId.isNotEmpty()) {
+            // Find product with the corresponding product id then select it
+            for (i in adapter.data.indices) {
+                if (adapter.getItemViewType(i) == VoucherGameProductViewHolder.LAYOUT) {
+                    val product = adapter.data[i] as VoucherGameProduct
+                    if (product.id == voucherGameExtraParam.productId) {
+                        selectProduct(product, i)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun selectProduct(product: VoucherGameProduct, position: Int) {
         // Show selected item in list
         if (::selectedProduct.isInitialized) {
             // If product is already selected, do nothing
@@ -241,12 +248,39 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         // Update selected product
         selectedProduct = product
 
+        showCheckoutView()
+    }
+
+    private fun showCheckoutView() {
+        // TODO: Check enquiry result before processing to cart
+
         checkout_view.setVisibilityLayout(true)
-        checkout_view.setTotalPrice(product.attributes.promo?.newPrice ?: product.attributes.price)
+        checkout_view.setTotalPrice(selectedProduct.attributes.promo?.newPrice ?: selectedProduct.attributes.price)
     }
 
     override fun onClickNextBuyButton() {
-        // TODO: Check enquiry result before processing to cart
+        processCheckout()
+    }
+
+    private fun processCheckout() {
+        // Setup checkout pass data
+        if (::voucherGameExtraParam.isInitialized && ::selectedProduct.isInitialized) {
+            checkoutPassData = DigitalCheckoutPassData.Builder()
+                    .action(DigitalCheckoutPassData.DEFAULT_ACTION)
+                    .categoryId(voucherGameExtraParam.categoryId)
+//                .clientNumber(telcoClientNumberWidget.getInputNumber())
+                    .instantCheckout("0")
+                    .isPromo(if (selectedProduct.attributes.promo != null) "1" else "0")
+                    .operatorId(voucherGameExtraParam.operatorId)
+                    .productId(selectedProduct.id)
+                    .utmCampaign(voucherGameExtraParam.categoryId)
+                    .utmContent(GlobalConfig.VERSION_NAME)
+                    .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
+                    .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
+                    .voucherCodeCopied("")
+                    .build()
+        }
+
         processToCart()
     }
 
@@ -273,22 +307,16 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
 
     companion object {
 
-        const val EXTRA_MENU_ID = "EXTRA_MENU_ID"
-        const val EXTRA_PLATFORM_ID = "EXTRA_PLATFORM_ID"
-        const val EXTRA_OPERATOR_ID = "EXTRA_OPERATOR_ID"
-
         const val ITEM_DECORATOR_SIZE = 8
 
         const val TAG_VOUCHER_GAME_INFO = "voucherGameInfo"
 
-        fun createInstance(menuId: Int, platformId: Int, operator: String): VoucherGameDetailFragment {
-            return VoucherGameDetailFragment().also {
-                it.arguments = Bundle().apply {
-                    putInt(EXTRA_MENU_ID, menuId)
-                    putInt(EXTRA_PLATFORM_ID, platformId)
-                    putString(EXTRA_OPERATOR_ID, operator)
-                }
-            }
+        fun newInstance(voucherGameExtraParam: VoucherGameExtraParam): Fragment {
+            val fragment = VoucherGameDetailFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+            fragment.arguments = bundle
+            return fragment
         }
     }
 }
