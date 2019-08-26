@@ -36,8 +36,8 @@ class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCas
         }
     }
 
-    fun createParams(menuID: Int, platformID: Int): Map<String, Any> {
-        return voucherGameUseCase.createParams(menuID, platformID)
+    fun createParams(menuID: Int): Map<String, Any> {
+        return voucherGameUseCase.createParams(menuID)
     }
 
 }

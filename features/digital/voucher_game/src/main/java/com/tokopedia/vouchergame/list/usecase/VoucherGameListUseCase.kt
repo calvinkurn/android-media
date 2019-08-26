@@ -36,15 +36,13 @@ class VoucherGameListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCa
         }
     }
 
-    fun createParams(menuID: Int, platformID: Int): Map<String,Any> {
+    fun createParams(menuID: Int): Map<String,Any> {
         val params: MutableMap<String, Any> = mutableMapOf()
         params.put(PARAM_MENU_ID, menuID)
-        params.put(PARAM_PLATFORM_ID, platformID)
         return params
     }
 
     companion object {
         const val PARAM_MENU_ID = "menuID"
-        const val PARAM_PLATFORM_ID = "platformID"
     }
 }
