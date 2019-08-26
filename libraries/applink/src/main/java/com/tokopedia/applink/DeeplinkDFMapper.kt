@@ -10,6 +10,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTI
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 
 /**
  * Dynamic Feature Deeplink Mapper
@@ -66,7 +67,7 @@ object DeeplinkDFMapper {
                         deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
                         context.getString(R.string.shop_settings_title))
                 }
-                deeplink.startsWith(ApplinkConst.PROFILE_COMPLETION) -> {
+                deeplink.startsWith(SETTING_PROFILE) -> {
                     getDFDeeplinkIfNotInstalled(context,
                         deeplink, MODULE_USER_PROFILE_COMPLETION,
                         context.getString(R.string.applink_profile_completion_title))
