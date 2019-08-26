@@ -8,6 +8,7 @@
 /feature/discovery/category_common/     @tokopedia/minion-stuart
 /feature/discovery/topadssdk/           @tokopedia/minion-dave
 /feature/discovery/home/                @tokopedia/minion-dave
+/feature/discovery/home_recom/          @tokopedia/minion-dave
 /feature/discovery/recentview/          @tokopedia/minion-dave
 /feature/discovery/wishlist_common/     @tokopedia/minion-dave
 /feature/discovery/productcard/         @tokopedia/minion-dave
@@ -85,6 +86,7 @@
 /features/user/vote/                            @tokopedia/minion-kevin
 /features/user/otp/                             @tokopedia/minion-kevin
 /features/user/settingbank/                     @tokopedia/minion-kevin
+/features/user/settingnotif/                    @tokopedia/minion-kevin
 /features/user/changepassword/                  @tokopedia/minion-kevin
 /features/user/logout/                          @tokopedia/minion-kevin
 /features/user/loginregister/                   @tokopedia/minion-kevin

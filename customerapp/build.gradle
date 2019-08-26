@@ -83,18 +83,6 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
-def archiveAPK(variant, output) {
-
-    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-    def originZipAlignedApkFile = output.outputFile;
-    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
-    copy {
-        from "$originZipAlignedApkFile"
-        into getAPKArchiveFolder(variant)
-        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
-    }
-}
-
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -294,6 +282,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.hotel)
+    implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.imagePreviewSlider)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
@@ -336,6 +325,7 @@ dependencies {
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
