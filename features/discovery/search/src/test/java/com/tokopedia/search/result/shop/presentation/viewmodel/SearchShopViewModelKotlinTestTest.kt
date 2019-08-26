@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.State
@@ -119,6 +120,8 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
             shopItemList = moreShopItemViewModelList
     )
 
+    private val dynamicFilterModel = DynamicFilterModel()
+
     private val searchShopParameter = mapOf(
             SearchApiConst.Q to "samsung"
     )
@@ -149,6 +152,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -224,6 +228,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 searchShopParameter,
                 TestErrorSearchUseCase(exception),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -271,6 +276,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -314,6 +320,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestErrorSearchUseCase(exception),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -364,6 +371,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -407,6 +415,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 searchShopParameter,
                 TestSearchUseCase(searchShopModelWithoutNextPage),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -447,6 +456,7 @@ class SearchShopViewModelKotlinTestTest: BehaviorSpec() {
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestSearchUseCase(searchMoreShopModelWithoutNextPage),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,

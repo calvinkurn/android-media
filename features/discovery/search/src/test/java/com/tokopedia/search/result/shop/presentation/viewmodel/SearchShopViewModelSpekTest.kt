@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.State
@@ -69,6 +70,8 @@ class SearchShopViewModelSpekTest : Spek({
             SearchApiConst.Q to "samsung"
     )
 
+    val dynamicFilterModel = DynamicFilterModel()
+
     val shopHeaderViewModelMapper = Mockito.mock(MockShopHeaderViewModelMapper::class.java)
 
     val shopViewModelMapper = Mockito.mock(MockShopViewModelMapper::class.java)
@@ -113,6 +116,7 @@ class SearchShopViewModelSpekTest : Spek({
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -188,6 +192,7 @@ class SearchShopViewModelSpekTest : Spek({
                 searchShopParameter,
                 TestErrorSearchUseCase(exception),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -235,6 +240,7 @@ class SearchShopViewModelSpekTest : Spek({
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -286,6 +292,7 @@ class SearchShopViewModelSpekTest : Spek({
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestErrorSearchUseCase(exception),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -328,6 +335,7 @@ class SearchShopViewModelSpekTest : Spek({
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -371,6 +379,7 @@ class SearchShopViewModelSpekTest : Spek({
                 searchShopParameter,
                 TestSearchUseCase(searchShopModelWithoutNextPage),
                 TestSearchUseCase(searchMoreShopModel),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,
@@ -411,6 +420,7 @@ class SearchShopViewModelSpekTest : Spek({
                 searchShopParameter,
                 TestSearchUseCase(searchShopModel),
                 TestSearchUseCase(searchMoreShopModelWithoutNextPage),
+                TestSearchUseCase(dynamicFilterModel),
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,

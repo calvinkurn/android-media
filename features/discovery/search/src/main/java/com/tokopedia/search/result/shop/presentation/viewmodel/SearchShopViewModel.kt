@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID
+import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.utils.AuthUtil
@@ -27,6 +28,7 @@ class SearchShopViewModel(
         searchParameter: Map<String, Any>,
         private val searchShopFirstPageUseCase: SearchUseCase<SearchShopModel>,
         private val searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
+        private val getDynamicFilterUseCase: SearchUseCase<DynamicFilterModel>,
         private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val emptySearchCreator: EmptySearchCreator,
@@ -93,6 +95,8 @@ class SearchShopViewModel(
         val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
 
         searchShopFirstPageSuccess(searchShopModel)
+
+        getDynamicFilter()
     }
 
     private fun isSearchShopLiveDataContainItems(): Boolean {
@@ -241,6 +245,22 @@ class SearchShopViewModel(
     private fun updateSearchShopLiveDataStateToError() {
         val searchShopDataList = getSearchShopLiveDataMutableList()
         searchShopLiveData.postValue(Error("", searchShopDataList))
+    }
+
+    private fun getDynamicFilter() {
+        launchCatchError(block = {
+            tryGetDynamicFilter()
+        }, onError = {
+            catchGetDynamicFilterError()
+        })
+    }
+
+    private suspend fun tryGetDynamicFilter() {
+
+    }
+
+    private fun catchGetDynamicFilterError() {
+
     }
 
     fun searchMoreShop() {

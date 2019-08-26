@@ -4,9 +4,10 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
+import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.search.result.common.EmptySearchCreator
-import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -17,6 +18,7 @@ class SearchShopViewModelFactory(
         private val searchParameter: Map<String, Any>,
         private val searchShopFirstPageUseCase: SearchUseCase<SearchShopModel>,
         private val searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
+        private val getDynamicFilterUseCase: SearchUseCase<DynamicFilterModel>,
         private val shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val emptySearchCreator: EmptySearchCreator,
@@ -39,6 +41,7 @@ class SearchShopViewModelFactory(
                 searchParameter,
                 searchShopFirstPageUseCase,
                 searchShopLoadMoreUseCase,
+                getDynamicFilterUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,

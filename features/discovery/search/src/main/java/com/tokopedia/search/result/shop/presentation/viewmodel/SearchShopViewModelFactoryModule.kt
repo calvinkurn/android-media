@@ -4,10 +4,12 @@ import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
 import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.EmptySearchCreatorModule
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
+import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterCoroutineUseCaseModule
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.domain.usecase.SearchShopCoroutineUseCaseModule
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
@@ -23,7 +25,8 @@ import javax.inject.Named
 @Module(includes = [
     SearchShopCoroutineUseCaseModule::class,
     ShopViewModelMapperModule::class,
-    EmptySearchCreatorModule::class
+    EmptySearchCreatorModule::class,
+    GetDynamicFilterCoroutineUseCaseModule::class
 ])
 class SearchShopViewModelFactoryModule(
         private val searchParameter: Map<String, Any> = mapOf()
@@ -37,6 +40,8 @@ class SearchShopViewModelFactoryModule(
             searchShopFirstPageUseCase: SearchUseCase<SearchShopModel>,
             @Named(SearchConstant.SearchShop.SEARCH_SHOP_LOAD_MORE_USE_CASE)
             searchShopLoadMoreUseCase: SearchUseCase<SearchShopModel>,
+            @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
+            getDynamicFilterUseCase: SearchUseCase<DynamicFilterModel>,
             shopHeaderViewModelMapper: Mapper<SearchShopModel, ShopHeaderViewModel>,
             shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
             emptySearchCreator: EmptySearchCreator,
@@ -48,6 +53,7 @@ class SearchShopViewModelFactoryModule(
                 searchParameter,
                 searchShopFirstPageUseCase,
                 searchShopLoadMoreUseCase,
+                getDynamicFilterUseCase,
                 shopHeaderViewModelMapper,
                 shopViewModelMapper,
                 emptySearchCreator,

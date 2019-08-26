@@ -1,13 +1,14 @@
 package com.tokopedia.search.result.domain.usecase.getdynamicfilter
 
+import com.tokopedia.discovery.common.coroutines.Repository
 import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
-import kotlinx.coroutines.delay
 
-class GetDynamicFilterCoroutineUseCase: SearchUseCase<DynamicFilterModel>() {
+class GetDynamicFilterCoroutineUseCase(
+        private val repository: Repository<DynamicFilterModel>
+): SearchUseCase<DynamicFilterModel>() {
 
     override suspend fun executeOnBackground(): DynamicFilterModel {
-        delay(1500)
-        return DynamicFilterModel()
+        return repository.query(requestParams.toMap())
     }
 }

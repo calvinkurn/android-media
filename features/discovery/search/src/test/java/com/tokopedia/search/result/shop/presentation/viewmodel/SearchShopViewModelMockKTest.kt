@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
 import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.State
@@ -137,6 +138,11 @@ class SearchShopViewModelMockKTest {
         `then assert search shop state is success and contains empty search data`()
     }
 
+    @Test
+    fun `test get dynamic filter after search shop`() {
+
+    }
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -180,9 +186,11 @@ class SearchShopViewModelMockKTest {
     private val searchShopModelEmptyList = SearchShopModel()
     private val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage)
     private val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
+//    private val dynamicFilterModel = DynamicFilterModel()
 
     private val searchShopUseCase = mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
     private val searchMoreShopUseCase = mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
+    private val dynamicFilterUseCase = mockk<SearchUseCase<DynamicFilterModel>>(relaxed = true)
 
     private val searchShopParameter = mapOf(
             SearchApiConst.Q to "samsung"
@@ -207,6 +215,7 @@ class SearchShopViewModelMockKTest {
             searchShopParameter,
             searchShopUseCase,
             searchMoreShopUseCase,
+            dynamicFilterUseCase,
             shopHeaderViewModelMapper,
             shopViewModelMapper,
             emptySearchCreator,
