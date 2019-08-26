@@ -26,7 +26,7 @@ class EditProductBottomSheetAdapter(private var data: List<BulkBottomSheetType>,
 
     fun clearData() {
         data = listOf(BulkBottomSheetType.EtalaseType(""),
-                BulkBottomSheetType.StockType(""),
+                BulkBottomSheetType.StockType(),
                 BulkBottomSheetType.DeleteType())
         notifyDataSetChanged()
     }
@@ -36,7 +36,7 @@ class EditProductBottomSheetAdapter(private var data: List<BulkBottomSheetType>,
             data.getOrNull(0)?.editValue = etalaseValue.etalaseValue
             (data.getOrNull(0) as BulkBottomSheetType.EtalaseType).etalaseId = etalaseValue.etalaseId
         } else if (stockValue != null) {
-            data.getOrNull(1)?.editValue = stockValue.stockValue
+            data.getOrNull(1)?.editValue = stockValue.getStatusStock()
         }
         notifyDataSetChanged()
     }
@@ -52,8 +52,8 @@ class EditProductBottomSheetAdapter(private var data: List<BulkBottomSheetType>,
             view.setOnClickListener {
                 when (data) {
                     is BulkBottomSheetType.EtalaseType -> listener.goToEtalasePicker(data.etalaseId)
-                    is BulkBottomSheetType.DeleteType -> listener.goToEditStock()
-                    else -> listener.goToEditStock()
+                    is BulkBottomSheetType.StockType -> listener.goToEditStock()
+                    else -> listener.goToConfirmationBottomSheet(true)
                 }
             }
 
@@ -65,12 +65,13 @@ class EditProductBottomSheetAdapter(private var data: List<BulkBottomSheetType>,
 
             txtTitle.text = view.resources.getString(data.labelTitle)
 
-            if (data.editValue == "") {
+            if (data.editValue == "" || data.editValue == "0") {
                 txtValue.visibility = View.GONE
                 imgArrow.visibility = View.VISIBLE
+                txtValue.text = ""
             } else {
-                txtValue.visibility = View.VISIBLE
                 txtValue.text = data.editValue
+                txtValue.visibility = View.VISIBLE
                 imgArrow.visibility = View.GONE
             }
         }

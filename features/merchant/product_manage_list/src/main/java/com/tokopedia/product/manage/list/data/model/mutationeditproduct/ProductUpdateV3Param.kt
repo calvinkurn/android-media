@@ -20,19 +20,25 @@ data class ProductUpdateV3Param(
 
         @SerializedName("menu")
         @Expose
-        var productEtalase: ProductEtalase = ProductEtalase()
+        var productEtalase: ProductEtalase = ProductEtalase(),
+
+        @SerializedName("shop")
+        @Expose
+        var shop: ShopParam = ShopParam()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readInt(),
             parcel.readString() ?: "",
-            parcel.readParcelable(ProductEtalase::class.java.classLoader) ?: ProductEtalase())
+            parcel.readParcelable(ProductEtalase::class.java.classLoader) ?: ProductEtalase(),
+            parcel.readParcelable(ShopParam::class.java.classLoader) ?: ShopParam())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
         parcel.writeInt(productStock)
         parcel.writeString(productStatus)
         parcel.writeParcelable(productEtalase, flags)
+        parcel.writeParcelable(shop, flags)
     }
 
     override fun describeContents(): Int {
@@ -48,7 +54,6 @@ data class ProductUpdateV3Param(
             return arrayOfNulls(size)
         }
     }
-
 }
 
 data class ProductEtalase(
@@ -83,5 +88,32 @@ data class ProductEtalase(
             return arrayOfNulls(size)
         }
     }
+}
 
+data class ShopParam(
+        @SerializedName("id")
+        @Expose
+        var shopId: String = ""
+) : Parcelable {
+
+    constructor(parcel: Parcel) : this(parcel.readString() ?: "") {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(shopId)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ShopParam> {
+        override fun createFromParcel(parcel: Parcel): ShopParam {
+            return ShopParam(parcel)
+        }
+
+        override fun newArray(size: Int): Array<ShopParam?> {
+            return arrayOfNulls(size)
+        }
+    }
 }

@@ -43,6 +43,7 @@
                 android:layout_marginLeft="@dimen/dp_10"
                 android:paddingRight="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_10"
                 android:orientation="horizontal"
                 app:layout_collapseMode="pin"
@@ -74,8 +75,6 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/grey_300"/>
-
-
     </android.support.design.widget.AppBarLayout>
 
     <com.tokopedia.core.customwidget.SwipeToRefresh

@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.list.view.listener;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 
@@ -28,7 +29,7 @@ public interface ProductManageView extends CustomerView {
 
     void onSuccessSetCashback(String productId, int cashback);
 
-    void onErrorMultipleDeleteProduct(Throwable e, List<String> productIdDeletedList, List<String> productIdFailToDeleteList);
+    void onErrorMultipleDeleteProduct(Throwable e, List<ProductUpdateV3Response> listOfResponse);
 
     void onSuccessMultipleDeleteProduct();
 
@@ -43,4 +44,8 @@ public interface ProductManageView extends CustomerView {
     void onSuccessGetPopUp(boolean isShowPopup, String productId);
 
     void onErrorGetPopUp(Throwable e);
+
+    void onSuccessBulkUpdateProduct(List<ProductUpdateV3Response> listOfResponse);
+
+    void onErrorBulkUpdateProduct(Throwable e);
 }

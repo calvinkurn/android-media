@@ -47,7 +47,7 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolde
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -55,12 +55,13 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -79,6 +80,7 @@ import com.tokopedia.product.manage.list.constant.ManageTrackingConstant;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.data.ConfirmationProductData;
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType;
+import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
 import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivity;
@@ -117,6 +119,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlin.Pair;
 import kotlin.Unit;
 
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_POWER_MERCHANT_IDLE_POPUP;
@@ -125,9 +128,15 @@ import static com.tokopedia.gm.common.constant.GMCommonConstantKt.URL_POWER_MERC
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 import static com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.EXTRA_STOCK;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.ERROR_CODE_LIMIT_CASHBACK;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_SORT_SELECTED;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQUEST_CODE_FILTER;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQUEST_CODE_SORT;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.STOCK_EDIT_REQUEST_CODE;
 import static com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment.URL_TIPS_TRICK;
-import static com.tokopedia.seller.product.manage.constant.ProductManageConstant.ETALASE_PICKER_REQUEST_CODE;
-import static com.tokopedia.seller.product.manage.constant.ProductManageConstant.STOCK_EDIT_REQUEST_CODE;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
@@ -141,15 +150,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         ProductManageListViewHolder.ProductManageViewHolderListener,
         EditProductBottomSheet.EditProductInterface {
 
-    public static final String ERROR_CODE_LIMIT_CASHBACK = "422";
-    public static final int REQUEST_CODE_ADD_IMAGE = 3859;
-    public static final int INSTAGRAM_SELECT_REQUEST_CODE = 3860;
-
-
     private List<ProductManageViewModel> productManageViewModels = null;
     private ArrayList<ConfirmationProductData> confirmationProductDataList = new ArrayList<>();
     private BulkBottomSheetType.EtalaseType etalaseType = new BulkBottomSheetType.EtalaseType("", 0);
-    private BulkBottomSheetType.StockType stockType = new BulkBottomSheetType.StockType("", 0);
+    private BulkBottomSheetType.StockType stockType = new BulkBottomSheetType.StockType();
 
     @Inject
     ProductManagePresenter productManagePresenter;
@@ -369,12 +373,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
         bottomActionView.setButton1OnClickListener(v -> {
             Intent intent = ProductManageSortActivity.createIntent(getActivity(), sortProductOption);
-            startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_SORT);
+            startActivityForResult(intent, REQUEST_CODE_SORT);
         });
 
         bottomActionView.setButton2OnClickListener(v -> {
             Intent intent = ProductManageFilterActivity.createIntent(getActivity(), productManageFilterModel);
-            startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_FILTER);
+            startActivityForResult(intent, REQUEST_CODE_FILTER);
         });
 
         bulkCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -390,6 +394,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
             containerBtnBulk.setVisibility(View.VISIBLE);
             bulkCountTxt.setVisibility(View.VISIBLE);
             checkBoxView.setVisibility(View.VISIBLE);
+            bulkCountTxt.setText(getString(R.string.product_manage_bulk_count, String.valueOf(adapter.getTotalChecked())));
+
         } else {
             containerBtnBulk.setVisibility(View.GONE);
             checkBoxView.setVisibility(View.GONE);
@@ -402,6 +408,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     }
 
     private void initView(View view) {
+        progressDialog = new ProgressDialog(getActivity());
         bulkCheckBox = view.findViewById(R.id.bulk_check_box);
         coordinatorLayout = view.findViewById(R.id.coordinator_layout);
         bottomActionView = view.findViewById(R.id.bottom_action_view);
@@ -478,8 +485,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                     return false;
                 }
             });
-        } else if (itemId == R.id.checklist_product_menu) {
-            UnifyTracking.eventProductManageTopNav(getActivity(), item.getTitle().toString());
         }
         return super.onOptionsItemSelected(item);
     }
@@ -497,6 +502,37 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     }
 
     @Override
+    public void onSuccessBulkUpdateProduct(List<ProductUpdateV3Response> listOfResponse) {
+        confirmationProductDataList.clear();
+        editProductBottomSheet.clearAllData();
+        bulkCheckBox.setChecked(false);
+        hideLoadingProgress();
+        Pair pairData = productManagePresenter.getBulkUpdateSuccessAndFailedList(listOfResponse);
+        List<ProductUpdateV3Response> successData = (List<ProductUpdateV3Response>) pairData.getFirst();
+        List<ProductUpdateV3Response> failedData = (List<ProductUpdateV3Response>) pairData.getSecond();
+        if (!failedData.isEmpty()) {
+            Snackbar snackbar = Snackbar.make(getView(), getString(R.string.product_manage_bulk_snackbar, String.valueOf(successData.size()), String.valueOf(failedData.size())),
+                    Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(R.string.retry_label, v -> {
+
+            });
+            snackbar.show();
+
+        } else {
+            ToasterNormal.show(getActivity(), getString(R.string.product_manage_bulk_snackbar_sucess, String.valueOf(successData.size())));
+        }
+
+        adapter.resetCheckedItemSet();
+        renderCheckedView();
+        loadInitialData();
+    }
+
+    @Override
+    public void onErrorBulkUpdateProduct(Throwable e) {
+        ToasterError.make(getView(), ViewUtils.getErrorMessage(getActivity(), e));
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
             case INSTAGRAM_SELECT_REQUEST_CODE:
@@ -509,9 +545,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                     }
                 }
                 break;
-            case ProductManageConstant.REQUEST_CODE_FILTER:
+            case REQUEST_CODE_FILTER:
                 if (resultCode == Activity.RESULT_OK) {
-                    productManageFilterModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_FILTER_SELECTED);
+                    productManageFilterModel = intent.getParcelableExtra(EXTRA_FILTER_SELECTED);
                     loadInitialData();
                     trackingFilter(productManageFilterModel);
                 }
@@ -528,21 +564,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
             case STOCK_EDIT_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
                     ProductStock productStock = intent.getParcelableExtra(EXTRA_STOCK);
-                    String stockValue;
-                    if (!productStock.isActive()) {
-                        stockValue = getContext().getString(R.string.stock_unavailable);
-                    } else {
-                        stockValue = "Tersedia";
-                    }
-
-                    stockType.setStockValue(stockValue);
+                    stockType.setStockStatus(productStock.getStockInteger());
                     stockType.setTotalStock(productStock.getStockCount());
                     editProductBottomSheet.setResultValue(null, stockType);
                 }
                 break;
-            case ProductManageConstant.REQUEST_CODE_SORT:
+            case REQUEST_CODE_SORT:
                 if (resultCode == Activity.RESULT_OK) {
-                    ProductManageSortModel productManageSortModel = intent.getParcelableExtra(ProductManageConstant.EXTRA_SORT_SELECTED);
+                    ProductManageSortModel productManageSortModel = intent.getParcelableExtra(EXTRA_SORT_SELECTED);
                     sortProductOption = productManageSortModel.getId();
                     loadInitialData();
                     trackingSort(productManageSortModel);
@@ -583,11 +612,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         UnifyTracking.eventProductManageFilterProduct(getActivity(), TextUtils.join(",", filters));
     }
 
-    @Override
-    public void onItemClicked(ProductManageViewModel productManageViewModel) {
-
-    }
-
     /**
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
@@ -600,9 +624,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
     @Override
     public void onItemChecked(ProductManageViewModel productManageViewModel, boolean checked) {
-        String totalChecked = String.valueOf(adapter.getTotalChecked());
         updateBulkLayout();
-        bulkCountTxt.setText(MethodChecker.fromHtml(getString(R.string.product_manage_bulk_count, totalChecked)));
+        renderCheckedView();
     }
 
     private void updateBulkLayout() {
@@ -611,20 +634,19 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
             containerBtnBulk.setVisibility(View.VISIBLE);
             btnBulk.setVisibility(View.VISIBLE);
             checkBoxView.setVisibility(View.VISIBLE);
-            btnBulk.setText("Ubah");
+            btnBulk.setText(getString(R.string.product_manage_change_btn));
             containerFlags.setScrollFlags(0);
         } else if (adapter.getTotalChecked() > 1) {
             containerBtnBulk.setVisibility(View.VISIBLE);
             btnBulk.setVisibility(View.VISIBLE);
             checkBoxView.setVisibility(View.VISIBLE);
-            btnBulk.setText("Ubah Sekaligus");
+            btnBulk.setText(getString(R.string.product_manage_bulk_change_btn));
             containerFlags.setScrollFlags(0);
         } else {
             containerBtnBulk.setVisibility(View.GONE);
             checkBoxView.setVisibility(View.GONE);
             btnBulk.setVisibility(View.GONE);
             containerFlags.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-
         }
     }
 
@@ -648,13 +670,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
     @Override
     public void onErrorEditPrice(Throwable t, final String productId, final String price, final String currencyId, final String currencyText) {
-        NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
-                ViewUtils.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        productManagePresenter.editPrice(productId, price, currencyId, currencyText);
-                    }
-                }).showRetrySnackbar();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                ViewUtils.getErrorMessage(getContext(), t),
+                () -> productManagePresenter.editPrice(productId, price, currencyId, currencyText)).showRetrySnackbar();
     }
 
     @Override
@@ -674,22 +692,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                         getString(R.string.product_manage_feature_name_cashback)
                 );
             } else {
-                NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
-                        ErrorHandler.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                productManagePresenter.setCashback(productId, cashback);
-                            }
-                        }).showRetrySnackbar();
+                NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                        ViewUtils.getErrorMessage(getActivity(), t), () -> productManagePresenter.setCashback(productId, cashback)).showRetrySnackbar();
             }
         } else {
-            NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
-                    ErrorHandler.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            productManagePresenter.setCashback(productId, cashback);
-                        }
-                    }).showRetrySnackbar();
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                    ViewUtils.getErrorMessage(getActivity(), t), () -> productManagePresenter.setCashback(productId, cashback)).showRetrySnackbar();
         }
     }
 
@@ -734,17 +742,17 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     }
 
     @Override
-    public void onErrorMultipleDeleteProduct(Throwable t, List<String> productIdDeletedList, final List<String> productIdFailToDeleteList) {
-        if (productIdDeletedList.size() > 0) {
-            loadInitialData();
-        }
-        NetworkErrorHelper.createSnackbarWithAction(coordinatorLayout,
-                ViewUtils.getErrorMessage(getActivity(), t), Snackbar.LENGTH_LONG, new NetworkErrorHelper.RetryClickedListener() {
-                    @Override
-                    public void onRetryClicked() {
-                        productManagePresenter.deleteProduct(productIdFailToDeleteList);
-                    }
+    public void onErrorMultipleDeleteProduct(Throwable t, List<ProductUpdateV3Response> listOfResponse) {
+        Pair pairData = productManagePresenter.getBulkUpdateSuccessAndFailedList(listOfResponse);
+        List<ProductUpdateV3Response> successData = (List<ProductUpdateV3Response>) pairData.getFirst();
+        List<ProductUpdateV3Response> failedData = (List<ProductUpdateV3Response>) pairData.getSecond();
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+                getString(R.string.product_manage_bulk_snackbar, String.valueOf(successData.size()), String.valueOf(failedData.size())), () -> {
+//                    productManagePresenter.bulkUpdateProduct();
                 }).showRetrySnackbar();
+//        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
+//                ViewUtils.getErrorMessage(getActivity(), t), () -> productManagePresenter.deleteProduct(productIdFailToDeleteList)).showRetrySnackbar();
+
     }
 
     @Override
@@ -838,10 +846,9 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                     UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString());
                 } else if (itemId == R.id.delete_product_menu) {
                     final List<String> productIdList = new ArrayList<>();
-                    productIdList.add(productManageViewModel.getId());
                     showDialogActionDeleteProduct(productIdList, (dialogInterface, i) -> {
                         UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.label_delete));
-                        productManagePresenter.deleteProduct(productIdList);
+                        productManagePresenter.deleteSingleProduct(productManageViewModel.getId());
                     }, (dialog, which) -> {
                         UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.title_cancel));
                         dialog.dismiss();
@@ -1025,8 +1032,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     }
 
     @Override
-    public void goToConfirmationBottomSheet() {
-        mappingUpdateProductModel();
+    public void goToConfirmationBottomSheet(boolean isActionDelete) {
+        List<ProductManageViewModel> listChecked = adapter.getCheckedDataList();
+        confirmationProductDataList.clear();
+        confirmationProductDataList = productManagePresenter.mapToBulkUpdateParam(isActionDelete, stockType, etalaseType, listChecked);
         ConfirmationUpdateProductBottomSheet confirmationUpdateProductBottomSheet = ConfirmationUpdateProductBottomSheet.newInstance(confirmationProductDataList);
         confirmationUpdateProductBottomSheet.setListener(this);
         confirmationUpdateProductBottomSheet.show(getFragmentManager(), "bs_update_product");
@@ -1034,26 +1043,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
     @Override
     public void updateProduct() {
-
-    }
-
-    private void mappingUpdateProductModel() {
-        List<ProductManageViewModel> listChecked = adapter.getCheckedDataList();
-        confirmationProductDataList.clear();
-        if (etalaseType != null && stockType != null) {
-            for (ProductManageViewModel data : listChecked) {
-                ConfirmationProductData confirmationProductData = new ConfirmationProductData();
-                confirmationProductData.setProductId(data.getProductId());
-                confirmationProductData.setProductName(data.getProductName());
-                confirmationProductData.setProductImgUrl(data.getImageUrl());
-                confirmationProductData.setProductEtalaseId(etalaseType.getEtalaseId());
-                confirmationProductData.setProductEtalaseName(etalaseType.getEtalaseValue());
-                confirmationProductData.setProductStock(stockType.getTotalStock());
-                confirmationProductData.setStatusStock(stockType.getStockValue());
-
-                confirmationProductDataList.add(confirmationProductData);
-            }
-        }
+        bulkBottomSheet.dismiss();
+        productManagePresenter.bulkUpdateProduct(confirmationProductDataList);
     }
 
     @Override
@@ -1061,4 +1052,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         startActivityForResult(ProductEditStockActivity.Companion.createIntent(getActivity(), new ProductStock(),
                 false, false), STOCK_EDIT_REQUEST_CODE);
     }
+
+    @Override
+    public void deleteProducts() {
+
+    }
+
+    @Override
+    public void onItemClicked(ProductManageViewModel productManageViewModel) {
+        //NO OP
+    }
+
 }

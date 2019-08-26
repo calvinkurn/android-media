@@ -5,9 +5,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Button
+import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.data.ConfirmationProductData
+import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_DELETED
 import com.tokopedia.product.manage.list.view.adapter.ConfirmationProductAdapter
 
 class ConfirmationUpdateProductBottomSheet : BottomSheets() {
@@ -38,6 +40,14 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
         this.listener = listener
     }
 
+    override fun title(): String {
+        return if (model.first().statusStock != STOCK_DELETED) {
+            MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_change, model.size.toString())).toString()
+        } else {
+            MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_delete, model.size.toString())).toString()
+        }
+    }
+
     private lateinit var rvConfirmation: RecyclerView
 
     override fun state(): BottomSheetsState = BottomSheetsState.FULL
@@ -48,9 +58,13 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
     override fun getTheme(): Int = R.style.BaseBottomSheetDialog
 
-    override fun initView(view: View) {
-        getArgument()
 
+    override fun configView(parentView: View?) {
+        getArgument()
+        super.configView(parentView)
+    }
+
+    override fun initView(view: View) {
         view.apply {
             rvConfirmation = findViewById(R.id.rv_confirmation_product)
             btnCancel = findViewById(R.id.btn_cancel_confirmation)
@@ -63,9 +77,10 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
         btnConfirmation.setOnClickListener {
             listener?.updateProduct()
+            dismiss()
         }
 
-        rvConfirmation?.apply {
+        rvConfirmation.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = confirmationAdapter
         }

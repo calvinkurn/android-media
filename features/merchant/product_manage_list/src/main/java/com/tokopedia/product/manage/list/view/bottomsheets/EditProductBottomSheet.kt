@@ -16,14 +16,15 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
     interface EditProductInterface {
         fun goToEtalasePicker(etalaseId: Int)
         fun goToEditStock()
-        fun goToConfirmationBottomSheet()
+        fun deleteProducts()
+        fun goToConfirmationBottomSheet(isActionDelete: Boolean)
         fun updateProduct()
     }
 
     var rvBulk: RecyclerView? = null
     var bulkData = listOf(
             BulkBottomSheetType.EtalaseType(""),
-            BulkBottomSheetType.StockType(""),
+            BulkBottomSheetType.StockType(),
             BulkBottomSheetType.DeleteType())
     private val editAdapter = EditProductBottomSheetAdapter(bulkData, listener)
     private var btnNext: Button? = null
@@ -38,7 +39,7 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
             }
         }
         btnNext?.setOnClickListener {
-            listener.goToConfirmationBottomSheet()
+            listener.goToConfirmationBottomSheet(false)
         }
     }
 

@@ -27,12 +27,10 @@ import com.tokopedia.product.manage.list.data.repository.ActionProductManageRepo
 import com.tokopedia.product.manage.list.data.source.ActionProductManageDataSource;
 import com.tokopedia.product.manage.list.data.source.ProductActionApi;
 import com.tokopedia.product.manage.list.domain.ActionProductManageRepository;
-import com.tokopedia.product.manage.list.domain.DeleteProductUseCase;
+import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
 import com.tokopedia.product.manage.list.domain.GetProductListUseCase;
-import com.tokopedia.product.manage.list.domain.MultipleDeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
-import com.tokopedia.product.manage.list.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl;
@@ -41,12 +39,10 @@ import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
-import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
-import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -61,7 +57,7 @@ import retrofit2.Retrofit;
 
 import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_PRODUCT_LIST;
 import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_UPDATE_PRODUCT;
-import static com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl.GQL_POPUP_NAME;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.GQL_POPUP_NAME;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
@@ -73,23 +69,16 @@ public class ProductManageModule {
     @Provides
     @ProductManageScope
     public ProductManagePresenter provideManageProductPresenter(GetShopInfoUseCase getShopInfoUseCase,
-                                                                GetProductListSellingUseCase getProductListSellingUseCase,
                                                                 EditPriceProductUseCase editPriceProductUseCase,
-                                                                DeleteProductUseCase deleteProductUseCase,
-                                                                GetProductListManageMapperView getProductListManageMapperView,
-                                                                MultipleDeleteProductUseCase multipleDeleteProductUseCase,
                                                                 UserSessionInterface userSession,
-                                                                TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                                                 TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
-                                                                GetFeatureProductListUseCase getFeatureProductListUseCase,
                                                                 SetCashbackUseCase setCashbackUseCase,
                                                                 PopupManagerAddProductUseCase popupManagerAddProductUseCase,
                                                                 GetProductListUseCase getProductListUseCase,
-                                                                ProductListMapperView productListMapperView) {
-        return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase,
-                deleteProductUseCase, getProductListManageMapperView, multipleDeleteProductUseCase, userSession,
-                topAdsAddSourceTaggingUseCase, topAdsGetShopDepositGraphQLUseCase, getFeatureProductListUseCase,
-                setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView);
+                                                                ProductListMapperView productListMapperView,
+                                                                BulkUpdateProductUseCase bulkUpdateProductUseCase) {
+        return new ProductManagePresenterImpl(getShopInfoUseCase, editPriceProductUseCase, userSession, topAdsGetShopDepositGraphQLUseCase,
+                setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView, bulkUpdateProductUseCase);
     }
 
     @Provides

@@ -16,42 +16,36 @@ class BulkUpdateProductUseCase @Inject constructor(@Named(GQL_UPDATE_PRODUCT) pr
 
     companion object {
         private const val PARAM_BULK_EDIT = "bulk_edit_param"
-        private const val PARAM_LIST_ID = "list_product_id"
         private const val PARAM_INPUT = "input"
-        private const val PRODUCT_ID = "input"
 
         @JvmStatic
-        fun createRequestParams(paramData: ProductUpdateV3Param, listProductId: List<String>): RequestParams {
+        fun createRequestParams(paramData: List<ProductUpdateV3Param>): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putObject(PARAM_BULK_EDIT, paramData)
-            requestParams.putObject(PARAM_LIST_ID, listProductId)
             return requestParams
         }
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<List<ProductUpdateV3Response>> {
-        val listProductId = requestParams.getObject(PARAM_LIST_ID) as List<String>
+        val listResponse = requestParams.getObject(PARAM_BULK_EDIT) as List<ProductUpdateV3Param>
 
-        return Observable.from(listProductId)
+        return Observable.from(listResponse)
                 .flatMap {
                     val variables = HashMap<String, Any>()
-                    val bulkEditQuery = requestParams.getObject(PARAM_BULK_EDIT) as ProductUpdateV3Param
-                    bulkEditQuery.productId = it
-                    variables[PARAM_INPUT] = bulkEditQuery
-                    val graphqlRequest = GraphqlRequest(gqlQuery, ProductUpdateV3Param::class.java, variables)
+                    variables[PARAM_INPUT] = it
+                    val graphqlRequest = GraphqlRequest(gqlQuery, ProductUpdateV3Response::class.java, variables)
                     graphqlUseCase.clearRequest()
                     graphqlUseCase.addRequest(graphqlRequest)
 
                     graphqlUseCase.createObservable(requestParams).flatMap { response ->
                         val data: ProductUpdateV3Response = response.getData(ProductUpdateV3Response::class.java)
                         Observable.just(data)
-                    }.onErrorResumeNext {
+                    }.onErrorResumeNext { throwable ->
+                        throwable.printStackTrace()
                         val data = ProductUpdateV3Response()
                         Observable.just(data)
-                    }.toList().flatMap {
-                        Observable.just(it)
                     }
-                }
+                }.toList()
     }
 
 }

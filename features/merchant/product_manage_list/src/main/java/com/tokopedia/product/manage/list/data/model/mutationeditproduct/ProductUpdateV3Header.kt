@@ -4,9 +4,9 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductUpdateV3Header(
-        @SerializedName("message")
+        @SerializedName("messages")
         @Expose
-        val errorMessage: List<String> = listOf(),
+        val errorMessage: ArrayList<String> = arrayListOf(),
         @SerializedName("reason")
         @Expose
         val reason: String = "",
