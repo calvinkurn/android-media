@@ -66,6 +66,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -75,8 +76,7 @@ import java.util.concurrent.TimeUnit;
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener,
-        CharacterPerMinuteInterface
-{
+        CharacterPerMinuteInterface {
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
@@ -145,12 +145,18 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
         }
 
-        if(callback == null) {
+        if (callback == null) {
             callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
         }
         registerActivityLifecycleCallbacks(callback);
 
         LogWrapper.init(this);
+        if (LogWrapper.instance != null) {
+            LogWrapper.instance.setLogentriesToken(
+                    new String[]{"08fcd148-14aa-4d89-ac67-4f70fefd2f37",
+                            "60664ea7-4d61-4df1-b39c-365dc647aced",
+                            "33acc8e7-1b5c-403e-bd31-7c1e61bbef2c"});
+        }
         TimberWrapper.init(this);
     }
 
