@@ -3,7 +3,9 @@ package com.tokopedia.home.beranda.listener;
 import android.support.v4.app.FragmentManager;
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.BannerViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 /**
