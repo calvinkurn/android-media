@@ -257,7 +257,13 @@ public class DigitalProductFragment extends BaseDaggerFragment
         super.onViewCreated(view, savedInstanceState);
         renderViewShadow();
         setupArguments(getArguments());
-        presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId));
+        // (Temporary) Ignore unparsable categoryId error
+        try {
+            if (categoryId != null)
+                presenter.trackRechargePushEventRecommendation(Integer.parseInt(categoryId));
+        } catch (Exception e) {
+            // do nothing
+        }
 
         if (savedInstanceState != null) {
             categoryDataState = saveInstanceCacheManager.get(EXTRA_STATE_CATEGORY_DATA,

@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -357,12 +358,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                             analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
                         }
                     }
-
-                    activity?.let {
-                        if (it.isTaskRoot) {
-                            getInboxChannelsIntent()?.let {startActivity(it)}
-                        }
-                    }
+                    backToChannelList()
                     activity?.finish()
                 }
             }
@@ -523,7 +519,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun backToChannelList() {
         activity?.let {
             if (it.isTaskRoot) {
-                startActivity(getInboxChannelsIntent())
+                startActivity(RouteManager.getIntent(it, ApplinkConst.HOME))
             }
             it.finish()
             it.onBackPressed()
