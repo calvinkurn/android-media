@@ -7,16 +7,16 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
+import android.util.AttributeSet
+import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.util.AttributeSet
-import android.util.Log
-import android.view.View
-import android.widget.ImageView
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.banner.Banner
 import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
@@ -24,12 +24,11 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.ViewHelper
 import com.tokopedia.home.beranda.presentation.view.adapter.CardBannerPagerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeBannerViewDecorator
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.layout_card_banner_dynamic_background.view.*
 import java.util.*
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 
 class BannerViewDynamicBackground : BannerView {
 
@@ -129,12 +128,16 @@ class BannerViewDynamicBackground : BannerView {
         })
     }
 
-    fun getBitmapImageViewTarget() : SimpleTarget<Bitmap> {
-        return object : SimpleTarget<Bitmap>() {
-            override fun onResourceReady(blurredBitmap: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                blurredBitmap?.run {
-                    showImage(blurredBitmap)
+    fun getBitmapImageViewTarget() : CustomTarget<Bitmap> {
+        return object : CustomTarget<Bitmap>() {
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                resource.run {
+                    showImage(resource)
                 }
+            }
+
+            override fun onLoadCleared(placeholder: Drawable?) {
+
             }
         }
     }

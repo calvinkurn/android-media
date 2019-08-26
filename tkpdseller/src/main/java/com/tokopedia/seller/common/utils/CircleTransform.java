@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 
 public class CircleTransform extends BitmapTransformation {
@@ -47,13 +48,8 @@ public class CircleTransform extends BitmapTransformation {
         return circleCrop(pool, toTransform);
     }
 
-//    @Override
-//    public String getId() {
-//        return getClass().getName();
-//    }
-
     @Override
     public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
-
+        messageDigest.update(getClass().getName().getBytes(Charset.forName("UTF-8")));
     }
 }

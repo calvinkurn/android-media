@@ -45,7 +45,6 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
@@ -246,7 +245,7 @@ public class ImageHandler {
         }
     }
 
-    public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
+    public static void loadImageWithTarget(Context context, String url, CustomTarget<Bitmap> simpleTarget) {
         Glide.with(context)
                 .asBitmap()
                 .load(url)
@@ -781,7 +780,7 @@ public class ImageHandler {
 
     public static void loadImageBlurWithViewTarget(final Context context,
                                      String imageUrl,
-                                     SimpleTarget<Bitmap> simpleTarget) {
+                                     CustomTarget<Bitmap> simpleTarget) {
         if (context != null && Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN) {
             Glide.with(context)
                     .asBitmap()

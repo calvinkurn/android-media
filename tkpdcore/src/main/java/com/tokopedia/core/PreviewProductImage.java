@@ -15,10 +15,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.core.app.NotificationCompat;
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +23,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-//import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
@@ -289,93 +291,98 @@ public class PreviewProductImage extends TActivity {
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(randomNotificationId, notificationBuilder.build());
 
-//        SimpleTarget<Bitmap> targetListener = new SimpleTarget<Bitmap>() {
-//            @Override
-//            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                final String path = CommonUtils.SaveImageFromBitmap(PreviewProductImage.this,
-//                        resource, filenameParam);
-//                if (path == null) {
-//                    notificationBuilder.setContentText(getString(R.string.download_failed))
-//                            .setProgress(0, 0, false);
-//                    notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
-//                    notificationManager.notify(randomNotificationId, notificationBuilder.build());
-//                    SnackbarManager.make(PreviewProductImage.this,
-//                            getString(R.string.download_failed),
-//                            Snackbar.LENGTH_SHORT)
-//                            .setCallback(new Snackbar.Callback() {
-//                                @Override
-//                                public void onDismissed(Snackbar snackbar, int event) {
-//                                    super.onDismissed(snackbar, event);
-//                                    PreviewProductImage.this.getWindow()
-//                                            .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                                                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//                                }
-//                            })
-//                            .show();
-//                } else {
-//                    Intent intent = new Intent();
-//                    intent.setAction(Intent.ACTION_VIEW);
-//                    File file = new File(path);
-//                    Uri uri = MethodChecker.getUri(getApplicationContext(), file);
-//                    intent.setDataAndType(uri, "image/*");
-//                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-//
-//                    PendingIntent pIntent = PendingIntent.getActivity(PreviewProductImage.this, 0, intent, 0);
-//
-//                    notificationBuilder.setContentText(getString(R.string.download_success))
-//                            .setProgress(0, 0, false)
-//                            .setContentIntent(pIntent);
-//
-//                    notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
-//                    notificationManager.notify(randomNotificationId, notificationBuilder.build());
-//
-//                    PreviewProductImage.this.getWindow().setFlags(~WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                            WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//
-//                    SnackbarManager.make(PreviewProductImage.this,
-//                            getString(R.string.download_success),
-//                            Snackbar.LENGTH_SHORT).setAction(R.string.preview_picture_open_action,
-//                            new OnClickListener() {
-//                                @Override
-//                                public void onClick(View v) {
-//                                    openImageDownloaded(path);
-//                                }
-//                            }).setCallback(new Snackbar.Callback() {
-//                        @Override
-//                        public void onDismissed(Snackbar snackbar, int event) {
-//                            super.onDismissed(snackbar, event);
-//                            PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//                        }
-//                    }).show();
-//                }
-//            }
-//
-//            @Override
-//            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                super.onLoadFailed(e, errorDrawable);
-//                notificationBuilder.setContentText(getString(R.string.download_failed))
-//                        .setProgress(0, 0, false);
-//                notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
-//                notificationManager.notify(randomNotificationId, notificationBuilder.build());
-//                PreviewProductImage.this.getWindow().setFlags(~WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//
-//                SnackbarManager.make(PreviewProductImage.this,
-//                        getString(R.string.download_failed),
-//                        Snackbar.LENGTH_SHORT)
-//                        .setCallback(new Snackbar.Callback() {
-//                            @Override
-//                            public void onDismissed(Snackbar snackbar, int event) {
-//                                super.onDismissed(snackbar, event);
-//                                PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-//                                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//                            }
-//                        })
-//                        .show();
-//            }
-//        };
-//        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLocations.get(vpImage.getCurrentItem()), targetListener);
+        CustomTarget<Bitmap> targetListener = new CustomTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                final String path = CommonUtils.SaveImageFromBitmap(PreviewProductImage.this,
+                        resource, filenameParam);
+                if (path == null) {
+                    notificationBuilder.setContentText(getString(R.string.download_failed))
+                            .setProgress(0, 0, false);
+                    notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+                    notificationManager.notify(randomNotificationId, notificationBuilder.build());
+                    SnackbarManager.make(PreviewProductImage.this,
+                            getString(R.string.download_failed),
+                            Snackbar.LENGTH_SHORT)
+                            .setCallback(new Snackbar.Callback() {
+                                @Override
+                                public void onDismissed(Snackbar snackbar, int event) {
+                                    super.onDismissed(snackbar, event);
+                                    PreviewProductImage.this.getWindow()
+                                            .setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                                }
+                            })
+                            .show();
+                } else {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    File file = new File(path);
+                    Uri uri = MethodChecker.getUri(getApplicationContext(), file);
+                    intent.setDataAndType(uri, "image/*");
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+                    PendingIntent pIntent = PendingIntent.getActivity(PreviewProductImage.this, 0, intent, 0);
+
+                    notificationBuilder.setContentText(getString(R.string.download_success))
+                            .setProgress(0, 0, false)
+                            .setContentIntent(pIntent);
+
+                    notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+                    notificationManager.notify(randomNotificationId, notificationBuilder.build());
+
+                    PreviewProductImage.this.getWindow().setFlags(~WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                            WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+                    SnackbarManager.make(PreviewProductImage.this,
+                            getString(R.string.download_success),
+                            Snackbar.LENGTH_SHORT).setAction(R.string.preview_picture_open_action,
+                            new OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    openImageDownloaded(path);
+                                }
+                            }).setCallback(new Snackbar.Callback() {
+                        @Override
+                        public void onDismissed(Snackbar snackbar, int event) {
+                            super.onDismissed(snackbar, event);
+                            PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                        }
+                    }).show();
+                }
+            }
+
+            @Override
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
+                notificationBuilder.setContentText(getString(R.string.download_failed))
+                        .setProgress(0, 0, false);
+                notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
+                notificationManager.notify(randomNotificationId, notificationBuilder.build());
+                PreviewProductImage.this.getWindow().setFlags(~WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+                SnackbarManager.make(PreviewProductImage.this,
+                        getString(R.string.download_failed),
+                        Snackbar.LENGTH_SHORT)
+                        .setCallback(new Snackbar.Callback() {
+                            @Override
+                            public void onDismissed(Snackbar snackbar, int event) {
+                                super.onDismissed(snackbar, event);
+                                PreviewProductImage.this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                                        WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                            }
+                        })
+                        .show();
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+            }
+        };
+        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLocations.get(vpImage.getCurrentItem()), targetListener);
     }
 
     @Override

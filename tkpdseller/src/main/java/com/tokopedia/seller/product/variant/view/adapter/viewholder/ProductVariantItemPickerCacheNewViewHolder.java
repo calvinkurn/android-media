@@ -40,8 +40,8 @@ public class ProductVariantItemPickerCacheNewViewHolder extends BaseItemPickerCa
         } else {
             if (!TextUtils.isEmpty(productVariantOption.getIcon())) {
                 imageView.clearColorFilter();
-//                Glide.with(imageView.getContext()).load(productVariantOption.getIcon())
-//                        .transform(new CircleTransform(imageView.getContext())).into(imageView);
+                Glide.with(imageView.getContext()).load(productVariantOption.getIcon())
+                        .transform(new CircleTransform(imageView.getContext())).into(imageView);
                 imageView.setVisibility(View.VISIBLE);
             } else { // no url
                 imageView.setVisibility(View.GONE);

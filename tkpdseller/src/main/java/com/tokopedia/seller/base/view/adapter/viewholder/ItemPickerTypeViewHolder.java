@@ -33,8 +33,8 @@ public class ItemPickerTypeViewHolder extends BaseViewHolder<ItemPickerType> {
     public void bindObject(final ItemPickerType itemPickerType) {
         if (!TextUtils.isEmpty(itemPickerType.getIcon())) {
             imageView.setVisibility(View.VISIBLE);
-//            Glide.with(imageView.getContext()).load(itemPickerType.getIcon())
-//                    .transform(new CircleTransform(imageView.getContext())).into(imageView);
+            Glide.with(imageView.getContext()).load(itemPickerType.getIcon())
+                    .transform(new CircleTransform(imageView.getContext())).into(imageView);
         } else {
             imageView.setVisibility(View.GONE);
         }
