@@ -1,6 +1,8 @@
 package com.tokopedia.tradein.view.viewcontrollers
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.graphics.Typeface
 import android.support.v4.app.Fragment
 import android.text.SpannableString
@@ -12,8 +14,10 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.Utils
@@ -33,9 +37,9 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     private lateinit var moneyInCheckoutViewModel: MoneyInCheckoutViewModel
     private lateinit var scheduleTime: ScheduleDate.ScheduleTime
-    private var orderValue :String = ""
-    private var hardwareId : String = ""
-    private var spId : Int = -1
+    private var orderValue: String = ""
+    private var hardwareId: String = ""
+    private var spId: Int = -1
     private var addrId: Int = -1
     private lateinit var destination: String
     private var isCourierSet: Boolean = false
@@ -49,22 +53,22 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     override fun initView() {
-        if(intent.hasExtra(MONEY_IN_ORDER_VALUE)) {
+        if (intent.hasExtra(MONEY_IN_ORDER_VALUE)) {
             orderValue = intent.getStringExtra(MONEY_IN_ORDER_VALUE)
         }
-        if(intent.hasExtra(MONEY_IN_HARDWARE_ID)) {
+        if (intent.hasExtra(MONEY_IN_HARDWARE_ID)) {
             hardwareId = intent.getStringExtra(MONEY_IN_HARDWARE_ID)
         }
         if (intent.hasExtra(MONEY_IN_DEFAULT_ADDRESS)) {
             setAddressView(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_DEFAULT_ADDRESS))
         }
-        if(intent.hasExtra(MONEY_IN_NEW_ADDRESS)){
+        if (intent.hasExtra(MONEY_IN_NEW_ADDRESS)) {
             setAddressView(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_NEW_ADDRESS))
         }
         moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
         setObservers()
         val terms = getString(R.string.checkout_terms_and_conditions_text)
-        val spannableString = SpannableString(terms )
+        val spannableString = SpannableString(terms)
         val clickableSpan = object : ClickableSpan() {
             override fun onClick(widget: View) {
                 showtnc()
@@ -81,6 +85,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         mTvTnc.text = spannableString
         mTvTnc.isClickable = true
         mTvTnc.movementMethod = LinkMovementMethod.getInstance()
+        val tvChangeRecipientAddress = findViewById<Typography>(R.id.tv_change_recipient_address) as Typography
+        tvChangeRecipientAddress.setOnClickListener {
+            val intent = CartAddressChoiceActivity.createInstance(this,
+                    CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST)
+            startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE)
+        }
     }
 
     private fun showtnc() {
@@ -120,7 +130,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             }
         })
         moneyInCheckoutViewModel.getErrorLiveData().observe(this, Observer {
-            when(it) {
+            when (it) {
                 is ScheduleTimeError -> {
                     showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
                         moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
@@ -195,7 +205,6 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         val tvRecipientName = findViewById<Typography>(R.id.tv_recipient_name) as Typography
         val tvRecipientAddress = findViewById<Typography>(R.id.tv_recipient_address) as Typography
         val tvRecipientPhone = findViewById<Typography>(R.id.tv_recipient_phone) as Typography
-        val tvChangeRecipientAddress = findViewById<Typography>(R.id.tv_change_recipient_address) as Typography
         val priceAmount = findViewById<Typography>(R.id.price_amount) as Typography
 
         if (recipientAddress.status == 2) {
@@ -209,21 +218,85 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         tvRecipientAddress.text = Utils.getHtmlFormat(getFullAddress(recipientAddress))
         priceAmount.text = orderValue
 
-        tvChangeRecipientAddress.setOnClickListener {
-            //TODO change address activity
-        }
         destination = "${(recipientAddress.district)}|${(recipientAddress.postalCode)}|${(recipientAddress.latitude)},${(recipientAddress.longitude)}"
         addrId = recipientAddress.addrId
         moneyInCheckoutViewModel.getCourierRates(getMeGQlString(R.raw.gql_courier_rates), destination)
 
         val btBuy = findViewById<Button>(R.id.bt_buy)
         btBuy.setOnClickListener {
-            if(::scheduleTime.isInitialized && isCourierSet) {
+            if (::scheduleTime.isInitialized && isCourierSet) {
                 moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.maxTimeUnix, scheduleTime.minTimeUnix)
-            } else if (!isCourierSet){
+            } else if (!isCourierSet) {
                 showMessage(getString(R.string.select_shipping))
-            }else if(!::scheduleTime.isInitialized){
+            } else if (!::scheduleTime.isInitialized) {
                 showMessage(getString(R.string.select_fetch_time))
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) run {
+            onResultFromRequestCodeAddressOptions(resultCode, data)
+        } else if (requestCode == TopPayActivity.REQUEST_CODE) run {
+            onResultFromPayment(resultCode)
+        }
+    }
+
+    private fun onResultFromRequestCodeAddressOptions(resultCode: Int, data: Intent?) {
+        if (resultCode == CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS) {
+            when (resultCode) {
+                CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS -> {
+                    if (data != null) {
+                        val addressModel = data.getParcelableExtra<RecipientAddressModel>(
+                                CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA
+                        )
+                        val recipientAddress = KeroGetAddress.Data(
+                                addressModel.id.toInt(),
+                                addressModel.addressName,
+                                addressModel.addressName,
+                                addressModel.addressName,
+                                addressModel.cityId.toInt(),
+                                addressModel.cityName,
+                                addressModel.countryName,
+                                addressModel.destinationDistrictId.toInt(),
+                                addressModel.destinationDistrictName,
+                                addressModel.isSelected,
+                                addressModel.isSelected,
+                                addressModel.isSelected,
+                                addressModel.latitude,
+                                addressModel.longitude,
+                                addressModel.recipientPhoneNumber,
+                                addressModel.postalCode,
+                                addressModel.provinceId.toInt(),
+                                addressModel.provinceName,
+                                addressModel.recipientName,
+                                addressModel.addressStatus
+                        )
+                        setAddressView(recipientAddress)
+                    }
+                }
+
+                else -> finish()
+            }
+        }
+    }
+
+
+    private fun onResultFromPayment(resultCode: Int) {
+        when (resultCode) {
+            TopPayActivity.PAYMENT_SUCCESS -> {
+                setResult(Activity.RESULT_OK, null)
+                finish()
+            }
+            TopPayActivity.PAYMENT_FAILED -> {
+                showMessage(getString(R.string.alert_payment_canceled_or_failed_money_in))
+            }
+            TopPayActivity.PAYMENT_CANCELLED -> {
+                showMessage(getString(R.string.alert_payment_canceled_money_in))
+            }
+            else -> {
+
             }
         }
     }

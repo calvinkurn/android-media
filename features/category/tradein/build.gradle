@@ -60,4 +60,6 @@ dependencies {
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.features.checkout)
+    implementation project(rootProject.ext.features.logisticcart)
 }

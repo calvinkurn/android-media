@@ -17,4 +17,7 @@
     <string name="checkout_terms_and_conditions_text">Saya menyetujui syarat dan ketentuan yang berlaku.</string>
     <string name="change_time">Ubah Waktu</string>
     <string name="change_courier">Ubah Kurir</string>
+    <string name="alert_payment_canceled_or_failed_money_in">Pembayaran tidak berhasil atau dibatalkan</string>
+    <string name="alert_payment_canceled_money_in">Pembayaran dibatalkan</string>
+    <string name="alert_payment_successful_money_in">Pembayaran Berhasil</string>
 </resources>
