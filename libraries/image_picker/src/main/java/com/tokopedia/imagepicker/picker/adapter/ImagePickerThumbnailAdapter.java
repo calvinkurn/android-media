@@ -2,26 +2,26 @@ package com.tokopedia.imagepicker.picker.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import androidx.annotation.ColorRes;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.StringRes;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by hendry on 02/05/18.
@@ -108,20 +108,20 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
         }
 
         public void bind(String imagePath, int position) {
-//            Glide.with(context)
-//                    .load(imagePath)
-//                    .asBitmap()
-//                    .override(thumbnailSize, thumbnailSize)
-//                    .centerCrop()
-//                    .into(new BitmapImageViewTarget(imageView) {
-//                        @Override
-//                        protected void setResource(Bitmap resource) {
-//                            RoundedBitmapDrawable circularBitmapDrawable =
-//                                    RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
-//                            circularBitmapDrawable.setCornerRadius(roundedSize);
-//                            imageView.setImageDrawable(circularBitmapDrawable);
-//                        }
-//                    });
+            Glide.with(context)
+                    .asBitmap()
+                    .load(imagePath)
+                    .override(thumbnailSize, thumbnailSize)
+                    .centerCrop()
+                    .into(new BitmapImageViewTarget(imageView) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(imageView.getContext().getResources(), resource);
+                            circularBitmapDrawable.setCornerRadius(roundedSize);
+                            imageView.setImageDrawable(circularBitmapDrawable);
+                        }
+                    });
             if (position == 0 && primaryImageStringRes != -1) {
                 tvCounterPrimary.setText(primaryImageStringRes);
                 tvCounterPrimary.setVisibility(View.VISIBLE);

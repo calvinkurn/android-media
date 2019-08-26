@@ -1,9 +1,11 @@
 package com.tokopedia.notifications.factory
 
-import android.app.*
+import android.app.Notification
 import android.app.Notification.BADGE_ICON_SMALL
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
-import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -13,9 +15,9 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
-import android.text.TextUtils
 import com.bumptech.glide.Glide
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
@@ -226,11 +228,11 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     internal fun getBitmap(url: String?): Bitmap {
         return try {
-            return Bitmap.createBitmap(0, 0, Bitmap.Config.ALPHA_8)
-//            Glide.with(context).load(url)
-//                    .asBitmap()
-//                    .into(imageWidth, imageHeight)
-//                    .get(3, TimeUnit.SECONDS)
+            Glide.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .into(imageWidth, imageHeight)
+                    .get(3, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
@@ -240,17 +242,16 @@ abstract class BaseNotification internal constructor(protected var context: Cont
         } catch (e: IllegalArgumentException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         }
-
     }
 
     internal fun getActionButtonBitmap(url: String): Bitmap {
         return try {
-            return Bitmap.createBitmap(0, 0, Bitmap.Config.ALPHA_8)
-//            val wh = actionButtonHeightWidth
-//            Glide.with(context).load(url)
-//                    .asBitmap()
-//                    .into(wh, wh)
-//                    .get(3, TimeUnit.SECONDS)
+            val wh = actionButtonHeightWidth
+            Glide.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .into(wh, wh)
+                    .get(3, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {

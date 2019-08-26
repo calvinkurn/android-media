@@ -1,10 +1,11 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
 import android.content.Context
-import android.util.Log
+import android.graphics.Point
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
@@ -12,8 +13,6 @@ import com.tokopedia.design.banner.BannerPagerAdapter
 import com.tokopedia.design.banner.BannerView
 import com.tokopedia.home.R
 import kotlinx.android.synthetic.main.layout_slider_banner_design_card.view.*
-import android.graphics.Point
-import android.view.WindowManager
 
 class CardBannerPagerAdapter(bannerImageUrls : List<String>,
                              onPromoClickListener : BannerView.OnPromoClickListener ) :
@@ -51,13 +50,13 @@ class CardBannerPagerAdapter(bannerImageUrls : List<String>,
             )
         }
         try {
-//            Glide.with(holder.itemView.context)
-//                    .load(bannerImageUrls[position])
-//                    .dontAnimate()
-//                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-//                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-//                    .centerCrop()
-//                    .into(holder.bannerImage)
+            Glide.with(holder.itemView.context)
+                    .load(bannerImageUrls[position])
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .centerCrop()
+                    .into(holder.bannerImage)
         } catch (e: Exception) {
             e.printStackTrace()
         }

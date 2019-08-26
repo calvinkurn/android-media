@@ -2,10 +2,11 @@ package com.tkpd.library.utils.image;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -44,12 +45,12 @@ public class ImageHandler {
         if(simpleTarget == null)
             return;
 
-//        Glide.with(context)
-//                .load(url)
-//                .asBitmap()
-//                .skipMemoryCache( true )
-//                .diskCacheStrategy( DiskCacheStrategy.NONE )
-//                .into(simpleTarget);
+        Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .skipMemoryCache( true )
+                .diskCacheStrategy( DiskCacheStrategy.NONE )
+                .into(simpleTarget);
     }
 
     public void loadImage(ImageView imageView, @NonNull String url, boolean withCache){

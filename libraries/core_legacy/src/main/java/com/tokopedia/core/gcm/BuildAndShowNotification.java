@@ -10,14 +10,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.TaskStackBuilder;
-import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
-//import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -31,14 +34,14 @@ import com.tokopedia.core.router.home.HomeRouter;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_IMAGE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
+
+//import com.bumptech.glide.request.animation.GlideAnimation;
 
 /**
  * @author by alvarisi on 1/11/17.
@@ -147,42 +150,46 @@ public class BuildAndShowNotification {
     private void downloadImageAndShowNotification(final ApplinkNotificationPass applinkNotificationPass,
                                                   final NotificationCompat.Builder mBuilder,
                                                   final NotificationConfiguration configuration) {
-//        Glide
-//                .with(mBuilder.mContext)
-//                .load(applinkNotificationPass.getImageUrl())
-//                .asBitmap()
-//                .into(new SimpleTarget<Bitmap>(60, 60) {
-//                    @Override
-//                    public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-//                        mBuilder.setLargeIcon(
-//                                ImageHandler.getRoundedCornerBitmap(resource, 60)
-//                        );
-//
-//                        NotificationManager mNotificationManager =
-//                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-//                        Notification notif = mBuilder.build();
-//                        if (configuration.isVibrate() && configuration.isBell()) {
-//                            notif.defaults |= Notification.DEFAULT_VIBRATE;
-//                        }
-//                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
-//                    }
-//
-//                    @Override
-//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                        mBuilder.setLargeIcon(
-//                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
-//                        );
-//
-//                        NotificationManager mNotificationManager =
-//                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-//                        Notification notif = mBuilder.build();
-//                        if (configuration.isVibrate() && configuration.isBell()) {
-//                            notif.defaults |= Notification.DEFAULT_VIBRATE;
-//                        }
-//                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
-//                    }
-//                });
+        Glide
+                .with(mContext)
+                .asBitmap()
+                .load(applinkNotificationPass.getImageUrl())
+                .into(new CustomTarget<Bitmap>(60, 60) {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        mBuilder.setLargeIcon(
+                                ImageHandler.getRoundedCornerBitmap(resource, 60)
+                        );
 
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                        Notification notif = mBuilder.build();
+                        if (configuration.isVibrate() && configuration.isBell()) {
+                            notif.defaults |= Notification.DEFAULT_VIBRATE;
+                        }
+                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        mBuilder.setLargeIcon(
+                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
+                        );
+
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                        Notification notif = mBuilder.build();
+                        if (configuration.isVibrate() && configuration.isBell()) {
+                            notif.defaults |= Notification.DEFAULT_VIBRATE;
+                        }
+                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                });
     }
 
     public void buildAndShowNotification(NotificationPass notificationPass, Bundle data, NotificationConfiguration configuration) {
@@ -468,10 +475,15 @@ public class BuildAndShowNotification {
     }
 
     private Bitmap getBitmap(String url) {
-        return Bitmap.createBitmap(0, 0, Bitmap.Config.ALPHA_8);
-//            return Glide.with(mContext).load(url)
-//                    .asBitmap()
-//                    .into(60, 60)
-//                    .get(3, TimeUnit.SECONDS);
+        try {
+            return Glide.with(mContext)
+                    .asBitmap()
+                    .load(url)
+                    .submit(60, 60)
+                    .get(3, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

@@ -5,17 +5,18 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.appcompat.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
@@ -83,11 +84,11 @@ public class FlightCancellationViewImageDialogFragment extends DialogFragment {
     }
 
     private void showImage() {
-//        Glide.with(context)
-//                .load(new File(filepath))
-//                .asBitmap()
-//                .centerCrop()
-//                .into(getRoundedImageViewTarget(imageView, 5.0f));
+        Glide.with(context)
+                .asBitmap()
+                .load(new File(filepath))
+                .centerCrop()
+                .into(getRoundedImageViewTarget(imageView, 5.0f));
     }
 
     private static BitmapImageViewTarget getRoundedImageViewTarget(final ImageView imageView, final float radius) {

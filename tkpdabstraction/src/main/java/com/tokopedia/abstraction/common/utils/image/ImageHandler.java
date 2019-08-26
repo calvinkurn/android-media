@@ -37,6 +37,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.signature.ObjectKey;
@@ -318,16 +319,16 @@ public class ImageHandler {
     }
 
 
-    public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
-//        Glide.with(context)
-//                .load(url)
-//                .asBitmap()
-//                .dontAnimate()
-//                .placeholder(R.drawable.loading_page)
-//                .error(R.drawable.error_drawable)
-//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .centerCrop()
-//                .into(target);
+    public static void loadImageBitmap2(Context context, String url, CustomTarget<Bitmap> target) {
+        Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .centerCrop()
+                .into(target);
     }
 
     public static void loadImageCircle2(Context context, final ImageView imageView,

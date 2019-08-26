@@ -16,8 +16,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import androidx.annotation.Nullable;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -30,12 +28,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
-//import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.ImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
@@ -54,6 +56,8 @@ import com.tokopedia.track.TrackApp;
 import javax.inject.Inject;
 
 import static android.content.Context.MODE_PRIVATE;
+
+//import com.bumptech.glide.request.animation.GlideAnimation;
 
 /**
  * Created by hendry on 28/03/18.
@@ -415,32 +419,36 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (!TextUtils.isEmpty(imageUrl)) {
             if (imageUrl.endsWith(".gif")) {
-//                Glide.with(getContext())
-//                        .load(imageUrl)
-//                        .asGif()
-//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
-//                            @Override
-//                            protected void setResource(GifDrawable resource) {
-//                                ivFloatingEgg.setImageDrawable(resource);
-//                                resource.start();
-//                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
-//
-//                            }
-//                        });
-            } else {
-//                Glide.with(getContext())
-//                        .load(imageUrl)
-//                        .asBitmap()
-//                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                        .into(new SimpleTarget<Bitmap>() {
-//                            @Override
-//                            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                                ivFloatingEgg.setImageBitmap(resource);
-//                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
-//                            }
-//                        });
+                Glide.with(getContext())
+                        .asGif()
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .into(new ImageViewTarget<GifDrawable>(ivFloatingEgg) {
+                            @Override
+                            protected void setResource(GifDrawable resource) {
+                                ivFloatingEgg.setImageDrawable(resource);
+                                resource.start();
+                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
 
+                            }
+                        });
+            } else {
+                Glide.with(getContext())
+                        .asBitmap()
+                        .load(imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .into(new CustomTarget<Bitmap>() {
+                            @Override
+                            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                ivFloatingEgg.setImageBitmap(resource);
+                                onFloatingEggLoaded(sumTokenString, isShowTime, timeRemainingSeconds);
+                            }
+
+                            @Override
+                            public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                            }
+                        });
             }
         }
     }

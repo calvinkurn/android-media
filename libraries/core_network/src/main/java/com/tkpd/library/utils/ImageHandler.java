@@ -15,19 +15,20 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
-import androidx.appcompat.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-//import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
-import com.tokopedia.core.network.R;
 import com.tokopedia.core.gcm.BuildAndShowNotification;
+import com.tokopedia.core.network.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -108,7 +109,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     public static Bitmap getBitmapFromUri(Context context, Uri uri, int width, int height) {
         Bitmap bitmap = null;
         try {
-//            bitmap = Glide.with(context).load(uri).asBitmap().into(width, height).get();
+            bitmap = Glide.with(context).asBitmap().load(uri).into(width, height).get();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -210,38 +211,38 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
 
     public static void loadImageWithoutFit(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
-//            Glide.with(context)
-//                    .load(url)
-//                    .placeholder(R.drawable.loading_page)
-//                    .error(R.drawable.error_drawable)
-//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                    .into(imageview);
+            Glide.with(context)
+                    .load(url)
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(imageview);
         }
     }
 
     public static void loadImageThumbs(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
-//            Glide.with(context)
-//                    .load(url)
-//                    .dontAnimate()
-//                    .placeholder(R.drawable.loading_page)
-//                    .error(R.drawable.error_drawable)
-//                    .skipMemoryCache(true)
-//                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
-//                    .into(imageview);
+            Glide.with(context)
+                    .load(url)
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(imageview);
         }
     }
 
     /* This method specifically designed to display cached image from different size when offline */
     public static void loadImageSourceSize(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
-//            Glide.with(context)
-//                    .load(url)
-//                    .dontAnimate()
-//                    .placeholder(R.drawable.loading_page)
-//                    .error(R.drawable.error_drawable)
-//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                    .into(imageview);
+            Glide.with(context)
+                    .load(url)
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(imageview);
         }
     }
 
@@ -249,11 +250,11 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     /* For product detail page only */
     public static void loadImageSourceSizeFitCenter(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
-//            Glide.with(context.getApplicationContext())
-//                    .load(url)
-//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                    .fitCenter()
-//                    .into(imageview);
+            Glide.with(context.getApplicationContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .fitCenter()
+                    .into(imageview);
         }
     }
 
@@ -261,37 +262,37 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     /* For product detail page only */
     public static void loadImageSourceSizeCenterCrop(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
-//            Glide.with(context.getApplicationContext())
-//                    .load(url)
-//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                    .centerCrop()
-//                    .into(imageview);
+            Glide.with(context.getApplicationContext())
+                    .load(url)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .centerCrop()
+                    .into(imageview);
         }
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder) {
         if (isContextValid(context)) {
-//            Glide.with(context)
-//                    .load(url)
-//                    .dontAnimate()
-//                    .placeholder(placeholder)
-//                    .error(R.drawable.error_drawable)
-//                    .skipMemoryCache(true)
-//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                    .into(imageview);
+            Glide.with(context)
+                    .load(url)
+                    .dontAnimate()
+                    .placeholder(placeholder)
+                    .error(R.drawable.error_drawable)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(imageview);
         }
     }
 
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
         if (isContextValid(context)) {
-//            Glide.with(context)
-//                    .load(url)
-//                    .dontAnimate()
-//                    .placeholder(placeholder)
-//                    .error(error_image)
-//                    .skipMemoryCache(true)
-//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                    .into(imageview);
+            Glide.with(context)
+                    .load(url)
+                    .dontAnimate()
+                    .placeholder(placeholder)
+                    .error(error_image)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(imageview);
         }
     }
 
@@ -332,16 +333,16 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-    public static void loadImageWithTarget(Context context, String url, SimpleTarget<Bitmap> simpleTarget) {
+    public static void loadImageWithTarget(Context context, String url, CustomTarget<Bitmap> simpleTarget) {
         if (isContextValid(context)) {
-//            Glide.with(context)
-//                    .load(url)
-//                    .asBitmap()
-//                    .fitCenter()
-//                    .dontAnimate()
-//                    .placeholder(R.drawable.loading_page)
-//                    .error(R.drawable.error_drawable)
-//                    .into(simpleTarget);
+            Glide.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .fitCenter()
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .into(simpleTarget);
         }
     }
 
@@ -362,37 +363,37 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
         }
     }
 
-//    public static void loadImageChat(ImageView imageview, String url, RequestListener<String, GlideDrawable> requestListener) {
-//        if (url != null) {
-//            Glide.with(imageview.getContext())
-//                    .load(url)
-//                    .dontAnimate()
-//                    .listener(requestListener)
-//                    .fitCenter()
-//                    .placeholder(R.drawable.loading_page)
-//                    .into(imageview);
-//        }
-//    }
+    public static void loadImageChat(ImageView imageview, String url, RequestListener<Drawable> requestListener) {
+        if (url != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .listener(requestListener)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
+                    .into(imageview);
+        }
+    }
 
-//    public static void loadImageChatBlurred(ImageView imageview, String url, RequestListener<String, GlideDrawable> requestListener) {
-//        if (url != null) {
-//            Glide.with(imageview.getContext())
-//                    .load(url)
-//                    .dontAnimate()
-//                    .override(30, 30)
-//                    .listener(requestListener)
-//                    .fitCenter()
-//                    .placeholder(R.drawable.loading_page)
-//                    .into(imageview);
-//        }
-//    }
+    public static void loadImageChatBlurred(ImageView imageview, String url, RequestListener<Drawable> requestListener) {
+        if (url != null) {
+            Glide.with(imageview.getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .override(30, 30)
+                    .listener(requestListener)
+                    .fitCenter()
+                    .placeholder(R.drawable.loading_page)
+                    .into(imageview);
+        }
+    }
 
     public static void loadImageAndCache(ImageView imageview, String url) {
-//        Glide.with(imageview.getContext())
-//                .load(url)
-//                .diskCacheStrategy(DiskCacheStrategy.RESULT)
-//                .dontAnimate()
-//                .into(imageview);
+        Glide.with(imageview.getContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .dontAnimate()
+                .into(imageview);
     }
 
     public static void loadImageCover2(ImageView imageview, String url) {
@@ -404,15 +405,15 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
 
     public static void loadImageBitmap2(Context context, String url, SimpleTarget<Bitmap> target) {
         if (isContextValid(context)) {
-//            Glide.with(context)
-//                    .load(url)
-//                    .asBitmap()
-//                    .dontAnimate()
-//                    .placeholder(R.drawable.loading_page)
-//                    .error(R.drawable.error_drawable)
-//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                    .centerCrop()
-//                    .into(target);
+            Glide.with(context)
+                    .asBitmap()
+                    .load(url)
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .error(R.drawable.error_drawable)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .centerCrop()
+                    .into(target);
         }
     }
 

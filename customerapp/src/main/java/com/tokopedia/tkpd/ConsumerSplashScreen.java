@@ -9,29 +9,26 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-//import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
-import com.google.firebase.perf.metrics.Trace;
+import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
-import com.tokopedia.core.TkpdCoreRouter;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 
 /**
@@ -128,36 +125,28 @@ public class ConsumerSplashScreen extends SplashScreen {
         }
         setContentView(R.layout.activity_splash);
         mainLayout = findViewById(R.id.layout_splash);
-//        Glide.with(this)
-//                .load(imageUrl)
-//                .asBitmap()
-//                .dontAnimate()
-//                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-//                .priority(Priority.HIGH)
-//                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                .into(new SimpleTarget<Bitmap>() {
-//                    @Override
-//                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-//                        super.onLoadFailed(e, errorDrawable);
-//                    }
-//
-//                    @Override
-//                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-//                        try {
-//                            if (resource != null) {
-//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-//                                    mainLayout.setBackground(new BitmapDrawable(getResources(), resource));
-//                                }
-//                            }
-//                        } catch (Exception ex) {
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onLoadStarted(Drawable placeholder) {
-//                        super.onLoadStarted(placeholder);
-//                    }
-//                });
+        Glide.with(this)
+                .asBitmap()
+                .load(imageUrl)
+                .dontAnimate()
+                .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                .priority(Priority.HIGH)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        try {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                mainLayout.setBackground(new BitmapDrawable(getResources(), resource));
+                            }
+                        } catch (Exception ignored) { }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+                });
     }
 
     @Override

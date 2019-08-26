@@ -1,8 +1,6 @@
 package com.tokopedia.imagepicker.picker.gallery.widget;
 
 import android.content.Context;
-//import android.graphics.drawable.Drawable;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -10,7 +8,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-//import com.bumptech.glide.Glide;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 
@@ -69,13 +69,13 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
     }
 
     private void setImage() {
-//        Glide.with(getContext())
-//                .loadFromMediaStore(mMedia.getContentUri())
-//                .placeholder(mPreBindInfo.mPlaceholder)
-//                .error(mPreBindInfo.error)
-//                .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
-//                .centerCrop()
-//                .into(mThumbnail);
+        Glide.with(getContext())
+                .load(mMedia.getContentUri())
+                .placeholder(mPreBindInfo.mPlaceholder)
+                .error(mPreBindInfo.error)
+                .override(mPreBindInfo.mResize, mPreBindInfo.mResize)
+                .centerCrop()
+                .into(mThumbnail);
     }
 
     private void setVideoDuration() {

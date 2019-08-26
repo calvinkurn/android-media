@@ -26,14 +26,14 @@ public class FlightBannerPagerAdapter extends BannerPagerAdapter {
     public void onBindViewHolder(BannerViewHolder holder, int position) {
         super.onBindViewHolder(holder, position);
         try {
-//            Glide.with(holder.itemView.getContext())
-//                    .load(bannerImageUrls.get(position))
-//                    .dontAnimate()
-//                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-//                    .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
-//                    .error(com.tokopedia.design.R.drawable.ic_loading_image)
-//                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
-//                    .into(holder.getBannerImage());
+            Glide.with(holder.itemView.getContext())
+                    .load(bannerImageUrls.get(position))
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .placeholder(com.tokopedia.design.R.drawable.ic_loading_image)
+                    .error(com.tokopedia.design.R.drawable.ic_loading_image)
+                    .override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                    .into(holder.getBannerImage());
         } catch (Exception e) {
             e.printStackTrace();
         }
