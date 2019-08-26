@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
+import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.di.DaggerVoucherGameDetailComponent
 import com.tokopedia.vouchergame.detail.di.VoucherGameDetailComponent
 import com.tokopedia.vouchergame.detail.view.fragment.VoucherGameDetailFragment
@@ -17,10 +18,13 @@ class VoucherGameDetailActivity : BaseSimpleActivity(), HasComponent<VoucherGame
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
-        val menuId = bundle?.getInt(VoucherGameDetailFragment.EXTRA_MENU_ID) ?: 0
-        val platformId = bundle?.getInt(VoucherGameDetailFragment.EXTRA_PLATFORM_ID) ?: 0
-        val operator = bundle?.getString(VoucherGameDetailFragment.EXTRA_OPERATOR_ID) ?: ""
-        return VoucherGameDetailFragment.createInstance(menuId, platformId, operator)
+        val voucherGameExtraParam = VoucherGameExtraParam(
+                bundle?.getString(PARAM_CATEGORY_ID) ?: "",
+                bundle?.getString(PARAM_PRODUCT_ID) ?: "",
+                bundle?.getString(PARAM_MENU_ID) ?: "",
+                bundle?.getString(PARAM_OPERATOR_ID) ?: ""
+        )
+        return VoucherGameDetailFragment.newInstance(voucherGameExtraParam)
     }
 
     override fun getComponent(): VoucherGameDetailComponent {
@@ -30,12 +34,20 @@ class VoucherGameDetailActivity : BaseSimpleActivity(), HasComponent<VoucherGame
     }
 
     companion object {
-        fun newInstance(context: Context, menuId: Int, platformId: Int, operator: String): Intent {
+
+        const val PARAM_CATEGORY_ID = "category_id"
+        const val PARAM_MENU_ID = "menu_id"
+        const val PARAM_OPERATOR_ID = "operator_id"
+        const val PARAM_PRODUCT_ID = "product_id"
+
+        fun newInstance(context: Context, categoryId: String, menuId: String, operatorId: String, productId: String = ""): Intent {
             val intent = Intent(context, VoucherGameDetailActivity::class.java)
-            intent.putExtra(VoucherGameDetailFragment.EXTRA_MENU_ID, menuId)
-            intent.putExtra(VoucherGameDetailFragment.EXTRA_PLATFORM_ID, platformId)
-            intent.putExtra(VoucherGameDetailFragment.EXTRA_OPERATOR_ID, operator)
+            intent.putExtra(PARAM_CATEGORY_ID, categoryId)
+            intent.putExtra(PARAM_MENU_ID, menuId)
+            intent.putExtra(PARAM_OPERATOR_ID, operatorId)
+            intent.putExtra(PARAM_PRODUCT_ID, productId)
             return intent
         }
+
     }
 }
