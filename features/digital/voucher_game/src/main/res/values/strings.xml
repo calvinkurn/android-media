@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">voucher_game</string>
+    <string name="app_label">Voucher Game</string>
+    <string name="input_field_error_message">Masukkan nomor ID terlebih dahulu</string>
 </resources>

@@ -115,7 +115,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         return VoucherGameListAdapterFactory(this, this)
     }
 
-    override fun getScreenName(): String = "Voucher Game"
+    override fun getScreenName(): String = getString(R.string.app_label)
 
     override fun initInjector() {
         getComponent(VoucherGameListComponent::class.java).inject(this)
