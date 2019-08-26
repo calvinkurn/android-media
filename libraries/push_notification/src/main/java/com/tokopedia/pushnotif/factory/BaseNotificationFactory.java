@@ -15,9 +15,8 @@ import android.preference.PreferenceManager;
 import android.webkit.URLUtil;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.R;
