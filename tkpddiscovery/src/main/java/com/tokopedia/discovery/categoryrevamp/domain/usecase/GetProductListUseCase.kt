@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.categoryrevamp.domain.usecase
 
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.mapper.ProductListMapper
+import com.tokopedia.discovery.categoryrevamp.domain.mapper.ProductListMapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable

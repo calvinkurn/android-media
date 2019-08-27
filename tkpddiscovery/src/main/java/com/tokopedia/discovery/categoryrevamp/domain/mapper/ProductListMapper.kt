@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categoryrevamp.domain.usecase.mapper
+package com.tokopedia.discovery.categoryrevamp.domain.mapper
 
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
