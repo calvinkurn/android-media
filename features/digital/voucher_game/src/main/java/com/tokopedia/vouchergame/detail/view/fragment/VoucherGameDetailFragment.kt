@@ -33,7 +33,6 @@ import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameProductDecorator
 import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductViewHolder
 import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewModel
 import com.tokopedia.vouchergame.detail.widget.VoucherGameBottomSheets
-import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
 import java.util.regex.Pattern
@@ -77,7 +76,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
             it.run {
                 when(it) {
                     is Success -> {
-                        renderEnquiryFields(it.data)
+                        setupEnquiryFields(it.data)
                         renderProducts(it.data)
 
                         checkAutoSelectProduct()
@@ -111,7 +110,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         checkout_view.setListener(this)
     }
 
-    private fun renderEnquiryFields(data: VoucherGameDetailData) {
+    private fun setupEnquiryFields(data: VoucherGameDetailData) {
         // Hide input fields if there is no fields
         if (!data.needEnquiry || data.enquiryFields.isEmpty()) {
             inputFieldCount = 0
@@ -135,56 +134,53 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                     input_field_2.setHint(secondField.name)
                 }
             }
-        }
 
-        setInputFieldListener(data.enquiryFields)
+            // Enquire if all required fields are filled
+            input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
+                override fun onEditorActionDone() {
+                    enquireFields(data.enquiryFields)
+                }
+            })
+            if (inputFieldCount == 2) {
+                input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener {
+                    override fun onEditorActionDone() {
+                        enquireFields(data.enquiryFields)
+                    }
+                })
+            }
+        }
     }
 
-    private fun setInputFieldListener(data: List<VoucherGameEnquiryFields>) {
+    private fun enquireFields(enquiryData: List<VoucherGameEnquiryFields>) {
         val input1 = input_field_1.getInputText()
         val input2 = input_field_2.getInputText()
 
-        when (inputFieldCount) {
-            1 -> {
-                input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
-                    override fun onEditorActionDone() {
-                        if (input1.isNotEmpty()) enquireFields(data, input1)
-                    }
-                })
+        if (inputFieldCount in 1..2) {
+            // Add case when user is still filling the fields (only 1/2 fields are filled)
+            if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) return
+
+            // Verify fields
+            var isValid: Boolean
+            isValid = verifyField(enquiryData[0].validations, input1)
+            if (isValid && inputFieldCount == 2) {
+                isValid = verifyField(enquiryData[1].validations, input2)
             }
-            2 -> {
-                input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener {
-                    override fun onEditorActionDone() {
-                        if (input1.isNotEmpty() && input2.isNotEmpty()) enquireFields(data, input1, input2)
-                    }
-                })
+
+            if (isValid) {
+                // Reset error label
+                setInputFieldsError(false)
+
+                // TODO: Add enquiry api call
+            } else {
+                // Set error message
+                setInputFieldsError(true)
             }
-        }
-    }
-
-    private fun enquireFields(enquiryData: List<VoucherGameEnquiryFields>,
-                              input1: String,
-                              input2: String = "") {
-        // Verify fields
-        var isValid: Boolean
-        isValid = verifyField(enquiryData[0].validations, input1)
-        if (isValid && input2.isNotEmpty()) {
-            isValid = verifyField(enquiryData[1].validations, input2)
-        }
-
-        if (isValid) {
-            // Reset error label
-            setInputFieldsError(false)
-
-            // TODO: Add enquiry api call
-        } else {
-            // Set error message
-            setInputFieldsError(true)
         }
     }
 
     private fun verifyField(fieldValidation: List<VoucherGameEnquiryFields.Validation>,
                             input: String): Boolean {
+        if (input.isEmpty()) return false
         for (validation in fieldValidation) {
             if (!Pattern.matches(validation.rule, input)) {
                 return false
