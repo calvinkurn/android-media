@@ -7,4 +7,5 @@
 
     <string name="input_field_label_message">Masukkan nomor ID</string>
     <string name="input_field_error_message">Masukkan nomor ID terlebih dahulu</string>
+    <string name="enquiry_result_title">ID Details</string>
 </resources>

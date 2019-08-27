@@ -33,6 +33,7 @@ import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameProductDecorator
 import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductViewHolder
 import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewModel
 import com.tokopedia.vouchergame.detail.widget.VoucherGameBottomSheets
+import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
 import java.util.regex.Pattern
@@ -225,6 +226,18 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
             }
             renderList(listData)
         }
+    }
+
+    private fun renderEnquiryResult() {
+        input_field_label.visibility = View.INVISIBLE
+        // TODO: Add enquiry result data
+//        context?.run {
+//            for (result in results) {
+//                val resultView = VoucherGameEnquiryResultWidget(this)
+//                resultView.setEnquiryResult(result.field, result.value)
+//                enquiry_result_container.addView(resultView)
+//            }
+//        }
     }
 
     private fun setupProductInfo() {

@@ -90,7 +90,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/dp_12">
+                android:paddingLeft="@dimen/dp_12"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_12"
+                android:paddingBottom="@dimen/dp_16">
 
                 <com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
                     android:id="@+id/input_field_1"
@@ -114,9 +117,9 @@
                     android:id="@+id/input_field_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:paddingBottom="@dimen/dp_4"
+                    android:layout_marginStart="@dimen/dp_5"
+                    android:layout_marginLeft="@dimen/dp_5"
+                    android:layout_marginBottom="@dimen/dp_4"
                     android:text="@string/input_field_label_message"
                     android:textSize="@dimen/sp_14"
                     android:textColor="@color/black_70"
@@ -124,6 +127,32 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/input_field_1"
                     app:typographyType="body_3" />
+
+                <LinearLayout
+                    android:id="@+id/enquiry_result_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/input_field_label"
+                    tools:visibility="visible">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/enquiry_result_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_4"
+                        android:text="@string/enquiry_result_title"
+                        android:textColor="@color/black_70"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/input_field_1"
+                        app:typographyType="heading_4" />
+
+                </LinearLayout>
 
             </android.support.constraint.ConstraintLayout>
 
