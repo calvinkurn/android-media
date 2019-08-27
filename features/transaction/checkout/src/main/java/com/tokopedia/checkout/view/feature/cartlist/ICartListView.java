@@ -30,7 +30,10 @@ public interface ICartListView extends IBaseView {
 
     void renderErrorInitialGetCartListData(String message);
 
-    void renderToShipmentFormSuccess(List<CartItemData> cartItemDataList, boolean checkoutProductEligibleForCashOnDelivery, int condition);
+    void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData,
+                                     List<CartItemData> cartItemDataList,
+                                     boolean checkoutProductEligibleForCashOnDelivery,
+                                     int condition);
 
     void renderToAddressChoice();
 
