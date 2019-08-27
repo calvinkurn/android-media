@@ -38,6 +38,7 @@ dependencies {
     }
 
     implementation rootProject.ext.debugToolsDependencies.stetho
+    implementation project(rootProject.ext.libraries.url)
 }
 
 apply from: '../../../publish_local.gradle'

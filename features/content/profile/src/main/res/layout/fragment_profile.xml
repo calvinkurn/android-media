@@ -408,6 +408,7 @@
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
                     android:orientation="vertical"
+                    app:layoutManager="android.support.v7.widget.GridLayoutManager"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior"
                     app:reverseLayout="false" />
 

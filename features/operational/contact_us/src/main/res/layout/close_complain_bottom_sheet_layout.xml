@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_182">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="@dimen/dp_280"
+        android:layout_height="@dimen/dp_26"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_24"
+        android:text="@string/_close_this_complaint"
+        android:textColor="@color/black"
+        android:textSize="@dimen/sp_20"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_discription"
+        android:layout_width="@dimen/dp_280"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_12"
+        android:layout_marginRight="@dimen/dp_16"
+        android:text="@string/close_complain_message"
+        android:textColor="@color/gr_700"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title" />
+
+    <TextView
+        android:id="@+id/tv_no_button"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@drawable/rounded_rectangle_green_border"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_11"
+        android:paddingBottom="@dimen/dp_11"
+        android:text="@string/inbox_cancel"
+        android:textColor="@color/g_500"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_yes_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_discription" />
+
+    <TextView
+        android:id="@+id/tv_yes_button"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:background="@drawable/rounded_rectangle_greenbutton_solid"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_11"
+        android:paddingBottom="@dimen/dp_11"
+        android:text="@string/yes_close"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_no_button"
+        app:layout_constraintTop_toBottomOf="@+id/tv_discription" />
+
+</android.support.constraint.ConstraintLayout>

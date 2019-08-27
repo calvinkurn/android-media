@@ -4,6 +4,10 @@ import android.net.Uri
 import android.text.TextUtils
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -13,6 +17,8 @@ import com.tokopedia.track.TrackApp
 import java.util.*
 
 class ProductDetailTracking() {
+
+    val currencyLable = "IDR"
 
     fun sendScreen(shopID: String, shopType: String, productId: String) {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(
@@ -236,7 +242,7 @@ class ProductDetailTracking() {
                         KEY_ACTION, ProductTrackingConstant.Action.TOPADS_IMPRESSION +
                         (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else ""),
                         KEY_LABEL, pageTitle,
-                        KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE, "impression",
+                        KEY_ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, CURRENCY_DEFAULT_VALUE, "impressions",
                         DataLayer.listOf(
                                 DataLayer.mapOf(PROMO_NAME, product.name,
                                         ID, product.productId.toString(),
@@ -419,6 +425,39 @@ class ProductDetailTracking() {
             "shopType", getEnhanceShopType(shopInfo?.goldOS)
         ))
     }
+
+
+    ///////////////////////////////////////////////////////////////
+    //BRANCH START
+    //////////////////////////////////////////////////////////////
+
+    fun eventBranchItemView(productInfo: ProductInfo?, userId: String?){
+        if(productInfo != null) {
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ITEM_VIEW, createLinkerData(productInfo, userId)))
+        }
+    }
+
+    fun eventBranchAddToWishlist(productInfo: ProductInfo?, userId: String?){
+        if(productInfo != null) {
+            LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_WHISHLIST, createLinkerData(productInfo, userId)))
+        }
+    }
+
+    private fun createLinkerData(productInfo: ProductInfo, userId: String?): LinkerData{
+        var linkerData = LinkerData()
+        linkerData.id = productInfo.basic.id.toString()
+        linkerData.price = productInfo.basic.price.toInt().toString()
+        linkerData.description = productInfo.basic.description
+        linkerData.shopId = productInfo.basic.shopID.toString()
+        linkerData.catLvl1 = productInfo.category.name
+        linkerData.userId = userId ?: ""
+        linkerData.currency = currencyLable
+        return linkerData
+    }
+
+    ///////////////////////////////////////////////////////////////
+    //BRANCH END
+    //////////////////////////////////////////////////////////////
 
     ////////////////////////////////////////////////////////////////
     // APPSFYLER START

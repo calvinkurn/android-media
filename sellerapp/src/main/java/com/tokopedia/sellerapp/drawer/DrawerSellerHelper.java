@@ -32,16 +32,13 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.flashsale.management.router.FlashSaleRouter;
 import com.tokopedia.gm.featured.view.activity.GMFeaturedProductActivity;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.gm.statistic.view.activity.GMStatisticDashboardActivity;
-import com.tokopedia.gm.subscribe.tracking.GMTracking;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
+import com.tokopedia.power_merchant.subscribe.tracking.GMTracking;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
@@ -70,17 +67,15 @@ public class DrawerSellerHelper extends DrawerHelper
 
     private SessionHandler sessionHandler;
 
-    private RemoteConfig remoteConfig;
-
     public DrawerSellerHelper(Activity activity,
                               SessionHandler sessionHandler,
                               LocalCacheHandler drawerCache) {
         super(activity);
         this.sessionHandler = sessionHandler;
         this.drawerCache = drawerCache;
-        shopName = (TextView) activity.findViewById(R.id.label);
-        shopLabel = (TextView) activity.findViewById(R.id.sublabel);
-        shopIcon = (ImageView) activity.findViewById(R.id.icon);
+        shopName = activity.findViewById(R.id.label);
+        shopLabel = activity.findViewById(R.id.sublabel);
+        shopIcon = activity.findViewById(R.id.icon);
         shopLayout = activity.findViewById(R.id.drawer_shop);
         footerShadow = activity.findViewById(R.id.drawer_footer_shadow);
 
@@ -148,7 +143,6 @@ public class DrawerSellerHelper extends DrawerHelper
     }
 
     private void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     private DrawerItem getSellerMenu() {
@@ -390,10 +384,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.SELLER_FLASH_SALE:
-                    if (context.getApplication() instanceof FlashSaleRouter) {
-                        intent = ((FlashSaleRouter) context.getApplication()).getFlashSaleDashboardIntent(context);
-                        context.startActivity(intent);
-                    }
+                    RouteManager.route(context, ApplinkConst.SellerApp.FLASHSALE_MANAGEMENT);
                     break;
                 case TkpdState.DrawerPosition.FEATURED_PRODUCT:
                     eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);

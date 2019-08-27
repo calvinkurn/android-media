@@ -14,6 +14,7 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.graphql)

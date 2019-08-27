@@ -9,9 +9,6 @@ buildscript {
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
-        classpath ('com.jakewharton:butterknife-gradle-plugin:9.0.0-SNAPSHOT'){
-            exclude group: 'com.android.tools.build', module: 'gradle'
-        }
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
@@ -27,6 +24,7 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.williamchart)
@@ -79,9 +77,6 @@ dependencies {
 
     implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
-
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    kapt rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor

@@ -34,8 +34,6 @@ import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
-import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
-import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -75,6 +73,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.cpm.CharacterPerMinuteInterface;
+import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.flashsale.management.router.FlashSaleInternalRouter;
 import com.tokopedia.flashsale.management.router.FlashSaleRouter;
@@ -82,8 +81,6 @@ import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
-import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
-import com.tokopedia.gm.subscribe.GmSubscribeModuleRouter;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
@@ -192,8 +189,6 @@ import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.transaction.common.TransactionRouter;
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest;
-import com.tokopedia.transaction.common.sharedata.AddToCartResult;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
@@ -226,7 +221,7 @@ public abstract class SellerRouterApplication extends MainApplication
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
         ApplinkRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
-        ChangePasswordRouter, WithdrawRouter, GmSubscribeModuleRouter,
+        ChangePasswordRouter, WithdrawRouter,
         PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
         TopAdsDashboardRouter,
         TopAdsManagementRouter,
@@ -496,12 +491,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void sendEventTrackingGmSubscribe(Map<String, Object> eventTracking) {
-        UnifyTracking.sendGTMEvent(getAppContext(), eventTracking);
-        CommonUtils.dumper(eventTracking.toString());
-    }
-
-    @Override
     public Intent getRegisterIntent(Context context) {
         Intent intent = RegisterInitialActivity.getCallingIntent(context);
         return intent;
@@ -710,13 +699,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToGMSubscribe(@NonNull Activity activity) {
-        Intent intent = GMSubscribeInternalRouter.getGMSubscribeHomeIntent(activity);
-        activity.startActivity(intent);
-    }
-
-    @Override
-    public Intent getGMHomeIntent(Context context) {
-        return GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
     }
 
     @Override
@@ -1290,11 +1272,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
     }
 
-    @Override
-    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest, boolean isOneClickShipment) {
-        return null;
-    }
-
     @NonNull
     @Override
     public Fragment getFavoritedShopFragment(@NonNull String userId) {
@@ -1355,8 +1332,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public boolean isAllowLogOnChuckInterceptorNotification() {
-        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptions.CHUCK_ENABLED);
-        return cache.getBoolean(DeveloperOptions.IS_CHUCK_ENABLED, false);
+        LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
+        return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
     }
 
     @Override

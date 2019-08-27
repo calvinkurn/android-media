@@ -18,6 +18,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.shipping_recommendation.domain.shipping.CartItemModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -31,9 +32,9 @@ public class ShipmentCartItemViewHolder extends RecyclerView.ViewHolder {
     private ShipmentItemListener shipmentItemListener;
 
     private ImageView mIvProductImage;
-    private TextView mTvProductName;
-    private TextView mTvProductPrice;
-    private TextView mTvProductCountAndWeight;
+    private Typography mTvProductName;
+    private Typography mTvProductPrice;
+    private Typography mTvProductCountAndWeight;
     private LinearLayout mLlOptionalNoteToSellerLayout;
     private TextView mTvOptionalNoteToSeller;
     private FlexboxLayout mllProductPoliciesLayout;

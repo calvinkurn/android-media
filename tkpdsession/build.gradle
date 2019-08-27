@@ -29,6 +29,7 @@ dependencies {
 
     
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.url)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.updateinactivephone)
