@@ -519,7 +519,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void startLocationFragment(List<Location> locations) {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString(), location);
-        getChildFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(CATEGORY_FRAGMENT).commit();
+        getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up)
+                .add(R.id.main_content, fragment).addToBackStack(CATEGORY_FRAGMENT).commit();
     }
 
     @Override

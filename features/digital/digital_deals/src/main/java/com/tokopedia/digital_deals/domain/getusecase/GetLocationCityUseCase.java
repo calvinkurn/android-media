@@ -28,7 +28,7 @@ public class GetLocationCityUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        String url = "https://booking-staging.tokopedia.com/v1/api/location/deal";
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CITIES;
         //Request 1
         Type token = new TypeToken<DataResponse<LocationResponse>>() {
         }.getType();

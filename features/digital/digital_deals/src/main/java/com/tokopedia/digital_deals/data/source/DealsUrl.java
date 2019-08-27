@@ -11,6 +11,7 @@ public class DealsUrl {
         String DEALS_LIST_V2 = "v2/api/h/deal";
         String DEALS_LIST_SEARCH = "v1/api/s/deal";
         String DEALS_LOCATIONS = "v1/api/s/location";
+        String DEALS_CITIES = "v1/api/location/deal";
         String DEALS_PRODUCT = "v1/api/p";
         String DEALS_CATEGORY = "v1/api/h/deal/c/";
         String DEALS_LIKES = "v1/api/deal/rating";

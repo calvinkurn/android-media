@@ -28,6 +28,8 @@ import com.tokopedia.library.baseadapter.BaseAdapter;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -42,13 +44,16 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
     private String searchText = "";
     private Location location;
     private AdapterCallback callback;
+    private List<Location> mPopularLocations = new ArrayList<>();
+    private boolean isForFirstTime = false;
 
-    public DealsPopularLocationAdapter(Context context, SelectPopularLocationListener selectPopularLocationListener, AdapterCallback callback, Location location) {
+    public DealsPopularLocationAdapter(Context context, SelectPopularLocationListener selectPopularLocationListener, AdapterCallback callback, Location location, boolean isForFirstTime) {
         super(callback);
         this.context = context;
         this.actionListener = selectPopularLocationListener;
         this.callback = callback;
         this.location = location;
+        this.isForFirstTime = isForFirstTime;
         getSearchLocationListRequestUseCase = new GetLocationListRequestUseCase();
     }
 
@@ -95,9 +100,16 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
                 if (pageNumber == 1 && locationResponse.getLocations() != null && locationResponse.getLocations().size() > 0) {
                     clear();
                 }
+                if (isForFirstTime) {
+                    mPopularLocations.addAll(locationResponse.getLocations());
+                    isForFirstTime = false;
+                }
                 if (locationResponse.getLocations() == null) {
                     setLastPage(true);
-                    callback.onEmptyList(locationResponse.getLocations());
+                    clear();
+                    addAll(mPopularLocations);
+                    loadCompleted(mPopularLocations, locationResponse);
+                    callback.onEmptyList(mPopularLocations);
                 } else {
                     loadCompleted(locationResponse.getLocations(), locationResponse);
                     if (locationResponse.getPage() == null || !URLUtil.isValidUrl(locationResponse.getPage().getUriNext())) {
@@ -144,7 +156,14 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
 
         @Override
         public void bindView(Location item, int position) {
-            bindData(item, position);
+            if (isForFirstTime) {
+                for (Location location : mPopularLocations) {
+                    bindData(location, position);
+                }
+            } else {
+                bindData(item, position);
+            }
+
         }
 
         public void setIndex(int position) {

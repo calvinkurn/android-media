@@ -212,7 +212,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     public void startLocationFragment(List<Location> locationList, boolean isForFirstTime) {
         Location location = Utils.getSingletonInstance().getLocation(this);
         Fragment fragment = SelectLocationBottomSheet.createInstance(tvCityName.getText().toString(), location);
-        getSupportFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(SEARCH_PAGE).commit();
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up)
+                .add(R.id.main_content, fragment).addToBackStack(SEARCH_PAGE).commit();
     }
 
     @Override

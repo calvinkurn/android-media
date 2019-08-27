@@ -254,7 +254,8 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
     public void startLocationFragment(List<Location> locations) {
         Location location = Utils.getSingletonInstance().getLocation(this);
         Fragment fragment = SelectLocationBottomSheet.createInstance(toolbarTitle.getText().toString(), location);
-        getSupportFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(ALL_BRANDS).commit();
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up)
+                .add(R.id.main_content, fragment).addToBackStack(ALL_BRANDS).commit();
     }
 
     private void refetchData(String searchText, int position) {

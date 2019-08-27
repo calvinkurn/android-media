@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -40,6 +41,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.coachmark.CoachMark;
@@ -69,6 +71,7 @@ import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -169,7 +172,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void onStart() {
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
+        if (location != null && !tvLocationName.getText().equals(location.getName())) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
+            Toaster.Companion.showNormal(mainContent, location.getName(), Snackbar.LENGTH_SHORT);
+//            Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();
@@ -712,7 +718,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         Fragment fragment = SelectLocationBottomSheet.createInstance(tvLocationName.getText().toString(), location);
-        getChildFragmentManager().beginTransaction().add(R.id.main_content, fragment).addToBackStack(HOME_FRAGMENT).commit();
+        getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up)
+                .add(R.id.main_content, fragment).addToBackStack(HOME_FRAGMENT).commit();
     }
 
     @Override

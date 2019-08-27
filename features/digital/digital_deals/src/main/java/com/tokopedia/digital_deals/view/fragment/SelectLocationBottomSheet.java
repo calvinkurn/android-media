@@ -5,10 +5,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
@@ -80,7 +79,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         noLocationLayout = locationView.findViewById(R.id.no_location);
         popularLocationTitle = locationView.findViewById(R.id.popular_location_heading);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        dealsPopularLocationAdapter = new DealsPopularLocationAdapter(getContext(), this, mAdapterCallbacks, getArguments().getParcelable(Utils.LOCATION_OBJECT));
+        dealsPopularLocationAdapter = new DealsPopularLocationAdapter(getContext(), this, mAdapterCallbacks, getArguments().getParcelable(Utils.LOCATION_OBJECT), true);
         this.selectedLocation = selectedLocation;
         searchInputView.setListener(this);
         searchInputView.setFocusChangeListener(this);
@@ -95,12 +94,14 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
         crossIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                KeyboardHandler.hideSoftKeyboard(getActivity());
                 getFragmentManager().popBackStack();
             }
         });
         renderPopularLocations();
 
         nestedScrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrolX, scrollY, oldScrollX, oldScrollY) -> {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
             if(v.getChildAt(v.getChildCount() - 1) != null) {
                 if ((scrollY >= (v.getChildAt(v.getChildCount() - 1).getMeasuredHeight() - v.getMeasuredHeight())) &&
                         scrollY > oldScrollY) {
@@ -147,7 +148,6 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
     }
 
     public void renderPopularLocations() {
-        rvLocationResults.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         rvLocationResults.setAdapter(dealsPopularLocationAdapter);
         dealsPopularLocationAdapter.startDataLoading();
     }
@@ -162,12 +162,14 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
     @Override
     public void onSearchSubmitted(String text) {
         if (!TextUtils.isEmpty(text)) {
+            nestedScrollView.scrollTo(0, 0);
             popularCityTitle.setVisibility(View.GONE);
             rvSearchResults.setVisibility(View.GONE);
             popularLocationTitle.setVisibility(View.GONE);
             dealsPopularLocationAdapter.setSearchText(text);
             dealsPopularLocationAdapter.setCurrentPageIndex(1);
             dealsPopularLocationAdapter.startDataLoading();
+            noLocationLayout.setVisibility(View.GONE);
         } else {
             dealsPopularLocationAdapter.setSearchText("");
             dealsPopularLocationAdapter.setCurrentPageIndex(1);
@@ -214,6 +216,7 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
 
         @Override
         public void onFinishFirstPageLoad(int itemCount, @Nullable Object rawObject) {
+
         }
 
         @Override
@@ -228,21 +231,23 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
 
         @Override
         public void onError(int pageNumber) {
-            popularCityTitle.setVisibility(View.GONE);
-            popularLocationTitle.setVisibility(View.VISIBLE);
-            rvSearchResults.setVisibility(View.GONE);
-            noLocationLayout.setVisibility(View.VISIBLE);
+            popularCityTitle.setVisibility(View.VISIBLE);
+            popularLocationTitle.setVisibility(View.GONE);
+            rvSearchResults.setVisibility(View.VISIBLE);
+            noLocationLayout.setVisibility(View.GONE);
         }
     };
 
     @Override
     public void onCityItemSelected(boolean locationUpdated) {
+        KeyboardHandler.hideSoftKeyboard(getActivity());
         selectedLocationListener.onLocationItemUpdated(locationUpdated);
         getFragmentManager().popBackStack();
     }
 
     @Override
     public void onPopularLocationSelected(boolean locationUpdated) {
+        KeyboardHandler.hideSoftKeyboard(getActivity());
         getFragmentManager().popBackStack();
         selectedLocationListener.onLocationItemUpdated(locationUpdated);
     }
