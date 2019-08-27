@@ -145,10 +145,10 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     override fun onTrackEventClick(type: Int, position: Int, categoryName: String) {
         when (type) {
             TYPE_ALL_PROMO -> travelHomepageTrackingUtil.travelHomepageClickAllBanner()
-            TYPE_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickOrder(position.toString(), categoryName)
+            TYPE_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickOrder(position, categoryName)
             TYPE_ALL_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickAllOrder()
-            TYPE_RECENT_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickRecentSearch(position.toString(), categoryName)
-            TYPE_POPULAR_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickPopularSearch(position.toString(), categoryName)
+            TYPE_RECENT_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickRecentSearch(position, categoryName)
+            TYPE_POPULAR_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickPopularSearch(position, categoryName)
             TYPE_ALL_DEALS -> travelHomepageTrackingUtil.travelHomepageClickAllDeals()
         }
     }
