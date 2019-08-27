@@ -76,7 +76,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         private fun initView(item: HighlightCardViewModel) {
             ImageHandler.loadImageFit2(itemView.context, itemView.productImage, item.thumbnail)
             if (getBadgeId(item) != 0) {
-                ImageHandler.loadImageWithId(itemView.productImage, getBadgeId(item))
+                ImageHandler.loadImageWithId(itemView.badge, getBadgeId(item))
             }
             ImageHandler.loadImageFit2(itemView.context, itemView.userImage, item.header.avatar)
             itemView.userName.text = item.header.avatarTitle
