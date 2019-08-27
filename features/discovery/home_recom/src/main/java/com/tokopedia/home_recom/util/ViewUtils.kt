@@ -14,7 +14,6 @@ import android.view.Gravity
 import android.view.View
 import android.view.View.LAYER_TYPE_SOFTWARE
 
-
 /**
  * Created by Lukas on 2019-08-20
  */
