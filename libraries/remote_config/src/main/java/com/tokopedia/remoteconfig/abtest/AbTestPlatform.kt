@@ -19,6 +19,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import rx.schedulers.Schedulers
+import java.lang.RuntimeException
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -40,27 +41,31 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     }
 
     override fun getByteArray(key: String?): ByteArray {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw RuntimeException("Method is not implemented yet")
     }
 
     override fun getByteArray(key: String?, defaultValue: ByteArray?): ByteArray {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw RuntimeException("Method is not implemented yet")
     }
 
     override fun getDouble(key: String?): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw RuntimeException("Method is not implemented yet")
+    }
+
+    override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
+        throw RuntimeException("Method is not implemented yet")
     }
 
     override fun getDouble(key: String?, defaultValue: Double): Double {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw RuntimeException("Method is not implemented yet")
     }
 
     override fun getLong(key: String?): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw RuntimeException("Method is not implemented yet")
     }
 
     override fun getLong(key: String?, defaultValue: Long): Long {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        throw RuntimeException("Method is not implemented yet")
     }
 
     override fun getString(key: String?): String {
