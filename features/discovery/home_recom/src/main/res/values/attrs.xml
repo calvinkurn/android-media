@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RoundedCardView">
+        <attr name="radius" format="dimension"/>
+        <attr name="contentPadding" format="dimension"/>
+        <attr name="elevation" format="dimension"/>
+        <attr name="shadowGravity" format="string"/>
+    </declare-styleable>
+</resources>

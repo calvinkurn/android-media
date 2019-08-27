@@ -20,10 +20,12 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<RecommendationCarouselDataModel>(view) {
 
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
+    private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
     private val recyclerView: RecyclerView by lazy { view.findViewById<RecyclerView>(R.id.list) }
     private val list = mutableListOf<RecommendationCarouselItemDataModel>()
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
+        seeMore.setOnClickListener {  }
         setupRecyclerView(element)
     }
 
