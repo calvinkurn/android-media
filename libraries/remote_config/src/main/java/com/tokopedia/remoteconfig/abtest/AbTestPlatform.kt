@@ -72,10 +72,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return getString(key, "")
     }
 
-    override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun getString(key: String?, defaultValue: String): String {
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)
         if (!cacheValue.isEmpty() && !cacheValue.equals(defaultValue, ignoreCase = true)) {
