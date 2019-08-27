@@ -34,7 +34,6 @@ import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
-import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsTrackingOrder;
 import com.tokopedia.unifycomponents.UnifyButton;
 
 import java.util.concurrent.TimeUnit;
@@ -49,8 +48,7 @@ import rx.schedulers.Schedulers;
  * Created by kris on 5/9/18. Tokopedia
  */
 
-public class TrackingPageFragment extends BaseDaggerFragment implements
-        ITrackingPageFragment, ITransactionAnalyticsTrackingOrder {
+public class TrackingPageFragment extends BaseDaggerFragment implements ITrackingPageFragment {
 
     private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
     private static final int PER_SECOND = 1000;
