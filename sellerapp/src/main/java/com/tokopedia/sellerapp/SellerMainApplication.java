@@ -19,48 +19,23 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.constant.AbstractionBaseURL;
-import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
-import com.tokopedia.changepassword.data.ChangePasswordUrl;
-import com.tokopedia.chat_common.network.ChatUrl;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.common.category.CategoryDbFlow;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
-import com.tokopedia.imageuploader.data.ImageUploaderUrl;
-import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
-import com.tokopedia.logout.data.LogoutUrl;
-import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
-import com.tokopedia.network.SessionUrl;
-import com.tokopedia.otp.cotp.data.CotpUrl;
-import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
-import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
-import com.tokopedia.product.detail.data.util.ProductDetailConstant;
-import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
-import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
-import com.tokopedia.sessioncommon.data.SessionCommonUrl;
-import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
-import com.tokopedia.settingbank.choosebank.data.BankListUrl;
-import com.tokopedia.shop.common.constant.ShopCommonUrl;
-import com.tokopedia.shop.common.constant.ShopUrl;
-import com.tokopedia.talk.common.data.TalkUrl;
-import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 
@@ -168,13 +143,13 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         super.onCreate();
 
+        TokopediaUrl.Companion.init(this);
+
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
         GraphqlClient.init(this);
         NetworkClient.init(this);
-        InstabugInitalize.init(this);
-        TokopediaUrl.Companion.init(this);
     }
 
     @Override
@@ -238,9 +213,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return null;
     }
 
-    //@Override
+    @Override
     public Intent getInboxTicketCallingIntent(Context context) {
-        return null;
+        return new Intent(context, InboxListActivity.class);
     }
 
 }

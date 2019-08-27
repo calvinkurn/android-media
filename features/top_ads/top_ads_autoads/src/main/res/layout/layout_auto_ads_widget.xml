@@ -59,7 +59,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="@dimen/dp_8"
-                    android:src="@drawable/ic_chevron_autoads" />
+                    app:srcCompat="@drawable/ic_chevron_autoads" />
             </RelativeLayout>
 
             <TextView

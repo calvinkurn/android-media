@@ -25,7 +25,7 @@ public class GetShopInfoUseCase extends UseCase<ShopInfo> {
 
     @Override
     public Observable<ShopInfo> createObservable(RequestParams requestParams) {
-        String shopId = requestParams.getString(SHOP_ID, null);
+        String shopId = requestParams.getString(SHOP_ID, "0");
         return shopRepository.getShopInfo(shopId);
     }
 

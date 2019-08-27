@@ -26,7 +26,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.saldodetails.R;
-import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
+import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
@@ -46,7 +46,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.inject.Inject;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SaldoDepositFragment extends BaseDaggerFragment
         implements SaldoDetailContract.View {
