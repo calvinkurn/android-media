@@ -232,7 +232,6 @@ ext {
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
             liveData              : "android.arch.lifecycle:livedata:$lifeCycleVersion",
             laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.2@aar",
-            rootbeer              : "com.github.scottyab:rootbeer:0.0.7",
     ]
 
     testDependencies = [
