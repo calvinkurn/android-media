@@ -56,6 +56,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
 
+    var inputFieldCount = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -111,9 +113,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
 
     private fun renderEnquiryFields(data: VoucherGameDetailData) {
         // Hide input fields if there is no fields
-        if (!data.needEnquiry) input_field_container.visibility = View.GONE
+        if (!data.needEnquiry || data.enquiryFields.isEmpty()) {
+            inputFieldCount = 0
+            input_field_container.visibility = View.GONE
+        }
         else {
             val fields = data.enquiryFields
+            inputFieldCount = fields.size
 
             // Show first input field (guaranteed to have an input field)
             val firstField = fields[0]
@@ -121,56 +127,49 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
             input_field_1.setHint(firstField.name)
 
             // Hide second field if there is only one field, setup second field otherwise
-            if (fields.size == 1) {
-                input_field_2.visibility = View.GONE
-            } else if (fields.size == 2) {
-                val secondField = fields[1]
-                input_field_2.setLabel(secondField.name)
-                input_field_2.setHint(secondField.name)
+            when (inputFieldCount) {
+                1 -> input_field_2.visibility = View.GONE
+                2 -> {
+                    val secondField = fields[1]
+                    input_field_2.setLabel(secondField.name)
+                    input_field_2.setHint(secondField.name)
+                }
             }
         }
 
-        // Enquire when all required input fields are filled
-        if (input_field_1.visibility == View.VISIBLE) {
-            input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
-                override fun onEditorActionDone() {
-                    val input1 = input_field_1.getInputText()
-                    val input2 = input_field_2.getInputText()
+        setInputFieldListener(data.enquiryFields)
+    }
 
-                    // If first input field is filled, check if second input field is required (and is filled)
-                    if (input1.isNotEmpty()) {
-                        if (input_field_2.visibility == View.VISIBLE && input2.isNotEmpty()) {
-                            enquireFields(data.enquiryFields, input1, input2)
-                        } else {
-                            enquireFields(data.enquiryFields, input1)
-                        }
-                    }
-                }
-            })
-        }
-        if (input_field_2.visibility == View.VISIBLE) {
-            input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener {
-                override fun onEditorActionDone() {
-                    val input1 = input_field_1.getInputText()
-                    val input2 = input_field_2.getInputText()
+    private fun setInputFieldListener(data: List<VoucherGameEnquiryFields>) {
+        val input1 = input_field_1.getInputText()
+        val input2 = input_field_2.getInputText()
 
-                    // Both input fields are required, check if both are filled
-                    if (input1.isNotEmpty() && input2.isNotEmpty()) {
-                        enquireFields(data.enquiryFields, input1, input2)
+        when (inputFieldCount) {
+            1 -> {
+                input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
+                    override fun onEditorActionDone() {
+                        if (input1.isNotEmpty()) enquireFields(data)
                     }
-                }
-            })
+                })
+            }
+            2 -> {
+                input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener {
+                    override fun onEditorActionDone() {
+                        if (input1.isNotEmpty() && input2.isNotEmpty()) enquireFields(data)
+                    }
+                })
+            }
         }
     }
 
-    private fun enquireFields(enquiryData: List<VoucherGameEnquiryFields>,
-                              input1: String,
-                              input2: String? = null) {
+    private fun enquireFields(enquiryData: List<VoucherGameEnquiryFields>) {
+        val input1 = input_field_1.getInputText()
 
         // Verify fields
         var isValid: Boolean
         isValid = verifyField(enquiryData[0].validations, input1)
-        if (isValid && input2 != null) {
+        if (isValid && inputFieldCount == 2) {
+            val input2 = input_field_2.getInputText()
             isValid = verifyField(enquiryData[1].validations, input2)
         }
 
