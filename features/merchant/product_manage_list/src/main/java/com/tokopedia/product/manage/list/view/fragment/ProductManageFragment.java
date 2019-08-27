@@ -18,7 +18,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.DividerItemDecoration;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -365,7 +364,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         productManageFilterModel = new ProductManageFilterModel();
         productManageFilterModel.reset();
         super.onViewCreated(view, savedInstanceState);
-        getRecyclerView(view).addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+//        getRecyclerView(view).addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         searchInputView.clearFocus();
         initView(view);
         setupBottomSheet();
@@ -409,6 +408,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
     private void initView(View view) {
         progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setTitle(R.string.title_loading);
         bulkCheckBox = view.findViewById(R.id.bulk_check_box);
         coordinatorLayout = view.findViewById(R.id.coordinator_layout);
         bottomActionView = view.findViewById(R.id.bottom_action_view);
@@ -750,9 +750,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                 getString(R.string.product_manage_bulk_snackbar, String.valueOf(successData.size()), String.valueOf(failedData.size())), () -> {
 //                    productManagePresenter.bulkUpdateProduct();
                 }).showRetrySnackbar();
-//        NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-//                ViewUtils.getErrorMessage(getActivity(), t), () -> productManagePresenter.deleteProduct(productIdFailToDeleteList)).showRetrySnackbar();
-
     }
 
     @Override

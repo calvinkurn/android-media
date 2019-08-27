@@ -11,15 +11,15 @@ import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_DELETED
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Param
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response
-import com.tokopedia.product.manage.list.data.model.productlist.ProductListResponse
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase
-import com.tokopedia.product.manage.list.domain.GetProductListUseCase
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.list.view.listener.ProductManageView
 import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
 import com.tokopedia.seller.product.manage.constant.*
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListResponse
+import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase
 import com.tokopedia.user.session.UserSessionInterface

@@ -29,7 +29,6 @@ import com.tokopedia.product.manage.list.data.source.ProductActionApi;
 import com.tokopedia.product.manage.list.domain.ActionProductManageRepository;
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
-import com.tokopedia.product.manage.list.domain.GetProductListUseCase;
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
@@ -39,6 +38,7 @@ import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
+import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase;
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
@@ -55,9 +55,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
-import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_PRODUCT_LIST;
 import static com.tokopedia.product.manage.list.constant.GqlRawConstantKt.GQL_UPDATE_PRODUCT;
 import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.GQL_POPUP_NAME;
+import static com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST;
 
 /**
  * Created by zulfikarrahman on 9/26/17.
@@ -245,21 +245,21 @@ public class ProductManageModule {
 
     @ProductManageScope
     @Provides
-    @Named(GQL_PRODUCT_LIST)
-    public String provideProductListQuery(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(
-                context.getResources(),
-                R.raw.gql_get_product_list
-        );
-    }
-
-    @ProductManageScope
-    @Provides
     @Named(GQL_UPDATE_PRODUCT)
     public String provideUpdateProduct(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.gql_mutation_edit_product
+        );
+    }
+
+    @ProductManageScope
+    @Provides
+    @Named(GQL_PRODUCT_LIST)
+    public String provideProductListQuery(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                com.tokopedia.shop.common.R.raw.gql_get_product_list
         );
     }
 }

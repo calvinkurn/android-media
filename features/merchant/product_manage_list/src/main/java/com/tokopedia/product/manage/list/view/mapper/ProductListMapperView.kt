@@ -1,9 +1,9 @@
 package com.tokopedia.product.manage.list.view.mapper
 
-import com.tokopedia.product.manage.list.data.model.productlist.Data
-import com.tokopedia.product.manage.list.data.model.productlist.ProductListResponse
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListResponse
 import com.tokopedia.product.manage.list.view.model.ProductListManageModelView
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.Data
 import javax.inject.Inject
 
 class ProductListMapperView @Inject constructor() {
