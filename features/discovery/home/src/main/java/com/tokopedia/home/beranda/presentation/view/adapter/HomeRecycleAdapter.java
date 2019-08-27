@@ -8,33 +8,19 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelSprintViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicLegoBannerViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author by errysuprayogi on 11/27/17.
  */
 
 public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
-    private Integer registeredLayouts[] =
-            {DynamicChannelSprintViewHolder.Companion.getLAYOUT_ITEM_SPRINT(),
-            DynamicLegoBannerViewHolder.Companion.getLAYOUT_ITEM_LEGO()};
-    private Set<Integer> registeredUnifyDynamicChannelLayout = new HashSet<>(Arrays.asList(registeredLayouts));
-
-    public static final String[] SET_VALUES = new String[] { "a", "b" };
-    public static final Set<String> MY_SET = new HashSet<>(Arrays.asList(SET_VALUES));
-
     //without ticker
     static public final int POSITION_GEOLOCATION_WITHOUT_TICKER = 3;
     static public final int POSITION_HEADER_WITHOUT_TICKER = 1;
@@ -56,11 +42,7 @@ public class HomeRecycleAdapter extends BaseAdapter<HomeAdapterFactory> {
 
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        int layout = viewType;
-        if (registeredUnifyDynamicChannelLayout.contains(viewType)) {
-            layout = DynamicChannelViewHolder.Companion.getMASTER_LAYOUT_DC();
-        }
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
         return typeFactory.createViewHolder(view, viewType);
     }
 

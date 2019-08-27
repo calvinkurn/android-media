@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.Typeface
 import android.support.annotation.LayoutRes
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
@@ -27,13 +26,15 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.LinearHorizontalSpacingDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
 import java.util.ArrayList
 
-class SpotlightViewHolder(itemView: View, listener: HomeCategoryListener) : AbstractViewHolder<SpotlightViewModel>(itemView) {
+class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : AbstractViewHolder<SpotlightViewModel>(itemView) {
     private val recyclerView: RecyclerView
     private val adapter: SpotlightAdapter
 
@@ -61,6 +62,11 @@ class SpotlightViewHolder(itemView: View, listener: HomeCategoryListener) : Abst
 
     override fun bind(element: SpotlightViewModel) {
         adapter.setData(element.spotlightItems)
+        if (!element.isCache) {
+            itemView.addOnImpressionListener(
+                    element, OnSpotlightImpression(element, listener, adapterPosition)
+            )
+        }
     }
 
     private class SpotlightAdapter(private val listener: HomeCategoryListener) : RecyclerView.Adapter<SpotlightItemViewHolder>() {
@@ -139,6 +145,21 @@ class SpotlightViewHolder(itemView: View, listener: HomeCategoryListener) : Abst
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_spotlight
+    }
+}
+
+class OnSpotlightImpression(
+        val spotlightViewModel: SpotlightViewModel,
+        val listener: HomeCategoryListener,
+        val position: Int) : ViewHintListener {
+    override fun onViewHint() {
+        listener.putEEToIris(
+                HomePageTracking.getEnhanceImpressionSpotlightHomePage(
+                        spotlightViewModel.channelId,
+                        spotlightViewModel.spotlightItems,
+                        position
+                )
+        )
     }
 }
 

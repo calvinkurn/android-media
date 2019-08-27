@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import android.support.annotation.IdRes
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -13,32 +12,53 @@ import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DateHelper
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
-abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: View,
+abstract class DynamicChannelViewHolder(itemView: View,
                                private val listener: HomeCategoryListener,
                                private val countDownListener: CountDownView.CountDownListener) : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
-
-    protected val defaultSpanCount = 3
-
     private val context: Context = itemView.context
 
     lateinit var countDownView: CountDownView
 
     companion object {
+        const val TYPE_SPRINT_SALE = 0
+        const val TYPE_SPRINT_LEGO = 1
+        const val TYPE_ORGANIC = 2
+        const val TYPE_SIX_GRID_LEGO = 3
+        const val TYPE_THREE_GRID_LEGO = 4
+        const val TYPE_CURATED = 5
+        const val TYPE_BANNER = 6
+        const val TYPE_BANNER_CAROUSEL = 7
+
         @LayoutRes
         val MASTER_LAYOUT_DC = R.layout.home_master_dynamic_channel
     }
 
+    protected fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
+        when(channels.layout) {
+            DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> return TYPE_SIX_GRID_LEGO
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> return TYPE_THREE_GRID_LEGO
+            DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
+            DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
+            DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC
+            DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> return TYPE_BANNER_CAROUSEL
+            DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
+        }
+        return TYPE_CURATED
+    }
+
     override fun bind(element: DynamicChannelViewModel) {
         try {
-            val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
             val channelTitle: Typography = itemView.findViewById(R.id.channel_title)
             val seeAllButton: TextView = itemView.findViewById(R.id.see_all_button)
             val channelTitleContainer: View = itemView.findViewById(R.id.channel_title_container)
@@ -47,14 +67,18 @@ abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: Vi
             val channel = element.channel
             val channelHeaderName = element.channel.header.name
 
-            recyclerView.layoutManager = GridLayoutManager(itemView.context, defaultSpanCount,
-                    GridLayoutManager.VERTICAL, false)
+            if (!element.isCache) {
+                itemView.addOnImpressionListener(channel, OnProductImpressedListener(
+                        channel,
+                        listener,
+                        adapterPosition,
+                        getLayoutType(channel)))
+            }
             /**
              * add decoration when recyclerview has no item decorator
              */
-            if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(getRecyclerViewDecorator())
+            setupContent(channel)
 
-            recyclerView.adapter = getItemAdapter(channel)
             /**
              * Requirement:
              * Only show channel header name when it is exist
@@ -102,9 +126,7 @@ abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: Vi
         }
     }
 
-    protected abstract fun getItemAdapter(channel: DynamicHomeChannel.Channels): RecyclerView.Adapter<T>
-
-    protected abstract fun getRecyclerViewDecorator(): RecyclerView.ItemDecoration
+    protected abstract fun setupContent(channel: DynamicHomeChannel.Channels)
 
     protected abstract fun getViewHolderClassName(): String
 
@@ -112,5 +134,58 @@ abstract class DynamicChannelViewHolder<T: RecyclerView.ViewHolder>(itemView: Vi
 
     private fun hasExpiredTime(channel: DynamicHomeChannel.Channels): Boolean {
         return channel.header.expiredTime != null && !TextUtils.isEmpty(channel.header.expiredTime)
+    }
+
+    class OnProductImpressedListener(val channel: DynamicHomeChannel.Channels,
+                                     val listener: HomeCategoryListener,
+                                     val position: Int,
+                                     val layoutType: Int) : ViewHintListener {
+        override fun onViewHint() {
+            when(layoutType) {
+                TYPE_SPRINT_SALE -> {
+                    listener.putEEToIris(
+                            HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
+                                    channel.id, channel.grids, channel.homeAttribution, position
+                            )
+                    )
+                }
+
+                TYPE_SPRINT_LEGO, TYPE_ORGANIC -> {
+                    listener.putEEToIris(
+                            HomePageTracking.getEnhanceImpressionDynamicSprintLegoHomePage(
+                                    channel.id, channel.grids, channel.header.name, channel.homeAttribution, position
+                            )
+                    )
+                }
+                TYPE_SIX_GRID_LEGO -> {
+                    listener.putEEToIris(
+                            HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
+                                    channel.id, channel.grids, channel.header.name, channel.homeAttribution, position
+                            )
+                    )
+                }
+                TYPE_THREE_GRID_LEGO -> {
+                    listener.putEEToIris(
+                            HomePageTracking.getEnhanceImpressionLegoThreeBannerHomePage(
+                                    channel.id, channel.grids, channel.header.name, channel.homeAttribution, position
+                            )
+                    )
+                }
+                TYPE_BANNER, TYPE_BANNER_CAROUSEL -> {
+                    val bannerType = when(layoutType) {
+                        TYPE_BANNER -> "non carousel"
+                        TYPE_BANNER_CAROUSEL -> "carousel"
+                        else -> "non carousel"
+                    }
+                    listener.putEEToIris(
+                            HomePageTracking.getEnhanceImpressionProductChannelMix(
+                                    channel.grids, channel.header.name, bannerType
+                            )
+                    )
+                    listener.putEEToIris(
+                            channel.enhanceImpressionBannerChannelMix)
+                }
+            }
+        }
     }
 }

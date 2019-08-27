@@ -5,7 +5,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DigitalsHomePagerAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitViewModel
 import com.tokopedia.home.beranda.presentation.view.fragment.TabBusinessFragment
 import kotlinx.android.synthetic.main.layout_bu_widget.view.*
 

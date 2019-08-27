@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_c
 
 import android.widget.ImageView
 import com.tokopedia.home.R
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
 import com.tokopedia.unifyprinciples.Typography
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

@@ -2,31 +2,26 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintLayout
 import android.support.design.widget.Snackbar
-import android.support.v4.content.ContextCompat.getSystemService
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.LayoutInflater
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.BitmapImageViewTarget
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
@@ -34,8 +29,17 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
-class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener)
-    : AbstractViewHolder<DynamicChannelViewModel>(itemView) {
+class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCategoryListener, countDownListener: CountDownView.CountDownListener)
+    : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener) {
+
+    override fun getViewHolderClassName(): String {
+        return BannerOrganicViewHolder::class.java.simpleName
+    }
+
+    override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
+        HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, channel.id, channel.header.name)
+    }
+
     val CTA_MODE_MAIN = "main"
     val CTA_MODE_TRANSACTION = "transaction"
     val CTA_MODE_INVERTED = "inverted"
@@ -46,58 +50,44 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     val CTA_TYPE_GHOST = "ghost"
     val CTA_TYPE_TEXT = "text_only"
 
-    var itemRecyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
-    var headerTitle = itemView.findViewById<Typography>(R.id.title_dc)
-    var seeAllText = itemView.findViewById<Typography>(R.id.see_all_dc)
     var bannerTitle = itemView.findViewById<Typography>(R.id.banner_title)
     var bannerDescription = itemView.findViewById<Typography>(R.id.banner_description)
     var bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
-    var bannerContainer = itemView.findViewById<ConstraintLayout>(R.id.dc_banner_card)
-    var titleDc = itemView.findViewById<Typography>(R.id.title_dc)
     var bannerImage = itemView.findViewById<ImageView>(R.id.banner_image)
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_banner_organic
+        val LAYOUT = R.layout.home_dc_banner_recyclerview
     }
 
-    override fun bind(element: DynamicChannelViewModel) {
-        val bannerItem = element.channel.banner
-        clearItemRecyclerViewDecoration()
+    override fun setupContent(channel: DynamicHomeChannel.Channels) {
+        val recyclerView: RecyclerView = itemView.findViewById(R.id.dc_banner_rv)
 
-        mappingCtaButton(element.channel.banner.cta)
+        val bannerItem = channel.banner
+        clearItemRecyclerViewDecoration(recyclerView)
+
+        recyclerView.adapter = BannerItemAdapter(
+                channel.layout,
+                channel.grids,
+                channel,
+                homeCategoryListener
+        )
+
+        mappingCtaButton(channel.banner.cta)
 
         bannerUnifyButton.setOnClickListener {
-            HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, element.channel)
+            HomePageTracking.eventClickBannerButtonChannelMix(itemView.context, channel)
 
             if (bannerItem.cta.couponCode.isEmpty()) {
-                homeCategoryListener.onSectionItemClicked(element.channel.banner.applink)
+                homeCategoryListener.onSectionItemClicked(channel.banner.applink)
             } else {
                 copyCoupon(itemView, bannerItem.cta)
             }
         }
 
         itemView.setOnClickListener {
-            HomePageTracking.eventClickBannerChannelMix(itemView.context, element.channel)
-            homeCategoryListener.onSectionItemClicked(element.channel.banner.applink)
-        }
-
-        if (element.channel.header.name.isEmpty()) {
-            titleDc.visibility = View.GONE
-            seeAllText.visibility = View.GONE
-        } else {
-            titleDc.text = element.channel.header.name
-            if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(element.channel.header))) {
-                seeAllText.visibility = View.VISIBLE
-            } else {
-                seeAllText.visibility = View.GONE
-            }
-            seeAllText.setOnClickListener {
-                HomePageTracking.eventClickSeeAllBannerMixChannel(itemView.context, element.channel.id, element.channel.header.name)
-                homeCategoryListener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(
-                        element.channel.header
-                ), element.channel.homeAttribution)
-            }
+            HomePageTracking.eventClickBannerChannelMix(itemView.context, channel)
+            homeCategoryListener.onSectionItemClicked(channel.banner.applink)
         }
 
         bannerTitle.text = bannerItem.title
@@ -117,49 +107,42 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
          */
         bannerUnifyButton.text = bannerItem.cta.text
 
-        val itemAdapter = BannerItemAdapter(
-                element.channel.layout,
-                element.channel.grids,
-                element.channel,
-                homeCategoryListener
-        )
-        itemRecyclerView.adapter = itemAdapter
-        when(element.channel.layout) {
+
+        when(channel.layout) {
             DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> {
-                itemRecyclerView.layoutManager = GridLayoutManager(
+                recyclerView.layoutManager = GridLayoutManager(
                         itemView.context,
                         3
                 )
-
                 /**
                  * Add margin for recyclerview on for non-carousel banner
                  */
-                val param = itemRecyclerView.layoutParams as ConstraintLayout.LayoutParams
+                val param = recyclerView.layoutParams as ConstraintLayout.LayoutParams
                 param.setMargins( itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_16),
                         param.topMargin,
                         itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_16),
                         param.bottomMargin
                 )
-                itemRecyclerView.layoutParams = param
+                recyclerView.layoutParams = param
             }
             DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
-                itemRecyclerView.layoutManager = LinearLayoutManager(
+                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(BannerOrganicDecoration())
+                recyclerView.layoutManager = LinearLayoutManager(
                         itemView.context,
                         LinearLayoutManager.HORIZONTAL,
                         false
                 )
-                if (itemRecyclerView.itemDecorationCount == 0) itemRecyclerView.addItemDecoration(BannerOrganicDecoration())
 
                 /**
                  * Make recyclerview to fill viewport width
                  */
-                val param = itemRecyclerView.layoutParams as ConstraintLayout.LayoutParams
+                val param = recyclerView.layoutParams as ConstraintLayout.LayoutParams
                 param.setMargins( 0,
                         param.topMargin,
                         0,
                         param.bottomMargin
                 )
-                itemRecyclerView.layoutParams = param
+                recyclerView.layoutParams = param
             }
         }
     }
@@ -191,9 +174,9 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
-    private fun clearItemRecyclerViewDecoration() {
-        while (itemRecyclerView.itemDecorationCount > 0) {
-            itemRecyclerView.removeItemDecorationAt(0);
+    private fun clearItemRecyclerViewDecoration(recyclerView: RecyclerView) {
+        while (recyclerView.itemDecorationCount > 0) {
+            recyclerView.removeItemDecorationAt(0);
         }
     }
 

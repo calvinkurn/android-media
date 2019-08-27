@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.content.Context
 import android.graphics.Paint
 import android.support.annotation.LayoutRes
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridS
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import java.util.HashMap
 
 /**
@@ -33,43 +35,20 @@ import java.util.HashMap
 class DynamicChannelSprintViewHolder(sprintView: View,
                                      private val homeCategoryListener: HomeCategoryListener,
                                      countDownListener: CountDownView.CountDownListener) :
-        DynamicChannelViewHolder<DynamicChannelSprintViewHolder.SprintViewHolder>(
+        DynamicChannelViewHolder(
                 sprintView, homeCategoryListener, countDownListener
         ) {
 
     companion object {
-        private const val TYPE_SPRINT_SALE = 0
-        private const val TYPE_SPRINT_LEGO = 1
-        private const val TYPE_ORGANIC = 2
-        private const val TYPE_CURATED = 3
-
         @LayoutRes
-        val LAYOUT_ITEM_SPRINT = R.layout.layout_sprint_product_item_simple
+        val LAYOUT = R.layout.home_dc_simple_recyclerview
     }
 
-    val context = sprintView.context
-
-    private fun getSprintType(channels: DynamicHomeChannel.Channels): Int {
-        when(channels.layout) {
-            DynamicHomeChannel.Channels.LAYOUT_SPRINT -> return TYPE_SPRINT_SALE
-            DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> return TYPE_SPRINT_LEGO
-            DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC
-        }
-        return TYPE_CURATED
-    }
-
-    override fun getItemAdapter(channel: DynamicHomeChannel.Channels): RecyclerView.Adapter<SprintViewHolder> {
-        return SprintAdapter(context, homeCategoryListener, channel, getSprintType(channel), countDownView)
-    }
-
-    override fun getRecyclerViewDecorator(): RecyclerView.ItemDecoration {
-        return GridSpacingItemDecoration(defaultSpanCount,
-                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_10),
-                true)
-    }
+    val context: Context = sprintView.context
+    val defaultSpanCount = 3
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        when(getSprintType(channel)) {
+        when(getLayoutType(channel)) {
             TYPE_SPRINT_SALE -> HomePageTracking.eventClickSeeAllProductSprint(context, channel.id)
             TYPE_SPRINT_LEGO -> HomePageTracking.eventClickSeeAllLegoProduct(context, channel.header.name, channel.id)
             TYPE_ORGANIC -> HomePageTracking.eventClickSeeAllLegoProduct(context, channel.header.name, channel.id)
@@ -84,6 +63,22 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         return DynamicChannelSprintViewHolder::class.java.simpleName
     }
 
+    override fun setupContent(channel: DynamicHomeChannel.Channels) {
+        val recyclerView: RecyclerView = itemView.findViewById(R.id.recycleList)
+
+        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
+                GridSpacingItemDecoration(defaultSpanCount,
+                itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_10),
+                true))
+
+        recyclerView.layoutManager = GridLayoutManager(
+                itemView.context,
+                defaultSpanCount,
+                GridLayoutManager.VERTICAL, false)
+
+        recyclerView.adapter = SprintAdapter(context, homeCategoryListener, channel, getLayoutType(channel), countDownView)
+    }
+
     class SprintAdapter(private val context: Context,
                              private val listener: HomeCategoryListener,
                              private val channels: DynamicHomeChannel.Channels,
@@ -92,7 +87,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         private var grids: Array<DynamicHomeChannel.Grid> = channels.grids
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SprintViewHolder {
-            val v = LayoutInflater.from(parent.context).inflate(LAYOUT_ITEM_SPRINT, parent, false)
+            val v = LayoutInflater.from(parent.context).inflate(R.layout.layout_sprint_product_item_simple, parent, false)
             return SprintViewHolder(v)
         }
 
@@ -100,17 +95,12 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             try {
                 val grid = grids[position]
                 ImageHandler.loadImageThumbs(holder.context, holder.channelImage1, grid.imageUrl)
-                holder.channelImage1.addOnImpressionListener(grid, OnProductImpressedListener(
-                        grid,
-                        listener,
-                        channels.getHomeAttribution(position + 1, grid.id),
-                        position))
 
-                TextViewHelper.displayText(holder.channelName, grid.name)
-                TextViewHelper.displayText(holder.channelPrice1, grid.price)
-                TextViewHelper.displayText(holder.channelDiscount1, grid.discount)
-                TextViewHelper.displayText(holder.channelBeforeDiscPrice1, grid.slashedPrice)
-                TextViewHelper.displayText(holder.channelCashback, grid.cashback)
+                holder.channelName.displayTextOrHide(grid.name)
+                holder.channelPrice1.displayTextOrHide(grid.price)
+                holder.channelDiscount1.displayTextOrHide(grid.discount)
+                holder.channelBeforeDiscPrice1.displayTextOrHide(grid.slashedPrice)
+                holder.channelCashback.displayTextOrHide(grid.cashback)
                 holder.channelBeforeDiscPrice1.paintFlags = holder.channelBeforeDiscPrice1.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
 
                 holder.itemContainer1.setOnClickListener {
@@ -161,18 +151,5 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         val itemContainer1: RelativeLayout = view.findViewById(R.id.channel_item_container_1)
         val context: Context
             get() = itemView.context
-    }
-
-    class OnProductImpressedListener(val grid: DynamicHomeChannel.Grid,
-                                     val listener: HomeCategoryListener,
-                                     val channelAttribution: String,
-                                     val position: Int) : ViewHintListener {
-        override fun onViewHint() {
-            listener.putEEToTrackingQueue(
-                    HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
-                            grid, channelAttribution, position
-                    )
-            )
-        }
     }
 }

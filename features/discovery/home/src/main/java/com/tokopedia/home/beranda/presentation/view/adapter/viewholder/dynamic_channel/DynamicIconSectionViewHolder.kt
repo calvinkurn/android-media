@@ -6,7 +6,6 @@ import android.support.annotation.LayoutRes
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Display
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,9 +20,11 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.DynamicIconDecoration
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -101,6 +102,14 @@ class DynamicIconSectionViewHolder(val view: View,
                 eventClickDynamicIcon(view.context, sectionViewModel.itemList[position], position)
                 listener.onSectionItemClicked(DynamicLinkHelper.getActionLink(sectionViewModel.itemList[position]))
             }
+
+            if(!sectionViewModel.isCache) {
+                holder.itemView.addOnImpressionListener(
+                        sectionViewModel.itemList[position], OnIconImpressedListener(
+                        sectionViewModel.itemList[position], listener, position
+                )
+                )
+            }
         }
 
         private fun eventClickDynamicIcon(context: Context, homeIconItem: HomeIconItem, position: Int) {
@@ -128,5 +137,16 @@ class DynamicIconSectionViewHolder(val view: View,
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.layout_dynamic_icon_section
+    }
+
+    class OnIconImpressedListener(private val homeIconItem: HomeIconItem,
+                                  private val listener: HomeCategoryListener,
+                                  private val position: Int) : ViewHintListener {
+
+        override fun onViewHint() {
+            listener.putEEToIris(
+                    HomePageTracking.getEnhanceImpressionDynamicIconHomePage(homeIconItem, position)
+            )
+        }
     }
 }

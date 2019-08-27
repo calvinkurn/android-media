@@ -39,7 +39,7 @@ import com.tokopedia.home.beranda.helper.StartSnapHelper;
 import com.tokopedia.home.beranda.listener.GridItemClickListener;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.unifyprinciples.Typography;
 
@@ -54,6 +54,8 @@ import java.util.Map;
  * No further development for this viewholder
  * Backend possibly return this layout for version android  >= 2.19
  */
+
+@Deprecated
 public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChannelViewModel>
         implements GridItemClickListener {
 

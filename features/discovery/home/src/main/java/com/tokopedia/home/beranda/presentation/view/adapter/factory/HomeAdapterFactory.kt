@@ -15,27 +15,26 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessUnitViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.HeaderViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.OvoViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BusinessUnitViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicIconSectionViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsDynamicChannelModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SearchPlaceholderViewModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.RetryModel
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DigitalsViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsDynamicChannelModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.SellViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.InspirationHeaderViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.SearchPlaceholderViewModel
 
-import java.util.Arrays
 import java.util.HashSet
 
 /**
@@ -48,19 +47,17 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val countDownListener: CountDownView.CountDownListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val sprintLayout = HashSet(
-            Arrays.asList(
+            listOf(
                     DynamicHomeChannel.Channels.LAYOUT_3_IMAGE,
                     DynamicHomeChannel.Channels.LAYOUT_SPRINT,
                     DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO,
-                    DynamicHomeChannel.Channels.LAYOUT_ORGANIC
-            )
+                    DynamicHomeChannel.Channels.LAYOUT_ORGANIC)
     )
 
     private val bannerLayout = HashSet(
-            Arrays.asList(
+            listOf(
                     DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL,
-                    DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC
-            )
+                    DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC)
     )
 
     override fun type(inspirationHeaderViewModel: InspirationHeaderViewModel): Int {
@@ -140,7 +137,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
          * refer to item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
          */
         if (sprintLayout.contains(layout)) {
-            return DynamicChannelSprintViewHolder.LAYOUT_ITEM_SPRINT
+            return DynamicChannelSprintViewHolder.LAYOUT
         } else if (bannerLayout.contains(layout)) {
             /**
              * Layout registered as sprint sale viewholder
@@ -161,8 +158,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             /**
              * refer to 3 and 6 image item layout {@link com.tokopedia.home.R.layout#layout_lego_item}
              */
-            DynamicHomeChannel.Channels.LAYOUT_6_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT_ITEM_LEGO
-            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT_ITEM_LEGO
+            DynamicHomeChannel.Channels.LAYOUT_6_IMAGE,
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
 
             /**
              * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
@@ -177,8 +174,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         when (type) {
-            DynamicChannelSprintViewHolder.LAYOUT_ITEM_SPRINT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, countDownListener)
-            DynamicLegoBannerViewHolder.LAYOUT_ITEM_LEGO -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener)
+            DynamicChannelSprintViewHolder.LAYOUT -> viewHolder = DynamicChannelSprintViewHolder(view, listener, countDownListener)
+            DynamicLegoBannerViewHolder.LAYOUT -> viewHolder = DynamicLegoBannerViewHolder(view, listener, countDownListener)
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             DigitalsViewHolder.LAYOUT -> viewHolder = DigitalsViewHolder(listener, fragmentManager, view)
@@ -186,7 +183,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             SellViewHolder.LAYOUT -> viewHolder = SellViewHolder(view, listener)
-            OvoViewHolder.LAYOUT -> viewHolder = OvoViewHolder(view, listener)
+            OvoViewHolder.LAYOUT, OvoViewHolder.NON_LOGIN_LAYOUT -> viewHolder = OvoViewHolder(view, listener)
             DynamicChannelHeroViewHolder.LAYOUT -> viewHolder = DynamicChannelHeroViewHolder(view, listener)
             RetryViewHolder.LAYOUT -> viewHolder = RetryViewHolder(view, homeFeedsListener)
             TopAdsViewHolder.LAYOUT -> viewHolder = TopAdsViewHolder(view)
@@ -197,7 +194,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             InspirationHeaderViewHolder.LAYOUT -> viewHolder = InspirationHeaderViewHolder(view)
             HomeRecommendationFeedViewHolder.LAYOUT -> viewHolder = HomeRecommendationFeedViewHolder(view, listener)
             GeolocationPromptViewHolder.LAYOUT -> viewHolder = GeolocationPromptViewHolder(view, listener)
-            BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener)
+            BannerOrganicViewHolder.LAYOUT -> viewHolder = BannerOrganicViewHolder(view, listener, countDownListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 
