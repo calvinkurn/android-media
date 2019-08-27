@@ -259,11 +259,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                     insuranceItemActionlistener.onInsuranceSelectStateChanges()
                 }
 
-                /*
-                 * By default need to keep this checked for cart page
-                 * */
-
-                cbSelectInsurance.isChecked = true
+                cbSelectInsurance.isChecked = insuranceCartDigitalProduct.optIn
                 insuranceCartDigitalProduct.optIn = true
 
                 ivDeleteInsurance.show()
