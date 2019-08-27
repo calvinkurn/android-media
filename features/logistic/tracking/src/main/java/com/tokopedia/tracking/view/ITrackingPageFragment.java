@@ -20,6 +20,8 @@ public interface ITrackingPageFragment {
 
     void showError(Throwable error);
 
+    void showSoftError(Throwable error);
+
     void setRetryButton(boolean active, long deadline);
 
     void startSuccessCountdown();

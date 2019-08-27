@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -200,6 +201,12 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
                     presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
                     presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
                 });
+    }
+
+    @Override
+    public void showSoftError(Throwable error) {
+        String message = ErrorHandler.getErrorMessage(getContext(), error);
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
