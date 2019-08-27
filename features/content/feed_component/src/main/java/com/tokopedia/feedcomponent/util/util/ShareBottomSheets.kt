@@ -50,8 +50,20 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         private const val CLASS_NAME_LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity"
         private const val CLASS_NAME_TWITTER = "com.twitter.composer.ComposerShareActivity"
         private const val CLASS_NAME_INSTAGRAM_DM = "com.instagram.direct.share.handler.DirectShareHandlerActivity"
-        private const val CLASS_NAME_INSTAGRAM_STORY = "com.instagram.share.ADD_TO_STORY"
+        private const val CLASS_NAME_INSTAGRAM_STORY = "com.instagram.share.handleractivity.StoryShareHandlerActivity"
         private const val CLASS_NAME_INSTAGRAM_FEED = "com.instagram.share.handleractivity.ShareHandlerActivity"
+
+        /**
+         * Custom Action
+         */
+        private const val ACTION_INSTAGRAM_STORY = "com.instagram.share.ADD_TO_STORY"
+
+        /**
+         * Extra
+         */
+        private const val IG_STORY_EXTRA_STICKER_URI = "interactive_asset_uri"
+        private const val IG_STORY_EXTRA_TOP_BG = "top_background_color"
+        private const val IG_STORY_EXTRA_BOTTOM_BG = "bottom_background_color"
 
         /**
          * Arguments
@@ -304,9 +316,16 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
                 .putExtra(Intent.EXTRA_TEXT, arguments?.getString(EXTRA_SHARE_FORMAT).orEmpty())
     }
 
+    @SuppressWarnings("ResourceType")
     private fun getInstagramStoryIntent(mediaUri: Uri): Intent {
-        return Intent(CLASS_NAME_INSTAGRAM_STORY)
-                .setDataAndType(mediaUri, MimeType.IMAGE.typeString)
+        activity?.grantUriPermission(
+                PACKAGE_NAME_INSTAGRAM, mediaUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        return Intent(ACTION_INSTAGRAM_STORY)
+                .setType(MimeType.IMAGE.typeString)
+                .putExtra(IG_STORY_EXTRA_STICKER_URI, mediaUri)
+                .putExtra(IG_STORY_EXTRA_TOP_BG, getString(R.color.share_ig_story_top_bg))
+                .putExtra(IG_STORY_EXTRA_BOTTOM_BG, getString(R.color.share_ig_story_bottom_bg))
                 .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
     }
 
@@ -402,7 +421,9 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
 
             add(ShareType.ActionShare(KEY_COPY, getString(R.string.copy), MimeType.TEXT, R.drawable.ic_copy_clipboard, ::actionCopy))
             add(ShareType.ActionShare(KEY_OTHER, getString(R.string.other), MimeType.TEXT, R.drawable.ic_btn_more, ::actionMore))
-        }.filterNot { shareType -> shareType is ShareType.ActivityShare && shareType.getResolveActivity(context as Context) == null }
+        }
+                .filterNot { shareType -> shareType is ShareType.ActivityShare && shareType.getResolveActivity(context as Context) == null }
+                .distinctBy(ShareType::key)
     }
 
     /**

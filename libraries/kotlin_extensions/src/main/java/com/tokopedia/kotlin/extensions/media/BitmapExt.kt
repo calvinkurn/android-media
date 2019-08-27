@@ -19,7 +19,7 @@ fun Bitmap.toTempFile(filename: String): File {
     return file
 }
 
-fun createTempFile(fileNameWithFormat: String): File {
+private fun createTempFile(fileNameWithFormat: String): File {
     val path = Environment.getExternalStorageDirectory().toString() + File.separator + "tkpdtemp" + File.separator
     val pathFile = File(path)
     if (pathFile.exists() && pathFile.isDirectory) {

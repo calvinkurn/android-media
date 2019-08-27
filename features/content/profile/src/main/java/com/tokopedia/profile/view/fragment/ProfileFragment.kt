@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Bitmap
 import android.graphics.Rect
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.content.LocalBroadcastManager
@@ -26,14 +25,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.feature.onboarding.view.fragment.UsernameInputFragment
@@ -110,7 +106,7 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
-import java.lang.Exception
+import kotlinx.android.synthetic.main.item_share_ig_by_me.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -182,6 +178,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var affiliatePreference: AffiliatePreference
+
+    private lateinit var byMeTemplatedView: View
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -1166,6 +1164,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
         )
 
+        if (!::byMeTemplatedView.isInitialized) byMeTemplatedView = LayoutInflater.from(context).inflate(R.layout.item_share_ig_by_me, null)
+        byMeTemplatedView.tv_user_name.text = element.formattedAffiliateName
+
         val selfProfile = userSession.userId == userId.toString()
                 && element.isAffiliate
         lateinit var action: View.OnClickListener
@@ -1173,15 +1174,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
             iv_action.gone()
             View.OnClickListener {
-                ImageHandler.loadImageWithTarget(context, "https://blogsimages.adobe.com/creativecloud/files/2014/06/creativecloud_wallpaper_2880x1800.jpg", object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap?, glideAnimation: GlideAnimation<in Bitmap>?) {
-                        showShareBottomSheet(element, resource)
-                    }
-
-                    override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
-                        showShareBottomSheet(element, null)
-                    }
-                })
+                byMeTemplatedView.iv_avatar.setImageDrawable(iv_profile.drawable)
+                showShareBottomSheet(element, byMeTemplatedView.toSquareBitmap())
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
