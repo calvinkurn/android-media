@@ -20,4 +20,16 @@ class GetTemplateChatRoomUseCase @Inject constructor(val api: ChatRoomApi,
         return api.getTemplate(requestParams.parameters).map(mapper)
     }
 
+    companion object {
+
+        private const val PARAM_IS_SELLER: String = "is_seller"
+
+        fun generateParam(isSeller: Boolean):
+                RequestParams{
+            val requestParams = RequestParams.create()
+            requestParams.putBoolean(PARAM_IS_SELLER, isSeller)
+            return requestParams
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
+import java.net.URLEncoder
 
 /**
  * @author by milhamj on 2019-08-14.
@@ -50,11 +51,11 @@ class CommissionDetailItemViewHolder(v: View) : AbstractViewHolder<CommissionDet
         }
 
         incomeInvoice.setOnClickListener {
-            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}?url=" + element.affInvoiceUrl)
+            RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW.replace("{url}", URLEncoder.encode(element.affInvoiceUrl, "UTF-8")))
         }
 
         feeInvoice.setOnClickListener {
-            RouteManager.route(itemView.context, "${ApplinkConstInternalGlobal.WEBVIEW}?url=w"+ element.tkpdInvoiceUrl)
+            RouteManager.route(itemView.context, ApplinkConstInternalGlobal.WEBVIEW.replace("{url}", URLEncoder.encode(element.tkpdInvoiceUrl, "UTF-8")))
         }
     }
 

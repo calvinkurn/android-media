@@ -62,6 +62,9 @@ data class NotificationUpdateItem(
         @SerializedName("read_status")
         @Expose
         var readStatus: Long = 0,
+        @SerializedName("type_link")
+        @Expose
+        var typeLink: Int = 0,
         @SerializedName("data_notification")
         @Expose
         var dataNotification: DataNotification

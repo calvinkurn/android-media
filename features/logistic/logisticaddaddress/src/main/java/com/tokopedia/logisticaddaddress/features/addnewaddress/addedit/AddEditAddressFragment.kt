@@ -33,12 +33,13 @@ import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
@@ -46,7 +47,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocompl
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -64,7 +64,7 @@ import javax.inject.Inject
 class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
         ResultCallback<LocationSettingsResult>, AddEditAddressListener,
-        DistrictRecommendationBottomSheetFragment.ActionListener,
+        DiscomBottomSheetFragment.ActionListener,
         AutocompleteBottomSheetListener,
         PinpointMapListener,
         ZipCodeChipsAdapter.ActionListener, IOnBackPressed,
@@ -462,7 +462,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = ""
-        if (et_detail_address.text!!.isEmpty()) {
+        if (et_detail_address?.text.isNullOrEmpty()) {
             validated = false
             rl_detail_address_info_counter.visibility = View.GONE
             setWrapperError(et_detail_address_wrapper, getString(R.string.validate_detail_alamat))
@@ -482,31 +482,31 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = ""
-        if (et_kota_kecamatan_mismatch.text!!.isEmpty()) {
+        if (et_kota_kecamatan_mismatch?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_kota_kecamatan_mismatch_wrapper, getString(R.string.validate_kota_kecamatan))
             if (field.isNotEmpty()) field += ", "
             field += "kota kecamatan"
         }
-        if (et_kode_pos_mismatch.text!!.isEmpty()) {
+        if (et_kode_pos_mismatch?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos))
             if (field.isNotEmpty()) field += ", "
             field += "kode pos"
         }
-        if (et_kode_pos_mismatch.text!!.length < 5) {
+        if (et_kode_pos_mismatch?.text?.length ?: 0 < 5) {
             validated = false
             setWrapperError(et_kode_pos_mismatch_wrapper, getString(R.string.validate_kode_pos_length))
             if (field.isNotEmpty()) field += ", "
             field += "kode pos"
         }
-        if (et_alamat_mismatch.text!!.isEmpty()) {
+        if (et_alamat_mismatch?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat))
             if (field.isNotEmpty()) field += ", "
             field += "alamat"
         }
-        if (et_alamat_mismatch.text!!.length < 5) {
+        if (et_alamat_mismatch?.text?.length ?: 0 < 5) {
             validated = false
             setWrapperError(et_alamat_mismatch_wrapper, getString(R.string.validate_alamat_length))
             if (field.isNotEmpty()) field += ", "
@@ -525,21 +525,22 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         var validated = true
 
         var field = errorField
-        if (et_label_address.text!!.isEmpty()) {
+        if (et_label_address?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_label_address_wrapper, getString(R.string.validate_label_alamat))
             if (field.isNotEmpty()) field += ", "
             field += "label alamat"
 
         }
-        if (et_receiver_name.text!!.isEmpty()) {
+
+        if (et_receiver_name?.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_receiver_name_wrapper, getString(R.string.validate_nama_penerima))
             if (field.isNotEmpty()) field += ", "
             field += "nama penerima"
 
         }
-        if (et_phone.text!!.isEmpty()) {
+        if (et_phone.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel))
             if (field.isNotEmpty()) field += ", "
@@ -713,7 +714,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             btn_map.layoutParams = params
             setOnClickListener {
                 hideKeyboard()
-                if (et_kota_kecamatan_mismatch.text!!.isEmpty()) {
+                if (et_kota_kecamatan_mismatch?.text.isNullOrEmpty()) {
                     view?.let { it1 -> activity?.let { it2 -> AddNewAddressUtils.showToastError(getString(R.string.choose_district_first), it1, it2) } }
                     AddNewAddressAnalytics.eventViewToasterPilihKotaDanKodePosTerlebihDahulu()
                 } else {
@@ -775,7 +776,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DistrictRecommendationBottomSheetFragment.newInstance()
+                DiscomBottomSheetFragment.newInstance()
         districtRecommendationBottomSheetFragment.setActionListener(this)
         districtRecommendationBottomSheetFragment.show(fragmentManager, "")
     }
@@ -915,20 +916,20 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun onConnectionFailed(p0: ConnectionResult) {
     }
 
-    override fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
-        val provinceName = districtRecommendationItemUiModel.provinceName
-        val cityName = districtRecommendationItemUiModel.cityName
-        val districtName = districtRecommendationItemUiModel.districtName
+    override fun onGetDistrict(districtAddress: Address) {
+        val provinceName = districtAddress.provinceName
+        val cityName = districtAddress.cityName
+        val districtName = districtAddress.districtName
         val districtSelected = "$provinceName, $cityName, $districtName"
 
         et_kota_kecamatan_mismatch.setText(districtSelected)
         saveAddressDataModel?.selectedDistrict = districtSelected
-        saveAddressDataModel?.cityId = districtRecommendationItemUiModel.cityId
-        saveAddressDataModel?.provinceId = districtRecommendationItemUiModel.provinceId
-        saveAddressDataModel?.districtId = districtRecommendationItemUiModel.districtId
+        saveAddressDataModel?.cityId = districtAddress.cityId
+        saveAddressDataModel?.provinceId = districtAddress.provinceId
+        saveAddressDataModel?.districtId = districtAddress.districtId
         saveAddressDataModel?.latitude = ""
         saveAddressDataModel?.longitude = ""
-        saveAddressDataModel?.zipCodes = districtRecommendationItemUiModel.zipCodes
+        saveAddressDataModel?.zipCodes = districtAddress.zipCodes
         autoCompletePresenter.getAutocomplete(districtName)
     }
 
@@ -997,7 +998,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         rv_label_alamat_chips.visibility = View.GONE
         et_label_address.run {
             setText(labelAlamat)
-            setSelection(et_label_address.text!!.length)
+            setSelection(et_label_address?.text?.length ?: 0)
         }
         if (!isMismatch && !isMismatchSolved) {
             AddNewAddressAnalytics.eventClickChipsLabelAlamatChangeAddressPositive()

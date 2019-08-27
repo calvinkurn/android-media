@@ -18,15 +18,21 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
     private String[] ratingDetails;
 
     private void setRatingBarChangedListener(RatingBar ratingBarView, Typography ratingLevelView) {
-        if (ratingBarView != null && ratingLevelView != null) {
+        if (ratingBarView != null && ratingLevelView != null && buttonView != null) {
             ratingBarView.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
                 ratingValue = rating;
                 int ratingIndex = ((int) rating) - 1;
 
-                ratingLevelView.setText(ratingDetails[ratingIndex]);
-
-                if (buttonView != null && !buttonView.isEnabled()) {
-                    buttonView.setEnabled(true);
+                if (ratingIndex >= 0) {
+                    ratingLevelView.setText(ratingDetails[ratingIndex]);
+                    if (!buttonView.isEnabled()) {
+                        buttonView.setEnabled(true);
+                    }
+                } else {
+                    ratingLevelView.setText("");
+                    if (buttonView.isEnabled()) {
+                        buttonView.setEnabled(false);
+                    }
                 }
             });
         }

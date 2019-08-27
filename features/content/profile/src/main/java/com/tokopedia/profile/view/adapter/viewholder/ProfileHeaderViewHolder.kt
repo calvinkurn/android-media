@@ -98,13 +98,12 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
                 if (element.following != ProfileHeaderViewModel.ZERO)
                     String.format(getString(R.string.profile_following_number), element.following)
                 else ""
+        val followers = String.format(
+                getString(R.string.profile_followers_number),
+                element.followers
+        )
         spannableString = if ((element.isKol || element.isAffiliate)
                 && element.followers != ProfileHeaderViewModel.ZERO) {
-
-            val followers = String.format(
-                    getString(R.string.profile_followers_number),
-                    element.followers
-            )
             val followersAndFollowing =
                     if (!TextUtils.isEmpty(following)) String.format(
                             getString(R.string.profile_followers_and_following),
@@ -113,9 +112,20 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
                     )
                     else followers
             SpannableString(followersAndFollowing)
-
         } else {
             SpannableString(following)
+        }
+
+        val goToFollower = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                viewListener.goToFollower()
+            }
+
+            override fun updateDrawState(ds: TextPaint?) {
+                super.updateDrawState(ds)
+                ds?.setUnderlineText(false)
+                ds?.color = MethodChecker.getColor(itemView.context, R.color.black_54)
+            }
         }
 
         val goToFollowing = object : ClickableSpan() {
@@ -128,6 +138,13 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileEmptyContrac
                 ds?.setUnderlineText(false)
                 ds?.color = MethodChecker.getColor(itemView.context, R.color.black_54)
             }
+        }
+        if (spannableString.indexOf(followers) != -1) {
+            spannableString.setSpan(
+                    goToFollower,
+                    spannableString.indexOf(followers),
+                    spannableString.indexOf(followers) + followers.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
         if (spannableString.indexOf(following) != -1) {

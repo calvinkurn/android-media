@@ -109,6 +109,7 @@ public class CheckoutRequest implements Parcelable {
         cornerData = builder.cornerData;
         hasPromoStacking = builder.hasPromoStacking;
         promoCodes = builder.promoCodes;
+        leasingId = builder.leasingId;
         hasMacroInsurance = builder.hasInsurance;
     }
 
