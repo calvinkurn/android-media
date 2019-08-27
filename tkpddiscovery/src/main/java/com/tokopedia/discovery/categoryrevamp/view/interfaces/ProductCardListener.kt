@@ -8,7 +8,7 @@ interface ProductCardListener {
 
     fun onLongClick(item: ProductsItem, adapterPosition: Int)
 
-    fun onWishlistButtonClicked(productItem: ProductsItem)
+    fun onWishlistButtonClicked(productItem: ProductsItem, position: Int)
 
     fun onProductImpressed(item: ProductsItem, adapterPosition: Int)
 }

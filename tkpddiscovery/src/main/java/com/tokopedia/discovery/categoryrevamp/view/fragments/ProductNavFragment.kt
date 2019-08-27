@@ -17,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -48,10 +49,11 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_product_nav.*
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.collections.set
 
 
@@ -59,13 +61,52 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         QuickFilterListener,
         ProductCardListener,
-        SubCategoryListener {
+        SubCategoryListener,
+        WishListActionListener {
+
+    override fun onErrorAddWishList(errorMessage: String?, productId: String) {
+        enableWishlistButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    override fun onSuccessAddWishlist(productId: String) {
+        productNavListAdapter?.updateWishlistStatus(productId.toInt(), true)
+        enableWishlistButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_add_wishlist))
+    }
+
+
+    override fun onErrorRemoveWishlist(errorMessage: String?, productId: String) {
+        enableWishlistButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, errorMessage)
+    }
+
+    override fun onSuccessRemoveWishlist(productId: String) {
+        productNavListAdapter?.updateWishlistStatus(productId.toInt(), false)
+        enableWishlistButton(productId)
+        NetworkErrorHelper.showSnackbar(activity, getString(R.string.msg_remove_wishlist))
+
+    }
+
+    fun enableWishlistButton(productId: String) {
+        productNavListAdapter?.setWishlistButtonEnabled(productId?.toInt() ?: 0, true)
+    }
+
+    fun disableWishlistButton(productId: String) {
+        productNavListAdapter?.setWishlistButtonEnabled(productId?.toInt() ?: 0, false)
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var productNavViewModel: ProductNavViewModel
+
+    @Inject
+    lateinit var removeWishlistActionUseCase: RemoveWishListUseCase
+
+    @Inject
+    lateinit var addWishlistActionUseCase: AddWishListUseCase
 
     lateinit var userSession: UserSession
 
@@ -307,8 +348,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         daFilterQueryType.sc = mDepartmentId
         paramMap.putString(CategoryNavConstants.SOURCE, "search_product")
         paramMap.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
-        paramMap.putString(CategoryNavConstants.Q,"")
-        paramMap.putString(CategoryNavConstants.SOURCE,"directory")
+        paramMap.putString(CategoryNavConstants.Q, "")
+        paramMap.putString(CategoryNavConstants.SOURCE, "directory")
         return paramMap
     }
 
@@ -384,9 +425,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
 
     private fun createParametersForQuery(parameters: Map<String, Any>): String {
-        val variables = HashMap<String, Any>()
-        /* variables[CategoryNavConstants.KEY_PARAMS] =*/ return ParamMapToUrl.generateUrlParamString(parameters)
-        // return variables
+        return ParamMapToUrl.generateUrlParamString(parameters)
     }
 
     private fun getUniqueId(): String {
@@ -440,8 +479,34 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         Log.d("ProductNavFragment", "onLongClick")
     }
 
-    override fun onWishlistButtonClicked(productItem: ProductsItem) {
+    override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {
 
+        if (userSession.isLoggedIn) {
+            disableWishlistButton(productItem.id.toString())
+            if (productItem.wishlist) {
+                removeWishlist(productItem.id.toString(), userSession.userId, position)
+            } else {
+                addWishlist(productItem.id.toString(), userSession.userId, position)
+            }
+        } else {
+            launchLoginActivity(productItem.id.toString())
+        }
+
+    }
+
+    private fun removeWishlist(productId: String, userId: String, adapterPosition: Int) {
+        removeWishlistActionUseCase.createObservable(productId,
+                userId, this)
+    }
+
+    private fun addWishlist(productId: String, userId: String, adapterPosition: Int) {
+        addWishlistActionUseCase.createObservable(productId, userId,
+                this)
+
+    }
+
+    private fun launchLoginActivity(productId: String) {
+        RouteManager.route(context, ApplinkConst.LOGIN)
     }
 
     override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {

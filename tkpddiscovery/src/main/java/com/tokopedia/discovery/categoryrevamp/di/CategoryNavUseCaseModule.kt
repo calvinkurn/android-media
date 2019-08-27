@@ -4,6 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -85,9 +87,23 @@ class CategoryNavUseCaseModule {
     @CategoryNavScope
     @Provides
     fun getProductListUseCase(categoryProductUseCase: CategoryProductUseCase
-                             , @Named("topAdsProductListing") topAdsProductsUseCase
-                             : TopAdsProductsUseCase)
+                              , @Named("topAdsProductListing") topAdsProductsUseCase
+                              : TopAdsProductsUseCase)
             : GetProductListUseCase {
         return GetProductListUseCase(categoryProductUseCase, topAdsProductsUseCase)
+    }
+
+    @CategoryNavScope
+    @Provides
+    fun getAddWishListUseCase(context: Context)
+            : AddWishListUseCase {
+        return AddWishListUseCase(context)
+    }
+
+    @CategoryNavScope
+    @Provides
+    fun getRemoveWishListUseCase(context: Context)
+            : RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
     }
 }

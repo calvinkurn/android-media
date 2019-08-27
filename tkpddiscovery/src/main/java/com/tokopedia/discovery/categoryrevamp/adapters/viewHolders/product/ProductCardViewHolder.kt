@@ -83,8 +83,8 @@ abstract class ProductCardViewHolder(itemView: View,
         getProductCardView()?.setButtonWishlistVisible(true)
         getProductCardView()?.setButtonWishlistImage(productItem.wishlist)
         getProductCardView()?.setButtonWishlistOnClickListener {
-            if (productItem.wishlist) {
-                productListener.onWishlistButtonClicked(productItem)
+            if (productItem.isWishListEnabled) {
+                productListener.onWishlistButtonClicked(productItem,adapterPosition)
             }
         }
     }

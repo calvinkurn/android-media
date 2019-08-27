@@ -24,6 +24,9 @@ data class ProductsItem(
         @field:SerializedName("wishlist")
         var wishlist: Boolean = false,
 
+        @field:SerializedName("isWishListEnabled")
+        var isWishListEnabled: Boolean = true,
+
         @field:SerializedName("rating")
         var rating: Int = 0,
 
@@ -114,6 +117,7 @@ data class ProductsItem(
             parcel.readParcelable(Shop::class.java.classLoader),
             parcel.readString(),
             parcel.readValue(Boolean::class.java.classLoader) as Boolean,
+            parcel.readValue(Boolean::class.java.classLoader) as Boolean,
             parcel.readInt(),
             // TODO("childs"),
             parcel.readString(),
@@ -148,6 +152,7 @@ data class ProductsItem(
         dest?.writeString(this.imageURL500)
         dest?.writeString(this.originalPrice)
         dest?.writeValue(this.wishlist)
+        dest?.writeValue(this.isWishListEnabled)
         dest?.writeInt(this.rating ?: 0)
         dest?.writeString(this.categoryName)
         dest?.writeInt(this.discountPercentage)

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.BaseProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.ProductTypeFactory
 
@@ -58,5 +59,31 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
         val itemSizeBeforeCleared = itemCount
         visitables.clear()
         notifyItemRangeRemoved(0, itemSizeBeforeCleared)
+    }
+
+    fun updateWishlistStatus(productId: Int, isWishlisted: Boolean) {
+        for (i in visitables.indices) {
+            if (visitables.get(i) is ProductsItem) {
+                val model = visitables.get(i) as ProductsItem
+                if (productId == model.id) {
+                    model.wishlist = isWishlisted
+                    notifyItemChanged(i)
+                    break
+                }
+            }
+        }
+    }
+
+    fun setWishlistButtonEnabled(productId: Int, isEnabled: Boolean) {
+        for (i in visitables.indices) {
+            if (visitables.get(i) is ProductsItem) {
+                val model = visitables.get(i) as ProductsItem
+                if (productId == model.id) {
+                    model.isWishListEnabled = isEnabled
+                    notifyItemChanged(i)
+                    break
+                }
+            }
+        }
     }
 }
