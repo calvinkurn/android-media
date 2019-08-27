@@ -43,7 +43,6 @@ import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
-import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
@@ -566,7 +565,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             val intent = if (GlobalConfig.isCustomerApp()) {
                 RouteManager.getIntent(it, ApplinkConst.CONTENT_CREATE_POST)
             } else {
-                CreatePostImagePickerActivity.getInstance(it, createPostUrl)
+                RouteManager.getIntent(it, ApplinkConstInternalContent.SHOP_POST_PICKER)
             }
             startActivityForResult(
                     intent,
