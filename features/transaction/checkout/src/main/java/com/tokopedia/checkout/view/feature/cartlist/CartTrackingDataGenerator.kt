@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData
 import javax.inject.Inject
 
@@ -19,15 +18,20 @@ class CartTrackingDataGenerator @Inject constructor() {
     }
 
     fun generateBundleEnhancedEcommerceStep1(cartItemDataList: List<CartItemData>): Bundle {
+        val eCommerceBundle = Bundle()
 
         val productBundles = ArrayList<Bundle>()
 
-        for (cartItemData in cartItemDataList) {
+        for ((index, cartItemData) in cartItemDataList.withIndex()) {
             val productBundle = getProductBundle(cartItemData)
+            if (index == 0) {
+                eCommerceBundle.putString("shopId", cartItemData.originData.shopId)
+                eCommerceBundle.putString("shopType", cartItemData.originData.shopType)
+                eCommerceBundle.putString("categoryId", cartItemData.originData.categoryId)
+            }
             productBundles.add(productBundle)
         }
 
-        val eCommerceBundle = Bundle()
         eCommerceBundle.putParcelableArrayList("items", productBundles)
 
         eCommerceBundle.putLong("step", 1)
@@ -35,12 +39,6 @@ class CartTrackingDataGenerator @Inject constructor() {
 
         eCommerceBundle.putString("eventCategory", "cart");
         eCommerceBundle.putString("eventAction", "click check out");
-//        eCommerceBundle.putString("eventLabel", "success - default");
-
-//        eCommerceBundle.putString("shopId", { { shop_id } });
-//        eCommerceBundle.putString("shopType", { { shop_type } });
-//        eCommerceBundle.putString("coupon", { { coupon_name } });
-//        eCommerceBundle.putString("categoryId", { { category_id } });
 
         return eCommerceBundle
     }
@@ -63,9 +61,9 @@ class CartTrackingDataGenerator @Inject constructor() {
             putString("dimension80",
                     if (TextUtils.isEmpty(cartItemData.originData.trackerAttribution)) EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     else cartItemData.originData.trackerAttribution)
-            putString("shop_id", cartItemData.originData.shopId)
-            putString("shop_type", cartItemData.originData.shopType)
-            putString("shop_name", cartItemData.originData.shopName)
+//            putString("shop_id", cartItemData.originData.shopId)
+//            putString("shop_type", cartItemData.originData.shopType)
+//            putString("shop_name", cartItemData.originData.shopName)
             putString("category_id", cartItemData.originData.categoryId)
             putString("dimension56", cartItemData.originData.warehouseId.toString())
             putString("dimension48", cartItemData.originData.weightPlan.toString())
