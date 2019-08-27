@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
@@ -12,6 +13,7 @@ import com.tokopedia.iris.model.Configuration
 import com.tokopedia.iris.worker.IrisBroadcastReceiver
 import com.tokopedia.iris.worker.IrisExecutor
 import com.tokopedia.iris.worker.IrisExecutor.handler
+import com.tokopedia.iris.worker.IrisService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -97,11 +99,21 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     }
 
     private fun setWorkManager(config: Configuration) {
-        val intent = Intent(context, IrisBroadcastReceiver::class.java)
-        intent.putExtra(MAX_ROW, config.maxRow)
-        val pintent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pintent)
+        val pendingIntent: PendingIntent?
+        pendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            val intent = Intent(context, IrisService::class.java)
+            intent.putExtra(MAX_ROW, config.maxRow)
+            PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        } else{
+            val intent = Intent(context, IrisBroadcastReceiver::class.java)
+            intent.putExtra(MAX_ROW, config.maxRow)
+            PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        }
+
+        pendingIntent?.let {
+            val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pendingIntent)
+        }
     }
 
     companion object {

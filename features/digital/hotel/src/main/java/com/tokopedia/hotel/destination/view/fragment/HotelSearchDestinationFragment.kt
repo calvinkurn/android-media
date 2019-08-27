@@ -76,6 +76,11 @@ SearchDestinationListener{
         return view
     }
 
+    override fun getSwipeRefreshLayoutResourceId(): Int = 0
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
+
     override fun getAdapterTypeFactory(): SearchDestinationTypeFactory {
         return SearchDestinationTypeFactory(this)
     }
@@ -110,7 +115,7 @@ SearchDestinationListener{
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         var emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_no_match_search_suggestion
+        emptyModel.urlRes = getString(R.string.hotel_url_no_match_search_suggestion)
         emptyModel.title = getString(R.string.hotel_destination_empty_view_holder_title)
         emptyModel.content = getString(R.string.hotel_destination_empty_view_holder_subtitle)
 

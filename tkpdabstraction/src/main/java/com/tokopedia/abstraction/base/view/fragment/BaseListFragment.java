@@ -123,15 +123,23 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     public RecyclerView getRecyclerView(View view) {
-        return (RecyclerView) view.findViewById(R.id.recycler_view);
+        return (RecyclerView) view.findViewById(getRecyclerViewResourceId());
     }
 
     @Nullable
     public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
         if (hasInitialSwipeRefresh()) {
-            return view.findViewById(R.id.swipe_refresh_layout);
+            return view.findViewById(getSwipeRefreshLayoutResourceId());
         }
         return null;
+    }
+
+    public int getSwipeRefreshLayoutResourceId(){
+        return R.id.swipe_refresh_layout;
+    }
+
+    public int getRecyclerViewResourceId(){
+        return R.id.recycler_view;
     }
 
     @Override

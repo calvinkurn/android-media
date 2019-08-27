@@ -240,7 +240,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     val policyView = InfoTextView(this)
                     policyView.setTitleAndDescription(policy.longTitle, policy.longDesc)
                     policyView.info_title.setFontSize(TextViewCompat.FontSize.SMALL)
-                    policyView.info_container.setMargin(0, 0, 0, policyView.info_container.getDimens(R.dimen.dp_16))
+                    policyView.info_container.setMargin(0, 0, 0, policyView.info_container.getDimens(com.tokopedia.design.R.dimen.dp_16))
                     hotelCancellationPolicyBottomSheets.addContentView(policyView)
                 }
             }
@@ -381,7 +381,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         tv_room_estimated_price_label.text = getString(priceLabelResId)
         tv_room_estimated_price.text = price
-        context?.run { tv_room_estimated_price.setTextColor(ContextCompat.getColor(this, R.color.orange_607)) }
+        context?.run { tv_room_estimated_price.setTextColor(ContextCompat.getColor(this, com.tokopedia.design.R.color.orange_607)) }
     }
 
     private fun setupImportantNotes(property: HotelPropertyData) {
@@ -400,7 +400,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
 
             context?.run {
-                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.green_200)),
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, com.tokopedia.design.R.color.green_200)),
                         spannableString.length - expandNotesLabel.length, spannableString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             }
 
