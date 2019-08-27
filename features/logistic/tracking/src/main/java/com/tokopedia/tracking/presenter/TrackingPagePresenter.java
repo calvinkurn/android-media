@@ -46,7 +46,7 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
     @Override
     public void onGetTrackingData(String orderId) {
-        view.showMainLoadingPage();
+        view.showLoading();
         TKPDMapParam<String, String> request = new TKPDMapParam<>();
         request.put("order_id", orderId);
         RequestParams requestParams = RequestParams.create();
@@ -121,13 +121,13 @@ public class TrackingPagePresenter extends BaseDaggerPresenter implements ITrack
 
             @Override
             public void onError(Throwable e) {
-                view.closeMainLoadingPage();
+                view.hideLoading();
                 view.showError(e);
             }
 
             @Override
             public void onNext(TrackingViewModel trackingViewModel) {
-                view.closeMainLoadingPage();
+                view.hideLoading();
                 view.populateView(trackingViewModel);
             }
         };

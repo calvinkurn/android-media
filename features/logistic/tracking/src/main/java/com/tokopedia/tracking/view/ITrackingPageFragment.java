@@ -10,10 +10,6 @@ public interface ITrackingPageFragment {
 
     void populateView(TrackingViewModel viewModel);
 
-    void showMainLoadingPage();
-
-    void closeMainLoadingPage();
-
     void showLoading();
 
     void hideLoading();

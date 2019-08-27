@@ -62,7 +62,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private String mTrackingUrl;
 
     private ProgressBar loadingScreen;
-    private ProgressDialog progressDialog;
     private TextView referenceNumber;
     private ImageView courierLogo;
     private TextView deliveryDate;
@@ -118,10 +117,6 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadingScreen = view.findViewById(R.id.main_progress_bar);
-
-        progressDialog = new ProgressDialog(getActivity());
-        progressDialog.setMessage(getString(R.string.title_loading));
-        progressDialog.setCancelable(false);
 
         rootView = view.findViewById(R.id.root_view);
         referenceNumber = view.findViewById(R.id.reference_number);
@@ -180,33 +175,20 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void showMainLoadingPage() {
+    public void showLoading() {
         loadingScreen.setVisibility(View.VISIBLE);
     }
 
     @Override
-    public void closeMainLoadingPage() {
-        loadingScreen.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void showLoading() {
-        if (progressDialog != null && !progressDialog.isShowing()) progressDialog.show();
-    }
-
-    @Override
     public void hideLoading() {
-        if (progressDialog != null && progressDialog.isShowing()) progressDialog.dismiss();
+        loadingScreen.setVisibility(View.GONE);
     }
 
     @Override
     public void showError(Throwable error) {
         String message = ErrorHandler.getErrorMessage(getContext(), error);
         // currently, message is not being used
-        NetworkErrorHelper.showEmptyState(getActivity(), rootView,
-                () -> {
-                    fetchData();
-                });
+        NetworkErrorHelper.showEmptyState(getActivity(), rootView, this::fetchData);
     }
 
     @Override
