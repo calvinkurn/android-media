@@ -5,16 +5,15 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
-import com.tokopedia.common.travel.utils.TextHtmlUtils;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -32,8 +31,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
     private AppCompatTextView tvMainButton;
     private AppCompatTextView tvArrivalCity;
     private FlightOrderSuccessViewModel item;
-    private LinearLayout containerTicketCancellationStatus;
-    private AppCompatTextView tvTicketCancellationStatus;
+    private Ticker warningTicker;
 
     public FlightOrderSuccessViewHolder(FlightOrderAdapter.OnAdapterInteractionListener adapterInteractionListener, View itemView) {
         super(itemView);
@@ -42,14 +40,13 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
     }
 
     private void findViews(View view) {
-        tvTitle = (AppCompatTextView) view.findViewById(R.id.tv_title);
-        tvOrderDate = (AppCompatTextView) view.findViewById(R.id.tv_order_date);
-        tvOrderId = (AppCompatTextView) view.findViewById(R.id.tv_order_id);
-        tvDepartureCity = (AppCompatTextView) view.findViewById(R.id.tv_departure_city);
-        tvArrivalCity = (AppCompatTextView) view.findViewById(R.id.tv_arrival_city);
-        tvMainButton = (AppCompatTextView) view.findViewById(R.id.tv_main_button);
-        containerTicketCancellationStatus = view.findViewById(R.id.container_cancellation_warning);
-        tvTicketCancellationStatus = view.findViewById(R.id.tv_cancellation_ticket_status);
+        tvTitle = view.findViewById(R.id.tv_title);
+        tvOrderDate = view.findViewById(R.id.tv_order_date);
+        tvOrderId = view.findViewById(R.id.tv_order_id);
+        tvDepartureCity = view.findViewById(R.id.tv_departure_city);
+        tvArrivalCity = view.findViewById(R.id.tv_arrival_city);
+        tvMainButton = view.findViewById(R.id.tv_main_button);
+        warningTicker = view.findViewById(R.id.cancellation_warning);
 
         view.setOnClickListener(v -> onDetailOptionClicked());
     }
@@ -139,12 +136,12 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
     }
 
     private void showCancellationStatus(String cancellationInfo) {
-        tvTicketCancellationStatus.setText(TextHtmlUtils.INSTANCE.getTextFromHtml(cancellationInfo));
-        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
+        warningTicker.setHtmlDescription(cancellationInfo);
+        warningTicker.setVisibility(View.VISIBLE);
     }
 
     private void hideCancellationStatus() {
-        containerTicketCancellationStatus.setVisibility(View.GONE);
+        warningTicker.setVisibility(View.GONE);
     }
 
 }
