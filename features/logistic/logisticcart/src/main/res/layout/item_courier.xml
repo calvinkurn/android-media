@@ -26,10 +26,10 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_toRightOf="@+id/tv_courier"
         android:background="@drawable/bg_promo_potency"
-        android:paddingBottom="@dimen/dp_2"
         android:paddingLeft="@dimen/dp_8"
-        android:paddingRight="@dimen/dp_8"
         android:paddingTop="@dimen/dp_2"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_2"
         android:text="@string/label_text_promo_potency"
         android:textColor="@color/text_promo_potency"
         android:visibility="gone"
@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier"
         android:layout_marginTop="4dp"
-        tools:text="Mulai dari Rp10.000" />
+        tools:text="Rp10.000" />
 
     <TextView
         android:id="@+id/tv_cod_availability"
@@ -53,6 +53,29 @@
         android:layout_marginTop="4dp"
         tools:text="(Tersedia Bayar di Tempat)"
         tools:visibility="visible" />
+
+    <LinearLayout
+        android:id="@+id/otdelivery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_cod_availability"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:layout_marginRight="2dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            tools:text="Jaminan tepat waktu" />
+
+    </LinearLayout>
+
 
     <ImageView
         android:id="@+id/img_check"
@@ -67,7 +90,7 @@
         android:id="@+id/v_separator"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_below="@id/tv_cod_availability"
+        android:layout_below="@id/otdelivery"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@color/separator_color" />
 
