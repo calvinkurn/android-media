@@ -56,7 +56,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
     private static final int PER_SECOND = 1000;
     private static final String ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID";
-    public static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
+    private static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
 
     private String mOrderId;
     private String mTrackingUrl;
@@ -147,10 +147,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
                 TextView.BufferType.SPANNABLE);
         furtherInformationText.setOnClickListener(onFurtherInformationClicked());
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
-        presenter.onGetTrackingData(mOrderId);
-        presenter.onGetRetryAvailability(mOrderId);
+        fetchData();
     }
-
 
     @Override
     public void populateView(TrackingViewModel model) {
@@ -207,8 +205,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         // currently, message is not being used
         NetworkErrorHelper.showEmptyState(getActivity(), rootView,
                 () -> {
-                    presenter.onGetTrackingData(mOrderId);
-                    presenter.onGetRetryAvailability(mOrderId);
+                    fetchData();
                 });
     }
 
@@ -251,8 +248,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
-                    presenter.onGetTrackingData(mOrderId);
-                    presenter.onGetRetryAvailability(mOrderId);
+                    fetchData();
                 });
     }
 
@@ -335,8 +331,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
             @Override
             public void onFinish() {
-                presenter.onGetTrackingData(mOrderId);
-                presenter.onGetRetryAvailability(mOrderId);
+                fetchData();
             }
         };
         mCountDownTimer.start();
@@ -352,6 +347,11 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
             startActivity(
                     SimpleWebViewActivity.createIntent(getActivity(), mTrackingUrl));
         };
+    }
+
+    private void fetchData() {
+        presenter.onGetTrackingData(mOrderId);
+        presenter.onGetRetryAvailability(mOrderId);
     }
 
     @Override
