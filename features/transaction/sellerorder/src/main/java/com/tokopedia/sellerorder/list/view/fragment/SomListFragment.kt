@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.list.view
+package com.tokopedia.sellerorder.list.view.fragment
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.list.view.adapter.SomListItemAdapter
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter

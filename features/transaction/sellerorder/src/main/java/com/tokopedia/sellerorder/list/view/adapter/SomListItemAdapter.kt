@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.list.view
+package com.tokopedia.sellerorder.list.view.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater

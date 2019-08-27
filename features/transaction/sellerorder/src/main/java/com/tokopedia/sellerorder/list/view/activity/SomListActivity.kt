@@ -1,7 +1,8 @@
-package com.tokopedia.sellerorder.list.view
+package com.tokopedia.sellerorder.list.view.activity
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.list.view.fragment.SomListFragment
 
 /**
  * Created by fwidjaja on 2019-08-23.
