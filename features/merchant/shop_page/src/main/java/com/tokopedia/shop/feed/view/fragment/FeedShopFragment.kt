@@ -43,6 +43,7 @@ import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.createpost.view.activity.CreatePostActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
@@ -58,7 +59,6 @@ import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
-import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -566,7 +566,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             val intent = if (GlobalConfig.isCustomerApp()) {
                 RouteManager.getIntent(it, ApplinkConst.CONTENT_CREATE_POST)
             } else {
-                RouteManager.getIntent(it, ApplinkConstInternalContent.SHOP_POST_PICKER, URLEncoder.encode(createPostUrl, "UTF-8"))
+                RouteManager.getIntent(it, ApplinkConstInternalContent.SHOP_POST_PICKER).apply{
+                    putExtra(CreatePostActivity.FORM_URL, createPostUrl)
+                }
             }
             startActivityForResult(
                     intent,
