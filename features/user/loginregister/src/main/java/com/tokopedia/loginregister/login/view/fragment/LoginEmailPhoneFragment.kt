@@ -452,8 +452,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                         userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
                         (it.id.equals(GPLUS, ignoreCase = true) &&
                                 userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
-                    tv.setText("${getString(R.string.continue_socmed)} ${it.name} " +
-                            "${getString(R.string.socmed_account_as)} $name")
+                    tv.setText("${it.name} ${getString(R.string.socmed_account_as)} $name")
                 }
             }
             if (!TextUtils.isEmpty(it.image)) {
