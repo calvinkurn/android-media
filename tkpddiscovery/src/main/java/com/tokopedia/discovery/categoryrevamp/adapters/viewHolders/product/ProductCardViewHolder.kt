@@ -43,8 +43,7 @@ abstract class ProductCardViewHolder(itemView: View,
         initLocationTextView(productItem)
         initCredibilitySection(productItem)
         initOffersLabel(productItem)
-        // initTopAdsIcon(productItem)
-
+        initTopAdsIcon(productItem)
         finishBindViewHolder()
     }
 
@@ -69,9 +68,9 @@ abstract class ProductCardViewHolder(itemView: View,
 
         setImageProductUrl(productItem)
 
-       /*   getProductCardView()?.setImageProductViewHintListener(productItem) {
-         productListener.onProductImpressed(productItem, adapterPosition)
-         }*/
+        /*   getProductCardView()?.setImageProductViewHintListener(productItem) {
+          productListener.onProductImpressed(productItem, adapterPosition)
+          }*/
     }
 
     protected fun setImageProductUrl(productItem: ProductsItem) {
@@ -81,7 +80,7 @@ abstract class ProductCardViewHolder(itemView: View,
     }
 
     protected fun initWishlistButton(productItem: ProductsItem) {
-        getProductCardView()?.setButtonWishlistVisible(productItem.wishlist)
+        getProductCardView()?.setButtonWishlistVisible(true)
         getProductCardView()?.setButtonWishlistImage(productItem.wishlist)
         getProductCardView()?.setButtonWishlistOnClickListener {
             if (productItem.wishlist) {
@@ -124,7 +123,7 @@ abstract class ProductCardViewHolder(itemView: View,
     }
 
     protected fun isShopNameShown(productItem: ProductsItem): Boolean {
-        return productItem.shop!!.isOfficial
+        return productItem.shop.isOfficial
     }
 
     protected fun initTitleTextView(productItem: ProductsItem) {
@@ -242,7 +241,7 @@ abstract class ProductCardViewHolder(itemView: View,
         getProductCardView()?.setImageRatingVisible(isImageRatingVisible)
 
         if (isImageRatingVisible) {
-             getProductCardView()?.setRating(getStarCount(productItem))
+            getProductCardView()?.setRating(getStarCount(productItem))
         }
     }
 
@@ -250,12 +249,12 @@ abstract class ProductCardViewHolder(itemView: View,
         return productItem.rating != 0
     }
 
-     protected fun getStarCount(productItem: ProductsItem): Int {
-        /* return if (productItem.isTopAds)
-             Math.round(productItem.rating / 20f)
-         else*/
-            return Math.round(productItem.rating?.toFloat()?:0f)
-     }
+    protected fun getStarCount(productItem: ProductsItem): Int {
+        return if (productItem.isTopAds)
+            Math.round(productItem.rating / 20f)
+        else
+            return Math.round(productItem.rating?.toFloat() ?: 0f)
+    }
 
     protected fun initReviewCount(productItem: ProductsItem) {
         val isReviewCountVisible = isReviewCountVisible(productItem)
@@ -311,9 +310,9 @@ abstract class ProductCardViewHolder(itemView: View,
         getProductCardView()?.setLabelOffersText(offersLabelViewModel.title)
     }
 
-    /* protected fun initTopAdsIcon(productItem: ProductsItem) {
-         getProductCardView()?.setImageTopAdsVisible(productItem.isTopAds)
-     }*/
+    protected fun initTopAdsIcon(productItem: ProductsItem) {
+        getProductCardView()?.setImageTopAdsVisible(productItem.isTopAds)
+    }
 
     protected fun finishBindViewHolder() {
         getProductCardView()?.realignLayout()

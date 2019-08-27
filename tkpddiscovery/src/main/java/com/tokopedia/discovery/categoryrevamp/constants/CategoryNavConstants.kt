@@ -14,11 +14,12 @@ class CategoryNavConstants {
         const val KEY_SAFE_SEARCH = "safe_search"
         const val OB = "ob"
         const val Q = "q"
-
-        //val KEY_ROWS = "catalog_rows"
-        const val KEY_SCHEME = "scheme"
-
-
+        const val KEY_PAGE = "page"
+        const val KEY_EP = "ep"
+        const val KEY_ITEM = "item"
+        const val KEY_F_SHOP = "fshop"
+        const val KEY_DEPT_ID = "dep_id"
+        const val KEY_SRC = "src"
         const val IDENTIFIER = "identifier"
         const val INTERMEDIARY = "intermediary"
         const val SAFESEARCH = "safeSearch"

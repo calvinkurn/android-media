@@ -34,6 +34,7 @@ import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.Prod
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
+import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
 import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
@@ -48,7 +49,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_product_nav.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.set
 
 
 class ProductNavFragment : BaseCategorySectionFragment(),
@@ -80,9 +84,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     var list: ArrayList<Visitable<ProductTypeFactory>> = ArrayList()
 
     var quickFilterList = ArrayList<Filter>()
-
-
-
     var mDepartmentId: String = ""
     var mDepartmentName: String = ""
 
@@ -198,7 +199,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                         scrollY > oldScrollY) {
                     if (isPagingAllowed) {
                         incrementpage()
-                        fetchProductData(getParamMap(getPage()))
+                        fetchProductData(getProductListParamMap(getPage()))
                         productNavListAdapter?.addLoading()
                         isPagingAllowed = false
                     }
@@ -211,7 +212,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
 
     private fun fetchProductData(paramMap: RequestParams) {
-        productNavViewModel.fetchProductList(paramMap)
+        productNavViewModel.fetchProductListing(paramMap)
     }
 
     private fun observeData() {
@@ -306,6 +307,8 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         daFilterQueryType.sc = mDepartmentId
         paramMap.putString(CategoryNavConstants.SOURCE, "search_product")
         paramMap.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
+        paramMap.putString(CategoryNavConstants.Q,"")
+        paramMap.putString(CategoryNavConstants.SOURCE,"directory")
         return paramMap
     }
 
@@ -321,7 +324,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
-            fetchProductData(getParamMap(getPage()))
+            fetchProductData(getProductListParamMap(getPage()))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
             productNavViewModel.fetchQuickFilters(getQuickFilterParams())
         }
@@ -345,18 +348,45 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         return subCategoryMap
     }
 
-    private fun getParamMap(start: Int): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putString(CategoryNavConstants.START, (start * 10).toString())
-        requestParams.putString(CategoryNavConstants.SC, mDepartmentId)
-        requestParams.putString(CategoryNavConstants.DEVICE, "android")
-        requestParams.putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
-        requestParams.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
-        requestParams.putString(CategoryNavConstants.ROWS, "10")
-        requestParams.putString(CategoryNavConstants.SOURCE, "search_product")
-        requestParams.putAllString(getSelectedSort())
-        requestParams.putAllString(getSelectedFilter())
-        return requestParams
+    private fun getProductListParamMap(start: Int): RequestParams {
+
+        val param = RequestParams.create()
+
+
+        val searchProductRequestParams = RequestParams.create()
+        searchProductRequestParams.putString(CategoryNavConstants.START, (start * 10).toString())
+        searchProductRequestParams.putString(CategoryNavConstants.SC, mDepartmentId)
+        searchProductRequestParams.putString(CategoryNavConstants.DEVICE, "android")
+        searchProductRequestParams.putString(CategoryNavConstants.UNIQUE_ID, getUniqueId())
+        searchProductRequestParams.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
+        searchProductRequestParams.putString(CategoryNavConstants.ROWS, "10")
+        searchProductRequestParams.putString(CategoryNavConstants.SOURCE, "search_product")
+        searchProductRequestParams.putAllString(getSelectedSort())
+        searchProductRequestParams.putAllString(getSelectedFilter())
+        param.putString("product_params", createParametersForQuery(searchProductRequestParams.parameters))
+
+
+        val topAdsRequestParam = RequestParams.create()
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_SAFE_SEARCH, "false")
+        topAdsRequestParam.putString(CategoryNavConstants.DEVICE, "android")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_SRC, "directory")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_PAGE, start.toString())
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_EP, "product")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_ITEM, "2")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_F_SHOP, "1")
+        topAdsRequestParam.putString(CategoryNavConstants.KEY_DEPT_ID, mDepartmentId)
+
+        topAdsRequestParam.putAllString(getSelectedSort())
+
+        param.putString("top_params", createParametersForQuery(topAdsRequestParam.parameters))
+        return param
+    }
+
+
+    private fun createParametersForQuery(parameters: Map<String, Any>): String {
+        val variables = HashMap<String, Any>()
+        /* variables[CategoryNavConstants.KEY_PARAMS] =*/ return ParamMapToUrl.generateUrlParamString(parameters)
+        // return variables
     }
 
     private fun getUniqueId(): String {
@@ -377,7 +407,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         showRefreshLayout()
         productNavListAdapter?.clearData()
         resetPage()
-        fetchProductData(getParamMap(getPage()))
+        fetchProductData(getProductListParamMap(getPage()))
 
         productNavViewModel.fetchQuickFilters(getQuickFilterParams())
 
@@ -411,7 +441,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onWishlistButtonClicked(productItem: ProductsItem) {
-        Log.d("ProductNavFragment", "onWishlistButtonClicked")
+
     }
 
     override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {

@@ -19,7 +19,7 @@ data class CatalogItem(
         val departmentId: Int? = null,
 
         @field:SerializedName("name")
-        val name: String? = null,
+        var name: String? = null,
 
         @field:SerializedName("count_product")
         val countProduct: Int? = null,
@@ -28,7 +28,7 @@ data class CatalogItem(
         val description: String? = null,
 
         @field:SerializedName("id")
-        val id: Int? = null,
+        var id: Int? = null,
 
         @field:SerializedName("price_min")
         val priceMin: String? = null,

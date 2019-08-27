@@ -2,13 +2,11 @@ package com.tokopedia.discovery.categoryrevamp.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductListResponse
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.CategoryProductUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.DynamicFilterUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.QuickFilterUseCase
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.SubCategoryUseCase
+import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.discovery.common.data.Filter
 import com.tokopedia.usecase.RequestParams
@@ -21,7 +19,8 @@ import javax.inject.Inject
 class ProductNavViewModel @Inject constructor(var categoryProductUseCase: CategoryProductUseCase,
                                               var subCategoryUseCase: SubCategoryUseCase,
                                               var dynamicFilterUseCase: DynamicFilterUseCase,
-                                              var quickFilterUseCase: QuickFilterUseCase) : ViewModel() {
+                                              var quickFilterUseCase: QuickFilterUseCase,
+                                              var getProductListUseCase: GetProductListUseCase) : ViewModel() {
 
 
     val mProductList = MutableLiveData<Result<List<ProductsItem>>>()
@@ -30,11 +29,11 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
     var mDynamicFilterModel = MutableLiveData<Result<DynamicFilterModel>>()
     var mQuickFilterModel = MutableLiveData<Result<List<Filter>>>()
 
-
-    fun fetchProductList(params: RequestParams) {
-
-        categoryProductUseCase.execute(params, object : Subscriber<ProductListResponse>() {
+    fun fetchProductListing(params: RequestParams) {
+        getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
+                Log.d("fetchProductList", "onNext")
+
                 productListResponse?.let { productResponse ->
                     (productResponse.searchProduct)?.let { searchProduct ->
                         searchProduct.products?.let { productList ->
@@ -48,13 +47,15 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
                         mProductCount.value = searchProduct.totalData.toString()
                     }
                 }
+
             }
 
             override fun onCompleted() {
+                Log.d("fetchProductList", "onCompleted")
             }
 
-            override fun onError(e: Throwable) {
-                mProductList.value = Fail(e)
+            override fun onError(e: Throwable?) {
+                Log.d("fetchProductList", "onError")
             }
         })
     }

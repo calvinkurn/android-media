@@ -182,6 +182,8 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         daFilterQueryType.sc = mDepartmentId
         paramMap.putString(CategoryNavConstants.SOURCE, "search_catalog")
         paramMap.putObject(CategoryNavConstants.FILTER, daFilterQueryType)
+        paramMap.putString(CategoryNavConstants.Q, "")
+        paramMap.putString(CategoryNavConstants.SOURCE, "directory_catalog")
         return paramMap
     }
 
@@ -227,8 +229,19 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         catalogMap.putString(CategoryNavConstants.SOURCE, "directory")
         catalogMap.putString(CategoryNavConstants.ST, "catalog")
         catalogMap.putInt(CategoryNavConstants.ROWS, 10)
-        catalogMap.putObject("filter", AceFilterInput("", "", mDepartmentId))
         catalogMap.putInt("ob", getSelectedSort()["ob"]?.toInt() ?: 23)
+        val hashmap = getSelectedFilter()
+        var pmin = ""
+        var pmax = ""
+        if (hashmap.containsKey("pmin")) {
+            pmin = hashmap.get("pmin") ?: ""
+        }
+        if (hashmap.containsKey("pmax")) {
+            pmax = hashmap.get("pmax") ?: ""
+        }
+
+        catalogMap.putObject("filter", AceFilterInput(pmin, pmax, mDepartmentId))
+
         return catalogMap
 
     }

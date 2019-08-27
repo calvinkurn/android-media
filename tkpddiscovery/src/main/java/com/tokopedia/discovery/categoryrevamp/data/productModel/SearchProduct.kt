@@ -29,5 +29,5 @@ data class SearchProduct(
 	val redirection: Redirection? = null,
 
 	@field:SerializedName("products")
-	val products: List<ProductsItem?>? = null
+	var products: ArrayList<ProductsItem?> = ArrayList()
 )

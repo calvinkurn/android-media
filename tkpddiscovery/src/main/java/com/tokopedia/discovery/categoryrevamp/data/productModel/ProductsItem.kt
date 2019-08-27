@@ -16,16 +16,16 @@ data class ProductsItem(
         val imageURL700: String = "",
 
         @field:SerializedName("shop")
-        val shop: Shop? = null,
+        val shop: Shop = Shop(),
 
         @field:SerializedName("originalPrice")
-        val originalPrice: String = "",
+        var originalPrice: String = "",
 
         @field:SerializedName("wishlist")
-        val wishlist: Boolean = false,
+        var wishlist: Boolean = false,
 
         @field:SerializedName("rating")
-        val rating: Int? = null,
+        var rating: Int = 0,
 
         //@field:SerializedName("childs")
         //val childs: List<Int?>? = null,
@@ -34,19 +34,19 @@ data class ProductsItem(
         val categoryName: String? = null,
 
         @field:SerializedName("discountPercentage")
-        val discountPercentage: Int = 0,
+        var discountPercentage: Int = 0,
 
         @field:SerializedName("countReview")
-        val countReview: Int = 0,
+        var countReview: Int = 0,
 
         @field:SerializedName("price")
-        val price: String = "",
+        var price: String = "",
 
         @field:SerializedName("imageURL")
-        val imageURL: String = "",
+        var imageURL: String = "",
 
         @field:SerializedName("id")
-        val id: Int? = null,
+        var id: Int? = null,
 
         @field:SerializedName("categoryBreadcrumb")
         val categoryBreadcrumb: String? = null,
@@ -61,7 +61,7 @@ data class ProductsItem(
         // val wholesalePrice: List<Any?>? = null,
 
         @field:SerializedName("categoryID")
-        val categoryID: Int? = null,
+        var categoryID: Int? = null,
 
         @field:SerializedName("GAKey")
         val gAKey: String? = null,
@@ -76,7 +76,7 @@ data class ProductsItem(
         val labels: List<LabelsItem?> = arrayListOf(),
 
         @field:SerializedName("badges")
-        val badges: List<BadgesItem> = arrayListOf(),
+        var badges: List<BadgesItem> = arrayListOf(),
 
         @field:SerializedName("condition")
         val condition: Int? = null,
@@ -85,19 +85,22 @@ data class ProductsItem(
         val labelGroups: List<LabelGroupsItem?> = arrayListOf(),
 
         @field:SerializedName("name")
-        val name: String = "",
+        var name: String = "",
 
         @field:SerializedName("category")
         val category: Int? = null,
 
         @field:SerializedName("priceRange")
-        val priceRange: String = "",
+        var priceRange: String = "",
 
         @field:SerializedName("imageURL300")
-        val imageURL300: String? = null,
+        var imageURL300: String? = null,
 
         @field:SerializedName("preorder")
-        val preorder: Boolean? = null
+        val preorder: Boolean? = null,
+
+        @field:SerializedName("isTopAds")
+        var isTopAds: Boolean = false
 ) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
 
 
@@ -135,7 +138,8 @@ data class ProductsItem(
             parcel.readValue(Int::class.java.classLoader) as? Int,
             parcel.readString(),
             parcel.readString(),
-            parcel.readValue(Boolean::class.java.classLoader) as? Boolean)
+            parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
+            parcel.readValue(Boolean::class.java.classLoader) as Boolean)
 
     override fun writeToParcel(dest: Parcel?, flags: Int) {
         dest?.writeString(this.imageURL500)
@@ -167,6 +171,7 @@ data class ProductsItem(
         dest?.writeString(this.priceRange)
         dest?.writeString(this.imageURL300)
         dest?.writeValue(this.preorder)
+        dest?.writeValue(this.isTopAds)
 
 
     }

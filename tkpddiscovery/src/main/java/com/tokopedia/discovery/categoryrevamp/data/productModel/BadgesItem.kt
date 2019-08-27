@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 data class BadgesItem(
 
-        @field:SerializedName("imageURL")
+        @field:SerializedName(value = "imageURL", alternate = ["image_url"])
         val imageURL: String? = null,
 
         @field:SerializedName("title")

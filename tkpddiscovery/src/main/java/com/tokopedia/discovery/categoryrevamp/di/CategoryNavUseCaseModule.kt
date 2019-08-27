@@ -73,4 +73,21 @@ class CategoryNavUseCaseModule {
     fun provideQuickFilterUseCase(context: Context): QuickFilterUseCase {
         return QuickFilterUseCase(context)
     }
+
+    @CategoryNavScope
+    @Named("topAdsProductListing")
+    @Provides
+    fun provideTopAdsUseCase(context: Context): TopAdsProductsUseCase {
+        return TopAdsProductsUseCase(context)
+    }
+
+
+    @CategoryNavScope
+    @Provides
+    fun getProductListUseCase(categoryProductUseCase: CategoryProductUseCase
+                             , @Named("topAdsProductListing") topAdsProductsUseCase
+                             : TopAdsProductsUseCase)
+            : GetProductListUseCase {
+        return GetProductListUseCase(categoryProductUseCase, topAdsProductsUseCase)
+    }
 }

@@ -1,12 +1,8 @@
-query ($params: String){
-  displayAdsV3(displayParams: $params) {
+query displayTopAds($params: String) {
+  productAds: displayAdsV3(displayParams: $params) {
     status {
       error_code
       message
-    }
-    header {
-      process_time
-      total_data
     }
     data {
       id
@@ -32,12 +28,17 @@ query ($params: String){
         uri
         relative_uri
         price_format
+        campaign {
+          discount_percentage
+          original_price
+        }
         wholesale_price {
           price_format
           quantity_max_format
           quantity_min_format
         }
         count_talk_format
+        count_review_format
         category {
           id
         }
@@ -48,6 +49,15 @@ query ($params: String){
         product_new_label
         product_cashback_rate
         product_rating
+        labels {
+          color
+          title
+        }
+        label_group {
+          position
+          type
+          title
+        }
         top_label
         bottom_label
       }
@@ -71,5 +81,8 @@ query ($params: String){
       }
       applinks
     }
+    template {
+      is_ad
     }
+  }
 }

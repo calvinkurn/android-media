@@ -10,10 +10,10 @@ data class Shop(
         val goldmerchant: Boolean? = null,
 
         @field:SerializedName("city")
-        val city: String = "",
+        var city: String = "",
 
         @field:SerializedName("name")
-        val name: String? = null,
+        var name: String? = null,
 
         @field:SerializedName("clover")
         val clover: String? = null,

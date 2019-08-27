@@ -84,6 +84,7 @@ query SearchProduct($params: String) {
       badges {
         title
         imageURL: image_url
+        show
       }
       isFeatured: is_featured
       rating
