@@ -1,6 +1,7 @@
 package com.tokopedia.transactionanalytics;
 
 import android.app.Activity;
+import android.os.Bundle;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -16,8 +17,8 @@ public abstract class TransactionAnalytics {
     TransactionAnalytics() {
     }
 
-    Analytics getTracker(){
-        return  TrackApp.getInstance().getGTM();
+    Analytics getTracker() {
+        return TrackApp.getInstance().getGTM();
     }
 
     public void sendScreenName(Activity activity, String screenName) {
@@ -40,5 +41,9 @@ public abstract class TransactionAnalytics {
 
     void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
+    }
+
+    void sendEnhancedEcommerceV5(String eventName, Bundle data) {
+        TrackApp.getInstance().getGTM().pushEECommerce(eventName, data);
     }
 }

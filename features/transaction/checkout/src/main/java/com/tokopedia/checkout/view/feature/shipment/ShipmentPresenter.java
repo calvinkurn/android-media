@@ -517,7 +517,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
         if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
-        if (leasingId != null && !leasingId.isEmpty()) paramGetShipmentForm.put("vehicle_leasing_id", leasingId);
+        if (leasingId != null && !leasingId.isEmpty())
+            paramGetShipmentForm.put("vehicle_leasing_id", leasingId);
 
         RequestParams requestParams = RequestParams.create();
         Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
@@ -962,9 +963,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
             enhancedECommerceActionField.setStep(step);
             String option = "";
-            if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_1)) {
-                option = EnhancedECommerceActionField.STEP_1_OPTION_CART_PAGE_LOADED;
-            } else if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_2)) {
+            if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_2)) {
                 option = EnhancedECommerceActionField.STEP_2_OPTION_CHECKOUT_PAGE_LOADED;
             } else if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_3)) {
                 option = EnhancedECommerceActionField.STEP_3_OPTION_DATA_VALIDATION;

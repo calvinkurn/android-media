@@ -265,7 +265,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processToUpdateCartData(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList) {
+    public void processToUpdateCartData(List<CartItemData> cartItemDataList) {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
@@ -287,7 +287,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList, cartShopHolderDataList))
+                        .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList))
         );
     }
 
@@ -783,7 +783,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList) {
+    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress(List<CartItemData> cartItemDataList) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -813,7 +813,7 @@ public class CartListPresenter implements ICartListPresenter {
                     } else {
                         int checklistCondition = getChecklistCondition();
                         view.renderToShipmentFormSuccess(
-                                generateCheckoutDataAnalytics(cartItemDataList, cartShopHolderDataList),
+                                cartItemDataList,
                                 isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
                                 checklistCondition);
                     }
