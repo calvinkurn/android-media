@@ -156,7 +156,25 @@ public class DeeplinkUTMUtils {
                             maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
 
                 } else if (host.contains(TOKOPEDIA_DOMAIN)) {
-                    //do nothing
+                    //send event if client id is present
+                    if (!TextUtils.isEmpty(maps.get(AppEventTracking.GTM.X_CLID))) {
+                        campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
+                        campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
+                        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
+                        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+                        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
+                        campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
+                                maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
+                        campaign.setExternalClientId(maps.get(AppEventTracking.GTM.X_CLID) != null ?
+                                maps.get(AppEventTracking.GTM.X_CLID) : "");
+                        campaign.setXAtttribute(maps.get(AppEventTracking.GTM.X_ATTR) != null ?
+                                maps.get(AppEventTracking.GTM.X_ATTR) : "");
+                    }
                 } else {
 
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
