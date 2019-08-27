@@ -197,9 +197,11 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
             retryButton.setOnClickListener(view -> {
                         retryButton.setEnabled(false);
                         presenter.onRetryPickup(mOrderId);
+                        mAnalytics.eventClickButtonCariDriver(mOrderId);
                     }
             );
             retryStatus.setVisibility(View.GONE);
+            mAnalytics.eventViewButtonCariDriver(mOrderId);
         } else {
             retryButton.setVisibility(View.GONE);
             if (deadline > 0) {
@@ -292,6 +294,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         long timeInMillis = remainingSeconds * 1000;
         String strFormat = (getContext() != null) ?
                 getContext().getString(R.string.retry_dateline_info) : "";
+        mAnalytics.eventViewLabelTungguRetry(
+                DateUtils.formatElapsedTime(timeInMillis / 1000), mOrderId);
         mCountDownTimer = new CountDownTimer(timeInMillis, PER_SECOND) {
             @Override
             public void onTick(long millsUntilFinished) {
