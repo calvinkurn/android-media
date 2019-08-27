@@ -33,13 +33,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
@@ -47,19 +47,26 @@ import com.tokopedia.payment.fingerprint.di.FingerprintModule;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment;
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister;
-import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.payment.presenter.TopPayContract;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -81,11 +88,13 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
 
+    private static final String ENABLE_TOPPAY_TIMEOUT = "android_enable_toppay_timeout";
+
     public static final int PAYMENT_SUCCESS = 5;
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
-    public static final long FORCE_TIMEOUT = 90000L;
+    public static final long FORCE_TIMEOUT = 500L;
 
     @Inject
     TopPayPresenter presenter;
@@ -104,6 +113,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;
     private CommonWebViewClient webChromeWebviewClient;
+    private RemoteConfig remoteConfig;
 
     private String mJsHciCallbackFuncName;
 
@@ -203,6 +213,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private void initVar() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
         webChromeWebviewClient = new CommonWebViewClient(this, progressBar);
     }
 
@@ -509,6 +520,15 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
             //  Log.d(TAG, "start url = " + url);
+            if (remoteConfig.getBoolean(ENABLE_TOPPAY_TIMEOUT, false)) {
+                timerObservable(view);
+            } else {
+                timerThread(view);
+            }
+            if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        }
+
+        private void timerThread(WebView view) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -527,7 +547,30 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     }
                 }
             }).start();
-            if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        }
+
+        private void timerObservable(WebView view) {
+            Observable.timer(FORCE_TIMEOUT, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Long>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+
+                        @Override
+                        public void onNext(Long aLong) {
+                            if (timeout) {
+                                showErrorTimeout(view);
+                            }
+                        }
+                    });
         }
 
         private void showErrorTimeout(WebView view) {
