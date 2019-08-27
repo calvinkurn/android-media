@@ -69,12 +69,9 @@ public abstract class SearchSectionFragment
     protected static final int START_ROW_FIRST_TIME_LOAD = 0;
 
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
-    private static final String EXTRA_FILTER = "EXTRA_FILTER";
-    private static final String EXTRA_SORT = "EXTRA_SORT";
     private static final String EXTRA_SELECTED_FILTER = "EXTRA_SELECTED_FILTER";
     private static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
-    private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
     protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME";
@@ -523,6 +520,7 @@ public abstract class SearchSectionFragment
         outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
         outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
+        outState.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
     }
 
     public abstract void reloadData();
@@ -553,6 +551,7 @@ public abstract class SearchSectionFragment
         setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
         setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
+        fragmentPosition = savedInstanceState.getInt(EXTRA_FRAGMENT_POSITION);
     }
 
     @Override

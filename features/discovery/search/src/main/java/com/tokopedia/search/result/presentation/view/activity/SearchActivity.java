@@ -79,6 +79,7 @@ public class SearchActivity extends BaseActivity
     private static final int TAB_FIRST_POSITION = 0;
     private static final int TAB_SECOND_POSITION = 1;
     private static final int TAB_THIRD_POSITION = 2;
+    private static final int TAB_FORTH_POSITION = 3;
 
     @DeepLink(ApplinkConst.DISCOVERY_SEARCH)
     public static Intent getCallingApplinkSearchIntent(Context context, Bundle bundle) {
@@ -440,15 +441,15 @@ public class SearchActivity extends BaseActivity
     }
 
     private ProductListFragment getProductFragment() {
-        return ProductListFragment.newInstance(searchParameter, 0);
+        return ProductListFragment.newInstance(searchParameter, TAB_FIRST_POSITION);
     }
 
     private CatalogListFragment getCatalogFragment() {
-        return CatalogListFragment.newInstance(searchParameter, 1);
+        return CatalogListFragment.newInstance(searchParameter, TAB_SECOND_POSITION);
     }
 
     private ShopListFragment getShopFragment() {
-        return ShopListFragment.newInstance(searchParameter, 2);
+        return ShopListFragment.newInstance(searchParameter, TAB_THIRD_POSITION);
     }
 
     private ProfileListFragment getProfileListFragment() {
@@ -487,6 +488,9 @@ public class SearchActivity extends BaseActivity
                 break;
             case TAB_THIRD_POSITION:
                 shopListFragment.backToTop();
+                break;
+            case TAB_FORTH_POSITION:
+                profileListFragment.backToTop();
                 break;
         }
     }

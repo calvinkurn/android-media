@@ -376,4 +376,8 @@ class ProfileListFragment :
         val cache = LocalCacheHandler(activity!!.applicationContext, GCM_STORAGE)
         return cache.getString(GCM_ID, "")
     }
+
+    fun backToTop() {
+        getRecyclerView(view)?.smoothScrollToPosition(0)
+    }
 }

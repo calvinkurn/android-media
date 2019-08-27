@@ -202,7 +202,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         catalogAdapter.onSaveInstanceState(outState);
         saveDataToBundle(outState);
