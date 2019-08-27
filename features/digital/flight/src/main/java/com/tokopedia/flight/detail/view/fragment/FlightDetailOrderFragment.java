@@ -1,6 +1,5 @@
 package com.tokopedia.flight.detail.view.fragment;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -551,14 +550,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void showCancellationStatus() {
-        tvTicketCancellationStatus.setText(getString(R.string.flight_cancellation_ticket_status));
+        tvTicketCancellationStatus.setText("");
         containerTicketCancellationStatus.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showCancellationStatusInProgress(int numberOfProcess) {
-        tvTicketCancellationStatus.setText(String.format(getString(
-                R.string.flight_cancellation_ticket_status_in_progress), numberOfProcess));
+        tvTicketCancellationStatus.setText("");
         containerTicketCancellationStatus.setVisibility(View.VISIBLE);
     }
 
