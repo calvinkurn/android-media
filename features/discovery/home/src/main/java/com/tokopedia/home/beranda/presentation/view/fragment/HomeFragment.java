@@ -207,7 +207,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
-        irisAnalytics = new IrisAnalytics(getActivity());
+        irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
 
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
