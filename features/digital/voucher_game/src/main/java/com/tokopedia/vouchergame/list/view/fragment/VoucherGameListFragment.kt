@@ -145,7 +145,9 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         }
     }
 
-    override fun hasInitialSwipeRefresh(): Boolean { return true }
+    override fun hasInitialSwipeRefresh(): Boolean {
+        return true
+    }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
@@ -177,7 +179,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onSearchSubmitted(text: String?) {
         text?.run {
-            if (text.isNotEmpty()) searchVoucherGame(text)
+            searchVoucherGame(text)
         }
     }
 
