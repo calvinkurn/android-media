@@ -72,6 +72,10 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         return getString(key, "")
     }
 
+    override fun getKeysByPrefix(prefix: String?): MutableSet<String> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun getString(key: String?, defaultValue: String): String {
         val cacheValue: String = this.sharedPreferences.getString(key, defaultValue)
         if (!cacheValue.isEmpty() && !cacheValue.equals(defaultValue, ignoreCase = true)) {
@@ -125,8 +129,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     if (featureVariants != null) {
                         for (a in featureVariants) {
                             setString(a.feature, a.variant)
-                            // ===== For testing purpose ===== //
-                            Toast.makeText(context, "${a.feature} :: ${a.variant}", Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -134,7 +136,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                         editor.putInt(REVISION, globalRevision).commit()
                     }
 
-                    return@map RolloutFeatureVariants(responseData.dataRollout.featureVariants)
+                    return@map RolloutFeatureVariants(featureVariants)
                 }
                 .doOnError { error ->
                     Log.d("doOnError", error.toString())
@@ -162,7 +164,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                 "eventCategory" to "abtesting",
                 "user_id" to if (userSession.isLoggedIn) userSession.userId else null,
                 "session_id" to userSession.deviceId,
-                "feature" to featureVariants
+                "feature" to featureVariants.featureVariants
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
     }
