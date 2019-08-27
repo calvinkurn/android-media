@@ -39,7 +39,6 @@ import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
-import com.tokopedia.home.account.presentation.activity.NotificationSettingActivity;
 import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;

@@ -363,12 +363,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                             analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
                         }
                     }
-
-                    activity?.let {
-                        if (it.isTaskRoot) {
-                            getInboxChannelsIntent()?.let {startActivity(it)}
-                        }
-                    }
+                    backToChannelList()
                     activity?.finish()
                 }
             }
@@ -529,7 +524,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun backToChannelList() {
         activity?.let {
             if (it.isTaskRoot) {
-                startActivity(getInboxChannelsIntent())
+                startActivity(RouteManager.getIntent(it, ApplinkConst.HOME))
             }
             it.finish()
             it.onBackPressed()
