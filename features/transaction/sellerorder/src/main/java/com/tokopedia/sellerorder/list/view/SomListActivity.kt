@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.view
+package com.tokopedia.sellerorder.list.view
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.sellerorder.R

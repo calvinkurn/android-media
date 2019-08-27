@@ -1,4 +1,4 @@
-package com.tokopedia.sellerorder.view
+package com.tokopedia.sellerorder.list.view
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -22,7 +22,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.tv_invoice.text = somItemList[position]
+        holder.itemView.invoice_label.text = somItemList[position]
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

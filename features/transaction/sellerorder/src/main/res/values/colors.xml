@@ -2,4 +2,5 @@
 <resources>
     <color name="green_header">#ebffef</color>
     <color name="red_header">#ffeaef</color>
+    <color name="red_due_response">#fa591d</color>
 </resources>
