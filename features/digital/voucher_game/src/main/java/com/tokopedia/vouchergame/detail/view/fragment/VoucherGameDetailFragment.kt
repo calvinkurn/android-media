@@ -148,28 +148,27 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
             1 -> {
                 input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
                     override fun onEditorActionDone() {
-                        if (input1.isNotEmpty()) enquireFields(data)
+                        if (input1.isNotEmpty()) enquireFields(data, input1)
                     }
                 })
             }
             2 -> {
                 input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener {
                     override fun onEditorActionDone() {
-                        if (input1.isNotEmpty() && input2.isNotEmpty()) enquireFields(data)
+                        if (input1.isNotEmpty() && input2.isNotEmpty()) enquireFields(data, input1, input2)
                     }
                 })
             }
         }
     }
 
-    private fun enquireFields(enquiryData: List<VoucherGameEnquiryFields>) {
-        val input1 = input_field_1.getInputText()
-
+    private fun enquireFields(enquiryData: List<VoucherGameEnquiryFields>,
+                              input1: String,
+                              input2: String = "") {
         // Verify fields
         var isValid: Boolean
         isValid = verifyField(enquiryData[0].validations, input1)
-        if (isValid && inputFieldCount == 2) {
-            val input2 = input_field_2.getInputText()
+        if (isValid && input2.isNotEmpty()) {
             isValid = verifyField(enquiryData[1].validations, input2)
         }
 
