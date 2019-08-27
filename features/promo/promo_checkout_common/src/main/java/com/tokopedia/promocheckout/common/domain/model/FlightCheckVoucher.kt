@@ -8,10 +8,10 @@ class FlightCheckVoucher (
         @SerializedName("voucherCode")
         @Expose
         var voucherCode: String = "",
-        @SerializedName("title")
+        @SerializedName("TitleDescription")
         @Expose
-        var title: String = "",
-        @SerializedName("isCoupon")
+        var titleDescription: String = "",
+        @SerializedName("IsCoupon")
         @Expose
         var isCoupon: Int = 0,
         @SerializedName("UserID")

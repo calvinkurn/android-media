@@ -11,5 +11,7 @@ query flightVoucher($cartID: String!, $voucherCode: String!) {
         DiscountedPricePlain
         Message
         VoucherAmount
+        TitleDescription
+        IsCoupon
     }
 }
