@@ -58,6 +58,7 @@ import com.tokopedia.shop.feed.view.model.EmptyFeedShopViewModel
 import com.tokopedia.shop.feed.view.model.WhitelistViewModel
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_feed_shop.*
+import java.net.URLEncoder
 import javax.inject.Inject
 
 /**
@@ -565,7 +566,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             val intent = if (GlobalConfig.isCustomerApp()) {
                 RouteManager.getIntent(it, ApplinkConst.CONTENT_CREATE_POST)
             } else {
-                RouteManager.getIntent(it, ApplinkConstInternalContent.SHOP_POST_PICKER, createPostUrl)
+                RouteManager.getIntent(it, ApplinkConstInternalContent.SHOP_POST_PICKER, URLEncoder.encode(createPostUrl, "UTF-8"))
             }
             startActivityForResult(
                     intent,
