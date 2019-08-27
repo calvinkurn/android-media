@@ -94,7 +94,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
-    public static final long FORCE_TIMEOUT = 500L;
+    public static final long FORCE_TIMEOUT = 90000L;
 
     @Inject
     TopPayPresenter presenter;
@@ -520,7 +520,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
             //  Log.d(TAG, "start url = " + url);
-            if (remoteConfig.getBoolean(ENABLE_TOPPAY_TIMEOUT, false)) {
+            if (remoteConfig.getBoolean(ENABLE_TOPPAY_TIMEOUT, true)) {
                 timerObservable(view);
             } else {
                 timerThread(view);
