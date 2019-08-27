@@ -174,7 +174,6 @@ import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
-import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
@@ -1275,11 +1274,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToGMSubscribe(Activity activity) {
         Intent intent = new Intent(activity, GoldMerchantRedirectActivity.class);
         activity.startActivity(intent);
-    }
-
-    @Override
-    public Intent getGMHomeIntent(Context context) {
-        return GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
     }
 
     @Override
