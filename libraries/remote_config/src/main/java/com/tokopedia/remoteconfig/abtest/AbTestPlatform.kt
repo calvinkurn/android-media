@@ -131,7 +131,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                         editor.putInt(REVISION, globalRevision).commit()
                     }
 
-                    return@map RolloutFeatureVariants(responseData.dataRollout.featureVariants)
+                    return@map RolloutFeatureVariants(featureVariants)
                 }
                 .doOnError { error ->
                     Log.d("doOnError", error.toString())
@@ -159,7 +159,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                 "eventCategory" to "abtesting",
                 "user_id" to if (userSession.isLoggedIn) userSession.userId else null,
                 "session_id" to userSession.deviceId,
-                "feature" to featureVariants
+                "feature" to featureVariants.featureVariants
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
     }
