@@ -10,39 +10,45 @@
     android:paddingBottom="12dp">
 
     <LinearLayout
-        android:id="@+id/title_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:typographyType="heading_5"
-            android:textColor="#f531353b"/>
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/icon_new"
-            android:layout_width="28dp"
-            android:layout_height="10dp"
-            app:srcCompat="@drawable/ic_new"
-            android:scaleType="fitXY"
-            android:layout_marginLeft="8dp"
-            android:visibility="gone"/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="heading_5"
+                android:textColor="#f531353b"/>
+
+            <ImageView
+                android:id="@+id/icon_new"
+                android:layout_width="28dp"
+                android:layout_height="10dp"
+                app:srcCompat="@drawable/ic_new"
+                android:scaleType="fitXY"
+                android:layout_marginLeft="8dp"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            android:textColor="#ae31353b"/>
 
     </LinearLayout>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_container"
-        android:layout_marginTop="2dp"
-        app:typographyType="body_3"
-        app:typographyWeight="reguler"
-        android:textColor="#ae31353b"/>
 
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/filter_detail_item_checkbox"

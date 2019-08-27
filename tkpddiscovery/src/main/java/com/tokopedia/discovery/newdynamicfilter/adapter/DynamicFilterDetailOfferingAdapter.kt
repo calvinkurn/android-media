@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.newdynamicfilter.adapter
 
+import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
 
@@ -34,6 +35,7 @@ class DynamicFilterDetailOfferingAdapter(filterDetailView: DynamicFilterDetailVi
             super.bind(option)
             title.text = option.name
             description.text = option.description
+            description.visibility = if (!TextUtils.isEmpty(option.description)) View.VISIBLE else View.GONE
             iconNew.visibility = if (option.isNew) View.VISIBLE else View.GONE
         }
     }
