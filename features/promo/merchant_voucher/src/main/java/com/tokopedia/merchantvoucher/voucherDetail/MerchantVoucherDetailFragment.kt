@@ -187,8 +187,7 @@ class MerchantVoucherDetailFragment : BaseDaggerFragment(),
             ImageHandler.loadImageAndCache(ivVoucherBanner, merchantVoucherViewModel.bannerUrl)
             ivVoucherBanner.visibility = View.VISIBLE
         }
-        val voucherString = merchantVoucherViewModel.voucherName + " " +
-                merchantVoucherViewModel.getTypeString(context!!) + " " +
+        val voucherString = merchantVoucherViewModel.getTypeString(context!!) + " " +
                 merchantVoucherViewModel.getAmountString()
         tvVoucherTitle.text = voucherString
         if (merchantVoucherViewModel.minimumSpend <= 0) {
