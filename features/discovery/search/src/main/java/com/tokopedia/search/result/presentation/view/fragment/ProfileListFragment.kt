@@ -24,7 +24,10 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewMode
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
 import com.tokopedia.search.result.presentation.model.ProfileViewModel
 import com.tokopedia.search.result.presentation.model.TotalSearchCountViewModel
-import com.tokopedia.search.result.presentation.view.listener.*
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
+import com.tokopedia.search.result.presentation.view.listener.ProfileListener
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProfileListTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProfileListTypeFactoryImpl
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -60,6 +63,8 @@ class ProfileListFragment :
 
     var nextPage : Int = 1
 
+    var hasLoadData = false
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (userVisibleHint && ::searchNavigationListener.isInitialized) {
@@ -69,7 +74,8 @@ class ProfileListFragment :
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if(isVisibleToUser) {
+        if(isVisibleToUser && !hasLoadData) {
+            hasLoadData = true
             onSwipeRefresh()
         }
         if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {

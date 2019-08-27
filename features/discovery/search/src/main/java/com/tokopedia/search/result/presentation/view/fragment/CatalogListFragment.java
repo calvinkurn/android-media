@@ -37,7 +37,6 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
-import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -91,9 +90,10 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Inject
     UserSessionInterface userSession;
 
-    public static CatalogListFragment newInstance(SearchParameter searchParameter) {
+    public static CatalogListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
+        bundle.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
 
         return createFragmentWithArguments(bundle);
     }
@@ -180,6 +180,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
         if (bundle != null) {
             copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
             setShareUrl(bundle.getString(EXTRA_SHARE_URL));
+            setFragmentPosition(bundle.getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 

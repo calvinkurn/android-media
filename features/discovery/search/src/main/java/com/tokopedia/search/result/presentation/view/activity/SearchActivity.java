@@ -440,15 +440,15 @@ public class SearchActivity extends BaseActivity
     }
 
     private ProductListFragment getProductFragment() {
-        return ProductListFragment.newInstance(searchParameter);
-    }
-
-    private ShopListFragment getShopFragment() {
-        return ShopListFragment.newInstance(searchParameter);
+        return ProductListFragment.newInstance(searchParameter, 0);
     }
 
     private CatalogListFragment getCatalogFragment() {
-        return CatalogListFragment.newInstance(searchParameter);
+        return CatalogListFragment.newInstance(searchParameter, 1);
+    }
+
+    private ShopListFragment getShopFragment() {
+        return ShopListFragment.newInstance(searchParameter, 2);
     }
 
     private ProfileListFragment getProfileListFragment() {

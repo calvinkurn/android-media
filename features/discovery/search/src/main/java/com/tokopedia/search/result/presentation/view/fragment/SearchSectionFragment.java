@@ -81,6 +81,7 @@ public abstract class SearchSectionFragment
     public static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
     public static final String EXTRA_FILTER_PARAMETER = "EXTRA_FILTER_PARAMETER";
     public static final String EXTRA_SELECTED_FILTERS = "EXTRA_SELECTED_FILTERS";
+    protected static final String EXTRA_FRAGMENT_POSITION = "EXTRA_FRAGMENT_POSITION";
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
@@ -97,6 +98,8 @@ public abstract class SearchSectionFragment
     private HashMap<String, String> selectedSort;
     protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
+    private int fragmentPosition;
+    private boolean hasLoadData;
 
     protected SearchParameter searchParameter;
     protected FilterController filterController = new FilterController();
@@ -110,17 +113,26 @@ public abstract class SearchSectionFragment
         initSpan();
         initLayoutManager();
         initSwipeToRefresh(view);
-
-        if (savedInstanceState == null) {
-            refreshLayout.post(this::onFirstTimeLaunch);
-        } else {
-            onRestoreInstanceState(savedInstanceState);
-        }
+        restoreInstanceState(savedInstanceState);
+        startToLoadDataForFirstFragmentPosition();
     }
 
     private void initSwipeToRefresh(View view) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         refreshLayout.setOnRefreshListener(this::onSwipeToRefresh);
+    }
+
+    private void restoreInstanceState(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            onRestoreInstanceState(savedInstanceState);
+        }
+    }
+
+    private void startToLoadDataForFirstFragmentPosition() {
+        if (getFragmentPosition() == 0) {
+            hasLoadData = true;
+            refreshLayout.post(this::onFirstTimeLaunch);
+        }
     }
 
     @Override
@@ -180,6 +192,7 @@ public abstract class SearchSectionFragment
         if (isVisibleToUser && getView() != null) {
             setupSearchNavigation();
             screenTrack();
+            startToLoadData();
         }
     }
 
@@ -210,6 +223,13 @@ public abstract class SearchSectionFragment
                     }
                 }, isSortEnabled());
         refreshMenuItemGridIcon();
+    }
+
+    private void startToLoadData() {
+        if (!hasLoadData) {
+            hasLoadData = true;
+            refreshLayout.post(this::onFirstTimeLaunch);
+        }
     }
 
     protected GridLayoutManager getGridLayoutManager() {
@@ -649,5 +669,13 @@ public abstract class SearchSectionFragment
     @Override
     public void onBannerAdsImpressionListener(int position, CpmData data) {
         TopAdsGtmTracker.eventSearchResultPromoView(getActivity(), data, position);
+    }
+
+    protected void setFragmentPosition(int fragmentPosition) {
+        this.fragmentPosition = fragmentPosition;
+    }
+
+    protected int getFragmentPosition() {
+        return this.fragmentPosition;
     }
 }
