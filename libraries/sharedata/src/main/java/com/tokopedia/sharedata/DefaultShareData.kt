@@ -19,7 +19,7 @@ import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.sharedata.service.ShareBroadcastReceiver
 import com.tokopedia.track.TrackApp
 
-class DefaultShare(
+class DefaultShareData(
         private val activity: Activity?,
         private val shareData: LinkerData
 ): ShareCallback {
