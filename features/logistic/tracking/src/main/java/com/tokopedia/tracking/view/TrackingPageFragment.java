@@ -46,9 +46,6 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.tokopedia.tracking.view.TrackingPageActivity.ORDER_ID_KEY;
-import static com.tokopedia.tracking.view.TrackingPageActivity.URL_LIVE_TRACKING;
-
 /**
  * Created by kris on 5/9/18. Tokopedia
  */
@@ -58,11 +55,14 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
     private static final String ADDITIONAL_INFO_URL = "https://m.tokopedia.com/bantuan/217217126-agen-logistik-di-tokopedia";
     private static final int PER_SECOND = 1000;
-    private static final String INVALID_REFERENCE_STATUS = "resi tidak valid";
+    private static final String ARGUMENTS_ORDER_ID = "ARGUMENTS_ORDER_ID";
+    public static final String ARGUMENTS_TRACKING_URL = "ARGUMENTS_TRACKING_URL";
+
+    private String mOrderId;
+    private String mTrackingUrl;
 
     private ProgressBar loadingScreen;
     private ProgressDialog progressDialog;
-
     private TextView referenceNumber;
     private ImageView courierLogo;
     private TextView deliveryDate;
@@ -93,10 +93,19 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     public static TrackingPageFragment createFragment(String orderId, String liveTrackingUrl) {
         TrackingPageFragment fragment = new TrackingPageFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(ORDER_ID_KEY, orderId);
-        bundle.putString(URL_LIVE_TRACKING, liveTrackingUrl);
+        bundle.putString(ARGUMENTS_ORDER_ID, orderId);
+        bundle.putString(ARGUMENTS_TRACKING_URL, liveTrackingUrl);
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mOrderId = getArguments().getString(ARGUMENTS_ORDER_ID);
+            mTrackingUrl = getArguments().getString(ARGUMENTS_TRACKING_URL);
+        }
     }
 
     @Nullable
@@ -138,8 +147,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
                 TextView.BufferType.SPANNABLE);
         furtherInformationText.setOnClickListener(onFurtherInformationClicked());
         liveTrackingButton = view.findViewById(R.id.live_tracking_button);
-        presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
-        presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+        presenter.onGetTrackingData(mOrderId);
+        presenter.onGetRetryAvailability(mOrderId);
     }
 
 
@@ -198,8 +207,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         // currently, message is not being used
         NetworkErrorHelper.showEmptyState(getActivity(), rootView,
                 () -> {
-                    presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
-                    presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+                    presenter.onGetTrackingData(mOrderId);
+                    presenter.onGetRetryAvailability(mOrderId);
                 });
     }
 
@@ -217,7 +226,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
             retryButton.setEnabled(true);
             retryButton.setOnClickListener(view -> {
                         retryButton.setEnabled(false);
-                        presenter.onRetryPickup(getArguments().getString(ORDER_ID_KEY));
+                        presenter.onRetryPickup(mOrderId);
                     }
             );
             retryStatus.setVisibility(View.GONE);
@@ -242,8 +251,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aLong -> {
-                    presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
-                    presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+                    presenter.onGetTrackingData(mOrderId);
+                    presenter.onGetRetryAvailability(mOrderId);
                 });
     }
 
@@ -283,7 +292,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     }
 
     private void setLiveTrackingButton() {
-        if (TextUtils.isEmpty(getArguments().getString(URL_LIVE_TRACKING)))
+        if (TextUtils.isEmpty(mTrackingUrl))
             liveTrackingButton.setVisibility(View.GONE);
         else {
             liveTrackingButton.setVisibility(View.VISIBLE);
@@ -326,8 +335,8 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
             @Override
             public void onFinish() {
-                presenter.onGetTrackingData(getArguments().getString(ORDER_ID_KEY));
-                presenter.onGetRetryAvailability(getArguments().getString(ORDER_ID_KEY));
+                presenter.onGetTrackingData(mOrderId);
+                presenter.onGetRetryAvailability(mOrderId);
             }
         };
         mCountDownTimer.start();
@@ -341,8 +350,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         return view -> {
             sendAnalyticsOnButtonLiveTrackingClicked();
             startActivity(
-                    SimpleWebViewActivity.createIntent(getActivity(),
-                            getArguments().getString(URL_LIVE_TRACKING)));
+                    SimpleWebViewActivity.createIntent(getActivity(), mTrackingUrl));
         };
     }
 
