@@ -368,6 +368,9 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public void renderEmptyList(int typeRequest) {
         if (typeRequest == TxOrderNetInteractor.TypeRequest.INITIAL) {
             swipeToRefresh.setVisibility(View.VISIBLE);
+            if (!hasRecyclerListener) {
+                addRecyclerListener();
+            }
             if (mOrderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || mOrderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE)) {
                 orderListAdapter.setEmptyMarketplace();
                 presenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), true);
