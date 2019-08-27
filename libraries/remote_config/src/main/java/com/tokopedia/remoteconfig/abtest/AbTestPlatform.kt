@@ -1,9 +1,7 @@
 package com.tokopedia.remoteconfig.abtest
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.util.Log
-import android.widget.Toast
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -11,7 +9,6 @@ import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
-import com.tokopedia.remoteconfig.abtest.data.FeatureVariant
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
@@ -96,14 +93,6 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         // Get existing revision for next Gql request
         val revision = sharedPreferences.getInt(REVISION, 0)
 
-        // Reset sharedPref
-        editor.clear().commit()
-
-        // Set timestamp when request gql
-        val currentTimestamp = Date().time
-        editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
-        editor.commit()
-
         // Gql request
         val payloads = HashMap<String, Any>()
         payloads[REVISION] = revision
@@ -117,22 +106,8 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         graphqlUseCase
                 .createObservable(RequestParams.EMPTY)
                 .map { graphqlResponse ->
-                    val responseData: AbTestVariantPojo = graphqlResponse.getData(AbTestVariantPojo::class.java)
-                    val featureVariants = responseData?.dataRollout?.featureVariants
-                    val globalRevision = responseData.dataRollout.globalRev
-                    val status = responseData.dataRollout.status
-
-                    if (featureVariants != null) {
-                        for (a in featureVariants) {
-                            setString(a.feature, a.variant)
-                        }
-                    }
-
-                    if (globalRevision != null) {
-                        editor.putInt(REVISION, globalRevision).commit()
-                    }
-
-                    return@map RolloutFeatureVariants(featureVariants)
+                    val featureVariants = gqlResponseHandler(graphqlResponse)
+                    return@map RolloutFeatureVariants(featureVariants.featureVariants)
                 }
                 .doOnError { error ->
                     Log.d("doOnError", error.toString())
@@ -150,6 +125,30 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                     override fun onError(e: Throwable?) { }
 
                 }}
+    }
+
+    private fun gqlResponseHandler(graphqlResponse: GraphqlResponse): RolloutFeatureVariants {
+        val responseData: AbTestVariantPojo = graphqlResponse.getData(AbTestVariantPojo::class.java)
+        val featureVariants = responseData?.dataRollout?.featureVariants
+        val globalRevision = responseData.dataRollout.globalRev
+        val status = responseData.dataRollout.status
+
+        val currentTimestamp = Date().time
+        editor.clear().commit()
+        editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
+        editor.commit()
+
+        if (featureVariants != null) {
+            for (a in featureVariants) {
+                setString(a.feature, a.variant)
+            }
+        }
+
+        if (globalRevision != null) {
+            editor.putInt(REVISION, globalRevision).commit()
+        }
+
+        return responseData.dataRollout
     }
 
     private fun sendTracking(featureVariants: RolloutFeatureVariants) {
