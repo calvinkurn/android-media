@@ -565,7 +565,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             val intent = if (GlobalConfig.isCustomerApp()) {
                 RouteManager.getIntent(it, ApplinkConst.CONTENT_CREATE_POST)
             } else {
-                RouteManager.getIntent(it, ApplinkConstInternalContent.SHOP_POST_PICKER)
+                RouteManager.getIntent(it, ApplinkConstInternalContent.SHOP_POST_PICKER, createPostUrl)
             }
             startActivityForResult(
                     intent,
