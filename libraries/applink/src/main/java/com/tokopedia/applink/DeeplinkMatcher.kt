@@ -25,6 +25,7 @@ import com.tokopedia.applink.DeepLinkChecker.RECOMMENDATION
 import com.tokopedia.applink.DeepLinkChecker.REFERRAL
 import com.tokopedia.applink.DeepLinkChecker.SALE
 import com.tokopedia.applink.DeepLinkChecker.SHOP
+import com.tokopedia.applink.DeepLinkChecker.SIMILAR_PRODUCT
 import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
 import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
 import com.tokopedia.applink.DeepLinkChecker.TOPPICKS
@@ -73,6 +74,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "reset.pl")) to OTHER)
             add(Pattern(GT,0, mapOf(0 to "order-list")) to ORDER_LIST)
             add(Pattern(GT, 0, mapOf(0 to "activation.pl")) to OTHER)
+            add(Pattern(GT, 2, mapOf(0 to "rekomendasi", 1 to "d")) to SIMILAR_PRODUCT)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, null) to SHOP)
