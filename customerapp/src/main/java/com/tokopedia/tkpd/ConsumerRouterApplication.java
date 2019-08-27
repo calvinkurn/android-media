@@ -1286,11 +1286,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGMHomeIntent(Context context) {
-        return GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
-    }
-
-    @Override
     public void navigateAppLinkWallet(Context context,
                                       String appLinkScheme,
                                       String alternateRedirectUrl,

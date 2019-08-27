@@ -28,8 +28,6 @@ public interface SellerModuleRouter {
 
     Intent getTopProfileIntent(Context context, String userId);
 
-    Intent getGMHomeIntent(Context context);
-
     Intent getInboxTalkCallingIntent(Context context);
 
     Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload);

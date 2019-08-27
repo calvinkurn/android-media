@@ -17,6 +17,8 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
+import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
+import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
@@ -104,7 +106,8 @@ import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleL
         ChatbotApplinkModule.class,
         PowerMerchantSubscribeDeeplinkModule.class,
         AutoAdsLinkModule.class,
-        FlashsaleDeeplinkModule.class
+        FlashsaleDeeplinkModule.class,
+        RNDevOptionsApplinkModule.class
 })
 /* **
  * Navigation will via RouteManager -> manifest instead.
@@ -142,7 +145,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ChatbotApplinkModuleLoader(),
                 new PowerMerchantSubscribeDeeplinkModuleLoader(),
                 new AutoAdsLinkModuleLoader(),
-                new FlashsaleDeeplinkModuleLoader()
+                new FlashsaleDeeplinkModuleLoader(),
+                new RNDevOptionsApplinkModuleLoader()
         );
     }
 

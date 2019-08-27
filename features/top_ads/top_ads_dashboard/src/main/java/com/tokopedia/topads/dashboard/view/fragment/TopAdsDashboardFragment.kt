@@ -364,6 +364,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(resources, R.raw.gql_get_deposit))
         topAdsDashboardPresenter.getShopInfo()
         topAdsDashboardPresenter.getTickerTopAds(resources)
+        loadStatisticsData()
     }
 
     fun loadAutoAds() {
@@ -391,7 +392,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
             TopAdsStatisticsType.ALL_ADS ->  R.string.topads_dashboard_all_promo_menu
             TopAdsStatisticsType.PRODUCT_ADS ->  R.string.top_ads_title_product
             TopAdsStatisticsType.SHOP_ADS ->  R.string.title_top_ads_store
-            else -> -1
+            else -> R.string.top_ads_title_product
         }
         return getString(resString)
     }
@@ -628,7 +629,6 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         swipe_refresh_layout.isRefreshing = false
         onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.dataDeposit)
         onSuccessPopulateTotalAds(dashboardPopulateResponse.totalAd)
-        loadStatisticsData()
         if (!isUsageExists || !isAdExists) {
             isShowAutoAddPromo = GlobalConfig.isCustomerApp()
         }
