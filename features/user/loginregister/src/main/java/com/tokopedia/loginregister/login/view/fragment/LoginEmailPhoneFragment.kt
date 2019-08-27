@@ -448,12 +448,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 var name = userSession.name
                 if(name.split("\\s".toRegex()).size > 1)
                     name = name.substring(0, name.indexOf(" "))
-                if (it.id.equals(FACEBOOK, ignoreCase = true) &&
-                        userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) {
-                    tv.setText("Lanjut " + it.name + " sebagai " + name)
-                } else if (it.id.equals(GPLUS, ignoreCase = true) &&
-                        userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE) {
-                    tv.setText("Lanjut " + it.name + " sebagai " + name)
+                if ((it.id.equals(FACEBOOK, ignoreCase = true) &&
+                        userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
+                        (it.id.equals(GPLUS, ignoreCase = true) &&
+                                userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
+                    tv.setText(getString(R.string.continue_socmed) + it.name +
+                            getString(R.string.socmed_account_as) + name)
                 }
             }
             if (!TextUtils.isEmpty(it.image)) {

@@ -321,6 +321,9 @@
 
     <string name="developer_options">Developer Options</string>
 
+    <string name="continue_socmed">Lanjut </string>
+    <string name="socmed_account_as"> sebagai </string>
+
     <!-- ERROR LOGIN -->
     <string name="error_login_user_cancel_create_password">Cancel create password</string>
     <string name="error_login_user_cancel_activate_account">Cancel activate account</string>
