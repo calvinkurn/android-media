@@ -191,11 +191,6 @@ android {
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
 
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    output.versionCodeOverride = (getTkpdVersionCode() * 100);
-                }
-            }
         }
     }
 
