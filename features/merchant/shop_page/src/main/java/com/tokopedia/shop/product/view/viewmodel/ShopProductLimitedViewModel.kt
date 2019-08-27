@@ -109,7 +109,6 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
 
     fun claimMembershipBenefit(questId: Int) {
         claimBenefitMembershipUseCase.params = ClaimBenefitMembershipUseCase.createRequestParams(questId)
-        claimBenefitMembershipUseCase.isFromCacheFirst = false
 
         launchCatchError(block = {
             claimMembershipResp.value = Success(claimBenefitMembershipUseCase.executeOnBackground())

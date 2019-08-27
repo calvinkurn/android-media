@@ -108,16 +108,12 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     }
 
     public int type(MembershipStampProgressViewModel membershipStampProgressViewModel) {
-        if (!membershipStampProgressViewModel.getMembershipData().isShown()) {
+        if (membershipStampProgressViewModel.getListOfData().size() == 0) {
             return HideViewHolder.LAYOUT;
         } else {
-            if (membershipStampProgressViewModel.getMembershipData().getMembershipProgram().getMembershipQuests().isEmpty()
-                    && membershipStampProgressViewModel.getMembershipData().isUserRegistered()) {
-                return HideViewHolder.LAYOUT;
-            } else {
-                return MembershipStampProgressViewHolder.getLAYOUT();
-            }
+            return MembershipStampProgressViewHolder.getLAYOUT();
         }
+
     }
 
     public int type(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {

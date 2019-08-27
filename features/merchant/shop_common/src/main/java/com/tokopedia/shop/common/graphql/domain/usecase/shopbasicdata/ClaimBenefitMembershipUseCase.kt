@@ -3,8 +3,6 @@ package com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.usecase.RequestParams
@@ -14,7 +12,6 @@ class ClaimBenefitMembershipUseCase(private val gqlQuery: String,
                                     private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<MembershipClaimBenefitResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
-    var isFromCacheFirst: Boolean = true
 
     companion object {
         private const val PARAM_QUEST_ID = "questUserId"
@@ -29,8 +26,6 @@ class ClaimBenefitMembershipUseCase(private val gqlQuery: String,
         val gqlRequest = GraphqlRequest(gqlQuery, MembershipClaimBenefitResponse::class.java, params.parameters)
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val data: MembershipClaimBenefitResponse? = gqlResponse.getSuccessData<MembershipClaimBenefitResponse>()

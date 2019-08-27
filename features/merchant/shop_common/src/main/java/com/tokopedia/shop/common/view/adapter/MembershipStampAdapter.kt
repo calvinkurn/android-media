@@ -8,8 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import com.tokopedia.shop.common.R
-import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipData
-import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipQuests
+import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
+import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
+import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.view.BaseMembershipViewHolder
 import com.tokopedia.shop.common.view.viewholder.MembershipItemRegisteredViewHolder
 import com.tokopedia.shop.common.view.viewholder.MembershipItemUnregisteredViewHolder
@@ -26,12 +27,10 @@ class MembershipStampAdapter(private val context: Context, private val listener:
         fun goToVoucherOrRegister(url: String?)
     }
 
-    private var membershipData: MembershipData = MembershipData()
-    private var membershipQuest: List<MembershipQuests> = listOf()
+    private var membershipData: List<BaseMembershipViewModel> = listOf()
 
-    fun setMembershipData(data: MembershipData?) {
-        membershipData = data ?: MembershipData()
-        membershipQuest = data?.membershipProgram?.membershipQuests ?: listOf()
+    fun setMembershipData(data: List<BaseMembershipViewModel>?) {
+        membershipData = data ?: listOf()
         notifyDataSetChanged()
     }
 
@@ -43,7 +42,7 @@ class MembershipStampAdapter(private val context: Context, private val listener:
                 val layoutParams = itemView.layoutParams
 
                 setWidthPercentage(parent, layoutParams, itemView)
-                return MembershipItemRegisteredViewHolder(itemView, membershipQuest.size, listener, membershipData.infoMessage.membershipCta.url)
+                return MembershipItemRegisteredViewHolder(itemView, membershipData.size, listener, (membershipData.first() as ItemRegisteredViewModel).url)
             }
             TYPE_UNREGISTERED -> {
                 val inflater = LayoutInflater.from(parent.context)
@@ -55,7 +54,7 @@ class MembershipStampAdapter(private val context: Context, private val listener:
     }
 
     private fun setWidthPercentage(parent: ViewGroup, layoutParams: ViewGroup.LayoutParams, view: View) {
-        if (membershipQuest.size > 1) {
+        if (membershipData.size > 1) {
             // Measure width 85% to screen
             if (parent.width != 0) {
                 layoutParams.width = (parent.width * 0.85).toInt()
@@ -70,22 +69,22 @@ class MembershipStampAdapter(private val context: Context, private val listener:
             }
         }
         view.layoutParams = layoutParams
-
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when (membershipData.isUserRegistered) {
-            true -> TYPE_REGISTERED
-            false -> TYPE_UNREGISTERED
+        return when (membershipData.first()) {
+            is ItemRegisteredViewModel -> TYPE_REGISTERED
+            is ItemUnregisteredViewModel -> TYPE_UNREGISTERED
+            else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
-    override fun getItemCount(): Int = if (membershipQuest.isEmpty()) 1 else membershipQuest.size
+    override fun getItemCount(): Int = membershipData.size
 
     override fun onBindViewHolder(holder: BaseMembershipViewHolder<*>, position: Int) {
         when (holder) {
-            is MembershipItemUnregisteredViewHolder -> holder.bind(membershipData.infoMessage)
-            is MembershipItemRegisteredViewHolder ->holder.bind(membershipQuest[position])
+            is MembershipItemUnregisteredViewHolder -> holder.bind((membershipData[position] as ItemUnregisteredViewModel))
+            is MembershipItemRegisteredViewHolder -> holder.bind((membershipData[position] as ItemRegisteredViewModel).membershipProgram)
         }
     }
 

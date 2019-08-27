@@ -59,11 +59,13 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION
 import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
 import com.tokopedia.shop.common.constant.ShopParamConstant
+import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
+import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
+import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipData
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
@@ -100,7 +102,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
         ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
-        MerchantVoucherListView, MembershipStampAdapter.MembershipStampAdapterListener{
+        MerchantVoucherListView, MembershipStampAdapter.MembershipStampAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -175,15 +177,15 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             }
         })
 
-        viewModel.claimMembershipResp.observe(this,Observer{
-            when(it){
+        viewModel.claimMembershipResp.observe(this, Observer {
+            when (it) {
                 is Success -> onSuccessClaimBenefit(it.data)
                 is Fail -> onErrorGetMembershipInfo(it.throwable)
             }
         })
 
         viewModel.membershipStampResponse.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is Success -> onSuccessGetMembershipInfo(it.data)
                 is Fail -> onErrorGetMembershipInfo(it.throwable)
             }
@@ -397,7 +399,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
-        return ShopProductAdapterTypeFactory(this,this, this, this,
+        return ShopProductAdapterTypeFactory(this, this, this, this,
                 this, this,
                 true, deviceWidth, ShopTrackProductTypeDef.PRODUCT
         )
@@ -596,8 +598,11 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         shopProductAdapter.shopProductFeaturedViewModel = null
     }
 
-    private fun onSuccessGetMembershipInfo(data: MembershipStampProgress?) {
-        val isShown = data?.membershipStampProgress?.isShown ?: false
+    private fun onSuccessGetMembershipInfo(data: MembershipStampProgress) {
+        val isShown = data.membershipStampProgress.isShown
+        val membershipQuests = data.membershipStampProgress.membershipProgram.membershipQuests
+        val membershipUrl = data.membershipStampProgress.infoMessage.membershipCta.appLink
+
         if (isShown && !isPaddingSet) {
             isPaddingSet = true
             // Remove padding item membership stamp when isShown
@@ -607,22 +612,40 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 addItemDecoration(RecyclerViewPadding(dpAsPixels))
             }
         }
-        shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(data?.membershipStampProgress
-                ?: MembershipData()))
+
+        if (!isShown) {
+            return
+        } else if (!data.membershipStampProgress.isUserRegistered) {
+            val listOfData: MutableList<BaseMembershipViewModel> = mutableListOf(
+                    ItemUnregisteredViewModel(bannerTitle = data.membershipStampProgress.infoMessage.title,
+                            btnText = data.membershipStampProgress.infoMessage.membershipCta.text,
+                            url = membershipUrl)
+            )
+            shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(listOfData))
+        } else if (data.membershipStampProgress.isUserRegistered && membershipQuests.isNotEmpty()) {
+            val listOfData: MutableList<BaseMembershipViewModel> = mutableListOf()
+            listOfData.addAll(membershipQuests.map {
+                ItemRegisteredViewModel(it, membershipUrl)
+            })
+            shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(listOfData))
+        } else if (membershipQuests.isEmpty()) {
+            shopProductAdapter.clearMembershipData()
+        }
+
         shopProductAdapter.notifyDataSetChanged()
         shopProductAdapter.refreshSticky()
     }
 
     private fun onErrorGetMembershipInfo(t: Throwable) {
-        shopProductAdapter.setMembershipStampViewModel(null)
+        shopProductAdapter.clearMembershipData()
         activity?.let {
             ToasterError.showClose(it, ErrorHandler.getErrorMessage(context, t))
         }
     }
 
-    private fun showToasterError(message:String) {
+    private fun showToasterError(message: String) {
         activity?.let {
-            ToasterError.showClose(it,message)
+            ToasterError.showClose(it, message)
         }
     }
 
@@ -638,7 +661,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         } else {
             val bottomSheetMembership = MembershipBottomSheetSuccess.newInstance(data.membershipClaimBenefitResponse.title,
                     data.membershipClaimBenefitResponse.subTitle,
-                    data.membershipClaimBenefitResponse.resultStatus.code,lastQuestId)
+                    data.membershipClaimBenefitResponse.resultStatus.code, lastQuestId)
             bottomSheetMembership.setListener(this)
             bottomSheetMembership.show(fragmentManager, "membership_shop_page")
         }
@@ -1075,9 +1098,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
-    private fun loadMembership(){
-        if(shopInfo != null){
-            viewModel.getMembershipStamp(shopInfo!!.shopCore.shopID.toInt(),false)
+    private fun loadMembership() {
+        if (shopInfo != null) {
+            viewModel.getMembershipStamp(shopInfo!!.shopCore.shopID.toInt(), false)
         }
     }
 

@@ -31,7 +31,9 @@ class PartialProductMembershipView private constructor(private var view: View, l
     fun renderMembershipData(element: MembershipStampProgress) {
         initRecyclerView(view)
         //if user not registered yet hide indicator
-        if (!element.membershipStampProgress.isUserRegistered) circleIndicator.visibility = View.GONE else {
+        if (!element.membershipStampProgress.isUserRegistered) {
+            circleIndicator.visibility = View.GONE
+        } else {
             circleIndicator.visibility = View.VISIBLE
             circleIndicator.setIndicator(element.membershipStampProgress.membershipProgram.membershipQuests.size)
         }
@@ -42,7 +44,7 @@ class PartialProductMembershipView private constructor(private var view: View, l
             return
         } else view.show()
 
-        membershipAdapter.setMembershipData(element.membershipStampProgress)
+//        membershipAdapter.setMembershipData(element.membershipStampProgress)
         rvMembership.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
