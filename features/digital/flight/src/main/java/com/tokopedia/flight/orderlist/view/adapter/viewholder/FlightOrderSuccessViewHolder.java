@@ -8,16 +8,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
+import com.tokopedia.common.travel.utils.TextHtmlUtils;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.cancellation.constant.FlightCancellationStatus;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
-
-import java.util.List;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -54,12 +51,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         containerTicketCancellationStatus = view.findViewById(R.id.container_cancellation_warning);
         tvTicketCancellationStatus = view.findViewById(R.id.tv_cancellation_ticket_status);
 
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onDetailOptionClicked();
-            }
-        });
+        view.setOnClickListener(v -> onDetailOptionClicked());
     }
 
 
@@ -80,12 +72,9 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
             renderDepartureSchedule(element.getOrderJourney());
         }
 
-        tvMainButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (adapterInteractionListener != null) {
-                    adapterInteractionListener.onDownloadETicket(item.getId());
-                }
+        tvMainButton.setOnClickListener(view -> {
+            if (adapterInteractionListener != null) {
+                adapterInteractionListener.onDownloadETicket(item.getId());
             }
         });
 
@@ -142,41 +131,20 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
     }
 
     private void renderCancellationStatus(FlightOrderSuccessViewModel element) {
-        if (element.getCancellations().size() > 0) {
-            countCancellationStatus(element.getCancellations());
+        if (element.getCancellationInfo().length() > 0) {
+            showCancellationStatus(element.getCancellationInfo());
         } else {
             hideCancellationStatus();
         }
     }
 
-    private void showCancellationStatus() {
-        tvTicketCancellationStatus.setText(getString(R.string.flight_cancellation_ticket_status));
-        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
-    }
-
-    private void showCancellationStatusInProgress(int numberOfProcess) {
-        tvTicketCancellationStatus.setText(String.format(getString(
-                R.string.flight_cancellation_ticket_status_in_progress), numberOfProcess));
+    private void showCancellationStatus(String cancellationInfo) {
+        tvTicketCancellationStatus.setText(TextHtmlUtils.INSTANCE.getTextFromHtml(cancellationInfo));
         containerTicketCancellationStatus.setVisibility(View.VISIBLE);
     }
 
     private void hideCancellationStatus() {
         containerTicketCancellationStatus.setVisibility(View.GONE);
-    }
-
-    private void countCancellationStatus(List<CancellationEntity> cancellationEntityList) {
-        int numberOfProgress = 0;
-        for (CancellationEntity item : cancellationEntityList) {
-            if (item.getStatus() == FlightCancellationStatus.PENDING || item.getStatus() == FlightCancellationStatus.REQUESTED) {
-                numberOfProgress++;
-            }
-        }
-
-        if (numberOfProgress > 0) {
-            showCancellationStatusInProgress(numberOfProgress);
-        } else {
-            showCancellationStatus();
-        }
     }
 
 }

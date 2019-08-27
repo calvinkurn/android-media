@@ -12,4 +12,5 @@ class FlightOrderPassengerViewModel(
         val passengerTitleId: Int,
         val passengerFirstName: String,
         val passengerLastName: String,
-        val amenities: List<FlightBookingAmenityViewModel>)
+        val amenities: List<FlightBookingAmenityViewModel>,
+        val cancellationStatusStr: String)
