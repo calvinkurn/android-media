@@ -58,7 +58,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_TELCO)
 
-            checkAutoSelectProduct()
+            checkAutoSelectOperator()
         }
     }
 
@@ -93,8 +93,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         if (::voucherGameExtraParam.isInitialized) outState.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
     }
 
-    private fun checkAutoSelectProduct() {
-        if (voucherGameExtraParam.operatorId.isNotEmpty() && voucherGameExtraParam.productId.isNotEmpty()) navigateToProduct()
+    private fun checkAutoSelectOperator() {
+        if (voucherGameExtraParam.operatorId.isNotEmpty()) navigateToProductList()
     }
 
     private fun initView() {
@@ -131,10 +131,10 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onItemClicked(operator: VoucherGameOperator) {
         voucherGameExtraParam.operatorId = operator.id.toString()
-        navigateToProduct()
+        navigateToProductList()
     }
 
-    private fun navigateToProduct() {
+    private fun navigateToProductList() {
         context?.run {
             val intent = VoucherGameDetailActivity.newInstance(this,
                     voucherGameExtraParam.categoryId,
