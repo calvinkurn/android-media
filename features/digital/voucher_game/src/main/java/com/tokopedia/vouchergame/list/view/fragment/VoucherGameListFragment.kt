@@ -105,6 +105,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 //        promo_banner.setPagerAdapter(object: BannerViewPagerAdapter())
     }
 
+    private fun togglePromoBanner(state: Boolean) {
+        promo_banner.visibility = if (state) View.VISIBLE else View.GONE
+        promo_banner_shimmering.visibility = if (state) View.GONE else View.VISIBLE
+    }
+
     private fun renderOperators(data: VoucherGameListData) {
         if (data.operators.isEmpty()) showEmpty()
         else renderList(data.operators)
@@ -183,7 +188,9 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         }
     }
 
-    override fun onSearchTextChanged(text: String?) { }
+    override fun onSearchTextChanged(text: String?) {
+
+    }
 
     override fun onSearchReset() {
         searchVoucherGame("")

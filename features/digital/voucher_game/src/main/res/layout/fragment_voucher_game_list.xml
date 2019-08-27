@@ -34,8 +34,11 @@
             <com.tokopedia.banner.Banner
                 android:id="@+id/promo_banner"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"/>
+                android:layout_height="wrap_content" />
+
+            <include layout="@layout/item_voucher_game_banner_shimmering"
+                android:id="@+id/promo_banner_shimmering"
+                android:visibility="gone" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
