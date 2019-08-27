@@ -1,6 +1,5 @@
 package com.tokopedia.tracking.view;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -87,7 +86,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
     @Inject
     DateUtil dateUtil;
     @Inject
-    OrderAnalyticsOrderTracking orderAnalyticsOrderTracking;
+    OrderAnalyticsOrderTracking mAnalytics;
 
     public static TrackingPageFragment createFragment(String orderId, String liveTrackingUrl) {
         TrackingPageFragment fragment = new TrackingPageFragment();
@@ -163,15 +162,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
         setHistoryView(model);
         setEmptyHistoryView(model);
         setLiveTrackingButton();
-        sendAnalyticsOnViewTrackingRendered();
-    }
-
-    public void sendAnalyticsOnViewTrackingRendered() {
-        orderAnalyticsOrderTracking.eventViewOrderTrackingImpressionButtonLiveTracking();
-    }
-
-    public void sendAnalyticsOnButtonLiveTrackingClicked() {
-        orderAnalyticsOrderTracking.eventClickOrderTrackingClickButtonLiveTracking();
+        mAnalytics.eventViewOrderTrackingImpressionButtonLiveTracking();
     }
 
     @Override
@@ -325,7 +316,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements
 
     private View.OnClickListener onLiveTrackingClickedListener() {
         return view -> {
-            sendAnalyticsOnButtonLiveTrackingClicked();
+            mAnalytics.eventClickOrderTrackingClickButtonLiveTracking();
             startActivity(
                     SimpleWebViewActivity.createIntent(getActivity(), mTrackingUrl));
         };
