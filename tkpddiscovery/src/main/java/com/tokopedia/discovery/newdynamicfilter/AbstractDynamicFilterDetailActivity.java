@@ -212,7 +212,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     protected void initRecyclerView() {
         adapter = getAdapter();
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this));
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
