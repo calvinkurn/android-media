@@ -106,6 +106,7 @@ ext {
             common_promo   : "com.tokopedia.common_promo:common_promo:${tkpdPromoApplyVersion}",
             digital                 : "com.tokopedia.digital:digital:${tkpdDigitalVersion}",
             digitalDeals            : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
+            digitalHome             : "com.tokopedia.digital.home:${tkpdDigitalVersion}",
             discovery               : "com.tokopedia.discovery:discovery:${tkpdDiscoveryVersion}",
             explore                 : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             events                  : "com.tokopedia.events:events:${tkpdEventVersion}",
@@ -210,6 +211,7 @@ ext {
             hotel                           : ":features:digital:hotel",
             travelHomepage                  : ":features:digital:travel_homepage",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
+            digitalHome                     : ":features:digital:digital_home",
 
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
