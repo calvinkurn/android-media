@@ -29,6 +29,18 @@ import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
 
+/**
+ * A Class ViewModel For Recommendation Page.
+ *
+ * @param graphqlRepository gql repository for getResponse from network with GQL request
+ * @param userSessionInterface the handler of user session
+ * @param getRecommendationUseCase use case for Recommendation Widget
+ * @param addWishListUseCase use case for add wishlist
+ * @param removeWishListUseCase use case for remove wishlist
+ * @param topAdsWishlishedUseCase use case for add wishlist topads product item
+ * @param dispatcher the dispatcher for coroutine
+ * @param primaryProductQuery the raw query for get primary product
+ */
 open class RecommendationPageViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val userSessionInterface: UserSessionInterface,
@@ -39,12 +51,19 @@ open class RecommendationPageViewModel @Inject constructor(
         @Named("Main") val dispatcher: CoroutineDispatcher,
         @Named("primaryQuery") private val primaryProductQuery: String
 ) : BaseViewModel(dispatcher) {
+    /**
+     * public variable
+     */
     val recommendationListModel = MutableLiveData<List<RecommendationWidget>>()
     val productInfoDataModel = MutableLiveData<ProductInfoDataModel>()
 
     val xSource = "recom_landing_page"
     val pageName = "recom_1,recom_2,recom_3"
 
+    /**
+     * [getPrimaryProduct] is the void for get detail primary product data from network
+     * @param productId product Id from deeplink
+     */
     fun getPrimaryProduct(productId: String) {
         launchCatchError(block = {
             val gqlData = withContext(Dispatchers.IO) {
@@ -72,6 +91,11 @@ open class RecommendationPageViewModel @Inject constructor(
         }
     }
 
+    /**
+     * [getRecommendationList] is the void for get recommendation widgets from the network
+     * @param productIds list of product Ids from deeplink
+     * @param onErrorGetRecommendation the callback for handling error for ui
+     */
     fun getRecommendationList(
             productIds: List<String>,
             onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
@@ -96,6 +120,11 @@ open class RecommendationPageViewModel @Inject constructor(
         )
     }
 
+    /**
+     * [addWishlist] is the void for handling adding wishlist item
+     * @param model the recommendation item product is clicked
+     * @param callback the callback for handling [added or removed, throwable] to UI
+     */
     fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)){
         if(model.isTopAds){
             val params = RequestParams.create()
@@ -135,6 +164,11 @@ open class RecommendationPageViewModel @Inject constructor(
         }
     }
 
+    /**
+     * [addWishlist] is the void for handling removing wishlist item
+     * @param model the recommendation item product is clicked
+     * @param wishlistCallback the callback for handling [added or removed, throwable] to UI
+     */
     fun removeWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))){
         removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener{
             override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
@@ -155,6 +189,9 @@ open class RecommendationPageViewModel @Inject constructor(
         })
     }
 
+    /**
+     * [isLoggedIn] is the function get user session is login or not login
+     */
     fun isLoggedIn() = userSessionInterface.isLoggedIn
 
 

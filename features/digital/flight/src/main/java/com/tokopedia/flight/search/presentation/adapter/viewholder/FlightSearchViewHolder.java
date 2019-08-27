@@ -67,12 +67,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         tvPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightJourneyViewModel.getFare().getAdultNumeric()));
         setDuration(flightJourneyViewModel);
         setAirline(flightJourneyViewModel);
-        View.OnClickListener detailClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onFlightSearchListener.onDetailClicked(flightJourneyViewModel, getAdapterPosition());
-            }
-        };
+        View.OnClickListener detailClickListener = v -> onFlightSearchListener.onDetailClicked(flightJourneyViewModel, getAdapterPosition());
         tvPrice.setOnClickListener(detailClickListener);
         containerDetail.setOnClickListener(detailClickListener);
 

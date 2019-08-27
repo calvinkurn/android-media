@@ -84,6 +84,16 @@
             android:text="View Network Log"
             android:textColor="@color/white" />
 
+        <TextView
+            android:id="@+id/device_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="Device ID: 1213124" />
+
         <CheckBox
             android:id="@+id/toggle_analytics"
             android:layout_width="match_parent"
