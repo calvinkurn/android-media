@@ -1215,12 +1215,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         userCod = productInfoP3.userCod
         if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
         headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
-        productInfoP3.rateEstSummarizeText?.let {
-            partialVariantAndRateEstView.renderRateEstimation(it) {
-                productDetailTracking.eventShippingRateEstimationClicked()
-                gotoRateEstimation(false)
-            }
-        }
+//        productInfoP3.rateEstSummarizeText?.let {
+//            partialVariantAndRateEstView.renderRateEstimation(it) {
+//                productDetailTracking.eventShippingRateEstimationClicked()
+//                gotoRateEstimation(false)
+//            }
+//        }
     }
 
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
@@ -1272,14 +1272,17 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun gotoRateEstimation(forDeliveryInfo: Boolean) {
+    private fun gotoRateEstimation() {
         if (productInfo == null && shopInfo == null) return
         activity?.let {
-            startActivity(RatesEstimationDetailActivity.createIntent(it,
-                    shopInfo!!.shopCore.domain, productInfo!!.basic.weight,
+            startActivity(RatesEstimationDetailActivity.createIntent(
+                    it,
+                    shopInfo!!.shopCore.domain,
+                    productInfo!!.basic.weight,
                     productInfo!!.basic.weightUnit,
                     if (productInfoViewModel.multiOrigin.isFulfillment)
-                        productInfoViewModel.multiOrigin.origin else null, forDeliveryInfo))
+                        productInfoViewModel.multiOrigin.origin else null
+            ))
         }
     }
 
@@ -1304,7 +1307,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 productStatsView.renderClickShipping(it) {
                     productDetailTracking.eventShippingClicked()
                     if (userSession.isLoggedIn) {
-                        gotoRateEstimation(true)
+                        gotoRateEstimation()
                     } else {
                         goToCourier(
                                 productInfo?.basic?.id?.toString() ?: "",
