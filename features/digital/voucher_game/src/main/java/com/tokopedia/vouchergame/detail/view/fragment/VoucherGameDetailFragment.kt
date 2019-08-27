@@ -318,10 +318,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     }
 
     private fun showCheckoutView() {
-        // TODO: Check enquiry result before processing to cart
-
         checkout_view.setVisibilityLayout(true)
         checkout_view.setTotalPrice(selectedProduct.attributes.promo?.newPrice ?: selectedProduct.attributes.price)
+
+        // Disable continue button if fields is not empty
+        // TODO: Check enquiry result before processing to cart
+
+        checkout_view.setBuyButtonState(false)
     }
 
     override fun onClickNextBuyButton() {

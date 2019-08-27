@@ -49,6 +49,10 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Conte
         }
     }
 
+    fun setBuyButtonState(state: Boolean) {
+        nextButton.isEnabled = state
+    }
+
     interface ActionListener {
         fun onClickNextBuyButton()
     }
