@@ -11,6 +11,8 @@ import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
 /**
  * Created by fwidjaja on 2019-08-23.
  */
+
+// SOM = Seller Order Management
 class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
     override fun getParentViewResourceID() = com.tokopedia.abstraction.R.id.parent_view
 
