@@ -97,6 +97,7 @@
     <color name="shadow_color_3">#15CCCCCC</color>
     <color name="shadow_color_4">#20CCCCCC</color>
     <color name="shadow_color_5">#25CCCCCC</color>
+    <color name="shadow_color_6">#60727272</color>
 
     <color name="tkpd_green_header">#42BD41</color>
     <color name="orange_red">#ff5722</color>

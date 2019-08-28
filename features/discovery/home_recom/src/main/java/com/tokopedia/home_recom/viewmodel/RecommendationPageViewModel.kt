@@ -98,12 +98,14 @@ open class RecommendationPageViewModel @Inject constructor(
      */
     fun getRecommendationList(
             productIds: List<String>,
+            ref: String,
             onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
         getRecommendationUseCase.execute(
                 getRecommendationUseCase.getRecomParams(
                         1,
                         xSource,
                         pageName,
+                        ref,
                         productIds), object : Subscriber<List<RecommendationWidget>>() {
             override fun onNext(t: List<RecommendationWidget>?) {
                 recommendationListModel.value = t
@@ -193,6 +195,5 @@ open class RecommendationPageViewModel @Inject constructor(
      * [isLoggedIn] is the function get user session is login or not login
      */
     fun isLoggedIn() = userSessionInterface.isLoggedIn
-
 
 }

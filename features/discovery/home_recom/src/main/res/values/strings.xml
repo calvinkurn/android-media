@@ -13,4 +13,5 @@
     <string name="recom_similar_product_title">Produk Serupa</string>
     <string name="recom_another_product_title">Produk Lain dari Toko Ini</string>
     <string name="home_recom_screen_name">/rekomendasi</string>
+    <string name="recom_see_more_title">Lihat Semua</string>
 </resources>
