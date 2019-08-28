@@ -21,6 +21,7 @@ import com.tokopedia.explore.di.ExploreComponent
 import com.tokopedia.explore.domain.entity.PostKol
 import com.tokopedia.explore.view.adapter.HashtagLandingItemAdapter
 import com.tokopedia.explore.view.viewmodel.HashtagLandingPageViewModel
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +36,9 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var viewModel: HashtagLandingPageViewModel
+
+    @Inject
+    lateinit var feedAnalytics: FeedAnalyticTracker
 
     private val layoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -124,11 +128,12 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
             loadData(true)
         }
 
-
         recycler_view.layoutManager = layoutManager
         recycler_view.addOnScrollListener(endlessScrollListener)
         recycler_view.adapter = adapter
         loadData()
+
+        feedAnalytics.eventOpenHashtagScreen()
     }
 
     override fun onImageClick(post: PostKol) {

@@ -13,6 +13,7 @@ class FeedAnalyticTracker @Inject constructor() {
     private object Event {
         const val CLICK_FEED = "clickFeed"
         const val CLICK_SOCIAL_COMMERCE = "clickSocialCommerce"
+        const val OPEN_SCREEN = "openScreen"
     }
 
     private object Category {
@@ -28,6 +29,10 @@ class FeedAnalyticTracker @Inject constructor() {
     private object Action {
         const val CLICK_HASHTAG = "click hashtag"
         const val CLICK_READ_MORE = "click read more"
+    }
+
+    private object Screen {
+        const val HASHTAG = "/feed/hashtag"
     }
 
     /**
@@ -108,6 +113,16 @@ class FeedAnalyticTracker @Inject constructor() {
         )
     }
 
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Row 38
+     *
+     */
+    fun eventOpenHashtagScreen() {
+        trackOpenScreenEvent(Screen.HASHTAG)
+    }
+
 
     /**
      * Base track click read more
@@ -157,6 +172,15 @@ class FeedAnalyticTracker @Inject constructor() {
                         EVENT_ACTION, eventAction,
                         EVENT_LABEL, eventLabel
                 ).plus(additionalData)
+        )
+    }
+
+    private fun trackOpenScreenEvent(screenName: String) {
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(
+                screenName,
+                mapOf(
+                        EVENT.capitalize() to Event.OPEN_SCREEN
+                )
         )
     }
 }
