@@ -179,8 +179,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private void setActionVar() {
-//        presenter.proccessUriPayment();
-        scroogeWebView.loadUrl("https://www.google.com");
+        presenter.proccessUriPayment();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -575,7 +574,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
                                 @Override
                                 public void onNext(Long aLong) {
-                                    if (isUnsubscribed()) {
+                                    if (!isUnsubscribed()) {
                                         showErrorTimeout(view);
                                     }
 //                                    if (timeout) {
