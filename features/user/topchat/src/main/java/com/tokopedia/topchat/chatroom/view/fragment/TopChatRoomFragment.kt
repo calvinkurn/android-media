@@ -37,6 +37,7 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
@@ -523,7 +524,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     return
                 }
                 processImagePathToUpload(data)?.let {
-                    presenter.startUploadImages(it)
+                    presenter.startCompressImages(it)
                 }
             }
 
