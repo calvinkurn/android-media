@@ -116,8 +116,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         }
     }
 
-    @Override
-    void getData() {
+    private void getData() {
         String saldoQuery = GraphqlHelper.loadRawString(getContext().getResources(), R.raw
                 .new_query_saldo_balance);
         presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home),

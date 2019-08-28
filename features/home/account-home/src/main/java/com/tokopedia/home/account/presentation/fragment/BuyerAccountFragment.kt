@@ -91,18 +91,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         }
     }
 
-    override fun getData() {
-        scrollToTop()
-        endlessRecyclerViewScrollListener?.resetState()
-
-        context?.let {
-            val saldoQuery = GraphqlHelper.loadRawString(it.resources, R.raw
-                    .new_query_saldo_balance)
-            presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
-                    .query_buyer_account_home), saldoQuery)
-        }
-    }
-
     override fun getScreenName(): String {
         return TAG
     }
@@ -242,6 +230,18 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
+    }
+
+    private fun getData() {
+        scrollToTop()
+        endlessRecyclerViewScrollListener?.resetState()
+
+        context?.let {
+            val saldoQuery = GraphqlHelper.loadRawString(it.resources, R.raw
+                    .new_query_saldo_balance)
+            presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
+                    .query_buyer_account_home), saldoQuery)
+        }
     }
 
     private fun initInjector() {

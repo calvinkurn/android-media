@@ -73,7 +73,6 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     private AffiliatePreference affiliatePreference;
 
     abstract void notifyItemChanged(int position);
-    abstract void getData();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
