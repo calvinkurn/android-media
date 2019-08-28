@@ -146,7 +146,6 @@ public class SessionHandler {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, null);
-        editor.putString(FULL_NAME, null);
         editor.putString(SHOP_DOMAIN, null);
         editor.putString(SHOP_ID, null);
         editor.putString(SHOP_NAME, null);
