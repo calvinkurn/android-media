@@ -59,10 +59,10 @@ import com.tokopedia.shop.page.di.module.ShopPageModule
 import com.tokopedia.shop.page.view.ShopPageViewModel
 import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
+import com.tokopedia.shop.page.view.widget.StickyTextView
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
-import com.tokopedia.shop.page.view.widget.StickyTextView
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
@@ -71,7 +71,6 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import kotlinx.android.synthetic.main.partial_shop_page_header.*
-import java.util.*
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
@@ -299,6 +298,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         getShopInfo()
 
         stickyLoginTextView = findViewById(R.id.sticky_login_text)
+        stickyLoginTextView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+            updateStickyState()
+        }
         stickyLoginTextView.setOnClickListener {
             shopPageTracking.eventClickOnStickyLogin(true)
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN) }
@@ -731,6 +733,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         } else {
             stickyLoginTextView.show()
             shopPageTracking.eventViewLoginStickyWidget()
+        }
+
+        if (stickyLoginTextView.isShowing()) {
+            viewPager.setPadding(0, 0, 0, stickyLoginTextView.height)
+        } else {
+            viewPager.setPadding(0, 0, 0, 0)
         }
     }
 }

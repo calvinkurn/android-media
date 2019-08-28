@@ -16,12 +16,13 @@ public class SpotlightItemViewModel {
     private String url;
     private String applink;
     private String promoName;
+    private String channeldId;
 
     public SpotlightItemViewModel(int id, String title, String description,
                                   String backgroundImageUrl, String tagName,
                                   String tagNameHexcolor, String tagHexcolor,
                                   String ctaText, String ctaTextHexcolor,
-                                  String url, String applink, String promoName) {
+                                  String url, String applink, String promoName, String channelId) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -34,6 +35,15 @@ public class SpotlightItemViewModel {
         this.url = url;
         this.applink = applink;
         this.promoName = promoName;
+        this.channeldId = channelId;
+    }
+
+    public String getChanneldId() {
+        return channeldId;
+    }
+
+    public void setChanneldId(String channeldId) {
+        this.channeldId = channeldId;
     }
 
     public int getId() {
@@ -80,12 +90,13 @@ public class SpotlightItemViewModel {
         return applink;
     }
 
-    public Map<String, Object> getEnhanceClickSpotlightHomePage(int position) {
+    public Map<String, Object> getEnhanceClickSpotlightHomePage(int position, String channelId) {
         return DataLayer.mapOf(
                 "event", "promoClick",
                 "eventCategory", "homepage",
                 "eventAction", "click on banner spotlight",
                 "eventLabel", title,
+                "channelId", channelId,
                 "ecommerce", DataLayer.mapOf(
                         "promoClick", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(

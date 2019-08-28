@@ -362,6 +362,10 @@ abstract class ProductCardView: BaseCustomView {
         labelDiscount?.text = discountText
     }
 
+    open fun setLabelDiscountText(discount: String) {
+        labelDiscount?.text = discount
+    }
+
     open fun setSlashedPriceVisible(isVisible: Boolean) {
         textViewSlashedPrice?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }

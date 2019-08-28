@@ -28,7 +28,6 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
-import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
@@ -66,8 +65,8 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         public void run() {
             List<Integer> items = new ArrayList<>();
             for (BaseItem each : mAdapter.getItems()) {
-                if(each instanceof CatalogsValueEntity) {
-                    CatalogsValueEntity entity= (CatalogsValueEntity) each;
+                if (each instanceof CatalogsValueEntity) {
+                    CatalogsValueEntity entity = (CatalogsValueEntity) each;
                     if (entity.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
                         items.add(entity.getId());
                     }
@@ -536,7 +535,9 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
-        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
+        SendGiftFragment sendGiftFragment = new SendGiftFragment();
+        sendGiftFragment.setArguments(bundle);
+        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
     }
 
     @Override
@@ -560,7 +561,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     @Override
     public void onEmptyList(Object rawObject) {
-
+        onEmptyCatalog();
     }
 
     @Override

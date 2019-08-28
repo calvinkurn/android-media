@@ -260,6 +260,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         context?.run {
             mIris = IrisAnalytics.getInstance(this)
+            analytics.onCreate(this)
         }
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
@@ -467,7 +468,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
-
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             val intent = mGoogleSignInClient.signInIntent
@@ -564,7 +564,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
 
-            analytics.eventSuccessLogin(userSession.loginMethod, registerAnalytics)
+            analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
             setFCM()
         }
@@ -1043,6 +1043,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        analytics.onDestroy()
     }
 
     override fun onBackPressed() {

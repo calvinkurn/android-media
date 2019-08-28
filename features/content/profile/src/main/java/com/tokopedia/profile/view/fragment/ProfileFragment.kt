@@ -1,5 +1,6 @@
 package com.tokopedia.profile.view.fragment
 
+import android.animation.LayoutTransition
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -68,6 +69,7 @@ import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.*
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
@@ -514,6 +516,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         startActivity(FollowingListActivity.createIntent(context, userId.toString()))
     }
 
+    override fun goToFollower() {
+        startActivity(KolFollowingListActivity.getFollowerInstance(context, userId))
+    }
+
     override fun updateCursor(cursor: String) {
         presenter.cursor = cursor
     }
@@ -822,7 +828,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            linkerData = ShareBottomSheets.constructShareData("", "", url, String.format("%s %s", description, "%s"), title)
+            linkerData = ShareBottomSheets.constructShareData("", "", url, description, title)
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
             checkShouldChangeUsername(url)
@@ -1068,6 +1074,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun showFooterOthers() {
+        parentView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        footer.show()
         footerOthers.show()
         if (profileHeader?.isFollowed == true) {
             footerOthersText.text = getString(R.string.sticky_footer_following)
@@ -1098,6 +1106,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun hideFootersOthers() {
+        parentView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        footer.hide()
         footerOthers.hide()
     }
 
@@ -1251,13 +1261,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 if (element.following != ProfileHeaderViewModel.ZERO)
                     String.format(getString(R.string.profile_following_number), element.following)
                 else ""
+        val followers = String.format(
+                getString(R.string.profile_followers_number),
+                element.followers
+        )
         spannableString = if ((element.isKol || element.isAffiliate)
                 && element.followers != ProfileHeaderViewModel.ZERO) {
-
-            val followers = String.format(
-                    getString(R.string.profile_followers_number),
-                    element.followers
-            )
             val followersAndFollowing =
                     if (!TextUtils.isEmpty(following)) String.format(
                             getString(R.string.profile_followers_and_following),
@@ -1266,9 +1275,20 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                     )
                     else followers
             SpannableString(followersAndFollowing)
-
         } else {
             SpannableString(following)
+        }
+
+        val goToFollower = object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                goToFollower()
+            }
+
+            override fun updateDrawState(ds: TextPaint?) {
+                super.updateDrawState(ds)
+                ds?.setUnderlineText(false)
+                ds?.color = MethodChecker.getColor(context, R.color.white)
+            }
         }
 
         val goToFollowing = object : ClickableSpan() {
@@ -1276,14 +1296,21 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 goToFollowing()
             }
 
-            override fun updateDrawState(ds: TextPaint) {
+            override fun updateDrawState(ds: TextPaint?) {
                 super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(activity, R.color.white)
+                ds?.setUnderlineText(false)
+                ds?.color = MethodChecker.getColor(context, R.color.white)
             }
         }
+        if (spannableString.indexOf(followers) != -1) {
+            spannableString.setSpan(
+                    goToFollower,
+                    spannableString.indexOf(followers),
+                    spannableString.indexOf(followers) + followers.length,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
 
-        if (following.isNotEmpty() && spannableString.indexOf(following) != -1) {
+        if (spannableString.indexOf(following) != -1) {
             spannableString.setSpan(
                     goToFollowing,
                     spannableString.indexOf(following),

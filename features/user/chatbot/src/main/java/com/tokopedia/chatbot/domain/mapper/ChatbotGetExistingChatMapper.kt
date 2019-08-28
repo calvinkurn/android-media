@@ -7,13 +7,18 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CHAT_DIVIDER_ONE
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CHAT_DIVIDER_TWO
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.chatdivider.ChatDividerResponse
 import com.tokopedia.chatbot.domain.pojo.quickreply.ListInvoicesSelectionPojo
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyPojo
@@ -24,11 +29,19 @@ import javax.inject.Inject
  */
 open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
 
+    object Companion {
+        const val  SHOW_TEXT = "show"
+        const val TYPE_CHAT_DIVIDER_ONE = "15"
+        const val TYPE_CHAT_DIVIDER_TWO = "16"
+    }
+
     override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
             TYPE_QUICK_REPLY -> convertToQuickReply(chatItemPojoByDateByTime)
             TYPE_CHAT_BALLOON_ACTION -> convertToBalloonAction(chatItemPojoByDateByTime)
             TYPE_INVOICES_SELECTION -> convertToInvoicesSelection(chatItemPojoByDateByTime)
+            TYPE_CHAT_DIVIDER_ONE->convertToChatDivider(chatItemPojoByDateByTime)
+            TYPE_CHAT_DIVIDER_TWO->convertToChatDivider(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime)
         }
     }
@@ -130,6 +143,20 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 pojo.replyTime,
                 list,
                 pojo.msg
+        )
+    }
+
+
+    /////////// CHAT DIVIDER
+    
+    private fun convertToChatDivider(pojo: Reply):ConnectionDividerViewModel{
+        val chatDividerPojo = GsonBuilder().create().fromJson<ChatDividerResponse>(pojo
+                .attachment?.attributes, ChatDividerResponse::class.java)
+        return ConnectionDividerViewModel(
+                chatDividerPojo?.divider?.label,
+                false,
+                SHOW_TEXT,
+                null
         )
     }
 
