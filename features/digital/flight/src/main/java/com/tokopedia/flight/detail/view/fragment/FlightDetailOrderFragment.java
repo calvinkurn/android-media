@@ -82,7 +82,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final String EXTRA_ORDER_DETAIL_PASS = "EXTRA_ORDER_DETAIL_PASS";
-    private static final String CANCEL_SOLUTION_ID = "1378";
     private static final float JOURNEY_TITLE_FONT_SIZE = 18;
     public static final String EXTRA_IS_AFTER_CANCELLATION = "EXTRA_IS_AFTER_CANCELLATION";
 

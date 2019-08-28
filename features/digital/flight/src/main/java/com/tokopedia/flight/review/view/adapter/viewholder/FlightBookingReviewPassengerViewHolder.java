@@ -39,7 +39,7 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     @Override
     public void bind(FlightDetailPassenger flightDetailPassenger) {
 
-        if (shouldShowCancellationStatus(flightDetailPassenger.getPassengerStatus())) {
+        if (shouldShowCancellationStatus(flightDetailPassenger.getPassengerStatus(), flightDetailPassenger.getPassengerCancellationStr())) {
             passengerCancellationStatus.setVisibility(View.VISIBLE);
         }
 
@@ -84,23 +84,25 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         recyclerViewPassengerDetail.setAdapter(reviewPassengerDetailAdapter);
     }
 
-    private boolean shouldShowCancellationStatus(int status) {
+    private boolean shouldShowCancellationStatus(int status, String cancellationStr) {
+        String cancellationStatusString = "";
+        if (cancellationStr != null) {
+            cancellationStatusString = cancellationStr;
+        }
+
         switch (status) {
             case FlightCancellationStatus.REQUESTED:
-                passengerCancellationStatus.setText(String.format(getString(
-                        R.string.flight_cancellation_passenger_status), "sedang dalam pengajuan."));
+                passengerCancellationStatus.setText(cancellationStatusString);
                 passengerCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
                 passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;
             case FlightCancellationStatus.PENDING:
-                passengerCancellationStatus.setText(String.format(getString(
-                        R.string.flight_cancellation_passenger_status), "sedang menunggu persetujuan."));
+                passengerCancellationStatus.setText(cancellationStatusString);
                 passengerCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
                 passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;
             case FlightCancellationStatus.REFUNDED:
-                passengerCancellationStatus.setText(String.format(getString(
-                        R.string.flight_cancellation_passenger_status), "telah disetujui."));
+                passengerCancellationStatus.setText(cancellationStatusString);
                 passengerCancellationStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle);
                 passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;

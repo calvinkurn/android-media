@@ -333,12 +333,15 @@
             android:id="@+id/cancellation_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@color/white"
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <com.tokopedia.design.component.TextViewCompat
                 style="@style/TextView.TitleBig.Bold"
@@ -351,7 +354,14 @@
                 android:paddingRight="@dimen/dp_20"
                 android:paddingBottom="@dimen/dp_10"
                 android:text="@string/flight_order_detail_cancellation_label"
+                android:textColor="@color/green_nob"
                 android:textSize="@dimen/sp_18" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="@dimen/dp_8"
+                android:layout_height="@dimen/dp_8"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/flight_shape_red_circle"/>
 
         </LinearLayout>
 

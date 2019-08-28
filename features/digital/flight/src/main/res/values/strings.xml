@@ -412,7 +412,6 @@
     <string name="flight_cancellation_detail_refund_information_label">Informasi Refund</string>
     <string name="flight_cancellation_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_estimate_refund_label">Estimasi Refund</string>
-    <string name="flight_cancellation_passenger_status" formatted="false">Pembatalan tiket %s</string>
     <string name="flight_label_cancellation_date">Tanggal Pembatalan</string>
     <string name="flight_cancellation_status_success">Pembatalan Berhasil</string>
     <string name="flight_cancellation_status_failed">Pembatalan Gagal</string>
