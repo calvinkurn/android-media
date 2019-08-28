@@ -743,12 +743,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         CreateTicketDialog createTicketDialog = new CreateTicketDialog(getActivity(), CreateTicketDialog.Page.PAGE_CHECKOUT);
         createTicketDialog.setDescription(message);
         createTicketDialog.setSecondaryOnClickListener(v -> {
+            checkoutAnalyticsCourierSelection.eventClickCloseOnHelpPopUpInCheckout();
             createTicketDialog.dismiss();
         });
         createTicketDialog.setOkOnClickListener(v -> {
-
+            checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
         });
         createTicketDialog.show();
+        checkoutAnalyticsCourierSelection.eventViewHelpPopUpAfterErrorInCheckout();
 //        if (message.contains("Pre Order") && message.contains("Corner"))
 //            mTrackerCorner.sendViewCornerPoError();
 //        if (message.equalsIgnoreCase("")) {
