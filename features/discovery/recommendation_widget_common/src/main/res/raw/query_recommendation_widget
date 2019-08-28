@@ -7,6 +7,7 @@ query productRecommendation($userID: Int!, $pageName: String!, $pageNumber: Int!
       foreignTitle
       widgetUrl
       pageName
+      seeMoreAppLink
       layoutType
       pagination {
         currentPage

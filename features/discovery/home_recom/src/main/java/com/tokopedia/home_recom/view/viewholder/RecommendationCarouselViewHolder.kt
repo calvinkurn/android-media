@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselItemDataModel
 import com.tokopedia.home_recom.model.datamodel.RecommendationCarouselDataModel
@@ -25,7 +26,7 @@ class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<Recommen
     private val list = mutableListOf<RecommendationCarouselItemDataModel>()
     override fun bind(element: RecommendationCarouselDataModel) {
         title.text = element.title
-        seeMore.setOnClickListener {  }
+        seeMore.setOnClickListener { RouteManager.route(itemView.context, element.appLinkSeeMore) }
         setupRecyclerView(element)
     }
 

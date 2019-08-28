@@ -43,7 +43,6 @@ import com.tokopedia.recommendation_widget_common.TYPE_SCROLL
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 
@@ -72,7 +71,7 @@ import javax.inject.Inject
  * @property REQUEST_FROM_PDP the const value for set request calling startActivityForResult ProductDetailActivity.
  * @constructor Creates an empty recommendation.
  */
-class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationListener {
+open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, HomeRecommendationTypeFactoryImpl>(), RecommendationListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -333,7 +332,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         listRecommendationModel.forEach { recommendationWidget ->
             when(recommendationWidget.layoutType){
                 TYPE_SCROLL -> {
-                    list.add(TitleDataModel(recommendationWidget.title))
+                    list.add(TitleDataModel(recommendationWidget.title, recommendationWidget.seeMoreAppLink))
                     recommendationWidget.recommendationItemList.forEach {
                         list.add(RecommendationItemDataModel(it, this))
                     }
@@ -341,6 +340,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
                 TYPE_CAROUSEL, TYPE_CUSTOM_HORIZONTAL -> list.add(
                         RecommendationCarouselDataModel(
                                 recommendationWidget.title,
+                                recommendationWidget.seeMoreAppLink,
                                 recommendationWidget.recommendationItemList.asSequence().map { RecommendationCarouselItemDataModel(it, list.size, this) }.toList(),
                                 this
                         )
@@ -435,7 +435,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
      * @param shareContent the content of intent share
      * @param shareUri the uri of intent share
      */
-    private fun openIntentShare(title: String, shareContent: String, shareUri: String){
+    fun openIntentShare(title: String, shareContent: String, shareUri: String){
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             type = "text/plain"

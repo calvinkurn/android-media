@@ -16,9 +16,9 @@ class TitleViewHolder(private val view: View) : AbstractViewHolder<TitleDataMode
     private val title: TextView by lazy { view.findViewById<TextView>(R.id.title) }
     private val seeMore: TextView by lazy { view.findViewById<TextView>(R.id.see_more) }
 
-    override fun bind(element: TitleDataModel?) {
-        title.text = element?.title
-        seeMore.setOnClickListener {  }
+    override fun bind(element: TitleDataModel) {
+        title.text = element.title
+        seeMore.setOnClickListener { RouteManager.route(view.context, element.appLinkSeeMore) }
     }
 
 }
