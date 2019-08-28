@@ -117,8 +117,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     private String mJsHciCallbackFuncName;
 
-    private CompositeSubscription compositeSubscription = new CompositeSubscription();
-
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
         intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
@@ -314,7 +312,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     @Override
     protected void onDestroy() {
-        compositeSubscription.unsubscribe();
         presenter.detachView();
         super.onDestroy();
     }
@@ -498,7 +495,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         @Override
         public void onPageFinished(WebView view, String url) {
             timeout = false;
-            compositeSubscription.clear();
+            presenter.clearTimeoutSubscription();
             if (progressBar != null) progressBar.setVisibility(View.GONE);
         }
 
@@ -554,7 +551,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         }
 
         private void timerObservable(WebView view) {
-            compositeSubscription.add(
+            presenter.addTimeoutSubscription(
                     Observable.timer(FORCE_TIMEOUT, TimeUnit.MILLISECONDS)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
