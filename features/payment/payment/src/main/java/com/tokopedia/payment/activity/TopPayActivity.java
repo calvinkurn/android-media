@@ -54,6 +54,7 @@ import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -88,13 +89,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
 
-    private static final String ENABLE_TOPPAY_TIMEOUT = "android_enable_toppay_timeout";
-
     public static final int PAYMENT_SUCCESS = 5;
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
-    public static final long FORCE_TIMEOUT = 90000L;
+    public static final long FORCE_TIMEOUT = 500L;
 
     @Inject
     TopPayPresenter presenter;
@@ -520,7 +519,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
             //  Log.d(TAG, "start url = " + url);
-            if (remoteConfig.getBoolean(ENABLE_TOPPAY_TIMEOUT, true)) {
+            if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TOPPAY_TIMEOUT, true)) {
                 timerObservable(view);
             } else {
                 timerThread(view);
