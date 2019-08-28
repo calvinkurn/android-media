@@ -270,6 +270,7 @@ class ProfileListFragment :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(EXTRA_QUERY, query)
+        outState.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
