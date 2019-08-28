@@ -1215,12 +1215,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         userCod = productInfoP3.userCod
         if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
         headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
-//        productInfoP3.rateEstSummarizeText?.let {
-//            partialVariantAndRateEstView.renderRateEstimation(it) {
-//                productDetailTracking.eventShippingRateEstimationClicked()
-//                gotoRateEstimation(false)
-//            }
-//        }
     }
 
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
