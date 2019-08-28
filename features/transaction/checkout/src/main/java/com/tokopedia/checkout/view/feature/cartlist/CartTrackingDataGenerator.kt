@@ -17,19 +17,21 @@ class CartTrackingDataGenerator @Inject constructor() {
         const val DEFAULT_VALUE_NONE_OTHER = "none / other"
     }
 
-    fun generateBundleEnhancedEcommerceStep1(cartItemDataList: List<CartItemData>): Bundle {
+    fun generateBundleEnhancedEcommerce(cartItemDataList: List<CartItemData>?): Bundle {
         val eCommerceBundle = Bundle()
 
         val productBundles = ArrayList<Bundle>()
 
-        for ((index, cartItemData) in cartItemDataList.withIndex()) {
-            val productBundle = getProductBundle(cartItemData)
-            if (index == 0) {
-                eCommerceBundle.putString("shopId", cartItemData.originData.shopId)
-                eCommerceBundle.putString("shopType", cartItemData.originData.shopType)
-                eCommerceBundle.putString("categoryId", cartItemData.originData.categoryId)
+        cartItemDataList?.apply {
+            withIndex().forEach { (index, cartItemData) ->
+                val productBundle = getProductBundle(cartItemData)
+                if (index == 0) {
+                    eCommerceBundle.putString("shopId", cartItemData.originData.shopId)
+                    eCommerceBundle.putString("shopType", cartItemData.originData.shopType)
+                    eCommerceBundle.putString("categoryId", cartItemData.originData.categoryId)
+                }
+                productBundles.add(productBundle)
             }
-            productBundles.add(productBundle)
         }
 
         eCommerceBundle.putParcelableArrayList("items", productBundles)
@@ -43,34 +45,33 @@ class CartTrackingDataGenerator @Inject constructor() {
         return eCommerceBundle
     }
 
-    private fun getProductBundle(cartItemData: CartItemData): Bundle {
+    private fun getProductBundle(cartItemData: CartItemData?): Bundle {
         val productBundle = Bundle().apply {
-            putString(FirebaseAnalytics.Param.ITEM_ID, cartItemData.originData.productId)
-            putString(FirebaseAnalytics.Param.ITEM_NAME, cartItemData.originData.productName)
-            putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE_NONE_OTHER)
-            putString(FirebaseAnalytics.Param.ITEM_CATEGORY,
-                    if (TextUtils.isEmpty(cartItemData.originData.category)) DEFAULT_VALUE_NONE_OTHER
-                    else cartItemData.originData.category
-            )
-            putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE_NONE_OTHER)
-            putDouble(FirebaseAnalytics.Param.PRICE, cartItemData.originData.pricePlanInt.toDouble())
-            putLong(FirebaseAnalytics.Param.QUANTITY, cartItemData.updatedData.quantity.toLong())
-            putString("dimension45", cartItemData.originData.cartId.toString())
-            putBoolean("dimension54", cartItemData.isFulfillment)
-            putBoolean("dimension53", cartItemData.originData.priceOriginal > 0)
-            putString("dimension80",
-                    if (TextUtils.isEmpty(cartItemData.originData.trackerAttribution)) EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                    else cartItemData.originData.trackerAttribution)
-//            putString("shop_id", cartItemData.originData.shopId)
-//            putString("shop_type", cartItemData.originData.shopType)
-//            putString("shop_name", cartItemData.originData.shopName)
-            putString("category_id", cartItemData.originData.categoryId)
-            putString("dimension56", cartItemData.originData.warehouseId.toString())
-            putString("dimension48", cartItemData.originData.weightPlan.toString())
-            putString("dimension45", cartItemData.originData.cartId.toString())
-            putString("dimension49", cartItemData.originData.promoCodes)
-            putString("dimension59", cartItemData.originData.promoDetails)
+            cartItemData?.apply {
+                putString(FirebaseAnalytics.Param.ITEM_ID, originData.productId)
+                putString(FirebaseAnalytics.Param.ITEM_NAME, originData.productName)
+                putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE_NONE_OTHER)
+                putString(FirebaseAnalytics.Param.ITEM_CATEGORY,
+                        if (TextUtils.isEmpty(originData.category)) DEFAULT_VALUE_NONE_OTHER
+                        else originData.category
+                )
+                putString(FirebaseAnalytics.Param.ITEM_VARIANT, DEFAULT_VALUE_NONE_OTHER)
+                putDouble(FirebaseAnalytics.Param.PRICE, originData.pricePlanInt.toDouble())
+                putLong(FirebaseAnalytics.Param.QUANTITY, updatedData.quantity.toLong())
+                putString("dimension45", originData.cartId.toString())
+                putBoolean("dimension54", isFulfillment)
+                putBoolean("dimension53", originData.priceOriginal > 0)
+                putString("dimension80",
+                        if (TextUtils.isEmpty(originData.trackerAttribution)) EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
+                        else originData.trackerAttribution)
+                putString("dimension56", originData.warehouseId.toString())
+                putString("dimension48", originData.weightPlan.toString())
+                putString("dimension45", originData.cartId.toString())
+                putString("dimension49", originData.promoCodes)
+                putString("dimension59", originData.promoDetails)
+            }
         }
+
         return productBundle
     }
 

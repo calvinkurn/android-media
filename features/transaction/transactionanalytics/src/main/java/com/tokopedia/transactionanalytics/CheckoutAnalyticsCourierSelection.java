@@ -1,5 +1,6 @@
 package com.tokopedia.transactionanalytics;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
@@ -342,6 +343,11 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, null
         );
         sendEnhancedEcommerce(dataLayer);
+    }
+
+    // GTM v5 EE Step 2 - 4
+    public void sendEnhancedECommerceCheckoutV5(Bundle eCommerceBundle) {
+        sendEnhancedEcommerceV5("checkout", eCommerceBundle);
     }
 
     public void eventClickCourierSelectionClickPilihAlamatLain() {

@@ -204,6 +204,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     @Inject
     CornerAnalytics mTrackerCorner;
+    @Inject
+    ShipmentTrackingDataGenerator shipmentTrackingDataGenerator;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     CartPromoSuggestion savedCartPromoSuggestion;
@@ -520,6 +522,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
+
+        sendEESGTMv5(dataCheckoutRequests);
+    }
+
+    private void sendEESGTMv5(List<DataCheckoutRequest> dataCheckoutRequests) {
+        CheckPromoParam checkPromoParam = new CheckPromoParam();
+        checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
+
+        int isDonation = shipmentPresenter.getShipmentDonationModel() != null && shipmentPresenter.getShipmentDonationModel().isChecked() ? 1 : 0;
+        CheckoutRequest checkoutRequest = shipmentPresenter.generateCheckoutRequest(
+                dataCheckoutRequests, checkPromoParam, isDonation, getCheckoutLeasingId()
+        );
+
+        Bundle eCommerceBundle = shipmentTrackingDataGenerator.generateBundleEnhancedEcommerce(checkoutRequest, shipmentPresenter.getShipmentCartItemModelList());
+        checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckoutV5(eCommerceBundle);
     }
 
     @Override
@@ -1652,6 +1669,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
                 "",
                 getCheckoutLeasingId());
+
+        sendEESGTMv5(dataCheckoutRequests);
     }
 
     @Override
@@ -2414,6 +2433,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @NonNull
+    @Override
     public Promo generateCheckPromoFirstStepParam() {
         Promo promo = new Promo();
         ArrayList<Order> orders = new ArrayList<>();
@@ -2526,6 +2546,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
+
+        sendEESGTMv5(dataCheckoutRequests);
     }
 
     @Override

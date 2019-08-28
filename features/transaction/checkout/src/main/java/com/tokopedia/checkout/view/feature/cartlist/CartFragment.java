@@ -1357,7 +1357,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                                             List<CartItemData> cartItemDataList,
                                             boolean checkoutProductEligibleForCashOnDelivery,
                                             int checklistCondition) {
-        Bundle eCommerceBundle = cartTrackingDataGenerator.generateBundleEnhancedEcommerceStep1(cartItemDataList);
+        Bundle eCommerceBundle = cartTrackingDataGenerator.generateBundleEnhancedEcommerce(cartItemDataList);
         switch (checklistCondition) {
             case CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES:
                 cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeCheckoutData, checkoutProductEligibleForCashOnDelivery);
