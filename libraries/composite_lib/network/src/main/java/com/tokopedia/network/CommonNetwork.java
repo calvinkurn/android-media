@@ -8,6 +8,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.TkpdOkHttpBuilder;
 import com.tokopedia.user.session.UserSession;
@@ -23,7 +24,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 public class CommonNetwork {
-
 
     /**
     method to create retrofit object for general purpose

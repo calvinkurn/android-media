@@ -17,7 +17,8 @@ class NotificationUpdateItemViewModel(
         var body: String = "",
         var templateKey: String = "",
         var appLink: String = "",
-        var hasShop: Boolean = false
+        var hasShop: Boolean = false,
+        var typeLink: Int = 0
 ) : Visitable<NotificationUpdateTypeFactory>, Parcelable {
 
     override fun type(typeFactory: NotificationUpdateTypeFactory): Int {
@@ -36,6 +37,7 @@ class NotificationUpdateItemViewModel(
         templateKey = `in`.readString()
         appLink = `in`.readString()
         hasShop = `in`.readInt() != 0
+        typeLink = `in`.readInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -50,6 +52,7 @@ class NotificationUpdateItemViewModel(
         parcel.writeString(templateKey)
         parcel.writeString(appLink)
         parcel.writeInt(if (hasShop) 1 else 0)
+        parcel.writeInt(typeLink)
     }
 
     override fun describeContents(): Int {
@@ -60,6 +63,12 @@ class NotificationUpdateItemViewModel(
 
         var BUYER_TYPE = 1
         var SELLER_TYPE = 2
+
+        var TYPE_BANNER_1X1 = 0
+        var TYPE_INTERNAL_LINK = 1
+        var TYPE_RECOMMENDATION = 2
+        var TYPE_WISHLIST = 3
+        var TYPE_BANNER_2X1 = 4
 
         @JvmField
         val CREATOR: Parcelable.Creator<NotificationUpdateItemViewModel> = object : Parcelable.Creator<NotificationUpdateItemViewModel> {

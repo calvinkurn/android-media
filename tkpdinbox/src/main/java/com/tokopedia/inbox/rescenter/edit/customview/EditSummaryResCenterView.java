@@ -5,33 +5,26 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.rescenter.edit.customadapter.LastProductTroubleAdapter;
 import com.tokopedia.inbox.rescenter.edit.listener.SellerEditResCenterListener;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
-
-import butterknife.BindView;
-import butterknife.OnClick;
 
 /**
  * Created on 8/29/16.
  */
 public class EditSummaryResCenterView extends BaseView<EditResCenterFormData, SellerEditResCenterListener> {
 
-    @BindView(R2.id.solution_text)
-    TextView solutionText;
-    @BindView(R2.id.remark)
-    TextView remark;
-    @BindView(R2.id.product_recyclerview)
-    RecyclerView productRecyclerView;
-    @BindView(R2.id.chevron_up)
-    ImageView flagCollapse;
-
+    private TextView solutionText;
+    private TextView remark;
+    private RecyclerView productRecyclerView;
+    private ImageView flagCollapse;
     private EditResCenterFormData data;
 
     public EditSummaryResCenterView(Context context) {
@@ -84,7 +77,6 @@ public class EditSummaryResCenterView extends BaseView<EditResCenterFormData, Se
         return data.getForm().getResolutionLast().getLastProductRelated() == 1;
     }
 
-    @OnClick(R2.id.action_collapse)
     public void onCollapse() {
         if (isRelatedProduct(data)) {
             flagCollapse.setImageResource(productRecyclerView.getVisibility() == VISIBLE ? R.drawable.chevron_down : R.drawable.chevron_up);
@@ -96,4 +88,24 @@ public class EditSummaryResCenterView extends BaseView<EditResCenterFormData, Se
         }
     }
 
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        settingUpVariables(view);
+        view.findViewById(R.id.action_collapse).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCollapse();
+            }
+        });
+    }
+
+    private void settingUpVariables(View view) {
+        solutionText = view.findViewById(R.id.solution_text);
+        remark = view.findViewById(R.id.remark);
+        productRecyclerView = view.findViewById(R.id.product_recyclerview);
+        flagCollapse = view.findViewById(R.id.chevron_up);
+    }
 }
