@@ -296,9 +296,10 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             if(productId.isNotBlank()) {
                 recommendationWidgetViewModel.getPrimaryProduct(productId)
                 recommendationWidgetViewModel.getRecommendationList(arrayListOf(productId),
+                        ref,
                         onErrorGetRecommendation = this::onErrorGetRecommendation)
             } else {
-                recommendationWidgetViewModel.getRecommendationList(arrayListOf(), onErrorGetRecommendation = this::onErrorGetRecommendation)
+                recommendationWidgetViewModel.getRecommendationList(arrayListOf(), ref, onErrorGetRecommendation = this::onErrorGetRecommendation)
             }
         }
     }

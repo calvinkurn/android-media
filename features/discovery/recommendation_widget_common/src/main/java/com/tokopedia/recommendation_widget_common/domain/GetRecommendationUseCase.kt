@@ -44,6 +44,7 @@ constructor(
     fun getRecomParams(pageNumber: Int,
                        xSource: String,
                        pageName: String,
+                       ref: String,
                        productIds: List<String>): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
@@ -69,6 +70,7 @@ constructor(
         }
 
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
+        params.putString(REF, ref)
         return params
     }
 
@@ -78,6 +80,7 @@ constructor(
         val PAGE_NUMBER = "pageNumber"
         val X_DEVICE = "xDevice"
         val PAGE_NAME = "pageName"
+        val REF = "ref"
         val DEFAULT_VALUE_X_SOURCE = "recom_widget"
         val DEFAULT_VALUE_X_DEVICE = "android"
         val DEFAULT_PAGE_NAME = ""
