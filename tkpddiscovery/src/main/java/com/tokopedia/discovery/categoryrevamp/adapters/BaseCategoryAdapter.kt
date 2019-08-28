@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
-import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.BaseProductTypeFactory
+import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactory
 
 abstract class BaseCategoryAdapter(val itemChangeView: OnItemChangeView) :
         RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {

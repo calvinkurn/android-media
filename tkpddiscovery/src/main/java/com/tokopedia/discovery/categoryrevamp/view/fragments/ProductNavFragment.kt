@@ -30,9 +30,9 @@ import com.tokopedia.discovery.categoryrevamp.adapters.SubCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
-import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.ProductTypeFactory
-import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.ProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
+import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
+import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.utils.ParamMapToUrl
