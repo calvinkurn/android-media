@@ -394,6 +394,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
+    public String getZoneId() {
+        return cartPassData.getZoneId();
+    }
+
+    @Override
     public boolean isInstantCheckout() {
         return cartPassData.getInstantCheckout().equals("1");
     }
