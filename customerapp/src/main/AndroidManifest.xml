@@ -148,11 +148,6 @@
                     android:pathPattern=".*"
                     android:scheme="https"/>
 
-                <data
-                    android:host="20.beta-feature.tokopedia.com"
-                    android:pathPattern=".*"
-                    android:scheme="https"/>
-
             </intent-filter>
             
         </activity>
