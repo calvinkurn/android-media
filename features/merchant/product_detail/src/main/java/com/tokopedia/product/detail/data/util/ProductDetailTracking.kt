@@ -11,7 +11,6 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.normalcheckout.view.NormalCheckoutTracking.Companion.PRODUCT_DETAIL_PAGE
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.PRODUCT_VIEW
@@ -856,6 +855,33 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.VIEW_LOGIN_STICKY_WIDGET,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventViewHelpPopUpWhenAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.VIEW_HELP_POP_UP_WHEN_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickReportOnHelpPopUpAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_REPORT_ON_HELP_POP_UP_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickCloseOnHelpPopUpAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
                 ProductTrackingConstant.Label.EMPTY_LABEL
         )
     }

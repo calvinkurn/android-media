@@ -109,6 +109,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener;
+import com.tokopedia.transaction.common.dialog.CreateTicketDialog;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
@@ -739,13 +740,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutCartError(String message) {
-        if (message.contains("Pre Order") && message.contains("Corner"))
-            mTrackerCorner.sendViewCornerPoError();
-        if (message.equalsIgnoreCase("")) {
-            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
-        } else {
-            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
-        }
+        CreateTicketDialog createTicketDialog = new CreateTicketDialog(getActivity(), CreateTicketDialog.Page.PAGE_CHECKOUT);
+        createTicketDialog.setDescription(message);
+        createTicketDialog.setSecondaryOnClickListener(v -> {
+            createTicketDialog.dismiss();
+        });
+        createTicketDialog.setOkOnClickListener(v -> {
+
+        });
+        createTicketDialog.show();
+//        if (message.contains("Pre Order") && message.contains("Corner"))
+//            mTrackerCorner.sendViewCornerPoError();
+//        if (message.equalsIgnoreCase("")) {
+//            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
+//        } else {
+//            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+//        }
     }
 
     @Override
@@ -1857,8 +1867,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
         switch (requestCode) {
             case REQUEST_CODE_NORMAL_CHECKOUT:
-                shipmentPresenter.processSaveShipmentState();
-                shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
+                renderCheckoutCartError("Barangmu akan dikembalikan ke keranjang. Laporkan gangguan ini biar bisa segera diperbaiki, ya!");
+//                shipmentPresenter.processSaveShipmentState();
+//                shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
                 break;
             case REQUEST_CODE_COD:
                 shipmentPresenter.proceedCodCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());

@@ -15,11 +15,8 @@ class CreateTicketDialog(activity: Activity, page: Page): UnifyDialog(activity, 
         setSecondary(activity.getString(R.string.create_ticket_dialog_cancel_action))
     }
 
-    companion object {
-
-        enum class Page {
-            PAGE_ATC, PAGE_CHECKOUT
-        }
+    enum class Page {
+        PAGE_ATC, PAGE_CHECKOUT
     }
 
 }
