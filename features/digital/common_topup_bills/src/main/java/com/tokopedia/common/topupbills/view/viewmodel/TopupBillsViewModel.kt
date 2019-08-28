@@ -2,6 +2,8 @@ package com.tokopedia.common.topupbills.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -23,6 +25,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     : BaseViewModel(dispatcher) {
 
     val enquiryData = MutableLiveData<Result<TelcoEnquiryData>>()
+    val menuDetailData = MutableLiveData<Result<TelcoCatalogMenuDetail>>()
 
     fun getEnquiry(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {
@@ -37,18 +40,35 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
+    fun getMenuDetail(rawQuery: String, mapParam: Map<String, Any>) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, TelcoCatalogMenuDetailData::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<TelcoCatalogMenuDetailData>()
+
+            menuDetailData.value = Success(data.catalogMenuDetailData)
+        }) {
+            menuDetailData.value = Fail(it)
+        }
+    }
+
     fun createEnquiryParams(clientNumber: String, productId: String): Map<String, Any> {
         val params: MutableMap<String, Any> = mutableMapOf()
         params.put(PARAM_CLIENT_NUMBER, clientNumber)
         params.put(PARAM_PRODUCT_ID, productId)
-//        params.put(PARAM_CLIENT_NUMBER, 10)
-//        params.put(PARAM_PRODUCT_ID, "472")
         return params
+    }
+
+    fun createMenuDetailParams(menuId: String): Map<String, Any> {
+        return mapOf(PARAM_MENU_ID to menuId)
     }
 
     companion object {
         const val PARAM_CLIENT_NUMBER = "clientNumber"
         const val PARAM_PRODUCT_ID = "productId"
+
+        const val PARAM_MENU_ID = "menuId"
     }
 
 }

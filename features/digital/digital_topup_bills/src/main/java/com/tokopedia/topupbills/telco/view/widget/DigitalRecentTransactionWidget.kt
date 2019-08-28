@@ -9,9 +9,7 @@ import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.telco.view.adapter.DigitalRecentNumbersAdapter
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.TelcoRecommendation
-import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
-import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
+import com.tokopedia.common.topupbills.data.TelcoRecommendation
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackRecentTransactionTelco
 import org.jetbrains.annotations.NotNull
 

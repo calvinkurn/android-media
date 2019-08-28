@@ -2,8 +2,8 @@ package com.tokopedia.topupbills.common
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
-import com.tokopedia.topupbills.telco.data.TelcoPromo
-import com.tokopedia.topupbills.telco.data.TelcoRecommendation
+import com.tokopedia.common.topupbills.data.TelcoPromo
+import com.tokopedia.common.topupbills.data.TelcoRecommendation
 import com.tokopedia.topupbills.telco.data.constant.TelcoCategoryType
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentName
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackProductTelco

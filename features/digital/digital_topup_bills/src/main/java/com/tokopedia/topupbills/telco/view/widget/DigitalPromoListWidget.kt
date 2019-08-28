@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.TelcoPromo
+import com.tokopedia.common.topupbills.data.TelcoPromo
 import com.tokopedia.topupbills.telco.view.adapter.DigitalPromoListAdapter
 import com.tokopedia.topupbills.telco.view.model.DigitalTrackPromoTelco
 import org.jetbrains.annotations.NotNull

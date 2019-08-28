@@ -1,4 +1,4 @@
-package com.tokopedia.topupbills.telco.data
+package com.tokopedia.common.topupbills.data
 
 import android.os.Parcel
 import android.os.Parcelable

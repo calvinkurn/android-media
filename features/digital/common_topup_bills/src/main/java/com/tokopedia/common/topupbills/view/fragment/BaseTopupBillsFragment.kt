@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
@@ -41,9 +42,19 @@ abstract class BaseTopupBillsFragment<T: Visitable<*>, F: AdapterTypeFactory>: B
                 }
             }
         })
+        topupBillsViewModel.menuDetailData.observe(this, Observer {
+            it.run {
+                when (it) {
+                    is Success -> processMenuDetail(it.data)
+                    is Fail -> showGetListError(it.throwable)
+                }
+            }
+        })
     }
 
     abstract fun processEnquiry(data: TelcoEnquiryData)
+
+    abstract fun processMenuDetail(data: TelcoCatalogMenuDetail)
 
     fun processToCart() {
         if (userSession.isLoggedIn) {

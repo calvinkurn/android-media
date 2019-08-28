@@ -2,7 +2,6 @@ package com.tokopedia.topupbills.telco.view.adapter
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.topupbills.R
-import com.tokopedia.topupbills.telco.data.TelcoRecommendation
+import com.tokopedia.common.topupbills.data.TelcoRecommendation
 
 /**
  * Created by nabillasabbaha on 23/04/19.

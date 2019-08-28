@@ -12,7 +12,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.getColorFromResources
-import com.tokopedia.topupbills.telco.data.TelcoPromo
+import com.tokopedia.common.topupbills.data.TelcoPromo
 
 /**
  * Created by nabillasabbaha on 23/04/19.

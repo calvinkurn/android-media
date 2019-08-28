@@ -2,7 +2,7 @@ package com.tokopedia.topupbills.telco.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.topupbills.telco.data.TelcoRecommendation
+import com.tokopedia.common.topupbills.data.TelcoRecommendation
 
 class DigitalTrackRecentTransactionTelco constructor(
         val itemRecent: TelcoRecommendation,

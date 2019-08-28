@@ -2,8 +2,8 @@ package com.tokopedia.topupbills.telco.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.topupbills.telco.data.TelcoPromo
-import com.tokopedia.topupbills.telco.data.TelcoRecommendation
+import com.tokopedia.common.topupbills.data.TelcoPromo
+import com.tokopedia.common.topupbills.data.TelcoRecommendation
 
 class DigitalTrackPromoTelco constructor(
         val promoItem: TelcoPromo,
