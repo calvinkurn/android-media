@@ -334,8 +334,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
 
         // Disable continue button if fields is not empty
         // TODO: Check enquiry result before processing to cart
-
-        checkout_view.setBuyButtonState(false)
     }
 
     override fun onClickNextBuyButton() {
@@ -364,9 +362,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                 checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
             }
             checkoutPassData = checkoutPassDataBuilder.build()
-        }
 
-        processToCart()
+            processToCart()
+        }
     }
 
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {

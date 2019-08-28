@@ -41,16 +41,15 @@
         app:typographyType="body_2"
         android:textColor="@color/tkpd_main_orange"/>
 
-    <Button
+    <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/next_btn"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignTop="@+id/title"
         android:layout_alignBottom="@+id/total_price"
-        style="@style/Button"
         android:layout_marginRight="@dimen/dp_15"
-        android:textColor="@color/white"
-        android:background="@drawable/digital_bg_orange_rounded"
         android:layout_alignParentRight="true"
-        android:text="Lanjut"/>
+        android:text="Lanjut"
+        app:buttonCompatType="transaction" />
 
 </RelativeLayout>
