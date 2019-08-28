@@ -94,7 +94,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
-    public static final long FORCE_TIMEOUT = 500L;
+    public static final long FORCE_TIMEOUT = 90000L;
 
     @Inject
     TopPayPresenter presenter;
@@ -229,9 +229,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.title_loading));
         tvTitle.setText(getString(R.string.toppay_title));
-        tvTitle.setOnClickListener(v -> {
-            presenter.proccessUriPayment();
-        });
     }
 
     private void setupURIPass(Uri data) {
@@ -577,9 +574,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                                     if (!isUnsubscribed()) {
                                         showErrorTimeout(view);
                                     }
-//                                    if (timeout) {
-//                                        showErrorTimeout(view);
-//                                    }
                                 }
                             })
             );
