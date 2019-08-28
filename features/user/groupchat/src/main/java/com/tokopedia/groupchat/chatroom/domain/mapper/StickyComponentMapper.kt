@@ -32,67 +32,24 @@ class StickyComponentMapper @Inject constructor() : Func1<Response<DataResponse<
         }
     }
 
-    public fun mapToViewModel(pojo: StickyComponentPojo): StickyComponentsViewModel {
-//        return StickyComponentViewModel(
-//                pojo.stickyComponent.componentId,
-//                pojo.stickyComponent.componentType,
-//                pojo.stickyComponent.imageUrl,
-//                pojo.stickyComponent.primaryText,
-//                pojo.stickyComponent.secondaryText,
-//                pojo.stickyComponent.linkUrl,
-//                pojo.stickyComponent.stickyTime,
-//                pojo.stickyComponent.relatedButton
-//        )
-//        for(i in 0 .. pojo.stickyComponents.size) {
-//            val stickyComp = pojo.stickyComponents[i]
-//            StickyComponentViewModel(
-//                stickyComp.componentId,
-//                stickyComp.componentType,
-//                stickyComp.imageUrl,
-//                stickyComp.primaryText,
-//                stickyComp.secondaryText,
-//                stickyComp.linkUrl,
-//                stickyComp.stickyTime,
-//                stickyComp.relatedButton)
-//        }
-        val model = StickyComponentViewModel(
-                pojo.stickyComponent.componentId,
-                pojo.stickyComponent.componentType,
-                pojo.stickyComponent.imageUrl,
-                pojo.stickyComponent.primaryText,
-                pojo.stickyComponent.secondaryText,
-                pojo.stickyComponent.linkUrl,
-                pojo.stickyComponent.stickyTime,
-                pojo.stickyComponent.relatedButton,
-                pojo.stickyComponent.attributeData.toString())
+    fun mapToViewModel(pojo: StickyComponentPojo): StickyComponentsViewModel {
 
-        return StickyComponentsViewModel(listOf(model))
-    }
+        val list = arrayListOf<StickyComponentViewModel>()
+        for (i in 0 until pojo.stickyComponents.size) {
+            val stickyComp = pojo.stickyComponents[i]
+            val model = StickyComponentViewModel(
+                    stickyComp.componentId,
+                    stickyComp.componentType,
+                    stickyComp.imageUrl,
+                    stickyComp.primaryText,
+                    stickyComp.secondaryText,
+                    stickyComp.linkUrl,
+                    stickyComp.stickyTime,
+                    stickyComp.relatedButton,
+                    stickyComp.attributeData.toString())
+            list.add(model)
+        }
 
-
-    public fun mapToViewModel(pojo: StickyComponentData): StickyComponentsViewModel {
-//        return StickyComponentViewModel(
-//                pojo.componentId,
-//                pojo.componentType,
-//                pojo.imageUrl,
-//                pojo.primaryText,
-//                pojo.secondaryText,
-//                pojo.linkUrl,
-//                pojo.stickyTime,
-//                pojo.relatedButton
-//        )
-
-        val model = StickyComponentViewModel(
-                pojo.componentId,
-                pojo.componentType,
-                pojo.imageUrl,
-                pojo.primaryText,
-                pojo.secondaryText,
-                pojo.linkUrl,
-                pojo.stickyTime,
-                pojo.relatedButton,
-                pojo.attributeData.toString())
-
-        return StickyComponentsViewModel(listOf(model))
+        return StickyComponentsViewModel(list)
     }
 }

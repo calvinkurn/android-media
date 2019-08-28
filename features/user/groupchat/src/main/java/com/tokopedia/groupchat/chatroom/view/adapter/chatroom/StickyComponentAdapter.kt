@@ -101,12 +101,10 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
             when (stickyComponentViewModel.componentType.toLowerCase()) {
                 StickyComponentViewModel.TYPE_PRODUCT -> {
                     atcStickyPlay.setOnClickListener {
-                        var attribute = Gson().fromJson(
+                        val attribute = Gson().fromJson(
                                 stickyComponentViewModel.attributeData,
                                 AttributeStickyComponentData::class.java
                         )
-
-                        attribute = AttributeStickyComponentData("3987128", "533466369", 1, "Meraih Mimpi")
 
                         eventGoToAtc.invoke(attribute)
                     }

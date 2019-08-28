@@ -46,7 +46,6 @@ class StickyComponentData (
         var relatedButton: Int = 0,
         @SerializedName("attribute_data")
         @Expose
-//        var attributeData: AttributeStickyComponentData = AttributeStickyComponentData()
         var attributeData: JsonObject? = null
 ){
         constructor() : this("")
