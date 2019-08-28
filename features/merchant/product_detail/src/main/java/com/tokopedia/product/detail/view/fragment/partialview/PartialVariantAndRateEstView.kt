@@ -98,7 +98,7 @@ class PartialVariantAndRateEstView private constructor(private val view: View) {
 
     fun renderPurchaseProtectionData(productInfo: ProductPurchaseProtectionInfo) {
         with(view) {
-            if (productInfo.ppItemDetailPage?.isProtectionAvailable!!) {
+            if (productInfo.ppItemDetailPage?.isProtectionAvailable == true) {
                 purchase_protection_divider.gone()
                 icon_purchase_protection.visible()
                 txt_purchase_protection_title.visible()

@@ -1267,16 +1267,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun gotoRateEstimation() {
-        if (productInfo == null && shopInfo == null) return
-        activity?.let {
-            startActivity(RatesEstimationDetailActivity.createIntent(
-                    it,
-                    shopInfo!!.shopCore.domain,
-                    productInfo!!.basic.weight,
-                    productInfo!!.basic.weightUnit,
-                    if (productInfoViewModel.multiOrigin.isFulfillment)
-                        productInfoViewModel.multiOrigin.origin else null
-            ))
+        productInfo?.let{ productInfo ->
+            shopInfo?.let{ shopInfo ->
+                context?.let{ context ->
+                    startActivity(RatesEstimationDetailActivity.createIntent(
+                            context,
+                            shopInfo.shopCore.domain,
+                            productInfo.basic.weight,
+                            productInfo.basic.weightUnit,
+                            if (productInfoViewModel.multiOrigin.isFulfillment)
+                                productInfoViewModel.multiOrigin.origin else null
+                    ))
+                }
+            }
         }
     }
 
