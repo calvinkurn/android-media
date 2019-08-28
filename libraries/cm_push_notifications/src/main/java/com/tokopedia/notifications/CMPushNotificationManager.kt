@@ -144,7 +144,7 @@ class CMPushNotificationManager : CoroutineScope {
             if (isFromCMNotificationPlatform(remoteMessage.data)) {
                 val confirmationValue = remoteMessage.data[CMConstant.PayloadKeys.SOURCE]
                 val bundle = convertMapToBundle(remoteMessage.data)
-                if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) || isInAppEnable) {
+                if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) && isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else {
                     launchCatchError(
