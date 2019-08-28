@@ -40,9 +40,9 @@ class ConfirmationProductAdapter(private var data: List<ConfirmationProductData>
                 txtProductEtalase.visibility = View.GONE
             }
 
-            if (data.productStock != 0) {
+            if (data.statusStock != 0) {
                 txtProductStock.visibility = View.VISIBLE
-                txtProductStock.text = data.productStock.toString()
+                txtProductStock.text = if (data.statusStock == 1) "Stock Tersedia" else "Stock Kosong"
             } else {
                 txtProductStock.visibility = View.GONE
             }

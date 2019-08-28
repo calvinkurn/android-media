@@ -41,7 +41,8 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
 
     void getPopupsInfo(String productId);
 
-    ArrayList<ConfirmationProductData> mapToBulkUpdateParam(boolean isActionDelete, BulkBottomSheetType.StockType stockType, BulkBottomSheetType.EtalaseType etalaseType, List<ProductManageViewModel>  productManageViewModels);
+    ArrayList<ConfirmationProductData> mapToProductConfirmationData(boolean isActionDelete, BulkBottomSheetType.StockType stockType, BulkBottomSheetType.EtalaseType etalaseType, List<ProductManageViewModel>  productManageViewModels);
 
     Pair<List<ProductUpdateV3Response>, List<ProductUpdateV3Response>> getBulkUpdateSuccessAndFailedList(List<ProductUpdateV3Response> listOfResponse);
+
 }

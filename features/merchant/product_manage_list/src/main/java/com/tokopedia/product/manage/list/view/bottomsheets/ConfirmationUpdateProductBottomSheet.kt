@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.product.manage.list.R
@@ -17,13 +18,14 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
     private var model = ArrayList<ConfirmationProductData>()
     private var listener: EditProductBottomSheet.EditProductInterface? = null
     lateinit var btnCancel: Button
-    lateinit var btnConfirmation: Button
+    private lateinit var btnConfirmation: Button
+    lateinit var btnClose: ImageView
+
     private val confirmationAdapter by lazy {
         ConfirmationProductAdapter(model)
     }
 
     companion object {
-
         const val CONFIRMATION_DATA_PARAM = "confirmation_data"
 
         @JvmStatic
@@ -59,9 +61,13 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
     override fun getTheme(): Int = R.style.BaseBottomSheetDialog
 
 
-    override fun configView(parentView: View?) {
+    override fun configView(parentView: View) {
         getArgument()
         super.configView(parentView)
+        btnClose = parentView.findViewById(R.id.btn_close_confirmation)
+        btnClose.setOnClickListener {
+            dismiss()
+        }
     }
 
     override fun initView(view: View) {

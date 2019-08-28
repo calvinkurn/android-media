@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 data class Data(
         @SerializedName("condition")
         val condition: Int = 0,
-        @SerializedName("flags")
+        @SerializedName("flag")
         val flags: Flags = Flags(),
         @SerializedName("cashback")
         @Expose

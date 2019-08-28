@@ -70,8 +70,7 @@ import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProdu
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity;
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
-import com.tokopedia.product.manage.item.stock.view.activity.ProductEditStockActivity;
-import com.tokopedia.product.manage.item.stock.view.model.ProductStock;
+import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity;
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.list.constant.CashbackOption;
@@ -364,7 +363,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         productManageFilterModel = new ProductManageFilterModel();
         productManageFilterModel.reset();
         super.onViewCreated(view, savedInstanceState);
-//        getRecyclerView(view).addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         searchInputView.clearFocus();
         initView(view);
         setupBottomSheet();
@@ -394,11 +392,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
             bulkCountTxt.setVisibility(View.VISIBLE);
             checkBoxView.setVisibility(View.VISIBLE);
             bulkCountTxt.setText(getString(R.string.product_manage_bulk_count, String.valueOf(adapter.getTotalChecked())));
+            bottomActionView.setVisibility(View.GONE);
 
         } else {
             containerBtnBulk.setVisibility(View.GONE);
             checkBoxView.setVisibility(View.GONE);
             bulkCountTxt.setVisibility(View.GONE);
+            bottomActionView.setVisibility(View.VISIBLE);
+
         }
 
         btnBulk.setOnClickListener(v -> {
@@ -521,7 +522,8 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         } else {
             ToasterNormal.show(getActivity(), getString(R.string.product_manage_bulk_snackbar_sucess, String.valueOf(successData.size())));
         }
-
+        stockType = new BulkBottomSheetType.StockType();
+        etalaseType = new BulkBottomSheetType.EtalaseType();
         adapter.resetCheckedItemSet();
         renderCheckedView();
         loadInitialData();
@@ -563,9 +565,14 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
                 break;
             case STOCK_EDIT_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    ProductStock productStock = intent.getParcelableExtra(EXTRA_STOCK);
-                    stockType.setStockStatus(productStock.getStockInteger());
-                    stockType.setTotalStock(productStock.getStockCount());
+                    boolean isActive = intent.getBooleanExtra(EXTRA_STOCK, false);
+                    int productStock;
+                    if (isActive) {
+                        productStock = 1;
+                    } else {
+                        productStock = 0;
+                    }
+                    stockType.setStockStatus(productStock);
                     editProductBottomSheet.setResultValue(null, stockType);
                 }
                 break;
@@ -1012,6 +1019,18 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         startActivity(intent);
     }
 
+    private boolean isDataListContainsVariant() {
+        boolean isContainVariant = false;
+        for (ProductManageViewModel data : adapter.getCheckedDataList()) {
+            if (data.isProductVariant()) {
+                isContainVariant = true;
+                break;
+            }
+
+        }
+        return isContainVariant;
+    }
+
     @Override
     public void onBottomSheetButtonClicked() {
         if (isIdlePowerMerchant()) {
@@ -1032,7 +1051,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     public void goToConfirmationBottomSheet(boolean isActionDelete) {
         List<ProductManageViewModel> listChecked = adapter.getCheckedDataList();
         confirmationProductDataList.clear();
-        confirmationProductDataList = productManagePresenter.mapToBulkUpdateParam(isActionDelete, stockType, etalaseType, listChecked);
+        confirmationProductDataList = productManagePresenter.mapToProductConfirmationData(isActionDelete, stockType, etalaseType, listChecked);
         ConfirmationUpdateProductBottomSheet confirmationUpdateProductBottomSheet = ConfirmationUpdateProductBottomSheet.newInstance(confirmationProductDataList);
         confirmationUpdateProductBottomSheet.setListener(this);
         confirmationUpdateProductBottomSheet.show(getFragmentManager(), "bs_update_product");
@@ -1046,8 +1065,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
     @Override
     public void goToEditStock() {
-        startActivityForResult(ProductEditStockActivity.Companion.createIntent(getActivity(), new ProductStock(),
-                false, false), STOCK_EDIT_REQUEST_CODE);
+        startActivityForResult(ProductBulkEditStockActivity.Companion.createIntent(getActivity()), STOCK_EDIT_REQUEST_CODE);
     }
 
     @Override

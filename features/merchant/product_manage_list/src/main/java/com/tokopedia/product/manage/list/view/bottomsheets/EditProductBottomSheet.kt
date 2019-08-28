@@ -22,11 +22,8 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
     }
 
     var rvBulk: RecyclerView? = null
-    var bulkData = listOf(
-            BulkBottomSheetType.EtalaseType(""),
-            BulkBottomSheetType.StockType(),
-            BulkBottomSheetType.DeleteType())
-    private val editAdapter = EditProductBottomSheetAdapter(bulkData, listener)
+
+    private val editAdapter = EditProductBottomSheetAdapter(listener)
     private var btnNext: Button? = null
 
     init {
@@ -41,6 +38,9 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
         btnNext?.setOnClickListener {
             listener.goToConfirmationBottomSheet(false)
         }
+
+        setInitialData(createDefaultObject())
+
     }
 
     fun setResultValue(etalaseValue: BulkBottomSheetType.EtalaseType?, stockValue: BulkBottomSheetType.StockType?) {
@@ -48,9 +48,20 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
         editAdapter.setDataResult(etalaseValue, stockValue)
     }
 
+    private fun setInitialData(initialData: List<BulkBottomSheetType>) {
+        editAdapter.loadInitialData(initialData)
+    }
+
+    private fun createDefaultObject(): List<BulkBottomSheetType> {
+        return arrayListOf(
+                BulkBottomSheetType.EtalaseType(),
+                BulkBottomSheetType.StockType(),
+                BulkBottomSheetType.DeleteType())
+    }
+
     fun clearAllData() {
         btnNext?.isEnabled = false
-        editAdapter.clearData()
+        editAdapter.clearData(createDefaultObject())
     }
 
 }

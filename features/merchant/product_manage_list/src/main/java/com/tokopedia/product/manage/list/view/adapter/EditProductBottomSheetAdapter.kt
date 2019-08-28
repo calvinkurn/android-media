@@ -10,10 +10,10 @@ import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.list.view.bottomsheets.EditProductBottomSheet
 
-class EditProductBottomSheetAdapter(private var data: List<BulkBottomSheetType>,
-                                    private val listener: EditProductBottomSheet.EditProductInterface)
+class EditProductBottomSheetAdapter(private val listener: EditProductBottomSheet.EditProductInterface)
     : RecyclerView.Adapter<EditProductBottomSheetAdapter.EditProductBottomSheetViewHolder>() {
 
+    private var data: List<BulkBottomSheetType> = listOf()
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): EditProductBottomSheetViewHolder {
         return EditProductBottomSheetViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_bs_edit, parent, false))
     }
@@ -24,10 +24,13 @@ class EditProductBottomSheetAdapter(private var data: List<BulkBottomSheetType>,
         holder.bind(data[position])
     }
 
-    fun clearData() {
-        data = listOf(BulkBottomSheetType.EtalaseType(""),
-                BulkBottomSheetType.StockType(),
-                BulkBottomSheetType.DeleteType())
+    fun loadInitialData(listData: List<BulkBottomSheetType>) {
+        data = listData
+        notifyDataSetChanged()
+    }
+
+    fun clearData(listOfDefaultObject: List<BulkBottomSheetType>) {
+        data = listOfDefaultObject
         notifyDataSetChanged()
     }
 
@@ -36,7 +39,7 @@ class EditProductBottomSheetAdapter(private var data: List<BulkBottomSheetType>,
             data.getOrNull(0)?.editValue = etalaseValue.etalaseValue
             (data.getOrNull(0) as BulkBottomSheetType.EtalaseType).etalaseId = etalaseValue.etalaseId
         } else if (stockValue != null) {
-            data.getOrNull(1)?.editValue = stockValue.getStatusStock()
+            data.getOrNull(1)?.editValue = stockValue.getStockStatusProductView()
         }
         notifyDataSetChanged()
     }

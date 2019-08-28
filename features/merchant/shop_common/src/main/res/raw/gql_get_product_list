@@ -31,12 +31,12 @@ query GetProductList($shopId:String!,$filter:ProductListFilter!){
         text_idr
         identifier
       }
-      flags{
-        isFeatured
-        isPreorder
-        isFreereturn
-        isVariant
-        withStock
+      flag{
+        is_variant
+        is_featured
+        is_preorder
+        with_stock
+        is_freereturn
       }
       primary_image{
         original

@@ -10,10 +10,6 @@ data class ProductUpdateV3Param(
         @Expose
         var productId: String = "",
 
-        @SerializedName("stock")
-        @Expose
-        var productStock: Int = 0,
-
         @SerializedName("status")
         @Expose
         var productStatus: String = "",
@@ -28,14 +24,12 @@ data class ProductUpdateV3Param(
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
-            parcel.readInt(),
             parcel.readString() ?: "",
             parcel.readParcelable(ProductEtalase::class.java.classLoader) ?: ProductEtalase(),
             parcel.readParcelable(ShopParam::class.java.classLoader) ?: ShopParam())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(productId)
-        parcel.writeInt(productStock)
         parcel.writeString(productStatus)
         parcel.writeParcelable(productEtalase, flags)
         parcel.writeParcelable(shop, flags)

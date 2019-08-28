@@ -240,7 +240,6 @@ class ProductManagePresenterImpl @Inject constructor(
         }
     }
 
-
     private fun generateEtalaseIdFilter(etalaseId: Int): String {
         return when (etalaseId) {
             ProductManageConstant.FILTER_ALL_PRODUK -> ProductManageConstant.FILTER_ALL_PRODUK_VALUE
@@ -263,16 +262,15 @@ class ProductManagePresenterImpl @Inject constructor(
             response.productEtalase.etalaseId = it.productEtalaseId.toString()
             response.productEtalase.etalaseName = it.productEtalaseName
             response.productId = it.productId
-            response.productStatus = it.getStatusProduct()
-            response.productStock = it.productStock
+            response.productStatus = it.getStatusProductParam()
             response.shop.shopId = userSessionInterface.shopId
             response
         })
         return listParam
     }
 
-    override fun mapToBulkUpdateParam(isActionDelete: Boolean, stockType: BulkBottomSheetType.StockType, etalaseType: BulkBottomSheetType.EtalaseType,
-                                      listOfProduct: List<ProductManageViewModel>): ArrayList<ConfirmationProductData> {
+    override fun mapToProductConfirmationData(isActionDelete: Boolean, stockType: BulkBottomSheetType.StockType, etalaseType: BulkBottomSheetType.EtalaseType,
+                                              listOfProduct: List<ProductManageViewModel>): ArrayList<ConfirmationProductData> {
 
         val confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
         listOfProduct.forEach {
@@ -282,12 +280,12 @@ class ProductManagePresenterImpl @Inject constructor(
             confirmationProductData.productImgUrl = it.imageUrl
             confirmationProductData.productEtalaseId = etalaseType.etalaseId
             confirmationProductData.productEtalaseName = etalaseType.etalaseValue
-            confirmationProductData.productStock = stockType.totalStock
             if (isActionDelete) {
                 confirmationProductData.statusStock = STOCK_DELETED
             } else {
                 confirmationProductData.statusStock = stockType.stockStatus
             }
+            confirmationProductData.isVariant = it.isProductVariant
             confirmationProductDataList.add(confirmationProductData)
         }
         return confirmationProductDataList
