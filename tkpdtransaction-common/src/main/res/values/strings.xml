@@ -23,4 +23,12 @@
     <string name="tkpdtransaction_common_enter_reason">Masukan alasan anda</string>
     <string name="ajukan">Ajukan</string>
     <string name="please_chose_one">Mohon Pilih Salah Satu</string>
+    <string name="create_ticket_dialog_atc_title">Barang belum bisa dimasukkan ke keranjang</string>
+    <string name="create_ticket_dialog_checkout_title">Maaf, kamu belum bisa pilih pembayaran</string>
+    <string name="create_ticket_dialog_cancel_action">Batal</string>
+    <string name="create_ticket_dialog_do_action">Laporkan</string>
+    <string name="success_ticket_dialog_title">Terima kasih sudah lapor!</string>
+    <string name="success_ticket_dialog_description">Kami akan segera menghubungimu via e-mail dan memperbaiki gangguan ini.</string>
+    <string name="success_ticket_dialog_atc_action">Oke!</string>
+    <string name="success_ticket_dialog_checkout_action">Kembali ke Keranjang</string>
 </resources>

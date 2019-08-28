@@ -62,6 +62,8 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
 import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
+import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DESC
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -523,7 +525,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 }
                 return@setOnClickListener
             }
-            doCheckoutAction(action)
+//            doCheckoutAction(action)
+            onFinishError("error desc")
         }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
@@ -628,6 +631,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 }
             })
             sendBranchAddToCardEvent()
+            finish()
+        }
+    }
+
+    fun onFinishError(errorDesc: String) {
+        activity?.run {
+            setResult(RESULT_CODE_ERROR_TICKET, Intent().apply {
+                putExtra(RESULT_TICKET_DESC, errorDesc)
+            })
             finish()
         }
     }

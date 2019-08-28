@@ -124,6 +124,10 @@ import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
+import com.tokopedia.transaction.common.dialog.CreateTicketDialog
+import com.tokopedia.transaction.common.dialog.CreateTicketDialog.Companion.Page
+import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DESC
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 import com.tokopedia.unifycomponents.Toaster
@@ -1075,7 +1079,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
+                if (resultCode == RESULT_CODE_ERROR_TICKET && data != null) {
+                    activity?.also {
+                        val createTicketDialog = CreateTicketDialog(it, Page.PAGE_ATC)
+                        createTicketDialog.setSecondaryOnClickListener(View.OnClickListener {
+                            createTicketDialog.dismiss()
+                        })
+                        createTicketDialog.setOkOnClickListener(View.OnClickListener {
+
+                        })
+                        createTicketDialog.setDescription(data.getStringExtra(RESULT_TICKET_DESC))
+                        createTicketDialog.show()
+                    }
+                } else if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
                         //refresh product by selected variant/product
                         val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
