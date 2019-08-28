@@ -148,7 +148,6 @@
                     android:textSize="@dimen/sp_10"
                     android:textStyle="normal"
                     android:visibility="visible"
-                    app:typographyType="body_2"
                     tools:ignore="RtlSymmetry"
                     tools:visibility="visible" />
 
@@ -177,7 +176,6 @@
                     android:textSize="@dimen/sp_10"
                     android:textStyle="normal"
                     android:visibility="visible"
-                    app:typographyType="body_2"
                     tools:ignore="RtlSymmetry"
                     tools:visibility="visible" />
             </LinearLayout>
