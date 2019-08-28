@@ -1,6 +1,8 @@
 package com.tokopedia.common.topupbills.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
+import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
@@ -50,6 +52,15 @@ abstract class BaseTopupBillsFragment<T: Visitable<*>, F: AdapterTypeFactory>: B
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_LOGIN) {
+                processToCart()
+            }
+        }
     }
 
     abstract fun processEnquiry(data: TelcoEnquiryData)
