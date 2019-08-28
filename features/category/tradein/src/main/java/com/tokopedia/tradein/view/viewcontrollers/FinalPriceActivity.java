@@ -112,7 +112,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         viewsTradeIn.add(divider2);
         viewsTradeIn.add(space);
 
-        if (TRADEIN_TYPE != 2) {
+        if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
             viewsTradeIn.add(mTvModelNew);
             viewsTradeIn.add(mTvPriceNew);
             viewsTradeIn.add(tvexchange);
@@ -124,7 +124,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (TRADEIN_TYPE == 2) {
+        if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             checkoutString = R.string.sell_now;
             hargeTncString = R.string.harga_tnc_moneyin;
             tncStringId = R.string.money_in_tnc;
@@ -200,7 +200,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private void renderDetails(DeviceDataResponse deviceDataResponse) {
         TradeInParams tradeInData = viewModel.getTradeInParams();
         tvTitle.setText(String.format(getString(R.string.price_elligible), getString(tradeInStringId)));
-        if (tradeInData != null && TRADEIN_TYPE != 2) {
+        if (tradeInData != null && TRADEIN_TYPE != TRADEIN_MONEYIN) {
             mTvModelNew.setText(tradeInData.getProductName());
             mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getNewPrice(), true));
         }
@@ -279,7 +279,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     }
 
     private void goToCheckout() {
-        if (TRADEIN_TYPE == 2) {
+        if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             viewModel.getAddress();
         } else {
             setResult(Activity.RESULT_OK, new Intent(Constants.ACTION_GO_TO_SHIPMENT).putExtra(TradeInParams.PARAM_DEVICE_ID, deviceId));

@@ -285,7 +285,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     private fun onResultFromPayment(resultCode: Int) {
         when (resultCode) {
-            TopPayActivity.PAYMENT_SUCCESS -> {
+            TopPayActivity.PAYMENT_SUCCESS, Activity.RESULT_OK -> {
                 setResult(Activity.RESULT_OK, null)
                 finish()
             }

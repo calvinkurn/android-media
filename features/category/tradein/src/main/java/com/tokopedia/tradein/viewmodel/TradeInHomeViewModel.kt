@@ -37,7 +37,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
             TradeInParams()
     }
 
-    var tradeInType: Int = 1
+    var tradeInType: Int = 0
 
     fun processMessage(intent: Intent) {
         val result = intent.getStringExtra("test-result")
@@ -62,6 +62,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
             deviceDiagInput.deviceReview = diagnostics.reviewDetails
             deviceDiagInput.newPrice = tradeInParams.newPrice
             deviceDiagInput.oldPrice = diagnostics.tradeInPrice
+            deviceDiagInput.tradeInType = tradeInType
             variables["params"] = deviceDiagInput
             val gqlDeviceDiagInput = GraphqlUseCase()
             gqlDeviceDiagInput.clearRequest()
