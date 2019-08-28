@@ -138,14 +138,13 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     override fun onImageClick(post: PostKol, position: Int) {
         activity?.let { RouteManager.route(it, ApplinkConst.CONTENT_DETAIL, post.id.toString()) }
-        feedAnalytics.eventHashtagClickThumbnail(post.id.toString(), searchTag, position)
+        feedAnalytics.eventHashtagPageClickThumbnail(post.id.toString(), searchTag, position)
     }
 
     override fun onUserImageClick(post: PostKol) {
         /** uncomment this when the result of explore post could differentiate whether the creator is shop **/
         //activity?.let { RouteManager.route(it,
         // if (isShopPost)ApplinkConst.SHOP else ApplinkConst.PROFILE, post.userId.toString()) }
-
     }
 
     override fun onUserNameClick(post: PostKol) {

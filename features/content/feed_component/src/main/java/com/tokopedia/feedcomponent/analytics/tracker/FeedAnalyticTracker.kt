@@ -40,6 +40,7 @@ class FeedAnalyticTracker @Inject constructor() {
         const val CLICK_HASHTAG = "click hashtag"
         const val CLICK_READ_MORE = "click read more"
         const val CLICK_POST = "click post"
+        const val CLICK_AVATAR = "click avatar"
     }
 
     private object Screen {
@@ -95,6 +96,48 @@ class FeedAnalyticTracker @Inject constructor() {
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Row 23
+     *
+     * @param activityId - postId
+     * @param hashtag - hashtag name
+     * @param position - position of item in list
+     */
+    fun eventHashtagPageClickThumbnail(
+            activityId: String,
+            hashtag: String,
+            position: Int
+    ) {
+        trackEnhancedEcommerceEvent(
+                Event.PROMO_CLICK,
+                Category.CONTENT_HASHTAG,
+                Action.CLICK_POST,
+                activityId,
+                getPromoClickData(
+                        getPromotionsData(
+                                listOf(getPromotionData(activityId, Screen.HASHTAG_POST_LIST, hashtag, position))
+                        )
+                )
+        )
+    }
+
+    /**
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Row 24
+     *
+     * @param id - either shopId or userId
+     */
+    fun eventHashtagPageClickNameAvatar(id: String) {
+        trackGeneralEvent(
+            Event.CLICK_FEED,
+            Category.CONTENT_HASHTAG,
+            Action.CLICK_AVATAR,
+            id
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
      * Row 28 (self-profile)
      * Row 35 (other-profile)
      *
@@ -129,33 +172,6 @@ class FeedAnalyticTracker @Inject constructor() {
                 activityId,
                 activityName,
                 mediaType
-        )
-    }
-
-    /**
-     *
-     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Row 23
-     *
-     * @param activityId - postId
-     * @param hashtag - hashtag name
-     * @param position - position of item in list
-     */
-    fun eventHashtagClickThumbnail(
-            activityId: String,
-            hashtag: String,
-            position: Int
-    ) {
-        trackEnhancedEcommerceEvent(
-                Event.PROMO_CLICK,
-                Category.CONTENT_HASHTAG,
-                Action.CLICK_POST,
-                activityId,
-                getPromoClickData(
-                        getPromotionsData(
-                                listOf(getPromotionData(activityId, Screen.HASHTAG_POST_LIST, hashtag, position))
-                        )
-                )
         )
     }
 
