@@ -24,7 +24,7 @@
         android:id="@+id/quick_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:visibility="visible"
         android:layout_below="@id/search_input_view" />
 
@@ -35,7 +35,8 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_below="@id/quick_filter">
 
             <!--<include
                 android:id="@+id/empty_state_order_list"

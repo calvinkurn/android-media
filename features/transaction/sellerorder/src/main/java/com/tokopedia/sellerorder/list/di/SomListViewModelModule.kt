@@ -1,0 +1,28 @@
+package com.tokopedia.sellerorder.list.di
+
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
+
+/**
+ * Created by fwidjaja on 2019-08-28.
+ */
+
+@Module
+@SomListScope
+abstract class SomListViewModelModule {
+
+    @SomListScope
+    @Binds
+    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SomListViewModel::class)
+    internal abstract fun somListViewModel(viewModel: SomListViewModel): ViewModel
+}
