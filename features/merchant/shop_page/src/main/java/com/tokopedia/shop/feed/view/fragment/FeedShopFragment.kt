@@ -23,6 +23,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.util.FeedScrollListener
@@ -92,6 +93,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     @Inject
     lateinit var postTagAnalytics: PostTagAnalytics
+
+    @Inject
+    lateinit var feedAnalytics: FeedAnalyticTracker
 
     @Inject
     lateinit var shopAnalytics: ShopAnalytics
@@ -576,7 +580,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
-
+        feedAnalytics.eventShopPageClickReadMore(
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType
+        )
     }
 
     fun hideFAB() {

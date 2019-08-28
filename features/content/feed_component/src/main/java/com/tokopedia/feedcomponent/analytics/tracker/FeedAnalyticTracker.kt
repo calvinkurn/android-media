@@ -12,15 +12,22 @@ class FeedAnalyticTracker @Inject constructor() {
 
     private object Event {
         const val CLICK_FEED = "clickFeed"
+        const val CLICK_SOCIAL_COMMERCE = "clickSocialCommerce"
     }
 
     private object Category {
         const val CONTENT_FEED_TIMELINE = "content feed timeline"
         const val FEED_DETAIL_PAGE = "feed detail page"
+
+        const val MY_PROFILE_SOCIALCOMMERCE = "my profile socialcommerce"
+        const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
+
+        const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
     }
 
     private object Action {
         const val CLICK_HASHTAG = "click hashtag"
+        const val CLICK_READ_MORE = "click read more"
     }
 
     /**
@@ -33,11 +40,11 @@ class FeedAnalyticTracker @Inject constructor() {
      * @param mediaType - video or image
      * @param hashtag - the hashtag name
      */
-    fun eventTimelineClickHashtag(activityName: String, activityId: String, mediaType: String, hashtag: String) {
+    fun eventTimelineClickHashtag(activityId: String, activityName: String, mediaType: String, hashtag: String) {
         eventClickHashtag(
                 Category.CONTENT_FEED_TIMELINE,
-                activityName,
                 activityId,
+                activityName,
                 mediaType,
                 hashtag)
     }
@@ -52,19 +59,81 @@ class FeedAnalyticTracker @Inject constructor() {
      * @param mediaType - video or image
      * @param hashtag - the hashtag name
      */
-    fun eventDetailClickHashtag(activityName: String, activityId: String, mediaType: String, hashtag: String) {
+    fun eventDetailClickHashtag(activityId: String, activityName: String, mediaType: String, hashtag: String) {
         eventClickHashtag(
                 Category.FEED_DETAIL_PAGE,
-                activityName,
                 activityId,
+                activityName,
                 mediaType,
                 hashtag)
     }
 
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Row 28 (self-profile)
+     * Row 35 (other-profile)
+     *
+     * @param isOwner - `true` indicates opening self-profile, `false` indicates opening other-profile
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     */
+    fun eventProfileClickReadMore(isOwner: Boolean, activityId: String, activityName: String, mediaType: String) {
+        eventClickReadMore(
+                Event.CLICK_SOCIAL_COMMERCE,
+                if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
+                activityId,
+                activityName,
+                mediaType
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Row 29
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     */
+    fun eventShopPageClickReadMore(activityId: String, activityName: String, mediaType: String) {
+        eventClickReadMore(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_SHOP_PAGE,
+                activityId,
+                activityName,
+                mediaType
+        )
+    }
+
+
+    /**
+     * Base track click read more
+     */
+    private fun eventClickReadMore(
+            eventName: String,
+            eventCategory: String,
+            activityId: String,
+            activityName: String,
+            mediaType: String
+    ) {
+        trackGeneralEvent(
+                eventName = eventName,
+                eventCategory = eventCategory,
+                eventAction = "${Action.CLICK_READ_MORE} - $activityName - $mediaType",
+                eventLabel = activityId
+        )
+    }
+
+    /**
+     * Base track click hashtag
+     */
     private fun eventClickHashtag(
             eventCategory: String,
-            activityName: String,
             activityId: String,
+            activityName: String,
             mediaType: String,
             hashtag: String) {
         trackGeneralEvent(

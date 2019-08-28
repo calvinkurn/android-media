@@ -554,15 +554,6 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         )
     }
 
-    fun eventClickReadMore(isOwner: Boolean, activityId: String, activityName: String, mediaType: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                Event.EVENT_CLICK_SOCIAL_COMMERCE,
-                if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
-                "${Action.CLICK_READ_MORE} - $activityName - $mediaType",
-                activityId
-        )
-    }
-
     private fun getEventEcommerceView(screenName: String,
                                       category: String,
                                       action: String,

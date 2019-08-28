@@ -45,6 +45,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -166,6 +167,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     @Inject
     lateinit var profileAnalytics: ProfileAnalytics
+
+    @Inject
+    lateinit var feedAnalytics: FeedAnalyticTracker
 
     @Inject
     lateinit var postTagAnalytics: PostTagAnalytics
@@ -1033,7 +1037,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
-        profileAnalytics.eventClickReadMore(
+        feedAnalytics.eventProfileClickReadMore(
                 isOwner,
                 trackingPostModel.postId.toString(),
                 trackingPostModel.activityName,

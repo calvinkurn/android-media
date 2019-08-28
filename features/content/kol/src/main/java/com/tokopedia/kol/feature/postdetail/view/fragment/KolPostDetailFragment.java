@@ -976,8 +976,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onHashtagClicked(@NotNull String hashtagText, @NotNull TrackingPostModel trackingPostModel) {
         feedAnalytics.eventDetailClickHashtag(
-                trackingPostModel.getActivityName(),
                 String.valueOf(trackingPostModel.getPostId()),
+                trackingPostModel.getActivityName(),
                 trackingPostModel.getMediaType(),
                 hashtagText
         );
