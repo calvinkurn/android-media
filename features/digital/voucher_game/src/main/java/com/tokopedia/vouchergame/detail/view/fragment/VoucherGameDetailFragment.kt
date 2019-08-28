@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TelcoEnquiryMainInfo
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
@@ -24,6 +25,7 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARA
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
+import com.tokopedia.vouchergame.common.view.VoucherGameBaseActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameEnquiryFields
@@ -115,6 +117,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
 
     override fun processEnquiry(data: TelcoEnquiryData) {
         renderEnquiryResult(data.enquiry.attributes.mainInfoList)
+    }
+
+    override fun processMenuDetail(data: TelcoCatalogMenuDetail) {
+        (activity as VoucherGameBaseActivity).updateTitle(data.catalog.getOrNull(0)?.label)
     }
 
     private fun setupEnquiryFields(data: VoucherGameDetailData) {
@@ -339,10 +345,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     private fun processCheckout() {
         // Setup checkout pass data
         if (::voucherGameExtraParam.isInitialized && ::selectedProduct.isInitialized) {
-            checkoutPassData = DigitalCheckoutPassData.Builder()
+            var checkoutPassDataBuilder = DigitalCheckoutPassData.Builder()
                     .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                     .categoryId(voucherGameExtraParam.categoryId)
-//                .clientNumber(telcoClientNumberWidget.getInputNumber())
                     .instantCheckout("0")
                     .isPromo(if (selectedProduct.attributes.promo != null) "1" else "0")
                     .operatorId(voucherGameExtraParam.operatorId)
@@ -352,7 +357,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                     .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                     .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                     .voucherCodeCopied("")
-                    .build()
+            if (inputFieldCount in 1..2) {
+                checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
+            }
+            if (inputFieldCount == 2) {
+                checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
+            }
+            checkoutPassData = checkoutPassDataBuilder.build()
         }
 
         processToCart()
