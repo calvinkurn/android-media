@@ -552,18 +552,6 @@ public class SearchActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         unregisterShake();
-        hideBottomNavigationForProfileListFragment();
-    }
-
-    private void hideBottomNavigationForProfileListFragment() {
-        if (isPageInProfileTab()) {
-            hideBottomNavigation();
-        }
-    }
-
-    private boolean isPageInProfileTab() {
-        return searchSectionPagerAdapter != null
-                && searchSectionPagerAdapter.getPageTitle(viewPager.getCurrentItem()).equals(profileTabTitle);
     }
 
     @Override
@@ -628,7 +616,25 @@ public class SearchActivity extends BaseActivity
     public void onProductLoadingFinished() {
         showLoadingView(false);
         showContainer(true);
-        showBottomNavigation();
+        showBottomNavigationForActiveTab();
+    }
+
+    private void showBottomNavigationForActiveTab() {
+        if (isCurrentActiveTabIsNotProfile()) {
+            showBottomNavigation();
+        }
+    }
+
+    private boolean isCurrentActiveTabIsNotProfile() {
+        return !getCurrentActivePageTitle().equals(profileTabTitle);
+    }
+
+    private String getCurrentActivePageTitle() {
+        if (searchSectionPagerAdapter != null) {
+            return searchSectionPagerAdapter.getPageTitle(viewPager.getCurrentItem()).toString();
+        }
+
+        return "";
     }
 
     @Override
