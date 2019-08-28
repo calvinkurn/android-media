@@ -7,6 +7,9 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedplus.FeedPlusConstant.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
@@ -28,7 +31,11 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
     override var cursor: String = ""
 
     override fun getFeedFirstPage(isPullToRefresh: Boolean) {
-
+        getDynamicFeedUseCase.graphqlUseCase.setCacheStrategy(
+                GraphqlCacheStrategy.Builder(if (isPullToRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
+                .setSessionIncluded(true)
+                .build())
         getDynamicFeedUseCase.execute(
                 GetDynamicFeedUseCase.createRequestParams(getUserId(), cursor, GetDynamicFeedUseCase.SOURCE_TRENDING),
                 object : Subscriber<DynamicFeedDomainModel>() {
