@@ -2,6 +2,7 @@ package com.tokopedia.home.account.presentation.fragment
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
@@ -18,6 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.home.account.R
+import com.tokopedia.home.account.data.util.StaticBuyerModelGenerator
 import com.tokopedia.home.account.di.component.DaggerBuyerAccountComponent
 import com.tokopedia.home.account.presentation.BuyerAccount
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory
@@ -29,6 +31,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.trackingoptimizer.TrackingQueue
+
 import kotlinx.android.synthetic.main.fragment_buyer_account.*
 
 import javax.inject.Inject
@@ -37,16 +40,17 @@ import javax.inject.Inject
  * @author okasurya on 7/16/18.
  */
 class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentListener {
-    private var fpmBuyer: PerformanceMonitoring? = null
-
-    lateinit var trackingQueue: TrackingQueue
-    private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
-    private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
 
     @Inject
     lateinit var presenter: BuyerAccount.Presenter
 
+    private lateinit var trackingQueue: TrackingQueue
+    private val adapter:BuyerAccountAdapter = BuyerAccountAdapter(AccountTypeFactory(this), arrayListOf())
+    private var snackBar: Snackbar? = null
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
+    private var fpmBuyer: PerformanceMonitoring? = null
+    private var layoutManager: StaggeredGridLayoutManager = StaggeredGridLayoutManager(
+            DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,38 +101,30 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
             presenter.getBuyerData(GraphqlHelper.loadRawString(it.resources, R.raw
                     .query_buyer_account_home), saldoQuery)
         }
-
-        view?.let {
-            it.invalidate()
-            it.requestLayout()
-        }
     }
 
     override fun getScreenName(): String {
         return TAG
     }
 
-    override fun loadBuyerData(model: BuyerViewModel) {
-        if (model.items != null) {
-            adapter.run {
-                clearAllElements()
-                setElement(model.items)
+    override fun loadBuyerData(model: BuyerViewModel?) {
+        if (model != null) {
+            model.items?.let {
+                adapter.clearAllElements()
+                adapter.setElement(it)
+
+                snackBar?.dismiss()
+                snackBar = null
+            }
+        } else {
+            context?.let {
+                adapter.clearAllElements()
+                adapter.setElement(StaticBuyerModelGenerator.getModel(it, null))
             }
         }
-        fpmBuyer?.run {
-            stopTrace()
-        }
+
+        fpmBuyer?.run { stopTrace() }
         presenter.getFirstRecomData()
-    }
-
-    private fun initInjector() {
-        val component = DaggerBuyerAccountComponent.builder()
-                .baseAppComponent(
-                        (activity?.application as BaseMainApplication).baseAppComponent
-                ).build()
-
-        component.inject(this)
-        presenter.attachView(this)
     }
 
     override fun showLoading() {
@@ -145,9 +141,11 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun showError(message: String) {
         if (view != null && userVisibleHint) {
-            ToasterError.make(view, message)
-                    .setAction(getString(R.string.title_try_again)) { getData() }
-                    .show()
+            snackBar = ToasterError.make(view, message)
+            snackBar?.let {
+                it.setAction(getString(R.string.title_try_again)) { getData() }
+                it.show()
+            }
         }
 
         fpmBuyer?.run { stopTrace() }
@@ -155,9 +153,11 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun showError(e: Throwable) {
         if (view != null && context != null && userVisibleHint) {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(context, e))
-                    .setAction(getString(R.string.title_try_again)) { getData() }
-                    .show()
+            snackBar = ToasterError.make(view, ErrorHandler.getErrorMessage(context, e))
+            snackBar?.let {
+                it.setAction(getString(R.string.title_try_again)) { getData() }
+                it.show()
+            }
         }
 
         fpmBuyer?.run { stopTrace() }
@@ -213,14 +213,6 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
         }
     }
 
-    private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
-        return object : EndlessRecyclerViewScrollListener(layoutManager) {
-            override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                presenter.getRecomData(page)
-            }
-        }
-    }
-
     override fun hideLoadMoreLoading() {
         adapter.hideLoading()
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
@@ -250,6 +242,24 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
     override fun onPause() {
         super.onPause()
         trackingQueue.sendAll()
+    }
+
+    private fun initInjector() {
+        val component = DaggerBuyerAccountComponent.builder()
+                .baseAppComponent(
+                        (activity?.application as BaseMainApplication).baseAppComponent
+                ).build()
+
+        component.inject(this)
+        presenter.attachView(this)
+    }
+
+    private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
+        return object : EndlessRecyclerViewScrollListener(layoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                presenter.getRecomData(page)
+            }
+        }
     }
 
     fun updateWishlist(wishlistStatusFromPdp: Boolean, position: Int) {

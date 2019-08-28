@@ -14,7 +14,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -23,7 +22,6 @@ import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
-import com.tokopedia.home.account.presentation.listener.BaseAccountView;
 import com.tokopedia.home.account.presentation.util.AccountByMeHelper;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
@@ -34,7 +32,6 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.SellerSaldoViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
-import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -464,6 +461,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public void sendProductWishlistClickTracking(boolean wishlistStatus) {
         accountAnalytics.eventClickWishlistButton(wishlistStatus);
     }
+
     @Override
     public void onPowerMerchantSettingClicked(){
         sendTracking(
@@ -473,27 +471,4 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         );
         RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
     }
-
-//    @Override
-//    public void showError(String message) {
-//        if (getView() != null && getUserVisibleHint()) {
-//            ToasterError.make(getView(), message)
-//                    .setAction(getString(R.string.title_try_again), view -> getData())
-//                    .show();
-//        }
-//    }
-//
-//    @Override
-//    public void showError(Throwable e) {
-//        if (getView() != null && getContext() != null && getUserVisibleHint()) {
-//            ToasterError.make(getView(), ErrorHandler.getErrorMessage(getContext(), e))
-//                    .setAction(getString(R.string.title_try_again), view -> getData())
-//                    .show();
-//        }
-//    }
-//
-//    @Override
-//    public void showErrorNoConnection() {
-//        showError(getString(R.string.error_no_internet_connection));
-//    }
 }
