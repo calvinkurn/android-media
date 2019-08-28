@@ -68,6 +68,7 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -93,7 +94,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     public static final int PAYMENT_CANCELLED = 6;
     public static final int PAYMENT_FAILED = 7;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
-    public static final long FORCE_TIMEOUT = 90000L;
+    public static final long FORCE_TIMEOUT = 500L;
 
     @Inject
     TopPayPresenter presenter;
@@ -115,6 +116,9 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private RemoteConfig remoteConfig;
 
     private String mJsHciCallbackFuncName;
+
+    private CompositeSubscription compositeSubscription = new CompositeSubscription();
+    private Thread thread;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -176,7 +180,8 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private void setActionVar() {
-        presenter.proccessUriPayment();
+//        presenter.proccessUriPayment();
+        scroogeWebView.loadUrl("https://www.google.com");
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -226,6 +231,9 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage(getString(R.string.title_loading));
         tvTitle.setText(getString(R.string.toppay_title));
+        tvTitle.setOnClickListener(v -> {
+            presenter.proccessUriPayment();
+        });
     }
 
     private void setupURIPass(Uri data) {
@@ -306,21 +314,26 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
             callbackPaymentSucceed();
         } else {
             callbackPaymentCanceled();
+            Intent intent = new Intent();
+            intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
+            setResult(PAYMENT_CANCELLED, intent);
+            finish();
         }
     }
 
     @Override
     protected void onDestroy() {
+        compositeSubscription.unsubscribe();
         presenter.detachView();
         super.onDestroy();
     }
 
     public void callbackPaymentCanceled() {
         hideProgressLoading();
-        Intent intent = new Intent();
-        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
-        setResult(PAYMENT_CANCELLED, intent);
-        finish();
+//        Intent intent = new Intent();
+//        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
+//        setResult(PAYMENT_CANCELLED, intent);
+//        finish();
     }
 
     public void callbackPaymentSucceed() {
@@ -372,7 +385,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private class TopPayWebViewClient extends WebViewClient {
-        private boolean timeout = true;
+//        private boolean timeout = true;
 
         @SuppressWarnings("deprecation")
         @Override
@@ -493,7 +506,15 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
         @Override
         public void onPageFinished(WebView view, String url) {
-            timeout = false;
+//            timeout = false;
+            if (thread != null && thread.isAlive()) {
+                try {
+                    thread.interrupt();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            compositeSubscription.clear();
             if (progressBar != null) progressBar.setVisibility(View.GONE);
         }
 
@@ -528,7 +549,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         }
 
         private void timerThread(WebView view) {
-            new Thread(new Runnable() {
+            thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -536,40 +557,43 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    if (timeout) {
+//                    if (timeout) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 showErrorTimeout(view);
                             }
                         });
-                    }
+//                    }
                 }
-            }).start();
+            });
+            thread.start();
         }
 
         private void timerObservable(WebView view) {
-            Observable.timer(FORCE_TIMEOUT, TimeUnit.MILLISECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<Long>() {
-                        @Override
-                        public void onCompleted() {
+            compositeSubscription.add(
+                    Observable.timer(FORCE_TIMEOUT, TimeUnit.MILLISECONDS)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Subscriber<Long>() {
+                                @Override
+                                public void onCompleted() {
 
-                        }
+                                }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                        }
+                                @Override
+                                public void onError(Throwable e) {
+                                    e.printStackTrace();
+                                }
 
-                        @Override
-                        public void onNext(Long aLong) {
-                            if (timeout) {
-                                showErrorTimeout(view);
-                            }
-                        }
-                    });
+                                @Override
+                                public void onNext(Long aLong) {
+//                                    if (timeout) {
+                                        showErrorTimeout(view);
+//                                    }
+                                }
+                            })
+            );
         }
 
         private void showErrorTimeout(WebView view) {
