@@ -7,7 +7,7 @@ import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.catalog.ListC
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.catalog.SmallGridCatalogCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.catalogModel.CatalogItem
-import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.BaseProductTypeFactoryImpl
+import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CatalogCardListener
 
 class CatalogTypeFactoryImpl(val catalogCardListener: CatalogCardListener) : BaseProductTypeFactoryImpl(), CatalogTypeFactory {

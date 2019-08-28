@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory.BaseProductTypeFactory
+import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
 
 

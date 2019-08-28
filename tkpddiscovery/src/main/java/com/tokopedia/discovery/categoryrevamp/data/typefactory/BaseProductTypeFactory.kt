@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory
+package com.tokopedia.discovery.categoryrevamp.data.typefactory
 
 interface BaseProductTypeFactory {
 

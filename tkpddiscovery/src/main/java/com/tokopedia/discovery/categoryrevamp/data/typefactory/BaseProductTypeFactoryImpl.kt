@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory
+package com.tokopedia.discovery.categoryrevamp.data.typefactory
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 

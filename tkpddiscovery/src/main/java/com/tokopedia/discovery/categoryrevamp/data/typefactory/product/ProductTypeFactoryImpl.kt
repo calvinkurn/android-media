@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categoryrevamp.data.productModel.typefactory
+package com.tokopedia.discovery.categoryrevamp.data.typefactory.product
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -7,6 +7,7 @@ import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.ListP
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.SmallGridProductCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
+import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactoryImpl
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 
 class ProductTypeFactoryImpl(var productCardListener: ProductCardListener) : BaseProductTypeFactoryImpl(), ProductTypeFactory {
@@ -24,13 +25,13 @@ class ProductTypeFactoryImpl(var productCardListener: ProductCardListener) : Bas
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         if (type == ListProductCardViewHolder.LAYOUT) {
-            viewHolder = ListProductCardViewHolder(view,productCardListener)
+            viewHolder = ListProductCardViewHolder(view, productCardListener)
 
         } else if (type == BigGridProductCardViewHolder.LAYOUT) {
-            viewHolder = BigGridProductCardViewHolder(view,productCardListener)
+            viewHolder = BigGridProductCardViewHolder(view, productCardListener)
 
         } else if (type == SmallGridProductCardViewHolder.LAYOUT) {
-            viewHolder = SmallGridProductCardViewHolder(view,productCardListener)
+            viewHolder = SmallGridProductCardViewHolder(view, productCardListener)
 
         } else {
             viewHolder = super.createViewHolder(view, type)
