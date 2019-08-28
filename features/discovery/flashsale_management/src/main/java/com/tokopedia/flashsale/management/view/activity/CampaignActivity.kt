@@ -7,12 +7,13 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.di.CampaignComponent
-import com.tokopedia.flashsale.management.di.CampaignModule
 import com.tokopedia.flashsale.management.di.DaggerCampaignComponent
 import com.tokopedia.flashsale.management.view.fragment.MyCampaignFragment
 import com.tokopedia.flashsale.management.view.fragment.UpcomingCampaignFragment
@@ -26,6 +27,14 @@ class CampaignActivity : BaseTabActivity(), HasComponent<CampaignComponent> {
         }
 
         private const val LIMIT_PAGER = 2
+    }
+
+    object DeeplinkIntents {
+        @DeepLink(ApplinkConst.SellerApp.FLASHSALE_MANAGEMENT)
+        @JvmStatic
+        fun createDeeplinkIntent(context: Context, extras: Bundle): Intent {
+            return createIntent(context)
+        }
     }
 
     override fun getComponent(): CampaignComponent {

@@ -139,6 +139,7 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -192,11 +193,11 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.graphql)
-    implementation project(rootProject.ext.libraries.network)
-    implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.cpm)
-    implementation project(rootProject.ext.libraries.config)
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation rootProject.ext.libraries.unifyComponents
@@ -214,6 +215,13 @@ dependencies {
     implementation (rootProject.ext.debugToolsDependencies.timber){
         exclude group: 'org.jetbrains', module: 'annotations'
     }
+
+    androidTestImplementation(rootProject.ext.testDependencies.espressoContrib, {
+        exclude group: 'com.android.support', module: 'appcompat'
+        exclude group: 'com.android.support', module: 'support-v4'
+        exclude module: 'recyclerview-v7'
+    })
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
 }
 
 repositories {

@@ -3,7 +3,6 @@ package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -35,6 +34,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
@@ -82,6 +82,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     OrderListAnalytics orderListAnalytics;
     String fromPayment = null;
     String orderId;
+    RequestCancelInfo requestCancelInfo;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
@@ -211,10 +212,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public static final String SHOP_ID = "shop_id";
 
 
-    private JsonArray generateInputQueryBuyAgain(OrderDetails data) {
-        List<Items> orderDetailItemData = data.getItems();
+    private JsonArray generateInputQueryBuyAgain(List<Items> items) {
         JsonArray jsonArray = new JsonArray();
-        for (Items item : orderDetailItemData) {
+        for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
             int productId = 0;
@@ -224,7 +224,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             try {
                 productId = item.getId();
                 quantity = item.getQuantity();
-                shopId = data.getShopInfo().getShopId();
+                shopId = orderDetails.getShopInfo().getShopId();
                 notes = item.getDescription();
             } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
@@ -243,16 +243,21 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return actionButtonList;
     }
 
+    @Override
+    public void onBuyAgainAllItems() {
+        onBuyAgainItems(orderDetails.getItems());
+    }
+
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-    public void onBuyAgain(Resources resources) {
+    public void onBuyAgainItems(List<Items> items) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
+        variables.put(PARAM, generateInputQueryBuyAgain(items));
 
-        variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.buy_again), ResponseBuyAgain.class, variables, false);
 
         buyAgainUseCase = new GraphqlUseCase();
@@ -279,10 +284,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     getView().hideProgressBar();
                     ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
                     if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1);
                 }
 
             }
@@ -396,6 +402,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setActionButtons(details.actionButtons());
         }
         getView().setMainViewVisible(View.VISIBLE);
+        this.requestCancelInfo = details.getRequestCancelInfo();
     }
 
 
@@ -562,5 +569,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (!TextUtils.isEmpty(fileName)) {
             Insurance_File_Name = fileName;
         }
+    }
+
+    public String getCancelTime() {
+        return requestCancelInfo.getRequestCancelNote();
+    }
+
+    public boolean shouldShowTimeForCancellation(){
+        return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
+                && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
 }

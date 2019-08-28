@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateViewModel;
 import com.tokopedia.usecase.RequestParams;
+
 import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
@@ -28,15 +29,16 @@ public class SetAvailabilityTemplateUseCase extends UseCase<GetTemplateViewModel
     @Override
     public Observable<GetTemplateViewModel> createObservable(RequestParams requestParams) {
         JsonObject object = (JsonObject) requestParams.getParameters().get("json");
-        return templateRepository.setAvailabilityTemplate(object);
+        return templateRepository.setAvailabilityTemplate(object, requestParams.getBoolean("is_seller", false));
     }
 
-    public static RequestParams generateParam(JsonArray list, boolean isEnabled) {
+    public static RequestParams generateParam(JsonArray list, boolean isEnabled, boolean isSeller) {
         RequestParams requestParams = RequestParams.create();
         JsonObject object = new JsonObject();
         if(list!=null) {
             object.add("position", list);
         }
+        object.addProperty("is_seller", isSeller);
         object.addProperty("is_enable", isEnabled);
         requestParams.putObject("json", object);
         return requestParams;

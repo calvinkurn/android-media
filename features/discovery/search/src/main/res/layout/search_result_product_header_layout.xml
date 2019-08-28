@@ -3,18 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/tkpd_bg_color"
     android:orientation="vertical">
 
     <com.tokopedia.topads.sdk.widget.TopAdsBannerView
         android:id="@+id/ads_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-
-    <com.tokopedia.search.result.presentation.view.widget.GlobalNavWidget
-        android:id="@+id/globalNavWidget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <LinearLayout
         android:id="@+id/suggestion_container"
@@ -33,7 +27,6 @@
         android:id="@+id/quickFilterListView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         tools:orientation="horizontal"
         tools:layoutManager="android.support.v7.widget.GridLayoutManager"

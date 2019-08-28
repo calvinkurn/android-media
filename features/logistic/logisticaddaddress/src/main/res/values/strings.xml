@@ -89,6 +89,7 @@
     <string name="et_no_ponsel_hint">No Ponsel</string>
     <string name="et_detail_address_hint">Tulis No. Rumah, Blok, RT/RW</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
+    <string name="tv_detail_address_placeholder">Tulis No. Rumah, Blok, RT/RW, dll</string>
     <string name="detail_alamat">Detail Alamat</string>
     <string name="invalid_title">Oops, lokasimu tidak dikenal</string>
     <string name="invalid_desc">Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail alamat secara jelas.</string>
@@ -134,6 +135,8 @@
     <string name="validate_kode_pos_length">Kode Pos minimal 5 karakter</string>
     <string name="validate_alamat">Alamat harus diisi</string>
     <string name="validate_alamat_length">Alamat minimal 5 karakter</string>
+    <string name="disabled_location_notif_title">Lokasi Anda Belum Terisi</string>
+    <string name="disabled_location_notfi_desc">Yuk, tulis alamat secara manual atau aktifkan GPS di HPmu</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

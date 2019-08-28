@@ -27,7 +27,7 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_add_email.*
+import kotlinx.android.synthetic.main.fragment_add_email_setting_profile.*
 import javax.inject.Inject
 
 
@@ -50,7 +50,7 @@ class AddEmailFragment : BaseDaggerFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_add_email, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_email_setting_profile, container, false)
         return view
     }
 

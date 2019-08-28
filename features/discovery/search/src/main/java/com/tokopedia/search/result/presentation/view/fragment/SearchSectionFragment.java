@@ -484,7 +484,7 @@ public abstract class SearchSectionFragment
     }
 
     public void performNewProductSearch(String query) {
-        redirectionListener.performNewProductSearch(query);
+        redirectionListener.startActivityWithApplink(ApplinkConstInternalDiscovery.SEARCH_RESULT + "?" + query);
     }
 
     public void showSearchInputView() {
@@ -500,8 +500,6 @@ public abstract class SearchSectionFragment
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        outState.putParcelableArrayList(EXTRA_FILTER, getFilters());
-        outState.putParcelableArrayList(EXTRA_SORT, getSort());
         outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
         outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
@@ -532,8 +530,6 @@ public abstract class SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
-        setFilterData(savedInstanceState.getParcelableArrayList(EXTRA_FILTER));
-        setSortData(savedInstanceState.getParcelableArrayList(EXTRA_SORT));
         setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
         setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);

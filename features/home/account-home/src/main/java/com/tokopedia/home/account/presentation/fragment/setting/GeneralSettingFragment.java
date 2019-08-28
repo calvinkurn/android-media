@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
@@ -38,7 +39,6 @@ import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
-import com.tokopedia.home.account.presentation.activity.NotificationSettingActivity;
 import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
@@ -216,8 +216,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 }
                 break;
             case SettingConstant.SETTING_NOTIFICATION_ID:
+                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING);
                 accountAnalytics.eventClickSetting(NOTIFICATION);
-                startActivity(NotificationSettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_TNC_ID:
                 accountAnalytics.eventClickSetting(TERM_CONDITION);
