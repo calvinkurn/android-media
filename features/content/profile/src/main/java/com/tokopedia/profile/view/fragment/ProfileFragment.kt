@@ -1028,6 +1028,10 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(pdpAppLink)
     }
 
+    override fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel) {
+
+    }
+
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             userId = savedInstanceState.getInt(ProfileActivity.EXTRA_PARAM_USER_ID, 0)

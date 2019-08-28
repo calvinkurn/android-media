@@ -31,6 +31,7 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
@@ -46,6 +47,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
@@ -136,6 +138,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Inject
     KolPostDetailAnalytics analytics;
+
+    @Inject
+    FeedAnalyticTracker feedAnalytics;
 
     KolPostDetailAdapter adapter;
 
@@ -966,6 +971,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             RouteManager.route(getContext(), post.getContent().getBody().getMedia().get(0).getApplink());
         }
         analytics.eventClickOtherPost(post.getId());
+    }
+
+    @Override
+    public void onHashtagClicked(@NotNull String hashtagText, @NotNull TrackingPostModel trackingPostModel) {
+        feedAnalytics.eventDetailClickHashtag(
+                trackingPostModel.getActivityName(),
+                String.valueOf(trackingPostModel.getPostId()),
+                trackingPostModel.getMediaType(),
+                hashtagText
+        );
     }
 
     private void onGoToLink(String link) {

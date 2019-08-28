@@ -1973,4 +1973,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
         return super.getUserVisibleHint();
     }
 
+    @Override
+    public void onHashtagClicked(@NotNull String hashtagText, @NotNull TrackingPostModel trackingPostModel) {
+
+    }
 }
