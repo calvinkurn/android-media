@@ -65,6 +65,29 @@ class ProfileListFragment :
 
     var hasLoadData = false
 
+    var fragmentPosition = 0
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        context?.let {
+            attachNavigationListener(it)
+            attachRedirectionListener(it)
+        }
+    }
+
+    private fun attachNavigationListener(context: Context) {
+        if (context is SearchNavigationListener) {
+            this.searchNavigationListener = context
+        }
+    }
+
+    private fun attachRedirectionListener(context: Context) {
+        if (context is RedirectionListener) {
+            this.redirectionListener = context
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (userVisibleHint && ::searchNavigationListener.isInitialized) {
@@ -199,14 +222,6 @@ class ProfileListFragment :
         }
     }
 
-    fun attachNavigationListener(searchNavigationListener: SearchNavigationListener) {
-        this.searchNavigationListener = searchNavigationListener
-    }
-
-    fun attachRedirectionListener(redirectionListener: RedirectionListener) {
-        this.redirectionListener = redirectionListener
-    }
-
     override fun onFollowButtonClicked(adapterPosition: Int, profileModel: ProfileViewModel) {
         SearchTracking.eventClickFollowActionProfileResultProfileTab(
             context,
@@ -232,27 +247,24 @@ class ProfileListFragment :
 
     companion object {
         private val EXTRA_QUERY = "EXTRA_QUERY"
+        private const val EXTRA_FRAGMENT_POSITION = "EXTRA_FRAGMENT_POSITION"
         private const val SCREEN_SEARCH_PAGE_PROFILE_TAB = "Search result - Profile tab"
 
-        fun newInstance(query: String,
-                        searchhNavigationListener: SearchNavigationListener,
-                        redirectionListener: RedirectionListener): ProfileListFragment {
+        fun newInstance(query: String, fragmentPosition: Int): ProfileListFragment {
             val args = Bundle()
             args.putString(EXTRA_QUERY, query)
+            args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition)
+
             val profileListFragment = ProfileListFragment()
             profileListFragment.arguments = args
-            profileListFragment.attachNavigationListener(searchhNavigationListener)
-            profileListFragment.attachRedirectionListener(redirectionListener)
+
             return profileListFragment
         }
     }
 
-    private fun loadDataFromArguments() {
-        query = arguments!!.getString(EXTRA_QUERY) ?: ""
-    }
-
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
-        query = savedInstanceState.getString(EXTRA_QUERY)?:""
+        query = savedInstanceState.getString(EXTRA_QUERY) ?: ""
+        fragmentPosition = savedInstanceState.getInt(EXTRA_FRAGMENT_POSITION)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -363,7 +375,7 @@ class ProfileListFragment :
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
-        return false
+        return fragmentPosition == 0
     }
 
     override fun getBaseAppComponent(): BaseAppComponent {
@@ -378,6 +390,8 @@ class ProfileListFragment :
     }
 
     fun backToTop() {
-        getRecyclerView(view)?.smoothScrollToPosition(0)
+        view?.let {
+            getRecyclerView(view)?.smoothScrollToPosition(0)
+        }
     }
 }
