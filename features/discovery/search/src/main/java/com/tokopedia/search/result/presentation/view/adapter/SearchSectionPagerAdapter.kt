@@ -80,7 +80,7 @@ class SearchSectionPagerAdapter(
         return titleList.size
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         return if (titleList.size > position) titleList[position] else ""
     }
 

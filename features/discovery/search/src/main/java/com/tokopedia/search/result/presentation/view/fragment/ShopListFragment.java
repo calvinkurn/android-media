@@ -349,12 +349,6 @@ public class ShopListFragment
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        onFirstTimeLaunch();
-    }
-
-    @Override
     public void onItemClicked(@NonNull ShopViewModel.ShopItem shopItem) {
         if (redirectionListener == null) return;
 

@@ -566,6 +566,18 @@ public class SearchActivity extends BaseActivity
     protected void onResume() {
         super.onResume();
         unregisterShake();
+        hideBottomNavigationForProfileListFragment();
+    }
+
+    private void hideBottomNavigationForProfileListFragment() {
+        if (isPageInProfileTab()) {
+            hideBottomNavigation();
+        }
+    }
+
+    private boolean isPageInProfileTab() {
+        return searchSectionPagerAdapter != null
+                && searchSectionPagerAdapter.getPageTitle(viewPager.getCurrentItem()).equals(profileTabTitle);
     }
 
     @Override
