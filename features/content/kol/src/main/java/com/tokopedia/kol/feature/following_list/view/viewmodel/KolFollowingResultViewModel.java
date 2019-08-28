@@ -16,6 +16,9 @@ public class KolFollowingResultViewModel implements Parcelable {
     private String buttonText;
     private String buttonApplink;
 
+    public KolFollowingResultViewModel() {
+    }
+
     public KolFollowingResultViewModel
             (boolean isCanLoadMore,
              String lastCursor,

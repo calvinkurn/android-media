@@ -1,10 +1,11 @@
 package com.tokopedia.hotel.hoteldetail.presentation.fragment
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.data.entity.FacilityData
 import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityAdapterTypeFactory
 
@@ -13,15 +14,25 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.HotelDetailFacilityA
  */
 class HotelDetailFacilityFragment : BaseListFragment<FacilityData, HotelDetailFacilityAdapterTypeFactory>() {
 
+
     lateinit var connector: Connector
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(com.tokopedia.abstraction.R.layout.fragment_base_list, container, false)
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int = com.tokopedia.abstraction.R.id.swipe_refresh_layout
+
+    override fun getRecyclerViewResourceId() = com.tokopedia.abstraction.R.id.recycler_view
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val recyclerView = getRecyclerView(view) as VerticalRecyclerView
         recyclerView.clearItemDecoration()
-        recyclerView.setPadding(0, 0,0,
-                resources.getDimension(R.dimen.dp_16).toInt())
+        recyclerView.setPadding(0, 0, 0,
+                resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
         recyclerView.clipToPadding = false
         recyclerView.isFocusable = false
     }

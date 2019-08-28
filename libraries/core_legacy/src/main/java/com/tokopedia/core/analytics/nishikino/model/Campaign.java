@@ -52,13 +52,9 @@ public class Campaign {
     }
 
     public Map<String, Object> getNullCampaignMap() {
-        setUtmCampaign(null);
-        setUtmContent(null);
-        setUtmMedium(null);
-        setUtmSource(null);
-        setUtmTerm(null);
-        setGclid(null);
-        setScreenName(null);
+        for(Map.Entry<String, Object> item: campaignMap.entrySet()) {
+            campaignMap.put(item.getKey(), null);
+        }
         return campaignMap;
     }
 }

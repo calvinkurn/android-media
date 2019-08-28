@@ -41,9 +41,9 @@ public interface ShippingDurationContract {
 
     interface Presenter extends CustomerPresenter<View> {
         void loadCourierRecommendation(ShipmentDetailData shipmentDetailData, int selectedServiceId,
-                                       List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner);
+                                       List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing);
 
-        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner);
+        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing);
 
         CourierItemData getCourierItemData(List<ShippingCourierViewModel> shippingCourierViewModels);
 

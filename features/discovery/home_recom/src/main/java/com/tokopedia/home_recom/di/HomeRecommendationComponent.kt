@@ -5,6 +5,9 @@ import com.tokopedia.home_recom.view.fragment.ProductInfoFragment
 import com.tokopedia.home_recom.view.fragment.RecommendationFragment
 import dagger.Component
 
+/**
+ * A Component class for Recommendation
+ */
 @HomeRecommendationScope
 @Component(modules = [
     HomeRecommendationModule::class,
