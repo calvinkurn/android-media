@@ -39,11 +39,14 @@ import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
 public class SimpleWebViewWithFilePickerFragment extends Fragment implements GeneralWebView {
     private static final String SEAMLESS = "seamless";
+    private static final String FINGERPRINT_HASH = "Fingerprint-Hash";
+    private static final String FINGERPRINT_DATA = "Fingerprint-Data";
     public static final int PROGRESS_COMPLETED = 100;
     private static WebViewClient webViewClient;
     private ProgressBar progressBar;
@@ -163,16 +166,20 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-            //TODO check url
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+            // When user create help ticket, it will put the fingerprint data to header
+            // to add the useful information of the android device.
+            String urlString = request.getUrl().toString();
+            if (urlString.contains("/contact-us/") &&
+                    urlString.contains("/create/step/") &&
                     getContext().getApplicationContext() instanceof NetworkRouter) {
                 NetworkRouter networkRouter = (NetworkRouter) getContext().getApplicationContext();
                 FingerprintModel fingerprintModel = networkRouter.getFingerprintModel();
                 String fingerprintHashData = fingerprintModel.getFingerprintHash();
                 String fingerprintHash = AuthUtil.md5(fingerprintHashData + "+" +
                         new UserSession(getContext()).getUserId());
-                request.getRequestHeaders().put("Fingerprint-Hash", fingerprintHash);
-                request.getRequestHeaders().put("Fingerprint-Data", fingerprintHashData);
+                Map<String, String> requestHeader = request.getRequestHeaders();
+                requestHeader.put(FINGERPRINT_HASH, fingerprintHash);
+                requestHeader.put(FINGERPRINT_DATA, fingerprintHashData);
             }
             return super.shouldInterceptRequest(view, request);
         }
