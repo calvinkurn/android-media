@@ -77,6 +77,25 @@ class FeedAnalyticTracker @Inject constructor() {
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Row 7
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     */
+    fun eventTimelineClickReadMore(activityId: String, activityName: String, mediaType: String) {
+        eventClickReadMore(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                activityId,
+                activityName,
+                mediaType
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
      * Row 8
      *
      * @param activityName - activity name
