@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
@@ -63,6 +62,7 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapter;
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 
 import java.util.List;
 
@@ -128,8 +128,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private TextView tvPaymentCost;
     private TextView tvPaymentCostLabel;
     private TextView tvPaymentDueDate;
-    private LinearLayout containerTicketCancellationStatus;
-    private AppCompatTextView tvTicketCancellationStatus;
+    private Ticker cancellationWarningTicker;
     private LinearLayout insuranceLayout;
     private RecyclerView insuranceRecyclerView;
 
@@ -178,22 +177,21 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         buttonCancelTicket = view.findViewById(R.id.button_cancel);
         buttonRescheduleTicket = view.findViewById(R.id.button_reschedule);
         buttonReorder = view.findViewById(R.id.button_reorder);
-        paymentInfoLayout = (LinearLayout) view.findViewById(R.id.payment_info_layout);
-        paymentCostLayout = (LinearLayout) view.findViewById(R.id.payment_cost_layout);
-        paymentDueDateLayout = (LinearLayout) view.findViewById(R.id.payment_due_date_layout);
-        tvPaymentDescriptionLabel = (TextView) view.findViewById(R.id.tv_payment_description_label);
-        tvPaymentDescription = (TextView) view.findViewById(R.id.tv_payment_description);
-        tvPaymentCost = (TextView) view.findViewById(R.id.tv_payment_cost);
-        tvPaymentCostLabel = (TextView) view.findViewById(R.id.tv_payment_cost_label);
-        tvPaymentDueDate = (TextView) view.findViewById(R.id.tv_payment_due_date);
-        insuranceLayout = (LinearLayout) view.findViewById(R.id.insurance_layout);
-        insuranceRecyclerView = (RecyclerView) view.findViewById(R.id.rv_insurance);
+        paymentInfoLayout = view.findViewById(R.id.payment_info_layout);
+        paymentCostLayout = view.findViewById(R.id.payment_cost_layout);
+        paymentDueDateLayout = view.findViewById(R.id.payment_due_date_layout);
+        tvPaymentDescriptionLabel = view.findViewById(R.id.tv_payment_description_label);
+        tvPaymentDescription = view.findViewById(R.id.tv_payment_description);
+        tvPaymentCost = view.findViewById(R.id.tv_payment_cost);
+        tvPaymentCostLabel = view.findViewById(R.id.tv_payment_cost_label);
+        tvPaymentDueDate = view.findViewById(R.id.tv_payment_due_date);
+        insuranceLayout = view.findViewById(R.id.insurance_layout);
+        insuranceRecyclerView = view.findViewById(R.id.rv_insurance);
         showEticket = view.findViewById(R.id.tv_lihat_e_ticket);
         progressDialog = new ProgressDialog(getActivity());
 
         containerCancellation = view.findViewById(R.id.cancellation_container);
-        containerTicketCancellationStatus = view.findViewById(R.id.container_cancellation_warning);
-        tvTicketCancellationStatus = view.findViewById(R.id.tv_cancellation_ticket_status);
+        cancellationWarningTicker = view.findViewById(R.id.cancellation_warning);
 
         setViewClickListener();
 
@@ -549,15 +547,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
-    public void showCancellationStatus() {
-        tvTicketCancellationStatus.setText("");
-        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void showCancellationStatusInProgress(int numberOfProcess) {
-        tvTicketCancellationStatus.setText("");
-        containerTicketCancellationStatus.setVisibility(View.VISIBLE);
+    public void showCancellationStatus(String status) {
+        cancellationWarningTicker.setHtmlDescription(status);
+        cancellationWarningTicker.setVisibility(View.VISIBLE);
     }
 
     @Override

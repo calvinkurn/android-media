@@ -77,9 +77,7 @@ public interface FlightDetailOrderContract {
 
         void hideLihatEticket();
 
-        void showCancellationStatus();
-
-        void showCancellationStatusInProgress(int numberOfProcess);
+        void showCancellationStatus(String status);
 
         void showCancellationContainer();
 
