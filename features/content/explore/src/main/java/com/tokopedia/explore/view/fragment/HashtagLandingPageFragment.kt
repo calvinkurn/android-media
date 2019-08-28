@@ -136,8 +136,9 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         feedAnalytics.eventOpenHashtagScreen()
     }
 
-    override fun onImageClick(post: PostKol) {
+    override fun onImageClick(post: PostKol, position: Int) {
         activity?.let { RouteManager.route(it, ApplinkConst.CONTENT_DETAIL, post.id.toString()) }
+        feedAnalytics.eventHashtagClickThumbnail(post.id.toString(), searchTag, position)
     }
 
     override fun onUserImageClick(post: PostKol) {

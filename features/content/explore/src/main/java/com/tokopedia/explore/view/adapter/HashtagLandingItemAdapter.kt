@@ -95,7 +95,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                 val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                 params.isFullSpan = false
                 holder.itemView.layoutParams = params
-                (holder as HashtagLandingItemViewHolder).bind(item.data)
+                (holder as HashtagLandingItemViewHolder).bind(item.data, position)
             }
         }
     }
@@ -164,7 +164,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
 
     inner class HashtagLandingItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
-        fun bind(item: PostKol){
+        fun bind(item: PostKol, position: Int){
             with(itemView){
                 if (item.content.isEmpty()){
                     post_thumbnail.gone()
@@ -184,7 +184,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                         }
                         else -> badge.gone()
                     }
-                    post_thumbnail.setOnClickListener { listener?.onImageClick(item) }
+                    post_thumbnail.setOnClickListener { listener?.onImageClick(item, position) }
                 }
 
                 creator_img.shouldShowWithAction(!item.userPhoto.isNullOrBlank()){
@@ -205,7 +205,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
     }
 
     interface OnHashtagPostClick{
-        fun onImageClick(post: PostKol)
+        fun onImageClick(post: PostKol, position: Int)
         fun onUserImageClick(post: PostKol)
         fun onUserNameClick(post: PostKol)
     }

@@ -10,10 +10,19 @@ import javax.inject.Inject
  */
 class FeedAnalyticTracker @Inject constructor() {
 
+    private companion object {
+        const val ECOMMERCE = "ecommerce"
+
+        const val PROMOTIONS = "promotions"
+    }
+
     private object Event {
         const val CLICK_FEED = "clickFeed"
         const val CLICK_SOCIAL_COMMERCE = "clickSocialCommerce"
         const val OPEN_SCREEN = "openScreen"
+
+        const val PROMO_CLICK = "promoClick"
+        const val PROMO_VIEW = "promoView"
     }
 
     private object Category {
@@ -24,15 +33,25 @@ class FeedAnalyticTracker @Inject constructor() {
         const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
 
         const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
+        const val CONTENT_HASHTAG = "content hashtag"
     }
 
     private object Action {
         const val CLICK_HASHTAG = "click hashtag"
         const val CLICK_READ_MORE = "click read more"
+        const val CLICK_POST = "click post"
     }
 
     private object Screen {
         const val HASHTAG = "/feed/hashtag"
+        const val HASHTAG_POST_LIST = "/hashtag page - post list"
+    }
+
+    private object Promotion {
+        const val ID = "id"
+        const val NAME = "name"
+        const val CREATIVE = "creative"
+        const val POSITION = "position"
     }
 
     /**
@@ -116,13 +135,39 @@ class FeedAnalyticTracker @Inject constructor() {
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Row 23
+     *
+     * @param activityId - postId
+     * @param hashtag - hashtag name
+     * @param position - position of item in list
+     */
+    fun eventHashtagClickThumbnail(
+            activityId: String,
+            hashtag: String,
+            position: Int
+    ) {
+        trackEnhancedEcommerceEvent(
+                Event.PROMO_CLICK,
+                Category.CONTENT_HASHTAG,
+                Action.CLICK_POST,
+                activityId,
+                getPromoClickData(
+                        getPromotionsData(
+                                listOf(getPromotionData(activityId, Screen.HASHTAG_POST_LIST, hashtag, position))
+                        )
+                )
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
      * Row 38
      *
      */
     fun eventOpenHashtagScreen() {
         trackOpenScreenEvent(Screen.HASHTAG)
     }
-
 
     /**
      * Base track click read more
@@ -159,19 +204,16 @@ class FeedAnalyticTracker @Inject constructor() {
         )
     }
 
+    /**
+     * Base tracker function
+     */
     private fun trackGeneralEvent(
             eventName: String,
             eventCategory: String,
             eventAction: String,
-            eventLabel: String,
-            additionalData: Map<String, Any> = emptyMap()) {
+            eventLabel: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                DataLayer.mapOf(
-                        EVENT, eventName,
-                        EVENT_CATEGORY, eventCategory,
-                        EVENT_ACTION, eventAction,
-                        EVENT_LABEL, eventLabel
-                ).plus(additionalData)
+                getGeneralData(eventName, eventCategory, eventAction, eventLabel)
         )
     }
 
@@ -183,4 +225,54 @@ class FeedAnalyticTracker @Inject constructor() {
                 )
         )
     }
+
+    private fun trackEnhancedEcommerceEvent(
+            eventName: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            eCommerceData: Map<String, Any>
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+                getGeneralData(eventName, eventCategory, eventAction, eventLabel)
+                        .plus(getEcommerceData(eCommerceData))
+        )
+    }
+
+    /**
+     * Data Generator
+     */
+    private fun getGeneralData(
+            eventName: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String
+    ): Map<String, Any> = DataLayer.mapOf(
+            EVENT, eventName,
+            EVENT_CATEGORY, eventCategory,
+            EVENT_ACTION, eventAction,
+            EVENT_LABEL, eventLabel
+    )
+
+    private fun getEcommerceData(data: Any): Map<String, Any> = DataLayer.mapOf(ECOMMERCE, data)
+
+    private fun getPromoClickData(data: Any): Map<String, Any> = DataLayer.mapOf(Event.PROMO_CLICK, data)
+
+    private fun getPromoViewData(data: Any): Map<String, Any> = DataLayer.mapOf(Event.PROMO_VIEW, data)
+
+    private fun getPromotionsData(
+            promotionDataList: List<Any>
+    ): Map<String, Any> = DataLayer.mapOf(PROMOTIONS, promotionDataList)
+
+    private fun getPromotionData(
+            id: String,
+            name: String,
+            creative: String,
+            position: Int
+    ): Map<String, Any> = DataLayer.mapOf(
+        Promotion.ID, id,
+        Promotion.NAME, name,
+        Promotion.CREATIVE, creative,
+        Promotion.POSITION, position
+    )
 }
