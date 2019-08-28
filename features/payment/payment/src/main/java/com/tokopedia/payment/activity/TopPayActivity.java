@@ -118,7 +118,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private String mJsHciCallbackFuncName;
 
     private CompositeSubscription compositeSubscription = new CompositeSubscription();
-    private Thread thread;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -314,10 +313,6 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
             callbackPaymentSucceed();
         } else {
             callbackPaymentCanceled();
-            Intent intent = new Intent();
-            intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
-            setResult(PAYMENT_CANCELLED, intent);
-            finish();
         }
     }
 
@@ -330,10 +325,10 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     public void callbackPaymentCanceled() {
         hideProgressLoading();
-//        Intent intent = new Intent();
-//        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
-//        setResult(PAYMENT_CANCELLED, intent);
-//        finish();
+        Intent intent = new Intent();
+        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
+        setResult(PAYMENT_CANCELLED, intent);
+        finish();
     }
 
     public void callbackPaymentSucceed() {
@@ -385,7 +380,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private class TopPayWebViewClient extends WebViewClient {
-//        private boolean timeout = true;
+        private boolean timeout = true;
 
         @SuppressWarnings("deprecation")
         @Override
@@ -506,14 +501,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
         @Override
         public void onPageFinished(WebView view, String url) {
-//            timeout = false;
-            if (thread != null && thread.isAlive()) {
-                try {
-                    thread.interrupt();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            timeout = false;
             compositeSubscription.clear();
             if (progressBar != null) progressBar.setVisibility(View.GONE);
         }
@@ -549,7 +537,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         }
 
         private void timerThread(WebView view) {
-            thread = new Thread(new Runnable() {
+            new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -557,17 +545,16 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-//                    if (timeout) {
+                    if (timeout) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 showErrorTimeout(view);
                             }
                         });
-//                    }
+                    }
                 }
-            });
-            thread.start();
+            }).start();
         }
 
         private void timerObservable(WebView view) {
@@ -588,8 +575,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
                                 @Override
                                 public void onNext(Long aLong) {
-//                                    if (timeout) {
+                                    if (isUnsubscribed()) {
                                         showErrorTimeout(view);
+                                    }
+//                                    if (timeout) {
+//                                        showErrorTimeout(view);
 //                                    }
                                 }
                             })
