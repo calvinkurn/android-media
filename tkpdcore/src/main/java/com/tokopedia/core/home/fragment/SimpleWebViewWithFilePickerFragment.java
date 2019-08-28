@@ -19,6 +19,7 @@ import android.webkit.SslErrorHandler;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -31,6 +32,10 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core2.R;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.data.model.FingerprintModel;
+import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -155,6 +160,22 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
             return onOverrideUrl(request.getUrl());
         }
 
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            //TODO check url
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+                    getContext().getApplicationContext() instanceof NetworkRouter) {
+                NetworkRouter networkRouter = (NetworkRouter) getContext().getApplicationContext();
+                FingerprintModel fingerprintModel = networkRouter.getFingerprintModel();
+                String fingerprintHashData = fingerprintModel.getFingerprintHash();
+                String fingerprintHash = AuthUtil.md5(fingerprintHashData + "+" +
+                        new UserSession(getContext()).getUserId());
+                request.getRequestHeaders().put("Fingerprint-Hash", fingerprintHash);
+                request.getRequestHeaders().put("Fingerprint-Data", fingerprintHashData);
+            }
+            return super.shouldInterceptRequest(view, request);
+        }
 
         protected boolean onOverrideUrl(Uri url) {
             String urlString = url.toString();
