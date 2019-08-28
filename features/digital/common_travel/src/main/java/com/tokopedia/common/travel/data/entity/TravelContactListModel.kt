@@ -18,6 +18,7 @@ data class TravelContactListModel (
             @Expose
             val response: TravelContactListModel = TravelContactListModel()
     )
+
     data class Contact(
             @SerializedName("uuid")
             @Expose
