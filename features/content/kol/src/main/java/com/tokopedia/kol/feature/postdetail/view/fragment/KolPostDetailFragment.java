@@ -983,6 +983,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         );
     }
 
+    @Override
+    public void onReadMoreClicked(@NotNull TrackingPostModel trackingPostModel) {
+
+    }
+
     private void onGoToLink(String link) {
         if (getActivity() != null && !TextUtils.isEmpty(link)) {
             if (RouteManager.isSupportApplink(getActivity(), link)) {

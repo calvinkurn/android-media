@@ -1977,4 +1977,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onHashtagClicked(@NotNull String hashtagText, @NotNull TrackingPostModel trackingPostModel) {
 
     }
+
+    @Override
+    public void onReadMoreClicked(@NotNull TrackingPostModel trackingPostModel) {
+
+    }
 }

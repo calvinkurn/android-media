@@ -575,6 +575,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     }
 
+    override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
+
+    }
+
     fun hideFAB() {
         fab_feed.hide()
     }

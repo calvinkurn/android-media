@@ -256,6 +256,8 @@ open class DynamicPostViewHolder(v: View,
                     if (!TextUtils.isEmpty(caption.appLink)) {
                         listener.onCaptionClick(adapterPosition, caption.appLink)
                     } else {
+                        if (itemView.caption.text.endsWith(caption.buttonName)) listener.onReadMoreClicked(trackingPostModel)
+
                         itemView.caption.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
                                 colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
                     }
@@ -517,5 +519,7 @@ open class DynamicPostViewHolder(v: View,
         fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem)
 
         fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
+
+        fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
     }
 }

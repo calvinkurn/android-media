@@ -88,6 +88,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         const val CLICK_EMPTY_CTA = "cta byme"
         const val IMPRESSION_OTHER_POST = "impression post lainnya"
         const val CLICK_OTHER_POST = "click post lainnya"
+        const val CLICK_READ_MORE = "click read more"
     }
 
     object Label {
@@ -550,6 +551,15 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                 Action.CLICK_EMPTY_CTA,
                 ""
             )
+        )
+    }
+
+    fun eventClickReadMore(isOwner: Boolean, activityId: String, activityName: String, mediaType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                Event.EVENT_CLICK_SOCIAL_COMMERCE,
+                if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
+                "${Action.CLICK_READ_MORE} - $activityName - $mediaType",
+                activityId
         )
     }
 

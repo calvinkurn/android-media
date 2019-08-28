@@ -1032,6 +1032,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
+    override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
+        profileAnalytics.eventClickReadMore(
+                isOwner,
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType
+        )
+    }
+
     private fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             userId = savedInstanceState.getInt(ProfileActivity.EXTRA_PARAM_USER_ID, 0)
