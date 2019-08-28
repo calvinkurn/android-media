@@ -44,6 +44,10 @@ class CMPushNotificationManager : CoroutineScope {
     private val isPushEnable: Boolean
         get() = (applicationContext as CMRouter).getBooleanRemoteConfig("app_cm_push_enable", false) || BuildConfig.DEBUG
 
+    private val isInAppEnable: Boolean
+        get() = (applicationContext as CMRouter).getBooleanRemoteConfig(CMConstant.RemoteKeys.KEY_IS_INAPP_ENABLE,
+                false) || BuildConfig.DEBUG
+
     /**
      * initialization of push notification library
      *
@@ -70,9 +74,9 @@ class CMPushNotificationManager : CoroutineScope {
                 }
                 cmUserHandler?.cancelRunnable()
                 cmUserHandler = CMUserHandler(applicationContext)
-                if(isForce ==null){
+                if (isForce == null) {
                     cmUserHandler?.updateToken(token, remoteDelaySeconds, false)
-                }else{
+                } else {
                     cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
                 }
             }
@@ -94,9 +98,9 @@ class CMPushNotificationManager : CoroutineScope {
                 }
                 cmUserHandler?.cancelRunnable()
                 cmUserHandler = CMUserHandler(applicationContext)
-                if(isForce ==null){
+                if (isForce == null) {
                     cmUserHandler?.updateToken(token, remoteDelaySeconds, false)
-                }else{
+                } else {
                     cmUserHandler?.updateToken(token, remoteDelaySeconds, isForce)
                 }
             }
@@ -130,8 +134,6 @@ class CMPushNotificationManager : CoroutineScope {
      * @param remoteMessage
      */
     fun handlePushPayload(remoteMessage: RemoteMessage?) {
-        if (!isPushEnable)
-            return
         if (null == remoteMessage)
             return
 
@@ -142,12 +144,13 @@ class CMPushNotificationManager : CoroutineScope {
             if (isFromCMNotificationPlatform(remoteMessage.data)) {
                 val confirmationValue = remoteMessage.data[CMConstant.PayloadKeys.SOURCE]
                 val bundle = convertMapToBundle(remoteMessage.data)
-                if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE)) {
+                if (confirmationValue.equals(CMConstant.PayloadKeys.SOURCE_VALUE) || isInAppEnable) {
                     CMInAppManager.getInstance().handlePushPayload(remoteMessage)
                 } else {
                     launchCatchError(
                             block = {
-                                handleNotificationBundle(bundle)
+                                if (isPushEnable)
+                                    handleNotificationBundle(bundle)
                             }, onError = {
                         Log.e(TAG, "CMPushNotificationManager: handleNotificationBundle ", it)
                     })

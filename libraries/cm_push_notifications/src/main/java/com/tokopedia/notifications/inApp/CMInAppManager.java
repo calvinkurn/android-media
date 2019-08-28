@@ -189,5 +189,11 @@ public class CMInAppManager implements CmInAppListener {
     public void onCMInAppClosed() {
 
     }
+
+    @Override
+    public void onCMInAppInflateException(CMInApp inApp) {
+        Log.d("CMInAPp","removing inapp");
+        RulesManager.getInstance().dataInflateError(inApp.id);
+    }
 }
 
