@@ -169,7 +169,8 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
             // When user create help ticket, it will put the fingerprint data to header
             // to add the useful information of the android device.
             String urlString = request.getUrl().toString();
-            if (urlString.contains("/contact-us/") &&
+            if ("POST".equals(request.getMethod()) &&
+                    urlString.contains("/contact-us/") &&
                     urlString.contains("/create/step/") &&
                     getContext().getApplicationContext() instanceof NetworkRouter) {
                 NetworkRouter networkRouter = (NetworkRouter) getContext().getApplicationContext();
