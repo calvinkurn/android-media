@@ -3,10 +3,11 @@ package com.tokopedia.purchase_platform.common.data.common.api;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;
 import java.util.Map;
@@ -24,9 +25,9 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
     private static final String CART_ERROR_GLOBAL = "Maaf, terjadi sedikit kendala. Coba ulangi beberapa saat lagi ya";
 
     @Inject
-    public CartApiInterceptor(Context context, AbstractionRouter abstractionRouter,
-                              String authKey) {
-        super(context, abstractionRouter, authKey);
+    public CartApiInterceptor(Context context, NetworkRouter abstractionRouter,
+                              UserSessionInterface userSessionInterface, String authKey) {
+        super(context, abstractionRouter, userSessionInterface, authKey);
     }
 
     @Override

@@ -7,10 +7,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.purchase_platform.common.data.common.repository.ICommonPurchaseRepository;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil;
 import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ICheckoutMapper;
 import com.tokopedia.usecase.RequestParams;
@@ -42,17 +42,14 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
 
     private final ICommonPurchaseRepository commonPurchaseRepository;
     private final ICheckoutMapper checkoutMapper;
-    private final ICheckoutModuleRouter checkoutModuleRouter;
     private final Context context;
 
     @Inject
     public CheckoutUseCase(@ApplicationContext Context context,
                            ICommonPurchaseRepository commonPurchaseRepository,
-                           ICheckoutMapper checkoutMapper,
-                           ICheckoutModuleRouter checkoutModuleRouter) {
+                           ICheckoutMapper checkoutMapper) {
         this.commonPurchaseRepository = commonPurchaseRepository;
         this.checkoutMapper = checkoutMapper;
-        this.checkoutModuleRouter = checkoutModuleRouter;
         this.context = context;
     }
 
@@ -79,11 +76,10 @@ public class CheckoutUseCase extends UseCase<CheckoutData> {
     }
 
     private TKPDMapParam<String, String> createParamFingerprint(TKPDMapParam<String, String> tkpdMapParam) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkoutModuleRouter != null
-                && FingerprintUtil.getEnableFingerprintPayment(context)) {
-            PublicKey publicKey = FingerprintUtil.generatePublicKey(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && FingerprintUtil.getEnableFingerprintPayment(context)) {
+            PublicKey publicKey = FingerPrintDialog.generatePublicKey(context);
             if (publicKey != null) {
-                tkpdMapParam.put(PARAM_FINGERPRINT_PUBLICKEY, FingerprintUtil.getPublicKeyString(publicKey));
+                tkpdMapParam.put(PARAM_FINGERPRINT_PUBLICKEY, FingerPrintDialog.getPublicKey(publicKey));
                 tkpdMapParam.put(PARAM_FINGERPRINT_SUPPORT, String.valueOf(true));
             } else {
                 tkpdMapParam.put(PARAM_FINGERPRINT_SUPPORT, String.valueOf(false));

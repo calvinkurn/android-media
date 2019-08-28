@@ -17,6 +17,8 @@ import com.tokopedia.purchase_platform.common.data.common.api.CartResponseConver
 import com.tokopedia.purchase_platform.common.data.common.api.CommonPurchaseApiUrl
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
 import com.tokopedia.purchase_platform.features.cart.view.di.CartScope
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -35,9 +37,13 @@ import java.util.concurrent.TimeUnit
 class PurchasePlatformBaseModule {
 
     @Provides
-    @CartScope
     fun provideRouter(@ApplicationContext context: Context): ICheckoutModuleRouter {
         return context as ICheckoutModuleRouter
+    }
+
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 
     @Provides
@@ -51,8 +57,8 @@ class PurchasePlatformBaseModule {
     }
 
     @Provides
-    fun getCartApiInterceptor(@ApplicationContext context: Context): CartApiInterceptor {
-        return CartApiInterceptor(context, context as AbstractionRouter, CommonPurchaseApiUrl.HMAC_KEY)
+    fun getCartApiInterceptor(@ApplicationContext context: Context, userSessionInterface: UserSessionInterface): CartApiInterceptor {
+        return CartApiInterceptor(context, context as NetworkRouter, userSessionInterface, CommonPurchaseApiUrl.HMAC_KEY)
     }
 
     @Provides
@@ -66,6 +72,7 @@ class PurchasePlatformBaseModule {
     }
 
     @Provides
+    @PurchasePlatformQualifier
     fun provideCartApiOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
                                    cartApiInterceptor: CartApiInterceptor,
                                    okHttpRetryPolicy: OkHttpRetryPolicy,
@@ -87,9 +94,10 @@ class PurchasePlatformBaseModule {
     }
 
     @Provides
-    fun provideCartApiRetrofit(okHttpClient: OkHttpClient): Retrofit {
+    @PurchasePlatformQualifier
+    fun provideCartApiRetrofit(@PurchasePlatformQualifier okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-                .baseUrl(CommonPurchaseApiUrl.BASE_URL)
+                .baseUrl(TokopediaUrl.getInstance().API)
                 .addConverterFactory(CartResponseConverter.create())
                 .addConverterFactory(StringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(Gson()))

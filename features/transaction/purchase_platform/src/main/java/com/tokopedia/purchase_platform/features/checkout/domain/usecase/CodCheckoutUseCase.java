@@ -3,15 +3,17 @@ package com.tokopedia.purchase_platform.features.checkout.domain.usecase;
 import android.content.Context;
 import android.os.Build;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.features.checkout.data.model.request.CodCheckoutRequest;
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.cod.CodResponse;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil;
+import com.tokopedia.purchase_platform.features.checkout.data.model.request.CodCheckoutRequest;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.cod.CodResponse;
 
 import java.security.PublicKey;
 import java.util.HashMap;
@@ -33,7 +35,7 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
     private ICheckoutModuleRouter checkoutModuleRouter;
 
     @Inject
-    public CodCheckoutUseCase(Context context,
+    public CodCheckoutUseCase(@ApplicationContext Context context,
                               ICheckoutModuleRouter checkoutModuleRouter) {
         this.context = context;
         this.checkoutModuleRouter = checkoutModuleRouter;
@@ -57,9 +59,9 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
     private void setFingerPrintParams() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkoutModuleRouter != null
                 && FingerprintUtil.getEnableFingerprintPayment(context)) {
-            PublicKey publicKey = FingerprintUtil.generatePublicKey(context);
+            PublicKey publicKey = FingerPrintDialog.generatePublicKey(context);
             if (publicKey != null) {
-                mFingerPrintPublicKey = FingerprintUtil.getPublicKeyString(publicKey);
+                mFingerPrintPublicKey = FingerPrintDialog.getPublicKey(publicKey);
                 mFingerPrintSupport = String.valueOf(true);
             } else {
                 mFingerPrintSupport = String.valueOf(false);

@@ -24,6 +24,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Originally authored by Kris, Aghny, Angga.
  * Modified by Irfan
@@ -34,6 +36,10 @@ public class ShipmentDataConverter {
     private static final int PRIME_ADDRESS = 2;
     private static final String MERCHANT_VOUCHER_TYPE = "merchant";
     private static final String LOGISTIC_VOUCHER_TYPE = "logistic";
+
+    @Inject
+    public ShipmentDataConverter() {
+    }
 
     public RecipientAddressModel getRecipientAddressModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         if (cartShipmentAddressFormData.getGroupAddress() != null && cartShipmentAddressFormData.getGroupAddress().size() > 0) {

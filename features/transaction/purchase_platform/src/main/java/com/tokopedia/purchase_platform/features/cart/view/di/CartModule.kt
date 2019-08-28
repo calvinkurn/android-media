@@ -16,6 +16,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.base.MapperUtil
 import com.tokopedia.purchase_platform.common.di2.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.di2.PurchasePlatformQualifier
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.api.CartApi
@@ -50,13 +51,7 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
-
-    @Provides
-    @CartScope
-    fun provideCartApi(retrofit: Retrofit): CartApi {
+    fun provideCartApi(@PurchasePlatformQualifier retrofit: Retrofit): CartApi {
         return retrofit.create(CartApi::class.java)
     }
 

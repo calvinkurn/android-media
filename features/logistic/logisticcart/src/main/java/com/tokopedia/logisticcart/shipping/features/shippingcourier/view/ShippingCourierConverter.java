@@ -5,11 +5,17 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 
+import javax.inject.Inject;
+
 /**
  * Created by Irfan Khoirul on 08/08/18.
  */
 
 public class ShippingCourierConverter {
+
+    @Inject
+    public ShippingCourierConverter() {
+    }
 
     public CourierItemData convertToCourierItemData(ShippingCourierViewModel shippingCourierViewModel) {
         CourierItemData courierItemData = new CourierItemData();

@@ -82,7 +82,8 @@ public class DataModule {
     @CartApiInterceptorQualifier
     CartApiInterceptor getCartApiInterceptor(@ApplicationContext Context context,
                                              AbstractionRouter abstractionRouter) {
-        return new CartApiInterceptor(context, abstractionRouter, TransactionDataApiUrl.Cart.HMAC_KEY);
+        return null;
+//        return new CartApiInterceptor(context, abstractionRouter, TransactionDataApiUrl.Cart.HMAC_KEY);
     }
 
 

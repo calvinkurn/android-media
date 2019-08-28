@@ -43,6 +43,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Product
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.fingerprint.view.FingerPrintDialog
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
@@ -589,9 +590,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             context?.run {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                         FingerprintUtil.getEnableFingerprintPayment(this)) {
-                    val publicKey = FingerprintUtil.generatePublicKey(this)
+                    val publicKey = FingerPrintDialog.generatePublicKey(this)
                     if (publicKey != null) {
-                        fragmentViewModel.fingerprintPublicKey = FingerprintUtil.getPublicKeyString(publicKey)
+                        fragmentViewModel.fingerprintPublicKey = FingerPrintDialog.getPublicKey(publicKey)
                         fragmentViewModel.hasGenerateFingerprintPublicKey = true
                     }
                 }

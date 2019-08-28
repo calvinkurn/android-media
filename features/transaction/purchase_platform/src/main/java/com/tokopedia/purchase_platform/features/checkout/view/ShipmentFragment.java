@@ -54,6 +54,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerShipmentC
 import com.tokopedia.purchase_platform.features.checkout.view.di.ShipmentComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.di.ShipmentModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di2.CheckoutComponent;
+import com.tokopedia.purchase_platform.features.checkout.view.di2.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di2.DaggerCheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata;
@@ -177,27 +178,27 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private String cornerId;
     private PromoNotEligibleBottomsheet promoNotEligibleBottomsheet;
 
-//    @Inject
+    @Inject
     ShipmentAdapter shipmentAdapter;
-//    @Inject
+    @Inject
     ShipmentContract.Presenter shipmentPresenter;
-//    @Inject
+    @Inject
     ShipmentDataConverter shipmentDataConverter;
-//    @Inject
+    @Inject
     RatesDataConverter ratesDataConverter;
-//    @Inject
+    @Inject
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
-//    @Inject
+    @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-//    @Inject
+    @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
-//    @Inject
+    @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
-//    @Inject
+    @Inject
     CodAnalytics mTrackerCod;
-//    @Inject
+    @Inject
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
-//    @Inject
+    @Inject
     CornerAnalytics mTrackerCorner;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
@@ -234,6 +235,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
         CheckoutComponent checkoutComponent = DaggerCheckoutComponent.builder()
                 .baseAppComponent(baseMainApplication.getBaseAppComponent())
+                .checkoutModule(new CheckoutModule(this))
                 .build();
         checkoutComponent.inject(this);
 

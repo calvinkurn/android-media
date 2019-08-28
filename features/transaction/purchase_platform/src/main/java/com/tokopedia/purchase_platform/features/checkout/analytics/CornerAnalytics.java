@@ -5,11 +5,14 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
+import javax.inject.Inject;
+
 /**
  * Created by fajarnuha on 01/03/19.
  */
 public class CornerAnalytics extends TransactionAnalytics {
 
+    @Inject
     public CornerAnalytics() {
 
     }

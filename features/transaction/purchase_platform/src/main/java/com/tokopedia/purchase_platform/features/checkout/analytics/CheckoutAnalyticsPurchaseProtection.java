@@ -6,11 +6,14 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
+import javax.inject.Inject;
+
 /**
  * Created by fajarnuha on 11/12/18.
  */
 public class CheckoutAnalyticsPurchaseProtection extends TransactionAnalytics {
 
+    @Inject
     public CheckoutAnalyticsPurchaseProtection() {
     }
 

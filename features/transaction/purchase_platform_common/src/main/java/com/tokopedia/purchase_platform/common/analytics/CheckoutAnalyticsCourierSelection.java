@@ -20,6 +20,7 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
  * @author anggaprasetiyo on 06/06/18.
  */
 public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
+
     @Inject
     public CheckoutAnalyticsCourierSelection() {
     }
