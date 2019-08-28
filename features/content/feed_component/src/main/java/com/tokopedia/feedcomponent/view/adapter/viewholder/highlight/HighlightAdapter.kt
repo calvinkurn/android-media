@@ -114,7 +114,8 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                 }
                 else -> {
                     itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_thumb)
-                    itemView.likeText.setText(R.string.kol_action_like)
+                    val likeText = if (like.fmt.isNotEmpty()) like.fmt else itemView.context.getString(R.string.kol_action_like)
+                    itemView.likeText.text = likeText
                     itemView.likeText.setTextColor(
                             MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)
                     )
@@ -123,11 +124,8 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         }
 
         private fun bindComment(comment: Comment) {
-            if (comment.value == 0) {
-                itemView.commentText.setText(R.string.kol_action_comment)
-            } else {
-                itemView.commentText.text = comment.fmt
-            }
+            val commentText = if (comment.fmt.isNotEmpty()) comment.fmt else itemView.context.getString(R.string.kol_action_comment)
+            itemView.commentText.text = commentText
         }
     }
 
