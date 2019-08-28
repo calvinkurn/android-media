@@ -8,6 +8,11 @@ apply plugin: 'io.hansel.preprocessor.module'
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
+
+androidExtensions {
+    experimental = true
+}
+
 buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -108,6 +113,8 @@ dependencies {
     implementation project(rootProject.ext.features.kolCommon)
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
 }
 
 apply from: '../publish_local.gradle'

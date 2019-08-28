@@ -79,4 +79,7 @@
     <string name="no_support_application">Tidak ada aplikasi pendukung untuk membuka konten.</string>
     <string name="description_page_title">Deskripsi Produk</string>
     <string name="search_cancel_text">Cancel</string>
+    <string name="catalog_marketprice">Harga Pasar</string>
+    <string name="catalog_complete_specifications">Spesifikasi lengkap</string>
+    <string name="bullet_string">• %1$s</string>
 </resources>
