@@ -106,6 +106,8 @@ public class RemoteConfigKey {
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
+    public static final String ENABLE_TOPPAY_TIMEOUT = "android_enable_toppay_timeout";
+
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 
     public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";

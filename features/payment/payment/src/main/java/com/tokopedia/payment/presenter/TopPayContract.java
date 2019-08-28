@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common.payment.model.PaymentPassData;
 
-import java.util.HashMap;
+import rx.Subscription;
 
 /**
  * Created by zulfikarrahman on 3/27/18.
@@ -25,6 +25,10 @@ public interface TopPayContract {
         void getPostDataOtp(String transactionId, String urlOtp);
 
         String getUserId();
+
+        void clearTimeoutSubscription();
+
+        void addTimeoutSubscription(Subscription subscribe);
     }
 
     interface View extends CustomerView {
