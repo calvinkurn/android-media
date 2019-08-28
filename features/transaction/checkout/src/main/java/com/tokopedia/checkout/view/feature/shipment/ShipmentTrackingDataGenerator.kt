@@ -43,8 +43,6 @@ class ShipmentTrackingDataGenerator @Inject constructor() {
 
         eCommerceBundle.putParcelableArrayList("items", productBundles)
 
-        eCommerceBundle.putString("eventCategory", "courier selection")
-
         return eCommerceBundle
     }
 

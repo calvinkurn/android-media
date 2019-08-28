@@ -283,16 +283,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public CheckoutData getCheckoutData() {
-        return checkoutData;
-    }
-
-    @Override
-    public void setCheckoutData(CheckoutData checkoutData) {
-        this.checkoutData = checkoutData;
-    }
-
-    @Override
     public void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList) {
         this.dataCheckoutRequestList = dataCheckoutRequestList;
     }
@@ -934,10 +924,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(CheckoutData checkoutData) {
-
+                ShipmentPresenter.this.checkoutData = checkoutData;
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
-                    getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
+                    getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId());
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?

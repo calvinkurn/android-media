@@ -152,7 +152,7 @@ public interface ShipmentContract {
 
         void clearTotalBenefitPromoStacking();
 
-        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
+        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId);
 
         void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
     }
@@ -290,10 +290,6 @@ public interface ShipmentContract {
         CartPromoSuggestion getCartPromoSuggestion();
 
         void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion);
-
-        CheckoutData getCheckoutData();
-
-        void setCheckoutData(CheckoutData checkoutData);
 
         void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList);
 

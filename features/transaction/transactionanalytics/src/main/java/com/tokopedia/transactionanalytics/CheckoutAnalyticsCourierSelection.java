@@ -346,7 +346,27 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
     }
 
     // GTM v5 EE Step 2 - 4
-    public void sendEnhancedECommerceCheckoutV5(Bundle eCommerceBundle) {
+    public void sendEnhancedECommerceCheckoutV5(Bundle eCommerceBundle,
+                                                int step,
+                                                String checkoutOption,
+                                                String transactionId,
+                                                boolean isTradeIn,
+                                                String eventAction,
+                                                String eventLabel) {
+        String eventCategory = EventCategory.COURIER_SELECTION;
+        if (isTradeIn) {
+            eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
+        }
+
+        eCommerceBundle.putLong("step", step);
+        eCommerceBundle.putString("option", checkoutOption);
+        eCommerceBundle.putString("eventCategory", eventCategory);
+        eCommerceBundle.putString("eventAction", eventAction);
+        eCommerceBundle.putString("eventLabel", eventLabel);
+
+        if (!TextUtils.isEmpty(transactionId)) {
+            eCommerceBundle.putString("payment_id", transactionId);
+        }
         sendEnhancedEcommerceV5("checkout", eCommerceBundle);
     }
 
@@ -873,6 +893,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 promoCode
         );
     }
+
     public void eventViewCourierImpressionErrorCourierNoAvailable() {
         sendEventCategoryAction(
                 EventName.VIEW_COURIER,
