@@ -26,7 +26,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
         private const val VALUE_CARD_SIZE = 0.4
         val TYPE_YOUTUBE = "youtube"
         val TYPE_VIDEO = "video"
-        val TYPE_MULTI = "multi"
+        val TYPE_MULTI = "multimedia"
     }
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): Holder {
