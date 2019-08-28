@@ -103,10 +103,8 @@ public class SearchActivity extends BaseActivity
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
-    private TextView buttonFilter;
-    private TextView buttonSort;
-    private View iconFilter;
-    private View iconSort;
+    private View buttonFilter;
+    private View buttonSort;
     private View searchNavDivider;
     private View searchNavContainer;
     private View backButton;
@@ -175,9 +173,7 @@ public class SearchActivity extends BaseActivity
         viewPager = findViewById(R.id.pager);
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter);
         buttonFilter = findViewById(R.id.button_filter);
-        iconFilter = findViewById(R.id.icon_filter);
         buttonSort = findViewById(R.id.button_sort);
-        iconSort = findViewById(R.id.icon_sort);
         searchNavDivider = findViewById(R.id.search_nav_divider);
         searchNavContainer = findViewById(R.id.search_nav_container);
         backButton = findViewById(R.id.action_up_btn);
@@ -324,17 +320,7 @@ public class SearchActivity extends BaseActivity
                 searchNavigationClickListener.onFilterClick();
             }
         });
-        iconFilter.setOnClickListener(view -> {
-            if (searchNavigationClickListener != null) {
-                searchNavigationClickListener.onFilterClick();
-            }
-        });
         buttonSort.setOnClickListener(view -> {
-            if (searchNavigationClickListener != null) {
-                searchNavigationClickListener.onSortClick();
-            }
-        });
-        iconSort.setOnClickListener(view -> {
             if (searchNavigationClickListener != null) {
                 searchNavigationClickListener.onSortClick();
             }
@@ -683,11 +669,9 @@ public class SearchActivity extends BaseActivity
 
         if (isSortEnabled) {
             buttonSort.setVisibility(View.VISIBLE);
-            iconSort.setVisibility(View.VISIBLE);
             searchNavDivider.setVisibility(View.VISIBLE);
         } else {
             buttonSort.setVisibility(View.GONE);
-            iconSort.setVisibility(View.GONE);
             searchNavDivider.setVisibility(View.GONE);
         }
 

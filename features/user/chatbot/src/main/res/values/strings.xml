@@ -22,5 +22,7 @@
     <string name="cb_bot_end_live_chat">Akhiri Live Chat</string>
     <string name="cb_bot_end_live_chat_desc">Kamu akan mengakhiri sesi Live Chat dengan CS kami. Apakah kamu yakin?</string>
     <string name="cb_bot_yes_end_text">Ya, Akhiri</string>
+    <string name="cb_bot_string_hint_invoice_search">Cari invoice atau nama produk</string>
+    <string name="cb_bot_title_no_result">Transaksi tidak ditemukan  Periksa kembali kata kunci Anda</string>
 
 </resources>

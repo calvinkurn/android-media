@@ -8,6 +8,7 @@ import com.tokopedia.discovery.newdynamicfilter.DynamicFilterColorActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailBrandActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterDetailGeneralActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterLocationActivity;
+import com.tokopedia.discovery.newdynamicfilter.DynamicFilterOfferingActivity;
 import com.tokopedia.discovery.newdynamicfilter.DynamicFilterRatingActivity;
 
 import rx.Observable;
@@ -29,6 +30,14 @@ public class FilterDetailActivityRouter {
                                             Filter filter, boolean isUsingTracking) {
         if (filter.isColorFilter()) {
             DynamicFilterColorActivity
+                    .moveTo(activity,
+                            filter.getTitle(),
+                            filter.getOptions(),
+                            filter.getSearch().getSearchable() == 1,
+                            filter.getSearch().getPlaceholder(), isUsingTracking);
+
+        } else if (filter.isOfferingFilter()) {
+            DynamicFilterOfferingActivity.Companion
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),
