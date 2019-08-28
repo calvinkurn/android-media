@@ -15,6 +15,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.topupbills.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TelcoEnquiryMainInfo
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -33,6 +35,7 @@ import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameProductDecorator
 import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductViewHolder
 import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewModel
 import com.tokopedia.vouchergame.detail.widget.VoucherGameBottomSheets
+import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
 import java.util.regex.Pattern
@@ -110,6 +113,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         checkout_view.setListener(this)
     }
 
+    override fun processEnquiry(data: TelcoEnquiryData) {
+        renderEnquiryResult(data.enquiry.attributes.mainInfoList)
+    }
+
     private fun setupEnquiryFields(data: VoucherGameDetailData) {
         // Hide input fields if there is no fields
         if (!data.needEnquiry || data.enquiryFields.isEmpty()) {
@@ -170,7 +177,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                 // Reset error label
                 setInputFieldsError(false)
 
-                // TODO: Add enquiry api call
+                val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
+//                topupBillsViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital_telco),
+//                        topupBillsViewModel.createEnquiryParams(clientNumber, voucherGameExtraParam.operatorId))
             } else {
                 // Set error message
                 setInputFieldsError(true)
@@ -222,16 +231,16 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         }
     }
 
-    private fun renderEnquiryResult() {
+    private fun renderEnquiryResult(results: List<TelcoEnquiryMainInfo>) {
         input_field_label.visibility = View.INVISIBLE
-        // TODO: Add enquiry result data
-//        context?.run {
-//            for (result in results) {
-//                val resultView = VoucherGameEnquiryResultWidget(this)
-//                resultView.setEnquiryResult(result.field, result.value)
-//                enquiry_result_container.addView(resultView)
-//            }
-//        }
+
+        context?.run {
+            for (result in results) {
+                val resultView = VoucherGameEnquiryResultWidget(this)
+                resultView.setEnquiryResult(result.label, result.value)
+                enquiry_result_container.addView(resultView)
+            }
+        }
     }
 
     private fun setupProductInfo() {

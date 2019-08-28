@@ -13,7 +13,7 @@ import kotlinx.coroutines.CoroutineDispatcher
  * Created by resakemal on 12/08/19.
  */
 @CommonTopupBillsScope
-@Component(modules = [CommonTopupBillsModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [CommonTopupBillsModule::class, CommonTopupBillsViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface CommonTopupBillsComponent {
 
     fun userSessionInterface(): UserSessionInterface

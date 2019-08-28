@@ -1,14 +1,20 @@
 package com.tokopedia.common.topupbills.view.fragment
 
+import android.arch.lifecycle.Observer
+import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.generateRechargeCheckoutToken
+import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -21,6 +27,23 @@ abstract class BaseTopupBillsFragment<T: Visitable<*>, F: AdapterTypeFactory>: B
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var topupBillsViewModel: TopupBillsViewModel
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        topupBillsViewModel.enquiryData.observe(this, Observer {
+            it.run {
+                when (it) {
+                    is Success -> processEnquiry(it.data)
+                    is Fail -> showGetListError(it.throwable)
+                }
+            }
+        })
+    }
+
+    abstract fun processEnquiry(data: TelcoEnquiryData)
 
     fun processToCart() {
         if (userSession.isLoggedIn) {
