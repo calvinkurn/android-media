@@ -6,6 +6,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
@@ -14,6 +15,7 @@ import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -137,6 +139,17 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
 
     private void showCancellationStatus(String cancellationInfo) {
         warningTicker.setHtmlDescription(cancellationInfo);
+        warningTicker.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(CharSequence charSequence) {
+                Toast.makeText(itemView.getContext(), charSequence, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDismiss() {
+
+            }
+        });
         warningTicker.setVisibility(View.VISIBLE);
     }
 

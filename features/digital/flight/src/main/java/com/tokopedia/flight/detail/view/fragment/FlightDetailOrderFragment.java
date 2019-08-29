@@ -63,6 +63,7 @@ import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdap
 import com.tokopedia.flight.review.view.adapter.FlightBookingReviewPassengerAdapterTypeFactory;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import java.util.List;
 
@@ -548,6 +549,17 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @Override
     public void showCancellationStatus(String status) {
         cancellationWarningTicker.setHtmlDescription(status);
+        cancellationWarningTicker.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(CharSequence charSequence) {
+                Toast.makeText(getContext(), charSequence, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDismiss() {
+
+            }
+        });
         cancellationWarningTicker.setVisibility(View.VISIBLE);
     }
 
