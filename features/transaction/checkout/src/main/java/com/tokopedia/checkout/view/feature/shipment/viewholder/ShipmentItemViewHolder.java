@@ -37,6 +37,7 @@ import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter
 import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
@@ -182,6 +183,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvErrorShipmentItemDescription;
     private RelativeLayout rlProductInfo;
     private FrameLayout flDisableContainer;
+    private TextView tickerOtd;
 
     // robinhood III
     private LinearLayout llCourierBlackboxStateLoading;
@@ -336,6 +338,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
         rlProductInfo = itemView.findViewById(R.id.rl_product_info);
         flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
+        tickerOtd = itemView.findViewById(R.id.ticker_otd);
 
         //priority
         llPrioritas = itemView.findViewById(R.id.ll_prioritas);
@@ -737,6 +740,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
             tvLogPromoMsg.setText(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
+
+            if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
+            shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()) {
+                OntimeDelivery otd = shipmentDetailData.getSelectedCourier().getOntimeDelivery();
+                tickerOtd.setVisibility(View.VISIBLE);
+                tickerOtd.setText(otd.getText_detail());
+            } else {
+                tickerOtd.setVisibility(View.GONE);
+            }
 
             if (shipmentCartItemModel.isHidingCourier()) {
                 // Robinhood Phase 21b
