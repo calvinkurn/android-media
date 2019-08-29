@@ -35,7 +35,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -565,8 +564,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         cancellationWarningTicker.setDescriptionClickEvent(new TickerCallback() {
             @Override
             public void onDescriptionViewClick(CharSequence charSequence) {
-                RouteManager.route(getContext(), charSequence.toString());
-                if (getActivity() != null) getActivity().finish();
+                navigateToCancellationListPage();
             }
 
             @Override
