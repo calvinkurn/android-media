@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -12,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_TELCO
@@ -38,7 +38,6 @@ import javax.inject.Inject
  */
 class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         VoucherGameListAdapterFactory>(),
-        BaseEmptyViewHolder.Callback,
         SearchInputView.ResetListener,
         VoucherGameListViewHolder.OnClickListener {
 
@@ -122,7 +121,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun getAdapterTypeFactory(): VoucherGameListAdapterFactory {
-        return VoucherGameListAdapterFactory(this, this)
+        return VoucherGameListAdapterFactory(this)
     }
 
     override fun getScreenName(): String = getString(R.string.app_label)
@@ -171,14 +170,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             }
         }
         return layoutManager
-    }
-
-    override fun onEmptyContentItemTextClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onEmptyButtonClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
