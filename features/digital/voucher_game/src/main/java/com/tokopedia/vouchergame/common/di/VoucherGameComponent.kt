@@ -3,7 +3,7 @@ package com.tokopedia.vouchergame.common.di
 import com.tokopedia.common.topupbills.di.CommonTopupBillsComponent
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.vouchergame.common.view.VoucherGameBaseActivity
+import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 
@@ -21,6 +21,6 @@ interface VoucherGameComponent {
 
     fun graphqlRepository(): GraphqlRepository
 
-    fun inject(voucherGameBaseActivity: VoucherGameBaseActivity)
+    fun inject(baseVoucherGameActivity: BaseVoucherGameActivity)
 
 }

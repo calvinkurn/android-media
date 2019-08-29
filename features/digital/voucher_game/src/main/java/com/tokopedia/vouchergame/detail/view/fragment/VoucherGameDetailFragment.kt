@@ -7,12 +7,11 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
@@ -25,13 +24,14 @@ import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARA
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
-import com.tokopedia.vouchergame.common.view.VoucherGameBaseActivity
+import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameEnquiryFields
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
 import com.tokopedia.vouchergame.detail.data.VoucherGameProductData
 import com.tokopedia.vouchergame.detail.di.VoucherGameDetailComponent
+import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapter
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapterFactory
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameProductDecorator
 import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductViewHolder
@@ -46,15 +46,17 @@ import javax.inject.Inject
 /**
  * Created by resakemal on 16/08/19.
  */
-class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
-        VoucherGameDetailAdapterFactory>(),
-        BaseEmptyViewHolder.Callback,
+class VoucherGameDetailFragment: BaseTopupBillsFragment(),
+        BaseListAdapter.OnAdapterInteractionListener<Visitable<*>>,
+        VoucherGameDetailAdapter.LoaderListener,
         VoucherGameProductViewHolder.OnClickListener,
         TopupBillsCheckoutWidget.ActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var voucherGameViewModel: VoucherGameDetailViewModel
+
+    lateinit var adapter: VoucherGameDetailAdapter
 
     lateinit var selectedProduct: VoucherGameProduct
 
@@ -65,9 +67,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+        activity?.let {
+            val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             voucherGameViewModel = viewModelProvider.get(VoucherGameDetailViewModel::class.java)
+
+            //Setup adapter
+            adapter = VoucherGameDetailAdapter(it,
+                    VoucherGameDetailAdapterFactory(this),
+                    this, this)
         }
 
         arguments?.let {
@@ -81,13 +88,15 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
             it.run {
                 when(it) {
                     is Success -> {
+                        adapter.hideLoading()
+
                         setupEnquiryFields(it.data)
                         renderProducts(it.data)
 
                         checkAutoSelectProduct()
                     }
                     is Fail -> {
-                        showGetListError(it.throwable)
+                        adapter.showGetListError(it.throwable)
                     }
                 }
             }
@@ -101,6 +110,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+
+        adapter.showLoading()
+        loadData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -109,6 +121,17 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     }
 
     private fun initView() {
+        recycler_view.adapter = adapter
+        val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(p0: Int): Int {
+                return when (adapter.getItemViewType(p0)) {
+                    VoucherGameProductViewHolder.LAYOUT -> 1
+                    else -> 2
+                }
+            }
+        }
+        recycler_view.layoutManager = layoutManager
         recycler_view.addItemDecoration(VoucherGameProductDecorator(ITEM_DECORATOR_SIZE, resources))
 
         checkout_view.setVisibilityLayout(false)
@@ -120,7 +143,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
     }
 
     override fun processMenuDetail(data: TelcoCatalogMenuDetail) {
-        (activity as VoucherGameBaseActivity).updateTitle(data.catalog.getOrNull(0)?.label)
+        (activity as BaseVoucherGameActivity).updateTitle(data.catalog.getOrNull(0)?.label)
+    }
+
+    override fun showError(t: Throwable) {
+
     }
 
     private fun setupEnquiryFields(data: VoucherGameDetailData) {
@@ -220,7 +247,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         product_name.text = data.product.text
 
         val dataCollection = data.product.dataCollections
-        if (dataCollection.isEmpty()) showEmpty()
+        if (dataCollection.isEmpty()) adapter.showEmpty()
         else {
             val listData = mutableListOf<Visitable<*>>()
             for (productList in dataCollection) {
@@ -233,7 +260,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
                     listData.addAll(productList.products)
                 }
             }
-            renderList(listData)
+            adapter.renderList(listData)
         }
     }
 
@@ -266,17 +293,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
         }
     }
 
-    override fun getAdapterTypeFactory(): VoucherGameDetailAdapterFactory {
-        return VoucherGameDetailAdapterFactory(this, this)
-    }
-
     override fun getScreenName(): String = getString(R.string.app_label)
 
     override fun initInjector() {
         getComponent(VoucherGameDetailComponent::class.java).inject(this)
     }
 
-    override fun loadData(page: Int) {
+    override fun loadData() {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             voucherGameViewModel.getVoucherGameProducts(GraphqlHelper.loadRawString(resources,
                     R.raw.query_voucher_game_product_detail),
@@ -365,27 +388,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment<Visitable<*>,
 
             processToCart()
         }
-    }
-
-    override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
-        val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
-        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(p0: Int): Int {
-                return when (adapter.getItemViewType(p0)) {
-                    VoucherGameProductViewHolder.LAYOUT -> 1
-                    else -> 2
-                }
-            }
-        }
-        return layoutManager
-    }
-
-    override fun onEmptyContentItemTextClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onEmptyButtonClicked() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     companion object {

@@ -4,9 +4,7 @@ import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -24,7 +22,7 @@ import javax.inject.Inject
 /**
  * Created by resakemal on 12/08/19.
  */
-abstract class BaseTopupBillsFragment<T: Visitable<*>, F: AdapterTypeFactory>: BaseListFragment<T, F>()  {
+abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     lateinit var checkoutPassData: DigitalCheckoutPassData
 
@@ -40,7 +38,7 @@ abstract class BaseTopupBillsFragment<T: Visitable<*>, F: AdapterTypeFactory>: B
             it.run {
                 when (it) {
                     is Success -> processEnquiry(it.data)
-                    is Fail -> showGetListError(it.throwable)
+                    is Fail -> showError(it.throwable)
                 }
             }
         })
@@ -48,7 +46,7 @@ abstract class BaseTopupBillsFragment<T: Visitable<*>, F: AdapterTypeFactory>: B
             it.run {
                 when (it) {
                     is Success -> processMenuDetail(it.data)
-                    is Fail -> showGetListError(it.throwable)
+                    is Fail -> showError(it.throwable)
                 }
             }
         })
@@ -67,6 +65,8 @@ abstract class BaseTopupBillsFragment<T: Visitable<*>, F: AdapterTypeFactory>: B
 
     abstract fun processMenuDetail(data: TelcoCatalogMenuDetail)
 
+    abstract fun showError(t: Throwable)
+
     fun processToCart() {
         if (userSession.isLoggedIn) {
             navigateToCart()
@@ -78,7 +78,7 @@ abstract class BaseTopupBillsFragment<T: Visitable<*>, F: AdapterTypeFactory>: B
     private fun navigateToCart() {
         if (::checkoutPassData.isInitialized) {
             checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
-            val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
+            val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CART_DIGITAL)
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
             startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
         }

@@ -18,7 +18,7 @@ import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProdu
  * @author by resakemal on 12/08/19
  */
 
-class VoucherGameDetailAdapterFactory(val callback: BaseEmptyViewHolder.Callback, val listener: VoucherGameProductViewHolder.OnClickListener): BaseAdapterTypeFactory() {
+class VoucherGameDetailAdapterFactory(val listener: VoucherGameProductViewHolder.OnClickListener): BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
