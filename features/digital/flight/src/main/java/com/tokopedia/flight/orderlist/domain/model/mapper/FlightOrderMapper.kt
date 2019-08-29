@@ -35,7 +35,7 @@ constructor(private val flightOrderJourneyMapper: FlightOrderJourneyMapper,
                 passengerViewModelMapper.getCancelledPassengerCount(orderEntity.attributes
                         .flight.cancellations),
                 orderEntity.attributes.flight.contactUsUrl,
-                if (orderEntity.attributes.flight.cancellationInfo.isNotEmpty()) orderEntity.attributes.flight.cancellationInfo[0].text else "")
+                if (orderEntity.attributes.flight.cancellationInfo != null && orderEntity.attributes.flight.cancellationInfo.isNotEmpty()) orderEntity.attributes.flight.cancellationInfo[0].text else "")
     }
 
     fun transform(orderEntities: List<OrderEntity>): List<FlightOrder> {
