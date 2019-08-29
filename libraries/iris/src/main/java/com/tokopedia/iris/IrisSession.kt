@@ -6,29 +6,30 @@ import android.util.Base64
 import java.nio.charset.Charset
 import java.util.*
 
-
 class IrisSession(val context: Context) : Session {
 
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
     private val editor = sharedPreferences.edit()
 
-    override fun getUserId(): String {
+    override fun getUserId(): String? {
         return sharedPreferences.getString(KEY_USER_ID, "")
     }
 
-    override fun getDeviceId(): String {
+    override fun getDeviceId(): String? {
         return sharedPreferences.getString(KEY_DEVICE_ID, "")
     }
 
-    override fun getSessionId(): String {
+    override fun getSessionId(): String? {
 
         val beginningCurrent = Calendar.getInstance().timeInMillis
         val beginningPrevious = sharedPreferences.getString(KEY_TIMESTAMP_PREVIOUS, beginningCurrent.toString())
 
         var sessionId = sharedPreferences.getString(KEY_SESSION_ID, "")
-        if (sessionId.isBlank() || shouldGenerateSession(beginningPrevious.toLong(), beginningCurrent)) {
-            sessionId = generateSessionId(beginningCurrent)
-            setSessionId(sessionId)
+        if (sessionId != null && beginningPrevious != null) {
+            if (sessionId.isBlank() || shouldGenerateSession(beginningPrevious.toLong(), beginningCurrent)) {
+                sessionId = generateSessionId(beginningCurrent)
+                setSessionId(sessionId)
+            }
         }
 
         return sessionId
@@ -96,17 +97,17 @@ class IrisSession(val context: Context) : Session {
         editor.commit()
     }
 
-    private fun setDomainHash(domainHash: String) {
+    private fun setDomainHash(domainHash: String?) {
         editor.putString(KEY_DOMAIN_HASH, domainHash)
         editor.commit()
     }
 
-    private fun setUuid(uuid: String) {
+    private fun setUuid(uuid: String?) {
         editor.putString(KEY_SESSION_ID, uuid)
         editor.commit()
     }
 
-    private fun setInitialVisit(initialVisit: String) {
+    private fun setInitialVisit(initialVisit: String?) {
         editor.putString(KEY_INITIAL_VISIT, initialVisit)
         editor.commit()
     }
