@@ -2066,12 +2066,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new DefaultShare(activity, shareData).show();
     }
 
-    public void sendAnalyticsGroupChat(String url, String error) {
-        if (remoteConfig.getBoolean("groupchat_analytics", false)) {
-            AnalyticsLog.logGroupChatWebSocketError(getAppContext(), url, error);
-        }
-    }
-
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
