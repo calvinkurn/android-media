@@ -7,7 +7,7 @@ data class OntimeDelivery(
         var available: Boolean = false,
         val text_label: String,
         val text_detail: String,
-        val value: Int
+        var value: Int = 0
 ) : Parcelable {
     constructor(source: Parcel) : this(
             1 == source.readInt(),

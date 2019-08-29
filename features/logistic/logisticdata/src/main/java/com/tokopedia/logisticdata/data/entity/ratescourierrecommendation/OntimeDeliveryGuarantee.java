@@ -10,7 +10,7 @@ public class OntimeDeliveryGuarantee implements Parcelable {
 
     @SerializedName("available")
     @Expose
-    private Boolean available;
+    private boolean available;
     @SerializedName("text_label")
     @Expose
     private String textLabel;
@@ -19,16 +19,16 @@ public class OntimeDeliveryGuarantee implements Parcelable {
     private String textDetail;
     @SerializedName("value")
     @Expose
-    private Integer value;
+    private int value;
     @SerializedName("icon_url")
     @Expose
     private String iconUrl;
 
-    public Boolean getAvailable() {
+    public boolean getAvailable() {
         return available;
     }
 
-    public void setAvailable(Boolean available) {
+    public void setAvailable(boolean available) {
         this.available = available;
     }
 
@@ -48,11 +48,11 @@ public class OntimeDeliveryGuarantee implements Parcelable {
         this.textDetail = textDetail;
     }
 
-    public Integer getValue() {
+    public int getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
