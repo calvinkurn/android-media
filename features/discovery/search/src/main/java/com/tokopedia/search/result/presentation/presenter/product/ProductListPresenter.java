@@ -629,7 +629,7 @@ final class ProductListPresenter
         getView().setProductList(list);
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
         getView().addLoading();
-
+        getView().updateScrollListener();
         getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
         getView().stopTracePerformanceMonitoring();
     }
