@@ -1,17 +1,17 @@
 package com.tokopedia.iris.data
 
 import android.content.Context
-import com.tokopedia.iris.DATABASE_NAME
-import com.tokopedia.iris.Session
-import com.tokopedia.iris.TAG
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.data.db.table.Tracking
 import com.tokopedia.iris.data.network.ApiService
+import com.tokopedia.iris.util.Cache
+import com.tokopedia.iris.util.DATABASE_NAME
+import com.tokopedia.iris.util.Session
+import com.tokopedia.iris.util.logIris
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.File
 
 /**
@@ -21,13 +21,14 @@ class TrackingRepository (
         private val context: Context
 ) {
 
+    private val cache: Cache = Cache(context)
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
 
     suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
         try {
             if (isSizeOver()) { // check if db over 2 MB
                 trackingDao.flush()
-                Timber.w("$TAG Database Local Over 2mb")
+                logIris(cache, "Database Local Over 2mb")
             }
             trackingDao.insert(Tracking(data, session.getUserId(),
                     session.getDeviceId()?: ""))
@@ -45,7 +46,7 @@ class TrackingRepository (
     fun delete(data: List<Tracking>) {
         try {
             trackingDao.delete(data)
-            Timber.w("$TAG Discard: $data")
+            logIris(cache, "Discard: $data")
         } catch (e: Throwable) {}
     }
 
@@ -62,7 +63,7 @@ class TrackingRepository (
         val f: File? = context.getDatabasePath(DATABASE_NAME)
         if (f != null) {
             val lengthDb = f.length()
-            Timber.w("$TAG Length Database: $lengthDb")
+            logIris(cache, "Length Database: $lengthDb")
             val sizeDbInMb = (lengthDb / 1024) / 1024
             return sizeDbInMb >= 2
         }
@@ -70,6 +71,9 @@ class TrackingRepository (
     }
 
     suspend fun sendRemainingEvent(maxRow: Int) {
+        if (!cache.isEnabled())
+            return
+
         val data: List<Tracking> = getFromOldest(maxRow)
 
         if (data.isNotEmpty()) {

@@ -5,6 +5,7 @@ import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterF
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.*
+import com.tokopedia.iris.util.*
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -41,7 +42,7 @@ class ApiService(private val context: Context) {
                             request.header(HEADER_USER_ID, userId)
                         }
                     }
-                    request.header(HEADER_DEVICE, HEADER_ANDROID+BuildConfig.VERSION_NAME)
+                    request.header(HEADER_DEVICE, HEADER_ANDROID +BuildConfig.VERSION_NAME)
                     request.method(original.method(), original.body())
                     val requestBuilder = request.build()
 

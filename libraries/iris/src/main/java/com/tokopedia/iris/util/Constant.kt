@@ -1,4 +1,4 @@
-package com.tokopedia.iris
+package com.tokopedia.iris.util
 
 /**
  * @author okasurya on 10/18/18.
@@ -25,7 +25,7 @@ const val HEADER_ANDROID = "android-"
 const val DATABASE_NAME = "iris-db"
 const val TABLE_TRACKING = "tracking"
 
-const val SHARED_PREFERENCES = "com.tokopedia.iris.SHARED_PREFERENCES"
+const val SHARED_PREFERENCES = "com.tokopedia.iris.util.SHARED_PREFERENCES"
 const val DOMAIN_HASH = "android-tokopedia"
 const val KEY_DOMAIN_HASH = "domain_hash"
 const val KEY_USER_ID = "user_id"
@@ -35,10 +35,11 @@ const val KEY_TIMESTAMP_PREVIOUS = "timestamp_previous"
 const val KEY_UUID = "uuid"
 const val KEY_INITIAL_VISIT = "initial_visit"
 
-const val WORKER_SEND_DATA = "com.tokopedia.iris.WORKER_SEND_DATA"
+const val WORKER_SEND_DATA = "com.tokopedia.iris.util.WORKER_SEND_DATA"
 const val MAX_ROW = "MAX_ROW"
 
 const val IRIS_ENABLED = "iris_enabled"
+const val IRIS_LOG_ENABLED = "iris_log_enabled"
 
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app"

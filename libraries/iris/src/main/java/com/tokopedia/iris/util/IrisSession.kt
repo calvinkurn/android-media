@@ -1,4 +1,4 @@
-package com.tokopedia.iris
+package com.tokopedia.iris.util
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

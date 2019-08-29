@@ -9,6 +9,7 @@ import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
 import com.tokopedia.iris.model.Configuration
+import com.tokopedia.iris.util.*
 import com.tokopedia.iris.worker.IrisBroadcastReceiver
 import com.tokopedia.iris.worker.IrisExecutor
 import com.tokopedia.iris.worker.IrisExecutor.handler
@@ -20,7 +21,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -54,6 +54,9 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
             val irisConfig = remoteConfig?.getString(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG)?: ""
 
             setService(irisConfig, irisEnable)
+
+            val irisLogEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_LOG_ENABLED_TOGGLE, false)?: false
+            cache.setEnableLogEntries(irisLogEnable)
         }
     }
 
@@ -111,7 +114,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 val trackingRepository = TrackingRepository(context)
                 val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
                 if (isSuccess && BuildConfig.DEBUG) {
-                    Timber.w("$TAG Success Send Single Event")
+                    logIris(cache, "Success Send Single Event")
                 }
             }
          }

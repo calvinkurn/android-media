@@ -1,4 +1,4 @@
-package com.tokopedia.iris
+package com.tokopedia.iris.util
 
 import android.content.Context
 
@@ -17,5 +17,14 @@ class Cache(context: Context) {
 
     fun isEnabled() : Boolean {
         return sharedPreferences.getBoolean(IRIS_ENABLED, false)
+    }
+
+    fun setEnableLogEntries(isEnabled: Boolean) {
+        editor.putBoolean(IRIS_LOG_ENABLED, isEnabled)
+        editor.commit()
+    }
+
+    fun isEnableLogEntries(): Boolean {
+        return sharedPreferences.getBoolean(IRIS_LOG_ENABLED, false)
     }
 }

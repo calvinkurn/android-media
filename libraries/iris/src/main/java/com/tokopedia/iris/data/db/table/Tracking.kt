@@ -3,7 +3,7 @@ package com.tokopedia.iris.data.db.table
 import android.arch.persistence.room.ColumnInfo
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.PrimaryKey
-import com.tokopedia.iris.TABLE_TRACKING
+import com.tokopedia.iris.util.TABLE_TRACKING
 import java.util.*
 
 @Entity(tableName = TABLE_TRACKING)

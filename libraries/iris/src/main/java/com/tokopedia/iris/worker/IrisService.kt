@@ -3,10 +3,10 @@ package com.tokopedia.iris.worker
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.BaseJobIntentService
-import com.tokopedia.iris.Cache
-import com.tokopedia.iris.DEFAULT_MAX_ROW
-import com.tokopedia.iris.JOB_IRIS_ID
-import com.tokopedia.iris.MAX_ROW
+import com.tokopedia.iris.util.Cache
+import com.tokopedia.iris.util.DEFAULT_MAX_ROW
+import com.tokopedia.iris.util.JOB_IRIS_ID
+import com.tokopedia.iris.util.MAX_ROW
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.worker.IrisExecutor.handler
 import kotlinx.coroutines.CoroutineScope

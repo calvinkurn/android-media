@@ -1,7 +1,7 @@
 package com.tokopedia.iris.data.network
 
-import com.tokopedia.iris.MULTI_EVENT
-import com.tokopedia.iris.SINGLE_EVENT
+import com.tokopedia.iris.util.MULTI_EVENT
+import com.tokopedia.iris.util.SINGLE_EVENT
 import kotlinx.coroutines.Deferred
 import okhttp3.RequestBody
 import retrofit2.Response
