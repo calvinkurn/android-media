@@ -69,18 +69,16 @@ public abstract class SearchSectionFragment
     protected static final int START_ROW_FIRST_TIME_LOAD = 0;
 
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
-    private static final String EXTRA_FILTER = "EXTRA_FILTER";
-    private static final String EXTRA_SORT = "EXTRA_SORT";
     private static final String EXTRA_SELECTED_FILTER = "EXTRA_SELECTED_FILTER";
     private static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
-    private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
     protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME";
     public static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
     public static final String EXTRA_FILTER_PARAMETER = "EXTRA_FILTER_PARAMETER";
     public static final String EXTRA_SELECTED_FILTERS = "EXTRA_SELECTED_FILTERS";
+    protected static final String EXTRA_FRAGMENT_POSITION = "EXTRA_FRAGMENT_POSITION";
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
@@ -97,6 +95,8 @@ public abstract class SearchSectionFragment
     private HashMap<String, String> selectedSort;
     protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
+    private int fragmentPosition;
+    private boolean hasLoadData;
 
     protected SearchParameter searchParameter;
     protected FilterController filterController = new FilterController();
@@ -110,17 +110,26 @@ public abstract class SearchSectionFragment
         initSpan();
         initLayoutManager();
         initSwipeToRefresh(view);
-
-        if (savedInstanceState == null) {
-            refreshLayout.post(this::onFirstTimeLaunch);
-        } else {
-            onRestoreInstanceState(savedInstanceState);
-        }
+        restoreInstanceState(savedInstanceState);
+        startToLoadDataForFirstFragmentPosition();
     }
 
     private void initSwipeToRefresh(View view) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         refreshLayout.setOnRefreshListener(this::onSwipeToRefresh);
+    }
+
+    private void restoreInstanceState(@Nullable Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            onRestoreInstanceState(savedInstanceState);
+        }
+    }
+
+    private void startToLoadDataForFirstFragmentPosition() {
+        if (getFragmentPosition() == 0) {
+            hasLoadData = true;
+            refreshLayout.post(this::onFirstTimeLaunch);
+        }
     }
 
     @Override
@@ -180,6 +189,7 @@ public abstract class SearchSectionFragment
         if (isVisibleToUser && getView() != null) {
             setupSearchNavigation();
             screenTrack();
+            startToLoadData();
         }
     }
 
@@ -210,6 +220,19 @@ public abstract class SearchSectionFragment
                     }
                 }, isSortEnabled());
         refreshMenuItemGridIcon();
+    }
+
+    private void startToLoadData() {
+        if (canStartToLoadData()) {
+            hasLoadData = true;
+            refreshLayout.post(this::onFirstTimeLaunch);
+        }
+    }
+
+    private boolean canStartToLoadData() {
+        return !hasLoadData
+                && isAdded()
+                && getPresenter() != null;
     }
 
     protected GridLayoutManager getGridLayoutManager() {
@@ -503,6 +526,7 @@ public abstract class SearchSectionFragment
         outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
         outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
+        outState.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
     }
 
     public abstract void reloadData();
@@ -533,6 +557,7 @@ public abstract class SearchSectionFragment
         setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
         setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
+        fragmentPosition = savedInstanceState.getInt(EXTRA_FRAGMENT_POSITION);
     }
 
     @Override
@@ -649,5 +674,13 @@ public abstract class SearchSectionFragment
     @Override
     public void onBannerAdsImpressionListener(int position, CpmData data) {
         TopAdsGtmTracker.eventSearchResultPromoView(getActivity(), data, position);
+    }
+
+    protected void setFragmentPosition(int fragmentPosition) {
+        this.fragmentPosition = fragmentPosition;
+    }
+
+    protected int getFragmentPosition() {
+        return this.fragmentPosition;
     }
 }
