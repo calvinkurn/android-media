@@ -196,7 +196,7 @@ public class ShipmentDataRequestConverter {
         return null;
     }
 
-    private RatesFeature generateRatesFeature(CourierItemData courierItemData) {
+    public static RatesFeature generateRatesFeature(CourierItemData courierItemData) {
         RatesFeature result = new RatesFeature();
         OntimeDeliveryGuarantee otdg = new OntimeDeliveryGuarantee();
         if (courierItemData.getOntimeDelivery() != null) {

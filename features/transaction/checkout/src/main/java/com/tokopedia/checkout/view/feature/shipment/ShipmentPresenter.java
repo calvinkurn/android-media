@@ -28,6 +28,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipe
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
@@ -43,6 +44,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewmodel.NotEligiblePromoHo
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -88,6 +90,7 @@ import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.EgoldData;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.RatesFeature;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.TokopediaCornerData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.SaveShipmentStateRequest;
@@ -1326,6 +1329,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
+        // todo: refactor to converter class
         List<ShipmentStateProductData> shipmentStateProductDataList = new ArrayList<>();
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
             ShipmentStateProductData.Builder builder = new ShipmentStateProductData.Builder()
@@ -1344,9 +1348,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .telpNo(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())
                 .build();
 
+        CourierItemData courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
+        RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
+
         ShipmentStateShippingInfoData shippingInfoDataBuilder = new ShipmentStateShippingInfoData.Builder()
-                .shippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId())
-                .spId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId())
+                .shippingId(courierData.getShipperId())
+                .spId(courierData.getShipperProductId())
+                .ratesFeature(ratesFeature)
                 .build();
 
         ShipmentStateShopProductData.Builder builder = new ShipmentStateShopProductData.Builder()
