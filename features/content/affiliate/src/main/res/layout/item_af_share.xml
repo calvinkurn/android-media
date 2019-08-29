@@ -7,7 +7,7 @@
     tools:paddingStart="@dimen/dp_16"
     tools:paddingEnd="@dimen/dp_16">
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/imageShare"
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
@@ -16,7 +16,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        tools:src="@drawable/ic_facebook" />
+        tools:srcCompat="@drawable/ic_facebook" />
 
     <LinearLayout
         android:layout_width="wrap_content"

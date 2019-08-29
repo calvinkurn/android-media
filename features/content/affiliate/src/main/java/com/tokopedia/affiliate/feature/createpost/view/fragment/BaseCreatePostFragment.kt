@@ -92,19 +92,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         ShareBottomSheetAdapter(::onShareButtonClicked)
     }
 
-    private val shareDialogView: View by lazy {
-        val view = layoutInflater.inflate(R.layout.bottom_sheet_share_post, null)
-        val (title, subtitle) = getShareTitleAndSubtitle()
-        view.apply {
-            shareSheetTitle.text = title
-            shareSheetSubtitle.text = subtitle
-            shareBtn.setOnClickListener {
-                saveDraftAndSubmit(true)
-                shareDialog.dismiss()
-            }
-        }
-        return@lazy view
-    }
+    private lateinit var shareDialogView: View
 
     private val shareDialog: CloseableBottomSheetDialog by lazy {
         CloseableBottomSheetDialog.createInstanceRounded(context).apply {
@@ -774,6 +762,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     fun openShareBottomSheetDialog() {
         presenter.invalidateShareOptions()
+        if (!::shareDialogView.isInitialized) shareDialogView = createBottomSheetView()
         shareDialogView.apply {
             shareList.adapter = shareAdapter
             shareBtn.isEnabled = isPostEnabled
@@ -792,5 +781,18 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun getShareTitleAndSubtitle(): Pair<String, String> {
         return if (isTypeAffiliate()) context?.getString(R.string.af_share_title).orEmpty() to context?.getString(R.string.af_share_subtitle).orEmpty()
         else context?.getString(R.string.af_merchant_share_title).orEmpty() to context?.getString(R.string.af_merchant_share_subtitle).orEmpty()
+    }
+
+    private fun createBottomSheetView(): View {
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_share_post, null)
+        val (title, subtitle) = getShareTitleAndSubtitle()
+        return view.apply {
+            shareSheetTitle.text = title
+            shareSheetSubtitle.text = subtitle
+            shareBtn.setOnClickListener {
+                saveDraftAndSubmit(true)
+                shareDialog.dismiss()
+            }
+        }
     }
 }
