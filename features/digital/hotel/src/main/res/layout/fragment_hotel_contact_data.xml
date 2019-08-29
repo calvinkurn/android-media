@@ -12,19 +12,19 @@
         android:orientation="vertical"
         android:layout_alignParentTop="true">
 
-        <android.support.v7.widget.AppCompatAutoCompleteTextView
+        <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/til_contact_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24">
 
-            <android.support.v7.widget.AppCompatAutoCompleteTextView
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:hint="@string/travel_contact_data_name_hint" />
 
-        </android.support.v7.widget.AppCompatAutoCompleteTextView>
+        </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/til_contact_email"
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24">
 
-            <android.support.v7.widget.AppCompatAutoCompleteTextView
+            <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
