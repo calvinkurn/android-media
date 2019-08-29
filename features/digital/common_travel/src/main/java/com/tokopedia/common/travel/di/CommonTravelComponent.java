@@ -2,7 +2,6 @@ package com.tokopedia.common.travel.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment;
-import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment;
 import com.tokopedia.common.travel.presentation.fragment.TravelPassengerEditFragment;
 import com.tokopedia.common.travel.presentation.fragment.TravelPassengerUpdateFragment;
 import com.tokopedia.common.travel.presentation.fragment.TravelPassengerListFragment;
@@ -21,8 +20,6 @@ public interface CommonTravelComponent {
     void inject(TravelPassengerListFragment travelPassengerListFragment);
 
     void inject(TravelPassengerEditFragment travelPassengerEditFragment);
-
-    void inject(TravelContactDataFragment travelContactDataFragment);
 
     void inject(PhoneCodePickerFragment phoneCodePickerFragment);
 }
