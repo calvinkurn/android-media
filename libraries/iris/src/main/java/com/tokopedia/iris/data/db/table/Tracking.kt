@@ -15,4 +15,8 @@ data class Tracking (
 ) {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") var trackingId: Int = 0
+
+    override fun toString(): String {
+        return "event: $event, userId: $userId, deviceId: $deviceId, timeStamp: $timeStamp"
+    }
 }

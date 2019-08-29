@@ -11,6 +11,8 @@ const val VERSION = "iris/v1/"
 
 const val BASE_URL ="$LIVE$VERSION"
 
+const val TAG = "IRIS-ANDROID"
+
 const val SINGLE_EVENT = "track/dim-event"
 const val MULTI_EVENT = "track/dim-event"
 
@@ -18,7 +20,7 @@ const val HEADER_CONTENT_TYPE = "Content-Type"
 const val HEADER_USER_ID = "Tkpd-UserId"
 const val HEADER_DEVICE = "X-Device"
 const val HEADER_JSON = "application/json"
-const val HEADER_ANDROID = "android-" + BuildConfig.VERSION_NAME
+const val HEADER_ANDROID = "android-"
 
 const val DATABASE_NAME = "iris-db"
 const val TABLE_TRACKING = "tracking"

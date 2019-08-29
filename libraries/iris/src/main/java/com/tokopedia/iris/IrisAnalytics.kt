@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
@@ -84,7 +85,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 val trackingRepository = TrackingRepository(context)
                 val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
                 if (isSuccess && BuildConfig.DEBUG) {
-                    Log.d("Iris", "Success Send Single Event")
+                    Timber.d("$TAG Success Send Single Event")
                 }
             }
          }
