@@ -2041,10 +2041,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY, false);
     }
 
-    public String getNotificationPreferenceConstant() {
-        return ApplinkConst.Play.NOTIFICATION_GROUP_CHAT;
-    }
-
     @Override
     public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
         CartComponentInjector.newInstance(this)
