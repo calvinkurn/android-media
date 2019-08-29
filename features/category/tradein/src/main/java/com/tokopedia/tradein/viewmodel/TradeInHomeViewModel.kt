@@ -14,6 +14,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.*
+import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
+import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +39,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
             TradeInParams()
     }
 
-    var tradeInType: Int = 0
+    var tradeInType: Int = TRADEIN_OFFLINE
 
     fun processMessage(intent: Intent) {
         val result = intent.getStringExtra("test-result")
@@ -177,7 +179,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
         val result = HomeResult()
         result.isSuccess = true
         if (diagnosedPrice > 0) {
-            if (tradeInType != 2) {
+            if (tradeInType != TRADEIN_MONEYIN) {
                 if (diagnosedPrice > tradeInParams.newPrice) {
                     result.priceStatus = HomeResult.PriceState.DIAGNOSED_INVALID
                 } else {

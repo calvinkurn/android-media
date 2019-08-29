@@ -221,7 +221,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         if (Constants.LAKU6_BASEURL.equals(Constants.LAKU6_BASEURL_STAGING))
             campaignId = Constants.CAMPAIGN_ID_STAGING;
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL);
+                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE);
         requestPermission();
     }
 

@@ -19,6 +19,9 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     public static final int TRADEIN_OFFLINE = 0;
     public static final int TRADEIN_ONLINE = 1;
     public static final int TRADEIN_MONEYIN = 2;
+    public static final String TRADEIN_EXCHANGE  = "exchange";
+    public static final String TRADEIN_MONEY_IN  = "money-in";
+    protected String TRADEIN_TEST_TYPE =TRADEIN_EXCHANGE;
     protected int TRADEIN_TYPE = TRADEIN_OFFLINE;
 
 
@@ -41,6 +44,7 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         super.onCreate(savedInstanceState);
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             toolbar.setTitle(R.string.money_in);
+            TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
         }
         setSupportActionBar(toolbar);
     }
