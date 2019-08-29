@@ -601,7 +601,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private fun onSuccessGetMembershipInfo(data: MembershipStampProgress) {
         val isShown = data.membershipStampProgress.isShown
         val membershipQuests = data.membershipStampProgress.membershipProgram.membershipQuests
-        val membershipUrl = data.membershipStampProgress.infoMessage.membershipCta.appLink
+        val membershipUrl = data.membershipStampProgress.infoMessage.membershipCta.url
 
         if (isShown && !isPaddingSet) {
             isPaddingSet = true
