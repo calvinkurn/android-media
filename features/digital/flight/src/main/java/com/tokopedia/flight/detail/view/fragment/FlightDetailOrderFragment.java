@@ -566,6 +566,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             @Override
             public void onDescriptionViewClick(CharSequence charSequence) {
                 RouteManager.route(getContext(), charSequence.toString());
+                if (getActivity() != null) getActivity().finish();
             }
 
             @Override
