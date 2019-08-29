@@ -116,7 +116,13 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
 
     private void setShopBadges() {
         if (imageViewShopBadge != null) {
-            ImageHandler.loadImageWithoutPlaceholder(imageViewShopBadge, boundedShopSearch.getShopBadgeIconUrl());
+            if (!boundedShopSearch.getShopBadgeIconUrl().isEmpty()) {
+                imageViewShopBadge.setVisibility(View.VISIBLE);
+                ImageHandler.loadImageWithoutPlaceholder(imageViewShopBadge, boundedShopSearch.getShopBadgeIconUrl());
+            }
+            else {
+                imageViewShopBadge.setVisibility(View.GONE);
+            }
         }
     }
 
