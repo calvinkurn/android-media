@@ -20,8 +20,9 @@ class GetContactListUseCase @Inject constructor(val useCase: MultiRequestGraphql
 
     suspend fun execute(query: String,
                         product: String,
-                        filterType: String,
-                        keyword: String = "") : List<TravelContactListModel.Contact> {
+                        filterType: String = "",
+                        keyword: String = "")
+            : List<TravelContactListModel.Contact> {
 
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).apply {
             setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
@@ -35,7 +36,7 @@ class GetContactListUseCase @Inject constructor(val useCase: MultiRequestGraphql
             useCase.addRequest(graphqlRequest)
             val contactList = useCase.executeOnBackground().getSuccessData<TravelContactListModel.Response>().response
 
-            return filterByKeyword(contactList.contacts, keyword)
+            return if (query.isNotBlank()) filterByKeyword(contactList.contacts, keyword) else contactList.contacts
         } catch (throwable: Throwable) {
             return listOf()
         }
@@ -48,6 +49,13 @@ class GetContactListUseCase @Inject constructor(val useCase: MultiRequestGraphql
     companion object {
         val PARAM_GET_CONTACT_LIST_PRODUCT = "product"
         val PARAM_GET_CONTACT_LIST_FILTER_TYPE = "filterType"
+
+        val PARAM_PRODUCT_FLIGHT = "flight"
+        val PARAM_PRODUCT_HOTEL = "hotel"
+
+        val PARAM_PRODUCT_ADULT = "adult"
+        val PARAM_PRODUCT_CHILD = "child"
+        val PARAM_PRODUCT_INFANT = "infant"
     }
 
 }

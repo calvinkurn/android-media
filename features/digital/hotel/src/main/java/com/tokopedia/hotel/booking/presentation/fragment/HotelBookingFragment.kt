@@ -2,6 +2,7 @@ package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
@@ -24,14 +25,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
-import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.booking.data.model.*
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
+import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import com.tokopedia.hotel.booking.presentation.widget.HotelBookingBottomSheets
 import com.tokopedia.hotel.common.analytics.TrackingHotelUtil
@@ -93,6 +93,10 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         })
 
+        bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer {
+            //do something
+        })
+
         bookingViewModel.hotelCheckoutResult.observe(this, android.arch.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
@@ -141,7 +145,7 @@ class HotelBookingFragment : HotelBaseFragment() {
             REQUEST_CODE_CONTACT_DATA -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.run {
-                        hotelBookingPageModel.contactData = this.getParcelableExtra(TravelContactDataFragment.EXTRA_CONTACT_DATA)
+                        hotelBookingPageModel.contactData = this.getParcelableExtra(HotelContactDataFragment.EXTRA_CONTACT_DATA)
                         renderContactData()
                     }
                 }
@@ -294,7 +298,7 @@ class HotelBookingFragment : HotelBaseFragment() {
 
         iv_edit_contact.setOnClickListener {
             context?.run {
-                startActivityForResult(TravelContactDataActivity.getCallingIntent(this, hotelBookingPageModel.contactData), REQUEST_CODE_CONTACT_DATA)
+                startActivityForResult(HotelContactDataActivity.getCallingIntent(this, hotelBookingPageModel.contactData), REQUEST_CODE_CONTACT_DATA)
             }
         }
 

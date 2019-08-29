@@ -75,7 +75,12 @@ data class TravelContactListModel (
             @SerializedName("idList")
             @Expose
             val idList: List<PassengerIdCard> = listOf()
-    )
+    ) {
+            override fun toString(): String {
+                    return if (fullName.isNotBlank()) "$shortTitle $fullName"
+                    else "$firstName $lastName"
+            }
+    }
 
     data class PassengerIdCard (
             @SerializedName("type")

@@ -2,6 +2,9 @@ package com.tokopedia.hotel.booking.presentation.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.common.travel.data.entity.TravelContactListModel
+import com.tokopedia.common.travel.domain.GetContactListUseCase
+import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -16,6 +19,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -24,10 +28,20 @@ import javax.inject.Inject
  */
 
 class HotelBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
+                                                private val getContactListUseCase: GetContactListUseCase,
                                                 val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
+    val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
     val hotelCartResult = MutableLiveData<Result<HotelCart>>()
     val hotelCheckoutResult = MutableLiveData<Result<HotelCheckoutResponse>>()
+
+    fun getContactListByQuery(query: String, keyword: String) {
+        launch {
+            contactListResult.value = getContactListUseCase.execute(query = query,
+                    product = GetContactListUseCase.PARAM_PRODUCT_HOTEL,
+                    keyword = keyword)
+        }
+    }
 
     fun getCartData(rawQuery: String, cartId: String) {
         val requestParams = CartDataParam(cartId)
