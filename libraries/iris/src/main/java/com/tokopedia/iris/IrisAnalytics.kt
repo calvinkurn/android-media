@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import com.tokopedia.iris.data.TrackingRepository
 import com.tokopedia.iris.data.db.mapper.ConfigurationMapper
 import com.tokopedia.iris.data.db.mapper.TrackingMapper
@@ -14,6 +13,9 @@ import com.tokopedia.iris.worker.IrisBroadcastReceiver
 import com.tokopedia.iris.worker.IrisExecutor
 import com.tokopedia.iris.worker.IrisExecutor.handler
 import com.tokopedia.iris.worker.IrisService
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,7 +23,6 @@ import org.json.JSONObject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
-
 
 /**
  * @author okasurya on 10/2/18.
@@ -31,9 +32,34 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private val session: Session = IrisSession(context)
     private var cache: Cache = Cache(context)
 
+    private lateinit var remoteConfig: RemoteConfig
 
     override val coroutineContext: CoroutineContext by lazy {
         IrisExecutor.executor + handler
+    }
+
+    private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
+
+        override fun onError(e: java.lang.Exception?) {
+            val configuration = Configuration(
+                    DEFAULT_MAX_ROW,
+                    DEFAULT_SERVICE_TIME,
+                    true
+            )
+            setService(configuration)
+        }
+
+        override fun onComplete(remoteConfig: RemoteConfig?) {
+            val irisEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true)?: true
+            val irisConfig = remoteConfig?.getString(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG)?: ""
+
+            setService(irisConfig, irisEnable)
+        }
+    }
+
+    override fun init() {
+        remoteConfig = FirebaseRemoteConfigImpl(context)
+        remoteConfig.fetch(remoteConfigListener)
     }
 
     override fun setService(config: String, isEnabled: Boolean) {
@@ -85,7 +111,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 val trackingRepository = TrackingRepository(context)
                 val isSuccess = trackingRepository.sendSingleEvent(JSONObject(map).toString(), session)
                 if (isSuccess && BuildConfig.DEBUG) {
-                    Timber.d("$TAG Success Send Single Event")
+                    Timber.w("$TAG Success Send Single Event")
                 }
             }
          }

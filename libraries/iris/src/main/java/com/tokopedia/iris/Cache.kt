@@ -18,8 +18,4 @@ class Cache(context: Context) {
     fun isEnabled() : Boolean {
         return sharedPreferences.getBoolean(IRIS_ENABLED, false)
     }
-
-    companion object {
-        const val IRIS_ENABLED = "iris_enabled"
-    }
 }

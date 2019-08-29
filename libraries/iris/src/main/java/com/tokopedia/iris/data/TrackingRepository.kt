@@ -27,9 +27,9 @@ class TrackingRepository (
         try {
             if (isSizeOver()) { // check if db over 2 MB
                 trackingDao.flush()
-                Timber.d("$TAG Database Local Over 2mb")
+                Timber.w("$TAG Database Local Over 2mb")
             }
-            trackingDao.insert(Tracking(data, session.getUserId()?: "",
+            trackingDao.insert(Tracking(data, session.getUserId(),
                     session.getDeviceId()?: ""))
         } catch (e: Throwable) {}
     }
@@ -45,15 +45,12 @@ class TrackingRepository (
     fun delete(data: List<Tracking>) {
         try {
             trackingDao.delete(data)
-            Timber.d("$TAG Discard: $data")
+            Timber.w("$TAG Discard: $data")
         } catch (e: Throwable) {}
     }
 
     suspend fun sendSingleEvent(data: String, session: Session) : Boolean {
-        val sessionId = session.getSessionId()?: ""
-        val userId = session.getUserId()?: ""
-        val deviceId = session.getDeviceId()?: ""
-        val dataRequest = TrackingMapper().transformSingleEvent(data, sessionId, userId, deviceId)
+        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
         val service = ApiService(context).makeRetrofitService()
         val requestBody = ApiService.parse(dataRequest)
         val request = service.sendSingleEventAsync(requestBody)
@@ -65,7 +62,7 @@ class TrackingRepository (
         val f: File? = context.getDatabasePath(DATABASE_NAME)
         if (f != null) {
             val lengthDb = f.length()
-            Timber.d("$TAG Length Database: $lengthDb")
+            Timber.w("$TAG Length Database: $lengthDb")
             val sizeDbInMb = (lengthDb / 1024) / 1024
             return sizeDbInMb >= 2
         }

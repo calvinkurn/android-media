@@ -11,15 +11,15 @@ class IrisSession(val context: Context) : Session {
     private val sharedPreferences = context.getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
     private val editor = sharedPreferences.edit()
 
-    override fun getUserId(): String? {
-        return sharedPreferences.getString(KEY_USER_ID, "")
+    override fun getUserId(): String {
+        return sharedPreferences.getString(KEY_USER_ID, "")?: ""
     }
 
-    override fun getDeviceId(): String? {
-        return sharedPreferences.getString(KEY_DEVICE_ID, "")
+    override fun getDeviceId(): String {
+        return sharedPreferences.getString(KEY_DEVICE_ID, "")?:""
     }
 
-    override fun getSessionId(): String? {
+    override fun getSessionId(): String {
 
         val beginningCurrent = Calendar.getInstance().timeInMillis
         val beginningPrevious = sharedPreferences.getString(KEY_TIMESTAMP_PREVIOUS, beginningCurrent.toString())
@@ -32,7 +32,7 @@ class IrisSession(val context: Context) : Session {
             }
         }
 
-        return sessionId
+        return sessionId?: ""
     }
 
     private fun generateSessionId(bc: Long) : String {

@@ -10,6 +10,11 @@ import com.tokopedia.iris.model.Configuration
 interface Iris {
 
     /**
+     * Simplify initialize iris
+     */
+    fun init()
+
+    /**
      * set custom configuration by json
      * param:
      * config, ex: {"row_limit":25,"interval":1}

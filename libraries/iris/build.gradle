@@ -52,6 +52,8 @@ android {
 
 dependencies {
 
+    implementation project(rootProject.ext.libraries.remoteConfig)
+
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
     api rootProject.ext.miscDependencies.coroutineCore
@@ -64,8 +66,9 @@ dependencies {
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.retrofitKotlinCoroutine
 
-    implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.rxJava
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {

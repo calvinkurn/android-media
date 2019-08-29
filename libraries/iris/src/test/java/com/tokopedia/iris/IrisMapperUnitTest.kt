@@ -30,6 +30,8 @@ class IrisMapperUnitTest {
         return test.toString()
     }
 
+
+
     @Test
     fun testTransformSingleEvent() {
         val result: String? = trackingMapper.transformSingleEvent(dataTest(), "session", "user", "device")
