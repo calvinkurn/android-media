@@ -613,6 +613,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
         unRegisterNewFeedReceiver()
+        feedAnalytics.sendPendingAnalytics()
     }
 
     private fun registerNewFeedReceiver() {

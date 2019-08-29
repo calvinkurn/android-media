@@ -140,6 +140,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onPause() {
+        super.onPause()
+        feedAnalytics.sendPendingAnalytics()
+    }
+
     override fun onDestroy() {
         presenter.detachView()
         super.onDestroy()

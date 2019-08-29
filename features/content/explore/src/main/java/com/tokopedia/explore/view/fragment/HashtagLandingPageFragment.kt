@@ -20,6 +20,7 @@ import com.tokopedia.explore.R
 import com.tokopedia.explore.di.ExploreComponent
 import com.tokopedia.explore.domain.entity.PostKol
 import com.tokopedia.explore.view.adapter.HashtagLandingItemAdapter
+import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.explore.view.viewmodel.HashtagLandingPageViewModel
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.unifycomponents.Toaster
@@ -103,7 +104,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         }
     }
 
-    private fun onSuccessGetData(data: List<PostKol>) {
+    private fun onSuccessGetData(data: List<PostKolUiModel>) {
         if (isInitialLoad)
             adapter.updateList(data)
         else
@@ -153,6 +154,15 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         //activity?.let { RouteManager.route(it,
         // if (isShopPost)ApplinkConst.SHOP else ApplinkConst.PROFILE, post.userId.toString()) }
         feedAnalytics.eventHashtagPageClickNameAvatar(post.userId.toString())
+    }
+
+    override fun onImageFirstTimeSeen(post: PostKol, position: Int) {
+        feedAnalytics.eventHashtagPageViewPost(post.id.toString(), searchTag, position)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        feedAnalytics.sendPendingAnalytics()
     }
 
     override fun onDestroy() {

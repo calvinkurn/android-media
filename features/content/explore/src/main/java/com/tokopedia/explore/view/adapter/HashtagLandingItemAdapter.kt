@@ -17,6 +17,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.explore.R
 import com.tokopedia.explore.domain.entity.PostKol
+import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kotlin.extensions.view.*
@@ -109,7 +110,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
         }
     }
 
-    fun updateList(data: List<PostKol>) {
+    fun updateList(data: List<PostKolUiModel>) {
         val dataNew = data.map { Data(it) }
         list.clear()
         list.addAll(dataNew)
@@ -129,7 +130,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
         }
     }
 
-    fun addData(data: List<PostKol>) {
+    fun addData(data: List<PostKolUiModel>) {
         val startInsert = itemCount
         list.addAll(data.map { Data(it) })
         notifyItemRangeInserted(startInsert, itemCount)
@@ -164,7 +165,8 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
 
     inner class HashtagLandingItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
-        fun bind(item: PostKol, position: Int){
+        fun bind(uiModel: PostKolUiModel, position: Int){
+            val item = uiModel.postKol
             with(itemView){
                 if (item.content.isEmpty()){
                     post_thumbnail.gone()
@@ -173,6 +175,9 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
                     val thumbnail = item.content.first()
                     post_thumbnail.loadImage(thumbnail.imageurl)
                     post_thumbnail.visible()
+                    post_thumbnail.addOnImpressionListener(uiModel.impressHolder) {
+                        listener?.onImageFirstTimeSeen(item, position)
+                    }
                     when {
                         item.content.size > 1 -> {
                             badge.loadImageDrawable(R.drawable.ic_affiliate_multi)
@@ -205,6 +210,7 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
     }
 
     interface OnHashtagPostClick{
+        fun onImageFirstTimeSeen(post: PostKol, position: Int)
         fun onImageClick(post: PostKol, position: Int)
         fun onUserImageClick(post: PostKol)
         fun onUserNameClick(post: PostKol)
@@ -214,5 +220,5 @@ class HashtagLandingItemAdapter(var listener: OnHashtagPostClick? = null)
 sealed class HashtagItemType
 object Loading: HashtagItemType()
 class Empty(val empty: EmptyModel): HashtagItemType()
-class Data(val data: PostKol): HashtagItemType()
+class Data(val data: PostKolUiModel): HashtagItemType()
 class Error(val error: ErrorNetworkModel): HashtagItemType()

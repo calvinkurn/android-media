@@ -282,6 +282,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onPause() {
         super.onPause()
         unregisterBroadcastReceiver()
+        feedAnalytics.sendPendingAnalytics()
     }
 
     override fun onDestroy() {

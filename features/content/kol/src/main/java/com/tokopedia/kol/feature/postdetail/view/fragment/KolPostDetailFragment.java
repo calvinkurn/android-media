@@ -225,6 +225,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        feedAnalytics.sendPendingAnalytics();
+    }
+
+    @Override
     public void onDestroy() {
         presenter.detachView();
         super.onDestroy();

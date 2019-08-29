@@ -3,12 +3,17 @@ package com.tokopedia.feedcomponent.analytics.tracker
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
+import kotlin.collections.HashMap
 
 /**
  * Created by jegul on 2019-08-28.
  */
-class FeedAnalyticTracker @Inject constructor() {
+class FeedAnalyticTracker
+@Inject constructor(
+        private val trackingQueue: TrackingQueue
+) {
 
     private companion object {
         const val ECOMMERCE = "ecommerce"
@@ -41,6 +46,8 @@ class FeedAnalyticTracker @Inject constructor() {
         const val CLICK_READ_MORE = "click read more"
         const val CLICK_POST = "click post"
         const val CLICK_AVATAR = "click avatar"
+
+        const val IMPRESSION_POST = "impression post"
     }
 
     private object Screen {
@@ -219,10 +226,44 @@ class FeedAnalyticTracker @Inject constructor() {
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 6
+     *
+     * @param activityId - postId
+     * @param hashtag - hashtag name
+     * @param position - position of item in list
+     */
+    fun eventHashtagPageViewPost(
+            activityId: String,
+            hashtag: String,
+            position: Int
+    ) {
+        trackEnhancedEcommerceEvent(
+                Event.PROMO_VIEW,
+                Category.CONTENT_HASHTAG,
+                Action.IMPRESSION_POST,
+                activityId,
+                getPromoViewData(
+                        getPromotionsData(
+                                listOf(getPromotionData(activityId, Screen.HASHTAG_POST_LIST, hashtag, position))
+                        )
+                )
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
      *
      */
     fun eventOpenHashtagScreen() {
         trackOpenScreenEvent(Screen.HASHTAG)
+    }
+
+    /**
+     * Send all pending analytics in trackingQueue
+     */
+    fun sendPendingAnalytics() {
+        trackingQueue.sendAll()
     }
 
     /**
@@ -290,10 +331,9 @@ class FeedAnalyticTracker @Inject constructor() {
             eventLabel: String,
             eCommerceData: Map<String, Any>
     ) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-                getGeneralData(eventName, eventCategory, eventAction, eventLabel)
-                        .plus(getEcommerceData(eCommerceData))
-        )
+        trackingQueue.putEETracking(getGeneralData(eventName, eventCategory, eventAction, eventLabel)
+                .plus(getEcommerceData(eCommerceData)) as HashMap<String, Any>)
+
     }
 
     /**
