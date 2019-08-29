@@ -31,7 +31,7 @@ private fun createTempFile(fileNameWithFormat: String): File {
             }
     } else {
         Timber.tag("Files").v("Not Exist")
-        pathFile.mkdir()
+        pathFile.mkdirs()
     }
 
     return File("$path$fileNameWithFormat").apply { createNewFile() }

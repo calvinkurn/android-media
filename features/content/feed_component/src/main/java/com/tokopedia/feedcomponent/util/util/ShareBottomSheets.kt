@@ -177,7 +177,9 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
         IMAGE(TYPE_IMAGE)
     }
 
-    private lateinit var data: LinkerData
+    lateinit var data: LinkerData
+    private set
+
     private var isAdding: Boolean = false
     private lateinit var listener: OnShareItemClickListener
 

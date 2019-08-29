@@ -452,7 +452,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             successPost -> {
                 when {
                     isAutomaticOpenShareUser() -> {
-                        checkShouldChangeUsername(element.profileHeaderViewModel.link)
+                        checkShouldChangeUsername(element.profileHeaderViewModel.link) { showShareBottomSheets(this) }
                         profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                     }
                     onlyOnePost -> showShowCaseDialog(shareProfile)
@@ -461,7 +461,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 successPost = false
             }
             openShare -> {
-                checkShouldChangeUsername(element.profileHeaderViewModel.link)
+                checkShouldChangeUsername(element.profileHeaderViewModel.link) { showShareBottomSheets(this) }
                 openShare = false
             }
         }
@@ -847,7 +847,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             linkerData = ShareBottomSheets.constructShareData("", "", url, description, title)
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
-            checkShouldChangeUsername(url)
+            checkShouldChangeUsername(url) { showShareBottomSheets(this) }
         }
     }
 
@@ -1187,8 +1187,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_share_white))
             iv_action.gone()
             View.OnClickListener {
-                byMeTemplatedView.iv_avatar.setImageDrawable(iv_profile.drawable)
-                showShareBottomSheet(element, byMeTemplatedView.toSquareBitmap())
+                showShareBottomSheet(
+                        element,
+                        String.format(getString(R.string.profile_share_text), element.link),
+                        String.format(getString(R.string.profile_other_share_title)),
+                        null
+                )
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
@@ -1416,17 +1420,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             }
 
             shareProfile.setOnClickListener {
-                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
-
-                linkerData = ShareBottomSheets.constructShareData(
-                        headerViewModel.name,
-                        headerViewModel.avatar,
-                        headerViewModel.link,
-                        String.format(getString(R.string.profile_share_text),
-                                headerViewModel.link),
-                        String.format(getString(R.string.profile_share_title)))
-                isShareProfile = true
-                checkShouldChangeUsername(headerViewModel.link)
+                checkShouldChangeUsername(headerViewModel.link) {
+                    byMeTemplatedView.iv_avatar.setImageDrawable(iv_profile.drawable)
+                    linkerData = showShareBottomSheet(
+                            headerViewModel,
+                            String.format(getString(R.string.profile_share_text), headerViewModel.link),
+                            String.format(getString(R.string.profile_share_title)),
+                            byMeTemplatedView.toSquareBitmap()
+                    )
+                }
             }
             shareProfile.setOnLongClickListener {
                 showToast(getString(R.string.profile_share_this_profile))
@@ -1479,11 +1481,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 .build()
     }
 
-    private fun checkShouldChangeUsername(link: String) {
+    private fun checkShouldChangeUsername(link: String, doIfNotChange: () -> Unit) {
         if (shouldChangeUsername()) {
             presenter.shouldChangeUsername(userSession.userId.toIntOrZero(), link)
         } else {
-            showShareBottomSheets(this)
+            doIfNotChange()
         }
     }
 
@@ -1752,19 +1754,27 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         linkerData = null
     }
 
-    private fun showShareBottomSheet(element: ProfileHeaderViewModel, imageBitmap: Bitmap?) {
-        ShareBottomSheets.newInstance(
+    private fun showShareBottomSheet(
+            element: ProfileHeaderViewModel,
+            shareFormat: String,
+            shareTitle: String,
+            imageBitmap: Bitmap?
+    ): LinkerData {
+        val bottomSheet = ShareBottomSheets.newInstance(
                 this@ProfileFragment,
                 element.name,
                 element.avatar,
                 element.link,
-                String.format(getString(R.string.profile_share_text),
-                        element.link),
-                String.format(getString(R.string.profile_other_share_title)),
-                MethodChecker.getUri(context, imageBitmap?.toTempFile(IG_STORY_TEMP)).toString()
-        ).show(fragmentManager)
+                shareFormat,
+                shareTitle,
+                imageBitmap?.let { image -> MethodChecker.getUri(context, image.toTempFile(IG_STORY_TEMP)).toString() }
+        ).also {
+            it.show(fragmentManager)
+        }
         profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
         isShareProfile = true
+
+        return bottomSheet.data
     }
 
     private fun sendTracker(packageName: String) {
