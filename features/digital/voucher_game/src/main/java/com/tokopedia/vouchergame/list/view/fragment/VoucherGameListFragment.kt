@@ -20,7 +20,7 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
-import com.tokopedia.vouchergame.common.view.VoucherGameBaseActivity
+import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.view.activity.VoucherGameDetailActivity
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
@@ -112,9 +112,12 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     private fun renderOperators(data: VoucherGameListData) {
-        (activity as VoucherGameBaseActivity).updateTitle(data.text)
+        (activity as BaseVoucherGameActivity).updateTitle(data.text)
 
-        if (data.operators.isEmpty()) showEmpty()
+        if (data.operators.isEmpty()) {
+            adapter.clearAllElements()
+            showEmpty()
+        }
         else renderList(data.operators)
     }
 

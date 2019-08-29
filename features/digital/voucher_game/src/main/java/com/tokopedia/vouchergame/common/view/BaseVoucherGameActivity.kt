@@ -17,7 +17,7 @@ import javax.inject.Inject
 /**
  * @author by resakemal on 26/08/19
  */
-abstract class VoucherGameBaseActivity: BaseSimpleActivity(), VoucherGameMenuBottomSheets.MenuListener {
+abstract class BaseVoucherGameActivity: BaseSimpleActivity(), VoucherGameMenuBottomSheets.MenuListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface

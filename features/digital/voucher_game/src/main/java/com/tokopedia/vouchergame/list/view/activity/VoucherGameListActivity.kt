@@ -3,10 +3,8 @@ package com.tokopedia.vouchergame.list.view.activity
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.vouchergame.common.view.VoucherGameBaseActivity
+import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.list.di.DaggerVoucherGameListComponent
 import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
@@ -15,7 +13,7 @@ import com.tokopedia.vouchergame.list.view.fragment.VoucherGameListFragment
 /**
  * Created by resakemal on 12/08/19.
  */
-class VoucherGameListActivity : VoucherGameBaseActivity(), HasComponent<VoucherGameListComponent> {
+class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherGameListComponent> {
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras

@@ -1,7 +1,5 @@
 package com.tokopedia.common.topupbills.di
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -22,6 +20,6 @@ interface CommonTopupBillsComponent {
 
     fun graphqlRepository(): GraphqlRepository
 
-    fun inject(baseTopupBillsFragment: BaseTopupBillsFragment<Visitable<*>, AdapterTypeFactory>)
+    fun inject(baseTopupBillsFragment: BaseTopupBillsFragment)
 
 }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.vouchergame.common.view.VoucherGameBaseActivity
+import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.di.DaggerVoucherGameDetailComponent
 import com.tokopedia.vouchergame.detail.di.VoucherGameDetailComponent
@@ -13,7 +13,7 @@ import com.tokopedia.vouchergame.detail.view.fragment.VoucherGameDetailFragment
 /**
  * Created by resakemal on 16/08/19.
  */
-class VoucherGameDetailActivity : VoucherGameBaseActivity(), HasComponent<VoucherGameDetailComponent> {
+class VoucherGameDetailActivity : BaseVoucherGameActivity(), HasComponent<VoucherGameDetailComponent> {
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
