@@ -74,7 +74,7 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
                     .getProductData().getFeatures().getOntimeDeliveryGuarantee();
             viewOtd.setVisibility(otd.getAvailable() ? View.VISIBLE : View.GONE);
             tvOtd.setText(otd.getTextLabel());
-            ImageHandler.loadImageWithoutPlaceholder(ivOtd, otd.getIconUrl());
+            ImageHandler.LoadImage(ivOtd, otd.getIconUrl());
         }
 
         tvCourier.setText(shippingCourierViewModel.getProductData().getShipperName());
