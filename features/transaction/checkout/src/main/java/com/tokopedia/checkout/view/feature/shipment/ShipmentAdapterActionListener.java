@@ -70,6 +70,8 @@ public interface ShipmentAdapterActionListener {
 
     void onPriorityTncClicker();
 
+    void onOntimeDeliveryClicked();
+
     void onNeedUpdateRequestData();
 
     void onDropshipCheckedForTrackingAnalytics();

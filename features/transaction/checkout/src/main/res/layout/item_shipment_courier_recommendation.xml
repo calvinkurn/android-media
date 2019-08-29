@@ -216,10 +216,16 @@
 
         </LinearLayout>
 
-        <TextView
+        <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/ticker_otd"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            app:tickerShapeType="loose"
+            app:tickerType="announcement"
+            tools:layout_height="50dp" />
 
     </LinearLayout>
 

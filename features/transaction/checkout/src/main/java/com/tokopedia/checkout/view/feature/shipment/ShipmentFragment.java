@@ -1965,6 +1965,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onOntimeDeliveryClicked() {
+        Intent intent = CheckoutWebViewActivity.newInstance(getContext(),
+                CartConstant.ONTIMIE_DELIVERY_URL,
+                getString(R.string.title_activity_checkout_tnc_webview));
+        startActivity(intent);
+    }
+
+    @Override
     public void onNeedUpdateRequestData() {
         shipmentAdapter.checkHasSelectAllCourier(true);
     }

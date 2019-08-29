@@ -51,6 +51,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
@@ -183,7 +184,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvErrorShipmentItemDescription;
     private RelativeLayout rlProductInfo;
     private FrameLayout flDisableContainer;
-    private TextView tickerOtd;
+    private Ticker tickerOtd;
 
     // robinhood III
     private LinearLayout llCourierBlackboxStateLoading;
@@ -744,8 +745,21 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
             shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()) {
                 OntimeDelivery otd = shipmentDetailData.getSelectedCourier().getOntimeDelivery();
+                String html = otd.getText_detail() + ". <a href=\"http://gw-staging.tokopedia.com/otdg_info\">S&K berlaku</a>";
                 tickerOtd.setVisibility(View.VISIBLE);
-                tickerOtd.setText(otd.getText_detail());
+                tickerOtd.setHtmlDescription(html);
+                tickerOtd.setTickerTitle(otd.getText_label());
+                tickerOtd.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(CharSequence charSequence) {
+                        mActionListener.onOntimeDeliveryClicked();
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
             } else {
                 tickerOtd.setVisibility(View.GONE);
             }
