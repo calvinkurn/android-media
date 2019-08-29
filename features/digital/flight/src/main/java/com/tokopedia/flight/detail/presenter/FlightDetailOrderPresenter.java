@@ -183,6 +183,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 } else {
                     getView().hideLihatEticket();
                 }
+
+                getView().checkIfShouldGoToCancellation();
             }
         };
     }

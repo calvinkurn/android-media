@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -49,6 +50,7 @@ import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderContract;
 import com.tokopedia.flight.detail.presenter.FlightDetailOrderPresenter;
+import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.detail.view.activity.FlightInvoiceActivity;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
@@ -132,10 +134,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     private LinearLayout insuranceLayout;
     private RecyclerView insuranceRecyclerView;
 
-    public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData) {
+    private boolean isCancellation;
+
+    public static Fragment createInstance(FlightOrderDetailPassData flightOrderDetailPassData, boolean isCancellation) {
         FlightDetailOrderFragment flightDetailOrderFragment = new FlightDetailOrderFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_ORDER_DETAIL_PASS, flightOrderDetailPassData);
+        bundle.putBoolean(FlightDetailOrderActivity.EXTRA_IS_CANCELLATION, isCancellation);
         flightDetailOrderFragment.setArguments(bundle);
         return flightDetailOrderFragment;
     }
@@ -155,6 +160,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         flightOrderDetailPassData = getArguments().getParcelable(EXTRA_ORDER_DETAIL_PASS);
+        isCancellation = getArguments().getBoolean(FlightDetailOrderActivity.EXTRA_IS_CANCELLATION, false);
     }
 
     @Nullable
@@ -370,6 +376,13 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     @Override
+    public void checkIfShouldGoToCancellation() {
+        if (isCancellation) {
+            navigateToCancellationListPage();
+        }
+    }
+
+    @Override
     public void updateOrderData(String eTicketLink, String invoiceLink, String cancelMessage) {
         this.eticketLink = eTicketLink;
         this.invoiceLink = invoiceLink;
@@ -552,7 +565,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
         cancellationWarningTicker.setDescriptionClickEvent(new TickerCallback() {
             @Override
             public void onDescriptionViewClick(CharSequence charSequence) {
-                Toast.makeText(getContext(), charSequence, Toast.LENGTH_SHORT).show();
+                RouteManager.route(getContext(), charSequence.toString());
             }
 
             @Override

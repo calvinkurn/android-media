@@ -28,7 +28,6 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     @LayoutRes
     public static int LAYOUT = R.layout.item_flight_review_passenger;
     private Context context;
-    private View containerView;
     private ReviewPassengerDetailAdapter reviewPassengerDetailAdapter;
     private TextView passengerNumber;
     private TextView passengerName;
@@ -72,7 +71,6 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
 
         context = layoutView.getContext();
 
-        containerView = layoutView;
         passengerNumber = (TextView) layoutView.findViewById(R.id.passenger_number);
         passengerName = (TextView) layoutView.findViewById(R.id.passenger_name);
         passengerCategory = (TextView) layoutView.findViewById(R.id.passenger_category);
@@ -91,6 +89,8 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
         }
 
         switch (status) {
+            case 0:
+                return false;
             case FlightCancellationStatus.REQUESTED:
                 passengerCancellationStatus.setText(cancellationStatusString);
                 passengerCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
@@ -109,7 +109,10 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
             case FlightCancellationStatus.ABORTED:
                 return false;
             default:
-                return false;
+                passengerCancellationStatus.setText(cancellationStatusString);
+                passengerCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
+                passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
+                return true;
         }
     }
 

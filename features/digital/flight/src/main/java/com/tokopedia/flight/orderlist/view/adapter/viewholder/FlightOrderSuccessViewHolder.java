@@ -6,8 +6,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
@@ -142,7 +142,7 @@ public class FlightOrderSuccessViewHolder extends FlightOrderBaseViewHolder<Flig
         warningTicker.setDescriptionClickEvent(new TickerCallback() {
             @Override
             public void onDescriptionViewClick(CharSequence charSequence) {
-                Toast.makeText(itemView.getContext(), charSequence, Toast.LENGTH_SHORT).show();
+                RouteManager.route(itemView.getContext(), charSequence.toString());
             }
 
             @Override

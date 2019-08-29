@@ -100,6 +100,9 @@ public interface FlightDetailOrderContract {
         void showInsuranceLayout();
 
         void renderInsurances(List<FlightInsurance> insurances);
+
+        void checkIfShouldGoToCancellation();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
