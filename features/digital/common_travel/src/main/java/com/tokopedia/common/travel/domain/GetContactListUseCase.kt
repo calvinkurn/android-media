@@ -20,8 +20,7 @@ class GetContactListUseCase @Inject constructor(val useCase: MultiRequestGraphql
 
     suspend fun execute(query: String,
                         product: String,
-                        filterType: String = "",
-                        keyword: String = "")
+                        filterType: String = "")
             : List<TravelContactListModel.Contact> {
 
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).apply {
@@ -36,7 +35,7 @@ class GetContactListUseCase @Inject constructor(val useCase: MultiRequestGraphql
             useCase.addRequest(graphqlRequest)
             val contactList = useCase.executeOnBackground().getSuccessData<TravelContactListModel.Response>().response
 
-            return if (query.isNotBlank()) filterByKeyword(contactList.contacts, keyword) else contactList.contacts
+            return contactList.contacts
         } catch (throwable: Throwable) {
             return listOf()
         }

@@ -2,7 +2,6 @@ package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent

@@ -35,11 +35,10 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
     val hotelCartResult = MutableLiveData<Result<HotelCart>>()
     val hotelCheckoutResult = MutableLiveData<Result<HotelCheckoutResponse>>()
 
-    fun getContactListByQuery(query: String, keyword: String) {
+    fun getContactListByQuery(query: String) {
         launch {
             contactListResult.value = getContactListUseCase.execute(query = query,
-                    product = GetContactListUseCase.PARAM_PRODUCT_HOTEL,
-                    keyword = keyword)
+                    product = GetContactListUseCase.PARAM_PRODUCT_HOTEL)
         }
     }
 

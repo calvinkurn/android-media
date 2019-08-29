@@ -9,12 +9,14 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.presentation.model.TravelContactData
+import com.tokopedia.common.travel.widget.autocompletetextview.TravelContactArrayAdapter
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
 import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
@@ -62,6 +64,13 @@ class HotelContactDataFragment: BaseDaggerFragment() {
 
     fun initView() {
         til_contact_name.setLabel(getString(R.string.travel_contact_data_name_title))
+
+        context?.let {
+            //TO DO: CHANGE CONTACT OBJECT
+            val adapter = TravelContactArrayAdapter(it, R.layout.layout_travel_autocompletetv, listOf())
+            (til_contact_name.editText as AutoCompleteTextView).setAdapter(adapter)
+        }
+
         til_contact_name.editText.setText(contactData.name)
         til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
 
