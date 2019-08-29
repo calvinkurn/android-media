@@ -121,6 +121,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun initView() {
+        // Call menu detail query for toolbar title
+        voucherGameExtraParam.menuId.toIntOrNull()?.let {
+            getMenuDetail(it)
+        }
+
         recycler_view.adapter = adapter
         val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
@@ -143,7 +148,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TelcoCatalogMenuDetail) {
-        (activity as BaseVoucherGameActivity).updateTitle(data.catalog.getOrNull(0)?.label)
+        (activity as BaseVoucherGameActivity).updateTitle(data.catalog.getOrNull(0)?.label ?: "")
     }
 
     override fun showError(t: Throwable) {
@@ -211,8 +216,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 setInputFieldsError(false)
 
                 val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
-//                topupBillsViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital_telco),
-//                        topupBillsViewModel.createEnquiryParams(clientNumber, voucherGameExtraParam.operatorId))
+//                getEnquiry(clientNumber, voucherGameExtraParam.operatorId)
             } else {
                 // Set error message
                 setInputFieldsError(true)

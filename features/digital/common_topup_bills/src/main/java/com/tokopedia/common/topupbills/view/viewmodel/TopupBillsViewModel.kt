@@ -60,7 +60,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         return params
     }
 
-    fun createMenuDetailParams(menuId: String): Map<String, Any> {
+    fun createMenuDetailParams(menuId: Int): Map<String, Any> {
         return mapOf(PARAM_MENU_ID to menuId)
     }
 
@@ -68,7 +68,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val PARAM_CLIENT_NUMBER = "clientNumber"
         const val PARAM_PRODUCT_ID = "productId"
 
-        const val PARAM_MENU_ID = "menuId"
+        const val PARAM_MENU_ID = "menuID"
     }
 
 }
