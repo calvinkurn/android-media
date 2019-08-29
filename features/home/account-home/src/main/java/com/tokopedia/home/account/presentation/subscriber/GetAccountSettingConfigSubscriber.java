@@ -44,7 +44,7 @@ public class GetAccountSettingConfigSubscriber extends BaseAccountSubscriber<Gra
 
         if (e instanceof UnknownHostException
                 || e instanceof SocketTimeoutException) {
-            view.showErroNoConnection();
+            view.showErrorNoConnection();
         } else {
             view.showError(errorMessage);
         }
