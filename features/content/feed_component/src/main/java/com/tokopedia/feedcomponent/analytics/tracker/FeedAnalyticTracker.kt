@@ -113,13 +113,11 @@ class FeedAnalyticTracker
      * @param mediaType - video or image
      * @param hashtag - the hashtag name
      */
-    fun eventProfileClickHashtag(isOwner: Boolean, activityId: String, activityName: String, mediaType: String, hashtag: String) {
+    fun eventProfileClickHashtag(isOwner: Boolean, activityId: String, hashtag: String) {
         eventClickHashtag(
                 Event.CLICK_SOCIAL_COMMERCE,
                 if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
                 activityId,
-                activityName,
-                mediaType,
                 hashtag)
     }
 
@@ -287,6 +285,19 @@ class FeedAnalyticTracker
     /**
      * Base track click hashtag
      */
+    private fun eventClickHashtag(
+            eventName: String,
+            eventCategory: String,
+            activityId: String,
+            hashtag: String) {
+        trackGeneralEvent(
+                eventName = eventName,
+                eventCategory = eventCategory,
+                eventAction = Action.CLICK_HASHTAG,
+                eventLabel = "$activityId - $hashtag"
+        )
+    }
+
     private fun eventClickHashtag(
             eventName: String,
             eventCategory: String,

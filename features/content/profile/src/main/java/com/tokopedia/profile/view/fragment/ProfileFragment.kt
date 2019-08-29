@@ -1050,8 +1050,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         feedAnalytics.eventProfileClickHashtag(
                 isOwner,
                 trackingPostModel.postId.toString(),
-                trackingPostModel.activityName,
-                trackingPostModel.mediaType,
                 hashtagText
         )
     }
