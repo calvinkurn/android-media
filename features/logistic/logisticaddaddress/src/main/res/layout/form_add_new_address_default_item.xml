@@ -24,7 +24,8 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b" />
+            android:textColor="#ae31353b"
+            android:textSize="@dimen/sp_14"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -54,7 +55,8 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b" />
+            android:textColor="#ae31353b"
+            android:textSize="@dimen/sp_14"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -76,7 +78,8 @@
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
-            android:textColor="#ae31353b" />
+            android:textColor="#ae31353b"
+            android:textSize="@dimen/sp_14"/>
 
     </android.support.design.widget.TextInputLayout>
 

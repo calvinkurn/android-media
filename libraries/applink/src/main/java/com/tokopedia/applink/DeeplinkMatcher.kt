@@ -64,6 +64,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 1, mapOf(0 to "people")) to PROFILE)
             add(Pattern(GT, 0, mapOf(0 to "content")) to CONTENT)
             add(Pattern(GT, 0, mapOf(0 to "kupon-thr")) to SMCREFERRAL)
+            add(Pattern(GT, 1, mapOf(0 to "seru")) to SMCREFERRAL)
             add(Pattern(GT, 0, mapOf(0 to "emas")) to OTHER)
             add(Pattern(GT, 0, mapOf(0 to "reksa-dana")) to OTHER)
             add(Pattern(GT, 0, mapOf(0 to "bantuan")) to OTHER)

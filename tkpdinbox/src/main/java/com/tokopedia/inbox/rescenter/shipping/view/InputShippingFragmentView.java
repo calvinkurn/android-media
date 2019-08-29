@@ -8,7 +8,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.shipping.model.InputShippingParamsGetModel;
 import com.tokopedia.inbox.rescenter.shipping.model.ResCenterKurir;
@@ -30,9 +30,9 @@ public interface InputShippingFragmentView {
 
     void setParamsModel(InputShippingParamsGetModel paramsModel);
 
-    ArrayList<AttachmentResCenterVersion2DB> getAttachmentData();
+    ArrayList<ResCenterAttachment> getAttachmentData();
 
-    void setAttachmentData(ArrayList<AttachmentResCenterVersion2DB> attachmentData);
+    void setAttachmentData(ArrayList<ResCenterAttachment> attachmentData);
 
     EditText getShippingRefNum();
 

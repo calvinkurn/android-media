@@ -59,8 +59,8 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_M
 /**
  * @author okasurya on 7/26/18.
  */
-public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
-        AccountItemListener {
+public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements AccountItemListener {
+
     public static final String PARAM_USER_ID = "{user_id}";
     public static final String PARAM_SHOP_ID = "{shop_id}";
     public static final int OPEN_SHOP_SUCCESS = 100;
@@ -68,9 +68,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public static final String OVO = "OVO";
     public Boolean isOpenShop = false;
 
-    private SeeAllView seeAllView;
     private AccountAnalytics accountAnalytics;
-    private RemoteConfig remoteConfig;
     UserSession userSession;
     private AffiliatePreference affiliatePreference;
 
@@ -94,7 +92,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         if (RouteManager.isSupportApplink(getContext(), applink)) {
             return true;
         } else if (applink.equals(AccountConstants.Navigation.SEE_ALL)) {
-            seeAllView = new SeeAllView();
+            SeeAllView seeAllView = new SeeAllView();
             seeAllView.setListener(this);
             seeAllView.show(getActivity().getSupportFragmentManager(), SeeAllView.class.getName());
         } else if (applink.equals(AccountConstants.Navigation.TOPADS)
@@ -307,7 +305,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     private void openSladoPage(String applink) {
-        remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
             if (userSession.hasShownSaldoIntroScreen()) {
                 openApplink(applink);
@@ -435,7 +434,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
 
     @Override
     public void onTopAdsMenuClicked() {
-        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
+        if (getContext() != null && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             ((AccountHomeRouter) getContext().getApplicationContext()).
                     gotoTopAdsDashboard(getContext());
         }
@@ -461,6 +460,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void sendProductWishlistClickTracking(boolean wishlistStatus) {
         accountAnalytics.eventClickWishlistButton(wishlistStatus);
     }
+
     @Override
     public void onPowerMerchantSettingClicked(){
         sendTracking(
@@ -470,5 +470,4 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
         );
         RouteManager.route(getActivity(), ApplinkConst.POWER_MERCHANT_SUBSCRIBE);
     }
-
 }

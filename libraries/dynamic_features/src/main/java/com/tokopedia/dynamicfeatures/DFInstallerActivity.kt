@@ -12,13 +12,15 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import com.google.android.play.core.tasks.Task
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -44,7 +46,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var imageView: ImageView
     private lateinit var progressGroup: View
     private var isAutoDownload = false
-    private var task: Task<Int>? = null
+    private var sessionId: Int? = null
 
     private lateinit var moduleName: String
     private lateinit var moduleNameTranslated: String
@@ -86,6 +88,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
+                Timber.w("P3Download Module {$moduleName}")
                 loadAndLaunchModule(moduleName)
             } else {
                 hideProgress()
@@ -125,12 +128,12 @@ class DFInstallerActivity : BaseSimpleActivity() {
         }
         closeButton.setOnClickListener {
             try {
-                task?.run {
-                    manager.cancelInstall(this.result)
+                sessionId?.run {
+                    manager.cancelInstall(this)
                 }
             } catch (e: Exception) {
             } finally {
-                task = null
+                sessionId = null
             }
             hideProgress()
         }
@@ -160,10 +163,18 @@ class DFInstallerActivity : BaseSimpleActivity() {
             .build()
 
         // Load and install the requested feature module.
-        task = manager.startInstall(request)
+        manager.startInstall(request).addOnSuccessListener {
+            sessionId = it
+        }.addOnFailureListener {
+            sessionId = null
+            hideProgress()
+            val message = getString(R.string.error_for_module_x, moduleName)
+            showFailedMessage(message)
+        }
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
+        Timber.w("P3Installed Module {$moduleName}")
         progressGroup.visibility = View.INVISIBLE
         if (launch && manager.installedModules.contains(moduleName)) {
             RouteManager.getIntentNoFallback(this, applink)?.let {
@@ -179,6 +190,9 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     /** Listener used to handle changes in state for install requests. */
     private val listener = SplitInstallStateUpdatedListener { state ->
+        if (state.sessionId() != sessionId) {
+            return@SplitInstallStateUpdatedListener
+        }
         val multiInstall = state.moduleNames().size > 1
 
         val names = state.moduleNames().joinToString(" - ")
@@ -208,13 +222,18 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
-                    message,
-                    Snackbar.LENGTH_INDEFINITE,
-                    getString(R.string.general_label_ok), View.OnClickListener { })
+                showFailedMessage(message)
                 hideProgress()
             }
         }
+    }
+
+    private fun showFailedMessage(message: String) {
+        Timber.w("P3Failed Module {$moduleName}")
+        Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
+            message,
+            Snackbar.LENGTH_INDEFINITE,
+            getString(R.string.general_label_ok), View.OnClickListener { })
     }
 
     private fun updateProgressMessage(message: String) {
