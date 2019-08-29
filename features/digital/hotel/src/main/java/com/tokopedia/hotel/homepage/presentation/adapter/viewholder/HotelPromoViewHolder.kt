@@ -26,7 +26,7 @@ class HotelPromoViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
             wm.defaultDisplay.getMetrics(metrics)
 
             val layoutParams = iv_hotel_promo.layoutParams
-            layoutParams.height = metrics.widthPixels / 3
+            layoutParams.height = (metrics.widthPixels / 3) - resources.getDimensionPixelSize(R.dimen.dp_16)
             iv_hotel_promo.layoutParams = layoutParams
 
             ImageHandler.loadImageWithoutPlaceholder(this.iv_hotel_promo, element.attributes.imageUrl)
