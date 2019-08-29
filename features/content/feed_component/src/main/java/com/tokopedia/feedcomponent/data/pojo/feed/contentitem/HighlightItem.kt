@@ -7,7 +7,7 @@ import com.tokopedia.feedcomponent.data.pojo.track.Tracking
 /**
  * @author by yfsx on 04/12/18.
  */
-data class Item (
+data class HighlightItem (
 
     @SerializedName("header")
     @Expose
@@ -23,7 +23,7 @@ data class Item (
 
     @SerializedName("tracking")
     @Expose
-    val tracking: List<Tracking> = ArrayList()
+    val tracking: Tracking = Tracking()
 
 
 
