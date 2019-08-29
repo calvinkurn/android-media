@@ -223,10 +223,16 @@ public abstract class SearchSectionFragment
     }
 
     private void startToLoadData() {
-        if (!hasLoadData) {
+        if (canStartToLoadData()) {
             hasLoadData = true;
             refreshLayout.post(this::onFirstTimeLaunch);
         }
+    }
+
+    private boolean canStartToLoadData() {
+        return !hasLoadData
+                && isAdded()
+                && getPresenter() != null;
     }
 
     protected GridLayoutManager getGridLayoutManager() {

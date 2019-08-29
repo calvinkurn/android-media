@@ -97,13 +97,19 @@ class ProfileListFragment :
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if(isVisibleToUser && !hasLoadData) {
+        if(isVisibleToUser && canStartToLoadData()) {
             hasLoadData = true
             onSwipeRefresh()
         }
         if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
+    }
+
+    private fun canStartToLoadData(): Boolean {
+        return !hasLoadData
+                && isAdded
+                && ::presenter.isInitialized
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
