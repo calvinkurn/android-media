@@ -6,13 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryItem
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListener
 import kotlinx.android.synthetic.main.item_sub_category.view.*
 
 class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryItem>,
                          private val subCategoryListener: SubCategoryListener) : RecyclerView.Adapter<SubCategoryAdapter.ViewHolder>() {
 
+
+    val viewMap = HashMap<Int, Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_sub_category, parent, false)
@@ -38,8 +42,15 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
 
         holder.parent_view.setOnClickListener {
             if (item.is_default) {
+                catAnalyticsInstance.eventClickSemuaThumbnail(item.id.toString(),
+                        item.name ?: "")
+
                 subCategoryListener.OnDefaultItemClicked()
             } else {
+                val id = ((holder.itemView.context) as CategoryNavActivity).getCategoryId()
+                catAnalyticsInstance.eventClickSubCategory(item.id.toString(),
+                        id, id, item.name ?: "", item.url ?: "", position)
+
                 subCategoryListener.OnSubCategoryClicked(item.id.toString(), item.name ?: "")
             }
         }
@@ -50,6 +61,20 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
         val parent_view = view.cardView_sub_category
         val img_sub_category = view.img_sub_category
         val txt_sub_category = view.txt_sub_category
+    }
+
+
+    override fun onViewAttachedToWindow(holder: ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        val position = holder.adapterPosition
+        if (!viewMap.containsKey(position)) {
+            viewMap[position] = true
+
+            val item = subCategoryList[position]
+
+            catAnalyticsInstance.eventSubCategoryImpression(((holder.itemView.context) as CategoryNavActivity).getCategoryId(),
+                    item.id.toString(), item.name ?: "", item.url ?: "", position)
+        }
     }
 
 

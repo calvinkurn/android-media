@@ -13,7 +13,8 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
-import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics
+import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
+import com.tokopedia.discovery.categoryrevamp.analytics.categoryPageAnalytics
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
@@ -116,18 +117,22 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
         icon_sort.setOnClickListener {
             visibleFragmentListener?.onSortClick()
+            catAnalyticsInstance.eventSortClicked(departmentId)
 
         }
         button_sort.setOnClickListener {
             visibleFragmentListener?.onSortClick()
+            catAnalyticsInstance.eventSortClicked(departmentId)
         }
 
         icon_filter.setOnClickListener {
             visibleFragmentListener?.onFilterClick()
+            catAnalyticsInstance.eventFilterClicked(departmentId)
         }
 
         button_filter.setOnClickListener {
             visibleFragmentListener?.onFilterClick()
+            catAnalyticsInstance.eventFilterClicked(departmentId)
         }
 
 
@@ -140,18 +145,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
             when (img_display_button.tag) {
 
                 STATE_GRID -> {
-                    CategoryPageAnalytics.getInstance().eventDisplayButtonClicked(departmentId, "grid")
+                    catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "grid")
                     img_display_button.tag = STATE_LIST
                     img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
                 }
 
                 STATE_LIST -> {
-                    CategoryPageAnalytics.getInstance().eventDisplayButtonClicked(departmentId, "list")
+                    catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "list")
                     img_display_button.tag = STATE_BIG
                     img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
                 }
                 STATE_BIG -> {
-                    CategoryPageAnalytics.getInstance().eventDisplayButtonClicked(departmentId, "big")
+                    catAnalyticsInstance.eventDisplayButtonClicked(departmentId, "big")
                     img_display_button.tag = STATE_GRID
                     img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
                 }
@@ -202,6 +207,15 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     private fun applyFilter(filterParameter: Map<String, String>) {
         val selectedFragment = searchSectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+
+        val presentFilterList = selectedFragment.getSelectedFilter()
+        if (presentFilterList.size < filterParameter.size) {
+            for (i in filterParameter.entries) {
+                if (!presentFilterList.containsKey(i.key)) {
+                    categoryPageAnalytics.eventFilterApplied(departmentId, i.key, i.value)
+                }
+            }
+        }
 
         selectedFragment.applyFilterToSearchParameter(filterParameter)
         selectedFragment.setSelectedFilter(HashMap(filterParameter))
@@ -260,9 +274,9 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
             override fun onPageSelected(position: Int) {
                 if (position == 0) {
-                    CategoryPageAnalytics.getInstance().eventClickProductTab(departmentId, "produk")
+                    catAnalyticsInstance.eventClickProductTab(departmentId)
                 } else {
-                    CategoryPageAnalytics.getInstance().eventClickProductTab(departmentId, "katalog")
+                    catAnalyticsInstance.eventClickCatalogTab(departmentId)
                 }
                 onPageSelectedCalled(position)
             }
@@ -281,13 +295,13 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     private fun initToolbar() {
         action_up_btn.setOnClickListener {
-            CategoryPageAnalytics.getInstance().eventBackButtonClicked(departmentId)
+            catAnalyticsInstance.eventBackButtonClicked(departmentId)
             onBackPressed()
         }
         et_search.text = departmentName
 
         layout_search.setOnClickListener {
-            CategoryPageAnalytics.getInstance().eventSearchBarClicked(departmentId)
+            catAnalyticsInstance.eventSearchBarClicked(departmentId)
             moveToAutoCompleteActivity()
         }
     }
@@ -331,6 +345,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         bottomSheetFilterView?.onActivityResult(requestCode, resultCode, data)
+    }
+
+    fun getCategoryId(): String {
+        return departmentId
     }
 
 }

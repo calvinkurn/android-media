@@ -36,6 +36,10 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         BaseCategoryAdapter.OnItemChangeView,
         CatalogCardListener {
 
+    override fun getDepartMentId(): String {
+        return mDepartmentId
+    }
+
     override fun setOnCatalogClicked(catalogID: String, catalogName: String) {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalDiscovery.CATALOG)
         intent.putExtra(EXTRA_CATALOG_ID, catalogID)

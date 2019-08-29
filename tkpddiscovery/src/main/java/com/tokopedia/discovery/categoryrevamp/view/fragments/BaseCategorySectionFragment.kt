@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
+import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.data.DataValue
@@ -79,6 +80,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     protected abstract fun getAdapter(): BaseCategoryAdapter?
 
     abstract fun reloadData()
+    abstract fun getDepartMentId(): String
     protected abstract fun getFilterRequestCode(): Int
 
 
@@ -367,9 +369,10 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (resultCode == Activity.RESULT_OK) {
 
             if (requestCode == getSortRequestCode()) run {
-                setSelectedSort(HashMap<String, String>(getMapFromIntent(data, EXTRA_SELECTED_SORT)))
-                setSelectedSort(HashMap<String, String>(getMapFromIntent(data, EXTRA_SELECTED_SORT)))
+                val sortFilterList = HashMap<String, String>(getMapFromIntent(data, EXTRA_SELECTED_SORT))
+                val selectedSortName = data?.getStringExtra(EXTRA_SELECTED_NAME)
 
+                setSelectedSort(sortFilterList)
                 if (searchParameter != null) {
                     selectedSort?.let {
                         searchParameter.getSearchParameterHashMap().putAll(it)
@@ -378,6 +381,9 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
                 clearDataFilterSort()
                 reloadData()
+                catAnalyticsInstance.eventSortApplied(getDepartMentId(),
+                        selectedSortName
+                                ?: "", sortFilterList["ob"]?.toInt() ?: 0)
             }
 
         }

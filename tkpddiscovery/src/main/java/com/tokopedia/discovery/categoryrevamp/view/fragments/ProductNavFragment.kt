@@ -22,11 +22,13 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.core.gcm.GCMHandler
+import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.SubCategoryAdapter
+import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
@@ -63,6 +65,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         ProductCardListener,
         SubCategoryListener,
         WishListActionListener {
+    override fun getDepartMentId():String {
+        return mDepartmentId
+    }
 
     override fun onErrorAddWishList(errorMessage: String?, productId: String) {
         enableWishlistButton(productId)
@@ -473,6 +478,11 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
         }
+        catAnalyticsInstance.eventClickProductList(item.id.toString(),
+                mDepartmentId,
+                item.name,
+                CurrencyFormatHelper.convertRupiahToInt(item.price),
+                adapterPosition)
     }
 
     override fun onLongClick(item: ProductsItem, adapterPosition: Int) {
@@ -485,8 +495,10 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             disableWishlistButton(productItem.id.toString())
             if (productItem.wishlist) {
                 removeWishlist(productItem.id.toString(), userSession.userId, position)
+                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), false)
             } else {
                 addWishlist(productItem.id.toString(), userSession.userId, position)
+                catAnalyticsInstance.eventWishistClicked(mDepartmentId, productItem.id.toString(), true)
             }
         } else {
             launchLoginActivity(productItem.id.toString())
@@ -521,12 +533,14 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
+            catAnalyticsInstance.eventQuickFilterClicked(mDepartmentId, option.name, true)
         } else {
             val filter = getSelectedFilter()
             filter.remove(option.key)
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
+            catAnalyticsInstance.eventQuickFilterClicked(mDepartmentId, option.name, false)
         }
 
     }
@@ -556,4 +570,5 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         isPagingAllowed = true
         pageCount = 0
     }
+
 }

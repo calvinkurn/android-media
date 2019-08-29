@@ -5,9 +5,13 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.design.utils.CurrencyFormatHelper
+import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.ProductCardViewHolder
+import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.product.ProductTypeFactory
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
 
 
 class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
@@ -15,6 +19,8 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                             onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
     private var loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
+    val viewMap = HashMap<Int, Boolean>()
+
 
     override fun onBindViewHolder(holder: AbstractViewHolder<Visitable<*>>, position: Int) {
         holder.bind(visitables[position])
@@ -84,6 +90,23 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                     break
                 }
             }
+        }
+    }
+
+    override fun onViewAttachedToWindow(holder: AbstractViewHolder<Visitable<*>>) {
+        super.onViewAttachedToWindow(holder)
+        if(holder is ProductCardViewHolder){
+            val position = holder.adapterPosition
+            if (!viewMap.containsKey(position)) {
+                viewMap[position] = true
+                val item = visitables[position] as ProductsItem
+                catAnalyticsInstance.eventProductListImpression(((holder.itemView.context) as CategoryNavActivity).getCategoryId(),
+                        item.name,
+                        item.id.toString(),
+                        CurrencyFormatHelper.convertRupiahToInt(item.price),
+                        position)
+            }
+
         }
     }
 }
