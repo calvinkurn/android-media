@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.view.adapter
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
+import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.*
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
@@ -21,9 +22,13 @@ class SearchSectionPagerAdapter(
     private var shopListFragment: ShopListFragment? = null
     private var profileListFragment: ProfileListFragment? = null
     private val titleList = mutableListOf<String>()
+    private val registeredFragments = SparseArrayCompat<Fragment>()
 
-    fun setTitleList(titleList: List<String>) {
+    fun updateData(titleList: List<String>) {
+        this.titleList.clear()
         this.titleList.addAll(titleList)
+        this.registeredFragments.clear()
+        this.notifyDataSetChanged()
     }
 
     override fun getItem(position: Int): Fragment {
@@ -63,6 +68,7 @@ class SearchSectionPagerAdapter(
         val fragment = super.instantiateItem(container, position)
 
         castFragmentsInstance(fragment)
+        registerFragments(position, fragment)
 
         return fragment
     }
@@ -76,12 +82,27 @@ class SearchSectionPagerAdapter(
         }
     }
 
+    private fun registerFragments(position: Int, fragment: Any) {
+        if (fragment is Fragment) {
+            registeredFragments.put(position, fragment)
+        }
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+        registeredFragments.remove(position)
+        super.destroyItem(container, position, `object`)
+    }
+
     override fun getCount(): Int {
         return titleList.size
     }
 
     override fun getPageTitle(position: Int): CharSequence {
         return if (titleList.size > position) titleList[position] else ""
+    }
+
+    override fun getItemPosition(`object`: Any): Int {
+        return POSITION_NONE
     }
 
     fun getProductListFragment(): ProductListFragment? = productListFragment
@@ -91,4 +112,8 @@ class SearchSectionPagerAdapter(
     fun getShopListFragment(): ShopListFragment? = shopListFragment
 
     fun getProfileListFragment(): ProfileListFragment? = profileListFragment
+
+    fun getRegisteredFragmentAtPosition(position: Int): Fragment? {
+        return registeredFragments.get(position)
+    }
 }
