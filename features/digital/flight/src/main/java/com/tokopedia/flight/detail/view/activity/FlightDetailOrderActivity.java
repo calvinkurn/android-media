@@ -49,7 +49,7 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
             } else {
                 Intent intent = new Intent(context, FlightDetailOrderActivity.class);
                 intent.putExtra(EXTRA_ORDER_PASS_DETAIL, passData);
-                intent.putExtra(EXTRA_IS_CANCELLATION, extras.getInt("is_cancellation", 0));
+                intent.putExtra(EXTRA_IS_CANCELLATION, extras.getString("is_cancellation"));
                 return intent
                         .setData(uri.build());
             }
@@ -63,7 +63,7 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
     protected Fragment getNewFragment() {
         return FlightDetailOrderFragment.createInstance(
                 getIntent().getParcelableExtra(EXTRA_ORDER_PASS_DETAIL),
-                getIntent().getIntExtra(EXTRA_IS_CANCELLATION, 0) == 1);
+                getIntent().getStringExtra(EXTRA_IS_CANCELLATION).equals("1"));
     }
 
     @Override
