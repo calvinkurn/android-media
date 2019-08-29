@@ -5,9 +5,11 @@ import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.R
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.generateRechargeCheckoutToken
@@ -59,6 +61,16 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
                 processToCart()
             }
         }
+    }
+
+    fun getEnquiry(clientNumber: String, productId: String) {
+        topupBillsViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital_telco),
+                topupBillsViewModel.createEnquiryParams(clientNumber, productId))
+    }
+
+    fun getMenuDetail(menuId: Int) {
+        topupBillsViewModel.getMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_telco_catalog_menu_detail),
+                topupBillsViewModel.createMenuDetailParams(menuId))
     }
 
     abstract fun processEnquiry(data: TelcoEnquiryData)
