@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:layout_alignParentTop="true">
 
-        <com.tokopedia.design.text.TkpdHintTextInputLayout
+        <android.support.v7.widget.AppCompatAutoCompleteTextView
             android:id="@+id/til_contact_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
                 android:inputType="text"
                 android:hint="@string/travel_contact_data_name_hint" />
 
-        </com.tokopedia.design.text.TkpdHintTextInputLayout>
+        </android.support.v7.widget.AppCompatAutoCompleteTextView>
 
         <com.tokopedia.design.text.TkpdHintTextInputLayout
             android:id="@+id/til_contact_email"
