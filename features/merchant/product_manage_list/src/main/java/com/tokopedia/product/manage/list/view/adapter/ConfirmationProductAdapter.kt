@@ -9,6 +9,8 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.data.ConfirmationProductData
+import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_DEFAULT
+import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_UNLIMITED
 
 class ConfirmationProductAdapter(private var data: List<ConfirmationProductData>)
     : RecyclerView.Adapter<ConfirmationProductAdapter.ConfirmationProductViewHolder>() {
@@ -40,9 +42,12 @@ class ConfirmationProductAdapter(private var data: List<ConfirmationProductData>
                 txtProductEtalase.visibility = View.GONE
             }
 
-            if (data.statusStock != 0) {
+            if (data.statusStock != STOCK_DEFAULT) {
                 txtProductStock.visibility = View.VISIBLE
-                txtProductStock.text = if (data.statusStock == 1) "Stock Tersedia" else "Stock Kosong"
+                txtProductStock.text = if (data.statusStock == STOCK_UNLIMITED)
+                    view.resources.getString(R.string.product_available)
+                else
+                    view.resources.getString(R.string.product_label_stock_empty)
             } else {
                 txtProductStock.visibility = View.GONE
             }

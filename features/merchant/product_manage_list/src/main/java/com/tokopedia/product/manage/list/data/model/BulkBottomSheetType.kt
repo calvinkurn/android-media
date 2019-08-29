@@ -9,15 +9,15 @@ abstract class BulkBottomSheetType(
         val shouldDisplayDrawable: Boolean = false
 ) {
     companion object {
-        private const val SELECT_ALL_ETALASE = -1
+        const val ETALASE_DEFAULT = -1
+        const val STOCK_DEFAULT = -1
         const val STOCK_EMPTY = 0
         const val STOCK_UNLIMITED = 1
-        const val STOCK_DEFAULT = 2
         const val STOCK_DELETED = 3
     }
 
     data class EtalaseType(var etalaseValue: String = "",
-                           var etalaseId: Int = SELECT_ALL_ETALASE) : BulkBottomSheetType(
+                           var etalaseId: Int = ETALASE_DEFAULT) : BulkBottomSheetType(
             R.string.product_bs_etalase_title, etalaseValue, false
     )
 

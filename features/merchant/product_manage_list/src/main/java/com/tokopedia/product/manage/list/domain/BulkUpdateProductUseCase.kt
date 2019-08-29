@@ -5,6 +5,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.list.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Param
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response
+import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -12,7 +13,7 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class BulkUpdateProductUseCase @Inject constructor(@Named(GQL_UPDATE_PRODUCT) private val gqlQuery: String,
-                                                   private val graphqlUseCase: GraphqlUseCase) : UseCase<List<ProductUpdateV3Response>>() {
+                                                   private val graphqlUseCase: GraphqlUseCase) : UseCase<ProductUpdateV3SuccessFailedResponse>() {
 
     companion object {
         private const val PARAM_BULK_EDIT = "bulk_edit_param"
@@ -26,7 +27,7 @@ class BulkUpdateProductUseCase @Inject constructor(@Named(GQL_UPDATE_PRODUCT) pr
         }
     }
 
-    override fun createObservable(requestParams: RequestParams): Observable<List<ProductUpdateV3Response>> {
+    override fun createObservable(requestParams: RequestParams): Observable<ProductUpdateV3SuccessFailedResponse> {
         val listResponse = requestParams.getObject(PARAM_BULK_EDIT) as List<ProductUpdateV3Param>
 
         return Observable.from(listResponse)
@@ -45,7 +46,18 @@ class BulkUpdateProductUseCase @Inject constructor(@Named(GQL_UPDATE_PRODUCT) pr
                         val data = ProductUpdateV3Response()
                         Observable.just(data)
                     }
-                }.toList()
-    }
+                }.toList().flatMap {
+                    val productUpdateV3SuccessFailedResponse = ProductUpdateV3SuccessFailedResponse()
 
+                    it.forEachIndexed { index, productResponse ->
+                        productResponse.productUpdateV3Data.productId = listResponse[index].productId
+                        if (productResponse.productUpdateV3Data.isSuccess) {
+                            productUpdateV3SuccessFailedResponse.successResponse.add(productResponse)
+                        } else {
+                            productUpdateV3SuccessFailedResponse.failedResponse.add(productResponse)
+                        }
+                    }
+                    Observable.just(productUpdateV3SuccessFailedResponse)
+                }
+    }
 }

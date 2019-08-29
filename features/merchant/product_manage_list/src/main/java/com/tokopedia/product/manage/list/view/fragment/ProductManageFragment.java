@@ -15,7 +15,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
@@ -78,7 +77,7 @@ import com.tokopedia.product.manage.list.constant.ManageTrackingConstant;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.data.ConfirmationProductData;
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType;
-import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response;
+import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
 import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivity;
@@ -117,7 +116,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import kotlin.Pair;
 import kotlin.Unit;
 
 import static com.tokopedia.gm.common.constant.GMCommonConstantKt.IMG_URL_POWER_MERCHANT_IDLE_POPUP;
@@ -423,7 +421,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
     private void setupBottomSheet() {
         bulkBottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(getContext(),
-                () -> editProductBottomSheet.clearAllData());
+                () -> {
+                    editProductBottomSheet.clearAllData();
+                    clearEtalaseAndStockData();
+                });
         if (getContext() != null) {
             editProductBottomSheet = new EditProductBottomSheet(getContext(), this, getFragmentManager());
         }
@@ -503,30 +504,32 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     }
 
     @Override
-    public void onSuccessBulkUpdateProduct(List<ProductUpdateV3Response> listOfResponse) {
-        confirmationProductDataList.clear();
-        editProductBottomSheet.clearAllData();
-        bulkCheckBox.setChecked(false);
+    public void onSuccessBulkUpdateProduct(ProductUpdateV3SuccessFailedResponse listOfResponse) {
         hideLoadingProgress();
-        Pair pairData = productManagePresenter.getBulkUpdateSuccessAndFailedList(listOfResponse);
-        List<ProductUpdateV3Response> successData = (List<ProductUpdateV3Response>) pairData.getFirst();
-        List<ProductUpdateV3Response> failedData = (List<ProductUpdateV3Response>) pairData.getSecond();
-        if (!failedData.isEmpty()) {
-            Snackbar snackbar = Snackbar.make(getView(), getString(R.string.product_manage_bulk_snackbar, String.valueOf(successData.size()), String.valueOf(failedData.size())),
-                    Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(R.string.retry_label, v -> {
+        bulkCheckBox.setChecked(false);
 
-            });
-            snackbar.show();
-
+        if (!listOfResponse.getFailedResponse().isEmpty()) {
+            ToasterError.make(getView(),
+                    getString(R.string.product_manage_bulk_snackbar, String.valueOf(listOfResponse.getSuccessResponse().size()), String.valueOf(listOfResponse.getFailedResponse().size())),
+                    ToasterError.LENGTH_LONG).setAction(R.string.retry_label, v -> {
+                productManagePresenter.bulkUpdateProduct(productManagePresenter.failedBulkDataMapper(listOfResponse.getFailedResponse(), confirmationProductDataList));
+            }).show();
         } else {
-            ToasterNormal.show(getActivity(), getString(R.string.product_manage_bulk_snackbar_sucess, String.valueOf(successData.size())));
+            confirmationProductDataList.clear();
+            editProductBottomSheet.clearAllData();
+            clearEtalaseAndStockData();
+            ToasterNormal.make(getView(), getString(R.string.product_manage_bulk_snackbar_sucess, String.valueOf(listOfResponse.getSuccessResponse().size())), ToasterNormal.LENGTH_LONG)
+                    .setAction(R.string.close, v -> {
+                    }).show();
         }
-        stockType = new BulkBottomSheetType.StockType();
-        etalaseType = new BulkBottomSheetType.EtalaseType();
         adapter.resetCheckedItemSet();
         renderCheckedView();
         loadInitialData();
+    }
+
+    private void clearEtalaseAndStockData() {
+        stockType = new BulkBottomSheetType.StockType();
+        etalaseType = new BulkBottomSheetType.EtalaseType();
     }
 
     @Override
@@ -745,16 +748,15 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
     @Override
     public void onSuccessMultipleDeleteProduct() {
+        ToasterNormal.show(getActivity(), getString(R.string.product_manage_bulk_snackbar_sucess_delete));
         loadInitialData();
     }
 
     @Override
-    public void onErrorMultipleDeleteProduct(Throwable t, List<ProductUpdateV3Response> listOfResponse) {
-        Pair pairData = productManagePresenter.getBulkUpdateSuccessAndFailedList(listOfResponse);
-        List<ProductUpdateV3Response> successData = (List<ProductUpdateV3Response>) pairData.getFirst();
-        List<ProductUpdateV3Response> failedData = (List<ProductUpdateV3Response>) pairData.getSecond();
+    public void onErrorMultipleDeleteProduct(Throwable t, ProductUpdateV3SuccessFailedResponse listOfResponse) {
+
         NetworkErrorHelper.createSnackbarWithAction(getActivity(),
-                getString(R.string.product_manage_bulk_snackbar, String.valueOf(successData.size()), String.valueOf(failedData.size())), () -> {
+                getString(R.string.product_manage_bulk_snackbar, String.valueOf(listOfResponse.getSuccessResponse().size()), String.valueOf(listOfResponse.getFailedResponse().size())), () -> {
 //                    productManagePresenter.bulkUpdateProduct();
                 }).showRetrySnackbar();
     }
@@ -834,42 +836,39 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
 
     @NonNull
     private BottomSheetItemClickListener onOptionBottomSheetClicked(final ProductManageViewModel productManageViewModel) {
-        return new BottomSheetItemClickListener() {
-            @Override
-            public void onBottomSheetItemClick(final MenuItem item) {
-                if (productManageViewModel.getProductStatus().equals(StatusProductOption.UNDER_SUPERVISION)) {
-                    NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.product_manage_desc_product_on_supervision, productManageViewModel.getProductName()));
-                    return;
+        return item -> {
+            if (productManageViewModel.getProductStatus().equals(StatusProductOption.UNDER_SUPERVISION)) {
+                NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.product_manage_desc_product_on_supervision, productManageViewModel.getProductName()));
+                return;
+            }
+            int itemId = item.getItemId();
+            if (itemId == R.id.edit_product_menu) {
+                goToEditProduct(productManageViewModel.getId());
+                UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString());
+            } else if (itemId == R.id.duplicat_product_menu) {
+                goToDuplicateProduct(productManageViewModel.getId());
+                UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString());
+            } else if (itemId == R.id.delete_product_menu) {
+                final List<String> productIdList = new ArrayList<>();
+                showDialogActionDeleteProduct(productIdList, (dialogInterface, i) -> {
+                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.label_delete));
+                    productManagePresenter.deleteSingleProduct(productManageViewModel.getId());
+                }, (dialog, which) -> {
+                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.title_cancel));
+                    dialog.dismiss();
+                });
+            } else if (itemId == R.id.change_price_product_menu) {
+                if (productManageViewModel.isProductVariant()) {
+                    showDialogVariantPriceLocked();
+                } else {
+                    showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
                 }
-                int itemId = item.getItemId();
-                if (itemId == R.id.edit_product_menu) {
-                    goToEditProduct(productManageViewModel.getId());
-                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString());
-                } else if (itemId == R.id.duplicat_product_menu) {
-                    goToDuplicateProduct(productManageViewModel.getId());
-                    UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString());
-                } else if (itemId == R.id.delete_product_menu) {
-                    final List<String> productIdList = new ArrayList<>();
-                    showDialogActionDeleteProduct(productIdList, (dialogInterface, i) -> {
-                        UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.label_delete));
-                        productManagePresenter.deleteSingleProduct(productManageViewModel.getId());
-                    }, (dialog, which) -> {
-                        UnifyTracking.eventProductManageOverflowMenu(getActivity(), item.getTitle().toString() + " - " + getString(R.string.title_cancel));
-                        dialog.dismiss();
-                    });
-                } else if (itemId == R.id.change_price_product_menu) {
-                    if (productManageViewModel.isProductVariant()) {
-                        showDialogVariantPriceLocked();
-                    } else {
-                        showDialogChangeProductPrice(productManageViewModel.getProductId(), productManageViewModel.getProductPricePlain(), productManageViewModel.getProductCurrencyId());
-                    }
-                } else if (itemId == R.id.share_product_menu) {
-                    downloadBitmap(productManageViewModel);
-                } else if (itemId == R.id.set_cashback_product_menu) {
-                    onSetCashbackClicked(productManageViewModel);
-                } else if (itemId == R.id.set_promo_ads_product_menu) {
-                    onPromoTopAdsClicked(productManageViewModel);
-                }
+            } else if (itemId == R.id.share_product_menu) {
+                downloadBitmap(productManageViewModel);
+            } else if (itemId == R.id.set_cashback_product_menu) {
+                onSetCashbackClicked(productManageViewModel);
+            } else if (itemId == R.id.set_promo_ads_product_menu) {
+                onPromoTopAdsClicked(productManageViewModel);
             }
         };
     }
@@ -1019,18 +1018,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
         startActivity(intent);
     }
 
-    private boolean isDataListContainsVariant() {
-        boolean isContainVariant = false;
-        for (ProductManageViewModel data : adapter.getCheckedDataList()) {
-            if (data.isProductVariant()) {
-                isContainVariant = true;
-                break;
-            }
-
-        }
-        return isContainVariant;
-    }
-
     @Override
     public void onBottomSheetButtonClicked() {
         if (isIdlePowerMerchant()) {
@@ -1066,11 +1053,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageV
     @Override
     public void goToEditStock() {
         startActivityForResult(ProductBulkEditStockActivity.Companion.createIntent(getActivity()), STOCK_EDIT_REQUEST_CODE);
-    }
-
-    @Override
-    public void deleteProducts() {
-
     }
 
     @Override

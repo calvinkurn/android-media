@@ -2,6 +2,7 @@ package com.tokopedia.product.manage.list.data
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_DEFAULT
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_EMPTY
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_UNLIMITED
 
@@ -25,6 +26,7 @@ data class ConfirmationProductData(
                 }
             }
             STOCK_EMPTY -> "EMPTY"
+            STOCK_DEFAULT -> ""
             else -> "DELETED"
         }
     }

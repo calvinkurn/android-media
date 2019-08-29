@@ -13,7 +13,7 @@ import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetProductListUseCase @Inject constructor(@Named(GQL_PRODUCT_LIST)private val gqlQuery: String,
+class GetProductListUseCase @Inject constructor(@Named(GQL_PRODUCT_LIST) private val gqlQuery: String,
                                                 private val graphqlUseCase: GraphqlUseCase) : UseCase<ProductListResponse>() {
 
     companion object {
@@ -29,19 +29,19 @@ class GetProductListUseCase @Inject constructor(@Named(GQL_PRODUCT_LIST)private 
         private const val PARAM_FILTER = "filter"
 
         @JvmStatic
-        fun createRequestParams(shopId: String, page: Int, fKeyword: String,
-                                fCatalog: Int, fCondition: Int, fMenu: String, fPicture: Int,
-                                sort: Int, fCategory: Int): RequestParams {
+        fun createRequestParams(shopId: String?, page: Int?, fKeyword: String?,
+                                fCatalog: Int?, fCondition: Int?, fMenu: String?, fPicture: Int?,
+                                sort: Int?, fCategory: Int?): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putString(PARAM_SHOP_ID, shopId)
             requestParams.putString(PARAM_FKEYWORD, fKeyword)
             requestParams.putString(PARAM_FMENU, fMenu)
-            requestParams.putInt(PARAM_PAGE, page)
-            requestParams.putInt(PARAM_FCATALOG, fCatalog)
-            requestParams.putInt(PARAM_FCONDITION, fCondition)
-            requestParams.putInt(PARAM_FPICTURE, fPicture)
-            requestParams.putInt(PARAM_SORT, sort)
-            requestParams.putInt(PARAM_FCATEGORY, fCategory)
+            requestParams.putInt(PARAM_PAGE, page ?: 1)
+            requestParams.putInt(PARAM_FCATALOG, fCatalog ?: 0)
+            requestParams.putInt(PARAM_FCONDITION, fCondition ?: 0)
+            requestParams.putInt(PARAM_FPICTURE, fPicture ?: 0)
+            requestParams.putInt(PARAM_SORT, sort ?: 0)
+            requestParams.putInt(PARAM_FCATEGORY, fCategory ?: 0)
 
             return requestParams
         }

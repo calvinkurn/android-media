@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
@@ -21,19 +22,23 @@ import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
 import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
-import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
-import com.tokopedia.seller.product.picker.view.mapper.GetProductListPickerMapperView;
+import com.tokopedia.seller.product.picker.view.mapper.GetProductListMapper;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenter;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenterImpl;
 import com.tokopedia.seller.shop.common.interceptor.HeaderErrorResponseInterceptor;
+import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
+
+import static com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_PRODUCT_LIST;
 
 /**
  * Created by zulfikarrahman on 9/8/17.
@@ -45,9 +50,10 @@ public class ProductListModule {
 
     @ProductListScope
     @Provides
-    ProductListPickerSearchPresenter provideListPickerSearchPresenter(GetProductListSellingUseCase getProductListSellingUseCase,
-                                                                      GetProductListPickerMapperView getProductListPickerMapperView){
-        return new ProductListPickerSearchPresenterImpl(getProductListSellingUseCase, getProductListPickerMapperView);
+    ProductListPickerSearchPresenter provideListPickerSearchPresenter(GetProductListUseCase getProductListUseCase,
+                                                                      GetProductListMapper getProductListMapper,
+                                                                      UserSessionInterface userSession){
+        return new ProductListPickerSearchPresenterImpl(getProductListUseCase, getProductListMapper, userSession);
     }
 
 
@@ -160,5 +166,15 @@ public class ProductListModule {
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @ProductListScope
+    @Provides
+    @Named(GQL_PRODUCT_LIST)
+    public String provideProductListQuery(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                com.tokopedia.shop.common.R.raw.gql_get_product_list
+        );
     }
 }

@@ -16,7 +16,6 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
     interface EditProductInterface {
         fun goToEtalasePicker(etalaseId: Int)
         fun goToEditStock()
-        fun deleteProducts()
         fun goToConfirmationBottomSheet(isActionDelete: Boolean)
         fun updateProduct()
     }

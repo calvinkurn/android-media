@@ -10,5 +10,7 @@ data class ProductUpdateV3Data(
         val header: ProductUpdateV3Header = ProductUpdateV3Header(),
         @SerializedName("isSuccess")
         @Expose
-        val isSuccess: Boolean = false
+        val isSuccess: Boolean = false,
+
+        var productId: String = ""
 )

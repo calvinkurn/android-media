@@ -8,9 +8,11 @@ import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase
 import com.tokopedia.product.manage.list.data.ConfirmationProductData
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
+import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.ETALASE_DEFAULT
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType.Companion.STOCK_DELETED
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Param
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3Response
+import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase
@@ -55,8 +57,8 @@ class ProductManagePresenterImpl @Inject constructor(
 
     override fun bulkUpdateProduct(listUpdateResponse: MutableList<ConfirmationProductData>) {
         view.showLoadingProgress()
-        bulkUpdateProductUseCase.execute(BulkUpdateProductUseCase.createRequestParams(mapToBulkUpdateParam(listUpdateResponse)), object : Subscriber<List<ProductUpdateV3Response>>() {
-            override fun onNext(listOfUpdateResponse: List<ProductUpdateV3Response>) {
+        bulkUpdateProductUseCase.execute(BulkUpdateProductUseCase.createRequestParams(mapToBulkUpdateParam(listUpdateResponse)), object : Subscriber<ProductUpdateV3SuccessFailedResponse>() {
+            override fun onNext(listOfUpdateResponse: ProductUpdateV3SuccessFailedResponse) {
                 view.onSuccessBulkUpdateProduct(listOfUpdateResponse)
             }
 
@@ -135,7 +137,7 @@ class ProductManagePresenterImpl @Inject constructor(
                 })
     }
 
-    override fun setCashback(productId: String?, cashback: Int) {
+    override fun setCashback(productId: String, cashback: Int) {
         view.showLoadingProgress()
         setCashbackUseCase.execute(SetCashbackUseCase.createRequestParams(productId, cashback), object : Subscriber<Boolean>() {
             override fun onNext(isSuccess: Boolean) {
@@ -182,7 +184,7 @@ class ProductManagePresenterImpl @Inject constructor(
 
     }
 
-    override fun getPopupsInfo(productId: String?) {
+    override fun getPopupsInfo(productId: String) {
         val shopId = getShopIdInteger()
         popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
                 object : Subscriber<Boolean>() {
@@ -207,10 +209,10 @@ class ProductManagePresenterImpl @Inject constructor(
         view.showLoadingProgress()
 
         bulkUpdateProductUseCase.execute(BulkUpdateProductUseCase.createRequestParams(singleDeleteProductMapper(productIds)),
-                object : Subscriber<List<ProductUpdateV3Response>>() {
-                    override fun onNext(listResponse: List<ProductUpdateV3Response>) {
+                object : Subscriber<ProductUpdateV3SuccessFailedResponse>() {
+                    override fun onNext(listResponse: ProductUpdateV3SuccessFailedResponse) {
                         view.hideLoadingProgress()
-                        if (!listResponse.first().productUpdateV3Data.isSuccess) {
+                        if (listResponse.failedResponse.isNotEmpty()) {
                             view.onErrorMultipleDeleteProduct(NetworkErrorException(),
                                     listResponse)
                         } else {
@@ -224,7 +226,7 @@ class ProductManagePresenterImpl @Inject constructor(
                     override fun onError(e: Throwable?) {
                         if (isViewAttached) {
                             view.hideLoadingProgress()
-                            view.onErrorMultipleDeleteProduct(e, java.util.ArrayList())
+                            view.onErrorMultipleDeleteProduct(e, ProductUpdateV3SuccessFailedResponse())
                         }
                     }
 
@@ -270,15 +272,19 @@ class ProductManagePresenterImpl @Inject constructor(
     }
 
     override fun mapToProductConfirmationData(isActionDelete: Boolean, stockType: BulkBottomSheetType.StockType, etalaseType: BulkBottomSheetType.EtalaseType,
-                                              listOfProduct: List<ProductManageViewModel>): ArrayList<ConfirmationProductData> {
+                                              productManageViewModels: List<ProductManageViewModel>): ArrayList<ConfirmationProductData> {
 
         val confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
-        listOfProduct.forEach {
+        productManageViewModels.forEach {
             val confirmationProductData = ConfirmationProductData()
             confirmationProductData.productId = it.productId
             confirmationProductData.productName = it.productName
             confirmationProductData.productImgUrl = it.imageUrl
-            confirmationProductData.productEtalaseId = etalaseType.etalaseId
+            if (etalaseType.etalaseId == ETALASE_DEFAULT) {
+                confirmationProductData.productEtalaseId = 0
+            } else {
+                confirmationProductData.productEtalaseId = etalaseType.etalaseId
+            }
             confirmationProductData.productEtalaseName = etalaseType.etalaseValue
             if (isActionDelete) {
                 confirmationProductData.statusStock = STOCK_DELETED
@@ -292,7 +298,7 @@ class ProductManagePresenterImpl @Inject constructor(
 
     }
 
-    private fun singleDeleteProductMapper(productId: String): MutableList<ProductUpdateV3Param> {
+    private fun singleDeleteProductMapper(productId: String): List<ProductUpdateV3Param> {
         val param = ProductUpdateV3Param()
         param.productId = productId
         param.shop.shopId = userSessionInterface.shopId
@@ -300,19 +306,10 @@ class ProductManagePresenterImpl @Inject constructor(
         return arrayListOf(param)
     }
 
-    override fun getBulkUpdateSuccessAndFailedList(listOfData: List<ProductUpdateV3Response>): Pair<ArrayList<ProductUpdateV3Response>, ArrayList<ProductUpdateV3Response>> {
-        val listSuccessUpdate: ArrayList<ProductUpdateV3Response> = arrayListOf()
-        val listFailedUpdate: ArrayList<ProductUpdateV3Response> = arrayListOf()
-
-        listOfData.forEach {
-            if (!it.productUpdateV3Data.isSuccess) {
-                listFailedUpdate.add(it)
-            } else {
-                listSuccessUpdate.add(it)
-            }
+    override fun failedBulkDataMapper(failData: List<ProductUpdateV3Response>, confirmationProductDataList: List<ConfirmationProductData>)
+            : List<ConfirmationProductData> {
+        return confirmationProductDataList.filter {
+            failData.map { it.productUpdateV3Data.productId }.contains(it.productId)
         }
-
-        return Pair(listSuccessUpdate, listFailedUpdate)
     }
-
 }

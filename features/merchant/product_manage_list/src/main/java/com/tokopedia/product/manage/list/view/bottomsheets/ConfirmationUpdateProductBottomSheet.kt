@@ -44,9 +44,17 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
     override fun title(): String {
         return if (model.first().statusStock != STOCK_DELETED) {
-            MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_change, model.size.toString())).toString()
+            if (model.size == 1) {
+                MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_change_single)).toString()
+            } else {
+                MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_change, model.size.toString())).toString()
+            }
         } else {
-            MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_delete, model.size.toString())).toString()
+            if (model.size == 1) {
+                MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_delete_single)).toString()
+            } else {
+                MethodChecker.fromHtml(getString(R.string.product_confirmation_bs_title_delete, model.size.toString())).toString()
+            }
         }
     }
 
