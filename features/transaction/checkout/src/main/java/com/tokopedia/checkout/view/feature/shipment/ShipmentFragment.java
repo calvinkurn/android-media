@@ -749,6 +749,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         });
         createTicketDialog.setOkOnClickListener(v -> {
             checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
+            createTicketDialog.dismiss();
             new SuccessTicketDialog(getActivity(), SuccessTicketDialog.Page.PAGE_CHECKOUT).show();
         });
         createTicketDialog.show();

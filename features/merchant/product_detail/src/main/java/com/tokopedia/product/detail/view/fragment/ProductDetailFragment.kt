@@ -1088,6 +1088,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         })
                         createTicketDialog.setOkOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                            createTicketDialog.dismiss()
                             SuccessTicketDialog(activity, SuccessTicketDialog.Page.PAGE_ATC).show()
                         })
                         createTicketDialog.setDescription(data.getStringExtra(RESULT_TICKET_DESC))

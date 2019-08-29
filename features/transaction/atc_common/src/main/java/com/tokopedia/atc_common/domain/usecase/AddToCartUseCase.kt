@@ -4,6 +4,7 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -77,6 +78,10 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
         return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
             addToCartGqlResponse.addToCartResponse.let {
+                val errorReporter = ErrorReporterModel()
+                errorReporter.eligible = it.errorReporter.eligible
+                errorReporter.description = it.errorReporter.description
+
                 val dataModel = DataModel()
                 dataModel.success = it.data.success
                 dataModel.cartId = it.data.cartId
@@ -96,6 +101,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                 addToCartDataModel.status = it.status
                 addToCartDataModel.errorMessage = it.errorMessage
                 addToCartDataModel.data = dataModel
+                addToCartDataModel.errorReporter = errorReporter
 
                 addToCartDataModel
             }

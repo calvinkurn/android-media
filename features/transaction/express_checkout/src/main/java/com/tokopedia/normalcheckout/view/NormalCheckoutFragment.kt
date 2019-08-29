@@ -525,8 +525,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 }
                 return@setOnClickListener
             }
-//            doCheckoutAction(action)
-            onFinishError("error desc")
+            doCheckoutAction(action)
         }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
@@ -794,6 +793,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         selectedProductInfo?.basic?.name ?: "",
                         selectedProductInfo?.category?.name ?: "")
                 onFinish(addToCartDataModel.data.message[0], addToCartDataModel.data.cartId.toString())
+            } else if (addToCartDataModel.errorReporter.eligible) {
+                onFinishError(addToCartDataModel.errorReporter.description)
             } else {
                 activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
                         addToCartDataModel.errorMessage[0])
