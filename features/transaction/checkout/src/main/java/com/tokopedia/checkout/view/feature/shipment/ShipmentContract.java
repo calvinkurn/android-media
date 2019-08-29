@@ -81,6 +81,8 @@ public interface ShipmentContract {
 
         void renderCheckoutCartError(String message);
 
+        void renderCheckoutCartErrorReporter(String message);
+
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
         void renderCheckPromoCodeFromCourierSuccess(PromoCodeCartListData promoCodeCartListData, int itemPosition, boolean noToast);

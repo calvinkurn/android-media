@@ -740,7 +740,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderCheckoutCartError(String message) {
+    public void renderCheckoutCartErrorReporter(String message) {
         CreateTicketDialog createTicketDialog = new CreateTicketDialog(getActivity(), CreateTicketDialog.Page.PAGE_CHECKOUT);
         createTicketDialog.setDescription(message);
         createTicketDialog.setSecondaryOnClickListener(v -> {
@@ -754,13 +754,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         });
         createTicketDialog.show();
         checkoutAnalyticsCourierSelection.eventViewHelpPopUpAfterErrorInCheckout();
-//        if (message.contains("Pre Order") && message.contains("Corner"))
-//            mTrackerCorner.sendViewCornerPoError();
-//        if (message.equalsIgnoreCase("")) {
-//            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
-//        } else {
-//            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
-//        }
+    }
+
+    @Override
+    public void renderCheckoutCartError(String message) {
+        if (message.contains("Pre Order") && message.contains("Corner"))
+            mTrackerCorner.sendViewCornerPoError();
+        if (message.equalsIgnoreCase("")) {
+            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
+        } else {
+            NetworkErrorHelper.showRedCloseSnackbar(getActivity(), message);
+        }
     }
 
     @Override
@@ -1872,9 +1876,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
         switch (requestCode) {
             case REQUEST_CODE_NORMAL_CHECKOUT:
-                renderCheckoutCartError("Barangmu akan dikembalikan ke keranjang. Laporkan gangguan ini biar bisa segera diperbaiki, ya!");
-//                shipmentPresenter.processSaveShipmentState();
-//                shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
+                shipmentPresenter.processSaveShipmentState();
+                shipmentPresenter.processCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());
                 break;
             case REQUEST_CODE_COD:
                 shipmentPresenter.proceedCodCheckout(checkPromoParam, isOneClickShipment(), isTradeIn(), getDeviceId(), getCheckoutLeasingId());

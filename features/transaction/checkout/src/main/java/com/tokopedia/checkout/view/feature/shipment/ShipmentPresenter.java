@@ -944,6 +944,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
                     }
                     getView().renderCheckoutCartSuccess(checkoutData);
+                } else if (checkoutData.getErrorReporter() != null && checkoutData.getErrorReporter().getEligible()) {
+                    getView().renderCheckoutCartErrorReporter(checkoutData.getErrorReporter().getDescription());
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
                     if (!checkoutData.getErrorMessage().isEmpty()) {
