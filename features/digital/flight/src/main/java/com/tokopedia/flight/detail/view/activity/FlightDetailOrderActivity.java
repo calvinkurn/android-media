@@ -41,7 +41,7 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
         FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
         passData.setOrderId(extras.getString("id"));
 
-        if (context.getApplicationContext() instanceof AbstractionRouter){
+        if (context.getApplicationContext() instanceof AbstractionRouter) {
             UserSessionInterface userSession = new UserSession(context);
 
             if (!userSession.isLoggedIn()) {
@@ -63,7 +63,7 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
     protected Fragment getNewFragment() {
         return FlightDetailOrderFragment.createInstance(
                 getIntent().getParcelableExtra(EXTRA_ORDER_PASS_DETAIL),
-                getIntent().getStringExtra(EXTRA_IS_CANCELLATION).equals("1"));
+                getIntent().getStringExtra(EXTRA_IS_CANCELLATION) != null && getIntent().getStringExtra(EXTRA_IS_CANCELLATION).equals("1"));
     }
 
     @Override
