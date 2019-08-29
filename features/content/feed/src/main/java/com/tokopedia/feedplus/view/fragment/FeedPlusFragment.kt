@@ -17,9 +17,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import android.widget.FrameLayout
-import android.widget.TextView
 import android.widget.Toast
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -29,7 +26,6 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -118,6 +114,7 @@ import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * @author by nisie on 5/15/17.
@@ -1136,7 +1133,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                              id: String, type: String,
                                              isFollow: Boolean) {
         if (type == FollowCta.AUTHOR_USER) {
-            val userIdInt = userIdInt
+            val userIdInt = id.toIntOrZero()
 
             if (isFollow) {
                 onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
