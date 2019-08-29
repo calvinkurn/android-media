@@ -29,7 +29,8 @@ class TrackingRepository (
                 trackingDao.flush()
                 Timber.d("$TAG Database Local Over 2mb")
             }
-            trackingDao.insert(Tracking(data, session.getUserId(), session.getDeviceId()))
+            trackingDao.insert(Tracking(data, session.getUserId()?: "",
+                    session.getDeviceId()?: ""))
         } catch (e: Throwable) {}
     }
 
@@ -49,11 +50,13 @@ class TrackingRepository (
     }
 
     suspend fun sendSingleEvent(data: String, session: Session) : Boolean {
-        val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(),
-                session.getUserId(), session.getDeviceId())
+        val sessionId = session.getSessionId()?: ""
+        val userId = session.getUserId()?: ""
+        val deviceId = session.getDeviceId()?: ""
+        val dataRequest = TrackingMapper().transformSingleEvent(data, sessionId, userId, deviceId)
         val service = ApiService(context).makeRetrofitService()
         val requestBody = ApiService.parse(dataRequest)
-        val request = service.sendSingleEvent(requestBody)
+        val request = service.sendSingleEventAsync(requestBody)
         val response = request.await()
         return response.isSuccessful
     }
@@ -77,7 +80,7 @@ class TrackingRepository (
 
             val service = ApiService(context).makeRetrofitService()
             val requestBody = ApiService.parse(request)
-            val response = service.sendMultiEvent(requestBody).await()
+            val response = service.sendMultiEventAsync(requestBody).await()
             if (response.isSuccessful && response.code() == 200) {
                 delete(data)
             }

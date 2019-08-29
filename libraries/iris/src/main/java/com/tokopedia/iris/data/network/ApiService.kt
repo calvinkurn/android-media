@@ -3,9 +3,8 @@ package com.tokopedia.iris.data.network
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.iris.*
-
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iris.*
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -37,8 +36,10 @@ class ApiService(private val context: Context) {
                     val original = it.request()
                     val request = original.newBuilder()
                     request.header(HEADER_CONTENT_TYPE, HEADER_JSON)
-                    if (!session.getUserId().isBlank()) {
-                        request.header(HEADER_USER_ID, session.getUserId())
+                    session.getUserId()?.let { userId ->
+                        if (!userId.isBlank()) {
+                            request.header(HEADER_USER_ID, userId)
+                        }
                     }
                     request.header(HEADER_DEVICE, HEADER_ANDROID+BuildConfig.VERSION_NAME)
                     request.method(original.method(), original.body())
