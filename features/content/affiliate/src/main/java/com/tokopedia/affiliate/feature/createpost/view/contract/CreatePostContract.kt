@@ -5,6 +5,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.TagItem
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
 
 /**
@@ -31,6 +32,11 @@ interface CreatePostContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun fetchContentForm(idList: MutableList<String>, type: String, postId: String)
+
         fun getFeedDetail(postId: String, isAffiliate: Boolean)
+
+        fun fetchProductSuggestion(shopId: String,
+                                   onSuccess: (List<TagItem>) -> Unit,
+                                   onError: (Throwable) -> Unit)
     }
 }
