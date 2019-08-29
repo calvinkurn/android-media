@@ -378,7 +378,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     // GTM v5 EE Step 1
     private void enhancedECommerceGoToCheckoutStep1(Bundle eCommerceBundle, String eventLabel) {
         eCommerceBundle.putString("eventLabel", eventLabel);
-        sendEnhancedEcommerceV5("checkout", eCommerceBundle);
+        sendEnhancedEcommerceV5("begin_checkout", eCommerceBundle);
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Bundle eCommerceBundle, boolean eligibleCod) {

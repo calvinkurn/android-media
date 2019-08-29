@@ -25,13 +25,8 @@ class ShipmentTrackingDataGenerator @Inject constructor() {
                 dataCheckoutRequest?.apply {
                     shopProducts.forEach { shopProductCheckoutRequest ->
                         shopProductCheckoutRequest?.apply {
-                            productData.withIndex().forEach { (index, productDataCheckoutRequest) ->
+                            productData.forEach { productDataCheckoutRequest ->
                                 productDataCheckoutRequest?.apply {
-                                    if (index == 0) {
-                                        eCommerceBundle.putString("shopId", productDataCheckoutRequest.productShopId)
-                                        eCommerceBundle.putString("shopType", productDataCheckoutRequest.productShopType)
-                                        eCommerceBundle.putString("categoryId", productDataCheckoutRequest.productCategoryId)
-                                    }
                                     productBundles.add(getProductBundle(shopProductCheckoutRequest, productDataCheckoutRequest, shipmentCartItemModelList))
                                 }
                             }

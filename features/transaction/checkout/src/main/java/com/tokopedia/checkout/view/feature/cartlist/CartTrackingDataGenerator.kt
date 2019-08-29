@@ -23,13 +23,8 @@ class CartTrackingDataGenerator @Inject constructor() {
         val productBundles = ArrayList<Bundle>()
 
         cartItemDataList?.apply {
-            withIndex().forEach { (index, cartItemData) ->
+            forEach { cartItemData ->
                 val productBundle = getProductBundle(cartItemData)
-                if (index == 0) {
-                    eCommerceBundle.putString("shopId", cartItemData.originData.shopId)
-                    eCommerceBundle.putString("shopType", cartItemData.originData.shopType)
-                    eCommerceBundle.putString("categoryId", cartItemData.originData.categoryId)
-                }
                 productBundles.add(productBundle)
             }
         }

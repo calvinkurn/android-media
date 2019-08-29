@@ -367,7 +367,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         if (!TextUtils.isEmpty(transactionId)) {
             eCommerceBundle.putString("payment_id", transactionId);
         }
-        sendEnhancedEcommerceV5("checkout", eCommerceBundle);
+        sendEnhancedEcommerceV5("checkout_progress", eCommerceBundle);
     }
 
     public void eventClickCourierSelectionClickPilihAlamatLain() {
