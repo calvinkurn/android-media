@@ -1046,7 +1046,13 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel) {
-
+        feedAnalytics.eventProfileClickHashtag(
+                isOwner,
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType,
+                hashtagText
+        )
     }
 
     override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {

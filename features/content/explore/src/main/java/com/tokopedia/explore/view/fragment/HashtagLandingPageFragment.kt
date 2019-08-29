@@ -145,12 +145,14 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         /** uncomment this when the result of explore post could differentiate whether the creator is shop **/
         //activity?.let { RouteManager.route(it,
         // if (isShopPost)ApplinkConst.SHOP else ApplinkConst.PROFILE, post.userId.toString()) }
+        feedAnalytics.eventHashtagPageClickNameAvatar(post.userId.toString())
     }
 
     override fun onUserNameClick(post: PostKol) {
         /** uncomment this when the result of explore post could differentiate whether the creator is shop **/
         //activity?.let { RouteManager.route(it,
         // if (isShopPost)ApplinkConst.SHOP else ApplinkConst.PROFILE, post.userId.toString()) }
+        feedAnalytics.eventHashtagPageClickNameAvatar(post.userId.toString())
     }
 
     override fun onDestroy() {

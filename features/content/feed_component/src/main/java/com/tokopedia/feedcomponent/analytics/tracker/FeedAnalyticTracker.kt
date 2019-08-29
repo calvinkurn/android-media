@@ -58,7 +58,7 @@ class FeedAnalyticTracker @Inject constructor() {
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Row 3
+     * Screenshot 1
      *
      * @param activityName - activity name
      * @param activityId - postId
@@ -67,6 +67,7 @@ class FeedAnalyticTracker @Inject constructor() {
      */
     fun eventTimelineClickHashtag(activityId: String, activityName: String, mediaType: String, hashtag: String) {
         eventClickHashtag(
+                Event.CLICK_FEED,
                 Category.CONTENT_FEED_TIMELINE,
                 activityId,
                 activityName,
@@ -77,7 +78,48 @@ class FeedAnalyticTracker @Inject constructor() {
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Row 7
+     * Screenshot 2
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     * @param hashtag - the hashtag name
+     */
+    fun eventDetailClickHashtag(activityId: String, activityName: String, mediaType: String, hashtag: String) {
+        eventClickHashtag(
+                Event.CLICK_FEED,
+                Category.FEED_DETAIL_PAGE,
+                activityId,
+                activityName,
+                mediaType,
+                hashtag)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 39
+     *
+     * @param isOwner - `true` indicates opening self-profile, `false` indicates opening other-profile
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     * @param hashtag - the hashtag name
+     */
+    fun eventProfileClickHashtag(isOwner: Boolean, activityId: String, activityName: String, mediaType: String, hashtag: String) {
+        eventClickHashtag(
+                Event.CLICK_SOCIAL_COMMERCE,
+                if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
+                activityId,
+                activityName,
+                mediaType,
+                hashtag)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 27
      *
      * @param activityName - activity name
      * @param activityId - postId
@@ -96,26 +138,46 @@ class FeedAnalyticTracker @Inject constructor() {
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Row 8
+     * Screenshot 28
      *
+     * @param isOwner - `true` indicates opening self-profile, `false` indicates opening other-profile
      * @param activityName - activity name
      * @param activityId - postId
      * @param mediaType - video or image
-     * @param hashtag - the hashtag name
      */
-    fun eventDetailClickHashtag(activityId: String, activityName: String, mediaType: String, hashtag: String) {
-        eventClickHashtag(
-                Category.FEED_DETAIL_PAGE,
+    fun eventProfileClickReadMore(isOwner: Boolean, activityId: String, activityName: String, mediaType: String) {
+        eventClickReadMore(
+                Event.CLICK_SOCIAL_COMMERCE,
+                if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
                 activityId,
                 activityName,
-                mediaType,
-                hashtag)
+                mediaType
+        )
     }
 
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Row 23
+     * Screenshot 29
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     */
+    fun eventShopPageClickReadMore(activityId: String, activityName: String, mediaType: String) {
+        eventClickReadMore(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_SHOP_PAGE,
+                activityId,
+                activityName,
+                mediaType
+        )
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 4
      *
      * @param activityId - postId
      * @param hashtag - hashtag name
@@ -141,7 +203,7 @@ class FeedAnalyticTracker @Inject constructor() {
 
     /**
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Row 24
+     * Screenshot 5
      *
      * @param id - either shopId or userId
      */
@@ -157,47 +219,6 @@ class FeedAnalyticTracker @Inject constructor() {
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Row 28 (self-profile)
-     * Row 35 (other-profile)
-     *
-     * @param isOwner - `true` indicates opening self-profile, `false` indicates opening other-profile
-     * @param activityName - activity name
-     * @param activityId - postId
-     * @param mediaType - video or image
-     */
-    fun eventProfileClickReadMore(isOwner: Boolean, activityId: String, activityName: String, mediaType: String) {
-        eventClickReadMore(
-                Event.CLICK_SOCIAL_COMMERCE,
-                if (isOwner) Category.MY_PROFILE_SOCIALCOMMERCE else Category.USER_PROFILE_SOCIALCOMMERCE,
-                activityId,
-                activityName,
-                mediaType
-        )
-    }
-
-    /**
-     *
-     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Row 29
-     *
-     * @param activityName - activity name
-     * @param activityId - postId
-     * @param mediaType - video or image
-     */
-    fun eventShopPageClickReadMore(activityId: String, activityName: String, mediaType: String) {
-        eventClickReadMore(
-                Event.CLICK_FEED,
-                Category.CONTENT_FEED_SHOP_PAGE,
-                activityId,
-                activityName,
-                mediaType
-        )
-    }
-
-    /**
-     *
-     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
-     * Row 38
      *
      */
     fun eventOpenHashtagScreen() {
@@ -226,13 +247,14 @@ class FeedAnalyticTracker @Inject constructor() {
      * Base track click hashtag
      */
     private fun eventClickHashtag(
+            eventName: String,
             eventCategory: String,
             activityId: String,
             activityName: String,
             mediaType: String,
             hashtag: String) {
         trackGeneralEvent(
-                eventName = Event.CLICK_FEED,
+                eventName = eventName,
                 eventCategory = eventCategory,
                 eventAction = "${Action.CLICK_HASHTAG} - $activityName - $mediaType",
                 eventLabel = "$activityId - $hashtag"
