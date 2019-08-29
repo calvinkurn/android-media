@@ -67,6 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_16"
+                android:visibility="gone"
                 app:closeButtonVisibility="gone"
                 app:tickerShapeType="loose"
                 app:tickerType="warning"
@@ -333,13 +334,13 @@
             android:id="@+id/cancellation_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_20"
             android:background="@color/white"
             android:clickable="true"
             android:focusable="true"
             android:orientation="horizontal"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -361,7 +362,7 @@
                 android:layout_width="@dimen/dp_8"
                 android:layout_height="@dimen/dp_8"
                 android:layout_gravity="center"
-                app:srcCompat="@drawable/flight_shape_red_circle"/>
+                app:srcCompat="@drawable/flight_shape_red_circle" />
 
         </LinearLayout>
 
