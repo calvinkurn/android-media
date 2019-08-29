@@ -23,6 +23,12 @@ class MembershipStampView : FrameLayout {
     private lateinit var imgStamp4: ImageView
     private lateinit var imgStamp5: ImageView
 
+    private lateinit var txtNumber1: TextView
+    private lateinit var txtNumber2: TextView
+    private lateinit var txtNumber3: TextView
+    private lateinit var txtNumber4: TextView
+    private lateinit var txtNumber5: TextView
+
     private lateinit var circleStamp1: FrameLayout
     private lateinit var circleStamp2: FrameLayout
     private lateinit var circleStamp3: FrameLayout
@@ -39,6 +45,7 @@ class MembershipStampView : FrameLayout {
     private var listImage = mutableListOf<ImageView>()
     private var listLine = mutableListOf<View>()
     private var listCircleStamp = mutableListOf<FrameLayout>()
+    private var listTxtNumber = mutableListOf<TextView>()
 
     constructor(context: Context) : super(context) {
         init()
@@ -58,9 +65,21 @@ class MembershipStampView : FrameLayout {
             val layoutParams = membershipCard.layoutParams
             layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
         }
+        // Set total of circle
         setTargetProgress(item.targetProgress)
+        // Set total stamp inside circle
         setCurrentStamp(item.currentProgress, item.iconURL)
+        // Set sequence number inside circle
+        setCountTxt(item.startCountTxt)
         setButtonClaim(item.actionButton)
+    }
+
+    private fun setCountTxt(startCountTxt: Int) {
+        var startCount = startCountTxt
+        listTxtNumber.forEach {
+            it.text = startCount.toString()
+            startCount += 1
+        }
     }
 
     private fun setTargetProgress(targetProgress: Int) {
@@ -140,6 +159,12 @@ class MembershipStampView : FrameLayout {
         circleStamp4 = view.findViewById(R.id.circle_stamp_4)
         circleStamp5 = view.findViewById(R.id.circle_stamp_5)
 
+        txtNumber1 = view.findViewById(R.id.txt_number_1)
+        txtNumber2 = view.findViewById(R.id.txt_number_2)
+        txtNumber3 = view.findViewById(R.id.txt_number_3)
+        txtNumber4 = view.findViewById(R.id.txt_number_4)
+        txtNumber5 = view.findViewById(R.id.txt_number_5)
+
         line1 = view.findViewById(R.id.line1)
         line2 = view.findViewById(R.id.line2)
         line3 = view.findViewById(R.id.line3)
@@ -148,6 +173,7 @@ class MembershipStampView : FrameLayout {
         listLine = mutableListOf(line1, line2, line3, line4)
         listImage = mutableListOf(imgStamp1, imgStamp2, imgStamp3, imgStamp4, imgStamp5)
         listCircleStamp = mutableListOf(circleStamp1, circleStamp2, circleStamp3, circleStamp4, circleStamp5)
+        listTxtNumber = mutableListOf(txtNumber1, txtNumber2, txtNumber3, txtNumber4, txtNumber5)
 
     }
 }

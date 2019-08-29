@@ -11,6 +11,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
+import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
+import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
@@ -266,6 +269,29 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
             it.etalaseCount = count.toLong()
             it.etalaseBadge = badge
         }
+    }
+
+    fun itemMembershipMapper(data: MembershipStampProgress): MutableList<BaseMembershipViewModel> {
+
+        val url = data.membershipStampProgress.infoMessage.membershipCta.url
+
+        if (!data.membershipStampProgress.isUserRegistered) {
+            return mutableListOf(
+                    ItemUnregisteredViewModel(bannerTitle = data.membershipStampProgress.infoMessage.title,
+                            btnText = data.membershipStampProgress.infoMessage.membershipCta.text,
+                            url = url))
+        } else if (data.membershipStampProgress.membershipProgram.membershipQuests.isNotEmpty()) {
+            val listOfMembershipQuests: MutableList<BaseMembershipViewModel> = mutableListOf()
+            val quests = data.membershipStampProgress.membershipProgram.membershipQuests
+            var count = 1
+            listOfMembershipQuests.addAll(quests.map {
+                it.startCountTxt = count
+                count += it.targetProgress
+                ItemRegisteredViewModel(it, url)
+            })
+            return listOfMembershipQuests
+        }
+        return mutableListOf()
     }
 
     companion object {

@@ -29,5 +29,8 @@ data class MembershipQuests(
         val taskID: Int = 0,
 
         @SerializedName("title")
-        val title: String = ""
+        val title: String = "",
+
+        //for continuous number inside view holder
+        var startCountTxt: Int = 0
 )

@@ -59,9 +59,6 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION
 import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
 import com.tokopedia.shop.common.constant.ShopParamConstant
-import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
-import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
-import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
@@ -600,8 +597,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private fun onSuccessGetMembershipInfo(data: MembershipStampProgress) {
         val isShown = data.membershipStampProgress.isShown
-        val membershipQuests = data.membershipStampProgress.membershipProgram.membershipQuests
-        val membershipUrl = data.membershipStampProgress.infoMessage.membershipCta.url
 
         if (isShown && !isPaddingSet) {
             isPaddingSet = true
@@ -614,22 +609,13 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
 
         if (!isShown) {
-            return
-        } else if (!data.membershipStampProgress.isUserRegistered) {
-            val listOfData: MutableList<BaseMembershipViewModel> = mutableListOf(
-                    ItemUnregisteredViewModel(bannerTitle = data.membershipStampProgress.infoMessage.title,
-                            btnText = data.membershipStampProgress.infoMessage.membershipCta.text,
-                            url = membershipUrl)
-            )
-            shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(listOfData))
-        } else if (data.membershipStampProgress.isUserRegistered && membershipQuests.isNotEmpty()) {
-            val listOfData: MutableList<BaseMembershipViewModel> = mutableListOf()
-            listOfData.addAll(membershipQuests.map {
-                ItemRegisteredViewModel(it, membershipUrl)
-            })
-            shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(listOfData))
-        } else if (membershipQuests.isEmpty()) {
             shopProductAdapter.clearMembershipData()
+            return
+        } else if (data.membershipStampProgress.membershipProgram.membershipQuests.isEmpty() && data.membershipStampProgress.isUserRegistered) {
+            shopProductAdapter.clearMembershipData()
+        } else {
+            val itemMembershipQuests = viewModel.itemMembershipMapper(data)
+            shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(listOfData = itemMembershipQuests))
         }
 
         shopProductAdapter.notifyDataSetChanged()
