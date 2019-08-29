@@ -6,11 +6,13 @@ import android.os.Parcelable;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Filter implements Parcelable {
+public final class Filter implements Parcelable, Visitable<DynamicFilterTypeFactory> {
 
     public static final String TEMPLATE_NAME_LOCATION = "template_location";
     public static final String TEMPLATE_NAME_OTHER = "template_other";
@@ -175,4 +177,9 @@ public final class Filter implements Parcelable {
             return new Filter[size];
         }
     };
+
+    @Override
+    public int type(DynamicFilterTypeFactory typeFactory) {
+        return 0;
+    }
 }

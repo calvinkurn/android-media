@@ -1,7 +1,7 @@
-package com.tokopedia.discovery.categorynav.domain.model;
+package com.tokopedia.filter.common.data;
 
 
-import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
+import com.tokopedia.filter.newdynamicfilter.adapter.MultiLevelExpIndListAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

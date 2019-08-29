@@ -13,11 +13,12 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.filter.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.filter.R;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 
@@ -146,7 +147,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
             @Override
             public void onClick(View v) {
                 if (isUsingTracking) {
-                    SearchTracking.eventSearchResultApplyFilterDetail(getActivityContext(), pageTitle);
+                    FilterTracking.eventSearchResultApplyFilterDetail(getActivityContext(), pageTitle);
                 }
                 applyFilter();
             }
@@ -156,7 +157,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     @Override
     public void onBackPressed() {
         if (isUsingTracking) {
-            SearchTracking.eventSearchResultBackFromFilterDetail(this, pageTitle);
+            FilterTracking.eventSearchResultBackFromFilterDetail(this, pageTitle);
         }
         super.onBackPressed();
     }
@@ -230,7 +231,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         option.setInputState(Boolean.toString(isChecked));
         hideKeyboard();
         if (isUsingTracking) {
-            SearchTracking.eventSearchResultFilterJourney(this, pageTitle, option.getName(), true, isChecked);
+            FilterTracking.eventSearchResultFilterJourney(this, pageTitle, option.getName(), true, isChecked);
         }
     }
 

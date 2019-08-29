@@ -7,7 +7,7 @@ import com.tokopedia.design.list.adapter.SectionDividedItemAdapter;
 import com.tokopedia.design.list.adapter.SectionTitleDictionary;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.filter.model.OptionWrapper;
+import com.tokopedia.filter.common.data.OptionWrapper;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView;
 

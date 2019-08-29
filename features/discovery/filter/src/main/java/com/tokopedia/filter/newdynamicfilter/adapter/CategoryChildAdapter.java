@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.categorynav.view.adapter;
+package com.tokopedia.filter.newdynamicfilter.adapter;
 
 import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
@@ -9,13 +9,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.discovery.dynamicfilter.adapter.MultiLevelExpIndListAdapter;
-import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.categorynav.domain.model.Category;
-import com.tokopedia.discovery.util.MoEngageEventTracking;
+import com.tokopedia.filter.R;
+import com.tokopedia.filter.common.data.Category;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -50,9 +46,6 @@ public class CategoryChildAdapter extends MultiLevelExpIndListAdapter {
             @Override
             public void onClick(View view) {
                 Category categoryClicked = (Category)getItemAt(position);
-                if (categoryClicked.getHasChild()) {
-                    MoEngageEventTracking.sendSubCategory(categoryClicked.getId(), categoryClicked.getName());
-                }
                 if (categoryClicked.getChildren()!=null && categoryClicked.getChildren().size()>0) {
                     activePosition = position;
                     toggleSelectedChild();
@@ -154,7 +147,7 @@ public class CategoryChildAdapter extends MultiLevelExpIndListAdapter {
     }
 
     public interface OnItemClickListener {
-        void onChildClicked(com.tokopedia.discovery.categorynav.domain.model.Category category);
+        void onChildClicked(Category category);
     }
 
 }

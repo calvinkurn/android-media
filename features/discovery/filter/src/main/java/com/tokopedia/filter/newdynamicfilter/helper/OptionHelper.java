@@ -4,11 +4,11 @@ import android.text.TextUtils;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.tokopedia.filter.categorynav.domain.model.Category;
+import com.tokopedia.filter.common.constants.FilterApiConst;
+import com.tokopedia.filter.common.data.Category;
 import com.tokopedia.filter.common.data.LevelThreeCategory;
 import com.tokopedia.filter.common.data.LevelTwoCategory;
 import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.filter.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView;
 
 import java.util.ArrayList;
@@ -262,7 +262,7 @@ public class OptionHelper {
     }
 
     private static boolean isPriceOption(Option option) {
-        return option.getKey().equals(SearchApiConst.PMIN) || option.getKey().equals(SearchApiConst.PMAX);
+        return option.getKey().equals(FilterApiConst.PMIN) || option.getKey().equals(FilterApiConst.PMAX);
     }
 
     private static void addGenericFilterOptionIfPriceFilterActive(boolean hasActivePriceFilter, List<Option> activeFilterOptionList, String combinedPriceFilterName) {

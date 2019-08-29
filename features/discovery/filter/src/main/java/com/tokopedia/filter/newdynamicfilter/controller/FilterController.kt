@@ -1,11 +1,11 @@
 package com.tokopedia.filter.newdynamicfilter.controller
 
 import android.text.TextUtils
+import com.tokopedia.filter.common.constants.FilterApiConst
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.LevelThreeCategory
 import com.tokopedia.filter.common.data.LevelTwoCategory
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.newdiscovery.constant.SearchApiConst
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import java.util.*
@@ -252,11 +252,11 @@ open class FilterController {
     }
 
     private fun isCategorySelected(): Boolean {
-        return !TextUtils.isEmpty(getFilterValue(SearchApiConst.SC))
+        return !TextUtils.isEmpty(getFilterValue(FilterApiConst.SC))
     }
 
     private fun isSelectedCategoryInList(optionList: List<Option>): Boolean {
-        val selectedCategoryId = getFilterValue(SearchApiConst.SC)
+        val selectedCategoryId = getFilterValue(FilterApiConst.SC)
 
         if (TextUtils.isEmpty(selectedCategoryId)) {
             return false
@@ -272,7 +272,7 @@ open class FilterController {
     }
 
     private fun getSelectedCategoryAsOption(filter: Filter): Option {
-        val selectedCategoryId = getFilterValue(SearchApiConst.SC)
+        val selectedCategoryId = getFilterValue(FilterApiConst.SC)
         val category = FilterHelper.getSelectedCategoryDetails(filter, selectedCategoryId)
         val selectedCategoryName = category?.categoryName ?: ""
 

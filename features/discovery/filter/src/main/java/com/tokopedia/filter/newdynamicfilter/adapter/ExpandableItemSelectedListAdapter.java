@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tkpd.library.utils.RatingHelper;
 import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.helper.RatingHelper;
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterView;
 
 import java.util.ArrayList;

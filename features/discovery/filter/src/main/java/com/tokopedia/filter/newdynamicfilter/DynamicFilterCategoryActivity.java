@@ -9,12 +9,12 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.tokopedia.filter.common.data.Category;
 import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.filter.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.filter.R;
-import com.tokopedia.filter.categorynav.domain.model.Category;
-import com.tokopedia.filter.categorynav.view.adapter.CategoryChildAdapter;
-import com.tokopedia.filter.categorynav.view.adapter.CategoryParentAdapter;
+import com.tokopedia.filter.newdynamicfilter.adapter.CategoryChildAdapter;
+import com.tokopedia.filter.newdynamicfilter.adapter.CategoryParentAdapter;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 
 import org.parceler.Parcels;
@@ -148,7 +148,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
             categoryChildAdapter.toggleSelectedChildbyId(category.getId());
         } else {
             if (isUsingTracking) {
-                SearchTracking.eventSearchResultFilterJourney(
+                FilterTracking.eventSearchResultFilterJourney(
                         this,
                         getResources().getString(R.string.title_category),
                         category.getName(), true, true);

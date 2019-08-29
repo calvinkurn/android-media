@@ -1,4 +1,4 @@
-package com.tokopedia.filter.newdiscovery.widget;
+package com.tokopedia.filter.widget;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,16 +17,16 @@ import android.widget.TextView;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.filter.R;
+import com.tokopedia.filter.common.constants.FilterApiConst;
+import com.tokopedia.filter.common.data.CategoryViewModel;
 import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.filter.model.Category;
-import com.tokopedia.filter.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.filter.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity;
 import com.tokopedia.filter.newdynamicfilter.DynamicFilterCategoryActivity;
 import com.tokopedia.filter.newdynamicfilter.DynamicFilterLocationActivity;
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.BottomSheetDynamicFilterTypeFactoryImpl;
 import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterDbHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterDetailActivityRouter;
@@ -44,7 +44,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
-import static com.tokopedia.core.discovery.model.Option.KEY_CATEGORY;
 
 /**
  * Created by henrypriyono on 12/03/18.
@@ -124,17 +123,17 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             enrichWithInputState(filter);
 
 
-            SearchTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), filter.getTitle());
+            FilterTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), filter.getTitle());
             FilterDetailActivityRouter.launchDetailActivity(callback.getActivity(), filter, true);
         }
     }
 
     private void launchFilterCategoryPage(Filter filter) {
-        String categoryId = filterController.getFilterValue(SearchApiConst.SC);
-        Category selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
+        String categoryId = filterController.getFilterValue(FilterApiConst.SC);
+        CategoryViewModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 
-        SearchTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), getResources().getString(R.string.title_category));
+        FilterTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), getResources().getString(R.string.title_category));
         FilterDetailActivityRouter.launchCategoryActivity(callback.getActivity(),
                 filter, selectedCategoryRootId, categoryId, true);
     }
@@ -158,7 +157,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
-        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, isChecked);
+        FilterTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, isChecked);
         filterController.setFilter(option, isChecked);
         applyFilter();
     }
@@ -174,7 +173,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         filterController.setFilter(OptionHelper.generateOptionFromUniqueId(uniqueId), false, true);
 
         String key = OptionHelper.parseKeyFromUniqueId(uniqueId);
-        SearchTracking.eventSearchResultFilterJourney(getContext(), key, "", false, false);
+        FilterTracking.eventSearchResultFilterJourney(getContext(), key, "", false, false);
         updateResetButtonVisibility();
     }
 
@@ -185,7 +184,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         filterController.setFilter(textInputOption, true, true);
 
         String key = textInputOption.getKey();
-        SearchTracking.eventSearchResultFilterJourney(getContext(), key, textInput, false, true);
+        FilterTracking.eventSearchResultFilterJourney(getContext(), key, textInput, false, true);
         updateResetButtonVisibility();
     }
 
@@ -201,8 +200,8 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void removeSelectedOption(Option option, String filterTitle) {
-        if (KEY_CATEGORY.equals(option.getKey())) {
-            SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
+        if (Option.KEY_CATEGORY.equals(option.getKey())) {
+            FilterTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
             filterController.setFilter(option, false, true);
             applyFilter();
         } else {
@@ -303,7 +302,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void selectCategory(Option option, String filterTitle) {
-        SearchTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, true);
+        FilterTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, true);
         filterController.setFilter(option, true, true);
         applyFilter();
     }
@@ -381,7 +380,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private void handleResultFromCategoryPage(Intent data) {
         String selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID);
 
-        Category category = FilterHelper.getSelectedCategoryDetailsFromFilterList(filterMainAdapter.getFilterList(), selectedCategoryId);
+        CategoryViewModel category = FilterHelper.getSelectedCategoryDetailsFromFilterList(filterMainAdapter.getFilterList(), selectedCategoryId);
 
         String selectedCategoryName = category != null ? category.getCategoryName() : "";
         Option categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);

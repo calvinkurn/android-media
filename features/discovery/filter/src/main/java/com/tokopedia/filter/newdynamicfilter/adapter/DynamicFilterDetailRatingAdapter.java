@@ -3,10 +3,10 @@ package com.tokopedia.filter.newdynamicfilter.adapter;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.tkpd.library.utils.RatingHelper;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.DynamicFilterDetailViewHolder;
+import com.tokopedia.filter.newdynamicfilter.helper.RatingHelper;
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView;
 
 /**

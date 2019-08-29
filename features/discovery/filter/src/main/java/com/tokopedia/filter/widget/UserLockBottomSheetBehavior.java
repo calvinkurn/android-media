@@ -1,4 +1,4 @@
-package com.tokopedia.filter.newdiscovery.widget;
+package com.tokopedia.filter.widget;
 
 import android.content.Context;
 import android.support.design.widget.BottomSheetBehavior;

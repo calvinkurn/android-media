@@ -27,7 +27,11 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.gson
+    implementation rootProject.ext.miscDependencies.parcelerApi
+    annotationProcessor rootProject.ext.miscDependencies.parceler
 }

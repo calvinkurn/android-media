@@ -9,18 +9,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.KeyboardHandler;
-import com.tkpd.library.utils.ToastNetworkHandler;
-import com.tokopedia.core.app.BaseActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.filter.R;
+import com.tokopedia.filter.common.constants.FilterApiConst;
+import com.tokopedia.filter.common.data.CategoryViewModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.filter.model.Category;
-import com.tokopedia.filter.newdiscovery.constant.SearchApiConst;
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
 import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactoryImpl;
@@ -43,6 +43,8 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.filter.common.data.Option.KEY_CATEGORY;
 
 /**
  * Created by henrypriyono on 8/8/17.
@@ -185,7 +187,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
             @Override
             public void onError(Throwable throwable) {
                 throwable.printStackTrace();
-                ToastNetworkHandler.showToast(RevampedDynamicFilterActivity.this, getString(R.string.error_get_local_dynamic_filter));
+                Toast.makeText(RevampedDynamicFilterActivity.this, getString(R.string.error_get_local_dynamic_filter), Toast.LENGTH_LONG).show();
                 finish();
             }
 
@@ -241,7 +243,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.core2.R.anim.push_down);
+        overridePendingTransition(android.R.anim.fade_in, R.anim.push_down);
     }
 
     @Override
@@ -322,7 +324,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         selectedCategoryName = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
         selectedCategoryRootId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
 
-        Category category = FilterHelper.getSelectedCategoryDetailsFromFilterList(adapter.getFilterList(), selectedCategoryId);
+        CategoryViewModel category = FilterHelper.getSelectedCategoryDetailsFromFilterList(adapter.getFilterList(), selectedCategoryId);
 
         String selectedCategoryNameFromList = category != null ? category.getCategoryName() : "";
         Option categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryNameFromList);
@@ -396,8 +398,8 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private void launchFilterCategoryPage(Filter filter) {
-        String categoryId = filterController.getFilterValue(SearchApiConst.SC);
-        Category selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
+        String categoryId = filterController.getFilterValue(FilterApiConst.SC);
+        CategoryViewModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 
         FilterDetailActivityRouter
