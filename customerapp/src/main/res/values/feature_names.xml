@@ -5,4 +5,6 @@
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
+
+    <string name="title_digital_topup">Digital Topup</string>
 </resources>

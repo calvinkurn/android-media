@@ -243,7 +243,8 @@ android {
         }
     }
 
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
+                       rootProject.ext.dynamicFeatures.digitalTopup]
 
 }
 
@@ -295,7 +296,6 @@ dependencies {
     implementation project(rootProject.ext.features.profile)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
-    implementation project(rootProject.ext.features.digitalTopupBills)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
