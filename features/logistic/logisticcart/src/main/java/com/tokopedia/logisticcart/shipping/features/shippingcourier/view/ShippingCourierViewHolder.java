@@ -68,7 +68,8 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
                     .getIsCodAvailable() == COD_ENABLE_VALUE ? View.VISIBLE : View.GONE);
         }
 
-        if (shippingCourierViewModel.getProductData().getFeatures() != null) {
+        if (shippingCourierViewModel.getProductData().getFeatures() != null &&
+                shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
             OntimeDeliveryGuarantee otd = shippingCourierViewModel
                     .getProductData().getFeatures().getOntimeDeliveryGuarantee();
             viewOtd.setVisibility(otd.getAvailable() ? View.VISIBLE : View.GONE);
