@@ -1,0 +1,21 @@
+query{
+  TravelCollectiveRecentSearches(product:ALL){
+    items {
+      product
+      title
+      subtitle
+      prefix
+      prefixStyling
+      value
+      webURL
+      appURL
+      imageURL
+    }
+    meta {
+      title
+      webURL
+      appURL
+      type
+    }
+  }
+}

@@ -21,7 +21,7 @@ public class CloudSetTemplateChatDataSource {
         this.chatApi = chatApi;
     }
 
-    public Observable<GetTemplateViewModel> setTemplate(JsonObject parameters) {
-        return chatApi.setTemplate(parameters).map(templateChatMapper);
+    public Observable<GetTemplateViewModel> setTemplate(JsonObject parameters, boolean isSeller) {
+        return chatApi.setTemplate(parameters, isSeller).map(templateChatMapper);
     }
 }

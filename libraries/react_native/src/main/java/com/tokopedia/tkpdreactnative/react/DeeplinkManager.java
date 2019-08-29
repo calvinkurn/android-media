@@ -39,7 +39,7 @@ public class DeeplinkManager extends ReactContextBaseJavaModule {
                             .actionApplink(this.getCurrentActivity(), applinks, extra);
                 } else {
                     if(isNewRouteEnable){
-                        RouteManager.route(context, applinks);
+                        RouteManager.route(this.getCurrentActivity(), applinks);
                     }else {
                         ((TkpdCoreRouter) context.getApplicationContext())
                                 .actionApplinkFromActivity(this.getCurrentActivity(), applinks);

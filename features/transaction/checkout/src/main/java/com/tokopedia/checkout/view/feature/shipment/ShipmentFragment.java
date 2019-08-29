@@ -229,7 +229,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         bundle.putString(ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO, defaultSelectedTabPromo);
         bundle.putBoolean(ARG_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);
         bundle.putString(ARG_CHECKOUT_LEASING_ID, leasingId);
-        if (leasingId != null) {
+        if (leasingId != null && !leasingId.isEmpty()) {
             bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, true);
         } else {
             bundle.putBoolean(ARG_IS_ONE_CLICK_SHIPMENT, isOneClickShipment);
@@ -2210,7 +2210,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (shipmentDetailData != null) {
                 shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
-                        recipientAddressModel, cartPosition, codHistory);
+                        recipientAddressModel, cartPosition, codHistory, shipmentCartItemModel.getIsLeasingProduct());
                 shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
                 if (getActivity() != null) {
