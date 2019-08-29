@@ -125,6 +125,7 @@ import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transaction.common.dialog.CreateTicketDialog
+import com.tokopedia.transaction.common.dialog.SuccessTicketDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DESC
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
@@ -1079,14 +1080,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
                 if (resultCode == RESULT_CODE_ERROR_TICKET && data != null) {
-                    activity?.also {
-                        val createTicketDialog = CreateTicketDialog(it, CreateTicketDialog.Page.PAGE_ATC)
+                    activity?.also { activity ->
+                        val createTicketDialog = CreateTicketDialog(activity, CreateTicketDialog.Page.PAGE_ATC)
                         createTicketDialog.setSecondaryOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickCloseOnHelpPopUpAtc()
                             createTicketDialog.dismiss()
                         })
                         createTicketDialog.setOkOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                            SuccessTicketDialog(activity, SuccessTicketDialog.Page.PAGE_ATC).show()
                         })
                         createTicketDialog.setDescription(data.getStringExtra(RESULT_TICKET_DESC))
                         createTicketDialog.show()

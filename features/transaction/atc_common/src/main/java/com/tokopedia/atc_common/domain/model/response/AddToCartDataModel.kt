@@ -7,7 +7,8 @@ package com.tokopedia.atc_common.domain.model.response
 data class AddToCartDataModel(
     var errorMessage: ArrayList<String> = arrayListOf(),
     var status: String = "",
-    var data: DataModel = DataModel()
+    var data: DataModel = DataModel(),
+    var errorReporter: ErrorReporterModel = ErrorReporterModel()
 ) {
     companion object {
         const val STATUS_OK = "OK"

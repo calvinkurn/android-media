@@ -110,6 +110,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener;
 import com.tokopedia.transaction.common.dialog.CreateTicketDialog;
+import com.tokopedia.transaction.common.dialog.SuccessTicketDialog;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
@@ -748,6 +749,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         });
         createTicketDialog.setOkOnClickListener(v -> {
             checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
+            new SuccessTicketDialog(getActivity(), SuccessTicketDialog.Page.PAGE_CHECKOUT).show();
         });
         createTicketDialog.show();
         checkoutAnalyticsCourierSelection.eventViewHelpPopUpAfterErrorInCheckout();
