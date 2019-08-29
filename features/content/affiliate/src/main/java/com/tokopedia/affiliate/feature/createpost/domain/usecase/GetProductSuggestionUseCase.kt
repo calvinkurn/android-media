@@ -19,13 +19,20 @@ class GetProductSuggestionUseCase(
         private val graphqlUseCase: MultiRequestGraphqlUseCase)
     : UseCase<List<TagItem>>() {
 
+    var params: HashMap<String, Any> = hashMapOf()
+
     companion object {
         const val QUERY_PRODUCT_SUGGESTION = "query_af_shop_product_suggestion"
+        private const val PARAM_SHOP_ID = "shopID"
+
+        fun createRequestParams(shopId: Int) = HashMap<String, Any>().apply {
+            put(PARAM_SHOP_ID, shopId)
+        }
     }
 
     override suspend fun executeOnBackground(): List<TagItem> {
 
-        val request = GraphqlRequest(query, ShopProductSuggestionResponse::class.java)
+        val request = GraphqlRequest(query, ShopProductSuggestionResponse::class.java, params)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)
