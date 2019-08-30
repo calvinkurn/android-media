@@ -9,7 +9,7 @@ import dagger.Provides
  * Created by Irfan Khoirul on 2019-08-29.
  */
 
-@Module(includes = [])
+@Module
 class AddressChoiceModule {
 
     @Provides

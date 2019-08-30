@@ -8,17 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.di.component.CartComponent
-import com.tokopedia.purchase_platform.common.di.component.DaggerShipmentAddressListComponent
-import com.tokopedia.purchase_platform.common.di.module.ShipmentAddressListModule
-import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
+import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.checkout.subfeature.corner_list.di.DaggerCornerComponent
 import java.util.*
 import javax.inject.Inject
 
@@ -43,16 +41,19 @@ class CornerListFragment : BaseDaggerFragment(), CornerContract.View, CornerAdap
     private lateinit var mProgressBar: ProgressBar
     private lateinit var mErrorView: View
 
-//    @Inject
+    @Inject
     lateinit var mPresenter: CornerListPresenter
 
     override fun initInjector() {
-//        val component = DaggerShipmentAddressListComponent.builder()
-//                .cartComponent(getComponent<CartComponent>(CartComponent::class.java))
-//                .shipmentAddressListModule(ShipmentAddressListModule(activity))
-//                .trackingAnalyticsModule(TrackingAnalyticsModule())
-//                .build()
-//        component.inject(this)
+        activity?.let {
+            val baseAppComponent = it.application
+            if (baseAppComponent is BaseMainApplication) {
+                DaggerCornerComponent.builder()
+                        .baseAppComponent(baseAppComponent.baseAppComponent)
+                        .build()
+                        .inject(this)
+            }
+        }
     }
 
     override fun getScreenName(): String {

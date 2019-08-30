@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.usecase
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.data.model.response.addresscorner.NewAddressCornerResponse
@@ -18,7 +19,7 @@ import javax.inject.Inject
 const val PARAM_CORNER_USECASE: String = "input"
 
 open class GetCornerList
-@Inject constructor(val context: Context, val graphqlUseCase: GraphqlUseCase, val mapper: AddressCornerMapper) {
+@Inject constructor(@ApplicationContext val context: Context, val graphqlUseCase: GraphqlUseCase, val mapper: AddressCornerMapper) {
 
     open fun execute(query: String): Observable<AddressListModel> =
             this.getObservable(query = query, page = 1, isAddress = false, isCorner = true)

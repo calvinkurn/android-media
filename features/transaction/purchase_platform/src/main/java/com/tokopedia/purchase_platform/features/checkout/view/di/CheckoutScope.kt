@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.checkout.view.di2
+package com.tokopedia.purchase_platform.features.checkout.view.di
 
 import javax.inject.Scope
 
