@@ -52,6 +52,10 @@ android {
 dependencies {
 
     implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.cpm)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
