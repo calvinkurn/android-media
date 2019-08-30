@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.activity;
+package com.tokopedia.filter.newdynamicfilter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,11 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core2.R;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.widgets.DividerItemDecoration;
-import com.tokopedia.discovery.common.data.Sort;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
+import com.tokopedia.filter.R;
+import com.tokopedia.filter.common.data.Sort;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,11 +27,12 @@ import java.util.Map;
  * Created by Erry on 7/12/2016.
  */
 @SuppressWarnings("unchecked")
-public class SortProductActivity extends TActivity {
+public class SortProductActivity extends BaseActivity {
 
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
     public static final String EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME";
+    public static final String SCREEN_SORT_PRODUCT = "Sort Produk Activity";
 
     RecyclerView recyclerView;
     View buttonClose;
@@ -55,17 +55,17 @@ public class SortProductActivity extends TActivity {
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_SORT_PRODUCT;
+        return SCREEN_SORT_PRODUCT;
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.tokopedia.discovery.R.layout.activity_product_sort);
-        topBarTitle = (TextView) findViewById(com.tokopedia.discovery.R.id.top_bar_title);
+        setContentView(R.layout.activity_product_sort);
+        topBarTitle = (TextView) findViewById(R.id.top_bar_title);
         topBarTitle.setText(getString(R.string.title_sort_but));
-        recyclerView = (RecyclerView) findViewById(com.tokopedia.discovery.R.id.list);
-        buttonClose = findViewById(com.tokopedia.discovery.R.id.top_bar_close_button);
+        recyclerView = (RecyclerView) findViewById(R.id.list);
+        buttonClose = findViewById(R.id.top_bar_close_button);
         buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

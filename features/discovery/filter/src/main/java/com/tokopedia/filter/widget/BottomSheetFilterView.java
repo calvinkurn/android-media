@@ -18,7 +18,7 @@ import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.common.constants.FilterApiConst;
-import com.tokopedia.filter.common.data.CategoryViewModel;
+import com.tokopedia.filter.common.data.CategoryFilterModel;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity;
 import com.tokopedia.filter.newdynamicfilter.DynamicFilterCategoryActivity;
@@ -130,7 +130,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     private void launchFilterCategoryPage(Filter filter) {
         String categoryId = filterController.getFilterValue(FilterApiConst.SC);
-        CategoryViewModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
+        CategoryFilterModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 
         FilterTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), getResources().getString(R.string.title_category));
@@ -380,7 +380,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     private void handleResultFromCategoryPage(Intent data) {
         String selectedCategoryId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ID);
 
-        CategoryViewModel category = FilterHelper.getSelectedCategoryDetailsFromFilterList(filterMainAdapter.getFilterList(), selectedCategoryId);
+        CategoryFilterModel category = FilterHelper.getSelectedCategoryDetailsFromFilterList(filterMainAdapter.getFilterList(), selectedCategoryId);
 
         String selectedCategoryName = category != null ? category.getCategoryName() : "";
         Option categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryName);

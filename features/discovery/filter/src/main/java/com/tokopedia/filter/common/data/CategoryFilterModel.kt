@@ -1,6 +1,6 @@
 package com.tokopedia.filter.common.data
 
-data class CategoryViewModel(
+data class CategoryFilterModel(
     val categoryId: String = "",
     val categoryRootId: String = "",
     val categoryName: String = ""

@@ -180,7 +180,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView
+    <com.tokopedia.filter.widget.BottomSheetFilterView
         android:id="@+id/bottomSheetFilter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

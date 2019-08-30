@@ -29,6 +29,7 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation project(rootProject.ext.libraries.applink)
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation rootProject.ext.miscDependencies.gson

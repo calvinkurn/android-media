@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.filter.common.constants.FilterApiConst;
-import com.tokopedia.filter.common.data.CategoryViewModel;
+import com.tokopedia.filter.common.data.CategoryFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.LevelThreeCategory;
 import com.tokopedia.filter.common.data.LevelTwoCategory;
@@ -25,7 +25,7 @@ import static com.tokopedia.filter.common.data.Option.METRIC_INTERNATIONAL;
 public class FilterHelper {
 
     @Nullable
-    public static CategoryViewModel getSelectedCategoryDetailsFromFilterList(List<Filter> filterList, String categoryId) {
+    public static CategoryFilterModel getSelectedCategoryDetailsFromFilterList(List<Filter> filterList, String categoryId) {
         return getSelectedCategoryDetails(getCategoryFilterFromList(filterList), categoryId);
     }
 
@@ -39,7 +39,7 @@ public class FilterHelper {
     }
 
     @Nullable
-    public static CategoryViewModel getSelectedCategoryDetails(Filter categoryFilter, String categoryId) {
+    public static CategoryFilterModel getSelectedCategoryDetails(Filter categoryFilter, String categoryId) {
         if (categoryFilter == null || TextUtils.isEmpty(categoryId)) {
             return null;
         }
@@ -48,16 +48,16 @@ public class FilterHelper {
     }
 
     @Nullable
-    private static CategoryViewModel findInRootCategoryList(Filter categoryFilter, String categoryId) {
+    private static CategoryFilterModel findInRootCategoryList(Filter categoryFilter, String categoryId) {
         List<Option> rootCategoryList = categoryFilter.getOptions();
 
         if (rootCategoryList != null) {
             for (Option rootCategory : rootCategoryList) {
                 if (categoryId.equals(rootCategory.getValue())) {
-                    return new CategoryViewModel(categoryId, rootCategory.getValue(), rootCategory.getName());
+                    return new CategoryFilterModel(categoryId, rootCategory.getValue(), rootCategory.getName());
                 }
 
-                CategoryViewModel category = findInLevelTwoCategoryList(rootCategory, categoryId);
+                CategoryFilterModel category = findInLevelTwoCategoryList(rootCategory, categoryId);
                 if (category != null) return category;
             }
         }
@@ -66,16 +66,16 @@ public class FilterHelper {
     }
 
     @Nullable
-    private static CategoryViewModel findInLevelTwoCategoryList(Option rootCategory, String categoryId) {
+    private static CategoryFilterModel findInLevelTwoCategoryList(Option rootCategory, String categoryId) {
         List<LevelTwoCategory> levelTwoCategoryList = rootCategory.getLevelTwoCategoryList();
 
         if (levelTwoCategoryList != null) {
             for (LevelTwoCategory levelTwoCategory : levelTwoCategoryList) {
                 if (categoryId.equals(levelTwoCategory.getValue())) {
-                    return new CategoryViewModel(categoryId, rootCategory.getValue(), levelTwoCategory.getName());
+                    return new CategoryFilterModel(categoryId, rootCategory.getValue(), levelTwoCategory.getName());
                 }
 
-                CategoryViewModel category = findInLevelThreeCategoryList(rootCategory, levelTwoCategory, categoryId);
+                CategoryFilterModel category = findInLevelThreeCategoryList(rootCategory, levelTwoCategory, categoryId);
                 if (category != null) return category;
             }
         }
@@ -84,13 +84,13 @@ public class FilterHelper {
     }
 
     @Nullable
-    private static CategoryViewModel findInLevelThreeCategoryList(Option rootCategory, LevelTwoCategory levelTwoCategory, String categoryId) {
+    private static CategoryFilterModel findInLevelThreeCategoryList(Option rootCategory, LevelTwoCategory levelTwoCategory, String categoryId) {
         List<LevelThreeCategory> levelThreeCategoryList = levelTwoCategory.getLevelThreeCategoryList();
 
         if (levelThreeCategoryList != null) {
             for (LevelThreeCategory levelThreeCategory : levelThreeCategoryList) {
                 if (categoryId.equals(levelThreeCategory.getValue())) {
-                    return new CategoryViewModel(categoryId, rootCategory.getValue(), levelThreeCategory.getName());
+                    return new CategoryFilterModel(categoryId, rootCategory.getValue(), levelThreeCategory.getName());
                 }
             }
         }

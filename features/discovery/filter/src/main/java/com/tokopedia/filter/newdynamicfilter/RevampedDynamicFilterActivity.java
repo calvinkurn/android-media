@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.common.constants.FilterApiConst;
-import com.tokopedia.filter.common.data.CategoryViewModel;
+import com.tokopedia.filter.common.data.CategoryFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterAdapter;
@@ -324,7 +324,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         selectedCategoryName = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_NAME);
         selectedCategoryRootId = data.getStringExtra(DynamicFilterCategoryActivity.EXTRA_SELECTED_CATEGORY_ROOT_ID);
 
-        CategoryViewModel category = FilterHelper.getSelectedCategoryDetailsFromFilterList(adapter.getFilterList(), selectedCategoryId);
+        CategoryFilterModel category = FilterHelper.getSelectedCategoryDetailsFromFilterList(adapter.getFilterList(), selectedCategoryId);
 
         String selectedCategoryNameFromList = category != null ? category.getCategoryName() : "";
         Option categoryOption = OptionHelper.generateOptionFromCategory(selectedCategoryId, selectedCategoryNameFromList);
@@ -399,7 +399,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     private void launchFilterCategoryPage(Filter filter) {
         String categoryId = filterController.getFilterValue(FilterApiConst.SC);
-        CategoryViewModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
+        CategoryFilterModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 
         FilterDetailActivityRouter
