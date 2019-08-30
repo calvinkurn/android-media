@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">TkpdStream</string>
 
+    <string name="host_groupchat">groupchat</string>
+    <string name="path_groupchat_channel_id">/.*\\/</string>
+
+    <string name="host_groupchat_webview">groupchat</string>
+    <string name="path_groupchat_webview">/.*\\/.*\\/</string>
+
     <!--Channel List-->
     <string name="activity_channel">Play</string>
     <string name="error_open_group_chat">Gagal masuk ke ruangan.</string>

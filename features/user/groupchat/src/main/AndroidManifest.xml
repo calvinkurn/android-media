@@ -30,14 +30,38 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Transparent.Groupchat"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|locale"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_groupchat"
+                    android:pathPattern="@string/path_groupchat_channel_id"/>
+            </intent-filter>
+        </activity>
 
 
         <activity
             android:name=".room.view.activity.PlayWebviewActivity"
             android:label="@string/activity_channel"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/host_groupchat_webview"
+                    android:pathPattern="@string/path_groupchat_webview"/>
+            </intent-filter>
+        </activity>
 
     </application>
 
