@@ -3,7 +3,7 @@ package com.tokopedia.filter.newdynamicfilter.helper;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.tokopedia.filter.common.constants.FilterApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.filter.common.data.CategoryFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.LevelThreeCategory;
@@ -158,7 +158,7 @@ public class FilterHelper {
     public static void addPreFilteredIsOfficial(List<Filter> filters, FilterFlagSelectedModel selectedModel) {
         for (Filter filter : filters) {
             for (Option option : filter.getOptions()) {
-                if (FilterApiConst.OFFICIAL.equals(option.getKey())) {
+                if (SearchApiConst.OFFICIAL.equals(option.getKey())) {
                     selectedModel.getSavedCheckedState().put(option.getUniqueId(), true);
                 }
             }

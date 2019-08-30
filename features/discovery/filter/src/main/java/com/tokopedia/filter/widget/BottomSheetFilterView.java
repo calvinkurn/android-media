@@ -16,8 +16,9 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.filter.R;
-import com.tokopedia.filter.common.constants.FilterApiConst;
+
 import com.tokopedia.filter.common.data.CategoryFilterModel;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity;
@@ -129,7 +130,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     private void launchFilterCategoryPage(Filter filter) {
-        String categoryId = filterController.getFilterValue(FilterApiConst.SC);
+        String categoryId = filterController.getFilterValue(SearchApiConst.SC);
         CategoryFilterModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 

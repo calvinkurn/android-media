@@ -16,8 +16,8 @@ import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.keyboard.KeyboardHelper;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.filter.R;
-import com.tokopedia.filter.common.constants.FilterApiConst;
 import com.tokopedia.filter.common.data.CategoryFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -398,7 +398,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private void launchFilterCategoryPage(Filter filter) {
-        String categoryId = filterController.getFilterValue(FilterApiConst.SC);
+        String categoryId = filterController.getFilterValue(SearchApiConst.SC);
         CategoryFilterModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 

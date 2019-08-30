@@ -1,6 +1,6 @@
 package com.tokopedia.filter.newdynamicfilter.controller
 
-import com.tokopedia.filter.common.constants.FilterApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.LevelThreeCategory
 import com.tokopedia.filter.common.data.LevelTwoCategory
@@ -33,27 +33,27 @@ class FilterControllerTest {
 
     private val filterController = FilterController()
 
-    private val officialOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.OFFICIAL, TRUE_VALUE, FilterApiConst.OFFICIAL))
+    private val officialOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.OFFICIAL, TRUE_VALUE, SearchApiConst.OFFICIAL))
 
-    private val jabodetabekOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.FCITY, JABODETABEK_VALUE, "Jabodetabek"))
-    private val jakartaOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.FCITY, JAKARTA_VALUE, "Jakarta"))
-    private val jakartaBaratOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.FCITY, JAKARTA_BARAT_VALUE, "Jakarta Barat"))
-    private val tangerangOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.FCITY, TANGERANG_VALUE, "Tangerang"))
-    private val bandungOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.FCITY, BANDUNG_VALUE, "Bandung"))
-    private val semuaHandphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.SC, SEMUA_HANDPHONE_VALUE, "Semua Handphone"))
-    private val handphoneBesarOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.SC, HANDPHONE_BESAR_VALUE, "Handphone Besar"))
-    private val semuaHandphoneBesarOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.SC, SEMUA_HANDPHONE_BESAR_VALUE, "Semua Handphone Besar"))
-    private val handphoneEnamInchOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.SC, HANDPHONE_ENAM_INCH, "Handphone Enam Inch"))
-    private val handphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.SC, HANDPHONE_VALUE, "Handphone")).also{
+    private val jabodetabekOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JABODETABEK_VALUE, "Jabodetabek"))
+    private val jakartaOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_VALUE, "Jakarta"))
+    private val jakartaBaratOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, JAKARTA_BARAT_VALUE, "Jakarta Barat"))
+    private val tangerangOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, TANGERANG_VALUE, "Tangerang"))
+    private val bandungOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.FCITY, BANDUNG_VALUE, "Bandung"))
+    private val semuaHandphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, SEMUA_HANDPHONE_VALUE, "Semua Handphone"))
+    private val handphoneBesarOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_BESAR_VALUE, "Handphone Besar"))
+    private val semuaHandphoneBesarOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, SEMUA_HANDPHONE_BESAR_VALUE, "Semua Handphone Besar"))
+    private val handphoneEnamInchOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_ENAM_INCH, "Handphone Enam Inch"))
+    private val handphoneOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, HANDPHONE_VALUE, "Handphone")).also{
         it.levelTwoCategoryList = createHandphoneCategoryLevels()
     }
-    private val tvLCDOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.SC, TV_LCD_VALUE, "TV"))
-    private val tvOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.SC, TV_VALUE, "TV")).also {
+    private val tvLCDOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_LCD_VALUE, "TV"))
+    private val tvOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.SC, TV_VALUE, "TV")).also {
         it.levelTwoCategoryList = createTVCategoryLevels()
     }
 
-    private val minPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.PMIN, "", "Harga Minimum"))
-    private val maxPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(FilterApiConst.PMAX, "", "Harga Maximum"))
+    private val minPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMIN, "", "Harga Minimum"))
+    private val maxPriceOption = OptionHelper.generateOptionFromUniqueId(OptionHelper.constructUniqueId(SearchApiConst.PMAX, "", "Harga Maximum"))
 
     private val tokoOptions = mutableListOf<Option>()
     private val locationOptions = mutableListOf<Option>()
@@ -138,8 +138,8 @@ class FilterControllerTest {
 
     private fun createParameter() : Map<String, String> {
         val parameter = mutableMapOf<String, String>()
-        parameter[FilterApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
-        parameter[FilterApiConst.OFFICIAL] = TRUE_VALUE
+        parameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
+        parameter[SearchApiConst.OFFICIAL] = TRUE_VALUE
 
         return parameter
     }
@@ -287,9 +287,9 @@ class FilterControllerTest {
 
     private fun createFilterParameterWithBundledOption() : Map<String, String> {
         val filterParameter = mutableMapOf<String, String>()
-        filterParameter[FilterApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
-        filterParameter[FilterApiConst.OFFICIAL] = TRUE_VALUE
-        filterParameter[FilterApiConst.FCITY] = "${jabodetabekOption.value},${bandungOption.value}"
+        filterParameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
+        filterParameter[SearchApiConst.OFFICIAL] = TRUE_VALUE
+        filterParameter[SearchApiConst.FCITY] = "${jabodetabekOption.value},${bandungOption.value}"
 
         return filterParameter
     }
@@ -432,7 +432,7 @@ class FilterControllerTest {
     private fun assertResetAllFiltersCorrect() {
         val actualParameter = filterController.getParameter()
         val expectedParameterSize = 1
-        val expectedParameterKey = FilterApiConst.Q
+        val expectedParameterKey = SearchApiConst.Q
         val expectedParameterContainsKey = true
 
         assert(actualParameter.size == expectedParameterSize

@@ -1,6 +1,6 @@
 package com.tokopedia.filter.newdynamicfilter.helper
 
-import com.tokopedia.filter.common.constants.FilterApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.Sort
 import org.junit.Test
 
@@ -15,11 +15,11 @@ class SortHelperTest {
         private const val HARGA_TERTINGGI_VALUE = "4"
         private const val HARGA_TERENDAH_VALUE = "3"
 
-        private val palingSesuaiSort = createSort(FilterApiConst.OB, PALING_SESUAI_VALUE, "Paling Sesuai")
-        private val ulasanSort = createSort(FilterApiConst.OB, ULASAN_VALUE, "Ulasan")
-        private val terbaruSort = createSort(FilterApiConst.OB, TERBARU_VALUE, "Terbaru")
-        private val hargaTertinggiSort = createSort(FilterApiConst.OB, HARGA_TERTINGGI_VALUE, "Harga Tertinggi")
-        private val hargaTerendahSort = createSort(FilterApiConst.OB, HARGA_TERENDAH_VALUE, "Harga Terendah")
+        private val palingSesuaiSort = createSort(SearchApiConst.OB, PALING_SESUAI_VALUE, "Paling Sesuai")
+        private val ulasanSort = createSort(SearchApiConst.OB, ULASAN_VALUE, "Ulasan")
+        private val terbaruSort = createSort(SearchApiConst.OB, TERBARU_VALUE, "Terbaru")
+        private val hargaTertinggiSort = createSort(SearchApiConst.OB, HARGA_TERTINGGI_VALUE, "Harga Tertinggi")
+        private val hargaTerendahSort = createSort(SearchApiConst.OB, HARGA_TERENDAH_VALUE, "Harga Terendah")
 
         private fun createSort(key: String, value: String, name: String) : Sort {
             val sort = Sort()
@@ -43,7 +43,7 @@ class SortHelperTest {
 
     private fun createSearchParameter() : Map<String, String> {
         val searchParameter = mutableMapOf<String, String>()
-        searchParameter[FilterApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
+        searchParameter[SearchApiConst.Q] = QUERY_FOR_TEST_SAMSUNG
         searchParameter[hargaTerendahSort.key] = hargaTerendahSort.value
 
         return searchParameter

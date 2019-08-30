@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.newdiscovery.constant
+package com.tokopedia.discovery.common.constants
 
 class SearchApiConst {
 
