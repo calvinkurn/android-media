@@ -16,6 +16,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.base.IMapperUtil
 import com.tokopedia.purchase_platform.common.base.MapperUtil
 import com.tokopedia.purchase_platform.common.di2.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.di2.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.di2.PurchasePlatformQualifier
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
@@ -46,7 +47,11 @@ import javax.inject.Named
  * Created by Irfan Khoirul on 2019-08-23.
  */
 
-@Module(includes = [PromoCheckoutModule::class, PurchasePlatformBaseModule::class])
+@Module(includes = [
+    PromoCheckoutModule::class,
+    PurchasePlatformNetworkModule::class,
+    PurchasePlatformBaseModule::class
+])
 class CartModule {
 
     @Provides

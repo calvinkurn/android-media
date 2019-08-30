@@ -13,10 +13,7 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.base.IMapperUtil
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformAddressModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformCommonModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformQualifier
+import com.tokopedia.purchase_platform.common.di2.*
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.purchase_platform.features.checkout.data.api.CheckoutApi
@@ -40,8 +37,9 @@ import rx.subscriptions.CompositeSubscription
  */
 
 @Module(includes = [
-    PurchasePlatformAddressModule::class,
+    PeopleAddressNetworkModule::class,
     PromoCheckoutModule::class,
+    PurchasePlatformNetworkModule::class,
     PurchasePlatformBaseModule::class,
     PurchasePlatformCommonModule::class
 ])

@@ -43,7 +43,6 @@ import javax.inject.Inject;
 
 import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT;
 import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS;
-import static com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.AddShipmentAddressActivity.EDIT_MODE;
 import static com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity.RESULT_CODE_SUCCESS_SET_SHIPPING;
 
 /**
@@ -61,7 +60,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 //    @Inject
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
-    public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
     private static final String ADDRESS_EXTRA = "ADDRESS_EXTRA";
     private static final String CART_IDS_EXTRA = "CART_IDS_EXTRA";
 
@@ -170,16 +168,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     public void sendAnalyticsMinButtonItemMultipleAddress() {
         sendAnalyticsOnClickButtonMinusQuantityItemMultipleAddress();
-    }
-
-    @Override
-    public void onItemChoosen(int itemPosition,
-                              ArrayList<MultipleAddressAdapterData> dataList,
-                              MultipleAddressAdapterData productData,
-                              MultipleAddressItemData addressData) {
-        startActivityForResult(AddShipmentAddressActivity
-                        .createIntent(getActivity(), itemPosition, dataList, productData, addressData, EDIT_MODE),
-                EDIT_SHIPMENT_ADDRESS_REQUEST_CODE);
     }
 
     @Override

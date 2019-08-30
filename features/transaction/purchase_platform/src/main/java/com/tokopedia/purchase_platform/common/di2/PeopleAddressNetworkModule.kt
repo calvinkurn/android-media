@@ -13,8 +13,6 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.purchase_platform.common.data.common.api.CartApiInterceptor
-import com.tokopedia.purchase_platform.common.data.common.api.CommonPurchaseApiUrl
 import com.tokopedia.purchase_platform.features.checkout.data.AddressRepository
 import com.tokopedia.purchase_platform.features.checkout.data.AddressRepositoryImpl
 import com.tokopedia.url.TokopediaUrl
@@ -33,7 +31,7 @@ import java.util.concurrent.TimeUnit
  */
 
 @Module
-class PurchasePlatformAddressModule {
+class PeopleAddressNetworkModule {
 
     @Provides
     fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, userSessionInterface: UserSessionInterface): TkpdAuthInterceptor {
@@ -41,7 +39,7 @@ class PurchasePlatformAddressModule {
     }
 
     @Provides
-    @EditAddressQualifier
+    @PeopleAddressQualifier
     fun providePeopleApiOkHttpClient(@ApplicationScope httpLoggingInterceptor: HttpLoggingInterceptor,
                                      tkpdAuthInterceptor: TkpdAuthInterceptor,
                                      okHttpRetryPolicy: OkHttpRetryPolicy,
@@ -62,8 +60,8 @@ class PurchasePlatformAddressModule {
     }
 
     @Provides
-    @EditAddressQualifier
-    fun providePeopleApiRetrofit(@EditAddressQualifier okHttpClient: OkHttpClient): Retrofit {
+    @PeopleAddressQualifier
+    fun providePeopleApiRetrofit(@PeopleAddressQualifier okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
                 .baseUrl(TokopediaUrl.getInstance().WS)
                 .addConverterFactory(TokopediaWsV4ResponseConverter())
@@ -75,7 +73,7 @@ class PurchasePlatformAddressModule {
     }
 
     @Provides
-    fun providePeopleApi(@EditAddressQualifier retrofit: Retrofit): PeopleActApi {
+    fun providePeopleApi(@PeopleAddressQualifier retrofit: Retrofit): PeopleActApi {
         return retrofit.create(PeopleActApi::class.java)
     }
 

@@ -3,6 +3,8 @@ package com.tokopedia.purchase_platform.common.analytics;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
+import javax.inject.Inject;
+
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventAction;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventCategory;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
@@ -12,6 +14,8 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
  * @author anggaprasetiyo on 05/06/18.
  */
 public class CheckoutAnalyticsMultipleAddress extends TransactionAnalytics {
+
+    @Inject
     public CheckoutAnalyticsMultipleAddress() {
     }
 

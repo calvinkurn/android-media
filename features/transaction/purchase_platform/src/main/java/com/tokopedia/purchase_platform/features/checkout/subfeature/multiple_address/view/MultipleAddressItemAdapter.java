@@ -72,10 +72,6 @@ public class MultipleAddressItemAdapter extends RecyclerView.Adapter
 
     public interface MultipleAddressItemAdapterListener {
 
-        void onEditItemChoosen(int parentItemPosition,
-                               MultipleAddressAdapterData productData,
-                               MultipleAddressItemData addressData);
-
         void onDeleteItem(MultipleAddressItemAdapter adapter, int position,
                           List<MultipleAddressItemData> multipleAddressItemDataList);
 

@@ -89,12 +89,6 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     @Override
-    public void onEditItemChoosen(int parentItemPosotion, MultipleAddressAdapterData productData,
-                                  MultipleAddressItemData addressData) {
-        listener.onItemChoosen(parentItemPosotion, this.addressData, productData, addressData);
-    }
-
-    @Override
     public void onDeleteItem(MultipleAddressItemAdapter adapter, int position,
                              List<MultipleAddressItemData> multipleAddressItemDataList) {
         listener.onDeleteItem(position, multipleAddressItemDataList);
@@ -147,11 +141,6 @@ public class MultipleAddressAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public interface MultipleAddressAdapterListener {
 
         void onGoToChooseCourier(List<MultipleAddressAdapterData> data);
-
-        void onItemChoosen(int itemPosition,
-                           ArrayList<MultipleAddressAdapterData> dataList,
-                           MultipleAddressAdapterData productData,
-                           MultipleAddressItemData addressData);
 
         void onAddNewShipmentAddress(ArrayList<MultipleAddressAdapterData> dataList, int parentPosition);
 

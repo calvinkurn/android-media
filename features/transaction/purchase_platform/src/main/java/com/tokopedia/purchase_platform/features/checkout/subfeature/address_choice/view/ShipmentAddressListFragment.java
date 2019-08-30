@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -26,6 +27,8 @@ import com.tokopedia.purchase_platform.common.di.component.DaggerShipmentAddress
 import com.tokopedia.purchase_platform.common.di.component.ShipmentAddressListComponent;
 import com.tokopedia.purchase_platform.common.di.module.ShipmentAddressListModule;
 import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.di.AddressChoiceComponent;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.di.DaggerAddressChoiceComponent;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.logisticaddaddress.AddressConstants;
@@ -91,13 +94,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
     private FirebaseRemoteConfigImpl remoteConfig;
 
     ShipmentAddressListAdapter mAdapter;
-//    @Inject
+    @Inject
     AddressListContract.Presenter mPresenter;
-//    @Inject
+    @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-//    @Inject
+    @Inject
     CornerAnalytics mCornerAnalytics;
-//    @Inject
+    @Inject
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
     private Token token;
@@ -138,6 +141,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected void initInjector() {
+        BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
+        AddressChoiceComponent addressChoiceComponent = DaggerAddressChoiceComponent.builder()
+                .baseAppComponent(baseMainApplication.getBaseAppComponent())
+                .build();
+
+        addressChoiceComponent.inject(this);
+
 //        ShipmentAddressListComponent component = DaggerShipmentAddressListComponent.builder()
 //                .cartComponent(getComponent(CartComponent.class))
 //                .shipmentAddressListModule(new ShipmentAddressListModule(getActivity(), this))

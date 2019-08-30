@@ -2,8 +2,6 @@ package com.tokopedia.purchase_platform.common.di.module;
 
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.purchase_platform.common.di.scope.AddShipmentAddressScope;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.AddShipmentAddressPresenter;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.IAddShipmentAddressPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -22,13 +20,6 @@ public class AddShipmentAddressModule {
     @AddShipmentAddressScope
     RecipientAddressModel provideAddressEditableModel() {
         return new RecipientAddressModel();
-    }
-
-
-    @Provides
-    @AddShipmentAddressScope
-    IAddShipmentAddressPresenter providePresenter(@AddShipmentAddressScope RecipientAddressModel recipientAddressModel) {
-        return new AddShipmentAddressPresenter(recipientAddressModel);
     }
 
 }
