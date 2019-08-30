@@ -67,7 +67,7 @@ class HotelContactDataFragment: BaseDaggerFragment() {
 
         bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
             contactList?.let{
-                travelContactArrayAdapter.updateItem(it)
+                travelContactArrayAdapter.updateItem(it.toMutableList())
             }
         })
 
@@ -95,7 +95,7 @@ class HotelContactDataFragment: BaseDaggerFragment() {
 
         context?.let {
             //TO DO: CHANGE CONTACT OBJECT
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, listOf())
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf())
             (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         }
 
