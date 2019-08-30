@@ -28,8 +28,10 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     public final static int REQUEST_CODE_DEALDETAILACTIVITY=103;
     public final static int REQUEST_CODE_LOGIN=104;
 
-    List<ProductItem> trendingDeals;
     private String title;
+    private String url;
+    private List<ProductItem> categoryItems;
+    private int position;
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -60,9 +62,17 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
         return DealsHomeFragment.createInstance();
     }
 
+    public String getTrendingDealsUrl() {
+        return url;
+    }
+
+    public List<ProductItem> getCategoryItems() {
+        return categoryItems;
+    }
+
     @Override
-    public List<ProductItem> getTrendingDeals() {
-        return this.trendingDeals;
+    public int getHomePosition() {
+        return position;
     }
 
     @Override
@@ -71,9 +81,10 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     }
 
     @Override
-    public void replaceFragment(List<ProductItem> trendingDeals, int flag, String title) {
-        this.trendingDeals = trendingDeals;
+    public void replaceFragment(String url, String title, List<ProductItem> items, int position) {
         this.title = title;
+        this.categoryItems = items;
+        this.position = position;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
         transaction.add(R.id.parent_view, TrendingDealsFragment.createInstance());
