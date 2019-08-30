@@ -595,7 +595,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             submitHelpTicketRequest.headerMessage = addToCartDataModel.errorMessage[0]
         }
         submitHelpTicketRequest.page = "atc"
-        submitHelpTicketRequest.requestUrl = "tokopedia.com/"
+        submitHelpTicketRequest.requestUrl = "gql.tokopedia.com"
         requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest)
         return submitHelpTicketUseCase.createObservable(requestParams)
     }

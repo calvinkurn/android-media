@@ -2,8 +2,7 @@ package com.tokopedia.transaction.common.usecase
 
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest
-import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketResponse
+import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketGqlResponse
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -20,13 +19,17 @@ class SubmitHelpTicketUseCase @Inject constructor(@Named(QUERY_NAME) val querySt
 
     override fun createObservable(params: RequestParams): Observable<SubmitTicketResult> {
         graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(GraphqlRequest(queryString, SubmitHelpTicketResponse::class.java, mapOf(Pair(PARAM, params.getObject(PARAM) as SubmitHelpTicketRequest))))
+        graphqlUseCase.addRequest(
+                GraphqlRequest(queryString, SubmitHelpTicketGqlResponse::class.java,
+                        mapOf(PARAM to params.getObject(PARAM)))
+        )
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map {
-                    val submitHelpTicket = it.getData<SubmitHelpTicketResponse>(SubmitHelpTicketResponse::class.java)
+                    val submitHelpTicketGql = it.getData<SubmitHelpTicketGqlResponse>(SubmitHelpTicketGqlResponse::class.java)
+                    val submitHelpTicket = submitHelpTicketGql.submitHelpTicketResponse
                     val submitTicketResult = SubmitTicketResult()
                     if (submitHelpTicket.status == STATUS_OK) {
                         submitTicketResult.status = true
@@ -35,8 +38,8 @@ class SubmitHelpTicketUseCase @Inject constructor(@Named(QUERY_NAME) val querySt
                         }
                     } else {
                         submitTicketResult.status = false
-                        if (submitHelpTicket.errorMessage.isNotEmpty()) {
-                            submitTicketResult.message = submitHelpTicket.errorMessage[0]
+                        if (submitHelpTicket.errorMessages.isNotEmpty()) {
+                            submitTicketResult.message = submitHelpTicket.errorMessages[0]
                         }
                     }
                     submitTicketResult
