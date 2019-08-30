@@ -187,7 +187,7 @@ class AddEmailFragment : BaseDaggerFragment() {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
             if(otpCode.isNotBlank()) {
                 val email = et_email.text.toString().trim()
-                viewModel.mutateAddEmail(email, otpCode)
+                viewModel.mutateAddEmail(context!!, email, otpCode)
             }else{
                 onErrorAddEmail(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
