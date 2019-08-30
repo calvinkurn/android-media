@@ -46,7 +46,6 @@ object DeepLinkChecker {
     const val ORDER_LIST = 29
     const val CONTACT_US =30
 
-
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
     private fun isExcludedHostUrl(context: Context, uriData: Uri): Boolean {

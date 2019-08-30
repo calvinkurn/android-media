@@ -69,10 +69,10 @@ public class ShopListFragment
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
-    public static ShopListFragment newInstance(SearchParameter searchParameter) {
+    public static ShopListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
         Bundle args = new Bundle();
-
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
+        args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
 
         ShopListFragment shopListFragment = new ShopListFragment();
         shopListFragment.setArguments(args);
@@ -92,6 +92,7 @@ public class ShopListFragment
     private void loadDataFromBundle(Bundle bundle) {
         if (bundle != null) {
             copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
+            setFragmentPosition(bundle.getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
@@ -345,12 +346,6 @@ public class ShopListFragment
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
         loadShopFirstTime();
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        onFirstTimeLaunch();
     }
 
     @Override
