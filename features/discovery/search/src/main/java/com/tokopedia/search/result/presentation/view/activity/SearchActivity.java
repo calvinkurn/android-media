@@ -282,7 +282,6 @@ public class SearchActivity extends BaseActivity
         if (isViewPagerCurrentItemPositionIsInvalid()) return;
 
         Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-
         if (fragmentItem instanceof SearchSectionFragment) {
             SearchSectionFragment selectedFragment = (SearchSectionFragment) fragmentItem;
 
