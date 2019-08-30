@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -53,6 +54,10 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
+import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -61,6 +66,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
+import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -70,6 +76,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val addWishListUseCase: AddWishListUseCase,
                                                private val removeWishlistUseCase: RemoveWishListUseCase,
                                                private val trackAffiliateUseCase: TrackAffiliateUseCase,
+                                               private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -533,6 +540,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         removeWishlistUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
         trackAffiliateUseCase.cancelJobs()
+        submitHelpTicketUseCase.unsubscribe()
     }
 
     fun loadMore() {
@@ -576,6 +584,20 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }) {
             it.debugTrace()
         }
+    }
+
+    fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel): Observable<SubmitTicketResult> {
+        val requestParams = RequestParams.create()
+        val submitHelpTicketRequest = SubmitHelpTicketRequest()
+        submitHelpTicketRequest.apiJsonResponse = addToCartDataModel.responseJson
+        submitHelpTicketRequest.errorMessage = addToCartDataModel.errorReporter.description
+        if (addToCartDataModel.errorMessage.isNotEmpty()) {
+            submitHelpTicketRequest.headerMessage = addToCartDataModel.errorMessage[0]
+        }
+        submitHelpTicketRequest.page = "atc"
+        submitHelpTicketRequest.requestUrl = "tokopedia.com/"
+        requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest)
+        return submitHelpTicketUseCase.createObservable(requestParams)
     }
 
     companion object {

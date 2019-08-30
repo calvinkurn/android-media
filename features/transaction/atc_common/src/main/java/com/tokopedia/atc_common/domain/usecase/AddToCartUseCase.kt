@@ -1,5 +1,6 @@
 package com.tokopedia.atc_common.domain.usecase
 
+import com.google.gson.Gson
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -79,11 +80,11 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
             addToCartGqlResponse.addToCartResponse.let {
                 val errorReporter = ErrorReporterModel()
-                errorReporter.eligible = it.errorReporter.eligible
-                errorReporter.description = it.errorReporter.description
+                errorReporter.eligible = true
+                errorReporter.description = "Barangmu akan dikembalikan ke keranjang. Laporkan gangguan ini biar bisa segera diperbaiki, ya!"
 
                 val dataModel = DataModel()
-                dataModel.success = it.data.success
+                dataModel.success = 0
                 dataModel.cartId = it.data.cartId
                 dataModel.productId = it.data.productId
                 dataModel.quantity = it.data.quantity
@@ -102,6 +103,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                 addToCartDataModel.errorMessage = it.errorMessage
                 addToCartDataModel.data = dataModel
                 addToCartDataModel.errorReporter = errorReporter
+                addToCartDataModel.responseJson = Gson().toJson(addToCartGqlResponse)
 
                 addToCartDataModel
             }

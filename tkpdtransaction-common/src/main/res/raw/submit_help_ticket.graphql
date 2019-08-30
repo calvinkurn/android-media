@@ -1,0 +1,10 @@
+mutation submit_help_ticket($ErrorDetail: TicketErrorDetailData){
+  submit_help_ticket(ErrorDetail:$ErrorDetail) {
+    status
+    error_messages
+    data {
+      success
+      message
+    }
+  }
+}

@@ -63,6 +63,7 @@ import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
 import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DESC
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
@@ -634,10 +635,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    fun onFinishError(errorDesc: String) {
+    private fun onFinishError(errorModel: AddToCartDataModel) {
         activity?.run {
             setResult(RESULT_CODE_ERROR_TICKET, Intent().apply {
-                putExtra(RESULT_TICKET_DESC, errorDesc)
+                putExtra(RESULT_TICKET_DATA, errorModel)
+                putExtra(RESULT_TICKET_DESC, errorModel.errorReporter.description)
             })
             finish()
         }
@@ -794,7 +796,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         selectedProductInfo?.category?.name ?: "")
                 onFinish(addToCartDataModel.data.message[0], addToCartDataModel.data.cartId.toString())
             } else if (addToCartDataModel.errorReporter.eligible) {
-                onFinishError(addToCartDataModel.errorReporter.description)
+                onFinishError(addToCartDataModel)
             } else {
                 activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
                         addToCartDataModel.errorMessage[0])

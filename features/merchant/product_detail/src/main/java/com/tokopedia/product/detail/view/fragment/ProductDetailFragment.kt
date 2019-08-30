@@ -33,6 +33,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
+import android.widget.Toast
 import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
@@ -63,6 +64,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ATC_ONLY
 import com.tokopedia.normalcheckout.constant.ProductAction
@@ -127,7 +129,9 @@ import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transaction.common.dialog.CreateTicketDialog
 import com.tokopedia.transaction.common.dialog.SuccessTicketDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DESC
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 import com.tokopedia.unifycomponents.Toaster
@@ -1088,8 +1092,29 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         })
                         createTicketDialog.setOkOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickReportOnHelpPopUpAtc()
-                            createTicketDialog.dismiss()
-                            SuccessTicketDialog(activity, SuccessTicketDialog.Page.PAGE_ATC).show()
+                            productInfoViewModel.hitSubmitTicket(data.getParcelableExtra(RESULT_TICKET_DATA))
+                                    .subscribe(object : rx.Observer<SubmitTicketResult> {
+                                        override fun onError(e: Throwable?) {
+                                            e?.printStackTrace()
+                                            hideProgressDialog()
+                                            Toaster.showError(view!!, ErrorHandler.getErrorMessage(context, e), Toast.LENGTH_SHORT)
+                                        }
+
+                                        override fun onNext(result: SubmitTicketResult) {
+                                            hideProgressDialog()
+                                            if (result.status) {
+                                                createTicketDialog.dismiss()
+                                                SuccessTicketDialog(activity, SuccessTicketDialog.Page.PAGE_ATC)
+                                            } else {
+                                                Toaster.showError(view!!, result.message, Toast.LENGTH_SHORT)
+                                            }
+                                        }
+
+                                        override fun onCompleted() {
+
+                                        }
+                                    })
+                            showProgressDialog()
                         })
                         createTicketDialog.setDescription(data.getStringExtra(RESULT_TICKET_DESC))
                         createTicketDialog.show()
