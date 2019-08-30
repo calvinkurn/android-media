@@ -12,7 +12,7 @@ interface Iris {
     /**
      * Simplify initialize iris
      */
-    fun init()
+    fun initialize()
 
     /**
      * set custom configuration by json

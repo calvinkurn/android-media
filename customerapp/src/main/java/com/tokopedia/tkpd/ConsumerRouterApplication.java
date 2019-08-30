@@ -543,7 +543,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(this);
-        mIris.init();
+        mIris.initialize();
     }
 
     private FlightConsumerComponent getFlightConsumerComponent() {

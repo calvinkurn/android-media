@@ -60,7 +60,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         }
     }
 
-    override fun init() {
+    override fun initialize() {
         remoteConfig = FirebaseRemoteConfigImpl(context)
         remoteConfig.fetch(remoteConfigListener)
     }
