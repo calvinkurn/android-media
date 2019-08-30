@@ -25,7 +25,11 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
 import javax.inject.Inject
 
-class CatalogDetailPageFragment : Fragment(), HasComponent<CatalogComponent>, CatalogImageAdapter.Listener, CatalogGalleryFragment.Listener {
+class CatalogDetailPageFragment : Fragment(),
+        HasComponent<CatalogComponent>,
+        CatalogImageAdapter.Listener,
+        CatalogGalleryFragment.Listener
+{
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -34,6 +38,7 @@ class CatalogDetailPageFragment : Fragment(), HasComponent<CatalogComponent>, Ca
     private var categoryId: String = ""
     private lateinit var catalogImage: ArrayList<Catalog.CatalogImage>
     private lateinit var fragment: CatalogGalleryFragment
+    private lateinit var catalog: Catalog
 
     companion object {
         private const val TAG_FRAGMENT = "TAG_FRAGMENT"
@@ -76,7 +81,8 @@ class CatalogDetailPageFragment : Fragment(), HasComponent<CatalogComponent>, Ca
             when (it) {
                 is Success -> {
                     catalog_layout.show()
-                    setUI(it.data.productCatalogQuery.data.catalog)
+                    catalog = it.data.productCatalogQuery.data.catalog
+                    setUI(catalog)
                 }
                 is Fail -> {
                 }
@@ -91,6 +97,10 @@ class CatalogDetailPageFragment : Fragment(), HasComponent<CatalogComponent>, Ca
         marketprice.text = marketPrice
         setBanner(catalog.catalogImage)
         setTopThreeSpecs(catalog.topthreespec)
+        complete_specifications.setOnClickListener {
+            val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalog.description, catalog.specification)
+            catalogSpecsAndDetailView.show(childFragmentManager, "")
+        }
     }
 
     private fun setBanner(catalogImage: ArrayList<Catalog.CatalogImage>) {

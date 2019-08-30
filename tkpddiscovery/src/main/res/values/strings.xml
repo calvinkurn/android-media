@@ -82,4 +82,5 @@
     <string name="catalog_marketprice">Harga Pasar</string>
     <string name="catalog_complete_specifications">Spesifikasi lengkap</string>
     <string name="bullet_string">• %1$s</string>
+    <string name="description">Deskripsi</string>
 </resources>

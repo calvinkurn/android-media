@@ -115,6 +115,7 @@ dependencies {
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation project(rootProject.ext.libraries.kotlinExtensions)
+    implementation project(rootProject.ext.features.transaction)
 }
 
 apply from: '../publish_local.gradle'

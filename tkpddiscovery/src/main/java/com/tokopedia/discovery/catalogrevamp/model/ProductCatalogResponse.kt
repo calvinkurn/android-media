@@ -119,18 +119,20 @@ data class ProductCatalogResponse(
                     val videoUrl: String
                 )
 
+                @Parcelize
                 data class Specification(
                     @SerializedName("name")
                     val name: String,
                     @SerializedName("row")
                     val row: ArrayList<Row>
-                ) {
+                ) : Parcelable {
+                    @Parcelize
                     data class Row(
                         @SerializedName("key")
                         val key: String,
                         @SerializedName("value")
                         val value: ArrayList<String>
-                    )
+                    ) : Parcelable
                 }
             }
         }
