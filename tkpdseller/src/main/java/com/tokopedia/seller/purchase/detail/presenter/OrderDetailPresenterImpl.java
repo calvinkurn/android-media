@@ -2,6 +2,7 @@ package com.tokopedia.seller.purchase.detail.presenter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 
@@ -9,6 +10,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.AppUtils;
@@ -582,5 +584,29 @@ public class OrderDetailPresenterImpl implements OrderDetailPresenter {
                 mainView.onSearchCancelled(s);
             }
         };
+    }
+
+    @Override
+    public void assignInvoiceDataTo(Intent intent, OrderDetailData orderData) {
+        if (orderData == null) return;
+        String id = orderData.getInvoiceId();
+        String invoiceCode = orderData.getInvoiceNumber();
+        String productName = orderData.getProductName();
+        String date = orderData.getPurchaseDate();
+        String imageUrl = orderData.getProductImageUrl();
+        String invoiceUrl = orderData.getInvoiceUrl();
+        String statusId = orderData.getOrderCode();
+        String status = orderData.getOrderStatus();
+        String totalPriceAmount = orderData.getTotalPayment();
+
+        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, id);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, date);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, imageUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
     }
 }

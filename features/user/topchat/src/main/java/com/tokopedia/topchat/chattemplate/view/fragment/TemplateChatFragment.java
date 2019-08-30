@@ -26,6 +26,7 @@ import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chattemplate.di.DaggerTemplateChatComponent;
 import com.tokopedia.topchat.chattemplate.view.activity.EditTemplateChatActivity;
+import com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingAdapter;
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatSettingTypeFactoryImpl;
 import com.tokopedia.topchat.chattemplate.view.adapter.viewholder.ItemTemplateChatViewHolder;
@@ -38,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.topchat.chattemplate.view.activity.TemplateChatActivity.PARAM_IS_SELLER;
 
 public class TemplateChatFragment extends BaseDaggerFragment
         implements TemplateChatContract.View {
@@ -68,10 +71,12 @@ public class TemplateChatFragment extends BaseDaggerFragment
 
     private Snackbar snackbarInfo;
     private BottomSheetView bottomSheetView;
+    private Boolean isSeller;
 
     public static TemplateChatFragment createInstance(Bundle extras) {
         TemplateChatFragment fragment = new TemplateChatFragment();
         fragment.setArguments(extras);
+        fragment.isSeller = extras.getBoolean(PARAM_IS_SELLER);
         return fragment;
     }
 
@@ -79,7 +84,6 @@ public class TemplateChatFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_template_chat, container, false);
-
         typeFactory = new TemplateChatSettingTypeFactoryImpl(this);
 
         loading = rootView.findViewById(R.id.loading_search);
@@ -94,7 +98,8 @@ public class TemplateChatFragment extends BaseDaggerFragment
         recyclerView.setHasFixedSize(true);
 
         presenter.attachView(this);
-
+        presenter.setMode(isSeller);
+        presenter.getTemplate();
         setBottomSheetDialog();
         return rootView;
     }
@@ -206,6 +211,7 @@ public class TemplateChatFragment extends BaseDaggerFragment
             } else {
                 bundle.putInt(InboxMessageConstant.PARAM_MODE, EDIT);
             }
+            bundle.putBoolean(PARAM_IS_SELLER, isSeller);
             intent.putExtras(bundle);
             startActivityForResult(intent, 100);
             getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);

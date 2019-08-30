@@ -20,7 +20,6 @@ import com.tokopedia.product.share.ekstensions.getShareContent
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import java.io.File
-import java.lang.Exception
 
 class ProductShare(private val activity: Activity, private val mode: Int = MODE_TEXT) {
     private val remoteConfig by lazy { FirebaseRemoteConfigImpl(activity) }
@@ -89,17 +88,24 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(0,
                     productDataToLinkerDataMapper(data), object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult) {
-                    openIntentShare(file, data.productName, data.getShareContent(linkerShareData.url), linkerShareData.url)
+                    try {
+                        openIntentShare(file, data.productName, data.getShareContent(linkerShareData.url), linkerShareData.url)
+                    } catch (e: Exception) {
+                        openIntentShareDefault(file, data)
+                    }
                 }
 
                 override fun onError(linkerError: LinkerError) {
-                    openIntentShare(file,  data.productName, data.getShareContent(data.renderShareUri), data.renderShareUri)
+                    openIntentShareDefault(file, data)
                 }
             }))
         } else {
-            openIntentShare(file,  data.productName, data.getShareContent(data.renderShareUri), data.renderShareUri)
+            openIntentShareDefault(file, data)
         }
+    }
 
+    private fun openIntentShareDefault(file: File?, data: ProductData) {
+        openIntentShare(file,  data.productName, data.getShareContent(data.renderShareUri), data.renderShareUri)
     }
 
     private fun productDataToLinkerDataMapper(productData: ProductData): LinkerShareData{

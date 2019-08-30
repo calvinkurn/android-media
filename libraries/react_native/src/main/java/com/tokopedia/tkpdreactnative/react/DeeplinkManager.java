@@ -40,7 +40,7 @@ public class DeeplinkManager extends ReactContextBaseJavaModule {
                             .goToApplinkActivity(this.getCurrentActivity(), applinks, ReactUtils.convertBundle(extra));
                 } else {
                     if(isNewRouteEnable){
-                        RouteManager.route(context, applinks);
+                        RouteManager.route(this.getCurrentActivity(), applinks);
                     }else {
                         ((ApplinkRouter) context.getApplicationContext())
                                 .goToApplinkActivity(this.getCurrentActivity(), applinks);

@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -86,7 +85,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
@@ -104,7 +102,6 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -148,7 +145,7 @@ import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationActivity;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -176,7 +173,6 @@ import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
-import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
@@ -200,7 +196,6 @@ import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
@@ -1261,11 +1256,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGMHomeIntent(Context context) {
-        return GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
-    }
-
-    @Override
     public void navigateAppLinkWallet(Context context,
                                       String appLinkScheme,
                                       String alternateRedirectUrl,
@@ -1412,16 +1402,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getResolutionCenterIntent(Context context) {
-        return InboxResCenterActivity.createIntent(context);
-    }
-
-    @Override
-    public Intent getResolutionCenterIntentBuyer(Context context) {
-        return ResoInboxActivity.newBuyerInstance(context);
-    }
-
-    @Override
     public Intent getResolutionCenterIntentSeller(Context context) {
         return ResoInboxActivity.newSellerInstance(context);
     }
@@ -1434,11 +1414,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
         return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
-    }
-
-    @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId, troubleId, solutionId);
     }
 
     @Override
@@ -1654,14 +1629,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
-        Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
-        var1.startActivityForResult(instance, var3);
-    }
-
-    @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
-        return DistrictRecommendationActivity.newInstance(activity, token);
+        return DiscomActivity.newInstance(activity, token);
     }
 
     @Override
@@ -2605,7 +2574,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new GlobalCacheManager().deleteAll();
         PersistentCacheManager.instance.delete();
         Router.clearEtalase(activity);
-        DbManagerImpl.getInstance().removeAllEtalase();
         TrackApp.getInstance().getMoEngage().logoutEvent();
         SessionHandler.clearUserData(activity);
         NotificationModHandler notif = new NotificationModHandler(activity);
@@ -2645,7 +2613,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             new GlobalCacheManager().deleteAll();
             PersistentCacheManager.instance.delete();
             Router.clearEtalase(activity);
-            DbManagerImpl.getInstance().removeAllEtalase();
             TrackApp.getInstance().getMoEngage().logoutEvent();
             SessionHandler.clearUserData(activity);
             NotificationModHandler notif = new NotificationModHandler(activity);

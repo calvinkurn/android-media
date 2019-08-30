@@ -101,7 +101,8 @@ public class ThreeGridChannelViewHolder extends AbstractViewHolder<DynamicChanne
                             DynamicLinkHelper.getActionLink(channel.getHeader()));
                     HomePageTracking.eventClickSeeAllThreeLegoBannerChannel(
                             context,
-                            channel.getHeader().getName());
+                            channel.getHeader().getName(),
+                            channel.getId());
                 }
             });
             itemAdapter.setChannel(channel, getAdapterPosition());
