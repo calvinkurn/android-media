@@ -42,7 +42,7 @@ open class PlayActivity : BaseSimpleActivity() {
     @Inject
     lateinit var analytics: GroupChatAnalytics
 
-    var channelId: String? = null
+    var channelId: String? = ""
 
     var pipDuration = 0L
     var pipStartTime = 0L
@@ -82,9 +82,10 @@ open class PlayActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        channelId = intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
-        if(channelId == null) {
-            channelId = intent?.extras?.getString(EXTRA_CHANNEL_UUID)
+        channelId = when {
+            intent.data != null -> intent?.data?.getQueryParameter(ApplinkConstant.PARAM_CHANNEL_ID)
+            intent.extras != null -> intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
+            else -> intent?.extras?.getString(EXTRA_CHANNEL_UUID)
         }
         initInjector()
         initView()
