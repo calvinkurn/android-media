@@ -132,6 +132,25 @@ public class HomePageTracking {
     private static final String VALUE_PROMO_NAME_THREE_BANNER = "/ - p%s - lego banner 3 image - %s";
     private static final String VALUE_PROMO_NAME_PRODUCT = "/ - p%s - %s";
     private static final String VALUE_PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner";
+    public static final String EVENT_PROMO_VIEW_IRIS = "promoViewIris";
+    public static final String EVENT_ACTION_IMPRESSION_ON_BANNER_SPOTLIGHT = "impression on banner spotlight";
+    public static final String EVENT_ACTION_LEGO_BANNER_3_IMAGE_IMPRESSION = "lego banner 3 image impression";
+    public static final String FIELD_ID = "id";
+    public static final String FIELD_NAME = "name";
+    public static final String FIELD_CREATIVE = "creative";
+    public static final String FIELD_CREATIVE_URL = "creative_url";
+    public static final String FIELD_POSITION = "position";
+    public static final String FIELD_PRICE = "price";
+    public static final String FIELD_BRAND = "brand";
+    public static final String FIELD_CATEGORY = "category";
+    public static final String FIELD_VARIANT = "variant";
+    public static final String PRODUCT_VIEW_IRIS = "productViewIris";
+    public static final String EVENT_ACTION_IMPRESSION_ON_LEGO_PRODUCT = "impression on lego product";
+    public static final String NONE_OTHER = "none / other";
+    public static final String PROMO_VIEW_IRIS = "promoViewIris";
+    public static final String EVENT_ACTION_LEGO_BANNER_IMPRESSION = "lego banner impression";
+    public static final String EVENT_ACTION_IMPRESSION_ON_PRODUCT_DYNAMIC_CHANNEL_MIX = "impression on product dynamic channel mix";
+    public static final String EVENT_ACTION_IMPRESSION_ON_BANNER_DYNAMIC_CHANNEL_MIX = "impression on banner dynamic channel mix";
 
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
@@ -772,11 +791,11 @@ public class HomePageTracking {
                         "promoView", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                "id", id,
-                                                "name", name,
-                                                "creative", alias,
-                                                "creative_url", creativeUrl,
-                                                "position", position,
+                                                FIELD_ID, id,
+                                                FIELD_NAME, name,
+                                                FIELD_CREATIVE, alias,
+                                                FIELD_CREATIVE_URL, creativeUrl,
+                                                FIELD_POSITION, position,
                                                 "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
                                         )
                                 )
@@ -806,11 +825,11 @@ public class HomePageTracking {
                             "promoClick", DataLayer.mapOf(
                                     "promotions", DataLayer.listOf(
                                             DataLayer.mapOf(
-                                                    "id", id,
-                                                    "name", name,
-                                                    "creative", alias,
-                                                    "creative_url", creativeUrl,
-                                                    "position", position,
+                                                    FIELD_ID, id,
+                                                    FIELD_NAME, name,
+                                                    FIELD_CREATIVE, alias,
+                                                    FIELD_CREATIVE_URL, creativeUrl,
+                                                    FIELD_POSITION, position,
                                                     "promo_code", !TextUtils.isEmpty(promoCode) ? promoCode : "NoPromoCode"
                                             )
                                     )
@@ -1056,16 +1075,16 @@ public class HomePageTracking {
                 DynamicHomeChannel.Grid grid = grids[i];
                 list.add(
                         DataLayer.mapOf(
-                                "name", grid.getName(),
-                                "id", grid.getId(),
-                                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                FIELD_NAME, grid.getName(),
+                                FIELD_ID, grid.getId(),
+                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
                                         grid.getPrice()
                                 )),
-                                "brand", "none / other",
-                                "category", "none / other",
-                                "variant", "none / other",
-                                "list", "/ - p1 - sprint sale",
-                                "position", String.valueOf(i + 1)
+                                FIELD_BRAND, "none / other",
+                                FIELD_CATEGORY, "none / other",
+                                FIELD_VARIANT, "none / other",
+                                LIST, "/ - p1 - sprint sale",
+                                FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );
             }
@@ -1073,25 +1092,22 @@ public class HomePageTracking {
         return list;
     }
 
-    public static HashMap<String, Object> getEnhanceImpressionDynamicSprintLegoHomePage(String channelId,
-                                                                             DynamicHomeChannel.Grid[] grids,
-                                                                             String headerName,
-                                                                             String channelAttribution,
-                                                                             int position) {
+    public static HashMap<String, Object> getIrisEnhanceImpressionDynamicSprintLegoHomePage(String channelId,
+                                                                                            DynamicHomeChannel.Grid[] grids,
+                                                                                            String headerName) {
         List<Object> list = convertPromoEnhanceDynamicSprintLegoDataLayer(grids, headerName);
         return (HashMap<String, Object>) DataLayer.mapOf(
-                "event", "productView",
-                "eventCategory", "homepage",
-                "eventAction", "impression on lego product",
-                "eventLabel", "",
+                EVENT, PRODUCT_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_LEGO_PRODUCT,
+                EVENT_LABEL, LABEL_EMPTY,
                 CHANNEL_ID, channelId,
-                "ecommerce", DataLayer.mapOf(
-                        "curencyCode", "IDR",
-                        "impressions", DataLayer.listOf(
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        IMPRESSIONS, DataLayer.listOf(
                                 list.toArray(new Object[list.size()])
                         )
-                ),
-                "attribution", getHomeAttribution(position + 1, headerName, channelAttribution)
+                )
         );
     }
 
@@ -1104,13 +1120,16 @@ public class HomePageTracking {
                 DynamicHomeChannel.Grid grid = grids[i];
                 list.add(
                         DataLayer.mapOf(
-                                "id", grid.getId(),
-                                "name", grid.getName(),
-                                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                FIELD_ID, grid.getId(),
+                                FIELD_NAME, grid.getName(),
+                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
                                         grid.getPrice()
                                 )),
-                                "list", "/ - p1 - lego product - " + headerName,
-                                "position", String.valueOf(i + 1)
+                                FIELD_BRAND, NONE_OTHER,
+                                FIELD_CATEGORY, NONE_OTHER,
+                                FIELD_VARIANT, NONE_OTHER,
+                                LIST, "/ - p1 - lego product - " + headerName,
+                                FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );
             }
@@ -1123,13 +1142,13 @@ public class HomePageTracking {
                                                                      String type){
         List<Object> list = convertProductEnhanceProductMixDataLayer(grids, headerName, type);
         return (HashMap<String, Object>) DataLayer.mapOf(
-                "event", "productView",
-                "eventCategory", "homepage",
-                "eventAction", "impression on product dynamic channel mix",
-                "eventLabel", "",
-                "ecommerce", DataLayer.mapOf(
-                        "currencyCode", "IDR",
-                        "impressions", DataLayer.listOf(
+                EVENT, PRODUCT_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_PRODUCT_DYNAMIC_CHANNEL_MIX,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        IMPRESSIONS, DataLayer.listOf(
                                 list.toArray(new Object[list.size()])
 
                         ))
@@ -1144,16 +1163,16 @@ public class HomePageTracking {
                 DynamicHomeChannel.Grid grid = grids[i];
                 list.add(
                         DataLayer.mapOf(
-                                "name", grid.getName(),
-                                "id", grid.getId(),
-                                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
+                                FIELD_NAME, grid.getName(),
+                                FIELD_ID, grid.getId(),
+                                FIELD_PRICE, Integer.toString(CurrencyFormatHelper.convertRupiahToInt(
                                         grid.getPrice()
                                 )),
-                                "brand", "none / other",
-                                "category", "none / other",
-                                "variant", "none / other",
-                                "list", "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
-                                "position", String.valueOf(i + 1)
+                                FIELD_BRAND, NONE_OTHER,
+                                FIELD_CATEGORY, NONE_OTHER,
+                                FIELD_VARIANT, NONE_OTHER,
+                                LIST, "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
+                                FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );
             }
@@ -1161,11 +1180,47 @@ public class HomePageTracking {
         return list;
     }
 
+    public static HashMap<String, Object> getIrisEnhanceImpressionBannerChannelMix(DynamicHomeChannel.Channels channel) {
+        List<Object> list = convertPromoEnhanceBannerChannelMix(channel);
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_BANNER_DYNAMIC_CHANNEL_MIX,
+                EVENT_LABEL, LABEL_EMPTY,
+                CHANNEL_ID, channel.getId(),
+                ECOMMERCE, DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", DataLayer.listOf(
+                                        list.toArray(new Object[list.size()])
+                                )
+                        )
+
+                )
+        );
+    }
+
+    private static List<Object> convertPromoEnhanceBannerChannelMix(DynamicHomeChannel.Channels channel) {
+        List<Object> list = new ArrayList<>();
+
+        /**
+         * Banner always in position 1 because only 1 banner shown
+         */
+        list.add(
+                DataLayer.mapOf(
+                        FIELD_ID, channel.getBanner().getId(),
+                        FIELD_NAME, "/ - p1 - dynamic channel mix - banner - "+channel.getHeader().getName(),
+                        FIELD_CREATIVE, channel.getBanner().getAttribution(),
+                        FIELD_CREATIVE_URL, channel.getBanner().getImageUrl(),
+                        FIELD_POSITION, String.valueOf(1)
+                )
+        );
+        return list;
+    }
+
     public static HashMap<String, Object> getEnhanceImpressionLegoBannerHomePage(
             String channelId,
             DynamicHomeChannel.Grid[] grids,
             String headerName,
-            String channelAttribution,
             int position) {
         String promoName = String.format(
                 VALUE_PROMO_NAME_SIX_BANNER,
@@ -1177,27 +1232,25 @@ public class HomePageTracking {
                 grids,
                 promoName);
         return (HashMap<String, Object>) DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", "homepage",
-                "eventAction", "lego banner impression",
-                "eventLabel", "",
-                "ecommerce", DataLayer.mapOf(
-                        "promoView", DataLayer.mapOf(
-                                "promotions", DataLayer.listOf(
+                EVENT, PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_IMPRESSION,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
                                         list.toArray(new Object[list.size()])
                                 )
                         )
                 ),
-                CHANNEL_ID, channelId,
-                "attribution", getHomeAttribution(position + 1, "", channelAttribution)
+                CHANNEL_ID, channelId
         );
     }
 
-    public static HashMap<String, Object> getEnhanceImpressionLegoThreeBannerHomePage(
+    public static HashMap<String, Object> getIrisEnhanceImpressionLegoThreeBannerHomePage(
             String channelId,
             DynamicHomeChannel.Grid[] grids,
             String headerName,
-            String channelAttribution,
             int position) {
         String promoName = String.format(
                 VALUE_PROMO_NAME_THREE_BANNER,
@@ -1209,19 +1262,18 @@ public class HomePageTracking {
                 grids,
                 promoName);
         return (HashMap<String, Object>) DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", "homepage",
-                "eventAction", "lego banner 3 image impression",
-                "eventLabel", "",
-                "ecommerce", DataLayer.mapOf(
-                        "promoView", DataLayer.mapOf(
-                                "promotions", DataLayer.listOf(
+                EVENT, EVENT_PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_LEGO_BANNER_3_IMAGE_IMPRESSION,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
                                         list.toArray(new Object[list.size()])
                                 )
                         )
                 ),
-                CHANNEL_ID, channelId,
-                "attribution", getHomeAttribution(position + 1, "", channelAttribution)
+                CHANNEL_ID, channelId
         );
     }
 
@@ -1233,11 +1285,11 @@ public class HomePageTracking {
                 DynamicHomeChannel.Grid grid = grids[i];
                 list.add(
                         DataLayer.mapOf(
-                                "id", grid.getId(),
-                                "name", promoName,
-                                "creative", grid.getAttribution(),
-                                "creative_url", grid.getImageUrl(),
-                                "position", String.valueOf(i + 1)
+                                FIELD_ID, grid.getId(),
+                                FIELD_NAME, promoName,
+                                FIELD_CREATIVE, grid.getAttribution(),
+                                FIELD_CREATIVE_URL, grid.getImageUrl(),
+                                FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );
             }
@@ -1245,20 +1297,20 @@ public class HomePageTracking {
         return list;
     }
 
-    public static HashMap<String, Object> getEnhanceImpressionSpotlightHomePage(
+    public static HashMap<String, Object> getIrisEnhanceImpressionSpotlightHomePage(
             String channelId,
             List<SpotlightItemViewModel> spotlights,
             int position) {
         List<Object> list = convertPromoEnhanceSpotlight(spotlights, position);
         return (HashMap<String, Object>) DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", "homepage",
-                "eventAction", "impression on banner spotlight",
-                "eventLabel", "",
-                "channelId", channelId,
-                "ecommerce", DataLayer.mapOf(
-                        "promoView", DataLayer.mapOf(
-                                "promotions", DataLayer.listOf(
+                EVENT, EVENT_PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_BANNER_SPOTLIGHT,
+                EVENT_LABEL, LABEL_EMPTY,
+                CHANNEL_ID, channelId,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
                                         list.toArray(new Object[list.size()])
                                 )
                         )
@@ -1279,11 +1331,11 @@ public class HomePageTracking {
                 SpotlightItemViewModel item = spotlights.get(i);
                 list.add(
                         DataLayer.mapOf(
-                                "id", String.valueOf(item.getId()),
-                                "name", promoName,
-                                "creative", item.getTitle(),
-                                "creative_url", item.getBackgroundImageUrl(),
-                                "position", String.valueOf(i + 1)
+                                FIELD_ID, String.valueOf(item.getId()),
+                                FIELD_NAME, promoName,
+                                FIELD_CREATIVE, item.getTitle(),
+                                FIELD_CREATIVE_URL, item.getBackgroundImageUrl(),
+                                FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );
             }
@@ -1335,11 +1387,11 @@ public class HomePageTracking {
         List<Object> list = new ArrayList<>();
         list.add(
                 DataLayer.mapOf(
-                        "id", item.getId(),
-                        "name", "/ - dynamic icon",
-                        "creative", item.getTitle(),
-                        "creative_url", item.getUrl(),
-                        "position", String.valueOf(position + 1)
+                        FIELD_ID, item.getId(),
+                        FIELD_NAME, "/ - dynamic icon",
+                        FIELD_CREATIVE, item.getTitle(),
+                        FIELD_CREATIVE_URL, item.getUrl(),
+                        FIELD_POSITION, String.valueOf(position + 1)
                 )
         );
         return list;

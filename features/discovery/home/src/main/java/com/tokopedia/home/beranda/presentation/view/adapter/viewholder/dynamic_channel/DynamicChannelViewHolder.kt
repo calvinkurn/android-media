@@ -2,8 +2,6 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.content.Context
 import android.support.annotation.LayoutRes
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
@@ -152,22 +150,22 @@ abstract class DynamicChannelViewHolder(itemView: View,
 
                 TYPE_SPRINT_LEGO, TYPE_ORGANIC -> {
                     listener.putEEToIris(
-                            HomePageTracking.getEnhanceImpressionDynamicSprintLegoHomePage(
-                                    channel.id, channel.grids, channel.header.name, channel.homeAttribution, position
+                            HomePageTracking.getIrisEnhanceImpressionDynamicSprintLegoHomePage(
+                                    channel.id, channel.grids, channel.header.name
                             )
                     )
                 }
                 TYPE_SIX_GRID_LEGO -> {
                     listener.putEEToIris(
                             HomePageTracking.getEnhanceImpressionLegoBannerHomePage(
-                                    channel.id, channel.grids, channel.header.name, channel.homeAttribution, position
+                                    channel.id, channel.grids, channel.header.name, position
                             )
                     )
                 }
                 TYPE_THREE_GRID_LEGO -> {
                     listener.putEEToIris(
-                            HomePageTracking.getEnhanceImpressionLegoThreeBannerHomePage(
-                                    channel.id, channel.grids, channel.header.name, channel.homeAttribution, position
+                            HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
+                                    channel.id, channel.grids, channel.header.name, position
                             )
                     )
                 }
@@ -183,7 +181,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
                             )
                     )
                     listener.putEEToIris(
-                            channel.enhanceImpressionBannerChannelMix)
+                            HomePageTracking.getIrisEnhanceImpressionBannerChannelMix(channel)
+                    )
                 }
             }
         }

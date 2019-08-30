@@ -154,7 +154,7 @@ class OnSpotlightImpression(
         val position: Int) : ViewHintListener {
     override fun onViewHint() {
         listener.putEEToIris(
-                HomePageTracking.getEnhanceImpressionSpotlightHomePage(
+                HomePageTracking.getIrisEnhanceImpressionSpotlightHomePage(
                         spotlightViewModel.channelId,
                         spotlightViewModel.spotlightItems,
                         position
