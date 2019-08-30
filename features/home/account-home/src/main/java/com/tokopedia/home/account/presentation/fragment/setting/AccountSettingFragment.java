@@ -144,7 +144,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     @Override
-    public void showErroNoConnection() {
+    public void showErrorNoConnection() {
         hideLoading();
         showError(getString(R.string.error_no_internet_connection));
     }
