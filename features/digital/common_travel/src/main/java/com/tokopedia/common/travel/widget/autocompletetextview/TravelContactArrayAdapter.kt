@@ -14,19 +14,19 @@ import com.tokopedia.common.travel.data.entity.TravelContactListModel
  * @author by jessica on 2019-08-29
  */
 
-class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context, val textViewResourceId: Int, var items: List<TravelContactListModel.Contact>)
+class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context, val textViewResourceId: Int, var items: MutableList<TravelContactListModel.Contact>)
     : ArrayAdapter<TravelContactListModel.Contact>(context, textViewResourceId, items) {
 
     var itemsAll: MutableList<TravelContactListModel.Contact> = arrayListOf()
     var suggestions: MutableList<TravelContactListModel.Contact> = arrayListOf()
 
     init {
-        itemsAll = items.toMutableList()
+        itemsAll = items
     }
 
-    fun updateItem(list: List<TravelContactListModel.Contact>) {
+    fun updateItem(list: MutableList<TravelContactListModel.Contact>) {
         this.items = list
-        this.itemsAll = list.toMutableList()
+        this.itemsAll = list
         notifyDataSetChanged()
     }
 
@@ -57,9 +57,8 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
         override fun performFiltering(constraint: CharSequence?): FilterResults {
             if (constraint != null) {
                 suggestions.clear()
-                for (contact in itemsAll) {
-                    if (contact.fullName.toLowerCase().contains(constraint.toString())) suggestions.add(contact)
-                }
+                suggestions.addAll(itemsAll.filter { it.fullName.toLowerCase().contains(constraint.toString()) })
+
                 val filterResults = FilterResults()
                 filterResults.values = suggestions
                 filterResults.count = suggestions.size
@@ -69,8 +68,8 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
 
         override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
             if (results != null && results.count > 0) {
+                clear()
                 val filteredList = results?.values as ArrayList<TravelContactListModel.Contact>
-//                clear()
                 for (contact in filteredList) add(contact)
                 notifyDataSetChanged()
             }
