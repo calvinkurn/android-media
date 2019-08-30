@@ -25,7 +25,7 @@ import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
 import javax.inject.Inject
 import android.widget.AdapterView
-
+import com.tokopedia.common.travel.data.entity.TravelContactListModel
 
 
 class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
@@ -100,6 +100,9 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
             //TO DO: CHANGE CONTACT OBJECT
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(), this)
             (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+
+            (til_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id ->  autofillView(travelContactArrayAdapter.getItem(position)) }
+
         }
 
         til_contact_name.editText.setText(contactData.name)
@@ -128,6 +131,13 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         }
 
         contact_data_button.setOnClickListener { onSaveButtonClicked() }
+    }
+
+    private fun autofillView(contact: TravelContactListModel.Contact?) {
+        if (contact != null) {
+            til_contact_email.editText.setText(contact.email)
+            til_contact_phone_number.editText.setText(contact.phoneNumber)
+        }
     }
 
     private fun onSaveButtonClicked() {

@@ -92,35 +92,12 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
 
     private fun getSpandableBoldText(strToPut: String, stringToHighlighted: String): CharSequence {
 
-        var indexStartHighlighted = -1
-        var indexEndHighlighted = -1
-        if (TextUtils.isEmpty(stringToHighlighted) || TextUtils.isEmpty(strToPut)) {
-            return strToPut
-        }
-
-        val strToPutLowerCase = strToPut.toLowerCase()
-        val strToBoldLowerCase = stringToHighlighted.toLowerCase()
         val spannableStringBuilder = SpannableStringBuilder(strToPut)
-        indexStartHighlighted = strToPutLowerCase.indexOf(strToBoldLowerCase)
-        if (indexStartHighlighted != -1) {
-            indexEndHighlighted = indexStartHighlighted + stringToHighlighted.length
-
-            if (indexEndHighlighted > strToPut.length) {
-                indexEndHighlighted = strToPut.length - 1
-            }
-        }
-
-        if (indexStartHighlighted == -1) {
+        if (stringToHighlighted.length <= strToPut.length) {
             spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    0, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            return spannableStringBuilder
-        } else {
-            if (indexStartHighlighted > 0) spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    0, indexStartHighlighted, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            if (indexEndHighlighted < strToPut.length) spannableStringBuilder.setSpan(android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
-                    indexEndHighlighted, strToPut.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            return spannableStringBuilder
+                    0, stringToHighlighted.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
+        return spannableStringBuilder
     }
 
     interface ContactArrayListener {
