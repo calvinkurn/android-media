@@ -1,15 +1,6 @@
 package com.tokopedia.purchase_platform.common.di.component;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper;
-import com.tokopedia.purchase_platform.features.cart.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.purchase_platform.features.checkout.data.AddressRepository;
-import com.tokopedia.purchase_platform.features.checkout.domain.mapper.ICheckoutMapper;
-import com.tokopedia.purchase_platform.features.checkout.domain.mapper.IShipmentMapper;
-import com.tokopedia.purchase_platform.common.data.repository.ICartRepository;
 import com.tokopedia.purchase_platform.common.di.module.CartUseCaseModule;
 import com.tokopedia.purchase_platform.common.di.module.CheckoutRouterModule;
 import com.tokopedia.purchase_platform.common.di.module.CheckoutUseCaseModule;
@@ -18,8 +9,6 @@ import com.tokopedia.purchase_platform.common.di.module.DataModule;
 import com.tokopedia.purchase_platform.common.di.module.DataUtilModule;
 import com.tokopedia.purchase_platform.common.di.module.ShipmentUseCaseModule;
 import com.tokopedia.purchase_platform.common.di.scope.CartScope;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
-import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
 
 import dagger.Component;
 

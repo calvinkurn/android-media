@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -20,11 +21,6 @@ import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_add
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
-import com.tokopedia.purchase_platform.common.di.component.CartComponent;
-import com.tokopedia.purchase_platform.common.di.component.DaggerMultipleAddressComponent;
-import com.tokopedia.purchase_platform.common.di.component.MultipleAddressComponent;
-import com.tokopedia.purchase_platform.common.di.module.MultipleAddressModule;
-import com.tokopedia.purchase_platform.common.di.module.TrackingAnalyticsModule;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity;
 import com.tokopedia.purchase_platform.features.cart.view.CartItemDecoration;
 import com.tokopedia.design.base.BaseToaster;
@@ -33,6 +29,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeA
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.di.DaggerNewMultipleAddressComponent;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -53,11 +50,11 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         implements IMultipleAddressView, MultipleAddressAdapter.MultipleAddressAdapterListener,
         AnalyticsActionMultipleAddressPageListener {
 
-//    @Inject
+    @Inject
     IMultipleAddressPresenter presenter;
-//    @Inject
+    @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-//    @Inject
+    @Inject
     CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
 
     private static final String ADDRESS_EXTRA = "ADDRESS_EXTRA";
@@ -100,12 +97,13 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     protected void initInjector() {
-//        MultipleAddressComponent component = DaggerMultipleAddressComponent
-//                .builder()
-//                .cartComponent(getComponent(CartComponent.class))
-//                .multipleAddressModule(new MultipleAddressModule(this))
-//                .trackingAnalyticsModule(new TrackingAnalyticsModule()).build();
-//        component.inject(this);
+        if (getActivity() != null) {
+            BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
+            DaggerNewMultipleAddressComponent.builder()
+                    .baseAppComponent(baseMainApplication.getBaseAppComponent())
+                    .build()
+                    .inject(this);
+        }
     }
 
     @Override
@@ -254,6 +252,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        presenter.attachView(this);
     }
 
     @Override
@@ -292,10 +291,10 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     @Override
     public void onDestroyView() {
-        presenter.onUnsubscribe();
         if (multipleAddressAdapter != null) {
             multipleAddressAdapter.unsubscribeSubscription();
         }
+        presenter.detachView();
         super.onDestroyView();
     }
 

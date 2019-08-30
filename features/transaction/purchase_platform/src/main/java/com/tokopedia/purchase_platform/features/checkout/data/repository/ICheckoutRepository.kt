@@ -12,10 +12,6 @@ import rx.Observable
 
 interface ICheckoutRepository {
 
-    fun getCartMultipleAddressList(param: Map<String, String>): Observable<CartMultipleAddressDataListResponse>
-
-    fun setShippingAddress(param: Map<String, String>): Observable<ShippingAddressDataResponse>
-
     fun getShipmentAddressForm(param: Map<String, String>): Observable<ShipmentAddressFormDataResponse>
 
     fun getShipmentAddressFormOneClickCheckout(param: Map<String, String>): Observable<ShipmentAddressFormDataResponse>

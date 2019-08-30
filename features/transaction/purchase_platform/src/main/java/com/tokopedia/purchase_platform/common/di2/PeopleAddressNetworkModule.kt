@@ -13,8 +13,8 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.purchase_platform.features.checkout.data.AddressRepository
-import com.tokopedia.purchase_platform.features.checkout.data.AddressRepositoryImpl
+import com.tokopedia.purchase_platform.features.checkout.data.repository.AddressRepository
+import com.tokopedia.purchase_platform.features.checkout.data.repository.AddressRepositoryImpl
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

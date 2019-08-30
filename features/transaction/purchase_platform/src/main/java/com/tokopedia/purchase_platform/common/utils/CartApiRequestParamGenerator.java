@@ -2,10 +2,17 @@ package com.tokopedia.purchase_platform.common.utils;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 
+import javax.inject.Inject;
+
 /**
  * @author anggaprasetiyo on 16/05/18.
  */
 public class CartApiRequestParamGenerator {
+
+    @Inject
+    public CartApiRequestParamGenerator() {
+    }
+
     private final String PARAM_KEY_LANG = "lang";
 
     private final String PARAM_VALUE_LANG_ID = "id";

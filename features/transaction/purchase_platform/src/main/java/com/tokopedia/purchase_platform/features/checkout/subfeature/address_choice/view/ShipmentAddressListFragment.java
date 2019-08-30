@@ -136,12 +136,13 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
     @Override
     protected void initInjector() {
-        BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
-        AddressChoiceComponent addressChoiceComponent = DaggerAddressChoiceComponent.builder()
-                .baseAppComponent(baseMainApplication.getBaseAppComponent())
-                .build();
-
-        addressChoiceComponent.inject(this);
+        if (getActivity() != null) {
+            BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
+            DaggerAddressChoiceComponent.builder()
+                    .baseAppComponent(baseMainApplication.getBaseAppComponent())
+                    .build()
+                    .inject(this);
+        }
     }
 
     @Override

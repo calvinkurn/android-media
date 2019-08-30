@@ -15,4 +15,7 @@ interface ICommonPurchaseRepository {
 
     fun checkout(param: Map<String, String>): Observable<CheckoutDataResponse>
 
+    fun setShippingAddress(param: Map<String, String>): Observable<ShippingAddressDataResponse>
+
+
 }

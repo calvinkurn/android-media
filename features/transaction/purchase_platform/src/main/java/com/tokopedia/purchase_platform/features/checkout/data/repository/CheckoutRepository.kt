@@ -14,18 +14,6 @@ import javax.inject.Inject
 
 class CheckoutRepository @Inject constructor(val checkoutApi: CheckoutApi) : ICheckoutRepository {
 
-    override fun getCartMultipleAddressList(param: Map<String, String>): Observable<CartMultipleAddressDataListResponse> {
-        return checkoutApi.getCartList(param).map { cartResponseResponse ->
-            cartResponseResponse.body()?.convertDataObj(CartMultipleAddressDataListResponse::class.java)
-        }
-    }
-
-    override fun setShippingAddress(param: Map<String, String>): Observable<ShippingAddressDataResponse> {
-        return checkoutApi.postSetShippingAddress(param).map { cartResponseResponse ->
-            cartResponseResponse.body()?.convertDataObj(ShippingAddressDataResponse::class.java)
-        }
-    }
-
     override fun getShipmentAddressForm(param: Map<String, String>): Observable<ShipmentAddressFormDataResponse> {
         return checkoutApi.getShipmentAddressForm(param).map { cartResponseResponse ->
             cartResponseResponse.body()?.convertDataObj(ShipmentAddressFormDataResponse::class.java)

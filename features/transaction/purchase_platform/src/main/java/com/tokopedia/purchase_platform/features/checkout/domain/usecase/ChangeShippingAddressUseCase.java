@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.checkout.domain.usecase;
 
+import com.tokopedia.purchase_platform.common.data.common.repository.ICommonPurchaseRepository;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.ShippingAddressDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
@@ -21,10 +22,10 @@ public class ChangeShippingAddressUseCase extends UseCase<SetShippingAddressData
 
     public static final String PARAM_ONE_CLICK_SHIPMENT = "is_one_click_shipment";
 
-    private ICheckoutRepository repository;
+    private ICommonPurchaseRepository repository;
 
     @Inject
-    public ChangeShippingAddressUseCase(ICheckoutRepository repository) {
+    public ChangeShippingAddressUseCase(ICommonPurchaseRepository repository) {
         this.repository = repository;
     }
 

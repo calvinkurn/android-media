@@ -10,8 +10,6 @@ class CheckoutApiUrl: CommonPurchaseApiUrl() {
 
     companion object {
 
-        const val PATH_CART_LIST_MULTIPLE_ADDRESS = "$BASE_PATH$VERSION/cart_list/multi_address"
-        const val PATH_SHIPPING_ADDRESS = "$BASE_PATH$VERSION/shipping_address"
         const val PATH_SHIPMENT_ADDRESS_FORM_DIRECT = "$BASE_PATH$VERSION/shipment_address_form"
         const val PATH_SHIPMENT_ADDRESS_ONE_CLICK_CHECKOUT = "$PATH_SHIPMENT_ADDRESS_FORM_DIRECT/one_click_shipment"
         const val PATH_SAVE_SHIPMENT = "$BASE_PATH$VERSION/save_shipment"

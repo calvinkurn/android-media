@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.domain.usecase;
 
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.purchase_platform.features.checkout.data.AddressRepository;
+import com.tokopedia.purchase_platform.features.checkout.data.repository.AddressRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

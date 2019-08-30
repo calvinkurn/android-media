@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.MultipleAddressFragment
 import dagger.Component
 
 /**
@@ -9,5 +10,6 @@ import dagger.Component
 
 @MultipleAddressScope
 @Component(modules = [MultipleAddressModule::class], dependencies = [BaseAppComponent::class])
-interface MultipleAddressComponent {
+interface NewMultipleAddressComponent {
+    fun inject(multipleAddressFragment: MultipleAddressFragment)
 }

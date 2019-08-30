@@ -52,7 +52,7 @@ public class MultipleAddressModule {
                                                GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase,
                                                CartApiRequestParamGenerator cartApiRequestParamGenerator,
                                                UserSessionInterface userSessionInterface) {
-        return new MultipleAddressPresenter(view, getCartMultipleAddressListUseCase,
+        return new MultipleAddressPresenter(getCartMultipleAddressListUseCase,
                 changeShippingAddressUseCase, cartApiRequestParamGenerator, userSessionInterface);
     }
 }

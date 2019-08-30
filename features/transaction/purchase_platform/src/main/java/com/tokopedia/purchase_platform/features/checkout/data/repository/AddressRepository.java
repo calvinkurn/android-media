@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.checkout.data;
+package com.tokopedia.purchase_platform.features.checkout.data.repository;
 
 import java.util.Map;
 

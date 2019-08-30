@@ -29,11 +29,6 @@ class PurchasePlatformCommonModule {
     }
 
     @Provides
-    fun provideIMapperUtil(): IMapperUtil {
-        return MapperUtil()
-    }
-
-    @Provides
     fun provideICheckoutMapper(iMapperUtil: IMapperUtil): ICheckoutMapper {
         return CheckoutMapper(iMapperUtil)
     }

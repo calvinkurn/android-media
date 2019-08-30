@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -40,38 +39,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
-import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView;
-import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
-import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
-import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
-import com.tokopedia.purchase_platform.features.cart.view.di.DaggerNewCartComponent;
-import com.tokopedia.purchase_platform.features.cart.view.di.NewCartComponent;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveView;
-import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveWithBackView;
-import com.tokopedia.purchase_platform.common.di.component.DaggerCartListComponent;
-import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
-import com.tokopedia.purchase_platform.features.cart.view.adapter.CartAdapter;
-import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter;
-import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewItemHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartSectionHeaderHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistHolderData;
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData;
-import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -89,12 +56,41 @@ import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiMo
 import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart;
-import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
+import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
+import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
+import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
+import com.tokopedia.purchase_platform.features.cart.domain.model.voucher.PromoCodeCartListData;
+import com.tokopedia.purchase_platform.features.cart.view.adapter.CartAdapter;
+import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter;
+import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveView;
+import com.tokopedia.purchase_platform.features.cart.view.compoundview.ToolbarRemoveWithBackView;
+import com.tokopedia.purchase_platform.features.cart.view.di.DaggerNewCartComponent;
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentViewItemHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartSectionHeaderHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData;
+import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
@@ -258,11 +254,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     protected void initInjector() {
-        BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
-        NewCartComponent newCartComponent = DaggerNewCartComponent.builder()
-                .baseAppComponent(baseMainApplication.getBaseAppComponent())
-                .build();
-        newCartComponent.inject(this);
+        if (getActivity() != null) {
+            BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
+            DaggerNewCartComponent.builder()
+                    .baseAppComponent(baseMainApplication.getBaseAppComponent())
+                    .build()
+                    .inject(this);
+        }
         cartAdapter = new CartAdapter(this, this, this);
     }
 

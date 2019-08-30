@@ -104,7 +104,6 @@ import com.tokopedia.purchase_platform.features.checkout.subfeature.webview.Chec
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
-import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
@@ -226,12 +225,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     protected void initInjector() {
-        BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
-        CheckoutComponent checkoutComponent = DaggerCheckoutComponent.builder()
-                .baseAppComponent(baseMainApplication.getBaseAppComponent())
-                .checkoutModule(new CheckoutModule(this))
-                .build();
-        checkoutComponent.inject(this);
+        if (getActivity() != null) {
+            BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
+            DaggerCheckoutComponent.builder()
+                    .baseAppComponent(baseMainApplication.getBaseAppComponent())
+                    .checkoutModule(new CheckoutModule(this))
+                    .build()
+                    .inject(this);
+        }
     }
 
     @Override

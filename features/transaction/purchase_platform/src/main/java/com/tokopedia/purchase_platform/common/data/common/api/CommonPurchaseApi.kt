@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.common.data.common.api
 
+import com.tokopedia.purchase_platform.features.checkout.data.api.CheckoutApiUrl
 import retrofit2.Response
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded
@@ -15,5 +16,9 @@ interface CommonPurchaseApi {
     @FormUrlEncoded
     @POST(CommonPurchaseApiUrl.PATH_CHECKOUT)
     fun checkout(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
+
+    @FormUrlEncoded
+    @POST(CommonPurchaseApiUrl.PATH_SHIPPING_ADDRESS)
+    fun postSetShippingAddress(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
 
 }

@@ -11,14 +11,6 @@ import rx.Observable
 
 interface CheckoutApi {
 
-    @FormUrlEncoded
-    @POST(CheckoutApiUrl.PATH_CART_LIST_MULTIPLE_ADDRESS)
-    fun getCartList(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
-
-    @FormUrlEncoded
-    @POST(CheckoutApiUrl.PATH_SHIPPING_ADDRESS)
-    fun postSetShippingAddress(@FieldMap params: Map<String, String>): Observable<Response<CartResponse>>
-
     @GET(CheckoutApiUrl.PATH_SHIPMENT_ADDRESS_FORM_DIRECT)
     fun getShipmentAddressForm(@QueryMap params: Map<String, String>): Observable<Response<CartResponse>>
 

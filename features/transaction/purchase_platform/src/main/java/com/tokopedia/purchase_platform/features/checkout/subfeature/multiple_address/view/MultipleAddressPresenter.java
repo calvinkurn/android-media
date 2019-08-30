@@ -45,16 +45,26 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     private IMultipleAddressView view;
 
-    public MultipleAddressPresenter(IMultipleAddressView view,
-                                    GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase,
+    public MultipleAddressPresenter(GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase,
                                     ChangeShippingAddressUseCase changeShippingAddressUseCase,
                                     CartApiRequestParamGenerator cartApiRequestParamGenerator,
                                     UserSessionInterface userSessionInterface) {
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.getCartMultipleAddressListUseCase = getCartMultipleAddressListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
-        this.view = view;
         this.userSessionInterface = userSessionInterface;
+    }
+
+    @Override
+    public void attachView(IMultipleAddressView iMultipleAddressView) {
+        view = iMultipleAddressView;
+    }
+
+    @Override
+    public void detachView() {
+        changeShippingAddressUseCase.unsubscribe();
+        getCartMultipleAddressListUseCase.unsubscribe();
+        view = null;
     }
 
     @Override
@@ -217,11 +227,6 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
         addressData.setMaxRemark(updatedData.getMaxCharRemark());
         initialItemData.add(addressData);
         return initialItemData;
-    }
-
-    @Override
-    public void onUnsubscribe() {
-        changeShippingAddressUseCase.unsubscribe();
     }
 
     private Subscriber<SetShippingAddressData> addMultipleAddressSubscriber() {

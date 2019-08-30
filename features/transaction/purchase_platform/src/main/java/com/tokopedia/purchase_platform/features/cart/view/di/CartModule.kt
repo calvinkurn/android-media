@@ -68,12 +68,6 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideIMapperUtil(): IMapperUtil {
-        return MapperUtil()
-    }
-
-    @Provides
-    @CartScope
     fun provideICartMapper(mapperUtil: IMapperUtil): ICartMapper {
         return CartMapper(mapperUtil)
     }
