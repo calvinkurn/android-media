@@ -9,12 +9,13 @@ import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
 import javax.inject.Named
 
 /**
  * @author by milhamj on 2019-08-29.
  */
-class GetProductSuggestionUseCase(
+class GetProductSuggestionUseCase @Inject constructor(
         @Named(QUERY_PRODUCT_SUGGESTION) private val query: String,
         private val graphqlUseCase: MultiRequestGraphqlUseCase)
     : UseCase<List<TagItem>>() {
