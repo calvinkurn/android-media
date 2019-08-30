@@ -144,18 +144,24 @@ class MediaHolderFragment : BaseDaggerFragment() {
         }
         super.onStop()
     }
-
-    private fun playVideo(source: String){
-        if (isFromLocalFile(mediaSource)){
-            val file = Uri.fromFile(File(source))
-            initPlayer(file, VideoSourceProtocol.File)
-        } else {
-            val url = Uri.parse(source)
-            initPlayer(url, VideoSourceProtocol.protocol(source))
+    
+    private fun playVideo(source: String) {
+        try {
+            if (isFromLocalFile(mediaSource)){
+                val file = Uri.fromFile(File(source))
+                initPlayer(file, VideoSourceProtocol.File)
+            } else {
+                val url = Uri.parse(source)
+                initPlayer(url, VideoSourceProtocol.protocol(source))
+            }
+        } catch (t: Throwable) {
+            showErrorLayout(t !is UnrecognizedInputFormatException)
         }
+
+        //player listener
         initPlayerListener()
     }
-
+    
     private fun initPlayerListener() {
         mExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
