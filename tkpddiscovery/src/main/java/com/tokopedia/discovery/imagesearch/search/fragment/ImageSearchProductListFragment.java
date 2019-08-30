@@ -23,7 +23,6 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListAdapter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
@@ -43,6 +42,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
