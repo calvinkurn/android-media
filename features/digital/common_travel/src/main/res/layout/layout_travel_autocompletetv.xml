@@ -13,6 +13,7 @@
         tools:text="Content"
         android:padding="@dimen/dp_16"
         app:typographyType="body_2"
+        android:textColor="@color/Neutral_N700_96"
         />
 
     <View

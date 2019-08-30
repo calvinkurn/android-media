@@ -24,8 +24,11 @@ import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivit
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
 import javax.inject.Inject
+import android.widget.AdapterView
 
-class HotelContactDataFragment: BaseDaggerFragment() {
+
+
+class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -95,7 +98,7 @@ class HotelContactDataFragment: BaseDaggerFragment() {
 
         context?.let {
             //TO DO: CHANGE CONTACT OBJECT
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf())
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(), this)
             (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         }
 
@@ -168,6 +171,10 @@ class HotelContactDataFragment: BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(HotelBookingComponent::class.java).inject(this)
+    }
+
+    override fun getFilterText(): String {
+        return til_contact_name.editText.text.toString()
     }
 
     companion object {
