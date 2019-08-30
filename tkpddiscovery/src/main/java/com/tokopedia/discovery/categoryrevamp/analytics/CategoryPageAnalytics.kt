@@ -4,7 +4,6 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
-lateinit var categoryPageAnalytics: CategoryPageAnalytics
 
 class CategoryPageAnalytics {
 

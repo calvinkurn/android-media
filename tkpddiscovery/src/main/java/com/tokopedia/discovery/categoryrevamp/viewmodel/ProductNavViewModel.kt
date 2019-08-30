@@ -118,4 +118,12 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
         return mDynamicFilterModel
     }
 
+
+    fun onDetach(){
+        subCategoryUseCase.unsubscribe()
+        dynamicFilterUseCase.unsubscribe()
+        quickFilterUseCase.unsubscribe()
+        getProductListUseCase.unsubscribe()
+    }
+
 }

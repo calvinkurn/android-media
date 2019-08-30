@@ -5,6 +5,10 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.BigListCatalogShimmerModel
+import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.GridListCatalogShimmerModel
+import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.CatalogShimmer.model.ListCatalogShimmerModel
+import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.BaseProductTypeFactory
 import com.tokopedia.discovery.categoryrevamp.data.typefactory.catalog.CatalogTypeFactory
 
@@ -14,6 +18,15 @@ class CatalogNavListAdapter(val catalogTypeFactory: CatalogTypeFactory,
                             onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
     private var loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
+
+    private val listShimmerModel: ListCatalogShimmerModel by lazy { ListCatalogShimmerModel() }
+
+    private val gridShimmerModelGrid: GridListCatalogShimmerModel by lazy { GridListCatalogShimmerModel() }
+
+    private val bigListShimmerModel: BigListCatalogShimmerModel by lazy { BigListCatalogShimmerModel() }
+
+    var isShimmer: Boolean = false
+
 
     override fun getTypeFactory(): BaseProductTypeFactory {
         return catalogTypeFactory
@@ -58,5 +71,45 @@ class CatalogNavListAdapter(val catalogTypeFactory: CatalogTypeFactory,
         val itemSizeBeforeCleared = itemCount
         visitables.clear()
         notifyItemRangeRemoved(0, itemSizeBeforeCleared)
+    }
+
+    fun addShimmer() {
+        isShimmer = true
+        val item = getShimmerItem()
+        for (i in 0..5) {
+            this.visitables.add(item as Visitable<CatalogTypeFactory>)
+            notifyItemInserted(i)
+        }
+    }
+
+    fun isShimmerRunning(): Boolean {
+        return isShimmer
+    }
+
+    fun removeShimmer() {
+        isShimmer = false
+        if (this.visitables.size > 5) {
+            for (i in 5 downTo 0) {
+                this.visitables.removeAt(i)
+            }
+            notifyItemRangeRemoved(0, 6)
+        }
+
+    }
+
+
+    private fun getShimmerItem(): Visitable<CatalogTypeFactory> {
+        return when (getCurrentLayoutType()) {
+            CategoryNavConstants.RecyclerView.GridType.GRID_1 -> {
+                listShimmerModel
+            }
+
+            CategoryNavConstants.RecyclerView.GridType.GRID_2 -> {
+                gridShimmerModelGrid
+            }
+            CategoryNavConstants.RecyclerView.GridType.GRID_3 -> {
+                bigListShimmerModel
+            }
+        }
     }
 }

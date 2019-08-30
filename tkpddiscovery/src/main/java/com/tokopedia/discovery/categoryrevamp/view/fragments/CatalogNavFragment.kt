@@ -140,6 +140,11 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
                     catalogNavListAdapter?.removeLoading()
                     if (it.data.count > 0) {
                         layout_no_data.visibility = View.GONE
+
+                        if (catalogNavListAdapter?.isShimmerRunning() == true) {
+                            catalogNavListAdapter?.removeShimmer()
+                        }
+
                         list.addAll(it.data.items as ArrayList<Visitable<CatalogTypeFactory>>)
                         catalog_recyclerview.adapter?.notifyDataSetChanged()
                         staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
@@ -200,6 +205,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         catalogNavListAdapter = CatalogNavListAdapter(catalogTypeFactory, list, this)
         catalog_recyclerview.adapter = catalogNavListAdapter
         catalog_recyclerview.layoutManager = getStaggeredGridLayoutManager()
+        catalogNavListAdapter?.addShimmer()
         getStaggeredGridLayoutManager()?.let {
             staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(it)
         }
@@ -276,6 +282,7 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         }
         showRefreshLayout()
         catalogNavListAdapter?.clearData()
+        catalogNavListAdapter?.addShimmer()
         staggeredGridLayoutLoadMoreTriggerListener?.resetState()
         fetchCatalogData(getCatalogListParams(0))
 
@@ -284,6 +291,12 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
 
     private fun fetchCatalogData(paramMap: RequestParams) {
         catalogNavViewModel.fetchCatalogDetail(paramMap)
+    }
+
+
+    override fun onDetach() {
+        super.onDetach()
+        catalogNavViewModel.onDetach()
     }
 
 }

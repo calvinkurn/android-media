@@ -20,6 +20,7 @@ class ProductListMapper {
 
                     item.imageURL300 = dataItem.product?.image?.sEcs ?: ""
                     item.imageURL = dataItem.product?.image?.sEcs ?: ""
+                    item.imageURL700 = dataItem.product?.image?.mEcs ?: ""
                     item.name = dataItem.product?.name ?: ""
                     item.shop.name = dataItem.shop?.name ?: ""
                     item.discountPercentage = dataItem.product?.campaign?.discountPercentage ?: 0

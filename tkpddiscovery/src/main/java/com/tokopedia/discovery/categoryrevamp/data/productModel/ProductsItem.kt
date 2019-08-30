@@ -13,7 +13,7 @@ data class ProductsItem(
         val imageURL500: String? = null,
 
         @field:SerializedName("imageURL700")
-        val imageURL700: String = "",
+        var imageURL700: String = "",
 
         @field:SerializedName("shop")
         val shop: Shop = Shop(),

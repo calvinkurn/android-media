@@ -56,5 +56,10 @@ class CatalogNavViewModel
         })
     }
 
+    fun onDetach() {
+        catalogUseCase.unsubscribe()
+        dynamicFilterUseCase.unsubscribe()
+    }
+
 }
 

@@ -65,7 +65,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         ProductCardListener,
         SubCategoryListener,
         WishListActionListener {
-    override fun getDepartMentId():String {
+    override fun getDepartMentId(): String {
         return mDepartmentId
     }
 
@@ -224,6 +224,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         productNavListAdapter = ProductNavListAdapter(productTypeFactory, list, this)
         product_recyclerview.adapter = productNavListAdapter
         product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
+        productNavListAdapter?.addShimmer()
 
         quickFilterAdapter = QuickFilterAdapter(quickFilterList, this)
         quickfilter_recyclerview.adapter = quickFilterAdapter
@@ -267,6 +268,10 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             when (it) {
                 is Success -> {
                     layout_no_data.visibility = View.GONE
+                    if (productNavListAdapter?.isShimmerRunning() == true) {
+                        productNavListAdapter?.removeShimmer()
+                    }
+
                     list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                     productNavListAdapter?.removeLoading()
                     product_recyclerview.adapter?.notifyDataSetChanged()
@@ -450,6 +455,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         }
         showRefreshLayout()
         productNavListAdapter?.clearData()
+        productNavListAdapter?.addShimmer()
         resetPage()
         fetchProductData(getProductListParamMap(getPage()))
 
@@ -569,6 +575,12 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     private fun resetPage() {
         isPagingAllowed = true
         pageCount = 0
+    }
+
+
+    override fun onDetach() {
+        super.onDetach()
+        productNavViewModel.onDetach()
     }
 
 }

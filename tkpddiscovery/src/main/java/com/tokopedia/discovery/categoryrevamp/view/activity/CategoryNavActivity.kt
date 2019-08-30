@@ -14,7 +14,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
-import com.tokopedia.discovery.categoryrevamp.analytics.categoryPageAnalytics
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
@@ -212,7 +211,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         if (presentFilterList.size < filterParameter.size) {
             for (i in filterParameter.entries) {
                 if (!presentFilterList.containsKey(i.key)) {
-                    categoryPageAnalytics.eventFilterApplied(departmentId, i.key, i.value)
+                    catAnalyticsInstance.eventFilterApplied(departmentId, i.key, i.value)
                 }
             }
         }
