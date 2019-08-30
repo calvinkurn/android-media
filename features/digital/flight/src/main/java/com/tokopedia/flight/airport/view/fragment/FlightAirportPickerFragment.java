@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.di.DaggerFlightAirportComponent;
@@ -136,6 +137,15 @@ public class FlightAirportPickerFragment extends BaseSearchListFragment<Visitabl
     @Override
     public void showLoading() {
         getAdapter().setElement(getLoadingModel());
+    }
+
+    @Override
+    protected Visitable getEmptyDataViewModel() {
+        EmptyModel emptyModel = new EmptyModel();
+        if (searchInputView.getSearchText().length() < 3)
+            emptyModel.setContent(getString(R.string.flight_airport_less_than_three_keyword_error));
+        else emptyModel.setContent(getString(com.tokopedia.abstraction.R.string.title_no_result));
+        return emptyModel;
     }
 
     @Override
