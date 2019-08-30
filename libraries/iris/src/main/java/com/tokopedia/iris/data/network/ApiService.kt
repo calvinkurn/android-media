@@ -37,10 +37,8 @@ class ApiService(private val context: Context) {
                     val original = it.request()
                     val request = original.newBuilder()
                     request.header(HEADER_CONTENT_TYPE, HEADER_JSON)
-                    session.getUserId()?.let { userId ->
-                        if (!userId.isBlank()) {
-                            request.header(HEADER_USER_ID, userId)
-                        }
+                    if (!session.getUserId().isBlank()) {
+                        request.header(HEADER_USER_ID, session.getUserId())
                     }
                     request.header(HEADER_DEVICE, HEADER_ANDROID +BuildConfig.VERSION_NAME)
                     request.method(original.method(), original.body())
