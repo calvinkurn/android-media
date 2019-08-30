@@ -118,6 +118,7 @@ import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * @author by nisie on 5/15/17.
@@ -1136,7 +1137,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                              id: String, type: String,
                                              isFollow: Boolean) {
         if (type == FollowCta.AUTHOR_USER) {
-            val userIdInt = userIdInt
+            val userIdInt = id.toIntOrZero()
 
             if (isFollow) {
                 onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
