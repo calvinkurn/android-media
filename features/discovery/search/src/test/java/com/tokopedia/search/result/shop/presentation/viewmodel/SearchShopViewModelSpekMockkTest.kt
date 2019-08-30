@@ -1,95 +1,188 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.data.DynamicFilterModel
+import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.search.result.InstantTaskExecutorRuleSpek
+import com.tokopedia.search.result.common.EmptySearchCreator
+import com.tokopedia.search.result.common.State
+import com.tokopedia.search.result.common.State.Error
+import com.tokopedia.search.result.common.State.Success
+import com.tokopedia.search.result.domain.usecase.SearchUseCase
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.presentation.mapper.ShopHeaderViewModelMapper
+import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapper
+import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
+import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.user.session.UserSessionInterface
+import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
+import io.mockk.*
+import kotlinx.coroutines.Dispatchers
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
-import kotlin.math.pow
 
 class SearchShopViewModelSpekMockkTest: Spek({
 
-    Feature("Math feature") {
+    InstantTaskExecutorRuleSpek(this)
 
-        Scenario("Test addition") {
-            var test = 0
+    val pagingWithNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "Some random string indicating has next page")
+    val pagingWithoutNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "")
 
-            Given("test is 2") {
-                test = 2
-            }
-
-            When("test added by 2") {
-                test += 2
-            }
-
-            Then("test should be 4") {
-                test.shouldBe(4)
-            }
-        }
-
-        Scenario("Test addition purposely fail") {
-            var test = 0
-
-            Given("test is 3") {
-                test = 3
-            }
-
-            When("test added by 2") {
-                test += 2
-            }
-
-            Then("test should be 6") {
-                test.shouldBe(6)
-            }
-        }
-
-        Scenario("Test multiplication") {
-            var test = 0
-
-            Given("test is 2") {
-                test = 2
-            }
-
-            When("test multiplied by 2") {
-                test *= 2
-            }
-
-            Then("test should be 4") {
-                test.shouldBe(4)
-            }
-        }
+    val shopItemList = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "1"))
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "2"))
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "3"))
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "4"))
     }
 
-    Feature("Another math feature") {
+    val moreShopItemList = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "5"))
+        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "6"))
+    }
 
-        Scenario("Test division fails") {
-            var test = 0
+    val aceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
+            paging = pagingWithNextPage,
+            shopList = shopItemList
+    )
 
-            Given("test is 2") {
-                test = 2
+    val aceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
+            paging = pagingWithoutNextPage,
+            shopList = shopItemList
+    )
+
+    val moreAceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
+            paging = pagingWithNextPage,
+            shopList = moreShopItemList
+    )
+
+    val moreAceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
+            paging = pagingWithoutNextPage,
+            shopList = moreShopItemList
+    )
+
+    val searchShopModel = SearchShopModel(aceSearchShopWithNextPage)
+    val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage)
+    val searchShopModelEmptyList = SearchShopModel()
+    val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage)
+    val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
+    val dynamicFilterModel = DynamicFilterModel()
+
+    val searchShopUseCase = mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
+    val searchMoreShopUseCase = mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
+    val dynamicFilterUseCase = mockk<SearchUseCase<DynamicFilterModel>>(relaxed = true)
+
+    val searchShopParameter = mapOf(
+            SearchApiConst.Q to "samsung"
+    )
+
+    val shopHeaderViewModelMapper = ShopHeaderViewModelMapper()
+    val shopViewModelMapper = ShopViewModelMapper()
+
+    val emptySearchCreator = mockk<EmptySearchCreator>(relaxed = true)
+
+    val userSession = mockk<UserSessionInterface>().also {
+        every { it.isLoggedIn }.returns(true)
+        every { it.userId }.returns("123456")
+    }
+
+    val localCacheHandler = mockk<LocalCacheHandler>().also {
+        every { it.getString(eq(SearchConstant.GCM_ID), "") }.returns("MOCK_GCM_ID")
+    }
+
+    Feature("Search Shop First Page") {
+        val searchShopViewModel by memoized {
+            SearchShopViewModel(
+                    Dispatchers.Unconfined, searchShopParameter,
+                    searchShopUseCase, searchMoreShopUseCase,
+                    dynamicFilterUseCase,
+                    shopHeaderViewModelMapper, shopViewModelMapper,
+                    emptySearchCreator, userSession, localCacheHandler
+            )
+        }
+
+        Scenario("Search Shop First Page Successful") {
+
+            Given("search shop API call will be successful and return search shop data") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
             }
 
-            When("test is divided by 0") {
-                test /= 0
+            When("execute search shop") {
+                searchShopViewModel.searchShop()
             }
 
-            Then("this part shouldn't be executed, already fails") {
-                test.shouldBe(0)
+            Then("verify search shop API is called once") {
+                searchShopUseCase.isExecuted()
+            }
+
+            Then("assert search shop state is success and contains search shop data") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
         }
 
-        Scenario("Test power") {
-            var test = 0.0
+        Scenario("Search Shop First Page Error") {
 
-            Given("test is 2") {
-                test = 2.0
+            Given("search shop API call will fail") {
+                val exception = Exception("Mock exception for testing error")
+                searchShopUseCase.stubExecuteOnBackground().throws(exception)
             }
 
-            When("test raised to the power of 3") {
-                test = test.pow(3.0)
+            When("execute search shop") {
+                searchShopViewModel.searchShop()
             }
 
-            Then("test should be 8") {
-                test.shouldBe(8.0)
+            Then("verify search shop API is called once") {
+                searchShopUseCase.isExecuted()
+            }
+
+            Then("assert search shop state is error with no data") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Error<*>>()
+                searchShopState.shouldBeNullOrEmpty()
             }
         }
     }
 })
+
+fun SearchUseCase<*>.stubExecuteOnBackground(): MockKStubScope<Any, Any> {
+    val it = this
+    return coEvery { it.executeOnBackground() }
+}
+
+fun SearchUseCase<*>.isExecuted(executionCount: Int = 1) {
+    val it = this
+    coVerify(exactly = executionCount) { it.executeOnBackground() }
+}
+
+fun State<List<Visitable<*>>>?.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween() {
+    this?.data?.first().shouldBeInstanceOf<ShopHeaderViewModel>()
+    this?.data?.last().shouldBeInstanceOf<LoadingMoreModel>()
+    this?.data?.betweenFirstAndLast()?.let {
+        it.forEachIndexed { index, shopItem ->
+            shopItem.shouldBeInstanceOf<ShopViewModel.ShopItem>()
+            (shopItem as ShopViewModel.ShopItem).position = index + 1
+        }
+    }
+}
+
+fun List<*>?.betweenFirstAndLast(): List<*>? {
+    if(this?.size ?: 0 < 3) return null
+
+    return this?.subList(1, this.size - 1)
+}
+
+fun State<List<Visitable<*>>>?.shouldHaveShopItemCount(size: Int) {
+    this?.data?.count { it is ShopViewModel.ShopItem } shouldBe size
+}
+
+fun State<List<Visitable<*>>>?.shouldBeNullOrEmpty() {
+    this?.data.isNullOrEmpty() shouldBe true
+}

@@ -131,9 +131,6 @@ dependencies {
     //Test
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.kotlinMockito
-    testImplementation rootProject.ext.testDependencies.spekApi
-    testImplementation rootProject.ext.testDependencies.platformEngine
-    //testImplementation rootProject.ext.testDependencies.junitPlatformRunner
     testImplementation 'io.kotlintest:kotlintest-runner-junit5:3.4.0'
     testImplementation 'org.slf4j:slf4j-simple:1.7.26'
     testImplementation rootProject.ext.testDependencies.mockk
