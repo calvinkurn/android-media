@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Filter
 import android.widget.TextView
-import com.tokopedia.common.travel.R
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
 
 /**
@@ -36,12 +35,20 @@ class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context
             val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             view = inflater.inflate(textViewResourceId, null)
         }
-        val contact = items.getOrNull(position)
+        val contact = getItem(position)
         if (contact != null) {
-            val label = view?.findViewById<TextView>(R.id.label)
+            val label = view?.findViewById<TextView>(com.tokopedia.common.travel.R.id.label)
             if (label != null) label.text = contact.fullName
         }
         return view
+    }
+
+    override fun getItem(position: Int): TravelContactListModel.Contact? {
+        return suggestions.get(position)
+    }
+
+    override fun getCount(): Int {
+        return suggestions.size
     }
 
     override fun getFilter(): Filter {
