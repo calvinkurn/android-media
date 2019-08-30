@@ -481,10 +481,6 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         RouteManager.route(activity, ApplinkConst.WEBVIEW, generateLink)
     }
 
-    private fun getInboxChannelsIntent(): Intent? {
-        return RouteManager.getIntent(activity, ApplinkConst.GROUPCHAT_LIST)
-    }
-
     override fun onOpenWebSocket(needRefreshInfo: Boolean) {
         snackBarWebSocket?.dismiss()
         if(needRefreshInfo) {
