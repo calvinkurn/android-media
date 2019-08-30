@@ -92,10 +92,6 @@ class HotelBookingFragment : HotelBaseFragment() {
             }
         })
 
-        bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer {
-            //do something
-        })
-
         bookingViewModel.hotelCheckoutResult.observe(this, android.arch.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {

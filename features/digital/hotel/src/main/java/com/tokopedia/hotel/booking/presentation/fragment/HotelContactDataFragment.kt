@@ -1,6 +1,8 @@
 package com.tokopedia.hotel.booking.presentation.fragment
 
 import android.app.Activity
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
@@ -11,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.common.travel.R
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
@@ -19,17 +21,30 @@ import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.autocompletetextview.TravelContactArrayAdapter
 import com.tokopedia.hotel.booking.di.HotelBookingComponent
 import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivity
+import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
+import javax.inject.Inject
 
 class HotelContactDataFragment: BaseDaggerFragment() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var bookingViewModel: HotelBookingViewModel
 
     lateinit var contactData: TravelContactData
 
     lateinit var spinnerAdapter: ArrayAdapter<String>
     val spinnerData = mutableListOf<String>()
 
+    lateinit var travelContactArrayAdapter: TravelContactArrayAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            bookingViewModel = viewModelProvider.get(HotelBookingViewModel::class.java)
+        }
 
         arguments?.let {
             contactData = it.getParcelable(HotelContactDataActivity.EXTRA_INITIAL_CONTACT_DATA) ?: TravelContactData()
@@ -37,12 +52,25 @@ class HotelContactDataFragment: BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_travel_contact_data, container, false)
+            inflater.inflate(com.tokopedia.hotel.R.layout.fragment_travel_contact_data, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
+
+        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
+            contactList?.let{
+                travelContactArrayAdapter.updateItem(it)
+            }
+        })
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -55,7 +83,7 @@ class HotelContactDataFragment: BaseDaggerFragment() {
                     contactData.phoneCode = countryPhoneCode.countryPhoneCode.toInt()
 
                     spinnerData.clear()
-                    spinnerData += getString(R.string.phone_code_format, contactData.phoneCode)
+                    spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
                     spinnerAdapter.notifyDataSetChanged()
                 }
             }
@@ -63,25 +91,25 @@ class HotelContactDataFragment: BaseDaggerFragment() {
     }
 
     fun initView() {
-        til_contact_name.setLabel(getString(R.string.travel_contact_data_name_title))
+        til_contact_name.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_title))
 
         context?.let {
             //TO DO: CHANGE CONTACT OBJECT
-            val adapter = TravelContactArrayAdapter(it, R.layout.layout_travel_autocompletetv, listOf())
-            (til_contact_name.editText as AutoCompleteTextView).setAdapter(adapter)
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, listOf())
+            (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         }
 
         til_contact_name.editText.setText(contactData.name)
-        til_contact_name.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_contact_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
-        til_contact_email.setLabel(getString(R.string.travel_contact_data_email_title))
+        til_contact_email.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_email_title))
         til_contact_email.editText.setText(contactData.email)
-        til_contact_email.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_contact_email.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
         til_contact_phone_number.editText.setText(contactData.phone)
-        til_contact_phone_number.setErrorTextAppearance(R.style.ErrorTextAppearance)
+        til_contact_phone_number.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
-        val initialPhoneCode = getString(R.string.phone_code_format, contactData.phoneCode)
+        val initialPhoneCode = getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
         spinnerData += initialPhoneCode
         context?.run {
             spinnerAdapter =  ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerData)
@@ -118,15 +146,15 @@ class HotelContactDataFragment: BaseDaggerFragment() {
     private fun validateData(): Boolean {
         var isValid = true
         if (til_contact_name.editText.text.isNullOrBlank()) {
-            til_contact_name.error = getString(R.string.travel_contact_data_name_error)
+            til_contact_name.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_error)
             isValid = false
         }
         if (!isValidEmail(til_contact_email.editText.text.toString())) {
-            til_contact_email.error = getString(R.string.travel_contact_data_email_error)
+            til_contact_email.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_email_error)
             isValid = false
         }
         if (til_contact_phone_number.editText.text.length < MIN_PHONE_NUMBER_DIGIT) {
-            til_contact_phone_number.error = getString(R.string.travel_contact_data_phone_number_error)
+            til_contact_phone_number.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_phone_number_error)
             isValid = false
         }
         return isValid
