@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.feature.createpost.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.TagItem
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase
@@ -50,7 +51,7 @@ class CreatePostPresenter @Inject constructor(
                 if (isAffiliate) userSession.userId else userSession.shopId,
                 source = SOURCE_DETAIL, sourceId = postId), object : Subscriber<FeedDetail?>() {
             override fun onNext(t: FeedDetail?) {
-                if (t == null) onError(Throwable(MESSAGE_POST_NOT_FOUND))
+                if (t == null) onError(MessageErrorException(MESSAGE_POST_NOT_FOUND))
                 else view?.onSuccessGetPostEdit(t)
             }
 

@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.TagItem
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 
@@ -94,5 +95,10 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
             productAttachmentLayoutManager.startSmoothScroll(productSmoothScroller)
             isAddingProduct = false
         }
+    }
+
+    override fun fetchProductSuggestion(onSuccess: (List<TagItem>) -> Unit,
+                                        onError: (Throwable) -> Unit) {
+        presenter.fetchProductSuggestion(userSession.shopId, onSuccess, onError)
     }
 }

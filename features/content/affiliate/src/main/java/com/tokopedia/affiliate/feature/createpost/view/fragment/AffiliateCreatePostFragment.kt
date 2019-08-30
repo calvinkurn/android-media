@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.TagItem
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -76,6 +77,11 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         if (adapter.itemCount > 0) {
             productAttachmentLayoutManager.scrollToPosition(adapter.itemCount - 1)
         }
+    }
+
+    override fun fetchProductSuggestion(onSuccess: (List<TagItem>) -> Unit,
+                                        onError: (Throwable) -> Unit) {
+
     }
 
     fun clearCache() {

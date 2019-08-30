@@ -10,7 +10,11 @@ import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.text.InputFilter
 import android.util.DisplayMetrics
-import android.view.*
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -23,6 +27,7 @@ import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Author
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.TagItem
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
@@ -85,40 +90,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     lateinit var productSmoothScroller: LinearSmoothScroller
 
-    private fun onDeleteProduct(position: Int){
-        if (adapter.itemCount < 1){
-            label_title_product_attachment.gone()
-            product_attachment.gone()
-        } else {
-            label_title_product_attachment.visible()
-            product_attachment.visible()
-        }
-
-        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
-
-        viewModel.relatedProducts.removeAt(position)
-
-        if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
-            viewModel.urlImageList.removeAt(position)
-        } else {
-            viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
-        }
-
-        val idPosition = if (isTypeAffiliate()) {
-            viewModel.adIdList.indexOf(relatedProductItem.id)
-        } else {
-            viewModel.productIdList.indexOf(relatedProductItem.id)
-        }
-        if (idPosition != -1 && viewModel.adIdList.size > idPosition) {
-            viewModel.adIdList.removeAt(idPosition)
-        }
-        if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
-            viewModel.productIdList.removeAt(idPosition)
-        }
-        updateMediaPreview()
-        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
-    }
-
     companion object {
         private const val MILLISECONDS_PER_INCH = 200f
         private const val VIEW_MODEL = "view_model"
@@ -131,6 +102,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val MAX_CHAR = 2000
         private const val CHAR_LENGTH_TO_SHOW = 1900
     }
+
+    interface OnCreatePostCallBack{
+        fun invalidatePostMenu(isPostEnabled: Boolean)
+    }
+
+    abstract fun fetchContentForm()
+
+    abstract fun onRelatedAddProductClick()
+
+    abstract fun fetchProductSuggestion(onSuccess: (List<TagItem>) -> Unit,
+                                        onError: (Throwable) -> Unit)
 
     override fun initInjector() {
         DaggerCreatePostComponent.builder()
@@ -337,6 +319,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
         updateCaption()
         updateHeader(feedContentForm.authors)
+
+        fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
     }
 
     override fun onErrorGetContentForm(message: String) {
@@ -356,10 +340,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
     }
-
-    abstract fun fetchContentForm()
-
-    abstract fun onRelatedAddProductClick()
 
     protected open fun initVar(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -703,6 +683,40 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.hint = viewModel.defaultPlaceholder
     }
 
+    private fun onDeleteProduct(position: Int){
+        if (adapter.itemCount < 1){
+            label_title_product_attachment.gone()
+            product_attachment.gone()
+        } else {
+            label_title_product_attachment.visible()
+            product_attachment.visible()
+        }
+
+        val relatedProductItem = viewModel.relatedProducts.getOrNull(position) ?: return
+
+        viewModel.relatedProducts.removeAt(position)
+
+        if (viewModel.urlImageList.getOrNull(position)?.path == relatedProductItem.image) {
+            viewModel.urlImageList.removeAt(position)
+        } else {
+            viewModel.urlImageList.removeFirst { it.path == relatedProductItem.image }
+        }
+
+        val idPosition = if (isTypeAffiliate()) {
+            viewModel.adIdList.indexOf(relatedProductItem.id)
+        } else {
+            viewModel.productIdList.indexOf(relatedProductItem.id)
+        }
+        if (idPosition != -1 && viewModel.adIdList.size > idPosition) {
+            viewModel.adIdList.removeAt(idPosition)
+        }
+        if (idPosition != -1 && viewModel.productIdList.size > idPosition) {
+            viewModel.productIdList.removeAt(idPosition)
+        }
+        updateMediaPreview()
+        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+    }
+
     open fun updateRelatedProduct() {
         adapter.updateProduct(viewModel.relatedProducts)
         if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState){
@@ -714,8 +728,15 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    interface OnCreatePostCallBack{
-        fun invalidatePostMenu(isPostEnabled: Boolean)
+    private fun onSuccessGetProductSuggestion(tags: List<TagItem>) {
+        Log.d("milhamj", tags.toString())
+    }
+
+    private fun onErrorGetProductSuggestion(t: Throwable) {
+        context?.let {
+            val errorMessage = ErrorHandler.getErrorMessage(context, t)
+            Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
