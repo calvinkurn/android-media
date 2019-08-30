@@ -53,7 +53,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
 
             ImageHandler.LoadImage(image, stickyComponentViewModel.imageUrl)
 
-            title.text = MethodChecker.fromHtml(stickyComponentViewModel.title)
+            title.text = getTitle(stickyComponentViewModel.title)
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             subtitle.setTypeface(null, Typeface.NORMAL)
             title.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
@@ -92,6 +92,17 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
             }
 
             setSpecificView(stickyComponentViewModel, eventGoToAtc)
+        }
+
+        private fun getTitle(title: String): CharSequence? {
+            val spanned = MethodChecker.fromHtml(title)
+            var editedTitle = ""
+            editedTitle = if(spanned.length > 15) {
+                spanned.take(12).toString().plus("...")
+            } else {
+                spanned.toString()
+            }
+            return editedTitle
         }
 
         private fun setSpecificView(
