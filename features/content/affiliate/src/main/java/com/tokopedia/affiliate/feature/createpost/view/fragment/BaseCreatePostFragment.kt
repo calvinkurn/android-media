@@ -734,6 +734,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun onErrorGetProductSuggestion(t: Throwable) {
         context?.let {
+            t.debugTrace()
             val errorMessage = ErrorHandler.getErrorMessage(context, t)
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
         }
