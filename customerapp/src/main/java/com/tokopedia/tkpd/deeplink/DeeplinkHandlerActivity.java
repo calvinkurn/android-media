@@ -62,8 +62,6 @@ import com.tokopedia.flight.applink.FlightApplinkModule;
 import com.tokopedia.flight.applink.FlightApplinkModuleLoader;
 import com.tokopedia.gamification.applink.GamificationApplinkModule;
 import com.tokopedia.gamification.applink.GamificationApplinkModuleLoader;
-import com.tokopedia.groupchat.common.applink.GroupChatApplinkModule;
-import com.tokopedia.groupchat.common.applink.GroupChatApplinkModuleLoader;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModule;
 import com.tokopedia.home.account.applink.AccountHomeApplinkModuleLoader;
 import com.tokopedia.home.applink.HomeApplinkModule;
@@ -193,7 +191,6 @@ import rx.schedulers.Schedulers;
         LoyaltyAppLinkModule.class,
         DealsDeepLinkModule.class,
         ShopAppLinkModule.class,
-        GroupChatApplinkModule.class,
         GamificationApplinkModule.class,
         ProfileApplinkModule.class,
         KolApplinkModule.class,
@@ -267,7 +264,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new LoyaltyAppLinkModuleLoader(),
                     new DealsDeepLinkModuleLoader(),
                     new ShopAppLinkModuleLoader(),
-                    new GroupChatApplinkModuleLoader(),
                     new GamificationApplinkModuleLoader(),
                     new ProfileApplinkModuleLoader(),
                     new KolApplinkModuleLoader(),
