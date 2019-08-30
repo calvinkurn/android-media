@@ -42,10 +42,12 @@ class StickyComponentHelper(
 
     fun assignModel(list: StickyComponentsViewModel?) {
         hide()
-
-        list?.list?.let {
-            stickyComponentAdapter.setList(it)
-            show()
+        stickyComponentAdapter.clearList()
+        list?.list?.run {
+            if(this.isNotEmpty()) {
+                stickyComponentAdapter.setList(this)
+                show()
+            }
         }
     }
 

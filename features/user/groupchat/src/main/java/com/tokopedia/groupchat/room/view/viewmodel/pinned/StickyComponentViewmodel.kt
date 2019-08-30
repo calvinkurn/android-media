@@ -46,9 +46,6 @@ data class StickyComponentViewModel constructor(val componentId : String = "",
     }
 
     companion object CREATOR : Parcelable.Creator<StickyComponentViewModel> {
-
-        const val TYPE = "sticky_component"
-        const val TYPE_CLOSE = "sticky_component_close"
         const val TYPE_PRODUCT = "product"
 
         override fun createFromParcel(parcel: Parcel): StickyComponentViewModel {

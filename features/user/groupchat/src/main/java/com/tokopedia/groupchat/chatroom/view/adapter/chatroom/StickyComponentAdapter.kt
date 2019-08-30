@@ -153,6 +153,11 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
         notifyDataSetChanged()
     }
 
+    fun clearList() {
+        this.list.clear()
+        notifyDataSetChanged()
+    }
+
     private fun dismissItem(position: Int): () -> Unit {
         return {
             list.removeAt(position)

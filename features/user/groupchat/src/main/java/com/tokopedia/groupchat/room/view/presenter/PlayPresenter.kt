@@ -198,7 +198,6 @@ class PlayPresenter @Inject constructor(
                         is DynamicButtonsViewModel -> view.updateDynamicButton(it)
                         is BackgroundViewModel -> view.onBackgroundUpdated(it)
                         is SprintSaleAnnouncementViewModel -> view.onSprintSaleReceived(it)
-//                        is StickyComponentViewModel -> view.onStickyComponentReceived(it)
                         is StickyComponentsViewModel -> view.onStickyComponentReceived(it)
                         is VideoStreamViewModel -> view.onVideoStreamUpdated(it)
                         else -> {
