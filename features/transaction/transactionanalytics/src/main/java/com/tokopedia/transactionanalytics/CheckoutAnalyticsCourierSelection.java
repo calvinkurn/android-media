@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Map;
 
@@ -358,8 +359,8 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
             eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
         }
 
-        eCommerceBundle.putLong("step", step);
-        eCommerceBundle.putString("option", checkoutOption);
+        eCommerceBundle.putLong(FirebaseAnalytics.Param.CHECKOUT_STEP, step);
+        eCommerceBundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, checkoutOption);
         eCommerceBundle.putString("eventCategory", eventCategory);
         eCommerceBundle.putString("eventAction", eventAction);
         eCommerceBundle.putString("eventLabel", eventLabel);
@@ -367,7 +368,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         if (!TextUtils.isEmpty(transactionId)) {
             eCommerceBundle.putString("payment_id", transactionId);
         }
-        sendEnhancedEcommerceV5("checkout_progress", eCommerceBundle);
+        sendEnhancedEcommerceV5(FirebaseAnalytics.Event.CHECKOUT_PROGRESS, eCommerceBundle);
     }
 
     public void eventClickCourierSelectionClickPilihAlamatLain() {

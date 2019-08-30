@@ -31,8 +31,8 @@ class CartTrackingDataGenerator @Inject constructor() {
 
         eCommerceBundle.putParcelableArrayList("items", productBundles)
 
-        eCommerceBundle.putLong("step", 1)
-        eCommerceBundle.putString("option", "cart page loaded")
+        eCommerceBundle.putLong(FirebaseAnalytics.Param.CHECKOUT_STEP, 1)
+        eCommerceBundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, "cart page loaded")
 
         eCommerceBundle.putString("eventCategory", "cart");
         eCommerceBundle.putString("eventAction", "click check out");

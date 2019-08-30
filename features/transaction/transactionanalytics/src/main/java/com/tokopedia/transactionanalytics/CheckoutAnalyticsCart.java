@@ -3,6 +3,7 @@ package com.tokopedia.transactionanalytics;
 import android.os.Bundle;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.Map;
 
@@ -378,7 +379,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
     // GTM v5 EE Step 1
     private void enhancedECommerceGoToCheckoutStep1(Bundle eCommerceBundle, String eventLabel) {
         eCommerceBundle.putString("eventLabel", eventLabel);
-        sendEnhancedEcommerceV5("begin_checkout", eCommerceBundle);
+        sendEnhancedEcommerceV5(FirebaseAnalytics.Event.BEGIN_CHECKOUT, eCommerceBundle);
     }
 
     public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Bundle eCommerceBundle, boolean eligibleCod) {
