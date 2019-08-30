@@ -844,10 +844,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
                               url: String, iamgeUrl: String) {
         activity?.let {
-            linkerData = ShareBottomSheets.constructShareData("", "", url, description, title)
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
-            checkShouldChangeUsername(url) { showShareBottomSheets(this) }
+            checkShouldChangeUsername(url) {
+                linkerData = showShareBottomSheet(
+                        ProfileHeaderViewModel(link = url),
+                        description,
+                        title,
+                        null
+                )
+            }
         }
     }
 
@@ -1112,17 +1118,15 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             footerOthersShareText.hide()
         }
         footerOthersShare.setOnClickListener {
-            profileHeader?.let {
-                linkerData = ShareBottomSheets.constructShareData(
-                        it.name,
-                        it.avatar,
-                        it.link,
-                        String.format(getString(R.string.profile_share_text),
-                                it.link),
-                        String.format(getString(R.string.profile_share_title)))
+            profileHeader?.let { header ->
+                linkerData = showShareBottomSheet(
+                        header,
+                        String.format(getString(R.string.profile_share_text), header.link),
+                        String.format(getString(R.string.profile_other_share_title)),
+                        null
+                )
                 profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                 isShareProfile = true
-                showShareBottomSheets(this)
             }
         }
     }
@@ -1193,6 +1197,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                         String.format(getString(R.string.profile_other_share_title)),
                         null
                 )
+                profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+                isShareProfile = true
             }
         } else {
             iv_action_parallax.setImageDrawable(MethodChecker.getDrawable(context, R.drawable.ic_af_graph))
@@ -1428,6 +1434,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                             String.format(getString(R.string.profile_share_title)),
                             byMeTemplatedView.toSquareBitmap()
                     )
+                    profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
+                    isShareProfile = true
                 }
             }
             shareProfile.setOnLongClickListener {
@@ -1767,12 +1775,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 element.link,
                 shareFormat,
                 shareTitle,
-                imageBitmap?.let { image -> MethodChecker.getUri(context, image.toTempFile(IG_STORY_TEMP)).toString() }
+                imageBitmap?.let { image ->
+                    val ctx = context
+                    if (ctx != null) MethodChecker.getUri(context, image.toTempFile(ctx, IG_STORY_TEMP)).toString()
+                    else null
+                }
         ).also {
             it.show(fragmentManager)
         }
-        profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
-        isShareProfile = true
 
         return bottomSheet.data
     }

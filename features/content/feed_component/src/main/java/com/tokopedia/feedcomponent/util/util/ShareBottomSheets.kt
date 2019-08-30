@@ -206,7 +206,7 @@ class ShareBottomSheets : BottomSheets(), ShareAdapter.OnItemClickListener {
     }
 
     override fun title(): String {
-        return arguments?.getString(EXTRA_TITLE) ?: getString(R.string.title_share)
+        return arguments?.getString(EXTRA_TITLE) ?: data.ogTitle
     }
 
     private lateinit var mRecyclerView: RecyclerView
