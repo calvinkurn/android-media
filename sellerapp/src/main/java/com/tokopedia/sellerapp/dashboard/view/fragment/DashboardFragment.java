@@ -554,7 +554,6 @@ public class DashboardFragment extends BaseDaggerFragment implements SellerDashb
                 break;
             case ShopStatusDef.NOT_ACTIVE:
                 shopWarningTickerView.setVisibility(View.GONE);
-                sellerDashboardPresenter.getProductList();
                 break;
             default:
                 shopWarningTickerView.setVisibility(View.GONE);

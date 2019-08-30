@@ -34,10 +34,6 @@ import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
-import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
-import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
-import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase;
 import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
@@ -177,19 +173,6 @@ public class ProductManageModule {
             return null;
         }
     }
-
-    @Provides
-    @ProductManageScope
-    public GetProductListSellingRepository provideGetProductListSellingRepository(GetProductListSellingDataSource getProductListSellingDataSource) {
-        return new GetProductListSellingRepositoryImpl(getProductListSellingDataSource);
-    }
-
-    @Provides
-    @ProductManageScope
-    public GetProductListSellerApi provideGetProductListSellerApi(@WsV4QualifierWithErrorHander Retrofit retrofit) {
-        return retrofit.create(GetProductListSellerApi.class);
-    }
-
 
     @Provides
     @ProductManageScope

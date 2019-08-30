@@ -19,6 +19,7 @@
         android:id="@+id/txt_title_product_confirmation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_12"
         android:layout_marginLeft="@dimen/dp_12"
         app:layout_constraintStart_toEndOf="@+id/img_product_confirmation"

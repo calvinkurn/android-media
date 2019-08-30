@@ -17,9 +17,9 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
     private var model = ArrayList<ConfirmationProductData>()
     private var listener: EditProductBottomSheet.EditProductInterface? = null
-    lateinit var btnCancel: Button
+    private lateinit var btnCancel: Button
     private lateinit var btnConfirmation: Button
-    lateinit var btnClose: ImageView
+    private lateinit var btnClose: ImageView
 
     private val confirmationAdapter by lazy {
         ConfirmationProductAdapter(model)
@@ -67,7 +67,6 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
     override fun getBaseLayoutResourceId(): Int = R.layout.base_confirmation_bottom_sheet
 
     override fun getTheme(): Int = R.style.BaseBottomSheetDialog
-
 
     override fun configView(parentView: View) {
         getArgument()

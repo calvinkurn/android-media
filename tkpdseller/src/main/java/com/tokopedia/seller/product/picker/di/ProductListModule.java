@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor;
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
@@ -18,10 +17,6 @@ import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.interactor.GetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
-import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
-import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
-import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepository;
 import com.tokopedia.seller.product.picker.view.mapper.GetProductListMapper;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenter;
 import com.tokopedia.seller.product.picker.view.presenter.ProductListPickerSearchPresenterImpl;
@@ -54,19 +49,6 @@ public class ProductListModule {
                                                                       GetProductListMapper getProductListMapper,
                                                                       UserSessionInterface userSession){
         return new ProductListPickerSearchPresenterImpl(getProductListUseCase, getProductListMapper, userSession);
-    }
-
-
-    @ProductListScope
-    @Provides
-    GetProductListSellingRepository productListSellingRepository(GetProductListSellingDataSource getProductListSellingDataSource){
-        return new GetProductListSellingRepositoryImpl(getProductListSellingDataSource);
-    }
-
-    @ProductListScope
-    @Provides
-    GetProductListSellerApi provideGetProductListApi(@WsV4QualifierWithErrorHander Retrofit retrofit){
-        return retrofit.create(GetProductListSellerApi.class);
     }
 
     @ProductListScope
