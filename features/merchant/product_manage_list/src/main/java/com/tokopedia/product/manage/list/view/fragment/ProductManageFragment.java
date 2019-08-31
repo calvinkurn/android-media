@@ -132,7 +132,7 @@ import static com.tokopedia.product.manage.list.constant.ProductManageListConsta
 import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQUEST_CODE_FILTER;
 import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQUEST_CODE_SORT;
 import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.STOCK_EDIT_REQUEST_CODE;
-import static com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment.URL_TIPS_TRICK;
+import static com.tokopedia.product.manage.list.constant.ProductManageListConstant.URL_TIPS_TRICK;
 
 /**
  * Created by zulfikarrahman on 9/22/17.

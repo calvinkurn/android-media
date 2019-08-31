@@ -85,30 +85,29 @@ class ProductManagePresenterImpl @Inject constructor(
 
         getProductListUseCase.execute(GetProductListUseCase.createRequestParams(userSessionInterface.shopId, page,
                 keywordFilter, catalogOptionInt, conditionOptionInt, etalaseIdString,
-                pictureOptionInt, sortOptionInt, categoryIdInt),
-                object : Subscriber<ProductListResponse>() {
+                pictureOptionInt, sortOptionInt, categoryIdInt), object : Subscriber<ProductListResponse>() {
 
-                    override fun onNext(productListResponse: ProductListResponse) {
-                        if (productListResponse.getProductList.data.isEmpty()) {
-                            view.onLoadListEmpty()
-                        }
+            override fun onNext(productListResponse: ProductListResponse) {
+                if (productListResponse.getProductList.data.isEmpty()) {
+                    view.onLoadListEmpty()
+                }
 
-                        val productListManageModelView = productListMapperView.mapIntoViewModel(productListResponse)
-                        view.onSuccessGetProductList(productListManageModelView.productManageViewModels,
-                                productListManageModelView.productManageViewModels.size,
-                                productListManageModelView.isHasNextPage)
-                    }
+                val productListManageModelView = productListMapperView.mapIntoViewModel(productListResponse)
+                view.onSuccessGetProductList(productListManageModelView.productManageViewModels,
+                        productListManageModelView.productManageViewModels.size,
+                        productListManageModelView.isHasNextPage)
+            }
 
-                    override fun onCompleted() {
-                    }
+            override fun onCompleted() {
+            }
 
-                    override fun onError(e: Throwable?) {
-                        if (isViewAttached) {
-                            view.onLoadListEmpty()
-                        }
-                    }
+            override fun onError(e: Throwable?) {
+                if (isViewAttached) {
+                    view.onLoadListEmpty()
+                }
+            }
 
-                })
+        })
     }
 
     override fun editPrice(productId: String, price: String, currencyId: String, currencyText: String) {

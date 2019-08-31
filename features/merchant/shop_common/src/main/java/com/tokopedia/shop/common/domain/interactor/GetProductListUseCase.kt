@@ -13,7 +13,7 @@ import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
-class GetProductListUseCase @Inject constructor(@Named(GQL_PRODUCT_LIST) private val gqlQuery: String,
+open class GetProductListUseCase @Inject constructor(@Named(GQL_PRODUCT_LIST) private val gqlQuery: String,
                                                 private val graphqlUseCase: GraphqlUseCase) : UseCase<ProductListResponse>() {
 
     companion object {

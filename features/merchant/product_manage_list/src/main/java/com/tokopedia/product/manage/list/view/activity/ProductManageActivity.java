@@ -15,10 +15,9 @@ import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.product.manage.list.R;
-import com.tokopedia.seller.ProductEditItemComponentInstance;
-import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
+import com.tokopedia.seller.ProductEditItemComponentInstance;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 
 /**
  * Created by zulfikarrahman on 9/25/17.

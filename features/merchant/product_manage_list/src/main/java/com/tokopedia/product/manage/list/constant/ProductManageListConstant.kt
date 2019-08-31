@@ -11,6 +11,7 @@ object ProductManageListConstant {
     const val EXTRA_FILTER_SELECTED = "extra_filter_selected"
     const val EXTRA_SORT_SELECTED = "extra_sort_selected"
     const val GQL_POPUP_NAME = "gql_popup"
+    const val URL_TIPS_TRICK = "https://seller.tokopedia.com/edu/cara-cepat-dapat-transaksi/"
 
 
 }
