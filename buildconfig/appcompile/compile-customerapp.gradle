@@ -72,8 +72,6 @@ include "features:logistic:tracking"
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
-include "features:logistic:logisticuploadawb"
-//include "features:logistic:logisticuploadawb_no_op"
 include "features:logistic:logisticinputreceiptshipment"
 //include 'features:logistic:logisticinputreceiptshipment_no_op'
 include "features:logistic:logisticlistaddress"

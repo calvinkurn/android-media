@@ -1,4 +1,4 @@
-package com.tokopedia.logisticuploadawb;
+package com.tokopedia.tracking.view.uploadawb;
 
 import android.content.Context;
 import android.content.Intent;

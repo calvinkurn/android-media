@@ -1,16 +1,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.tokopedia.tracking">
+    package="com.tokopedia.tracking">
 
     <application>
         <activity
             android:name=".view.TrackingPageActivity"
+            android:label="@string/label_tracking_activity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:label="@string/label_tracking_activity"/>
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".view.SimpleWebViewActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White" />
+        <activity
+            android:name=".view.uploadawb.UploadAwbLogisticActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

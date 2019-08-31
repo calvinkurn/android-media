@@ -223,8 +223,8 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitial
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
-import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
-import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
+import com.tokopedia.tracking.view.uploadawb.ILogisticUploadAwbRouter;
+import com.tokopedia.tracking.view.uploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.common.PopUpNotif;

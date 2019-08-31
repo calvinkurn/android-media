@@ -83,7 +83,6 @@ ext {
     groupIdLogistic = 'com.tokopedia.logistic'
     artifactIdLogisticData = 'logisticdata'
     artifactIdLogisticInputReceiptShipment = 'logisticinputreceiptshipment'
-    artifactIdLogisticUploadAwb = 'logisticuploadawb'
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
     artifactIdLogisticListAddress = 'logisticlistaddress'
@@ -248,8 +247,6 @@ ext {
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             tracking                        : ":features:logistic:tracking",
 //            tracking                      : ":features:logistic:tracking_no_op",
-            logisticuploadawb               : ":features:logistic:logisticuploadawb",
-//            logisticuploadawb               : ":features:logistic:logisticuploadawb_no_op",
             logisticcart                    : ":features:logistic:logisticcart",
 
             goldMerchant                    : ":features:merchant:gold_merchant",

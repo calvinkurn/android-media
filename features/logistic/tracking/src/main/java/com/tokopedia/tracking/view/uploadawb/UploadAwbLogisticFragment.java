@@ -1,4 +1,4 @@
-package com.tokopedia.logisticuploadawb;
+package com.tokopedia.tracking.view.uploadawb;
 
 import android.os.Bundle;
 import android.webkit.URLUtil;
