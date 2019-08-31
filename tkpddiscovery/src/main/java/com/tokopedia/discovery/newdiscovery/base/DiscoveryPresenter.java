@@ -38,7 +38,9 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
     @Override
     public void detachView() {
         super.detachView();
-        getProductUseCase.unsubscribe();
+
+        if(getProductUseCase !=null) getProductUseCase.unsubscribe();
+        if(getImageSearchUseCase != null) getImageSearchUseCase.unsubscribe();
     }
 
 }

@@ -31,6 +31,7 @@ import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -54,6 +55,7 @@ import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
 import com.tokopedia.tkpd.timber.TimberWrapper;
 import com.tokopedia.tkpd.utils.CacheApiWhiteList;
 import com.tokopedia.tkpd.utils.CustomPushListener;
+import com.tokopedia.tkpd.utils.DeviceUtil;
 import com.tokopedia.tkpd.utils.UIBlockDebugger;
 import com.tokopedia.tokocash.network.api.WalletUrl;
 import com.tokopedia.track.TrackApp;
@@ -83,6 +85,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
 
     CharacterPerMinuteActivityLifecycleCallbacks callback;
+    private TetraDebugger tetraDebugger;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -112,6 +115,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         com.tokopedia.config.GlobalConfig.HOME_ACTIVITY_CLASS_NAME = MainParentActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME = DeeplinkHandlerActivity.class.getName();
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
+        com.tokopedia.config.GlobalConfig.DEVICE_ID = DeviceUtil.getDeviceId(this);
 
         TokopediaUrl.Companion.init(this); // generate base url
 
@@ -141,8 +145,11 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlClient.init(getApplicationContext());
         NetworkClient.init(getApplicationContext());
 
-        if (!GlobalConfig.DEBUG) {
+        if (!com.tokopedia.config.GlobalConfig.DEBUG) {
             new ANRWatchDog().setANRListener(Crashlytics::logException).start();
+        } else {
+            tetraDebugger = TetraDebugger.Companion.instance(context);
+            tetraDebugger.init();
         }
 
         if(callback == null) {
@@ -152,6 +159,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         LogWrapper.init(this);
         TimberWrapper.init(this);
+    }
+
+    @Override
+    public void doLogoutAccount(Activity activity) {
+        super.doLogoutAccount(activity);
+        tetraDebugger.setUserId("");
     }
 
     @Override
@@ -377,11 +390,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             }
         }
         return md5StrBuff.toString();
-    }
-
-
-    public void goToTokoCash(String applinkUrl, String redirectUrl, Activity activity) {
-
     }
 
     public Class<?> getDeeplinkClass() {

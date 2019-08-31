@@ -106,6 +106,8 @@ public class RemoteConfigKey {
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
+    public static final String ENABLE_TOPPAY_TIMEOUT = "android_enable_toppay_timeout";
+
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 
     public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";
@@ -135,10 +137,12 @@ public class RemoteConfigKey {
 
     //feed section
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
+    public static final String APP_ENABLE_SALDO_LOCK = "app_enable_saldo_lock";
 
     public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
 
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
 
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
+    public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
 }

@@ -23,7 +23,7 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
     protected TextView emptyTitleTextView;
     protected TextView emptyContentTextView;
     protected TextView emptyContentItemTextView;
-    private Button emptyButtonItemButton;
+    protected Button emptyButtonItemButton;
     private Callback callback;
     private Context context;
 
@@ -38,7 +38,7 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
         this.callback = callback;
     }
 
-    private void findView(View itemView) {
+    protected void findView(View itemView) {
         context = itemView.getContext();
         emptyTitleTextView = (TextView) itemView.findViewById(R.id.text_view_empty_title_text);
         emptyContentTextView = (TextView) itemView.findViewById(R.id.text_view_empty_content_text);

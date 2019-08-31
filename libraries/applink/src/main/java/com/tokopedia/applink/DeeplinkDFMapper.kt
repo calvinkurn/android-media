@@ -2,6 +2,8 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
+import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
@@ -9,7 +11,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
-import com.crashlytics.android.Crashlytics;
 
 /**
  * Dynamic Feature Deeplink Mapper
@@ -30,6 +31,8 @@ import com.crashlytics.android.Crashlytics;
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
     private val MODULE_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
+    private val MODULE_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
+    private val MODULE_HOTEL_TRAVEL = "hotel_travel"
 
     private var manager: SplitInstallManager? = null
 
@@ -39,6 +42,10 @@ object DeeplinkDFMapper {
      */
     @JvmStatic
     fun getDFDeeplinkIfNotInstalled(context: Context, deeplink: String): String? {
+        //KITKAT does not support dynamic feature
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            return null
+        }
         if (deeplink.startsWith(DYNAMIC_FEATURE_INSTALL_BASE)) {
             return null
         }
@@ -52,8 +59,19 @@ object DeeplinkDFMapper {
                 else -> null
             }
         } else {
-            // currently cust app has no dynamic features module
-            return null
+            return when {
+//                deeplink.startsWith(ApplinkConst.HOTEL) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                            deeplink, MODULE_HOTEL_TRAVEL,
+//                            context.getString(R.string.title_hotel))
+//                }
+//                deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                        deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
+//                        context.getString(R.string.shop_settings_title))
+//                }
+                else -> null
+            }
         }
     }
 
