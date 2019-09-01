@@ -38,8 +38,6 @@ include "features:im:referral"
 
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticaddaddress"
-include "features:logistic:logisticinputreceiptshipment"
-//include "features:logistic:logisticinputreceiptshipment_no_op"
 include "features:logistic:logisticdata"
 include "features:logistic:shipping_recommendation"
 include "features:logistic:tracking"

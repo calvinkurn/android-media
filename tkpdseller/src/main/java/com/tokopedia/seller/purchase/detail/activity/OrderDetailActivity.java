@@ -44,7 +44,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.Tooltip;
-import com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.transaction.common.TransactionRouter;
