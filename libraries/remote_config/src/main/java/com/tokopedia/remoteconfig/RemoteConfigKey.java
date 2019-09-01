@@ -21,7 +21,9 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
 
     public static final String REFERRAL_SUBHEADER = "referral_subheader";
+    public static final String APP_ENABLE_INDI_CHALLENGES = "app_enable_indi_challenges";
     public static final String APP_REFERRAL_TITLE = "app_referral_title";
+    public static final String APP_REFERRAL_SUBTITLE = "app_referral_subtitle";
     public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
     public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
     public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
@@ -106,6 +108,8 @@ public class RemoteConfigKey {
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
+    public static final String ENABLE_TOPPAY_TIMEOUT = "android_enable_toppay_timeout";
+
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 
     public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";
@@ -142,4 +146,5 @@ public class RemoteConfigKey {
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
 
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
+    public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
 }

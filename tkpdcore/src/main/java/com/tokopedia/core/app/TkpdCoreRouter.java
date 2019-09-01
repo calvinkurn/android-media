@@ -125,10 +125,6 @@ public interface TkpdCoreRouter {
 
     Intent getInboxReputationIntent(Context context);
 
-    Intent getResolutionCenterIntent(Context context);
-
-    Intent getResolutionCenterIntentBuyer(Context context);
-
     Intent getResolutionCenterIntentSeller(Context context);
 
     Intent getKolFollowingPageIntent(Context context, int userId);
@@ -183,6 +179,4 @@ public interface TkpdCoreRouter {
     Intent getAutomaticResetPasswordIntent(Context context, String email);
 
     Intent getCreateResCenterActivityIntent(Context context, String orderId);
-
-    Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId);
 }

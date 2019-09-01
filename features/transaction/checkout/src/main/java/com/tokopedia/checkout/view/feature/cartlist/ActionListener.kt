@@ -36,7 +36,9 @@ interface ActionListener {
 
     fun onRemoveFromWishlist(productId: String)
 
-    fun onProductClicked(productId: String)
+    fun onWishlistProductClicked(productId: String)
+
+    fun onRecentViewProductClicked(productId: String)
 
     fun onRecommendationProductClicked(productId: String)
 
@@ -45,4 +47,8 @@ interface ActionListener {
     fun onShowTickerOutOfStock(productId: String)
 
     fun onSimilarProductUrlClicked(similarProductUrl: String)
+
+    fun onSelectAllClicked()
+
+    fun onShowCartTicker(tickerId: String)
 }

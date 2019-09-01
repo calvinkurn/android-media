@@ -222,4 +222,10 @@
     <string name="hotel_recommendation_gps_dialog_desc">Aktifkan GPS untuk menggunakan lokasi.</string>
     <string name="hotel_recommendation_gps_dialog_ok">Aktifkan</string>
     <string name="hotel_recommendation_gps_dialog_cancel">Batal</string>
+
+    <string name="hotel_url_empty_room_listing">https://ecs7.tokopedia.net/img/attachment/2019/8/20/5512496/5512496_f86e4cbb-c385-455e-9a2f-ff6394a967aa.png</string>
+    <string name="hotel_url_empty_search_result">https://ecs7.tokopedia.net/img/android/hotel/emptySearchResult.png</string>
+    <string name="hotel_url_no_indonesian_review">https://ecs7.tokopedia.net/img/android/hotel/noIndonesianReview.png</string>
+    <string name="hotel_url_no_match_search_suggestion">https://ecs7.tokopedia.net/img/android/hotel/noMatchSearchSuggestion.png</string>
+    <string name="hotel_url_no_review">https://ecs7.tokopedia.net/img/android/hotel/noReview.png</string>
 </resources>

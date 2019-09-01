@@ -12,7 +12,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 interface BuyerAccount {
     interface View : BaseAccountView {
-        fun loadBuyerData(model: BuyerViewModel)
+        fun loadBuyerData(model: BuyerViewModel?)
         fun hideLoadMoreLoading()
         fun showLoadMoreLoading()
         fun onRenderRecomAccountBuyer(list: List<Visitable<*>>)

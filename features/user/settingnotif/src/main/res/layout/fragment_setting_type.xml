@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rv_setting_type"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:has_divider_left_padding="true"
+    tools:listitem="@layout/item_setting_type">
+
+</com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView>

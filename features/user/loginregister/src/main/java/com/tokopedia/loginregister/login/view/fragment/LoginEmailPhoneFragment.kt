@@ -260,6 +260,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         context?.run {
             mIris = IrisAnalytics.getInstance(this)
+            analytics.onCreate(this)
         }
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
@@ -443,6 +444,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
             tv.tag = it.id
             tv.setText(it.name)
+            if(userSession.name.isNotEmpty()){
+                var name = userSession.name
+                if(name.split("\\s".toRegex()).size > 1)
+                    name = name.substring(0, name.indexOf(" "))
+                if ((it.id.equals(FACEBOOK, ignoreCase = true) &&
+                        userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
+                        (it.id.equals(GPLUS, ignoreCase = true) &&
+                                userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
+                    tv.setText("${it.name} ${getString(R.string.socmed_account_as)} $name")
+                }
+            }
             if (!TextUtils.isEmpty(it.image)) {
                 tv.setImage(it.image)
             } else if (it.imageResource != 0) {
@@ -467,7 +479,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
-
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             val intent = mGoogleSignInClient.signInIntent
@@ -564,7 +575,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
 
-            analytics.eventSuccessLogin(userSession.loginMethod, registerAnalytics)
+            analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
             setFCM()
         }
@@ -942,7 +953,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-                onGoToWelcomeNewUserPage()
+                onSuccessLogin()
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
                 analytics.eventFailedLogin(userSession.loginMethod, getString(R.string.error_login_user_cancel_activate_account))
                 dismissLoadingLogin()
@@ -1043,6 +1054,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        analytics.onDestroy()
     }
 
     override fun onBackPressed() {

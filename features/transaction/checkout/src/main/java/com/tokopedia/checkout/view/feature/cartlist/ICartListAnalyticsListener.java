@@ -85,9 +85,21 @@ public interface ICartListAnalyticsListener {
 
     void sendAnalyticsOnViewPromoManualApply(String type);
 
-    void sendAnalyticsOnViewProductRecommendationOnCart(Map<String, Object> eeDataLayerCart);
+    void sendAnalyticsOnViewProductRecommendation(Map<String, Object> eeDataLayerCart);
 
-    void sendAnalyticsOnClickProductRecommendationOnEmptyCart(String position, Map<String, Object> eeDataLayerCart);
+    void sendAnalyticsOnClickProductRecommendation(String position, Map<String, Object> eeDataLayerCart);
+
+    void sendAnalyticsOnViewProductWishlist(Map<String, Object> eeDataLayerCart);
+
+    void sendAnalyticsOnClickProductWishlistOnEmptyCart(String position, Map<String, Object> eeDataLayerCart);
+
+    void sendAnalyticsOnClickProductWishlistOnCartList(String position, Map<String, Object> eeDataLayerCart);
+
+    void sendAnalyticsOnViewProductRecentView(Map<String, Object> eeDataLayerCart);
+
+    void sendAnalyticsOnClickProductRecentViewOnEmptyCart(String position, Map<String, Object> eeDataLayerCart);
+
+    void sendAnalyticsOnClickProductRecentViewOnCartList(String position, Map<String, Object> eeDataLayerCart);
 
     void sendAnalyticsOnGoToShipmentFailed(String errorMessage);
 

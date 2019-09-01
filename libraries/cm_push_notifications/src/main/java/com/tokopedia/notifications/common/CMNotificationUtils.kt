@@ -119,10 +119,17 @@ object CMNotificationUtils {
         cacheHandler.saveStringValue(CMConstant.FCM_TOKEN_CACHE_KEY, token)
     }
 
+    fun getToken(context: Context): String?
+            = CMNotificationCacheHandler(context).getStringValue(CMConstant.FCM_TOKEN_CACHE_KEY)
+
+
     fun saveUserId(context: Context, userId: String) {
         val cacheHandler = CMNotificationCacheHandler(context)
         cacheHandler.saveStringValue(CMConstant.USERID_CACHE_KEY, userId)
     }
+
+    fun getUserId(context: Context) : String?
+            = CMNotificationCacheHandler(context).getStringValue(CMConstant.USERID_CACHE_KEY)
 
     fun saveGAdsIdId(context: Context, gAdsId: String) {
         val cacheHandler = CMNotificationCacheHandler(context)
