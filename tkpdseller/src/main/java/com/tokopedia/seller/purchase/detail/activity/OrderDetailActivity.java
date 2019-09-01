@@ -93,6 +93,7 @@ public class OrderDetailActivity extends TActivity
     private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
+    private static final String EXTRA_ORDER_DETAIL_DATA = "EXTRA_ORDER_DETAIL_DATA";
     private static final String PARAM_ORDER_ID = "order_id";
     private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
@@ -693,7 +694,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onSellerConfirmShipping(OrderDetailData data) {
         Intent intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION, "confirm");
-        intent.putExtra("EXTRA_ORDER_DETAIL_DATA", data);
+        intent.putExtra(EXTRA_ORDER_DETAIL_DATA, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 
@@ -724,7 +725,7 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void onChangeCourier(OrderDetailData data) {
         Intent intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION, "change");
-        intent.putExtra("EXTRA_ORDER_DETAIL_DATA", data);
+        intent.putExtra(EXTRA_ORDER_DETAIL_DATA, data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 
