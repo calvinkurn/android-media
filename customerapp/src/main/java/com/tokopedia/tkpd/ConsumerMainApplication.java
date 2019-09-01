@@ -240,12 +240,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
             RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
-
-            // ===== For testing purpose ===== //
-            Toast.makeText(this, "Last time fetch is more than 1 hour, now fetching", Toast.LENGTH_SHORT).show();
         }
-        // ===== For testing purpose ===== //
-        Toast.makeText(this, "Last time fetch is less than 1 hour, so this time we are not fetching anymore", Toast.LENGTH_SHORT).show();
     }
 
     protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
