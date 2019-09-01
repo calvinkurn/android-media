@@ -30,6 +30,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TActivity;
@@ -43,7 +44,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.Tooltip;
-import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
+import com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment.ConfirmShippingActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.transaction.common.TransactionRouter;
@@ -71,7 +72,6 @@ import com.tokopedia.seller.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.seller.purchase.utils.OrderDetailAnalytics;
 import com.tokopedia.seller.purchase.utils.OrderDetailConstant;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -693,7 +693,8 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onSellerConfirmShipping(OrderDetailData data) {
-        Intent intent = ConfirmShippingActivity.createInstance(this, data);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION, "confirm");
+        intent.putExtra("EXTRA_ORDER_DETAIL_DATA", data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 
@@ -723,7 +724,8 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onChangeCourier(OrderDetailData data) {
-        Intent intent = ConfirmShippingActivity.createChangeCourierInstance(this, data);
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION, "change");
+        intent.putExtra("EXTRA_ORDER_DETAIL_DATA", data);
         startActivityForResult(intent, CONFIRM_SHIPMENT_REQUEST_CODE);
     }
 

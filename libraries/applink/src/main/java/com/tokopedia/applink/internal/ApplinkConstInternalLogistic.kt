@@ -9,5 +9,5 @@ object ApplinkConstInternalLogistic {
     val INTERNAL_LOGISTIC = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_LOGISTIC"
 
     @JvmField
-    val SHIPPING_CONFIRMATION = "${INTERNAL_LOGISTIC}/shipping-confirmation"
+    val SHIPPING_CONFIRMATION = "${INTERNAL_LOGISTIC}/shipping-confirmation/{mode}"
 }

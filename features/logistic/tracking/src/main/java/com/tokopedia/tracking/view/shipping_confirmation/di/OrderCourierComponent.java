@@ -1,8 +1,8 @@
-package com.tokopedia.logisticinputreceiptshipment.di;
+package com.tokopedia.tracking.view.shipping_confirmation.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.logisticdata.data.module.qualifier.OrderCourierScope;
-import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.ConfirmShippingActivity;
+import com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment.ConfirmShippingActivity;
 
 import dagger.Component;
 

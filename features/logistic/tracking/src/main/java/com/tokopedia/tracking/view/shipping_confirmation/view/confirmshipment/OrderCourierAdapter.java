@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
+package com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -10,7 +10,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.logisticinputreceiptshipment.R;
+import com.tokopedia.tracking.R;
 import com.tokopedia.transaction.common.data.order.CourierViewModel;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 

@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
+package com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -22,15 +22,19 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.logisticdata.data.analytics.SalesShippingAnalytics;
 import com.tokopedia.logisticdata.data.analytics.listener.IConfirmShippingAnalyticsActionListener;
-import com.tokopedia.logisticdata.data.BaseSimpleLogisticActivity;
-import com.tokopedia.logisticinputreceiptshipment.R;
-import com.tokopedia.logisticinputreceiptshipment.di.DaggerOrderCourierComponent;
-import com.tokopedia.logisticinputreceiptshipment.di.OrderCourierComponent;
-import com.tokopedia.logisticinputreceiptshipment.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
-import com.tokopedia.logisticinputreceiptshipment.view.data.CourierSelectionModel;
+import com.tokopedia.tracking.R;
+import com.tokopedia.tracking.view.shipping_confirmation.di.DaggerOrderCourierComponent;
+import com.tokopedia.tracking.view.shipping_confirmation.di.OrderCourierComponent;
+import com.tokopedia.tracking.view.shipping_confirmation.view.barcodescanner.ReceiptShipmentBarcodeScannerActivity;
+import com.tokopedia.tracking.view.shipping_confirmation.view.data.CourierSelectionModel;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
@@ -40,27 +44,30 @@ import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
+
 import javax.inject.Inject;
 
 /**
  * Created by kris on 1/3/18. Tokopedia
  */
 
-public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
+public class ConfirmShippingActivity extends BaseSimpleActivity
         implements ConfirmShippingView,
         ServiceSelectionFragment.ServiceSelectionListener,
         CourierSelectionFragment.OrderCourierFragmentListener,
         ToolbarChangeListener, IConfirmShippingAnalyticsActionListener {
 
     private static final String EXTRA_ORDER_DETAIL_DATA = "EXTRA_ORDER_DETAIL_DATA";
-    private static final String EXTRA_ORDER_MODE_KEY = "EXTRA_ORDER_MODE_KEY";
+    private static final String EXTRA_ORDER_MODE_KEY = "mode";
     private static final String SELECT_COURIER_FRAGMENT_TAG = "select_courier";
     public static final String SELECT_SERVICE_FRAGMENT_TAG = "select_service";
-    public static final int CONFIRM_SHIPMENT_MODE = 1;
-    public static final int CHANGE_COURIER_MODE = 2;
+    public static final String CONFIRM_SHIPMENT_MODE = "confirm";
+    public static final String CHANGE_COURIER_MODE = "change";
 
     private final String[] permissionList = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE};
     private OrderDetailShipmentModel editableModel;
+    private String mMode;
 
     private TextView courierName;
     private EditText barcodeEditText;
@@ -79,7 +86,7 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
         Intent intent = new Intent(context, ConfirmShippingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_ORDER_DETAIL_DATA, data);
-        bundle.putInt(EXTRA_ORDER_MODE_KEY, CONFIRM_SHIPMENT_MODE);
+        bundle.putString(EXTRA_ORDER_MODE_KEY, CONFIRM_SHIPMENT_MODE);
         intent.putExtras(bundle);
         return intent;
     }
@@ -88,15 +95,34 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
         Intent intent = new Intent(context, ConfirmShippingActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_ORDER_DETAIL_DATA, data);
-        bundle.putInt(EXTRA_ORDER_MODE_KEY, CHANGE_COURIER_MODE);
+        bundle.putString(EXTRA_ORDER_MODE_KEY, CHANGE_COURIER_MODE);
         intent.putExtras(bundle);
         return intent;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initInjector();
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            Map<String, Object> param = UriUtil.destructureUriToMap(ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION, uri, true);
+            mMode = (String) param.get("mode");
+        }
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.getString(EXTRA_ORDER_MODE_KEY) != null) {
+                mMode = extras.getString(EXTRA_ORDER_MODE_KEY);
+            }
+            orderDetailData = extras.getParcelable(EXTRA_ORDER_DETAIL_DATA);
+        }
     }
 
     private boolean isChangeCourierMode(int orderCode) {
         return (orderCode >= OrderShipmentTypeDef.ORDER_WAITING
                 && orderCode < OrderShipmentTypeDef.ORDER_DELIVERED)
-                || getIntent().getExtras().getInt(EXTRA_ORDER_MODE_KEY) == CHANGE_COURIER_MODE;
+                || mMode.equals(CHANGE_COURIER_MODE);
     }
 
     @Override
@@ -226,84 +252,10 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
         }
     }
 
-    public void initInjector() {
-        OrderCourierComponent component = DaggerOrderCourierComponent
-                .builder()
-                .baseAppComponent(getComponent())
-                .build();
-        component.inject(this);
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-        orderDetailData = extras.getParcelable(EXTRA_ORDER_DETAIL_DATA);
-    }
-
     @Override
     protected void onDestroy() {
         presenter.detachView();
         super.onDestroy();
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    protected void initView() {
-        presenter.setView(this);
-        editableModel = new OrderDetailShipmentModel();
-        if (getIntent().getExtras().getInt(EXTRA_ORDER_MODE_KEY) == CONFIRM_SHIPMENT_MODE) {
-            editableModel.setShipmentId(orderDetailData.getShipmentId());
-            editableModel.setPackageId(orderDetailData.getShipmentServiceId());
-            editableModel.setShipmentName(orderDetailData.getShipmentName());
-            editableModel.setPackageName(orderDetailData.getShipmentServiceName());
-        } else {
-            editableModel.setShipmentName("");
-            editableModel.setPackageName("");
-        }
-        editableModel.setOrderId(orderDetailData.getOrderId());
-        editableModel.setOrderStatusCode(Integer.parseInt(orderDetailData.getOrderCode()));
-
-
-        FrameLayout frameLayout = findViewById(R.id.parent_view);
-        LayoutInflater.from(this).inflate(R.layout.activity_confirm_shipping_logistic_module, frameLayout);
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.title_loading));
-        progressDialog.setCancelable(false);
-
-        courierName = findViewById(R.id.courier_name);
-        barcodeEditText = findViewById(R.id.barcode_edit_text);
-        ImageView barcodeScanner = findViewById(R.id.icon_scan);
-        LinearLayout courierLayout = findViewById(R.id.courier_layout);
-        TextView confirmButton = findViewById(R.id.confirm_button);
-        if (isChangeCourierMode(Integer.parseInt(orderDetailData.getOrderCode())))
-            toolbar.setTitle(getString(R.string.button_order_detail_change_courier_logistic_module));
-        courierLayout.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));
-        confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
-        barcodeEditText.setText(orderDetailData.getAwb());
-        barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
-        if (!editableModel.getShipmentName().isEmpty())
-            courierName.setText(
-                    editableModel.getShipmentName() + " " + editableModel.getPackageName()
-            );
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     @Override
@@ -392,5 +344,54 @@ public class ConfirmShippingActivity extends BaseSimpleLogisticActivity
     public static void requestBarcodeScanner(Activity activity, Class customClass) {
         IntentIntegrator intentIntegrator = new IntentIntegrator(activity);
         intentIntegrator.setCaptureActivity(customClass).initiateScan();
+    }
+
+    private void initInjector() {
+        BaseAppComponent baseAppComponent = ((BaseMainApplication) getApplication()).getBaseAppComponent();
+        OrderCourierComponent component = DaggerOrderCourierComponent
+                .builder()
+                .baseAppComponent(baseAppComponent)
+                .build();
+        component.inject(this);
+    }
+
+    private void initView() {
+        presenter.setView(this);
+        editableModel = new OrderDetailShipmentModel();
+        if (mMode.equals(CONFIRM_SHIPMENT_MODE)) {
+            editableModel.setShipmentId(orderDetailData.getShipmentId());
+            editableModel.setPackageId(orderDetailData.getShipmentServiceId());
+            editableModel.setShipmentName(orderDetailData.getShipmentName());
+            editableModel.setPackageName(orderDetailData.getShipmentServiceName());
+        } else {
+            editableModel.setShipmentName("");
+            editableModel.setPackageName("");
+        }
+        editableModel.setOrderId(orderDetailData.getOrderId());
+        editableModel.setOrderStatusCode(Integer.parseInt(orderDetailData.getOrderCode()));
+
+
+        FrameLayout frameLayout = findViewById(R.id.parent_view);
+        LayoutInflater.from(this).inflate(R.layout.activity_confirm_shipping_logistic_module, frameLayout);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage(getString(R.string.title_loading));
+        progressDialog.setCancelable(false);
+
+        courierName = findViewById(R.id.courier_name);
+        barcodeEditText = findViewById(R.id.barcode_edit_text);
+        ImageView barcodeScanner = findViewById(R.id.icon_scan);
+        LinearLayout courierLayout = findViewById(R.id.courier_layout);
+        TextView confirmButton = findViewById(R.id.confirm_button);
+        if (isChangeCourierMode(Integer.parseInt(orderDetailData.getOrderCode())))
+            toolbar.setTitle(getString(R.string.button_order_detail_change_courier_logistic_module));
+        courierLayout.setOnClickListener(onGetCourierButtonClickedListener(orderDetailData));
+        confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
+        barcodeEditText.setText(orderDetailData.getAwb());
+        barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
+        if (!editableModel.getShipmentName().isEmpty())
+            courierName.setText(
+                    editableModel.getShipmentName() + " " + editableModel.getPackageName()
+            );
     }
 }

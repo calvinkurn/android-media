@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.di;
+package com.tokopedia.tracking.view.shipping_confirmation.di;
 
 import android.content.Context;
 
@@ -14,9 +14,9 @@ import com.tokopedia.logisticdata.data.module.qualifier.LogisticMyShopOrderApiQu
 import com.tokopedia.logisticdata.data.module.qualifier.LogisticOrderDetailApiQualifier;
 import com.tokopedia.logisticdata.data.module.qualifier.OrderCourierScope;
 import com.tokopedia.logisticdata.data.repository.OrderCourierRepository;
-import com.tokopedia.logisticinputreceiptshipment.network.mapper.OrderDetailMapper;
-import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.OrderCourierInteractorImpl;
-import com.tokopedia.logisticinputreceiptshipment.view.confirmshipment.OrderCourierPresenterImpl;
+import com.tokopedia.tracking.view.shipping_confirmation.network.mapper.OrderDetailMapper;
+import com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment.OrderCourierInteractorImpl;
+import com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment.OrderCourierPresenterImpl;
 import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;

@@ -1,9 +1,8 @@
-package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
+package com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment;
 
 
 import com.tokopedia.logisticdata.data.repository.OrderCourierRepository;
-import com.tokopedia.logisticinputreceiptshipment.network.mapper.OrderDetailMapper;
-import com.tokopedia.network.utils.TKPDMapParam;
+import com.tokopedia.tracking.view.shipping_confirmation.network.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 
 import java.util.Map;

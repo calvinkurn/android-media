@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.network.mapper;
+package com.tokopedia.tracking.view.shipping_confirmation.network.mapper;
 
 import com.tokopedia.logisticdata.data.entity.courierlist.CourierResponse;
 import com.tokopedia.logisticdata.data.entity.courierlist.Shipment;

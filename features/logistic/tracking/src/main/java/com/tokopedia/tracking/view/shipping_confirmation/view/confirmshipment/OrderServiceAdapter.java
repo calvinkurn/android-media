@@ -1,4 +1,4 @@
-package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
+package com.tokopedia.tracking.view.shipping_confirmation.view.confirmshipment;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 
-import com.tokopedia.logisticinputreceiptshipment.R;
-import com.tokopedia.logisticinputreceiptshipment.view.data.CourierSelectionModel;
+import com.tokopedia.tracking.R;
+import com.tokopedia.tracking.view.shipping_confirmation.view.data.CourierSelectionModel;
 import com.tokopedia.transaction.common.data.order.CourierServiceModel;
 
 import java.util.List;
