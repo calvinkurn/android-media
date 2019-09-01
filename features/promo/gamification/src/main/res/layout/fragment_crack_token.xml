@@ -44,9 +44,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_24"
+        android:layout_marginRight="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_24"
         android:visibility="gone" />
 
     <com.tokopedia.gamification.cracktoken.compoundview.WidgetCrackResult
@@ -75,12 +75,12 @@
             android:id="@+id/text_info_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginLeft="@dimen/dp_36"
             android:layout_marginRight="@dimen/dp_36"
             android:layout_marginBottom="@dimen/dp_16"
             android:background="@drawable/bg_info_crack_egg"
             android:gravity="center"
-            android:layout_gravity="center"
             android:paddingLeft="@dimen/dp_32"
             android:paddingTop="@dimen/dp_8"
             android:paddingRight="@dimen/dp_32"
@@ -117,6 +117,22 @@
                 android:fontFamily="sans-serif"
                 android:textSize="@dimen/sp_17"
                 android:textStyle="normal" />
+
+            <FrameLayout
+                android:id="@+id/fl_prize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginRight="@dimen/dp_64"
+                android:tooltipText=""
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/daily_prize"
+                    android:layout_width="@dimen/dp_32"
+                    android:layout_height="@dimen/dp_32"
+                    tools:src="@drawable/ic_empty_egg" />
+            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/fl_remaining_token"
