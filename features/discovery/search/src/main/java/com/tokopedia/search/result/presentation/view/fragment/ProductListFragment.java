@@ -136,11 +136,14 @@ public class ProductListFragment
 
     private FilterController quickFilterController = new FilterController();
 
-    public static ProductListFragment newInstance(SearchParameter searchParameter) {
+    public static ProductListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
+        args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
+        
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
+
         return productListFragment;
     }
 
@@ -158,6 +161,7 @@ public class ProductListFragment
     private void loadDataFromArguments() {
         if(getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
+            setFragmentPosition(getArguments().getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
