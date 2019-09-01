@@ -109,7 +109,9 @@ public class TrendingDealsAdapter extends BaseAdapter<ProductItem> {
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse dataResponse = restResponse.getData();
                 CategoryDetailsResponse dealEntity = (CategoryDetailsResponse) dataResponse.getData();
-                loadCompleted(dealEntity.getDealItems(), dealEntity);
+                if (dealEntity != null && dealEntity.getDealItems() != null) {
+                    loadCompleted(dealEntity.getDealItems(), dealEntity);
+                }
                 if (dealEntity.getPage() == null || !URLUtil.isValidUrl(dealEntity.getPage().getUriNext())) {
                     setLastPage(true);
                 } else {

@@ -82,6 +82,7 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
 
     @Override
     public void replaceFragment(String url, String title, List<ProductItem> items, int position) {
+        this.url = url;
         this.title = title;
         this.categoryItems = items;
         this.position = position;
