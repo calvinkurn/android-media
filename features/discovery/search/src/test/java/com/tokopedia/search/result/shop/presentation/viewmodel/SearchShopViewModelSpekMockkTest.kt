@@ -29,76 +29,83 @@ class SearchShopViewModelSpekMockkTest: Spek({
 
     InstantTaskExecutorRuleSpek(this)
 
-    val pagingWithNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "Some random string indicating has next page")
-    val pagingWithoutNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "")
+    Feature("Search Shop") {
+        val pagingWithNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "Some random string indicating has next page")
+        val pagingWithoutNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "")
 
-    val shopItemList = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "1"))
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "2"))
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "3"))
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "4"))
-    }
+        val shopItemList: List<SearchShopModel.AceSearchShop.ShopItem> = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
+            it.add(SearchShopModel.AceSearchShop.ShopItem(id = "1"))
+            it.add(SearchShopModel.AceSearchShop.ShopItem(id = "2"))
+            it.add(SearchShopModel.AceSearchShop.ShopItem(id = "3"))
+            it.add(SearchShopModel.AceSearchShop.ShopItem(id = "4"))
+        }
 
-    val moreShopItemList = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "5"))
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "6"))
-    }
+        val moreShopItemList: List<SearchShopModel.AceSearchShop.ShopItem> = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
+            it.add(SearchShopModel.AceSearchShop.ShopItem(id = "5"))
+            it.add(SearchShopModel.AceSearchShop.ShopItem(id = "6"))
+        }
 
-    val aceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
-            paging = pagingWithNextPage,
-            shopList = shopItemList
-    )
+        val aceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
+                paging = pagingWithNextPage,
+                shopList = shopItemList
+        )
 
-    val aceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
-            paging = pagingWithoutNextPage,
-            shopList = shopItemList
-    )
+        val aceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
+                paging = pagingWithoutNextPage,
+                shopList = shopItemList
+        )
 
-    val moreAceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
-            paging = pagingWithNextPage,
-            shopList = moreShopItemList
-    )
+        val moreAceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
+                paging = pagingWithNextPage,
+                shopList = moreShopItemList
+        )
 
-    val moreAceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
-            paging = pagingWithoutNextPage,
-            shopList = moreShopItemList
-    )
+        val moreAceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
+                paging = pagingWithoutNextPage,
+                shopList = moreShopItemList
+        )
 
-    val searchShopModel = SearchShopModel(aceSearchShopWithNextPage)
-    val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage)
-    val searchShopModelEmptyList = SearchShopModel()
-    val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage)
-    val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
-    val dynamicFilterModel = DynamicFilterModel()
+        val searchShopModel = SearchShopModel(aceSearchShopWithNextPage)
+        val searchShopModelWithoutNextPage = SearchShopModel(aceSearchShopWithoutNextPage)
+        val searchShopModelEmptyList = SearchShopModel()
+        val searchMoreShopModel = SearchShopModel(moreAceSearchShopWithNextPage)
+        val searchMoreShopModelWithoutNextPage = SearchShopModel(moreAceSearchShopWithoutNextPage)
+        val dynamicFilterModel = DynamicFilterModel()
 
-    val searchShopUseCase = mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
-    val searchMoreShopUseCase = mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
-    val dynamicFilterUseCase = mockk<SearchUseCase<DynamicFilterModel>>(relaxed = true)
+        val searchShopParameter = mapOf(
+                SearchApiConst.Q to "samsung"
+        )
 
-    val searchShopParameter = mapOf(
-            SearchApiConst.Q to "samsung"
-    )
+        val shopHeaderViewModelMapper = ShopHeaderViewModelMapper()
+        val shopViewModelMapper = ShopViewModelMapper()
 
-    val shopHeaderViewModelMapper = ShopHeaderViewModelMapper()
-    val shopViewModelMapper = ShopViewModelMapper()
+        val emptySearchCreator = mockk<EmptySearchCreator>(relaxed = true)
 
-    val emptySearchCreator = mockk<EmptySearchCreator>(relaxed = true)
+        val userSession = mockk<UserSessionInterface>().also {
+            every { it.isLoggedIn }.returns(true)
+            every { it.userId }.returns("123456")
+        }
 
-    val userSession = mockk<UserSessionInterface>().also {
-        every { it.isLoggedIn }.returns(true)
-        every { it.userId }.returns("123456")
-    }
+        val localCacheHandler = mockk<LocalCacheHandler>().also {
+            every { it.getString(eq(SearchConstant.GCM_ID), "") }.returns("MOCK_GCM_ID")
+        }
 
-    val localCacheHandler = mockk<LocalCacheHandler>().also {
-        every { it.getString(eq(SearchConstant.GCM_ID), "") }.returns("MOCK_GCM_ID")
-    }
+        val searchShopUseCase by memoized {
+            mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
+        }
 
-    Feature("Search Shop First Page") {
+        val searchMoreShopUseCase by memoized {
+            mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
+        }
+
+        val dynamicFilterUseCase by memoized {
+            mockk<SearchUseCase<DynamicFilterModel>>(relaxed = true)
+        }
+
         val searchShopViewModel by memoized {
             SearchShopViewModel(
                     Dispatchers.Unconfined, searchShopParameter,
-                    searchShopUseCase, searchMoreShopUseCase,
-                    dynamicFilterUseCase,
+                    searchShopUseCase, searchMoreShopUseCase, dynamicFilterUseCase,
                     shopHeaderViewModelMapper, shopViewModelMapper,
                     emptySearchCreator, userSession, localCacheHandler
             )
@@ -147,6 +154,59 @@ class SearchShopViewModelSpekMockkTest: Spek({
 
                 searchShopState.shouldBeInstanceOf<Error<*>>()
                 searchShopState.shouldBeNullOrEmpty()
+            }
+        }
+
+        Scenario("Search Shop and Search More Shop Successful") {
+
+            Given("search shop and search more shop API call will be successful and return search shop data") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchMoreShopUseCase.stubExecuteOnBackground().returns(searchMoreShopModel)
+            }
+
+            When("execute search shop and search more shop") {
+                searchShopViewModel.searchShop()
+                searchShopViewModel.searchMoreShop()
+            }
+
+            Then("verify search shop and search more shop API called once") {
+                searchShopUseCase.isExecuted()
+                searchMoreShopUseCase.isExecuted()
+            }
+
+            Then("assert search shop state is success and contains data from search shop and search more shop") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
+            }
+        }
+
+        Scenario("Search Shop Successful, but Search More Shop Error") {
+
+            Given("search shop API call will be successful, but search more shop API call will fail") {
+                val exception = Exception("Mock exception for testing error")
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchMoreShopUseCase.stubExecuteOnBackground().throws(exception)
+            }
+
+            When("execute search shop and search more shop") {
+                searchShopViewModel.searchShop()
+                searchShopViewModel.searchMoreShop()
+            }
+
+            Then("verify search shop and search more shop API called once") {
+                searchShopUseCase.isExecuted()
+                searchMoreShopUseCase.isExecuted()
+            }
+
+            Then("assert search shop state is error, but still contains data from search shop") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Error<*>>()
+                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
         }
     }

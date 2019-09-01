@@ -6,7 +6,7 @@ import org.spekframework.spek2.dsl.Root
 
 class InstantTaskExecutorRuleSpek(root: Root) {
     init {
-        root.beforeEachTest {
+        root.beforeGroup {
             ArchTaskExecutor.getInstance().setDelegate(object : TaskExecutor() {
                 override fun executeOnDiskIO(runnable: Runnable) {
                     runnable.run()
@@ -22,7 +22,7 @@ class InstantTaskExecutorRuleSpek(root: Root) {
             })
         }
 
-        root.afterEachTest {
+        root.afterGroup {
             ArchTaskExecutor.getInstance().setDelegate(null)
         }
     }
