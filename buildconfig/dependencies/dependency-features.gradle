@@ -84,7 +84,6 @@ ext {
     artifactIdLogisticData = 'logisticdata'
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
-    artifactIdLogisticListAddress = 'logisticlistaddress'
     logisticGroupVersion = '2.22'
 
     groupIdPayment = 'com.tokopedia.payment'
@@ -240,10 +239,8 @@ ext {
 //            challenges                    : ":features:im:challenges_no_op",
 
             logisticdata                    : ":features:logistic:logisticdata",
-            logisticlistaddress             : ":features:logistic:logisticlistaddress",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             tracking                        : ":features:logistic:tracking",
-//            tracking                      : ":features:logistic:tracking_no_op",
             logisticcart                    : ":features:logistic:logisticcart",
 
             goldMerchant                    : ":features:merchant:gold_merchant",
