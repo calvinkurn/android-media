@@ -3,6 +3,7 @@ ext {
     dynamicFeatures = [
             hotelTravel                     : ":dynamic-features:travel:hotel_travel",
             shopSettings                    : ":dynamic-features:merchant:shop_settings",
+            groupChat                       : ":dynamic-features:user:groupchat",
     ]
 
     dynamicFeaturesSellerapp = [

@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Hotel-->
     <string name="title_hotel_travel">Hotel</string>
     <string name="hotel_app_name">Hotel</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
+
+    <!--Groupchat-->
+    <string name="title_groupchat">Groupchat</string>
+    <string name="groupchat_app_name">Play</string>
 </resources>
