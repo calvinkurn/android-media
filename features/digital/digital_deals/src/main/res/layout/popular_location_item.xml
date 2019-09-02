@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_16"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:paddingBottom="@dimen/dp_8">
 
     <ImageView
         android:id="@+id/popular_loc_img"
         android:layout_width="@dimen/dp_24"
         android:layout_height="@dimen/dp_24"
-        android:src="@drawable/ic_add_photo"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:src="@drawable/ic_add_photo"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,29 +22,32 @@
         android:id="@+id/location_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_16"
         android:textColor="@color/clr_f531353b"
         android:textSize="@dimen/sp_14"
-        app:layout_constraintRight_toLeftOf="@+id/location_type"
+        app:layout_constraintBottom_toTopOf="@+id/location_address"
         app:layout_constraintLeft_toRightOf="@+id/popular_loc_img"
-        tools:text="Monumen Nasional"/>
+        app:layout_constraintRight_toLeftOf="@+id/location_type"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Monumen Nasional" />
 
     <TextView
         android:id="@+id/location_address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="#7031353b"
-        android:textSize="@dimen/sp_12"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:maxLines="2"
         android:ellipsize="end"
-        app:layout_constraintRight_toLeftOf="@+id/location_type"
+        android:maxLines="2"
+        android:text="Setiabudi, Karet Kuningan, Jakarta Selatan, DKI Jakarta"
+        android:textColor="#7031353b"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/popular_loc_img"
+        app:layout_constraintRight_toLeftOf="@+id/location_type"
         app:layout_constraintTop_toBottomOf="@+id/location_name"
-        android:text="Setiabudi, Karet Kuningan, Jakarta Selatan, DKI Jakarta"/>
+        tools:visibility="visible" />
 
 
     <TextView
@@ -52,28 +55,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginRight="@dimen/dp_8"
-        android:layout_marginBottom="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:background="@drawable/rect_grey_loc_type_background"
         android:padding="@dimen/dp_4"
-        android:visibility="gone"
         android:textColor="#9e9fa3"
         android:textSize="@dimen/sp_10"
+        android:visibility="gone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/rect_grey_loc_type_background"
         tools:text="Landmark"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@color/search_divider_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/location_address"
-        android:background="@color/search_divider_color" />
+        app:layout_constraintTop_toBottomOf="@+id/location_address" />
 
 </android.support.constraint.ConstraintLayout>

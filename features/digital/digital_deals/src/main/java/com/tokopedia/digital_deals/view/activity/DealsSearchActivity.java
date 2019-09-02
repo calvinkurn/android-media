@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,6 +43,7 @@ import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -113,9 +115,10 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     protected void onStart() {
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (isLocationUpdated && location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
+        if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
-            Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
+            Toaster.Companion.showNormalWithAction(mainContent, location.getName(), Snackbar.LENGTH_SHORT, "Oke", v1 -> {
+            });
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
         dealsAnalytics.sendScreenNameEvent(SCREEN_NAME);
@@ -143,7 +146,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         tvCityName.setOnClickListener(this);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
-        searchInputView.setSearchImageView(MethodChecker.getDrawable(this,R.drawable.ic_search_deal));
+        searchInputView.setSearchImageView(MethodChecker.getDrawable(this, R.drawable.ic_search_deal));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
         dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);
@@ -314,7 +317,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             brandsHeading.setVisibility(View.VISIBLE);
             if (count > 4) {
                 brandCount.setVisibility(View.VISIBLE);
-                brandCount.setText(String.format(getResources().getString(R.string.brand_count_text), searchInputView.getSearchText(),count));
+                brandCount.setText(String.format(getResources().getString(R.string.brand_count_text), searchInputView.getSearchText(), count));
             } else {
                 brandCount.setVisibility(View.GONE);
             }
@@ -506,6 +509,13 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     @Override
     public void onLocationItemUpdated(boolean isLocationUpdated) {
         this.isLocationUpdated = isLocationUpdated;
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
+            tvCityName.setText(location.getName());
+            Toaster.Companion.showNormalWithAction(mainContent, location.getName(), Snackbar.LENGTH_SHORT, "Oke", v1 -> {
+            });
+            mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+        }
     }
 
     @Override
