@@ -14,5 +14,5 @@ import dagger.Component;
 @Component(modules = MultipleAddressModule.class, dependencies = CartComponent.class)
 public interface MultipleAddressComponent {
 
-    void inject(MultipleAddressFragment multipleAddressFragment);
+//    void inject(MultipleAddressFragment multipleAddressFragment);
 }

@@ -107,6 +107,12 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter.attachView(this);
+    }
+
+    @Override
     protected boolean isRetainInstance() {
         return false;
     }
@@ -252,7 +258,6 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        presenter.attachView(this);
     }
 
     @Override
