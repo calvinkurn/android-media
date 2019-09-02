@@ -24,11 +24,11 @@ import javax.inject.Inject
 
 class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View, CheckoutProfileActionListener {
 
-//    @Inject
+    @Inject
     lateinit var presenter: CheckoutProfileContract.Presenter
-//    @Inject
+    @Inject
     lateinit var analytics: ExpressCheckoutAnalyticsTracker
-//    @Inject
+    @Inject
     lateinit var adapter: CheckoutProfileAdapter
 
     private lateinit var listener: CheckoutProfileFragmentListener
@@ -64,15 +64,15 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
     }
 
     private fun initInjector() {
-//        activity?.let {
-//            val baseAppComponent = it.application
-//            if (baseAppComponent is BaseMainApplication) {
-//                DaggerCheckoutProfileComponent.builder()
-//                        .baseAppComponent(baseAppComponent.baseAppComponent)
-//                        .build()
-//                        .inject(this)
-//            }
-//        }
+        activity?.let {
+            val baseAppComponent = it.application
+            if (baseAppComponent is BaseMainApplication) {
+                DaggerCheckoutProfileComponent.builder()
+                        .baseAppComponent(baseAppComponent.baseAppComponent)
+                        .build()
+                        .inject(this)
+            }
+        }
     }
 
     override fun initView(view: View?) {

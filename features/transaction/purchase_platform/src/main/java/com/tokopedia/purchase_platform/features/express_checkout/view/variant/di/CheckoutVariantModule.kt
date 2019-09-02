@@ -6,15 +6,17 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.di2.PeopleAddressNetworkModule
+import com.tokopedia.purchase_platform.common.di2.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.di2.PurchasePlatformCommonModule
+import com.tokopedia.purchase_platform.common.di2.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantContract
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantItemDecorator
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantPresenter
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.FragmentViewModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.FragmentViewModel
 import dagger.Module
 import dagger.Provides
 import rx.subscriptions.CompositeSubscription
@@ -24,7 +26,12 @@ import javax.inject.Named
  * Created by Irfan Khoirul on 03/02/19.
  */
 
-@Module
+@Module(includes = [
+    PeopleAddressNetworkModule::class,
+    PurchasePlatformNetworkModule::class,
+    PurchasePlatformBaseModule::class,
+    PurchasePlatformCommonModule::class
+])
 class CheckoutVariantModule {
 
     @CheckoutVariantScope
@@ -76,12 +83,6 @@ class CheckoutVariantModule {
     @CheckoutVariantScope
     @Provides
     fun provideAnalytics(): ExpressCheckoutAnalyticsTracker = ExpressCheckoutAnalyticsTracker()
-
-    @CheckoutVariantScope
-    @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
-    }
 
     @Provides
     @Named("atcOcsMutation")
