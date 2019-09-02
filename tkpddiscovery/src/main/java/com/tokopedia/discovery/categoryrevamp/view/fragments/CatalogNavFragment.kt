@@ -137,14 +137,13 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         catalogNavViewModel.mCatalog.observe(this, Observer {
             when (it) {
                 is Success -> {
+
+                    if (catalogNavListAdapter?.isShimmerRunning() == true) {
+                        catalogNavListAdapter?.removeShimmer()
+                    }
                     catalogNavListAdapter?.removeLoading()
                     if (it.data.count > 0) {
                         layout_no_data.visibility = View.GONE
-
-                        if (catalogNavListAdapter?.isShimmerRunning() == true) {
-                            catalogNavListAdapter?.removeShimmer()
-                        }
-
                         list.addAll(it.data.items as ArrayList<Visitable<CatalogTypeFactory>>)
                         catalog_recyclerview.adapter?.notifyDataSetChanged()
                         staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
@@ -165,8 +164,12 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
         catalogNavViewModel.mCatalogCount.observe(this@CatalogNavFragment, Observer {
 
             it?.let {
+                if (it.toInt() > 0) {
+                    txt_catalog_count.text = activity?.getString(R.string.category_nav_catalog_count, it)
+                } else {
+                    txt_catalog_count.text = ""
+                }
                 setTotalSearchResultCount(it)
-                txt_catalog_count.text = activity?.getString(R.string.category_nav_catalog_count, it)
             }
         })
 

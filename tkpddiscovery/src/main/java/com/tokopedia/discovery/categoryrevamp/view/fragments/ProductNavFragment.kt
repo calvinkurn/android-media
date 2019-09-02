@@ -267,17 +267,21 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
             when (it) {
                 is Success -> {
-                    layout_no_data.visibility = View.GONE
                     if (productNavListAdapter?.isShimmerRunning() == true) {
                         productNavListAdapter?.removeShimmer()
                     }
 
-                    list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
-                    productNavListAdapter?.removeLoading()
-                    product_recyclerview.adapter?.notifyDataSetChanged()
+                    if (it.data.isNotEmpty()) {
+                        layout_no_data.visibility = View.GONE
+                        list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
+                        productNavListAdapter?.removeLoading()
+                        product_recyclerview.adapter?.notifyDataSetChanged()
+                        isPagingAllowed = true
+                    } else {
+                        layout_no_data.visibility = View.VISIBLE
+                    }
                     hideRefreshLayout()
                     reloadFilter(createFilterParam())
-                    isPagingAllowed = true
                 }
 
                 is Fail -> {

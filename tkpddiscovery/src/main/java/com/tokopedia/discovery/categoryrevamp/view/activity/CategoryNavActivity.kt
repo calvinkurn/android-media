@@ -337,12 +337,10 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data != null) {
-            handleDefaultActivityResult(requestCode, resultCode, data)
-        }
+        handleDefaultActivityResult(requestCode, resultCode, data)
     }
 
-    private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         bottomSheetFilterView?.onActivityResult(requestCode, resultCode, data)
     }
 

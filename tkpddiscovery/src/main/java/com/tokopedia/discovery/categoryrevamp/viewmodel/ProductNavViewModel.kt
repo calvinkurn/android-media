@@ -37,11 +37,7 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
                 productListResponse?.let { productResponse ->
                     (productResponse.searchProduct)?.let { searchProduct ->
                         searchProduct.products?.let { productList ->
-                            if (productList.isNotEmpty()) {
                                 mProductList.value = Success((productList) as List<ProductsItem>)
-                            } else {
-                                mProductList.value = Fail(Throwable("no data"))
-                            }
                         }
 
                         mProductCount.value = searchProduct.totalData.toString()
