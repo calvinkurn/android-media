@@ -77,10 +77,7 @@ class FeedAnalyticTracker
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
      * Screenshot 35
      *
-     * @param activityName - activity name
      * @param activityId - postId
-     * @param mediaType - video or image
-     * @param hashtag - the hashtag name
      */
     fun eventTrendingClickMedia(activityId: String) {
         trackGeneralEvent(
@@ -95,16 +92,28 @@ class FeedAnalyticTracker
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
      * Screenshot 3
      *
-     * @param activityName - activity name
      * @param activityId - postId
-     * @param mediaType - video or image
-     * @param hashtag - the hashtag name
      */
     fun eventTrendingClickSeeAll(activityId: String) {
         trackGeneralEvent(
                 Event.CLICK_FEED,
                 Category.CONTENT_FEED_TIMELINE,
                 Action.CLICK_SEE_ALL,
+                activityId)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 3
+     *
+     * @param activityId - postId
+     */
+    fun eventTrendingClickProfile(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_AVATAR,
                 activityId)
     }
 

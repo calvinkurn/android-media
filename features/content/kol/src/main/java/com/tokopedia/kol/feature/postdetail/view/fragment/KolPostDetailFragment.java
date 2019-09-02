@@ -891,7 +891,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onTitleCtaClick(@NotNull String redirectUrl, @NonNull String postId) {
+    public void onTitleCtaClick(@NotNull String redirectUrl, int adapterPosition) {
         onGoToLink(redirectUrl);
 
     }

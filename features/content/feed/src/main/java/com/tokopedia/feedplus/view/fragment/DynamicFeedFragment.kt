@@ -128,8 +128,9 @@ class DynamicFeedFragment:
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String,  postId: String) {
-        feedAnalyticTracker.eventTrendingClickSeeAll(postId)
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
+        val item = ((adapter.list[adapterPosition]) as HighlightViewModel)
+        feedAnalyticTracker.eventTrendingClickSeeAll(item.postId)
         onGoToLink(redirectUrl)
     }
 
@@ -173,6 +174,8 @@ class DynamicFeedFragment:
     }
 
     override fun onAvatarClick(positionInFeed: Int, redirectUrl: String) {
+        val item = ((adapter.list[positionInFeed]) as HighlightViewModel)
+        feedAnalyticTracker.eventTrendingClickProfile(item.postId)
         onGoToLink(redirectUrl)
     }
 

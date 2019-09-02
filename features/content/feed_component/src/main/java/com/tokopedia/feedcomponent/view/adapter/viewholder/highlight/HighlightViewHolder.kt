@@ -52,12 +52,12 @@ class HighlightViewHolder(val v: View,
         adapter = HighlightAdapter(element.cards, highlightListener)
         highlightRv.adapter = adapter
         highlightRv.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        bindTitle(element.title, element.template.cardhighlight.title, element.psotId)
+        bindTitle(element.title, element.template.cardhighlight.title)
     }
 
-    private fun bindTitle(title: Title, template: TemplateTitle, postId: String) {
+    private fun bindTitle(title: Title, template: TemplateTitle) {
         itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
-            itemView.cardTitle.bind(title, template, postId)
+            itemView.cardTitle.bind(title, template, adapterPosition)
         }
         itemView.cardTitle.listener = cardTitleListener
     }

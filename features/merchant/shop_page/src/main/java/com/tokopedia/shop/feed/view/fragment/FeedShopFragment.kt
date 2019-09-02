@@ -519,7 +519,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onActionPopup() {
     }
 
-    override fun onTitleCtaClick(redirectUrl: String, postId: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 

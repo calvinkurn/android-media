@@ -915,7 +915,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String, postId: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 
