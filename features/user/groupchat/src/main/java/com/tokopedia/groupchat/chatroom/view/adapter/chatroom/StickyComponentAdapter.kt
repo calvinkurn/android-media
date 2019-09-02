@@ -148,6 +148,11 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
         )
     }
 
+    override fun onViewRecycled(holder: StickyComponentViewHolder) {
+        super.onViewRecycled(holder)
+        ImageHandler.clearImage(holder.image)
+    }
+
     fun setList(list: List<StickyComponentViewModel>) {
         this.list = ArrayList(list)
         notifyDataSetChanged()
