@@ -18,7 +18,7 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
 
     var childItem = MutableLiveData<Result<List<ChildItem>>>()
 
-    var hotlistItem = MutableLiveData<ArrayList<ListItem>>()
+    var hotlistItem = MutableLiveData<MutableList<ListItem>>()
 
 
     fun refresh(id: String) {
@@ -44,7 +44,6 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
                 categoryHotlist!!.list.let {
                     hotlistItem.value = categoryHotlist.list
                 }
-
             }
             override fun onCompleted() {
 
@@ -63,7 +62,7 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
         return childItem
     }
 
-    fun getCategoryHotlist(): MutableLiveData<ArrayList<ListItem>> {
+    fun getCategoryHotlist(): MutableLiveData<MutableList<ListItem>> {
         return hotlistItem
     }
 }
