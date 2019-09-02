@@ -7,22 +7,10 @@
     android:layout_height="wrap_content"
     android:foreground="?selectableItemBackground">
 
-    <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker_header_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_16"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"
-        app:descriptionText="@string/duration_header_ticker"
-        app:tickerShapeType="loose"
-        app:tickerType="announcement" />
-
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ticker_header_info"
         android:background="@color/white"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16">

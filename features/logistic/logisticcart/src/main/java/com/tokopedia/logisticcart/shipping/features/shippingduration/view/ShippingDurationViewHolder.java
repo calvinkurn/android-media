@@ -39,7 +39,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
     private TextView tvCod;
     private TextView tvTextDesc;
     private ImageView imgCheck;
-    private Ticker tickerHeaderInfo;
     private RelativeLayout rlContent;
     private TextView tvPromoPotency;
     private TextView tvOrderPrioritas;
@@ -59,7 +58,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         tvPrice = itemView.findViewById(R.id.tv_price);
         tvTextDesc = itemView.findViewById(R.id.tv_text_desc);
         imgCheck = itemView.findViewById(R.id.img_check);
-        tickerHeaderInfo = itemView.findViewById(R.id.ticker_header_info);
         rlContent = itemView.findViewById(R.id.rl_content);
         tvPromoPotency = itemView.findViewById(R.id.tv_promo_potency);
         tvCod = itemView.findViewById(R.id.tv_cod_availability);
@@ -122,12 +120,6 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-
-        if (getAdapterPosition() == 0) {
-            tickerHeaderInfo.setVisibility(View.VISIBLE);
-        } else {
-            tickerHeaderInfo.setVisibility(View.GONE);
-        }
     }
 
     private void setShowCase(ShippingDurationAdapterListener shippingDurationAdapterListener) {
