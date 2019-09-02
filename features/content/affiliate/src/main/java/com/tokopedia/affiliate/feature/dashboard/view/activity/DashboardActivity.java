@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
-import com.tokopedia.affiliate.feature.dashboard.view.fragment.DashboardFragment;
+import com.tokopedia.affiliate.feature.dashboard.view.fragment.NewDashboardFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 
@@ -31,7 +31,7 @@ public class DashboardActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return DashboardFragment.getInstance(getIntent().getExtras());
+        return NewDashboardFragment.Companion.getInstance(getIntent().getExtras());
     }
 
     @Override
