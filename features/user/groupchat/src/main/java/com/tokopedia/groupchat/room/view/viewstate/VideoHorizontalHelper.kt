@@ -98,7 +98,7 @@ class VideoHorizontalHelper(
         viewModel?.isVideoLive = false
     }
 
-    fun setYoutubeLandscapeEnabled() {
+    private fun setYoutubeLandscapeEnabled() {
         youTubePlayer?.setShowFullscreenButton(remoteConfig.getBoolean(RemoteConfigKey.PLAY_YOUTUBE_FULL_SCREEN))
     }
 
