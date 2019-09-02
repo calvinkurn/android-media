@@ -35,7 +35,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.ChallengesModuleRouterImpl;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailsActivity;
@@ -743,8 +743,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
     }
 
     public void onShowBuzzPointsText() {
-        buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication())
-                .getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
+        buzzPointText = ChallengesModuleRouterImpl.getStringRemoteConfig(getActivity(),Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
         if (!TextUtils.isEmpty(buzzPointText)) {
             CloseableBottomSheetDialog sortingDialog = CloseableBottomSheetDialog.createInstance(getActivity());
             sortingDialog.setOnShowListener(dialog -> {
@@ -754,8 +753,7 @@ public class ChallengeDetailsFragment extends BaseDaggerFragment implements Chal
                     BottomSheetBehavior.from(bottomSheet)
                             .setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
-                buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication())
-                        .getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
+                buzzPointText = ChallengesModuleRouterImpl.getStringRemoteConfig(getActivity(),Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
                 if (!TextUtils.isEmpty(buzzPointText)) {
                     Utils.generateBulletText(d.findViewById(R.id.buzzTextContainer), buzzPointText);
                 }

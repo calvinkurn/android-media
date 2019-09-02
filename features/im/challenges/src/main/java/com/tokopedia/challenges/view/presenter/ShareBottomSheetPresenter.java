@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.ChallengesModuleRouterImpl;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.domain.usecase.PostMapBranchUrlUseCase;
@@ -108,12 +108,9 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             shareLink(true, url, challengeItem.getTitle(), packageName);
         } else {
             getView().showProgress(getView().getActivity().getString(R.string.ch_please_wait));
-            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, challengeItem.getTitle(), name, challengeItem.getSharing().getMetaTags().getOgUrl(), challengeItem.getSharing().getMetaTags().getOgTitle(), challengeItem.getSharing().getMetaTags().getOgDescription(), challengeItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
-                @Override
-                public void onGenerateLink(String shareContents, String shareUri) {
-                    getView().hideProgress();
-                    shareLink(true, shareUri, challengeItem.getTitle(), packageName);
-                }
+            ChallengesModuleRouterImpl.generateBranchUrlForChallenge(getView().getActivity(), url, challengeItem.getTitle(), name, challengeItem.getSharing().getMetaTags().getOgUrl(), challengeItem.getSharing().getMetaTags().getOgTitle(), challengeItem.getSharing().getMetaTags().getOgDescription(), challengeItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId()), (shareContents, shareUri) -> {
+                getView().hideProgress();
+                shareLink(true, shareUri, challengeItem.getTitle(), packageName);
             });
         }
     }
@@ -132,12 +129,9 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             shareLink(false, url, submissionItem.getTitle(), packageName);
         } else {
             getView().showProgress(getView().getActivity().getString(R.string.ch_please_wait));
-            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, submissionItem.getTitle(), name, submissionItem.getSharing().getMetaTags().getOgUrl(), submissionItem.getSharing().getMetaTags().getOgTitle(), submissionItem.getSharing().getMetaTags().getOgDescription(), submissionItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
-                @Override
-                public void onGenerateLink(String shareContents, String shareUri) {
-                    getView().hideProgress();
-                    postMapBranchUrl(submissionItem.getId(), shareUri, packageName, submissionItem.getTitle(), false);
-                }
+            ChallengesModuleRouterImpl.generateBranchUrlForChallenge(getView().getActivity(), url, submissionItem.getTitle(), name, submissionItem.getSharing().getMetaTags().getOgUrl(), submissionItem.getSharing().getMetaTags().getOgTitle(), submissionItem.getSharing().getMetaTags().getOgDescription(), submissionItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId()), (shareContents, shareUri) -> {
+                getView().hideProgress();
+                postMapBranchUrl(submissionItem.getId(), shareUri, packageName, submissionItem.getTitle(), false);
             });
         }
     }
@@ -198,7 +192,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         } else if (PACKAGENAME_INSTAGRAM.equalsIgnoreCase(packageName)) {
             shareToInstagram(title, getShareContents(isChallenge, branchUrl, title), isChallenge);
         } else {
-            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).shareBranchUrlForChallenge(getView().getActivity(), packageName, branchUrl, getShareContents(isChallenge, branchUrl, title));
+            ChallengesModuleRouterImpl.shareBranchUrlForChallenge(getView().getActivity(), packageName, branchUrl, getShareContents(isChallenge, branchUrl, title));
         }
     }
 

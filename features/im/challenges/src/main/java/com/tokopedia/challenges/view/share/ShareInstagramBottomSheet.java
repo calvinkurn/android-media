@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.ChallengesModuleRouterImpl;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.model.Result;
@@ -76,7 +76,7 @@ public class ShareInstagramBottomSheet extends BottomSheets {
                 hastag = submissionResult.getSharing().getSocialTracking().getInstagram().getRequiredText();
         }
         LinearLayout llShareInstructions = view.findViewById(R.id.ll_share_instructions);
-        String instructionsText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig(Utils.INSTGRAM_INSTRUCTION_TEXT_FIREBASE_KEY);
+        String instructionsText = ChallengesModuleRouterImpl.getStringRemoteConfig(getActivity(),Utils.INSTGRAM_INSTRUCTION_TEXT_FIREBASE_KEY);
         if (TextUtils.isEmpty(instructionsText)) {
             Utils.generateBulletText(llShareInstructions, getString(R.string.ch_insta_instruction_text));
         } else {

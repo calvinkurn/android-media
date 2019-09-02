@@ -1,8 +1,5 @@
 package com.tokopedia.challenges.view.activity;
 
-import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -10,11 +7,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.design.utils.TabUtil;
 
@@ -30,21 +25,21 @@ public class ChallengesHomeActivity extends ChallengesBaseActivity {
     private final static String SCREEN_CHALLENGES = "challenges";
 
 
-    @DeepLink({ChallengesUrl.AppLink.CHALLENGES_HOME})
-    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
-        Intent destination;
-        try {
-            String deepLink = extras.getString(DeepLink.URI);
-            Uri.Builder uri = Uri.parse(deepLink).buildUpon();
-            destination = new Intent(context, ChallengesHomeActivity.class)
-                    .setData(uri.build())
-                    .putExtras(extras);
-
-        } catch (Exception e) {
-            destination = new Intent(context, ChallengesHomeActivity.class);
-        }
-        return destination;
-    }
+//    @DeepLink({ChallengesUrl.AppLink.CHALLENGES_HOME})
+//    public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
+//        Intent destination;
+//        try {
+//            String deepLink = extras.getString(DeepLink.URI);
+//            Uri.Builder uri = Uri.parse(deepLink).buildUpon();
+//            destination = new Intent(context, ChallengesHomeActivity.class)
+//                    .setData(uri.build())
+//                    .putExtras(extras);
+//
+//        } catch (Exception e) {
+//            destination = new Intent(context, ChallengesHomeActivity.class);
+//        }
+//        return destination;
+//    }
 
     @Override
     protected Fragment getNewFragment() {

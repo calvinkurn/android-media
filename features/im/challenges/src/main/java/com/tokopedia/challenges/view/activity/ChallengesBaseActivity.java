@@ -3,10 +3,9 @@ package com.tokopedia.challenges.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.ChallengesModuleRouterImpl;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
 import com.tokopedia.user.session.UserSession;
@@ -29,12 +28,13 @@ public abstract class ChallengesBaseActivity extends BaseSimpleActivity implemen
             navigateToLoginPage();
         }
         if (!checkFirebaseEnable()) {
-            finish();
+            //finish();
         }
     }
 
     private void navigateToLoginPage() {
-        Intent intent = ((ChallengesModuleRouter) (this.getApplication())).getLoginIntent(this);
+        Intent intent = ChallengesModuleRouterImpl.getLoginIntent(this);
+//        Intent intent = ((ChallengesModuleRouter) (this.getApplication())).getLoginIntent(this);
         startActivityForResult(intent, LOGIN_REQUEST_CODE);
     }
 
@@ -42,7 +42,7 @@ public abstract class ChallengesBaseActivity extends BaseSimpleActivity implemen
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (!checkFirebaseEnable()) {
-            finish();
+           // finish();
         }
         if (requestCode == LOGIN_REQUEST_CODE && resultCode != RESULT_OK) {
             finish();
@@ -51,6 +51,6 @@ public abstract class ChallengesBaseActivity extends BaseSimpleActivity implemen
     }
 
     private boolean checkFirebaseEnable() {
-        return (((ChallengesModuleRouter) getApplicationContext()).getBooleanRemoteConfig("app_enable_indi_challenges", true));
+        return (!ChallengesModuleRouterImpl.getBooleanRemoteConfig(ChallengesBaseActivity.this,"app_enable_indi_challenges", true));
     }
 }

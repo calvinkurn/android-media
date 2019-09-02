@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.ChallengesModuleRouterImpl;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.adapter.viewHolder.SubmissionViewHolder;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
@@ -147,8 +147,7 @@ public class ChallengeMainDetailsAdapter extends RecyclerView.Adapter {
         if (itemView.getTag() == null) {
             viewHolder.challengeResult = challengeResult;
             itemView.setTag(true);
-            String buzzPointText = ((ChallengesModuleRouter) context.getApplicationContext())
-                    .getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
+            String buzzPointText = ChallengesModuleRouterImpl.getStringRemoteConfig(context,Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
             if (TextUtils.isEmpty(buzzPointText)) {
                 viewHolder.tvBuzzPoint.setVisibility(View.GONE);
                 viewHolder.dividerBuzz.setVisibility(View.GONE);
