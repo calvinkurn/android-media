@@ -1881,7 +1881,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         submitHelpTicketRequest.setApiJsonResponse(checkoutData.getJsonResponse());
         submitHelpTicketRequest.setErrorMessage(checkoutData.getErrorReporter().getDescription());
         submitHelpTicketRequest.setHeaderMessage(checkoutData.getErrorMessage());
-        submitHelpTicketRequest.setPage("checkout");
+        submitHelpTicketRequest.setPage(SubmitHelpTicketUseCase.PAGE_CHECKOUT);
         submitHelpTicketRequest.setRequestUrl(TransactionDataApiUrl.Cart.PATH_CHECKOUT);
         requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest);
         compositeSubscription.add(

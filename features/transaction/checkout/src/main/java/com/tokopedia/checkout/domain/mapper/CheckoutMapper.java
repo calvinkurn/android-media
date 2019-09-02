@@ -27,11 +27,11 @@ public class CheckoutMapper implements ICheckoutMapper {
         checkoutData.setJsonResponse(new Gson().toJson(checkoutDataResponse));
         checkoutData.setError(true);
         checkoutData.setErrorMessage(checkoutDataResponse.getError());
-//        if (checkoutDataResponse.getErrorReporterResponse() != null) {
+        if (checkoutDataResponse.getErrorReporterResponse() != null) {
             ErrorReporterResponse errorReporterResponse = checkoutDataResponse.getErrorReporterResponse();
-            ErrorReporter errorReporter = new ErrorReporter(true, "blablabla");
+            ErrorReporter errorReporter = new ErrorReporter(errorReporterResponse.getEligible(), errorReporterResponse.getDescription());
             checkoutData.setErrorReporter(errorReporter);
-//        }
+        }
         if (!checkoutData.isError()
                 && !mapperUtil.isEmpty(checkoutDataResponse.getData())
                 && !mapperUtil.isEmpty(checkoutDataResponse.getData().getParameter())) {

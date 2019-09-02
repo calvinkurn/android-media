@@ -53,5 +53,10 @@ class SubmitHelpTicketUseCase @Inject constructor(@Named(QUERY_NAME) val querySt
         const val PARAM = "ErrorDetail"
 
         const val QUERY_NAME = "submit_ticket"
+
+        const val PAGE_ATC = "atc"
+        const val PAGE_CHECKOUT = "checkout"
+
+        const val GQL_REQUEST_URL = "gql.tokopedia.com"
     }
 }
