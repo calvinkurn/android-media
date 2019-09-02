@@ -140,6 +140,11 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
 
             til_contact_email.editText.setText(contact.email)
             til_contact_phone_number.editText.setText(contact.phoneNumber)
+
+            contactData.phoneCode = contact.phoneCountryCode
+            spinnerData.clear()
+            spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contact.phoneCountryCode)
+            spinnerAdapter.notifyDataSetChanged()
         }
     }
 
@@ -151,7 +156,8 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
             bookingViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_upsert_travel_contact_list),
-                    selectedContact, TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone))
+                    selectedContact, TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
+                    phoneCountryCode = contactData.phoneCode))
 
             activity?.run {
                 val intent = Intent()

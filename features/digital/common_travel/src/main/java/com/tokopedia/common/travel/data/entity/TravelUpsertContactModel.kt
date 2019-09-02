@@ -41,6 +41,10 @@ class TravelUpsertContactModel(
             @Expose
             val nationality: String = "",
 
+            @SerializedName("phoneCountryCode")
+            @Expose
+            val phoneCountryCode: Int = 0,
+
             @SerializedName("phoneNumber")
             @Expose
             val phoneNumber: String = "",
