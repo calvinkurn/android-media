@@ -14,6 +14,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.banner.BannerViewPagerAdapter
+import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_TELCO
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
@@ -75,6 +78,20 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                 }
             }
         })
+        voucherGameViewModel.voucherGameBanners.observe(this, Observer {
+            it.run {
+                togglePromoBanner(true)
+                when(it) {
+                    is Success -> {
+                        if (it.data.isEmpty()) promo_banner.visibility = View.GONE
+                        else renderBanners(it.data)
+                    }
+                    is Fail -> {
+                        promo_banner.visibility = View.GONE
+                    }
+                }
+            }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -84,6 +101,12 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        voucherGameExtraParam.menuId.toIntOrNull()?.let {
+            togglePromoBanner(false)
+            voucherGameViewModel.getVoucherGameBanners(GraphqlHelper.loadRawString(resources, R.raw.query_telco_catalog_menu_detail),
+                    voucherGameViewModel.createBannerParams(it))
+        }
         initView()
     }
 
@@ -100,8 +123,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         searchInputView.setResetListener(this)
 
         recycler_view.addItemDecoration(VoucherGameListDecorator(ITEM_DECORATOR_SIZE, resources))
-
-//        promo_banner.setPagerAdapter(object: BannerViewPagerAdapter())
     }
 
     private fun togglePromoBanner(state: Boolean) {
@@ -117,6 +138,12 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             showEmpty()
         }
         else renderList(data.operators)
+    }
+
+    private fun renderBanners(data: List<TopupBillsBanner>) {
+        promo_banner.setPagerAdapter(BannerViewPagerAdapter(data.map { it.imageUrl }) {
+            RouteManager.route(context, data[it].applinkUrl)
+        })
     }
 
     override fun getAdapterTypeFactory(): VoucherGameListAdapterFactory {

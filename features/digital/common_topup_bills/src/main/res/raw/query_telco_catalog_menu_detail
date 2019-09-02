@@ -38,5 +38,12 @@ query catalogMenuDetail($menuID: Int!){
       ActionText
       ActionLink
     }
+    banners {
+      id
+      filename
+      img_url
+      promo_code
+      app_link
+    }
   }
 }

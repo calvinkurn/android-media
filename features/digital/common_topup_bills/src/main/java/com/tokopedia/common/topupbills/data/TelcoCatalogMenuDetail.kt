@@ -18,5 +18,8 @@ class TelcoCatalogMenuDetail(
         val promos: List<TelcoPromo>,
         @SerializedName("tickers")
         @Expose
-        val tickers: List<TelcoTicker>
+        val tickers: List<TelcoTicker>,
+        @SerializedName("banners")
+        @Expose
+        val banners: List<TopupBillsBanner>
 )
