@@ -24,8 +24,8 @@ import com.tokopedia.hotel.booking.presentation.activity.HotelContactDataActivit
 import com.tokopedia.hotel.booking.presentation.viewmodel.HotelBookingViewModel
 import kotlinx.android.synthetic.main.fragment_hotel_contact_data.*
 import javax.inject.Inject
-import android.widget.AdapterView
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
+import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 
 
 class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
@@ -35,6 +35,7 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
     lateinit var bookingViewModel: HotelBookingViewModel
 
     lateinit var contactData: TravelContactData
+    var selectedContact = TravelContactListModel.Contact()
 
     lateinit var spinnerAdapter: ArrayAdapter<String>
     val spinnerData = mutableListOf<String>()
@@ -135,6 +136,8 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
 
     private fun autofillView(contact: TravelContactListModel.Contact?) {
         if (contact != null) {
+            selectedContact = TravelContactListModel.Contact(fullName = contact.fullName, email = contact.email, phoneNumber = contact.phoneNumber)
+
             til_contact_email.editText.setText(contact.email)
             til_contact_phone_number.editText.setText(contact.phoneNumber)
         }
@@ -146,6 +149,9 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
             contactData.email = til_contact_email.editText.text.toString()
             contactData.phone = til_contact_phone_number.editText.text.toString()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
+
+            bookingViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_upsert_travel_contact_list),
+                    selectedContact, TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone))
 
             activity?.run {
                 val intent = Intent()

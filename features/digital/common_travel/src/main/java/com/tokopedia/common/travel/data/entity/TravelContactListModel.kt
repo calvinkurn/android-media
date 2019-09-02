@@ -74,33 +74,23 @@ data class TravelContactListModel (
 
             @SerializedName("idList")
             @Expose
-            val idList: List<PassengerIdCard> = listOf()
+            val idList: List<TravelContactIdCard> = listOf()
     ) {
             override fun toString(): String {
                     return if (fullName.isNotBlank()) "$shortTitle $fullName"
                     else "$firstName $lastName"
             }
+
+            override fun equals(other: Any?): Boolean {
+                    return if (other is Contact) {
+                            (this.uuid.equals(other.uuid)) && (this.type.equals(other.type)) &&
+                                    (this.titleID.equals(other.titleID)) && (this.title.equals(other.title)) &&
+                                    (this.shortTitle.equals(other.shortTitle)) && (this.firstName.equals(other.firstName)) &&
+                                    (this.lastName.equals(other.lastName)) && (this.fullName.equals(other.fullName)) &&
+                                    (this.gender.equals(other.gender)) && (this.birthDate.equals(other.birthDate)) &&
+                                    (this.nationality.equals(other.nationality)) && (this.phoneNumber.equals(other.phoneNumber)) &&
+                                    (this.email.equals(other.email)) && (this.idList.equals(other.idList))
+                    } else false
+            }
     }
-
-    data class PassengerIdCard (
-            @SerializedName("type")
-            @Expose
-            val type: String = "",
-
-            @SerializedName("title")
-            @Expose
-            val title: String = "",
-
-            @SerializedName("number")
-            @Expose
-            val number: String = "",
-
-            @SerializedName("country")
-            @Expose
-            val country: String = "",
-
-            @SerializedName("expiry")
-            @Expose
-            val expiry: String = ""
-    )
 }

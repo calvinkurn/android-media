@@ -51,25 +51,20 @@ class TravelUpsertContactModel(
 
             @SerializedName("idList")
             @Expose
-            val idList: List<PassengerIdCard> = listOf()
+            val idList: List<TravelContactIdCard> = listOf()
     ) {
-        data class PassengerIdCard(
-                @SerializedName("type")
-                @Expose
-                val type: String = "",
 
-                @SerializedName("number")
-                @Expose
-                val number: String = "",
-
-                @SerializedName("country")
-                @Expose
-                val country: String = "",
-
-                @SerializedName("expiry")
-                @Expose
-                val expiry: String = ""
-        )
+        override fun equals(other: Any?): Boolean {
+            return if (other is Contact) {
+                title.equals(other.title) && fullName.equals(other.fullName) && firstName.equals(other.firstName) &&
+                        lastName.equals(other.lastName) && birthDate.equals(other.birthDate) && nationality.equals(other.nationality) &&
+                        phoneNumber.equals(other.phoneNumber) && email.equals(other.email) && idList.equals(other.idList)
+            } else if (other is TravelContactListModel.Contact) {
+                title.equals(other.title) && fullName.equals(other.fullName) && firstName.equals(other.firstName) &&
+                        lastName.equals(other.lastName) && birthDate.equals(other.birthDate) && nationality.equals(other.nationality) &&
+                        phoneNumber.equals(other.phoneNumber) && email.equals(other.email) && idList.equals(other.idList)
+            } else false
+        }
     }
 
     data class Response(

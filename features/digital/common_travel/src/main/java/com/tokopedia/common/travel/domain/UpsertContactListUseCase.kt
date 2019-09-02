@@ -31,5 +31,8 @@ class UpsertContactListUseCase @Inject constructor(val useCase: MultiRequestGrap
 
     companion object {
         const val PARAM_UPSERT_CONTACT = "data"
+
+        const val PARAM_TRAVEL_HOTEL = "hotel"
+        const val PARAM_TRAVEL_FLIGHT = "flight"
     }
 }

@@ -3,7 +3,9 @@ package com.tokopedia.hotel.booking.presentation.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
+import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 import com.tokopedia.common.travel.domain.GetContactListUseCase
+import com.tokopedia.common.travel.domain.UpsertContactListUseCase
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -29,6 +31,7 @@ import javax.inject.Inject
 
 class HotelBookingViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                 private val getContactListUseCase: GetContactListUseCase,
+                                                private val upsertContactListUseCase: UpsertContactListUseCase,
                                                 val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
@@ -39,6 +42,17 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
         launch {
             contactListResult.value = getContactListUseCase.execute(query = query,
                     product = GetContactListUseCase.PARAM_PRODUCT_HOTEL)
+        }
+    }
+
+    fun updateContactList(query: String, contact: TravelContactListModel.Contact,
+                          updatedContact: TravelUpsertContactModel.Contact) {
+        launch {
+            if (!updatedContact.equals(contact)) {
+                upsertContactListUseCase.execute(query,
+                        TravelUpsertContactModel(updateLastUsedProduct = UpsertContactListUseCase.PARAM_TRAVEL_HOTEL,
+                                contacts = listOf(updatedContact)))
+            }
         }
     }
 
