@@ -20,6 +20,7 @@ import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapter;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapterTypeFactory;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationRefundBottomAdapter;
+import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationRefundDetailMiddleAdapter;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationDetailContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationDetailPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
@@ -56,7 +57,6 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private AppCompatTextView txtCancellationStatus;
     private TextView txtCancellationDate;
     private TextView txtRealRefund;
-    private TextView txtEstimateRefund;
     private Ticker tickerRefundInfo;
     private RecyclerView rvBottomTopInfo, rvBottomMiddleInfo, rvBottomBottomInfo;
 
@@ -84,7 +84,6 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         rvFlights = view.findViewById(R.id.recycler_view_flight);
         rvPassengers = view.findViewById(R.id.recycler_view_data_passenger);
         txtRealRefund = view.findViewById(R.id.total_price);
-        txtEstimateRefund = view.findViewById(R.id.estimate_refund);
         txtCancellationStatus = view.findViewById(R.id.cancellation_status);
         txtCancellationDate = view.findViewById(R.id.cancellation_date);
         tickerRefundInfo = view.findViewById(R.id.ticker_refund_info);
@@ -151,7 +150,6 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         flightCancellationDetailPassengerAdapter.notifyDataSetChanged();
 
         txtRealRefund.setText(flightCancellationListViewModel.getCancellations().getRealRefund());
-        txtEstimateRefund.setText(flightCancellationListViewModel.getCancellations().getEstimatedRefund());
 
         if (flightCancellationListViewModel.getCancellations().getRefundInfo().length() > 0) {
             tickerRefundInfo.setTextDescription(flightCancellationListViewModel.getCancellations().getRefundInfo());
@@ -177,11 +175,10 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         rvBottomTopInfo.setLayoutManager(new LinearLayoutManager(getContext()));
         rvBottomTopInfo.setAdapter(refundTopAdapter);
 
-        /*// middle info
-        FlightCancellationRefundBottomAdapter refundMiddleAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL);
-        refundMiddleAdapter.addData(generateSimpleViewModel(refundDetail.getTopInfo()));
+        // middle info
+        FlightCancellationRefundDetailMiddleAdapter refundMiddleAdapter = new FlightCancellationRefundDetailMiddleAdapter(refundDetail.getMiddleInfo());
         rvBottomMiddleInfo.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvBottomMiddleInfo.setAdapter(refundMiddleAdapter);*/
+        rvBottomMiddleInfo.setAdapter(refundMiddleAdapter);
 
         // bottom info
         FlightCancellationRefundBottomAdapter refundBottomAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_RED);
