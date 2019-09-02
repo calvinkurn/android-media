@@ -727,10 +727,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (wishlist.getId().equalsIgnoreCase(productId)) {
                 if (FLAG_IS_CART_EMPTY) {
                     sendAnalyticsOnClickProductWishlistOnEmptyCart(String.valueOf(position),
-                        dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position));
+                            dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position));
                 } else {
                     sendAnalyticsOnClickProductWishlistOnCartList(String.valueOf(position),
-                        dPresenter.generateWishlistProductClickDataLayer(wishlist, position));
+                            dPresenter.generateWishlistProductClickDataLayer(wishlist, position));
                 }
             }
             position++;
@@ -747,10 +747,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (recentView.getId().equalsIgnoreCase(productId)) {
                 if (FLAG_IS_CART_EMPTY) {
                     sendAnalyticsOnClickProductRecentViewOnEmptyCart(String.valueOf(position),
-                        dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position));
+                            dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position));
                 } else {
                     sendAnalyticsOnClickProductRecentViewOnCartList(String.valueOf(position),
-                        dPresenter.generateRecentViewProductClickDataLayer(recentView, position));
+                            dPresenter.generateRecentViewProductClickDataLayer(recentView, position));
                 }
             }
             position++;
@@ -773,8 +773,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         if (recommendationItemClick != null) {
-                sendAnalyticsOnClickProductRecommendation(String.valueOf(position),
-                        dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
+            sendAnalyticsOnClickProductRecommendation(String.valueOf(position),
+                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
         }
 
         onProductClicked(productId);
@@ -1255,18 +1255,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
 
                 cartAdapter.addDataList(cartListData.getShopGroupDataList());
-                if (cartListData.getAdsModel() != null) {
-                    cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
-                }
 
                 if (cartListData.getShopGroupDataList() != null && !cartListData.getShopGroupDataList().isEmpty()) {
                     dPresenter.getInsuranceTechCart();
                 }
 
-
-                if (cartListData.getAdsModel() != null) {
-                    cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
-                }
                 dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList(), cartAdapter.getInsuranceCartShops());
                 if (cbSelectAll != null) {
                     cbSelectAll.setChecked(cartListData.isAllSelected());
@@ -1276,35 +1269,40 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartAdapter.checkForShipmentForm();
                 onCartNotEmpty();
 
-                if (toolbar != null) {
-                    setVisibilityRemoveButton(true);
-                } else {
-                    if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
-                        mIsMenuVisible = true;
-                        getActivity().invalidateOptionsMenu();
-                    }
-                }
-                cartPageAnalytics.eventViewCartListFinishRender();
-
-                if (recentViewList == null) {
-                    dPresenter.processGetRecentViewData();
-                } else {
-                    renderRecentView(null);
-                }
-
-                if (wishLists == null) {
-                    dPresenter.processGetWishlistData();
-                } else {
-                    renderWishlist(null);
-                }
-
-                if (recommendationList == null) {
-                    dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
-                } else {
-                    renderRecommendation(null);
-                }
-
             }
+
+            if (toolbar != null) {
+                setVisibilityRemoveButton(true);
+            } else {
+                if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
+                    mIsMenuVisible = true;
+                    getActivity().invalidateOptionsMenu();
+                }
+            }
+
+            if (cartListData.getAdsModel() != null) {
+                cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+            }
+
+            if (recentViewList == null) {
+                dPresenter.processGetRecentViewData();
+            } else {
+                renderRecentView(null);
+            }
+
+            if (wishLists == null) {
+                dPresenter.processGetWishlistData();
+            } else {
+                renderWishlist(null);
+            }
+
+            if (recommendationList == null) {
+                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
+            } else {
+                renderRecommendation(null);
+            }
+
+            cartPageAnalytics.eventViewCartListFinishRender();
         }
     }
 
@@ -1909,14 +1907,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList
-            (Map<String, Object> eeDataLayerCart) {
+    public void sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(Map<String, Object> eeDataLayerCart) {
         cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusDanTambahWishlistFromTrashBin(eeDataLayerCart);
     }
 
     @Override
-    public void sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList
-            (Map<String, Object> eeDataLayerCart) {
+    public void sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(Map<String, Object> eeDataLayerCart) {
         cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(eeDataLayerCart);
     }
 
@@ -2101,8 +2097,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onClashCheckPromo(@NonNull ClashingInfoDetailUiModel
-                                          clashingInfoDetailUiModel, @NotNull String type) {
+    public void onClashCheckPromo(@NonNull ClashingInfoDetailUiModel clashingInfoDetailUiModel,
+                                  @NotNull String type) {
         ClashBottomSheetFragment clashBottomSheetFragment = ClashBottomSheetFragment.newInstance();
         clashBottomSheetFragment.setData(clashingInfoDetailUiModel);
         clashBottomSheetFragment.setActionListener(this);
