@@ -97,7 +97,6 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.Distric
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.tracking.view.uploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.tracking.view.uploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
@@ -220,7 +219,7 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
-        ApplinkRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
+        ApplinkRouter, ImageUploaderRouter,
         NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         ChangePasswordRouter, GmSubscribeModuleRouter,
         PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
@@ -987,12 +986,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public String getDesktopLinkGroupChat() {
         return "";
     }
-
-    @Override
-    public String logisticUploadRouterGetApplicationBuildFlavor() {
-        return BuildConfig.FLAVOR;
-    }
-
 
     @Override
     public void goToApplinkActivity(Context context, String applink) {
