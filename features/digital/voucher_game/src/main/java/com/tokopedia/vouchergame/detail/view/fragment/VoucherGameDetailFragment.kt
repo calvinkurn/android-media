@@ -65,6 +65,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private var inputFieldCount = 0
     lateinit var enquiryData: List<VoucherGameEnquiryFields>
+    var isEnquired = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -147,6 +148,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun processEnquiry(data: TelcoEnquiryData) {
         toggleEnquiryLoadingBar(false)
+        isEnquired = true
         renderEnquiryResult(data.enquiry.attributes.mainInfoList)
     }
 
@@ -156,6 +158,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun showError(t: Throwable) {
         toggleEnquiryLoadingBar(false)
+        isEnquired = false
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.message) { enquireFields() }.showRetrySnackbar()
     }
 
@@ -163,6 +166,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         // Hide input fields if there is no fields
         if (!data.needEnquiry || data.enquiryFields.isEmpty()) {
             inputFieldCount = 0
+            isEnquired = true
             input_field_container.visibility = View.GONE
         }
         else {
@@ -225,6 +229,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 //                getEnquiry(clientNumber, voucherGameExtraParam.operatorId)
                 } else {
                     // Set error message
+                    isEnquired = false
                     setInputFieldsError(true)
                 }
             }
@@ -239,7 +244,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                             input: String): Boolean {
         if (input.isEmpty()) return false
         for (validation in fieldValidation) {
-            if (!Pattern.matches(validation.rule, input)) {
+            if (validation.rule.isNotEmpty() && !Pattern.matches(validation.rule, input)) {
                 return false
             }
         }
@@ -370,8 +375,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         checkout_view.setVisibilityLayout(true)
         checkout_view.setTotalPrice(selectedProduct.attributes.promo?.newPrice ?: selectedProduct.attributes.price)
 
-        // Disable continue button if fields is not empty
-        // TODO: Check enquiry result before processing to cart
+        // Disable continue button if fields are not valid
+        checkout_view.setBuyButtonState(isEnquired)
     }
 
     override fun onClickNextBuyButton() {
