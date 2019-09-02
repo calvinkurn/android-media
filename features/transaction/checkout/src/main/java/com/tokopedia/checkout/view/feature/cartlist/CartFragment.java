@@ -1256,6 +1256,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
                 cartAdapter.addDataList(cartListData.getShopGroupDataList());
 
+                if (cartListData.getAdsModel() != null) {
+                    cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+                }
+
                 if (cartListData.getShopGroupDataList() != null && !cartListData.getShopGroupDataList().isEmpty()) {
                     dPresenter.getInsuranceTechCart();
                 }
@@ -1269,6 +1273,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 cartAdapter.checkForShipmentForm();
                 onCartNotEmpty();
 
+                cartPageAnalytics.eventViewCartListFinishRender();
             }
 
             if (toolbar != null) {
@@ -1278,10 +1283,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     mIsMenuVisible = true;
                     getActivity().invalidateOptionsMenu();
                 }
-            }
-
-            if (cartListData.getAdsModel() != null) {
-                cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
             }
 
             if (recentViewList == null) {
@@ -1302,7 +1303,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 renderRecommendation(null);
             }
 
-            cartPageAnalytics.eventViewCartListFinishRender();
         }
     }
 
