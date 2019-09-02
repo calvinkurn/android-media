@@ -142,7 +142,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     }
 
     override fun onErrorGetPopUp(e: Throwable) {
-        onSuccessGetPopUp(false, null)
+        onSuccessGetPopUp(false, "")
     }
 
 

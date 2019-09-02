@@ -14,6 +14,10 @@ import java.util.*
 
 interface ProductManagePresenter : CustomerPresenter<ProductManageView> {
 
+    fun isIdlePowerMerchant() : Boolean
+
+    fun isPowerMerchant(): Boolean
+
     fun getGoldMerchantStatus()
 
     fun bulkUpdateProduct(listUpdateResponse: MutableList<ConfirmationProductData>)
@@ -35,5 +39,5 @@ interface ProductManagePresenter : CustomerPresenter<ProductManageView> {
 
     fun mapToProductConfirmationData(isActionDelete: Boolean, stockType: BulkBottomSheetType.StockType, etalaseType: BulkBottomSheetType.EtalaseType, productManageViewModels: List<ProductManageViewModel>): ArrayList<ConfirmationProductData>
 
-    fun failedBulkDataMapper(failData: List<ProductUpdateV3Response> , confirmationProductDataList : List<ConfirmationProductData>) : List<ConfirmationProductData>
+    fun failedBulkDataMapper(failData: List<ProductUpdateV3Response>, confirmationProductDataList: List<ConfirmationProductData>): MutableList<ConfirmationProductData>
 }

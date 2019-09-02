@@ -40,6 +40,9 @@ class ProductManagePresenterImpl @Inject constructor(
         private val bulkUpdateProductUseCase: BulkUpdateProductUseCase
 ) : BaseDaggerPresenter<ProductManageView>(), ProductManagePresenter {
 
+    override fun isIdlePowerMerchant(): Boolean =  userSessionInterface.isPowerMerchantIdle
+    override fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
+
     override fun getGoldMerchantStatus() {
         getShopInfoUseCase.execute(RequestParams.EMPTY, object : Subscriber<ShopModel>() {
             override fun onNext(shopModel: ShopModel) {
@@ -306,9 +309,9 @@ class ProductManagePresenterImpl @Inject constructor(
     }
 
     override fun failedBulkDataMapper(failData: List<ProductUpdateV3Response>, confirmationProductDataList: List<ConfirmationProductData>)
-            : List<ConfirmationProductData> {
+            : MutableList<ConfirmationProductData> {
         return confirmationProductDataList.filter {
             failData.map { it.productUpdateV3Data.productId }.contains(it.productId)
-        }
+        }.toMutableList()
     }
 }
