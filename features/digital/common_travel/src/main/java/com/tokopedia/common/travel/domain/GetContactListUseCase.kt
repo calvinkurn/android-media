@@ -22,10 +22,7 @@ class GetContactListUseCase @Inject constructor(val useCase: MultiRequestGraphql
                         product: String,
                         filterType: String = "")
             : List<TravelContactListModel.Contact> {
-
-        useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).apply {
-            setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
-        }.build())
+        
         useCase.clearRequest()
 
         try {
