@@ -4,16 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/img_arrow"
-        android:background="?attr/selectableItemBackground"
         android:orientation="vertical"
-        android:paddingRight="@dimen/dp_8">
+        android:paddingRight="@dimen/dp_16">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_cancellation_created_time"
