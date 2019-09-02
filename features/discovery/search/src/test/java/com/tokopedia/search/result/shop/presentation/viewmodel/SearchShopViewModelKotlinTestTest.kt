@@ -28,7 +28,7 @@ import io.kotlintest.specs.BehaviorSpec
 import kotlinx.coroutines.Dispatchers
 import org.mockito.Mockito
 
-fun <T> List<T>?.secondElementAndAbove(): List<T>? {
+private fun <T> List<T>?.secondElementAndAbove(): List<T>? {
     if(this?.size ?: 0 < 2) return this
 
     return this?.subList(1, this.size)

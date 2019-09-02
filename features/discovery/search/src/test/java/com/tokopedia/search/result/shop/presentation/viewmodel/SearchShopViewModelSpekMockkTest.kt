@@ -17,6 +17,8 @@ import com.tokopedia.search.result.shop.presentation.mapper.ShopHeaderViewModelM
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapper
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.utils.betweenFirstAndLast
+import com.tokopedia.search.utils.secondToLast
 import com.tokopedia.user.session.UserSessionInterface
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
@@ -209,40 +211,129 @@ class SearchShopViewModelSpekMockkTest: Spek({
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
             }
         }
+
+        Scenario("Search Shop Twice") {
+
+            Given("search shop API call will be successful and return search shop data") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+            }
+
+            When("execute search shop twice") {
+                searchShopViewModel.searchShop()
+                searchShopViewModel.searchShop()
+            }
+
+            Then("verify search shop API called once") {
+                searchShopUseCase.isExecuted()
+            }
+
+            Then("assert search shop state is success and contains search shop data from first API call") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+        }
+
+        Scenario("Search More Shop without Next Page after Search Shop") {
+
+            Given("search shop API call will return data with has next page is false") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModelWithoutNextPage)
+                searchMoreShopUseCase.stubExecuteOnBackground().returns(searchMoreShopModel)
+            }
+
+            When("execute search shop then search more shop") {
+                searchShopViewModel.searchShop()
+                searchShopViewModel.searchMoreShop()
+            }
+
+            Then("verify search shop API is called, and search more shop API is not called") {
+                searchShopUseCase.isExecuted()
+                searchMoreShopUseCase.isNeverExecuted()
+            }
+
+            Then("assert search shop state is success, but only have search shop data") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndShopItemFromSecondToLastElement()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+        }
+
+        Scenario("Search More Shop without Next Page after Search More SHop") {
+
+            Given("search more shop API will return data with has next page is false") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchMoreShopUseCase.stubExecuteOnBackground()
+                        .returns(searchMoreShopModelWithoutNextPage)
+                        .andThen(
+                                SearchShopModel(
+                                        SearchShopModel.AceSearchShop(
+                                                shopList = moreShopItemList.map { it.copy() }.toList()
+                                        )
+                                )
+                        )
+            }
+
+            When("execute search shop and then search more shop twice") {
+                searchShopViewModel.searchShop()
+                searchShopViewModel.searchMoreShop()
+                searchShopViewModel.searchMoreShop()
+            }
+
+            Then("verify search shop API and search more shop API called once") {
+                searchShopUseCase.isExecuted()
+                searchMoreShopUseCase.isExecuted()
+            }
+
+            Then("assert search shop state is success, without data from second search more shop API call") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndShopItemFromSecondToLastElement()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
+            }
+        }
     }
 })
 
-fun SearchUseCase<*>.stubExecuteOnBackground(): MockKStubScope<Any, Any> {
+private fun SearchUseCase<*>.stubExecuteOnBackground(): MockKStubScope<Any, Any> {
     val it = this
     return coEvery { it.executeOnBackground() }
 }
 
-fun SearchUseCase<*>.isExecuted(executionCount: Int = 1) {
+private fun SearchUseCase<*>.isNeverExecuted() {
+    return this.isExecuted(0)
+}
+
+private fun SearchUseCase<*>.isExecuted(executionCount: Int = 1) {
     val it = this
     coVerify(exactly = executionCount) { it.executeOnBackground() }
 }
 
-fun State<List<Visitable<*>>>?.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween() {
+private fun State<List<Visitable<*>>>?.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween() {
     this?.data?.first().shouldBeInstanceOf<ShopHeaderViewModel>()
     this?.data?.last().shouldBeInstanceOf<LoadingMoreModel>()
-    this?.data?.betweenFirstAndLast()?.let {
-        it.forEachIndexed { index, shopItem ->
-            shopItem.shouldBeInstanceOf<ShopViewModel.ShopItem>()
-            (shopItem as ShopViewModel.ShopItem).position = index + 1
-        }
+    this?.data.betweenFirstAndLast().forEachIndexed { index, shopItem ->
+        shopItem.shouldBeInstanceOf<ShopViewModel.ShopItem>()
+        (shopItem as ShopViewModel.ShopItem).position = index + 1
     }
 }
 
-fun List<*>?.betweenFirstAndLast(): List<*>? {
-    if(this?.size ?: 0 < 3) return null
-
-    return this?.subList(1, this.size - 1)
+private fun State<List<Visitable<*>>>?.shouldHaveHeaderAndShopItemFromSecondToLastElement() {
+    this?.data?.first().shouldBeInstanceOf<ShopHeaderViewModel>()
+    this?.data.secondToLast().forEachIndexed { index, shopItem ->
+        shopItem.shouldBeInstanceOf<ShopViewModel.ShopItem>()
+        (shopItem as ShopViewModel.ShopItem).position = index + 1
+    }
 }
 
-fun State<List<Visitable<*>>>?.shouldHaveShopItemCount(size: Int) {
+private fun State<List<Visitable<*>>>?.shouldHaveShopItemCount(size: Int) {
     this?.data?.count { it is ShopViewModel.ShopItem } shouldBe size
 }
 
-fun State<List<Visitable<*>>>?.shouldBeNullOrEmpty() {
+private fun State<List<Visitable<*>>>?.shouldBeNullOrEmpty() {
     this?.data.isNullOrEmpty() shouldBe true
 }
