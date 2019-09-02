@@ -3,8 +3,8 @@ package com.tokopedia.shop.page.view.widget
 import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.PorterDuff
-import android.support.annotation.AttrRes
-import android.support.annotation.StyleRes
+import androidx.annotation.AttrRes
+import androidx.annotation.StyleRes
 import android.text.SpannableString
 import android.text.TextUtils
 import android.text.method.LinkMovementMethod

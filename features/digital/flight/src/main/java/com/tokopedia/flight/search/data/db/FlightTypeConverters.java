@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.data.db;
 
-import android.arch.persistence.room.TypeConverter;
+import androidx.room.TypeConverter;
 
 import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
 

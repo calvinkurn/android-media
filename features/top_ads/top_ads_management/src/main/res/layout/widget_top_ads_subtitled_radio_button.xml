@@ -24,7 +24,7 @@
 
     </LinearLayout>
 
-    <android.support.v7.widget.AppCompatRadioButton
+    <androidx.appcompat.widget.AppCompatRadioButton
         android:id="@+id/radioButton"
         style="@style/RadioButton"
         android:padding="@dimen/dp_0"

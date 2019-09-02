@@ -2,7 +2,7 @@ package com.tokopedia.flight.common.view;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuItem;
 

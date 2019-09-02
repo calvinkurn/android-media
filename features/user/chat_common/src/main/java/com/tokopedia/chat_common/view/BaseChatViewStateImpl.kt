@@ -1,9 +1,9 @@
 package com.tokopedia.chat_common.view
 
-import android.support.annotation.NonNull
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.Toolbar
+import androidx.annotation.NonNull
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable

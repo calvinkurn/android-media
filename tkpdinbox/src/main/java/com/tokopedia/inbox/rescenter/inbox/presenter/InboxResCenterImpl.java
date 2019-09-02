@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.inbox.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 

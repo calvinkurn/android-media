@@ -1,8 +1,8 @@
 package com.tokopedia.groupchat.chatroom.view.adapter.chatroom.viewholder
 
 import android.graphics.Paint
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar

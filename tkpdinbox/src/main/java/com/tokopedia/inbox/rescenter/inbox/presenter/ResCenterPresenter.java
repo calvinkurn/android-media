@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.inbox.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 

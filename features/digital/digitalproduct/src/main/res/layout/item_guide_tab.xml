@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/dp_16"
     android:paddingTop="@dimen/dp_3">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
@@ -39,5 +39,5 @@
             <include layout="@layout/include_digital_guide_youtube_view" />
 
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

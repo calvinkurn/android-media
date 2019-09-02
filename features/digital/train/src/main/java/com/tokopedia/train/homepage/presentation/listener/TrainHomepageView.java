@@ -1,7 +1,7 @@
 package com.tokopedia.train.homepage.presentation.listener;
 
 import android.app.Activity;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.train.homepage.presentation.model.TrainHomepageViewModel;

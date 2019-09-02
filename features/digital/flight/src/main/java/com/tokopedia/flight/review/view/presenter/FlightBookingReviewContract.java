@@ -1,7 +1,7 @@
 package com.tokopedia.flight.review.view.presenter;
 
 import android.content.Context;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.flight.booking.view.presenter.FlightBaseBookingContact;

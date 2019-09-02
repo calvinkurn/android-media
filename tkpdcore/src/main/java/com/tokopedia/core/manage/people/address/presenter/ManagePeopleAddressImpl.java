@@ -3,7 +3,7 @@ package com.tokopedia.core.manage.people.address.presenter;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
 import com.tokopedia.core.manage.people.address.customdialog.BottomSheetFilterDialog;

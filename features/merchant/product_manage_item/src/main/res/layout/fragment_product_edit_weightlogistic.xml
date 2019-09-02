@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:background="@color/white">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextView.Small"
             android:text="@string/product_label_product_weight"
             android:layout_marginTop="@dimen/dp_16"
@@ -27,7 +27,7 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginRight="@dimen/dp_12"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextView.TitleBig.Bold"
             android:text="@string/product_label_additional_info"
             android:layout_marginTop="@dimen/dp_24"
@@ -88,7 +88,7 @@
             android:orientation="vertical"
             android:visibility="gone">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 style="@style/TextView.Small"
                 android:text="@string/product_label_process_time"
                 android:layout_marginTop="@dimen/dp_16"

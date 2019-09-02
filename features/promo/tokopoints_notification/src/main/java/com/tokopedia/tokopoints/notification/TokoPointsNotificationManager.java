@@ -1,7 +1,7 @@
 package com.tokopedia.tokopoints.notification;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.tokopoints.notification.R;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;

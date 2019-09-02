@@ -3,7 +3,7 @@ package com.tokopedia.seller.selling.presenter;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core2.R;

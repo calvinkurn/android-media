@@ -5,7 +5,7 @@ import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.FloatingActionButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.view.View;
 
 import com.tokopedia.core2.R;

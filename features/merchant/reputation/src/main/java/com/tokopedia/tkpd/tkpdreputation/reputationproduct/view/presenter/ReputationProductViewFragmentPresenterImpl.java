@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.tkpdreputation.reputationproduct.view.presenter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.usecase.DeleteCommentUseCase;
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.domain.usecase.GetLikeDislikeUseCase;

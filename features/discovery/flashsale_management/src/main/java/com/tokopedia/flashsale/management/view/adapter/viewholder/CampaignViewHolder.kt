@@ -1,8 +1,8 @@
 package com.tokopedia.flashsale.management.view.adapter.viewholder
 
 import android.graphics.drawable.GradientDrawable
-import android.support.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
+import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler

@@ -1,8 +1,8 @@
 package com.tokopedia.shop.page.view.widget;
 
 import android.graphics.Rect;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 public class SpacingItemDecoration extends RecyclerView.ItemDecoration {

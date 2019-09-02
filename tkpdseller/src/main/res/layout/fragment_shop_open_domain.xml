@@ -20,14 +20,14 @@
             android:layout_gravity="center_horizontal"
             android:adjustViewBounds="true"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/text_hello"
             style="@style/TextView.TitleBig"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_20"
             tools:text="@string/hello_x" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/TextView.Title"
             android:layout_gravity="center"
             android:text="@string/fill_domain_and_shop" />
@@ -42,7 +42,7 @@
             app:counterEnabled="true"
             app:counterMaxLength="@integer/max_shop_name">
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/edit_text_shop_name"
                 style="@style/EditText"
                 android:layout_width="match_parent"

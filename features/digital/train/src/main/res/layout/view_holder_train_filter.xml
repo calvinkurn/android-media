@@ -22,7 +22,7 @@
         android:layout_centerVertical="true"
         tools:text="Langsung" />
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkbox"
         android:layout_width="@dimen/dp_36"
         android:layout_height="@dimen/dp_36"

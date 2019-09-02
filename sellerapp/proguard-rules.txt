@@ -387,3 +387,6 @@
 
 -keepnames class com.rapid7.jul.LogentriesHandler
 -keepnames class com.tokopedia.logger.LogFormatter
+
+-dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
+-dontwarn androidx.appcompat.widget.RebindReportingHolder

@@ -28,7 +28,7 @@
         android:orientation="horizontal"
         android:padding="@dimen/dp_4">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_protection_label"
             style="@style/TextView.Small.Green"
             android:layout_width="0dp"
@@ -40,7 +40,7 @@
             android:textAlignment="textEnd"
             tools:text="Teramsuk 5 Proteksi Lain" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_protection_expand"
             style="@style/TextView.Small.Green"
             android:layout_width="12dp"
@@ -55,7 +55,7 @@
         android:layout_height="@dimen/dp_1"
         android:background="@drawable/line_divider" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_benefits"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

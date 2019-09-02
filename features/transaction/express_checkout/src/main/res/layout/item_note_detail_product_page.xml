@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:text="@string/label_note_for_seller" />
 
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/et_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

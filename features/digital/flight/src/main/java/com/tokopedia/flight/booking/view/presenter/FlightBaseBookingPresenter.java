@@ -1,6 +1,6 @@
 package com.tokopedia.flight.booking.view.presenter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.utils.CurrencyFormatUtil;

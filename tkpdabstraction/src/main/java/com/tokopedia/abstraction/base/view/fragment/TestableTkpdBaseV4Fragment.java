@@ -1,6 +1,6 @@
 package com.tokopedia.abstraction.base.view.fragment;
 
-import android.support.annotation.RestrictTo;
+import androidx.annotation.RestrictTo;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 

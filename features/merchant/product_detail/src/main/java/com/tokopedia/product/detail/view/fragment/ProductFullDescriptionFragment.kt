@@ -3,7 +3,7 @@ package com.tokopedia.product.detail.view.fragment
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.util.Linkify
 import android.view.LayoutInflater
 import android.view.View

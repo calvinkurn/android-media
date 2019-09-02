@@ -1,6 +1,6 @@
 package com.tokopedia.seller.opportunity.presenter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.seller.opportunity.listener.OpportunityListView;

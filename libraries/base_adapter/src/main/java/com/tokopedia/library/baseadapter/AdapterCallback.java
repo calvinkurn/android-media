@@ -1,6 +1,6 @@
 package com.tokopedia.library.baseadapter;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public interface AdapterCallback {
 

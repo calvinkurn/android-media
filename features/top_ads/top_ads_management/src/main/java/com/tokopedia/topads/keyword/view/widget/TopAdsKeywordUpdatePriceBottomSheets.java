@@ -1,8 +1,8 @@
 package com.tokopedia.topads.keyword.view.widget;
 
 import android.app.Dialog;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;

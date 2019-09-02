@@ -2,7 +2,7 @@ package com.tokopedia.core.manage.people.notification.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.SettingsNotification;
 import com.tokopedia.core.manage.ManageConstant;

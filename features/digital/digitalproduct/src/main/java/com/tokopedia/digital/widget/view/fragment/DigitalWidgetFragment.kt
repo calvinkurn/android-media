@@ -1,8 +1,8 @@
 package com.tokopedia.digital.widget.view.fragment
 
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.content.res.ResourcesCompat
+import com.google.android.material.tabs.TabLayout
+import androidx.core.content.res.ResourcesCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

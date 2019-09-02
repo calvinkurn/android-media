@@ -1,15 +1,19 @@
 package com.tokopedia.seller.seller.info.view.adapter;
 
 import android.graphics.Bitmap;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.base.list.seller.view.adapter.BaseViewHolder;
 import com.tokopedia.seller.R;
@@ -59,13 +63,18 @@ public class SellerInfoViewHolder extends BaseViewHolder<SellerInfoModel> {
 
         textTitle.setText(sellerInfoModel.getTitle());
 
-        ImageHandler.loadImageWithTarget(imageSellerInfo.getContext(), sellerInfoModel.getInfoThumbnailUrl(), new SimpleTarget<Bitmap>() {
+        ImageHandler.loadImageWithTarget(imageSellerInfo.getContext(), sellerInfoModel.getInfoThumbnailUrl(), new CustomTarget<Bitmap>() {
             @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 RoundedBitmapDrawable dr = RoundedBitmapDrawableFactory.create(imageSellerInfo.getResources(), resource);
                 float radius = imageSellerInfo.getResources().getDimension(R.dimen.seller_info_radius_image_view);
                 dr.setCornerRadius(radius);
                 imageSellerInfo.setImageDrawable(dr);
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+
             }
         });
 

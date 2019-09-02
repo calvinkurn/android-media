@@ -4,7 +4,7 @@ package com.tokopedia.flight.booking.constant;
  * Created by alvarisi on 11/7/17.
  */
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

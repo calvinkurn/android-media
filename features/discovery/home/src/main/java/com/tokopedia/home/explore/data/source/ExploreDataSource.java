@@ -2,7 +2,7 @@ package com.tokopedia.home.explore.data.source;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;

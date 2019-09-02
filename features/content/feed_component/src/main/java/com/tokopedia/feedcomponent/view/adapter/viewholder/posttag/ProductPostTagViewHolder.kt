@@ -5,8 +5,8 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
-import android.support.annotation.LayoutRes
-import android.support.v7.widget.CardView
+import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewTreeObserver

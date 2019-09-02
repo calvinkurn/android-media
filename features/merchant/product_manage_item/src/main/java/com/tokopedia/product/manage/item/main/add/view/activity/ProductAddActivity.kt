@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.item.main.add.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.product.manage.item.R
 import com.tokopedia.product.manage.item.catalog.view.model.ProductCatalog
 import com.tokopedia.product.manage.item.category.view.model.ProductCategory

@@ -1,7 +1,7 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.PorterDuff
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import android.view.View
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse

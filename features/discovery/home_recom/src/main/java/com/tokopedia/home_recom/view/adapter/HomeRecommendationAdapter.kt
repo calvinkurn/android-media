@@ -1,6 +1,6 @@
 package com.tokopedia.home_recom.view.adapter
 
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable

@@ -62,7 +62,7 @@
         app:decimal_input_hint="@string/product_label_stock_count"
         android:visibility="gone"/>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textViewHelperStock"
         style="@style/TextView.Nano"
         android:text="@string/product_helper_product_stock"
@@ -70,7 +70,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:visibility="gone"/>
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
         android:text="@string/product_label_additional_info"
         android:layout_marginTop="@dimen/dp_24"

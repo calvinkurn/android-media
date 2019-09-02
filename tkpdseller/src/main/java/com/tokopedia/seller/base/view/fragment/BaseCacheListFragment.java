@@ -2,7 +2,7 @@ package com.tokopedia.seller.base.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.base.list.seller.view.fragment.BaseListFragment;
 import com.tokopedia.seller.R;

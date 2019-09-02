@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.autosweepmf.data.mapper;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.tokocash.autosweepmf.data.CommonConstant;
 import com.tokopedia.tokocash.autosweepmf.data.model.AutoSweepDetailEntity;

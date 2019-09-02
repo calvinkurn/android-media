@@ -1,7 +1,7 @@
 package com.tokopedia.core.manage.people.address.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.manage.people.address.model.ChooseAddress.ChooseAddressResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;

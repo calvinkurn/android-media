@@ -1,9 +1,9 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
-import android.support.annotation.DrawableRes
-import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintLayout
-import android.support.v4.content.ContextCompat
+import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView

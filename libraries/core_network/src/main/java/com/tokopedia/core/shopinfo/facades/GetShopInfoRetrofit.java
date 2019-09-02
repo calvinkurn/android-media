@@ -1,7 +1,7 @@
 package com.tokopedia.core.shopinfo.facades;
 
 import android.content.Context;
-import android.support.v4.util.ArrayMap;
+import androidx.collection.ArrayMap;
 
 import com.google.gson.Gson;
 import com.tkpd.library.kirisame.Kirisame;

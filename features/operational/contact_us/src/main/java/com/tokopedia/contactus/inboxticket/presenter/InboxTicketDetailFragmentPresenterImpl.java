@@ -2,7 +2,7 @@ package com.tokopedia.contactus.inboxticket.presenter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.contactus.createticket.interactor.ContactUsRetrofitInteractor;
 import com.tokopedia.contactus.createticket.interactor.ContactUsRetrofitInteractorImpl;

@@ -1,6 +1,6 @@
 package com.tokopedia.core.tracking.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;

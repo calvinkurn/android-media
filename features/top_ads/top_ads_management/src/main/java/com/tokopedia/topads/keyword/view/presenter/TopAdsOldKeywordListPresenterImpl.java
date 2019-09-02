@@ -1,6 +1,6 @@
 package com.tokopedia.topads.keyword.view.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils;
 import com.tokopedia.base.list.seller.view.listener.BaseListViewListener;

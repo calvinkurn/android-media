@@ -1,7 +1,7 @@
 package com.tokopedia.phoneverification.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;

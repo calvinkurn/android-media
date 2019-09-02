@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.core.analytics.AppEventTracking;

@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="@color/white">
 
-    <android.support.design.widget.TabLayout
+    <com.google.android.material.tabs.TabLayout
         android:id="@+id/indicator"
         style="@style/TabBar.White"
         app:tabMode="scrollable"

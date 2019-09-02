@@ -2,7 +2,7 @@ package com.tokopedia.core.network.retrofit.utils;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tokopedia.core.network.CoreNetworkApplication;

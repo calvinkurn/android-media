@@ -3,8 +3,8 @@ package com.tokopedia.profile.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.PagerAdapter
+import com.google.android.material.tabs.TabLayout
+import androidx.viewpager.widget.PagerAdapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity

@@ -1,7 +1,7 @@
 package com.tokopedia.shopetalasepicker.view.activity
 
 import android.content.Context
-import android.support.v4.content.ContextCompat.startActivity
+import androidx.core.content.ContextCompat.startActivity
 import android.content.Intent
 
 /**
