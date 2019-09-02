@@ -1,4 +1,4 @@
-package com.tokopedia.iris
+package com.tokopedia.iris.util
 
 /**
  * @author okasurya on 10/18/18.
@@ -11,6 +11,8 @@ const val VERSION = "iris/v1/"
 
 const val BASE_URL ="$LIVE$VERSION"
 
+const val TAG = "P3IRIS-ANDROID"
+
 const val SINGLE_EVENT = "track/dim-event"
 const val MULTI_EVENT = "track/dim-event"
 
@@ -18,7 +20,7 @@ const val HEADER_CONTENT_TYPE = "Content-Type"
 const val HEADER_USER_ID = "Tkpd-UserId"
 const val HEADER_DEVICE = "X-Device"
 const val HEADER_JSON = "application/json"
-const val HEADER_ANDROID = "android-" + BuildConfig.VERSION_NAME
+const val HEADER_ANDROID = "android-"
 
 const val DATABASE_NAME = "iris-db"
 const val TABLE_TRACKING = "tracking"
@@ -36,10 +38,13 @@ const val KEY_INITIAL_VISIT = "initial_visit"
 const val WORKER_SEND_DATA = "com.tokopedia.iris.WORKER_SEND_DATA"
 const val MAX_ROW = "MAX_ROW"
 
+const val IRIS_ENABLED = "iris_enabled"
+const val IRIS_LOG_ENABLED = "iris_log_enabled"
+
 const val KEY_CONTAINER = "gtm"
 const val KEY_EVENT = "default_app"
 
 const val DEFAULT_CONFIG = "{\"row_limit\":25,\"interval\":2}"
 const val JOB_IRIS_ID = 1500
-const val DEFAULT_SERVICE_TIME: Long = 15
-const val DEFAULT_MAX_ROW = 50
+const val DEFAULT_SERVICE_TIME: Long = 2
+const val DEFAULT_MAX_ROW = 25

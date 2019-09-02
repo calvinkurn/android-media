@@ -1,4 +1,4 @@
-package com.tokopedia.iris
+package com.tokopedia.iris.util
 
 import android.content.Context
 
@@ -19,7 +19,12 @@ class Cache(context: Context) {
         return sharedPreferences.getBoolean(IRIS_ENABLED, false)
     }
 
-    companion object {
-        const val IRIS_ENABLED = "iris_enabled"
+    fun setEnableLogEntries(isEnabled: Boolean) {
+        editor.putBoolean(IRIS_LOG_ENABLED, isEnabled)
+        editor.commit()
+    }
+
+    fun isEnableLogEntries(): Boolean {
+        return sharedPreferences.getBoolean(IRIS_LOG_ENABLED, false)
     }
 }

@@ -5,6 +5,11 @@ import com.tokopedia.iris.model.Configuration
 
 interface Iris {
 
+    /**
+     * Simplify initialize iris
+     */
+    fun initialize()
+
     fun setService(config: String, isEnabled: Boolean)
 
     fun setService(config: Configuration)
