@@ -47,6 +47,9 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -113,6 +116,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     var seenAttachedProduct = HashSet<Int>()
 
+    protected var remoteConfig: RemoteConfig? = null
+
     companion object {
 
         private const val POST_ID = "{post_id}"
@@ -141,6 +146,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -525,7 +531,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     return
                 }
                 processImagePathToUpload(data)?.let {
-                    presenter.startCompressImages(it)
+                    model ->
+                    remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
+                        if(it == null || it == false) {
+                            presenter.startUploadImages(model)
+                        } else {
+                            presenter.startCompressImages(model)
+                        }
+                    }
                 }
             }
 
