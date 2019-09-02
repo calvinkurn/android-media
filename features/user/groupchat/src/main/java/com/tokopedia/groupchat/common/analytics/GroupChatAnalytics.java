@@ -943,6 +943,7 @@ public class GroupChatAnalytics {
 
     //#ATCSC1
     public void eventClickATC(String productName, String productId, String productPrice, int quantity, String shopId, String shopName) {
+        productPrice = productPrice.replace(".","").replace("Rp","").trim();
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT_NAME, "addToCart",
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,

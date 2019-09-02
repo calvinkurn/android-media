@@ -55,7 +55,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
 
             title.text = getTitle(stickyComponentViewModel.title)
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
-            subtitle.setTypeface(null, Typeface.NORMAL)
+            title.setTypeface(null, Typeface.NORMAL)
             title.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
 
             subtitle.text = MethodChecker.fromHtml(stickyComponentViewModel.subtitle)
