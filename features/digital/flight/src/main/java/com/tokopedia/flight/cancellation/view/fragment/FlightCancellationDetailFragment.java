@@ -193,6 +193,8 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         refundNotesAdapter.setViewModels(generateSimpleViewModel(refundDetail.getNote()));
         rvBottomNotes.setLayoutManager(new LinearLayoutManager(getContext()));
         rvBottomNotes.setAdapter(refundNotesAdapter);
+
+        if (refundDetail.getNote().size() == 0) rvBottomNotes.setVisibility(View.GONE);
     }
 
     private List<SimpleViewModel> generateSimpleViewModel(List<KeyValueEntity> items) {
