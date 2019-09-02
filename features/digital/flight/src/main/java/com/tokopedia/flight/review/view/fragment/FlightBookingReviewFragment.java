@@ -124,7 +124,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     private Button buttonSubmit;
     private TickerView tickerView;
     private TickerCheckoutView promoTicker;
-    private PromoData promoData;
+    private PromoData promoData = new PromoData();
     private View containerFlightReturn;
     private ProgressDialog progressDialog;
     private FlightSimpleAdapter flightBookingReviewPriceAdapter;
