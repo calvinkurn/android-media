@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartTickerViewHolder;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
@@ -54,6 +55,8 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
                 viewHolder instanceof CartWishlistViewHolder ||
                 viewHolder instanceof CartRecommendationViewHolder ||
                 viewHolder instanceof CartSectionHeaderViewHolder) {
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
+        } else if (viewHolder instanceof CartTickerViewHolder) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else {
             outRect.bottom = verticalSpaceHeight;

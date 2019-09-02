@@ -39,27 +39,23 @@ project.ext {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.iris)
+
     implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
 
-    implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation rootProject.ext.playServicesDependencies.plus
-    implementation rootProject.ext.playServicesDependencies.base
-    implementation rootProject.ext.firebase.appIndexing
-    implementation rootProject.ext.firebase.core
-    implementation rootProject.ext.firebase.messaging
-    implementation rootProject.ext.playServicesDependencies.location
-    implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.auth
-    implementation rootProject.ext.playServicesDependencies.places
-    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
-    implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
     implementation rootProject.ext.analyticsDependencies.moengageFirebase
@@ -70,14 +66,19 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation project(rootProject.ext.libraries.analytics)
-
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation project(rootProject.ext.libraries.iris)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.firebase.appIndexing
+    implementation rootProject.ext.firebase.core
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config
+    implementation rootProject.ext.firebase.performance
+
+    implementation rootProject.ext.playServicesDependencies.plus
+    implementation rootProject.ext.playServicesDependencies.base
+    implementation rootProject.ext.playServicesDependencies.location
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.auth
+    implementation rootProject.ext.playServicesDependencies.places
+    implementation rootProject.ext.playServicesDependencies.tagManagerImpl
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler

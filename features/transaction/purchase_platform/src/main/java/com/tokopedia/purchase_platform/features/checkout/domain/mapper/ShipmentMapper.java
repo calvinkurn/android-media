@@ -260,6 +260,11 @@ public class ShipmentMapper implements IShipmentMapper {
                         groupShopResult.setHasPromoList(groupShop.isHasPromoList());
                         groupShopResult.setSaveStateFlag(groupShop.isSaveStateFlag());
 
+                        if (groupShop.getVehicleLeasing() != null) {
+                            groupShopResult.setIsLeasingProduct(groupShop.getVehicleLeasing().isLeasingProduct());
+                            groupShopResult.setBookingFee(groupShop.getVehicleLeasing().getBookingFee());
+                        }
+
                         groupShopResult.setFulfillment(groupShop.isFulfillment());
                         if (groupShop.getWarehouse() != null) {
                             groupShopResult.setFulfillmentId(groupShop.getWarehouse().getWarehouseId());

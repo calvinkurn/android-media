@@ -26,5 +26,6 @@ object RawQueryKeyConstant {
     const val QUERY_PRODUCT_PP = "query_ppGetItemDetailPage"
     const val QUERY_RECOMMEN_PRODUCT = "query_recommendation_product"
     const val QUERY_SHOP_FEATURE = "query_shop_feature"
+    const val MUTATION_AFFILIATE_TRACKING = "mutation_af_tracking"
     const val MUTATION_UPDATE_CART_COUNTER = "update_cart_counter"
 }

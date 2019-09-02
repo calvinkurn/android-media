@@ -392,11 +392,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void triggerSendEnhancedEcommerceCheckoutAnalytics(List<DataCheckoutRequest> dataCheckoutRequests,
                                                               String step,
                                                               String eventAction,
-                                                              String eventLabel) {
+                                                              String eventLabel,
+                                                              String leasingId) {
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(getView().generateCheckPromoFirstStepParam());
         CheckoutRequest checkoutRequest = generateCheckoutRequest(dataCheckoutRequests, checkPromoParam,
-                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
+                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step);
         if (eeDataLayer != null) {
@@ -488,7 +489,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                                boolean isTradeIn, boolean isSkipUpdateOnboardingState,
-                                               @Nullable String cornerId, String deviceId) {
+                                               @Nullable String cornerId, String deviceId, String leasingId) {
+
         if (isReloadData) {
             getView().showLoading();
         } else {
@@ -497,6 +499,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
         if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
+        if (leasingId != null && !leasingId.isEmpty()) paramGetShipmentForm.put("vehicle_leasing_id", leasingId);
 
         RequestParams requestParams = RequestParams.create();
         Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
@@ -696,10 +699,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
+    public void processCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, checkPromoParam,
-                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
+                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
 
         if (checkoutRequest != null) {
@@ -1120,7 +1123,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 });
     }
 
-    private CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, CheckPromoParam checkPromoParam, int isDonation) {
+    private CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, CheckPromoParam checkPromoParam, int isDonation, String leasingId) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
             return null;
@@ -1155,6 +1158,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 builder.promoCodes(checkPromoParam.getPromo().getCodes());
             }
             builder.hasPromoStacking(true);
+        }
+
+        if (leasingId != null && !leasingId.isEmpty()) {
+            builder.setLeasingId(Integer.parseInt(leasingId));
         }
 
         return builder.build();
@@ -1612,7 +1619,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             cornerId = getRecipientAddressModel().isCornerAddress();
         }
 
-        getCourierRecommendationUseCase.execute(query, counter, cornerId, shippingParam, spId, 0,
+        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentCartItemModel.getIsLeasingProduct(), shippingParam, spId, 0,
                 shopShipmentList, new GetCourierRecommendationSubscriber(
                         getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
                         shipmentCartItemModel, shopShipmentList, isInitialLoad));
@@ -1688,9 +1695,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId) {
+    public void proceedCodCheckout(CheckPromoParam checkPromoParam, boolean isOneClickShipment, boolean isTradeIn, String deviceId, String leasingId) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null, checkPromoParam,
-                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0
+                shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0, leasingId
         );
         getView().showLoading();
         codCheckoutUseCase.clearRequest();

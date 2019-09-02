@@ -18,6 +18,7 @@ ext {
     tkpdFeedComponentVersion = '2.22'
     tkpdFlashsaleManagementVersion = '2.22'
     tkpdFlightVersion = '2.22'
+    tkpdTravelHomepageVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
     tkpdPowerMerchantVersion = '2.22'
@@ -162,6 +163,7 @@ ext {
             topAdsAutoAds        : "com.tokopedia.topads:top_ads_autoads:${tkpdTopAdsSDKVersion}",
             transaction             : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon       : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
+            travelHomepage          : "com.tokopedia.travel.homepage:travel_homepage:${tkpdTravelHomepageVersion}",
             userIdentification      : "com.tokopedia.user:user:${tkpdUserIdentification}",
             userIdentificationCommon: "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                    : "com.tokopedia.user:user:${tkpdVoteVersion}",
@@ -205,6 +207,7 @@ ext {
             train                           : ":features:digital:train",
 //            train                         : ":features:digital:train_no_op",
             hotel                           : ":features:digital:hotel",
+            travelHomepage                  : ":features:digital:travel_homepage",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
 
             categoryCommon                  : ":features:discovery:category_common",
@@ -266,6 +269,7 @@ ext {
             productManageList               : ":features:merchant:product_manage_list",
             productManageDetail             : ":features:merchant:product_detail",
             productShare                    : ":features:merchant:product_share",
+            report                          : ":features:merchant:report",
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
 
@@ -340,6 +344,7 @@ ext {
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
             settingbank                     : ":features:user:settingbank",
+            settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
 //            topchat                         : ":features:user:topchat_no_op",

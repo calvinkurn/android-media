@@ -246,6 +246,8 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
         shipmentCartItemModel.setHasPromoList(groupShop.isHasPromoList());
         shipmentCartItemModel.setSaveStateFlag(groupShop.isSaveStateFlag());
+        shipmentCartItemModel.setIsLeasingProduct(groupShop.getIsLeasingProduct());
+        shipmentCartItemModel.setBookingFee(groupShop.getBookingFee());
 
         List<Product> products = groupShop.getProducts();
         List<CartItemModel> cartItemModels = convertFromProductList(products);

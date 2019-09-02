@@ -11,5 +11,6 @@ public class CartConstant {
     public static final String PRIORITY_TNC_URL = "https://www.tokopedia.com/tnc-order-prioritas";
     public static final String SCREEN_NAME_CART_NEW_USER = "/user/address/create/cart";
     public static final String SCREEN_NAME_CART_EXISTING_USER = "/cart/address/create";
+    public static final String CHECKOUT_LEASING_ID = "vehicle_leasing_id";
 
 }

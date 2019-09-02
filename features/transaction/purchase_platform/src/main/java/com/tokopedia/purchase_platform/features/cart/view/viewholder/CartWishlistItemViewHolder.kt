@@ -60,9 +60,9 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
 
         itemView.img_wishlist.setOnClickListener {
             if (element.isWishlist) {
-                actionListener.onRemoveFromWishlist(element.id);
+                actionListener.onRemoveFromWishlist(element.id)
             } else {
-                actionListener.onAddToWishlist(element.id);
+                actionListener.onAddToWishlist(element.id)
             }
         }
 
@@ -71,7 +71,7 @@ class CartWishlistItemViewHolder(val view: View, val actionListener: ActionListe
         }
 
         itemView.setOnClickListener {
-            actionListener.onProductClicked(element.id)
+            actionListener.onWishlistProductClicked(element.id)
         }
     }
 

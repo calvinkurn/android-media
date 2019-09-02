@@ -17,6 +17,7 @@ import java.util.List;
 public class CartListData implements Parcelable {
     private boolean isError;
     private String errorMessage;
+    private CartTickerData ticker;
 
     private List<ShopGroupData> shopGroupDataList = new ArrayList<>();
     private CartPromoSuggestionHolderData cartPromoSuggestionHolderData;
@@ -75,6 +76,14 @@ public class CartListData implements Parcelable {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
+    }
+
+    public CartTickerData getTicker() {
+        return ticker;
+    }
+
+    public void setTicker(CartTickerData ticker) {
+        this.ticker = ticker;
     }
 
     public AutoApplyData getAutoApplyData() {
@@ -137,6 +146,7 @@ public class CartListData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
+        dest.writeParcelable(this.ticker, flags);
         dest.writeTypedList(this.shopGroupDataList);
         dest.writeParcelable(this.cartPromoSuggestionHolderData, flags);
         dest.writeByte(this.promoCouponActive ? (byte) 1 : (byte) 0);
@@ -149,6 +159,7 @@ public class CartListData implements Parcelable {
     protected CartListData(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
+        this.ticker = in.readParcelable(CartTickerData.class.getClassLoader());
         this.shopGroupDataList = in.createTypedArrayList(ShopGroupData.CREATOR);
         this.cartPromoSuggestionHolderData = in.readParcelable(CartPromoSuggestionHolderData.class.getClassLoader());
         this.promoCouponActive = in.readByte() != 0;

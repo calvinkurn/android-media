@@ -7,6 +7,7 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 /**
  * @author anggaprasetiyo on 13/03/18.
@@ -25,10 +26,23 @@ public class CartTickerErrorViewHolder extends RecyclerView.ViewHolder {
 
     public void bindData(final CartItemTickerErrorHolderData data, final int position) {
         this.errorTicker.setTickerTitle(data.getCartTickerErrorData().getErrorInfo());
-        this.errorTicker.setTextDescription(data.getCartTickerErrorData().getActionInfo());
+        this.errorTicker.setDescriptionClickEvent(new TickerCallback() {
+            @Override
+            public void onDescriptionViewClick(CharSequence charSequence) {
+                actionListener.onCartItemTickerErrorActionClicked(data, position);
+            }
+
+            @Override
+            public void onDismiss() {
+
+            }
+        });
+        // Do not send empty link
+        this.errorTicker.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_link, data.getCartTickerErrorData().getActionInfo(), data.getCartTickerErrorData().getActionInfo()));
         this.errorTicker.setTickerType(Ticker.TYPE_WARNING);
         this.errorTicker.setTickerShape(Ticker.SHAPE_LOOSE);
         this.errorTicker.setCloseButtonVisibility(View.GONE);
-        this.errorTicker.setOnClickListener(view -> actionListener.onCartItemTickerErrorActionClicked(data, position));
+        // Request layout to update ticker from reused view
+        this.errorTicker.requestLayout();
     }
 }

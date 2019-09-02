@@ -58,11 +58,11 @@ class HotelSearchResultFilterAdapter(private val mode: Int = MODE_SINGLE)
                 title.text = item.itemTitle
                 base_item_filter.isSelected = isSelected
                 if (isSelected){
-                    image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_stars_active_xxl))
-                    title.setTextColor(ContextCompat.getColor(context, R.color.tkpd_main_green))
+                    image.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.design.R.drawable.ic_stars_active_xxl))
+                    title.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.tkpd_main_green))
                 } else {
-                    image.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_system_action_star_grayscale_24))
-                    title.setTextColor(ContextCompat.getColor(context, R.color.light_secondary))
+                    image.setImageDrawable(ContextCompat.getDrawable(context, com.tokopedia.resources.common.R.drawable.ic_system_action_star_grayscale_24))
+                    title.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.light_secondary))
                 }
             }
         }

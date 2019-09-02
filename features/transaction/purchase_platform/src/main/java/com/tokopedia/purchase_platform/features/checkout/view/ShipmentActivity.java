@@ -8,6 +8,8 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
@@ -32,6 +34,17 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     private ShipmentFragment shipmentFragment;
+
+    @DeepLink(ApplinkConst.CHECKOUT)
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Intent intent = new Intent(context, ShipmentActivity.class).putExtras(extras);
+        intent.putExtras(extras);
+        if (extras.getString(CartConstant.CHECKOUT_LEASING_ID) != null) {
+            Uri.Builder uri = Uri.parse(extras.getString(CartConstant.CHECKOUT_LEASING_ID)).buildUpon();
+            intent.setData(uri.build());
+        }
+        return intent;
+    }
 
     public static Intent createInstance(Context context,
                                         PromoStackingData promoData,
@@ -101,10 +114,15 @@ public class ShipmentActivity extends BaseCheckoutActivity {
 
     @Override
     protected Fragment getNewFragment() {
+        String leasingId = "";
+        if (getIntent().getData() != null) {
+            leasingId = String.valueOf(getIntent().getData());
+        }
         shipmentFragment = ShipmentFragment.newInstance(
                 getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
                 getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false),
                 getIntent().getBooleanExtra(EXTRA_IS_ONE_CLICK_SHIPMENT, false),
+                leasingId,
                 getIntent().getExtras()
         );
 

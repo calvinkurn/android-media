@@ -39,6 +39,10 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         return R.layout.dialog_promo_not_eligible
     }
 
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FLEXIBLE
+    }
+
     override fun initView(dialogView: View) {
         tvInfo = dialogView.findViewById(R.id.tv_info)
         rvPromoList = dialogView.findViewById(R.id.rv_promo_list)

@@ -12,4 +12,17 @@
     <string name="cb_bot_reason_text">Beri saran untuk Toped Bot</string>
     <string name="cb_bot_other_reason_text_hint">Tulis saran untuk kami (Opsional)</string>
     <string name="minimum_30_character">Minimum 30 karakter</string>
+    <string name="cb_bot_leave_queue">Keluar Antrian</string>
+    <string name="cb_bot_leave_the_queue">Keluar dari Antrian</string>
+    <string name="cb_bot_leave_the_queue_desc_one">Antrian kamu akan terputus jika keluar dari percakapan ini. Kamu yakin?</string>
+    <string name="cb_bot_leave_the_queue_desc_two">Kamu yakin ingin keluar dari antrian?</string>
+    <string name="cb_bot_ok_text">Ya, Keluar"</string>
+    <string name="cb_bot_cancel_text">Batal</string>
+    <string name="cb_bot_you_left_the_queue">Kamu telah keluar dari antrian</string>
+    <string name="cb_bot_end_live_chat">Akhiri Live Chat</string>
+    <string name="cb_bot_end_live_chat_desc">Kamu akan mengakhiri sesi Live Chat dengan CS kami. Apakah kamu yakin?</string>
+    <string name="cb_bot_yes_end_text">Ya, Akhiri</string>
+    <string name="cb_bot_string_hint_invoice_search">Cari invoice atau nama produk</string>
+    <string name="cb_bot_title_no_result">Transaksi tidak ditemukan  Periksa kembali kata kunci Anda</string>
+
 </resources>

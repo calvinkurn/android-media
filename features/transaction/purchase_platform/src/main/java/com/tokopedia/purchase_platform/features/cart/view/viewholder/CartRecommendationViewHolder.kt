@@ -33,7 +33,7 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
         }
 
         itemView.setOnClickListener {
-            actionListener.onProductClicked(element.recommendationItem.productId.toString())
+            actionListener.onRecommendationProductClicked(element.recommendationItem.productId.toString())
         }
     }
 

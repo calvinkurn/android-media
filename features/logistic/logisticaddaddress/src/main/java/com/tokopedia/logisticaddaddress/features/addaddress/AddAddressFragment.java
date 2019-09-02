@@ -38,8 +38,8 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.purchase_platform.common.analytics.ITransactionAnalyticsAddAddress;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
@@ -846,7 +846,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private View.OnClickListener onCityDistrictClick() {
         return view -> {
             sendAnalyticsOnDistrictSelectionClicked();
-            Intent intent = DistrictRecommendationActivity.newInstance(getActivity(), token);
+            Intent intent = DiscomActivity.newInstance(getActivity(), token);
             startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
         };
     }

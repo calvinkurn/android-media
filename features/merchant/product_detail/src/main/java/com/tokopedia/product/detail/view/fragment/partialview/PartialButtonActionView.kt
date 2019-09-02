@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -31,7 +32,6 @@ class PartialButtonActionView private constructor(private val view: View,
     var isExpressCheckout = false
     var isWarehouseProduct: Boolean = false
     var hasShopAuthority: Boolean = false
-    var isSpecialPrize: Boolean = false
     var preOrder: PreOrder? = PreOrder()
 
     companion object {
@@ -85,9 +85,7 @@ class PartialButtonActionView private constructor(private val view: View,
                     }
                 })
             btn_buy_now.visibility = View.VISIBLE
-            if (isSpecialPrize) btn_add_to_cart.gone()
-            else btn_add_to_cart.visible()
-
+            btn_add_to_cart.visible()
             btn_buy_now.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener
                 buyNowClick?.invoke()
@@ -162,5 +160,13 @@ class PartialButtonActionView private constructor(private val view: View,
                 btn_byme.visible()
             } else btn_byme.gone()
         }
+    }
+
+    fun setBackground(resource: Int) {
+        view.base_btn_action.setBackgroundResource(resource)
+    }
+
+    fun setBackground(drawable: Drawable) {
+        view.base_btn_action.background = drawable
     }
 }

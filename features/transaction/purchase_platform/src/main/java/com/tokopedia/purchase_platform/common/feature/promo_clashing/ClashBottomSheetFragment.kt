@@ -44,6 +44,10 @@ open class ClashBottomSheetFragment : BottomSheets(), ClashingAdapter.ActionList
         }
     }
 
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FLEXIBLE
+    }
+
     fun setData(uiModel: ClashingInfoDetailUiModel) {
         this.uiModel = uiModel
     }

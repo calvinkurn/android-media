@@ -35,6 +35,10 @@ open class TotalBenefitBottomSheetFragment : BottomSheets() {
         }
     }
 
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FLEXIBLE
+    }
+
     fun setBenefit(benefitSummaryInfoUiModel: BenefitSummaryInfoUiModel) {
         this.benefitUiModel = benefitSummaryInfoUiModel
     }

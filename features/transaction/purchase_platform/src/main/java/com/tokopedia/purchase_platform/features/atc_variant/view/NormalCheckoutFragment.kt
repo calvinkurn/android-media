@@ -111,25 +111,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
 
     companion object {
-        const val EXTRA_SHOP_ID = "shop_id"
-        const val EXTRA_PRODUCT_ID = "product_id"
-        const val EXTRA_NOTES = "notes"
-        const val EXTRA_QUANTITY = "quantity"
-        const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
-        const val EXTRA_ACTION = "action"
-        const val EXTRA_PRODUCT_IMAGE = "product_image"
-        const val EXTRA_SHOP_TYPE = "shop_type"
-        const val EXTRA_SHOP_NAME = "shop_name"
-        const val EXTRA_OCS = "ocs"
-        const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
         const val EXTRA_CART_ID = "cart_id"
-        private const val TRACKER_ATTRIBUTION = "tracker_attribution"
-        private const val TRACKER_LIST_NAME = "tracker_list_name"
 
         const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
         const val RESULT_SELECTED_WAREHOUSE = "selected_warehouse"
         const val RESULT_PRODUCT_DATA = "product_data"
-        const val RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message"
 
         const val REQUEST_CODE_LOGIN = 561
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562
@@ -146,22 +132,24 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            shopType: String? = "",
                            shopName: String? = "",
                            isOneClickShipment: Boolean,
+                           isNeedRefresh: Boolean,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
-                    putString(EXTRA_SHOP_ID, shopId)
-                    putString(EXTRA_PRODUCT_ID, productId)
-                    putString(EXTRA_NOTES, notes)
-                    putInt(EXTRA_QUANTITY, quantity ?: 0)
-                    putInt(EXTRA_ACTION, action)
-                    putString(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
-                    putString(EXTRA_SELECTED_VARIANT_ID, selectedVariantId ?: "")
-                    putString(TRACKER_ATTRIBUTION, trackerAttribution ?: "")
-                    putString(TRACKER_LIST_NAME, trackerListName ?: "")
-                    putString(EXTRA_SHOP_TYPE, shopType ?: "")
-                    putString(EXTRA_SHOP_NAME, shopName ?: "")
-                    putBoolean(EXTRA_OCS, isOneClickShipment)
-                    putParcelable(EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                    putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
+                    putString(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, productId)
+                    putString(ApplinkConst.Transaction.EXTRA_NOTES, notes)
+                    putInt(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity ?: 0)
+                    putInt(ApplinkConst.Transaction.EXTRA_ACTION, action)
+                    putString(ApplinkConst.Transaction.EXTRA_PRODUCT_IMAGE, placeholderProductImage)
+                    putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId ?: "")
+                    putString(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution ?: "")
+                    putString(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName ?: "")
+                    putString(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopType ?: "")
+                    putString(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName ?: "")
+                    putBoolean(ApplinkConst.Transaction.EXTRA_OCS, isOneClickShipment)
+                    putBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, isNeedRefresh)
+                    putParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
             }
 
@@ -478,30 +466,31 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun onCreate(savedInstanceState: Bundle?) {
         val argument = arguments
         if (argument != null) {
-            shopId = argument.getString(EXTRA_SHOP_ID)
-            productId = argument.getString(EXTRA_PRODUCT_ID) ?: ""
-            notes = argument.getString(EXTRA_NOTES)
-            quantity = argument.getInt(EXTRA_QUANTITY)
-            placeholderProductImage = argument.getString(EXTRA_PRODUCT_IMAGE)
-            action = argument.getInt(EXTRA_ACTION, ATC_AND_BUY)
-            trackerAttribution = argument.getString(TRACKER_ATTRIBUTION)
-            trackerListName = argument.getString(TRACKER_LIST_NAME)
-            shopType = argument.getString(EXTRA_SHOP_TYPE)
-            shopName = argument.getString(EXTRA_SHOP_NAME)
-            tradeInParams = argument.getParcelable(EXTRA_TRADE_IN_PARAMS)
-            isOcs = argument.getBoolean(EXTRA_OCS)
+            shopId = argument.getString(ApplinkConst.Transaction.EXTRA_SHOP_ID)
+            productId = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_ID) ?: ""
+            notes = argument.getString(ApplinkConst.Transaction.EXTRA_NOTES)
+            quantity = argument.getInt(ApplinkConst.Transaction.EXTRA_QUANTITY)
+            placeholderProductImage = argument.getString(ApplinkConst.Transaction.EXTRA_PRODUCT_IMAGE)
+            action = argument.getInt(ApplinkConst.Transaction.EXTRA_ACTION, ATC_AND_BUY)
+            trackerAttribution = argument.getString(ApplinkConst.Transaction.TRACKER_ATTRIBUTION)
+            trackerListName = argument.getString(ApplinkConst.Transaction.TRACKER_LIST_NAME)
+            shopType = argument.getString(ApplinkConst.Transaction.EXTRA_SHOP_TYPE)
+            shopName = argument.getString(ApplinkConst.Transaction.EXTRA_SHOP_NAME)
+            tradeInParams = argument.getParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS)
+            isOcs = argument.getBoolean(ApplinkConst.Transaction.EXTRA_OCS)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
-                selectedVariantId = argument.getString(EXTRA_SELECTED_VARIANT_ID)
+                selectedVariantId = argument.getString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
             }
         } else {
-            selectedVariantId = savedInstanceState.getString(EXTRA_SELECTED_VARIANT_ID)
-            notes = savedInstanceState.getString(EXTRA_NOTES)
-            quantity = savedInstanceState.getInt(EXTRA_QUANTITY)
+            selectedVariantId = savedInstanceState.getString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
+            notes = savedInstanceState.getString(ApplinkConst.Transaction.EXTRA_NOTES)
+            quantity = savedInstanceState.getInt(ApplinkConst.Transaction.EXTRA_QUANTITY)
         }
 
         super.onCreate(savedInstanceState)
+        viewModel.parseDataFrom(arguments)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -593,7 +582,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             if (fragmentViewModel.isStateChanged == true) {
                 setResult(Activity.RESULT_OK, Intent().apply {
                     if (!selectedVariantId.isNullOrEmpty()) {
-                        putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+                        putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
                         selectedProductInfo?.let {
                             val cacheManager =
                                     SaveInstanceCacheManager(this@run, true).apply {
@@ -605,8 +594,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                             putExtra(RESULT_PRODUCT_DATA_CACHE_ID, cacheManager.id)
                         }
                     }
-                    putExtra(EXTRA_QUANTITY, quantity)
-                    putExtra(EXTRA_NOTES, notes)
+                    putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+                    putExtra(ApplinkConst.Transaction.EXTRA_NOTES, notes)
                 })
             }
             finish()
@@ -620,7 +609,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+                putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
                 if (!selectedVariantId.isNullOrEmpty()) {
                     selectedProductInfo
                 } else {
@@ -633,10 +622,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                                     }
                             putExtra(RESULT_PRODUCT_DATA_CACHE_ID, cacheManager.id)
                         }
-                putExtra(EXTRA_QUANTITY, quantity)
-                putExtra(EXTRA_NOTES, notes)
+                putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+                putExtra(ApplinkConst.Transaction.EXTRA_NOTES, notes)
                 atcSuccessMessage?.let {
-                    putExtra(RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
+                    putExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE, atcSuccessMessage)
                 }
             })
             sendBranchAddToCardEvent()
@@ -800,6 +789,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
                         addToCartDataModel.errorMessage[0])
+                normalCheckoutTracking.eventViewErrorWhenAddToCart(addToCartDataModel.errorMessage[0])
             }
         }
 
@@ -807,6 +797,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun onErrorAtc(e: Throwable?, onRetryWhenError: (() -> Unit)) {
         hideLoadingDialog()
+        normalCheckoutTracking.eventViewErrorWhenAddToCart(ErrorHandler.getErrorMessage(context, e))
         showToastError(e) {
             onRetryWhenError()
         }
@@ -985,9 +976,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
-        outState.putInt(EXTRA_QUANTITY, quantity)
-        outState.putString(EXTRA_NOTES, notes)
+        outState.putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+        outState.putInt(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+        outState.putString(ApplinkConst.Transaction.EXTRA_NOTES, notes)
     }
 
     override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */

@@ -185,7 +185,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         context?.run {
             startActivityForResult(HotelDestinationActivity.createInstance(this), REQUEST_CODE_DESTINATION)
         }
-        activity?.overridePendingTransition(R.anim.travel_slide_up_in, R.anim.travel_anim_stay)
+        activity?.overridePendingTransition(com.tokopedia.common.travel.R.anim.travel_slide_up_in,
+                com.tokopedia.common.travel.R.anim.travel_anim_stay)
     }
 
     private fun configAndRenderCheckInDate() {
@@ -305,19 +306,18 @@ class HotelHomepageFragment : HotelBaseFragment(),
             rv_hotel_homepage_promo.setHasFixedSize(true)
             rv_hotel_homepage_promo.isNestedScrollingEnabled = false
             rv_hotel_homepage_promo.adapter = promoAdapter
+            if (promoDataList.isNotEmpty()) trackingHotelUtil.hotelBannerImpression(promoDataList.first(), 0)
             rv_hotel_homepage_promo.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val position = (rv_hotel_homepage_promo.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                        trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)?.promoId
-                                ?: "")
+                        trackingHotelUtil.hotelBannerImpression(promoDataList.getOrNull(position)
+                                ?: HotelPromoEntity(), position)
                     }
                 }
             })
-        } else {
-            promoAdapter.updateItem(promoDataList)
-        }
+        } else promoAdapter.updateItem(promoDataList)
     }
 
     private fun openCalendarDialog(checkIn: String? = null, checkOut: String? = null) {
@@ -339,8 +339,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotel_container_promo.visibility = View.GONE
     }
 
-    override fun onPromoClicked(promo: HotelPromoEntity) {
-        trackingHotelUtil.hotelClickBanner(promo.promoId)
+    override fun onPromoClicked(promo: HotelPromoEntity, position: Int) {
+        trackingHotelUtil.hotelClickBanner(promo, position)
     }
 
     companion object {
