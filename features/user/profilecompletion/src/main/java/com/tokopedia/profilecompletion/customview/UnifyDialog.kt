@@ -38,7 +38,7 @@ class UnifyDialog(private val activity: Activity,
         val dialogView = activity.layoutInflater.inflate(layoutResId(), null)
         initView(dialogView)
 
-        alertDialog = AlertDialog.Builder(activity, R.style.CustomUnifyDialog).create()
+        alertDialog = AlertDialog.Builder(activity).create()
         alertDialog?.requestWindowFeature(Window.FEATURE_NO_TITLE)
 
         alertDialog?.setView(dialogView)

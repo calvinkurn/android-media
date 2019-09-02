@@ -136,7 +136,7 @@ class SelectLoanParamActivity : BaseActivity() {
         val EXTRA_DATA = "EXTRA_DATA"
         val EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME"
 
-        fun createInstance(context: Context, sort: ArrayList<LoanPeriodType>, selectedSort: HashMap<String, String>?): Intent {
+        fun createInstance(context: Context, sort: ArrayList<LoanPeriodType>): Intent {
             val intent = Intent(context, SelectLoanParamActivity::class.java)
             intent.putParcelableArrayListExtra(EXTRA_DATA, sort)
             return intent

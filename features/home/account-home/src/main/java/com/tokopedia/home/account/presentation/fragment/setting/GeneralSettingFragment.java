@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
+import android.app.Application;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,11 +26,13 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
@@ -38,7 +41,6 @@ import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
-import com.tokopedia.home.account.presentation.activity.NotificationSettingActivity;
 import com.tokopedia.home.account.presentation.activity.SettingWebViewActivity;
 import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
@@ -50,6 +52,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemV
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.url.TokopediaUrl;
 
@@ -216,8 +219,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 }
                 break;
             case SettingConstant.SETTING_NOTIFICATION_ID:
+                RouteManager.route(getContext(), ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING);
                 accountAnalytics.eventClickSetting(NOTIFICATION);
-                startActivity(NotificationSettingActivity.createIntent(getActivity()));
                 break;
             case SettingConstant.SETTING_TNC_ID:
                 accountAnalytics.eventClickSetting(TERM_CONDITION);
@@ -399,6 +402,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
             ((AccountHomeRouter) getActivity().getApplication()).doLogoutAccount(getActivity());
         }
+
+        RemoteConfigInstance.getInstance().getABTestPlatform().fetchByType(null);
     }
 
     @Override

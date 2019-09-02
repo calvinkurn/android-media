@@ -12,7 +12,6 @@ import android.view.View;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tkpd.library.utils.data.DataManagerImpl;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
@@ -21,7 +20,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.util.PasswordGenerator;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.linker.LinkerManager;
@@ -44,6 +42,9 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 public class SplashScreen extends AppCompatActivity implements DownloadResultReceiver.Receiver{
 
     public static final int DAYS_IN_SECONDS = 86400;
+    public static final int STATUS_FINISHED = 1;
+    public static final String SHIPPING_CITY_DURATION_STORAGE = "shipping_city_storage";
+
     private PasswordGenerator Pgenerator;
     String id = null;
     protected View decorView;
@@ -123,13 +124,13 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         CommonUtils.dumper(resultData);
-        if (resultCode == DownloadService.STATUS_FINISHED) finishSplashScreen();
+        if (resultCode == STATUS_FINISHED) finishSplashScreen();
     }
 
     private void resetAllDatabaseFlag() {
         LocalCacheHandler flagDB = new LocalCacheHandler(this, "DATABASE_VERSION" + MainApplication.DATABASE_VERSION);
         if (!flagDB.getBoolean("reset_db_flag", false)) {
-            LocalCacheHandler.clearCache(this, DataManagerImpl.SHIPPING_CITY_DURATION_STORAGE);
+            LocalCacheHandler.clearCache(this, SHIPPING_CITY_DURATION_STORAGE);
             if (getApplication() instanceof TkpdCoreRouter) {
                 ((TkpdCoreRouter) getApplication()).resetAddProductCache(this);
             }

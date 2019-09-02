@@ -202,7 +202,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
             getViewState().onSetCustomMessage(customMessage)
-            presenter.getTemplate()
+            presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
             activity?.run {
                 val data = Intent()
@@ -487,7 +487,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun goToSettingTemplate() {
-        val intent = TemplateChatActivity.createInstance(context)
+        var isSeller = getUserSession().shopId == shopId.toString()
+        val intent = TemplateChatActivity.createInstance(context, isSeller)
         activity?.let {
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
             it.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
@@ -516,7 +517,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_GO_TO_SETTING_TEMPLATE -> {
-                presenter.getTemplate()
+                presenter.getTemplate(getUserSession().shopId == shopId.toString())
             }
 
             TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
@@ -541,7 +542,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
         if (resultCode != RESULT_OK) return
         if (data == null) return
-        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
+        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE) ?: return
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
         }

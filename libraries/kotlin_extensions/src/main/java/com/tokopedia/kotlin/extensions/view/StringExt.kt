@@ -25,3 +25,7 @@ fun String?.toDoubleOrZero(): Double {
 fun String?.toEmptyStringIfNull(): String {
     return this ?: ""
 }
+
+fun CharSequence?.hasValue(): Boolean {
+    return !this.isNullOrBlank()
+}
