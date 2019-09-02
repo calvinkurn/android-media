@@ -23,6 +23,7 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
+import com.tokopedia.unifycomponents.ticker.Ticker;
 
 import javax.inject.Inject;
 
@@ -47,6 +48,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private TextView txtCancellationDate;
     private TextView txtRealRefund;
     private TextView txtEstimateRefund;
+    private Ticker tickerRefundInfo;
 
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightCancellationDetailPassengerAdapter flightCancellationDetailPassengerAdapter;
@@ -75,6 +77,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         txtEstimateRefund = view.findViewById(R.id.estimate_refund);
         txtCancellationStatus = view.findViewById(R.id.cancellation_status);
         txtCancellationDate = view.findViewById(R.id.cancellation_date);
+        tickerRefundInfo = view.findViewById(R.id.ticker_refund_info);
 
         FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
@@ -133,6 +136,11 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
 
         txtRealRefund.setText(flightCancellationListViewModel.getCancellations().getRealRefund());
         txtEstimateRefund.setText(flightCancellationListViewModel.getCancellations().getEstimatedRefund());
+
+        if (flightCancellationListViewModel.getCancellations().getRefundInfo().length() > 0) {
+            tickerRefundInfo.setTextDescription(flightCancellationListViewModel.getCancellations().getRefundInfo());
+            tickerRefundInfo.setVisibility(View.VISIBLE);
+        }
 
         txtCancellationDate.setText(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,

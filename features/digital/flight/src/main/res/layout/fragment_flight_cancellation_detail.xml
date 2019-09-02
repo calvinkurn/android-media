@@ -33,16 +33,28 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
                 android:background="@drawable/bg_line_separator" />
+
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_refund_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:autoLink="web"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:tickerShapeType="loose"
+                app:tickerType="warning"
+                tools:visibility="visible" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingBottom="@dimen/dp_2"
                 android:paddingTop="@dimen/dp_2"
+                android:paddingBottom="@dimen/dp_2"
                 android:weightSum="2">
 
                 <TextView
@@ -82,8 +94,8 @@
             android:layout_marginTop="@dimen/dp_20"
             android:background="@color/white"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_10"
-            android:paddingTop="@dimen/dp_10">
+            android:paddingTop="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10">
 
             <LinearLayout
                 android:id="@+id/layout_expendable_passenger"
@@ -122,22 +134,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_20"
             android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginBottom="@dimen/dp_20"
             android:background="@color/white"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_10"
             android:paddingLeft="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_10"
             android:paddingRight="@dimen/dp_20"
-            android:paddingTop="@dimen/dp_10">
+            android:paddingBottom="@dimen/dp_10">
 
             <TextView
                 style="@style/TextView.Title.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingBottom="@dimen/dp_10"
                 android:text="@string/flight_cancellation_detail_refund_information_label" />
 
             <RelativeLayout
@@ -163,8 +175,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_below="@+id/container_pnr"
-                android:layout_marginBottom="@dimen/margin_8"
                 android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
                 android:background="@color/black_twenty_percent" />
 
             <RelativeLayout
