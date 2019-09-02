@@ -3,11 +3,13 @@ package com.tokopedia.search.result.presentation.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
@@ -31,6 +33,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
@@ -47,6 +50,8 @@ import com.tokopedia.search.result.presentation.view.fragment.SearchSectionFragm
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
+import com.tokopedia.search.utils.CountDrawable;
+import com.tokopedia.search.utils.SearchRouter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -102,6 +107,7 @@ public class SearchActivity extends BaseActivity
     private View backButton;
     private TextView searchTextView;
     private ImageView buttonChangeGrid;
+    private ImageView buttonCart;
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -171,6 +177,7 @@ public class SearchActivity extends BaseActivity
         backButton = findViewById(R.id.action_up_btn);
         searchTextView = findViewById(R.id.searchTextView);
         buttonChangeGrid = findViewById(R.id.search_change_grid_button);
+        buttonCart = findViewById(R.id.search_cart_button);
     }
 
     protected void prepareView() {
@@ -185,6 +192,7 @@ public class SearchActivity extends BaseActivity
         configureSupportActionBar();
         setSearchTextViewDrawableLeft();
         configureToolbarOnClickListener();
+        configureButtonCart();
     }
 
     private void configureSupportActionBar() {
@@ -206,6 +214,29 @@ public class SearchActivity extends BaseActivity
         searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
+        buttonCart.setOnClickListener(v -> moveToCartActivity());
+    }
+
+    private void configureButtonCart() {
+        if (!userSession.isLoggedIn()) {
+            buttonCart.setVisibility(View.GONE);
+        } else {
+            if (getApplication() instanceof SearchRouter) {
+                Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
+                if (drawable instanceof LayerDrawable) {
+                    CountDrawable countDrawable = new CountDrawable(this);
+                    int cartCount = ((SearchRouter) getApplication()).getCartCount(this);
+                    if (cartCount > 99) {
+                        countDrawable.setCount("99+");
+                    } else {
+                        countDrawable.setCount(String.valueOf(cartCount));
+                    }
+                    drawable.mutate();
+                    ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
+                    buttonCart.setImageDrawable(drawable);
+                }
+            }
+        }
     }
 
     private void moveToAutoCompleteActivity() {
@@ -216,6 +247,10 @@ public class SearchActivity extends BaseActivity
         } else {
             startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + query);
         }
+    }
+
+    private void moveToCartActivity() {
+        RouteManager.route(this, ApplinkConstInternalMarketplace.CART);
     }
 
     private void initViewPager() {
