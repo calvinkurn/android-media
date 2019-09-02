@@ -884,7 +884,7 @@ public class MainParentActivity extends BaseActivity implements
                         String shopID = userSession.getShopId();
 
                         Intent shopIntent;
-                        if (shopID.equalsIgnoreCase(DEFAULT_NO_SHOP)) {
+                        if (!userSession.hasShop()) {
                             shopIntent = RouteManager.getIntent(getContext(), OPEN_SHOP);
                         } else {
                             shopIntent = ((GlobalNavRouter) getApplication()).getShopPageIntent(this, shopID);
