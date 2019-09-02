@@ -17,10 +17,14 @@ class CompressImageUseCase @Inject constructor(){
     fun compressImage(imageUrl: String): Observable<String> {
         return Observable.just(imageUrl)
                 .concatMap {
-                    val file = ImageUtils.compressImageFile(it, 80)
+                    val file = ImageUtils.compressImageFile(it, QUALITY_COMPRESS)
                     Observable.just(file.absolutePath)
                 }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    companion object {
+        var QUALITY_COMPRESS = 80
     }
 }
