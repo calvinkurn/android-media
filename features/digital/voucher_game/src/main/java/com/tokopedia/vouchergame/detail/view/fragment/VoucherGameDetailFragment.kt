@@ -231,8 +231,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun toggleEnquiryLoadingBar(value: Boolean) {
-        enquiry_loading_bar.visibility = if (value) View.VISIBLE else View.GONE
+    private fun toggleEnquiryLoadingBar(state: Boolean) {
+        enquiry_loading_bar.visibility = if (state) View.VISIBLE else View.GONE
     }
 
     private fun verifyField(fieldValidation: List<VoucherGameEnquiryFields.Validation>,
