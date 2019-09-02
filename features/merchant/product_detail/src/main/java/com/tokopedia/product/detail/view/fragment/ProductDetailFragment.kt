@@ -232,8 +232,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private var refreshLayout: SwipeToRefresh? = null
 
-    private lateinit var createTicketDialog: CreateTicketDialog
-
     override val isUserSessionActive: Boolean
         get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
 
@@ -1087,7 +1085,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             REQUEST_CODE_NORMAL_CHECKOUT -> {
                 if (resultCode == RESULT_CODE_ERROR_TICKET && data != null) {
                     activity?.also { activity ->
-                        createTicketDialog = CreateTicketDialog(activity, CreateTicketDialog.Page.PAGE_ATC)
+                        val createTicketDialog = CreateTicketDialog(activity, CreateTicketDialog.Page.PAGE_ATC)
                         createTicketDialog.setSecondaryOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickCloseOnHelpPopUpAtc()
                             createTicketDialog.dismiss()

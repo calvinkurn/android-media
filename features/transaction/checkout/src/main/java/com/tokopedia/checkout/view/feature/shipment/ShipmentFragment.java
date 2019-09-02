@@ -219,7 +219,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
-    private CreateTicketDialog createTicketDialog;
 
     public static ShipmentFragment newInstance(String defaultSelectedTabPromo,
                                                boolean isAutoApplyPromoCodeApplied,
@@ -742,7 +741,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutCartErrorReporter(CheckoutData checkoutData) {
-        createTicketDialog = new CreateTicketDialog(getActivity(), CreateTicketDialog.Page.PAGE_CHECKOUT);
+        CreateTicketDialog createTicketDialog = new CreateTicketDialog(getActivity(), CreateTicketDialog.Page.PAGE_CHECKOUT);
         createTicketDialog.setDescription(checkoutData.getErrorReporter().getDescription());
         createTicketDialog.setSecondaryOnClickListener(v -> {
             checkoutAnalyticsCourierSelection.eventClickCloseOnHelpPopUpInCheckout();
