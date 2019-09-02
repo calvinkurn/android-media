@@ -84,8 +84,8 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     @Override
     public void crackToken(String tokenUserId, int campaignId) {
         Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID_STR, "");
-        queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, 0);
+        queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID_STR, tokenUserId);
+        queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, campaignId);
         getCrackResultEggUseCase.clearRequest();
         GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.crack_egg_result_mutation),
                 ResponseCrackResultEntity.class, queryParams, false);
