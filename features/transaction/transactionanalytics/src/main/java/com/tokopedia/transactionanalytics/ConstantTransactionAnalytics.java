@@ -300,6 +300,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_BUTTON_CARI_DRIVER = "view button cari driver";
         String CLICK_BUTTON_CARI_DRIVER = "click button cari driver";
 
+        //Error Popup
         String VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT = "view help pop up after error in checkout";
         String CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT = "click report on help pop up in checkout";
         String CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT = "click close on help pop up in checkout";
