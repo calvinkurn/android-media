@@ -8,6 +8,10 @@ public interface ITrackingPagePresenter {
 
     void onGetTrackingData(String orderId);
 
+    void onGetRetryAvailability(String orderId);
+
+    void onRetryPickup(String orderId);
+
     void onDetach();
 
 }

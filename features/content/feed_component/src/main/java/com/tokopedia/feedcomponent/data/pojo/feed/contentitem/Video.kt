@@ -9,5 +9,11 @@ import com.google.gson.annotations.SerializedName
 data class Video(
         @SerializedName("url")
         @Expose
-        var url: String = ""
+        var url: String = "",
+        @SerializedName("durationVal")
+        @Expose
+        var durationVal: String = "",
+        @SerializedName("durationFmt")
+        @Expose
+        var durationFmt: String = ""
 )
