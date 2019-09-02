@@ -416,10 +416,6 @@
     <string name="flight_cancellation_status_success">Pembatalan Berhasil</string>
     <string name="flight_cancellation_status_failed">Pembatalan Gagal</string>
     <string name="flight_cancellation_status_on_progress">Pembatalan Sedang Diproses</string>
-    <string name="flight_cancellation_list_status_requested">DALAM PENGAJUAN</string>
-    <string name="flight_cancellation_list_status_pending">MENUNGGU PERSETUJUAN</string>
-    <string name="flight_cancellation_list_status_refunded">BERHASIL</string>
-    <string name="flight_cancellation_list_status_aborted">GAGAL</string>
     <string name="flight_cancellation_journey_title" formatted="false">Penerbangan %d - %s</string>
     <string name="flight_cancellation_review_dialog_description">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
