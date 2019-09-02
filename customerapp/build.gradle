@@ -244,7 +244,8 @@ android {
     }
 
     dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
-                       rootProject.ext.dynamicFeatures.profileCompletion]
+//                       rootProject.ext.dynamicFeatures.profileCompletion
+    ]
 
 }
 
@@ -422,6 +423,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.profileCompletion)
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

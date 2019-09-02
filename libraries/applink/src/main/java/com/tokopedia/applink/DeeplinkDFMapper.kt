@@ -68,11 +68,11 @@ object DeeplinkDFMapper {
                         deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
                         context.getString(R.string.shop_settings_title))
                 }
-                deeplink.startsWith(SETTING_PROFILE) -> {
-                    getDFDeeplinkIfNotInstalled(context,
-                        deeplink, MODULE_USER_PROFILE_COMPLETION,
-                        context.getString(R.string.applink_profile_completion_title))
-                }
+//                deeplink.startsWith(SETTING_PROFILE) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                        deeplink, MODULE_USER_PROFILE_COMPLETION,
+//                        context.getString(R.string.applink_profile_completion_title))
+//                }
                 else -> null
             }
         }
