@@ -56,7 +56,6 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private AppCompatImageView imageExpendablePassenger;
     private AppCompatTextView txtCancellationStatus;
     private TextView txtCancellationDate;
-    private TextView txtRealRefund;
     private Ticker tickerRefundInfo;
     private RecyclerView rvBottomTopInfo, rvBottomMiddleInfo, rvBottomBottomInfo;
 
@@ -83,7 +82,6 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
         rvFlights = view.findViewById(R.id.recycler_view_flight);
         rvPassengers = view.findViewById(R.id.recycler_view_data_passenger);
-        txtRealRefund = view.findViewById(R.id.total_price);
         txtCancellationStatus = view.findViewById(R.id.cancellation_status);
         txtCancellationDate = view.findViewById(R.id.cancellation_date);
         tickerRefundInfo = view.findViewById(R.id.ticker_refund_info);
@@ -148,8 +146,6 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         flightCancellationDetailPassengerAdapter.addElement(flightCancellationListViewModel
                 .getCancellations().getPassengers());
         flightCancellationDetailPassengerAdapter.notifyDataSetChanged();
-
-        txtRealRefund.setText(flightCancellationListViewModel.getCancellations().getRealRefund());
 
         if (flightCancellationListViewModel.getCancellations().getRefundInfo().length() > 0) {
             tickerRefundInfo.setTextDescription(flightCancellationListViewModel.getCancellations().getRefundInfo());
