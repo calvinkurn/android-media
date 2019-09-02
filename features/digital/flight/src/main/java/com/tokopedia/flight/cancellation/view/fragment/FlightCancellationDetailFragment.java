@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapter;
@@ -57,7 +58,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private AppCompatTextView txtCancellationStatus;
     private TextView txtCancellationDate;
     private Ticker tickerRefundInfo;
-    private RecyclerView rvBottomTopInfo, rvBottomMiddleInfo, rvBottomBottomInfo;
+    private RecyclerView rvBottomTopInfo, rvBottomMiddleInfo, rvBottomBottomInfo, rvBottomNotes;
 
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightCancellationDetailPassengerAdapter flightCancellationDetailPassengerAdapter;
@@ -88,6 +89,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         rvBottomTopInfo = view.findViewById(R.id.rv_bottom_top_info);
         rvBottomMiddleInfo = view.findViewById(R.id.rv_bottom_middle_info);
         rvBottomBottomInfo = view.findViewById(R.id.rv_bottom_bottom_info);
+        rvBottomNotes = view.findViewById(R.id.rv_bottom_notes);
 
         FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
@@ -181,6 +183,16 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         refundBottomAdapter.addData(generateSimpleViewModel(refundDetail.getBottomInfo()));
         rvBottomBottomInfo.setLayoutManager(new LinearLayoutManager(getContext()));
         rvBottomBottomInfo.setAdapter(refundBottomAdapter);
+
+        // notes
+        FlightSimpleAdapter refundNotesAdapter = new FlightSimpleAdapter();
+        refundNotesAdapter.setArrowVisible(false);
+        refundNotesAdapter.setClickable(false);
+        refundNotesAdapter.setTitleBold(false);
+        refundNotesAdapter.setTitleOnly(true);
+        refundNotesAdapter.setViewModels(generateSimpleViewModel(refundDetail.getNote()));
+        rvBottomNotes.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvBottomNotes.setAdapter(refundNotesAdapter);
     }
 
     private List<SimpleViewModel> generateSimpleViewModel(List<KeyValueEntity> items) {
