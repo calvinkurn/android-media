@@ -118,13 +118,24 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
     private void hideShowClickListener() {
 
-        if (minimizeButtonLeft.getRotation() == newAngleOfMinimizeBtn)
-            shiftEggTowardsLeft(newAngleOfMinimizeBtn, oldAngleOfMinimizeBtn, vgFloatingEgg.getX(), vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth());
-        else
-            shiftEggTowardsRight(oldAngleOfMinimizeBtn, newAngleOfMinimizeBtn, vgFloatingEgg.getX(), vgFloatingEgg.getX() + vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
+        if (minimizeButtonLeft.getRotation() == newAngleOfMinimizeBtn) {
+            shiftEggTowardsLeftOrRight(newAngleOfMinimizeBtn, oldAngleOfMinimizeBtn, vgFloatingEgg.getX(),
+                    vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth());
+            if (isRight)
+                isMinimized = false;
+            else
+                isMinimized = true;
+        } else {
+            shiftEggTowardsLeftOrRight(oldAngleOfMinimizeBtn, newAngleOfMinimizeBtn, vgFloatingEgg.getX(),
+                    vgFloatingEgg.getX() + vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
+            if (isRight)
+                isMinimized = true;
+            else
+                isMinimized = false;
+        }
     }
 
-    private void shiftEggTowardsLeft(float oldAngle, float newAngle, float oldX, float newX) {
+    private void shiftEggTowardsLeftOrRight(float oldAngle, float newAngle, float oldX, float newX) {
         AnimatorSet rotateRight = new AnimatorSet();
         final PropertyValuesHolder pvRotateMinimizeBtn = PropertyValuesHolder.ofFloat(View.ROTATION, oldAngle, newAngle);
         final PropertyValuesHolder pvhTranslateEggX = PropertyValuesHolder.ofFloat(View.X, oldX, newX);
@@ -133,27 +144,6 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         rotateRight.setDuration(SHORT_ANIMATION_DURATION);
         rotateRight.playTogether(rotateMinimizeAnimator, translateEggXAnimator);
         rotateRight.start();
-        if (isRight)
-            isMinimized = false;
-        else
-            isMinimized = true;
-        saveCoordPreference((int)newX, (int)vgFloatingEgg.getY());
-    }
-
-    public void shiftEggTowardsRight(float oldAngle, float newAngle, float oldX, float newX) {
-        AnimatorSet rotateTranslateSet = new AnimatorSet();
-        final PropertyValuesHolder pvRotateMinimizeBtn = PropertyValuesHolder.ofFloat(View.ROTATION, oldAngle, newAngle);
-        final PropertyValuesHolder pvhTranslateEggX = PropertyValuesHolder.ofFloat(View.X, oldX, newX);
-
-        ObjectAnimator rotateMinimizeAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvRotateMinimizeBtn);
-        ObjectAnimator translateEggXAnimator = ObjectAnimator.ofPropertyValuesHolder(vgFloatingEgg, pvhTranslateEggX);
-        rotateTranslateSet.setDuration(SHORT_ANIMATION_DURATION);
-        rotateTranslateSet.playTogether(rotateMinimizeAnimator, translateEggXAnimator);
-        rotateTranslateSet.start();
-        if (isRight)
-            isMinimized = true;
-        else
-            isMinimized = false;
         saveCoordPreference((int)newX, (int)vgFloatingEgg.getY());
     }
 
@@ -610,22 +600,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             rotateRightAnimatorSet.setDuration(SHORT_ANIMATION_DURATION);
 
             if (!isRight) {
-                float oldAngle;
-                float newAngle;
                 if (isMinimized) {
-                    oldAngle = oldAngleOfMinimizeBtn;
-                    newAngle = newAngleOfMinimizeBtn;
+                    animateMinimizeButton(objectAnimator, newAngleOfMinimizeBtn, 0);
                 } else {
-                    oldAngle = newAngleOfMinimizeBtn;
-                    newAngle = oldAngleOfMinimizeBtn;
+                    animateMinimizeButton(objectAnimator, oldAngleOfMinimizeBtn, 0);
                 }
-
-                final PropertyValuesHolder pvRotateMinimizeBtn = PropertyValuesHolder.ofFloat(View.ROTATION, oldAngle, newAngle);
-                final PropertyValuesHolder pvhTranslateEggX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, 0);
-                ObjectAnimator rotateMinimizeAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvRotateMinimizeBtn);
-                ObjectAnimator translateEggXAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvhTranslateEggX);
-                rotateRightAnimatorSet.playTogether(objectAnimator, rotateMinimizeAnimator, translateEggXAnimator);
-                rotateRightAnimatorSet.start();
                 isRight = true;
             } else {
                 objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
@@ -648,22 +627,11 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
             rotateRightAnimatorSet.setDuration(SHORT_ANIMATION_DURATION);
 
             if (isRight) {
-                float oldAngle;
-                float newAngle;
                 if (isMinimized) {
-                    oldAngle = newAngleOfMinimizeBtn;
-                    newAngle = oldAngleOfMinimizeBtn;
+                    animateMinimizeButton(objectAnimator, oldAngleOfMinimizeBtn, vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
                 } else {
-                    oldAngle = oldAngleOfMinimizeBtn;
-                    newAngle = newAngleOfMinimizeBtn;
+                    animateMinimizeButton(objectAnimator, newAngleOfMinimizeBtn, vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
                 }
-
-                final PropertyValuesHolder pvRotateMinimizeBtn = PropertyValuesHolder.ofFloat(View.ROTATION, oldAngle, newAngle);
-                final PropertyValuesHolder pvhTranslateEggX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
-                ObjectAnimator rotateMinimizeAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvRotateMinimizeBtn);
-                ObjectAnimator translateEggXAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvhTranslateEggX);
-                rotateRightAnimatorSet.playTogether(objectAnimator, rotateMinimizeAnimator, translateEggXAnimator);
-                rotateRightAnimatorSet.start();
                 isRight = false;
             } else {
                 objectAnimator.setDuration(SHORT_ANIMATION_DURATION);
@@ -673,6 +641,15 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         }
     }
 
+    private void animateMinimizeButton(ObjectAnimator animator, float newAngle, float newX){
+        AnimatorSet rotateRightAnimatorSet = new AnimatorSet();
+        final PropertyValuesHolder pvRotateMinimizeBtn = PropertyValuesHolder.ofFloat(View.ROTATION, newAngle);
+        final PropertyValuesHolder pvhTranslateEggX = PropertyValuesHolder.ofFloat(View.TRANSLATION_X, newX);
+        ObjectAnimator rotateMinimizeAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvRotateMinimizeBtn);
+        ObjectAnimator translateEggXAnimator = ObjectAnimator.ofPropertyValuesHolder(minimizeButtonLeft, pvhTranslateEggX);
+        rotateRightAnimatorSet.playTogether(animator, rotateMinimizeAnimator, translateEggXAnimator);
+        rotateRightAnimatorSet.start();
+    }
     @Override
     protected String getScreenName() {
         return null;
