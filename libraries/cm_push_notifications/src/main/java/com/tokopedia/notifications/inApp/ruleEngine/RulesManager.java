@@ -45,6 +45,10 @@ public class RulesManager {
         dataConsumer.dataShown(id);
     }
 
+    public void dataInflateError(long id){
+        dataConsumer.inflationError(id);
+    }
+
     public void dataConsumed(long id, long bufTime){
         dataConsumer.dataShown(id, currentTime+bufTime);
     }

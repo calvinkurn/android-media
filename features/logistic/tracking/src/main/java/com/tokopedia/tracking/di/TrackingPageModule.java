@@ -20,7 +20,11 @@ import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.presenter.TrackingPagePresenter;
 import com.tokopedia.logisticdata.data.repository.ITrackingPageRepository;
 import com.tokopedia.logisticdata.data.repository.TrackingPageRepository;
+import com.tokopedia.tracking.usecase.GetRetryAvailability;
+import com.tokopedia.tracking.usecase.RetryPickup;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
+import com.tokopedia.tracking.usecase.executor.MainSchedulerProvider;
+import com.tokopedia.tracking.usecase.executor.SchedulerProvider;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
@@ -130,14 +134,22 @@ public class TrackingPageModule {
     @Provides
     @TrackingPageScope
     ITrackingPagePresenter provideTrackingPagePresenter(TrackCourierUseCase useCase,
+                                                        GetRetryAvailability getRetryUsecase,
+                                                        RetryPickup retryPickupUsecase,
                                                         UserSession userSession) {
-        return new TrackingPagePresenter(useCase, userSession, view);
+        return new TrackingPagePresenter(useCase, getRetryUsecase, retryPickupUsecase, userSession, view);
     }
 
     @Provides
     @TrackingPageScope
     DateUtil provideDateUtil() {
         return new DateUtil();
+    }
+
+    @Provides
+    @TrackingPageScope
+    SchedulerProvider provideSchedulerProvider() {
+        return new MainSchedulerProvider();
     }
 
 }
