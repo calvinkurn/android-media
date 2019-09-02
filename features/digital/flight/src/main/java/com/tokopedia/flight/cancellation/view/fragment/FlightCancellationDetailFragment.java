@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -49,6 +50,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private TextView txtRealRefund;
     private TextView txtEstimateRefund;
     private Ticker tickerRefundInfo;
+    private LinearLayout rootContainer;
 
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightCancellationDetailPassengerAdapter flightCancellationDetailPassengerAdapter;
@@ -69,6 +71,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_cancellation_detail, container, false);
 
+        rootContainer = view.findViewById(R.id.root_container);
         layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
         imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
         rvFlights = view.findViewById(R.id.recycler_view_flight);
@@ -147,6 +150,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
                 flightCancellationListViewModel.getCancellations().getCreateTime()));
         presenter.checkCancellationStatus();
 
+        rootContainer.requestFocus();
     }
 
     @Override
