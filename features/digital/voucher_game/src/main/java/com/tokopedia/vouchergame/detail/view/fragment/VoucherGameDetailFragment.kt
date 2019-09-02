@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TelcoEnquiryMainInfo
@@ -62,7 +63,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
 
-    var inputFieldCount = 0
+    private var inputFieldCount = 0
+    lateinit var enquiryData: List<VoucherGameEnquiryFields>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,6 +146,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun processEnquiry(data: TelcoEnquiryData) {
+        toggleEnquiryLoadingBar(false)
         renderEnquiryResult(data.enquiry.attributes.mainInfoList)
     }
 
@@ -152,7 +155,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun showError(t: Throwable) {
-
+        toggleEnquiryLoadingBar(false)
+        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.message) { enquireFields() }.showRetrySnackbar()
     }
 
     private fun setupEnquiryFields(data: VoucherGameDetailData) {
@@ -162,11 +166,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             input_field_container.visibility = View.GONE
         }
         else {
-            val fields = data.enquiryFields
-            inputFieldCount = fields.size
+            enquiryData = data.enquiryFields
+            inputFieldCount = enquiryData.size
 
             // Show first input field (guaranteed to have an input field)
-            val firstField = fields[0]
+            val firstField = enquiryData[0]
             input_field_1.setLabel(firstField.name)
             input_field_1.setHint(firstField.name)
 
@@ -174,7 +178,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             when (inputFieldCount) {
                 1 -> input_field_2.visibility = View.GONE
                 2 -> {
-                    val secondField = fields[1]
+                    val secondField = enquiryData[1]
                     input_field_2.setLabel(secondField.name)
                     input_field_2.setHint(secondField.name)
                 }
@@ -183,45 +187,52 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             // Enquire if all required fields are filled
             input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
                 override fun onEditorActionDone() {
-                    enquireFields(data.enquiryFields)
+                    enquireFields()
                 }
             })
             if (inputFieldCount == 2) {
                 input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener {
                     override fun onEditorActionDone() {
-                        enquireFields(data.enquiryFields)
+                        enquireFields()
                     }
                 })
             }
         }
     }
 
-    private fun enquireFields(enquiryData: List<VoucherGameEnquiryFields>) {
-        val input1 = input_field_1.getInputText()
-        val input2 = input_field_2.getInputText()
+    private fun enquireFields() {
+        if (::enquiryData.isInitialized) {
+            val input1 = input_field_1.getInputText()
+            val input2 = input_field_2.getInputText()
 
-        if (inputFieldCount in 1..2) {
-            // Add case when user is still filling the fields (only 1/2 fields are filled)
-            if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) return
+            if (inputFieldCount in 1..2) {
+                // Add case when user is still filling the fields (only 1/2 fields are filled)
+                if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) return
 
-            // Verify fields
-            var isValid: Boolean
-            isValid = verifyField(enquiryData[0].validations, input1)
-            if (isValid && inputFieldCount == 2) {
-                isValid = verifyField(enquiryData[1].validations, input2)
-            }
+                // Verify fields
+                var isValid: Boolean
+                isValid = verifyField(enquiryData[0].validations, input1)
+                if (isValid && inputFieldCount == 2) {
+                    isValid = verifyField(enquiryData[1].validations, input2)
+                }
 
-            if (isValid) {
-                // Reset error label
-                setInputFieldsError(false)
+                if (isValid) {
+                    // Reset error label
+                    setInputFieldsError(false)
 
-                val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
+//                toggleEnquiryLoadingBar(true)
+//                val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
 //                getEnquiry(clientNumber, voucherGameExtraParam.operatorId)
-            } else {
-                // Set error message
-                setInputFieldsError(true)
+                } else {
+                    // Set error message
+                    setInputFieldsError(true)
+                }
             }
         }
+    }
+
+    private fun toggleEnquiryLoadingBar(value: Boolean) {
+        enquiry_loading_bar.visibility = if (value) View.VISIBLE else View.GONE
     }
 
     private fun verifyField(fieldValidation: List<VoucherGameEnquiryFields.Validation>,

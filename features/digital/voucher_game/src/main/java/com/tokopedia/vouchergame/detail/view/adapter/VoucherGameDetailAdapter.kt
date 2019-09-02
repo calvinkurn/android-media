@@ -9,7 +9,7 @@ import com.tokopedia.network.utils.ErrorHandler
 class VoucherGameDetailAdapter(val context: Context,
                                adapterFactory: VoucherGameDetailAdapterFactory,
                                interactionListener: OnAdapterInteractionListener<Visitable<*>>,
-                               val loaderListener: LoaderListener):
+                               private val loaderListener: LoaderListener):
         BaseListAdapter<Visitable<*>, VoucherGameDetailAdapterFactory>(adapterFactory, interactionListener) {
 
     fun renderList(data: List<Visitable<*>>) {
