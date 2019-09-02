@@ -171,24 +171,22 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     }
 
     private void renderBottomInfo(RefundDetailEntity refundDetail) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-
         // top info
         FlightCancellationRefundBottomAdapter refundTopAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL);
         refundTopAdapter.addData(generateSimpleViewModel(refundDetail.getTopInfo()));
-        rvBottomTopInfo.setLayoutManager(layoutManager);
+        rvBottomTopInfo.setLayoutManager(new LinearLayoutManager(getContext()));
         rvBottomTopInfo.setAdapter(refundTopAdapter);
 
         /*// middle info
         FlightCancellationRefundBottomAdapter refundMiddleAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL);
         refundMiddleAdapter.addData(generateSimpleViewModel(refundDetail.getTopInfo()));
-        rvBottomMiddleInfo.setLayoutManager(layoutManager);
+        rvBottomMiddleInfo.setLayoutManager(new LinearLayoutManager(getContext()));
         rvBottomMiddleInfo.setAdapter(refundMiddleAdapter);*/
 
         // bottom info
         FlightCancellationRefundBottomAdapter refundBottomAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_RED);
         refundBottomAdapter.addData(generateSimpleViewModel(refundDetail.getBottomInfo()));
-        rvBottomBottomInfo.setLayoutManager(layoutManager);
+        rvBottomBottomInfo.setLayoutManager(new LinearLayoutManager(getContext()));
         rvBottomBottomInfo.setAdapter(refundBottomAdapter);
     }
 
