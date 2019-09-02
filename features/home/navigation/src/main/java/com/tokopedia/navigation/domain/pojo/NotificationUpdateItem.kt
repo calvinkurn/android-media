@@ -67,9 +67,26 @@ data class NotificationUpdateItem(
         var typeLink: Int = 0,
         @SerializedName("data_notification")
         @Expose
-        var dataNotification: DataNotification
+        var dataNotification: DataNotification,
+        @SerializedName("product_data")
+        @Expose
+        var productData: List<ProductData>
 )
 
+data class ProductData(
+        @Expose
+        @SerializedName("product_id")
+        val productId: String = "",
+        @Expose
+        @SerializedName("name")
+        val name: String = "",
+        @Expose
+        @SerializedName("url")
+        val url: String = "",
+        @Expose
+        @SerializedName("image_url")
+        val imageUrl: String = ""
+)
 
 data class DataNotification(
         @Expose

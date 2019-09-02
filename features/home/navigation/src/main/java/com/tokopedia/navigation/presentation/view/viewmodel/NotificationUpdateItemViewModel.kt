@@ -3,6 +3,7 @@ package com.tokopedia.navigation.presentation.view.viewmodel
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactory
 
 class NotificationUpdateItemViewModel(
@@ -18,7 +19,8 @@ class NotificationUpdateItemViewModel(
         var templateKey: String = "",
         var appLink: String = "",
         var hasShop: Boolean = false,
-        var typeLink: Int = 0
+        var typeLink: Int = 0,
+        var products: List<ProductData> = emptyList()
 ) : Visitable<NotificationUpdateTypeFactory>, Parcelable {
 
     override fun type(typeFactory: NotificationUpdateTypeFactory): Int {

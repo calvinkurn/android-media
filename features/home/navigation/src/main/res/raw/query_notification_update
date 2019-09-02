@@ -30,6 +30,12 @@ query get_notification_update($page: Int!, $typeId: Int!, $tagId: Int!, $lastNot
         info_thumbnail_url
         mobile_link
       }
+      product_data {
+        product_id
+        name
+        url
+        image_url
+      }
     }
     user_info {
       user_id
