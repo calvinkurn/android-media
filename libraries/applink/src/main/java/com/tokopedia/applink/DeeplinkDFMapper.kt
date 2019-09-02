@@ -10,7 +10,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
-import com.crashlytics.android.Crashlytics;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 
 /**
