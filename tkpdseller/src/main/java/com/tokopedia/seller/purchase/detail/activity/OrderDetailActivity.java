@@ -95,6 +95,7 @@ public class OrderDetailActivity extends TActivity
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
     private static final String EXTRA_ORDER_DETAIL_DATA = "EXTRA_ORDER_DETAIL_DATA";
     private static final String PARAM_ORDER_ID = "order_id";
+    public static final String EXTRA_URL_UPLOAD = "EXTRA_URL_UPLOAD";
     private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
     private static final int SELLER_MODE = 2;
@@ -225,17 +226,10 @@ public class OrderDetailActivity extends TActivity
             tvUploadAwbMessage.setText(Html.fromHtml(data.getAwbUploadProofText()));
             if (data.isShowUploadAwb()) {
                 btnUploadAwb.setVisibility(View.VISIBLE);
-                btnUploadAwb.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (getApplication() instanceof SellerModuleRouter) {
-                            Intent intent = ((SellerModuleRouter) getApplication())
-                                    .transactionOrderDetailRouterGetIntentUploadAwb
-                                            (data.getAwbUploadProofUrl());
-                            startActivity(intent);
-                        }
-
-                    }
+                btnUploadAwb.setOnClickListener(view -> {
+                    Intent intent = RouteManager.getIntent(OrderDetailActivity.this, ApplinkConstInternalLogistic.UPLOAD_AWB);
+                    intent.putExtra(EXTRA_URL_UPLOAD, data.getAwbUploadProofUrl());
+                    startActivity(intent);
                 });
             } else {
                 btnUploadAwb.setVisibility(View.GONE);

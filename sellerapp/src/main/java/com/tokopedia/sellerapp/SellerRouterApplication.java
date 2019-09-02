@@ -97,7 +97,6 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.Distric
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.tracking.view.uploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
@@ -1477,12 +1476,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public boolean isEnable() {
         return false;
-    }
-
-
-    @Override
-    public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {
-        return UploadAwbLogisticActivity.newInstance(this, urlUpload);
     }
 
     @Override

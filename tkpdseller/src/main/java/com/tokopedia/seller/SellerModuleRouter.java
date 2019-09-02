@@ -32,8 +32,6 @@ public interface SellerModuleRouter {
 
     Intent getInboxTalkCallingIntent(Context context);
 
-    Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload);
-
     boolean isToggleBuyAgainOn();
 
 }

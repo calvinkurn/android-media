@@ -2,4 +2,5 @@
 <resources>
     <string name="host_logistic" translatable="false">logistic</string>
     <string name="path_shipping_confirmation" translatable="false">/shipping-confirmation/.*\\</string>
+    <string name="path_upload_awb" translatable="false">/upload-awb</string>
 </resources>
