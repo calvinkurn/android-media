@@ -20,6 +20,7 @@ public class CheckoutData implements Parcelable {
     private String transactionId;
 
     private ErrorReporter errorReporter;
+    private String jsonResponse;
 
     public boolean isError() {
         return isError;
@@ -93,6 +94,14 @@ public class CheckoutData implements Parcelable {
         this.errorReporter = errorReporter;
     }
 
+    public String getJsonResponse() {
+        return jsonResponse;
+    }
+
+    public void setJsonResponse(String jsonResponse) {
+        this.jsonResponse = jsonResponse;
+    }
+
     public CheckoutData() {
     }
 
@@ -112,6 +121,7 @@ public class CheckoutData implements Parcelable {
         dest.writeString(this.callbackFailedUrl);
         dest.writeString(this.transactionId);
         dest.writeParcelable(errorReporter, flags);
+        dest.writeString(this.jsonResponse);
     }
 
     protected CheckoutData(Parcel in) {
@@ -124,6 +134,7 @@ public class CheckoutData implements Parcelable {
         this.callbackFailedUrl = in.readString();
         this.transactionId = in.readString();
         this.errorReporter = in.readParcelable(ErrorReporter.class.getClassLoader());
+        this.jsonResponse = in.readString();
     }
 
     public static final Creator<CheckoutData> CREATOR = new Creator<CheckoutData>() {

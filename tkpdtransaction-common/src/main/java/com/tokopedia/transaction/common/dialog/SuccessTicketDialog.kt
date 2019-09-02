@@ -1,7 +1,6 @@
 package com.tokopedia.transaction.common.dialog
 
 import android.app.Activity
-import android.view.View
 import com.tokopedia.transaction.common.R
 
 class SuccessTicketDialog(activity: Activity, page: Page) : UnifyDialog(activity, SINGLE_ACTION, NO_HEADER) {
@@ -14,9 +13,6 @@ class SuccessTicketDialog(activity: Activity, page: Page) : UnifyDialog(activity
             Page.PAGE_CHECKOUT -> R.string.success_ticket_dialog_checkout_action
         }
         setOk(activity.getString(okRes))
-        setOkOnClickListener(View.OnClickListener {
-            dismiss()
-        })
     }
 
     enum class Page {

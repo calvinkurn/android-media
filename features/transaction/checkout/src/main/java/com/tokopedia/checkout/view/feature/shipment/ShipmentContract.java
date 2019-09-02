@@ -81,7 +81,9 @@ public interface ShipmentContract {
 
         void renderCheckoutCartError(String message);
 
-        void renderCheckoutCartErrorReporter(String message);
+        void renderCheckoutCartErrorReporter(CheckoutData checkoutData);
+
+        void renderSubmitHelpTicketSuccess();
 
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
@@ -369,6 +371,8 @@ public interface ShipmentContract {
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
 
         boolean isIneligbilePromoDialogEnabled();
+
+        void processSubmitHelpTicket(CheckoutData checkoutData);
     }
 
 }

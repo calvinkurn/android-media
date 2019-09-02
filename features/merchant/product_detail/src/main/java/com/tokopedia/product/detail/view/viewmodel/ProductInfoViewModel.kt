@@ -66,7 +66,8 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
-import rx.Observable
+import rx.Observer
+import rx.Subscription
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -100,6 +101,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         get() = userSessionInterface.deviceId
 
     private var lazyNeedForceUpdate = false
+
+    private var submitTicketSubscription: Subscription? = null
 
     fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
         if (forceRefresh){
@@ -540,7 +543,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         removeWishlistUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
         trackAffiliateUseCase.cancelJobs()
-        submitHelpTicketUseCase.unsubscribe()
+        submitTicketSubscription?.unsubscribe()
     }
 
     fun loadMore() {
@@ -586,7 +589,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-    fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel): Observable<SubmitTicketResult> {
+    fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
         val requestParams = RequestParams.create()
         val submitHelpTicketRequest = SubmitHelpTicketRequest()
         submitHelpTicketRequest.apiJsonResponse = addToCartDataModel.responseJson
@@ -597,7 +600,20 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         submitHelpTicketRequest.page = "atc"
         submitHelpTicketRequest.requestUrl = "gql.tokopedia.com"
         requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest)
-        return submitHelpTicketUseCase.createObservable(requestParams)
+        submitTicketSubscription = submitHelpTicketUseCase.createObservable(requestParams).subscribe(object : Observer<SubmitTicketResult> {
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+                onErrorSubmitHelpTicket(e)
+            }
+
+            override fun onNext(t: SubmitTicketResult) {
+                onNextSubmitHelpTicket(t)
+            }
+
+            override fun onCompleted() {
+                submitTicketSubscription = null
+            }
+        })
     }
 
     companion object {

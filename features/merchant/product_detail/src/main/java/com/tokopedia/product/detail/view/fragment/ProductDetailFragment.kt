@@ -232,6 +232,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private var refreshLayout: SwipeToRefresh? = null
 
+    private lateinit var createTicketDialog: CreateTicketDialog
+
     override val isUserSessionActive: Boolean
         get() = if (!::productInfoViewModel.isInitialized) false else productInfoViewModel.isUserSessionActive()
 
@@ -1085,35 +1087,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             REQUEST_CODE_NORMAL_CHECKOUT -> {
                 if (resultCode == RESULT_CODE_ERROR_TICKET && data != null) {
                     activity?.also { activity ->
-                        val createTicketDialog = CreateTicketDialog(activity, CreateTicketDialog.Page.PAGE_ATC)
+                        createTicketDialog = CreateTicketDialog(activity, CreateTicketDialog.Page.PAGE_ATC)
                         createTicketDialog.setSecondaryOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickCloseOnHelpPopUpAtc()
                             createTicketDialog.dismiss()
                         })
                         createTicketDialog.setOkOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickReportOnHelpPopUpAtc()
-                            productInfoViewModel.hitSubmitTicket(data.getParcelableExtra(RESULT_TICKET_DATA))
-                                    .subscribe(object : rx.Observer<SubmitTicketResult> {
-                                        override fun onError(e: Throwable?) {
-                                            e?.printStackTrace()
-                                            hideProgressDialog()
-                                            Toaster.showError(view!!, ErrorHandler.getErrorMessage(context, e), Toast.LENGTH_SHORT)
-                                        }
-
-                                        override fun onNext(result: SubmitTicketResult) {
-                                            hideProgressDialog()
-                                            if (result.status) {
-                                                createTicketDialog.dismiss()
-                                                SuccessTicketDialog(activity, SuccessTicketDialog.Page.PAGE_ATC)
-                                            } else {
-                                                Toaster.showError(view!!, result.message, Toast.LENGTH_SHORT)
-                                            }
-                                        }
-
-                                        override fun onCompleted() {
-
-                                        }
-                                    })
+                            productInfoViewModel.hitSubmitTicket(data.getParcelableExtra(RESULT_TICKET_DATA), this::onErrorSubmitHelpTicket, this::onSuccessSubmitHelpTicket)
                             showProgressDialog()
                         })
                         createTicketDialog.setDescription(data.getStringExtra(RESULT_TICKET_DESC))
@@ -1199,6 +1180,25 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun onErrorSubmitHelpTicket(e: Throwable?) {
+        hideProgressDialog()
+        Toaster.showError(view!!, ErrorHandler.getErrorMessage(context, e), Toast.LENGTH_SHORT)
+    }
+
+    private fun onSuccessSubmitHelpTicket(result: SubmitTicketResult) {
+        hideProgressDialog()
+        if (result.status) {
+            createTicketDialog.dismiss()
+            val successTicketDialog = SuccessTicketDialog(activity!!, SuccessTicketDialog.Page.PAGE_ATC)
+            successTicketDialog.setOkOnClickListener(View.OnClickListener {
+                successTicketDialog.dismiss()
+            })
+            successTicketDialog.show()
+        } else {
+            Toaster.showError(view!!, result.message, Toast.LENGTH_SHORT)
         }
     }
 
