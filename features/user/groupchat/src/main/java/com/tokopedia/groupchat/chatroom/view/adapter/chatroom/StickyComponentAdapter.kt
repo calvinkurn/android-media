@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit
 
 class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyComponentViewModel) -> Unit
                              , var eventViewStickyComponent: (item: StickyComponentViewModel) -> Unit
-                             , var eventGoToAtc: (item: AttributeStickyComponentData) -> Unit)
+                             , var eventGoToAtc: (item: AttributeStickyComponentData, productName: String, productPrice: String) -> Unit)
     : RecyclerView.Adapter<StickyComponentAdapter.StickyComponentViewHolder>() {
 
     private var list: ArrayList<StickyComponentViewModel> = arrayListOf()
@@ -47,7 +47,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
                 dismissItem: () -> Unit,
                 eventClickStickyComponent: (item: StickyComponentViewModel) -> Unit,
                 eventViewStickyComponent: (item: StickyComponentViewModel) -> Unit,
-                eventGoToAtc : (item: AttributeStickyComponentData) -> Unit
+                eventGoToAtc : (item: AttributeStickyComponentData, productName: String, productPrice: String) -> Unit
         ) {
             byMeIcon.hide()
 
@@ -107,7 +107,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
 
         private fun setSpecificView(
                 stickyComponentViewModel: StickyComponentViewModel,
-                eventGoToAtc: (item: AttributeStickyComponentData) -> Unit
+                eventGoToAtc: (item: AttributeStickyComponentData, productName: String, productPrice: String) -> Unit
         ) {
             when (stickyComponentViewModel.componentType.toLowerCase()) {
                 StickyComponentViewModel.TYPE_PRODUCT -> {
@@ -117,7 +117,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
                                 AttributeStickyComponentData::class.java
                         )
 
-                        eventGoToAtc.invoke(attribute)
+                        eventGoToAtc.invoke(attribute, stickyComponentViewModel.title, stickyComponentViewModel.subtitle)
                     }
                 }
             }

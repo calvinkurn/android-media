@@ -82,16 +82,17 @@ class StickyComponentHelper(
         }
     }
 
-    private fun eventGoToAtc(): (item: AttributeStickyComponentData) -> Unit {
-        return {item ->
+    private fun eventGoToAtc(): (item: AttributeStickyComponentData, productName: String, productPrice: String) -> Unit {
+        return { item: AttributeStickyComponentData, productName: String, productPrice: String ->
 
+            val productId = item.productId
             val quantity = item.minQuantity
             val atcAndBuyAction = "1"
             val needRefresh = true
             val shopName = item.shopName
             var intent = RouteManager.getIntent(stickyComponentView.context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
                 putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, item.shopId)
-                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, item.productId)
+                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, productId)
                 putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
                 putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, item.productId)
                 putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
@@ -101,6 +102,9 @@ class StickyComponentHelper(
             }
 
             activity.startActivityForResult(intent, 102)
+
+
+            analytics.eventClickATC(productName, productId, productPrice, quantity, item.shopId, shopName)
         }
     }
 }
