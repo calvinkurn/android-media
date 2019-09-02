@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel
 import com.tokopedia.search.result.InstantTaskExecutorRuleSpek
 import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.State
@@ -13,13 +14,14 @@ import com.tokopedia.search.result.common.State.Error
 import com.tokopedia.search.result.common.State.Success
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
-import com.tokopedia.search.result.shop.presentation.mapper.ShopHeaderViewModelMapper
-import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapper
+import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.betweenFirstAndLast
 import com.tokopedia.search.utils.secondToLast
 import com.tokopedia.user.session.UserSessionInterface
+import io.kotlintest.matchers.collections.shouldHaveSingleElement
+import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
 import io.mockk.*
@@ -78,8 +80,10 @@ class SearchShopViewModelSpekMockkTest: Spek({
                 SearchApiConst.Q to "samsung"
         )
 
-        val shopHeaderViewModelMapper = ShopHeaderViewModelMapper()
-        val shopViewModelMapper = ShopViewModelMapper()
+        val shopViewModelMapperModule = ShopViewModelMapperModule()
+
+        val shopHeaderViewModelMapper = shopViewModelMapperModule.provideShopHeaderViewModelMapper()
+        val shopViewModelMapper = shopViewModelMapperModule.provideShopViewModelMapper()
 
         val emptySearchCreator = mockk<EmptySearchCreator>(relaxed = true)
 
@@ -296,6 +300,137 @@ class SearchShopViewModelSpekMockkTest: Spek({
                 searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
             }
         }
+
+        Scenario("Retry Search Shop After Error in Search Shop") {
+
+            Given("search more shop API will fail first, and then success") {
+                val exception = Exception("Mock exception for testing retry mechanism")
+
+                searchShopUseCase.stubExecuteOnBackground()
+                        .throws(exception)
+                        .andThen(searchShopModel)
+            }
+
+            When("execute search shop, and then retry") {
+                searchShopViewModel.searchShop()
+                searchShopViewModel.retrySearchShop()
+            }
+
+            Then("verify search shop API called twice") {
+                searchShopUseCase.isExecuted(2)
+            }
+
+            Then("assert search shop state success after retry") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+        }
+
+        Scenario("Retry Search Shop After Error in Search More Shop") {
+
+            Given("search more shop API will success, and search more shop API will fail first, and then success") {
+                val exception = Exception("Mock exception for testing retry mechanism")
+
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchMoreShopUseCase.stubExecuteOnBackground()
+                        .throws(exception)
+                        .andThen(searchMoreShopModel)
+            }
+
+            When("execute search shop, search more shop, and then retry") {
+                searchShopViewModel.searchShop()
+                searchShopViewModel.searchMoreShop()
+                searchShopViewModel.retrySearchShop()
+            }
+
+            Then("verify search shop API called twice") {
+                searchShopUseCase.isExecuted()
+                searchMoreShopUseCase.isExecuted(2)
+            }
+
+            Then("assert search shop state success after retry") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
+            }
+        }
+
+        Scenario("Reload Search Shop") {
+
+            Given("search shop API call will be successful and return search shop data") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+            }
+
+            When("execute reload search shop") {
+                searchShopViewModel.reloadSearchShop()
+            }
+
+            Then("verify search shop API called once") {
+                searchShopUseCase.isExecuted()
+            }
+
+            Then("assert search shop state success after retry") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+        }
+
+        Scenario("Reload Search Shop After Search Shop and Search More Shop") {
+
+            Given("search shop and search more shop API call will be successful and return search shop data") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchMoreShopUseCase.stubExecuteOnBackground().returns(searchMoreShopModel)
+            }
+
+            When("execute reload search shop") {
+                searchShopViewModel.searchShop()
+                searchShopViewModel.searchMoreShop()
+                searchShopViewModel.reloadSearchShop()
+            }
+
+            Then("verify search shop and search more shop API called in sequence") {
+                searchShopUseCase.isExecuted(2)
+                searchMoreShopUseCase.isExecuted()
+            }
+
+            Then("assert search shop state success after retry") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size)
+            }
+        }
+
+        Scenario("Search Shop with Empty Result") {
+
+            Given("search shop API will be successful and return empty search shop list") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModelEmptyList)
+            }
+
+            When("execute search shop") {
+                searchShopViewModel.searchShop()
+            }
+
+            Then("verify search shop API called once") {
+                searchShopUseCase.isExecuted()
+            }
+
+            Then("assert search shop state is success and contains empty search data") {
+                val searchShopState = null// searchShopViewModel.getSearchShopLiveData().value
+
+//                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldOnlyHaveEmptySearchModel()
+            }
+        }
     }
 })
 
@@ -336,4 +471,9 @@ private fun State<List<Visitable<*>>>?.shouldHaveShopItemCount(size: Int) {
 
 private fun State<List<Visitable<*>>>?.shouldBeNullOrEmpty() {
     this?.data.isNullOrEmpty() shouldBe true
+}
+
+private fun State<List<Visitable<*>>>?.shouldOnlyHaveEmptySearchModel() {
+    this?.data?.shouldHaveSize(1)
+    this?.data?.first().shouldBeInstanceOf<EmptySearchModel>()
 }
