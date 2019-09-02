@@ -307,11 +307,11 @@
                 android:id="@+id/live_tracking_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/label_live_tracking"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="filled" />
 
@@ -319,21 +319,21 @@
                 android:id="@+id/retry_pickup_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
+                android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="12dp"
-                android:layout_marginRight="16dp"
+                android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/find_new_driver"
                 android:visibility="gone"
                 app:unifyButtonSize="medium"
                 app:unifyButtonVariant="ghost"
                 tools:visibility="visible" />
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_retry_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
                 android:gravity="center"
                 android:visibility="gone"
                 tools:text="Tunggu xx:xx untuk mencari driver baru"
