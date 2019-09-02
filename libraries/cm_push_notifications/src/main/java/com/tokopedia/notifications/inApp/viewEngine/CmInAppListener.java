@@ -18,4 +18,6 @@ public interface CmInAppListener {
     void onCMInAppLinkClick(Uri deepLinkUri, String screenName);
 
     void onCMInAppClosed();
+
+    void onCMInAppInflateException(CMInApp inApp);
 }

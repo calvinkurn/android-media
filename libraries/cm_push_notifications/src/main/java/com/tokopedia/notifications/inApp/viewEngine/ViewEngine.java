@@ -113,7 +113,10 @@ public class ViewEngine {
             handleBackPress(view);
             return cmInApp;
         } catch (Exception e) {
-            Log.d("ViewEngine", e.getMessage());
+            CmInAppListener listener = CMInAppManager.getCmInAppListener();
+            if (listener != null) {
+                listener.onCMInAppInflateException(cmInApp);
+            }
             return null;
         }
     }
@@ -410,7 +413,7 @@ public class ViewEngine {
         boolean isCLoseButtonVisible = false;
         if (cmInApp.isCancelable()) {
             isCLoseButtonVisible = true;
-        }else {
+        } else {
             constraintLayout.findViewById(resCmClose).setVisibility(View.GONE);
         }
 
