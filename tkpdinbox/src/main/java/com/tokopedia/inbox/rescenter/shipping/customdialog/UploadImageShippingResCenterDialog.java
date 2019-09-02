@@ -31,14 +31,18 @@ public class UploadImageShippingResCenterDialog extends BaseUploadImageDialog {
         this.fragment = fragment;
         this.resolutionID = resolutionID;
         this.context = fragment.getActivity();
-        this.cache = LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID);
+        this.cache = LocalCacheManager
+                .AttachmentShippingResCenter
+                .Builder(this.fragment.getActivity().getApplication(), resolutionID);
     }
 
     public UploadImageShippingResCenterDialog(Activity activity, String resolutionID) {
         this.activity = activity;
         this.resolutionID = resolutionID;
         this.context = activity;
-        this.cache = LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID);
+        this.cache = LocalCacheManager
+                .AttachmentShippingResCenter
+                .Builder(this.fragment.getActivity().getApplication(), resolutionID);
     }
 
     @Override
@@ -46,7 +50,9 @@ public class UploadImageShippingResCenterDialog extends BaseUploadImageDialog {
         cache.setImageLocalPath(cameraFileLoc)
                 .setImageUUID(UUID.randomUUID().toString())
                 .save();
-        listener.onSuccess(LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID).getCache());
+        listener.onSuccess(LocalCacheManager
+                .AttachmentShippingResCenter
+                .Builder(this.fragment.getActivity().getApplication(), resolutionID).getCache());
     }
 
     @Override
@@ -56,7 +62,9 @@ public class UploadImageShippingResCenterDialog extends BaseUploadImageDialog {
             cache.setImageLocalPath(imageUrlOrPathList.get(0))
                     .setImageUUID(UUID.randomUUID().toString())
                     .save();
-            listener.onSuccess(LocalCacheManager.AttachmentShippingResCenter.Builder(resolutionID).getCache());
+            listener.onSuccess(LocalCacheManager
+                    .AttachmentShippingResCenter
+                    .Builder(this.fragment.getActivity().getApplication(), resolutionID).getCache());
         }else{
             listener.onFailed();
         }

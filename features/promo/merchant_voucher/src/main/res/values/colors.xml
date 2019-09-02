@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="separator_color">#e0e0e0</color>
+    <color name="voucher_text_color_disable">#abadb1</color>
+    <color name="voucher_button_color_disable">#e5e7e9</color>
 </resources>
