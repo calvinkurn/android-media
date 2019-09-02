@@ -6,13 +6,13 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel
 import com.tokopedia.search.result.InstantTaskExecutorRuleSpek
 import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.common.State.Error
 import com.tokopedia.search.result.common.State.Success
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
+import com.tokopedia.search.result.presentation.model.EmptySearchViewModel
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
@@ -20,7 +20,6 @@ import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.betweenFirstAndLast
 import com.tokopedia.search.utils.secondToLast
 import com.tokopedia.user.session.UserSessionInterface
-import io.kotlintest.matchers.collections.shouldHaveSingleElement
 import io.kotlintest.matchers.collections.shouldHaveSize
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import io.kotlintest.shouldBe
@@ -425,9 +424,9 @@ class SearchShopViewModelSpekMockkTest: Spek({
             }
 
             Then("assert search shop state is success and contains empty search data") {
-                val searchShopState = null// searchShopViewModel.getSearchShopLiveData().value
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
 
-//                searchShopState.shouldBeInstanceOf<Success<*>>()
+                searchShopState.shouldBeInstanceOf<Success<*>>()
                 searchShopState.shouldOnlyHaveEmptySearchModel()
             }
         }
@@ -475,5 +474,5 @@ private fun State<List<Visitable<*>>>?.shouldBeNullOrEmpty() {
 
 private fun State<List<Visitable<*>>>?.shouldOnlyHaveEmptySearchModel() {
     this?.data?.shouldHaveSize(1)
-    this?.data?.first().shouldBeInstanceOf<EmptySearchModel>()
+    this?.data?.first().shouldBeInstanceOf<EmptySearchViewModel>()
 }
