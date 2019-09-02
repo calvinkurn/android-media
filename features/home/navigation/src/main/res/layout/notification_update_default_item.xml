@@ -120,15 +120,16 @@
     <com.tokopedia.navigation.widget.RoundedImageView
         android:id="@+id/image_banner"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:adjustViewBounds="true"
         android:maxWidth="@dimen/dp_288"
         android:maxHeight="@dimen/dp_145"
         app:borderRadius="@dimen/dp_4"
+        app:layout_constraintDimensionRatio="2:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/body"
+        app:layout_constraintBottom_toBottomOf="parent"
         tools:src="@tools:sample/avatars" />
 
 </android.support.constraint.ConstraintLayout>

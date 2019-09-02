@@ -41,8 +41,17 @@ public class DynamicFilterDetailRatingAdapter extends DynamicFilterDetailAdapter
         @Override
         public void bind(final Option option) {
             super.bind(option);
-            int ratingCount = Integer.parseInt(option.getName());
+            int ratingCount = getRatingCount(option);
             ratingView.setImageResource(RatingHelper.getRatingDrawable(ratingCount));
+        }
+
+        private int getRatingCount(final Option option) {
+            try {
+                return Integer.parseInt(option.getValue());
+            }
+            catch (Exception e) {
+                return 0;
+            }
         }
     }
 }

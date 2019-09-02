@@ -2,6 +2,7 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
@@ -41,6 +42,10 @@ object DeeplinkDFMapper {
      */
     @JvmStatic
     fun getDFDeeplinkIfNotInstalled(context: Context, deeplink: String): String? {
+        //KITKAT does not support dynamic feature
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            return null
+        }
         if (deeplink.startsWith(DYNAMIC_FEATURE_INSTALL_BASE)) {
             return null
         }
@@ -60,11 +65,11 @@ object DeeplinkDFMapper {
 //                            deeplink, MODULE_HOTEL_TRAVEL,
 //                            context.getString(R.string.title_hotel))
 //                }
-                deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
-                    getDFDeeplinkIfNotInstalled(context,
-                        deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
-                        context.getString(R.string.shop_settings_title))
-                }
+//                deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                        deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
+//                        context.getString(R.string.shop_settings_title))
+//                }
                 else -> null
             }
         }

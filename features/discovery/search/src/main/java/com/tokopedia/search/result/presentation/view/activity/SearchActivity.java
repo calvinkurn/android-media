@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.content.res.AppCompatResources;
@@ -287,13 +288,23 @@ public class SearchActivity extends BaseActivity
     }
 
     private void applyFilter(Map<String, String> filterParameter) {
-        SearchSectionFragment selectedFragment
-                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
+        if (isViewPagerCurrentItemPositionIsInvalid()) return;
 
-        selectedFragment.applyFilterToSearchParameter(filterParameter);
-        selectedFragment.setSelectedFilter(new HashMap<>(filterParameter));
-        selectedFragment.clearDataFilterSort();
-        selectedFragment.reloadData();
+        Fragment fragmentItem = searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
+
+        if (fragmentItem instanceof SearchSectionFragment) {
+            SearchSectionFragment selectedFragment = (SearchSectionFragment) fragmentItem;
+
+            selectedFragment.applyFilterToSearchParameter(filterParameter);
+            selectedFragment.setSelectedFilter(new HashMap<>(filterParameter));
+            selectedFragment.clearDataFilterSort();
+            selectedFragment.reloadData();
+        }
+    }
+
+    private boolean isViewPagerCurrentItemPositionIsInvalid() {
+        return viewPager.getCurrentItem() < 0
+                || viewPager.getCurrentItem() >= searchSectionPagerAdapter.getCount();
     }
 
     @Override
