@@ -3,13 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:focusedByDefault="true">
 
     <LinearLayout
-        android:id="@+id/root_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusedByDefault="true"
         android:orientation="vertical">
 
         <LinearLayout
@@ -139,19 +138,55 @@
             android:layout_marginBottom="@dimen/dp_20"
             android:background="@color/white"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/dp_20"
-            android:paddingTop="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_20"
-            android:paddingBottom="@dimen/dp_10">
+            android:padding="@dimen/dp_16">
 
-            <TextView
-                style="@style/TextView.Title.Bold"
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10"
-                android:paddingBottom="@dimen/dp_10"
-                android:text="@string/flight_cancellation_detail_refund_information_label" />
+                android:paddingTop="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_8"
+                android:text="@string/flight_cancellation_detail_refund_information_label"
+                android:textColor="@color/black_70"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_bottom_top_info"
+                android:nestedScrollingEnabled="false">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                android:background="@color/black_twenty_percent" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_bottom_middle_info"
+                android:nestedScrollingEnabled="false">
+
+            </android.support.v7.widget.RecyclerView>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/margin_8"
+                android:layout_marginBottom="@dimen/margin_8"
+                android:background="@color/black_twenty_percent" />
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/rv_bottom_bottom_info"
+                android:nestedScrollingEnabled="false">
+
+            </android.support.v7.widget.RecyclerView>
 
             <RelativeLayout
                 android:layout_width="match_parent"

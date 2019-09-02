@@ -4,19 +4,22 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapter;
 import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationDetailPassengerAdapterTypeFactory;
+import com.tokopedia.flight.cancellation.view.adapter.FlightCancellationRefundBottomAdapter;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationDetailContract;
 import com.tokopedia.flight.cancellation.view.presenter.FlightCancellationDetailPresenter;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
@@ -24,7 +27,12 @@ import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderAdapter;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailOrderTypeFactory;
+import com.tokopedia.flight.orderlist.data.cloud.entity.KeyValueEntity;
+import com.tokopedia.flight.orderlist.data.cloud.entity.RefundDetailEntity;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -50,7 +58,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private TextView txtRealRefund;
     private TextView txtEstimateRefund;
     private Ticker tickerRefundInfo;
-    private LinearLayout rootContainer;
+    private RecyclerView rvBottomTopInfo, rvBottomMiddleInfo, rvBottomBottomInfo;
 
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightCancellationDetailPassengerAdapter flightCancellationDetailPassengerAdapter;
@@ -71,7 +79,6 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_cancellation_detail, container, false);
 
-        rootContainer = view.findViewById(R.id.root_container);
         layoutExpendablePassenger = view.findViewById(R.id.layout_expendable_passenger);
         imageExpendablePassenger = view.findViewById(R.id.image_expendable_passenger);
         rvFlights = view.findViewById(R.id.recycler_view_flight);
@@ -81,6 +88,9 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         txtCancellationStatus = view.findViewById(R.id.cancellation_status);
         txtCancellationDate = view.findViewById(R.id.cancellation_date);
         tickerRefundInfo = view.findViewById(R.id.ticker_refund_info);
+        rvBottomTopInfo = view.findViewById(R.id.rv_bottom_top_info);
+        rvBottomMiddleInfo = view.findViewById(R.id.rv_bottom_middle_info);
+        rvBottomBottomInfo = view.findViewById(R.id.rv_bottom_bottom_info);
 
         FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
@@ -129,6 +139,9 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     }
 
     private void renderView() {
+        txtCancellationStatus.requestFocus();
+        txtCancellationStatus.setText(flightCancellationListViewModel.getCancellations().getStatusStr());
+
         flightDetailOrderAdapter.addElement(flightCancellationListViewModel
                 .getCancellations().getJourneys());
         flightDetailOrderAdapter.notifyDataSetChanged();
@@ -148,9 +161,8 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         txtCancellationDate.setText(FlightDateUtil.formatDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 FlightDateUtil.DEFAULT_VIEW_FORMAT,
                 flightCancellationListViewModel.getCancellations().getCreateTime()));
-        presenter.checkCancellationStatus();
 
-        rootContainer.requestFocus();
+        renderBottomInfo(flightCancellationListViewModel.getCancellations().getRefundDetail());
     }
 
     @Override
@@ -158,9 +170,36 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         return flightCancellationListViewModel;
     }
 
-    @Override
-    public void renderCancellationStatus(int resId) {
-        txtCancellationStatus.setText(getString(resId));
+    private void renderBottomInfo(RefundDetailEntity refundDetail) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        // top info
+        FlightCancellationRefundBottomAdapter refundTopAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL);
+        refundTopAdapter.addData(generateSimpleViewModel(refundDetail.getTopInfo()));
+        rvBottomTopInfo.setLayoutManager(layoutManager);
+        rvBottomTopInfo.setAdapter(refundTopAdapter);
+
+        /*// middle info
+        FlightCancellationRefundBottomAdapter refundMiddleAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL);
+        refundMiddleAdapter.addData(generateSimpleViewModel(refundDetail.getTopInfo()));
+        rvBottomMiddleInfo.setLayoutManager(layoutManager);
+        rvBottomMiddleInfo.setAdapter(refundMiddleAdapter);*/
+
+        // bottom info
+        FlightCancellationRefundBottomAdapter refundBottomAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_RED);
+        refundBottomAdapter.addData(generateSimpleViewModel(refundDetail.getBottomInfo()));
+        rvBottomBottomInfo.setLayoutManager(layoutManager);
+        rvBottomBottomInfo.setAdapter(refundBottomAdapter);
+    }
+
+    private List<SimpleViewModel> generateSimpleViewModel(List<KeyValueEntity> items) {
+        List<SimpleViewModel> datas = new ArrayList<>();
+
+        for (KeyValueEntity item : items) {
+            datas.add(new SimpleViewModel(item.getKey(), item.getValue()));
+        }
+
+        return datas;
     }
 
     private void togglePassengerInfo() {
