@@ -101,7 +101,7 @@ open class DynamicPostViewHolder(v: View,
             return
         }
 
-        bindTitle(element.title, element.template.cardpost.title)
+        bindTitle(element.title, element.template.cardpost.title, element.id)
         bindHeader(element.id, element.header, element.template.cardpost.header)
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
@@ -129,9 +129,9 @@ open class DynamicPostViewHolder(v: View,
         itemView.authorImage.clearImage()
     }
 
-    private fun bindTitle(title: Title, template: TemplateTitle) {
+    private fun bindTitle(title: Title, template: TemplateTitle, postId: Int) {
         itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
-            itemView.cardTitle.bind(title, template)
+            itemView.cardTitle.bind(title, template, postId.toString())
         }
         itemView.cardTitle.listener = cardTitleListener
     }

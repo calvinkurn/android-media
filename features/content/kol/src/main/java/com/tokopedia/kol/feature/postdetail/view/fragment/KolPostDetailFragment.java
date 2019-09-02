@@ -46,6 +46,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
@@ -890,7 +891,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onTitleCtaClick(@NotNull String redirectUrl) {
+    public void onTitleCtaClick(@NotNull String redirectUrl, @NonNull String postId) {
         onGoToLink(redirectUrl);
 
     }
@@ -920,7 +921,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onHighlightItemClicked(int positionInFeed, @NotNull String redirectUrl) {
+    public void onHighlightItemClicked(int positionInFeed, @NotNull HighlightCardViewModel item) {
 
     }
 

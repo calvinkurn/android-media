@@ -96,6 +96,7 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -914,7 +915,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, postId: String) {
         onGoToLink(redirectUrl)
     }
 
@@ -960,7 +961,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 

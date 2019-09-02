@@ -15,12 +15,15 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.view.adapter.typefactory.dynamicfeed.DynamicFeedTypeFactoryImpl
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.listener.DynamicFeedContract
@@ -41,9 +44,11 @@ class DynamicFeedFragment:
 
     companion object {
         private const val KOL_COMMENT_CODE = 13
+        private const val KEY_FEED  = "KEY_FEED"
         fun newInstance(feedKey: String): DynamicFeedFragment {
             val fragment = DynamicFeedFragment()
             val bundle = Bundle()
+            bundle.putString(KEY_FEED, feedKey)
             fragment.arguments = bundle
             return fragment
         }
@@ -52,8 +57,12 @@ class DynamicFeedFragment:
     @Inject
     lateinit var presenter: DynamicFeedContract.Presenter
 
+    @Inject
+    lateinit var feedAnalyticTracker: FeedAnalyticTracker
+
     private var isLoading = false
     private var isForceRefresh = false
+    private var feedKey = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_dynamic_feed, container, false)
@@ -66,6 +75,7 @@ class DynamicFeedFragment:
     }
 
     private fun initView() {
+        feedKey = arguments?.getString(KEY_FEED) ?: ""
         presenter.attachView(this)
         rv_dynamic_feed.adapter = adapter
         rv_dynamic_feed.layoutManager = LinearLayoutManager(activity)
@@ -118,7 +128,8 @@ class DynamicFeedFragment:
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String,  postId: String) {
+        feedAnalyticTracker.eventTrendingClickSeeAll(postId)
         onGoToLink(redirectUrl)
     }
 
@@ -135,7 +146,11 @@ class DynamicFeedFragment:
     }
 
     override fun getScreenName(): String {
-        return ""
+        var screenName = ""
+        when(feedKey){
+            FeedTabs.KEY_TRENDING -> screenName = FeedAnalyticTracker.Screen.TRENDING
+        }
+        return screenName
     }
 
     override fun initInjector() {
@@ -186,8 +201,9 @@ class DynamicFeedFragment:
     override fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean) {
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
-        onGoToLink(redirectUrl)
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
+        feedAnalyticTracker.eventTrendingClickMedia(item.postId.toString())
+        onGoToLink(item.applink)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

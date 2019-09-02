@@ -105,6 +105,7 @@ import javax.inject.Inject
 
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.kol.common.util.createBottomMenu
@@ -1199,7 +1200,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, postId: String) {
         onGoToLink(redirectUrl)
     }
 
@@ -1345,7 +1346,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 

@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
@@ -12,10 +13,12 @@ import kotlin.collections.HashMap
  */
 class FeedAnalyticTracker
 @Inject constructor(
-        private val trackingQueue: TrackingQueue
+        private val trackingQueue: TrackingQueue,
+        private val userSessionInterface: UserSessionInterface
 ) {
 
     private companion object {
+        private const val USER_ID = "user_id"
         const val ECOMMERCE = "ecommerce"
 
         const val PROMOTIONS = "promotions"
@@ -31,6 +34,10 @@ class FeedAnalyticTracker
     }
 
     private object Category {
+
+        //trending
+        const val CONTENT_EXPLORE_TRENDING = "explore page - trending"
+
         const val CONTENT_FEED_TIMELINE = "content feed timeline"
         const val FEED_DETAIL_PAGE = "feed detail page"
 
@@ -42,6 +49,8 @@ class FeedAnalyticTracker
     }
 
     private object Action {
+        const val CLICK_MEDIA = "click media"
+        const val CLICK_SEE_ALL = "click lihat semua"
         const val CLICK_HASHTAG = "click hashtag"
         const val CLICK_READ_MORE = "click read more"
         const val CLICK_POST = "click post"
@@ -50,7 +59,8 @@ class FeedAnalyticTracker
         const val IMPRESSION_POST = "impression post"
     }
 
-    private object Screen {
+    public object Screen {
+        const val TRENDING = "/feed/trending-tab"
         const val HASHTAG = "/feed/hashtag"
         const val HASHTAG_POST_LIST = "/hashtag page - post list"
     }
@@ -60,6 +70,42 @@ class FeedAnalyticTracker
         const val NAME = "name"
         const val CREATIVE = "creative"
         const val POSITION = "position"
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 35
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     * @param hashtag - the hashtag name
+     */
+    fun eventTrendingClickMedia(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_MEDIA,
+                activityId)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 3
+     *
+     * @param activityName - activity name
+     * @param activityId - postId
+     * @param mediaType - video or image
+     * @param hashtag - the hashtag name
+     */
+    fun eventTrendingClickSeeAll(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_SEE_ALL,
+                activityId)
     }
 
     /**
@@ -359,7 +405,8 @@ class FeedAnalyticTracker
             EVENT, eventName,
             EVENT_CATEGORY, eventCategory,
             EVENT_ACTION, eventAction,
-            EVENT_LABEL, eventLabel
+            EVENT_LABEL, eventLabel,
+            USER_ID,  userSessionInterface.userId
     )
 
     private fun getEcommerceData(data: Any): Map<String, Any> = DataLayer.mapOf(ECOMMERCE, data)
