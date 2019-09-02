@@ -61,6 +61,7 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionV
             }
             if (listener != null) itemView.setOnClickListener {
                 if (type == TYPE_RECOMMENDATION) listener.onTrackDealsClick(item, position + 1)
+                else if (type == TYPE_ORDER_LIST) listener.onTrackEventClick(type, position + 1, item.product)
                 else if (type == TYPE_RECENT_SEARCH && categoryType == TYPE_POPULAR_SEARCH_CATEGORY) listener.onTrackEventClick(TYPE_POPULAR_SEARCH, position + 1, item.product)
                 else if (type == TYPE_RECENT_SEARCH && categoryType != TYPE_POPULAR_SEARCH_CATEGORY) listener.onTrackEventClick(TYPE_RECENT_SEARCH, position + 1, item.product)
 

@@ -1,14 +1,18 @@
 package com.tokopedia.iris
 
-import com.tokopedia.iris.Iris
-import com.tokopedia.iris.model.Configuration
 import android.content.Context
+import com.tokopedia.iris.model.Configuration
 
 /**
  * @author ricoharisin .
  */
 
 class IrisAnalytics(context: Context) : Iris {
+
+    override fun initialize() {
+
+    }
+
     override fun setService(config: String, isEnabled: Boolean) {
     }
 

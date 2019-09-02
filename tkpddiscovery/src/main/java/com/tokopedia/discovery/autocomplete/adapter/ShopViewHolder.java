@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.discovery.R;
@@ -29,9 +28,8 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
 
     private TextView titleTextView;
     private TextView location;
-    private ImageView badgesOfficialStore;
+    private ImageView imageViewShopBadge;
     private ImageView shopAvatar;
-    private ImageView iconCopyTextView;
 
     private final ItemClickListener listener;
 
@@ -51,9 +49,8 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
     private void initView() {
         titleTextView = itemView.findViewById(R.id.titleTextView);
         location = itemView.findViewById(R.id.subTitleTextView);
-        badgesOfficialStore = itemView.findViewById(R.id.badgesOfficialStore);
+        imageViewShopBadge = itemView.findViewById(R.id.imageViewShopBadge);
         shopAvatar = itemView.findViewById(R.id.shop_avatar);
-        iconCopyTextView = itemView.findViewById(R.id.icon);
     }
 
     @Override
@@ -65,7 +62,7 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
         setTitle();
         setSubtitle();
         loadImageIntoShopAvatar();
-        setBadgesOfficialStoreIfOfficial();
+        setShopBadges();
         setItemViewOnClickListener();
     }
 
@@ -117,11 +114,15 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
         ImageHandler.loadImageCircle2(context, shopAvatar, boundedShopSearch.getImageUrl());
     }
 
-    private void setBadgesOfficialStoreIfOfficial() {
-        if(boundedShopSearch.isOfficial()){
-            badgesOfficialStore.setVisibility(View.VISIBLE);
-        } else {
-            badgesOfficialStore.setVisibility(View.GONE);
+    private void setShopBadges() {
+        if (imageViewShopBadge != null) {
+            if (!boundedShopSearch.getShopBadgeIconUrl().isEmpty()) {
+                imageViewShopBadge.setVisibility(View.VISIBLE);
+                ImageHandler.loadImageWithoutPlaceholder(imageViewShopBadge, boundedShopSearch.getShopBadgeIconUrl());
+            }
+            else {
+                imageViewShopBadge.setVisibility(View.GONE);
+            }
         }
     }
 

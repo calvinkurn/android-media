@@ -40,7 +40,6 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             proguardFiles 'proguard-rules.pro'
         }
     }
@@ -51,6 +50,12 @@ android {
 }
 
 dependencies {
+
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.libraries.cpm)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
 
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
@@ -64,8 +69,9 @@ dependencies {
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.retrofitKotlinCoroutine
 
-    implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+
+    implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.rxJava
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {

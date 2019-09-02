@@ -52,6 +52,12 @@
             android:theme="@style/Theme.Tokopedia3"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
+            android:name=".newdynamicfilter.DynamicFilterOfferingActivity"
+            android:label="Penawaran"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Tokopedia3"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+        <activity
             android:name=".newdynamicfilter.DynamicFilterLocationActivity"
             android:label="Lokasi"
             android:screenOrientation="portrait"

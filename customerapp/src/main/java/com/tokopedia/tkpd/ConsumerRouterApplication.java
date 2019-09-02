@@ -63,11 +63,6 @@ import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
-import com.tokopedia.logisticcart.cod.view.CodActivity;
-import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -86,12 +81,8 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
-import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.Constants;
@@ -103,7 +94,6 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -149,7 +139,7 @@ import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.discovery.DiscoveryRouter;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
+import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -177,7 +167,6 @@ import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
-import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
@@ -201,13 +190,11 @@ import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.rescenter.create.activity.CreateResCenterActivity;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
 import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
-import com.tokopedia.iris.model.Configuration;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kyc.KYCRouter;
@@ -220,9 +207,12 @@ import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
+import com.tokopedia.logisticcart.cod.view.CodActivity;
+import com.tokopedia.logisticdata.data.entity.address.Token;
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -421,9 +411,6 @@ import tradein_common.TradeInUtils;
 import tradein_common.router.TradeInRouter;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
-import static com.tokopedia.iris.ConstantKt.DEFAULT_CONFIG;
-import static com.tokopedia.iris.ConstantKt.DEFAULT_MAX_ROW;
-import static com.tokopedia.iris.ConstantKt.DEFAULT_SERVICE_TIME;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
@@ -556,25 +543,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(this);
-
-        boolean irisEnable = getBooleanRemoteConfig(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true);
-        String irisConfig = getStringRemoteConfig(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG);
-
-        if (!irisConfig.isEmpty()) {
-            mIris.setService(irisConfig, irisEnable);
-        } else {
-            Configuration configuration = new Configuration(
-                    DEFAULT_MAX_ROW,
-                    DEFAULT_SERVICE_TIME,
-                    irisEnable
-            );
-            mIris.setService(configuration);
-        }
-    }
-
-    @Override
-    public Iris getIris() {
-        return mIris;
+        mIris.initialize();
     }
 
     private FlightConsumerComponent getFlightConsumerComponent() {
@@ -1286,11 +1255,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGMHomeIntent(Context context) {
-        return GMSubscribeInternalRouter.getGMSubscribeHomeIntent(context);
-    }
-
-    @Override
     public void navigateAppLinkWallet(Context context,
                                       String appLinkScheme,
                                       String alternateRedirectUrl,
@@ -1437,16 +1401,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getResolutionCenterIntent(Context context) {
-        return InboxResCenterActivity.createIntent(context);
-    }
-
-    @Override
-    public Intent getResolutionCenterIntentBuyer(Context context) {
-        return ResoInboxActivity.newBuyerInstance(context);
-    }
-
-    @Override
     public Intent getResolutionCenterIntentSeller(Context context) {
         return ResoInboxActivity.newSellerInstance(context);
     }
@@ -1459,11 +1413,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
         return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId);
-    }
-
-    @Override
-    public Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId) {
-        return CreateResCenterActivity.getCreateResCenterActivityIntent(context, orderId, troubleId, solutionId);
     }
 
     @Override
@@ -1676,12 +1625,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new GetBalanceTokoCashWrapper(tokoCashComponent.getBalanceTokoCashUseCase(),
                 tokoCashComponent.getPendingCasbackUseCase())
                 .getTokoCashAccountBalance();
-    }
-
-    @Override
-    public void navigateToChooseAddressActivityRequest(Fragment var1, Intent var2, int var3) {
-        Intent instance = ChooseAddressActivity.createInstance(var1.getContext());
-        var1.startActivityForResult(instance, var3);
     }
 
     @Override
@@ -2631,7 +2574,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new GlobalCacheManager().deleteAll();
         PersistentCacheManager.instance.delete();
         Router.clearEtalase(activity);
-        DbManagerImpl.getInstance().removeAllEtalase();
         TrackApp.getInstance().getMoEngage().logoutEvent();
         SessionHandler.clearUserData(activity);
         NotificationModHandler notif = new NotificationModHandler(activity);
@@ -2671,7 +2613,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             new GlobalCacheManager().deleteAll();
             PersistentCacheManager.instance.delete();
             Router.clearEtalase(activity);
-            DbManagerImpl.getInstance().removeAllEtalase();
             TrackApp.getInstance().getMoEngage().logoutEvent();
             SessionHandler.clearUserData(activity);
             NotificationModHandler notif = new NotificationModHandler(activity);
