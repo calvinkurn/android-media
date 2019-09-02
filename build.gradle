@@ -10,7 +10,6 @@ apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
 apply plugin: 'idea'
 
-
 buildscript {
     ext.jacocoVersion = '0.8.2'
     repositories {
@@ -70,10 +69,6 @@ allprojects {
             }
         }
         maven { url "https://www.jitpack.io" }
-        maven {
-            url "https://jitpack.io"
-            credentials { username authToken }
-        }
         maven { url "$rootDir/node_modules/react-native/android" }
         flatDir {
             dirs '../aars'
@@ -197,3 +192,10 @@ idea.module {
     excludeDirs += file('.okbuck/')
     excludeDirs += file('buck-out/')
 }
+
+//Installing Git Hooks
+task installGitHooks(type: Copy) {
+    ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
+    Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
+}
+clean.dependsOn installGitHooks

@@ -24,15 +24,15 @@ public class CloudEditTemplateChatDataSource {
         this.chatApi = chatApi;
     }
 
-    public Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object> parameters) {
-        return chatApi.editTemplate(index, parameters).map(templateChatMapper);
+    public Observable<EditTemplateViewModel> editTemplate(int index, HashMap<String, Object> parameters, boolean isSeller) {
+        return chatApi.editTemplate(index, parameters, isSeller).map(templateChatMapper);
     }
 
     public Observable<EditTemplateViewModel> createTemplate(HashMap<String, Object> parameters) {
         return chatApi.createTemplate(parameters).map(templateChatMapper);
     }
 
-    public Observable<EditTemplateViewModel> deleteTemplate(int index) {
-        return chatApi.deleteTemplate(index, new JsonObject()).map(templateChatMapper);
+    public Observable<EditTemplateViewModel> deleteTemplate(int index, boolean isSeller) {
+        return chatApi.deleteTemplate(index, isSeller, new JsonObject()).map(templateChatMapper);
     }
 }

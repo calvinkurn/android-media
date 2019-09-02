@@ -3,40 +3,71 @@ package com.tokopedia.merchantvoucher.common.widget
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.*
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.merchantvoucher.R
+import android.graphics.RectF
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.StyleSpan
+import android.text.style.TypefaceSpan
+import android.widget.TextView
+import android.graphics.Typeface
+import android.text.TextPaint
+
 
 /*
     Provides the background for voucher view
-    +---------------------+   +--------+
-    |                     +-+-+        |
-    |                       |          |
-    |                       |          |
-    |                     +-+-+        |
-    +---------------------+   +--------+
+    +-------------------------------------+
+    |                                     |
+    +-+                                 +-+
+      |                                 |
+    +-+                                 +-+
+    |                                     |
+    +-+                                 +-+
+      |                                 |
+    +-+                                 +-+
+    |                                     |
+    +-------------------------------------+
  */
 open class CustomVoucherView : FrameLayout {
 
-    private var path: Path? = null
-    private var linePath: Path? = null
-    private var borderPaint: Paint? = null
-    private var dashPaint: Paint? = null
+    private val pathSmoothJaggedEdgeBackgroundLayout: Path by lazy {
+        Path()
+    }
+    private val pathSmoothJaggedEdgeOverlayLayout: Path by lazy {
+        Path()
+    }
+    private val paint: Paint by lazy {
+        Paint(Paint.ANTI_ALIAS_FLAG)
+    }
     private var requiresShapeUpdate = true
+    private var mShadowRadius: Int = 0
+    private var totalJaggedEdge: Int = 0
+    private var canvasWidth = -1
+    private var canvasHeight = -1
+    private var minX = -1
+    private var maxX = -1
+    private var minY = -1
+    private var maxY = -1
+    private var canvasCleanHeight = -1
+    private var totalJaggedAndStraight = -1
+    private var diameter = -1f
 
-    protected var cornerRadius: Int = 0
-    protected var mScallopRadius: Int = 0
-    protected var mScallopRelativePosition: Float = 0.toFloat()
-    protected var mShadowRadius: Int = 0
-    protected var mDashWidth: Int = 0
-    protected var mDashGap: Int = 0
-    protected var mDashColor: Int = 0
 
-    protected var drawable: Drawable? = null
+    companion object {
+        private const val DEFAULT_TOTAL_JAGGED_EDGE = 8
+        private const val LEFT_JAGGED_BOTTOM_TO_TOP = "LEFT_JAGGED_BOTTOM_TO_TOP"
+        private const val RIGHT_JAGGED_TOP_TO_BOTTOM = "RIGHT_JAGGED_TOP_TO_BOTTOM"
+
+    }
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -52,12 +83,10 @@ open class CustomVoucherView : FrameLayout {
 
     private fun init(context: Context, attrs: AttributeSet?) {
         applyAttrs(context, attrs)
-
         isDrawingCacheEnabled = true
         setWillNotDraw(false)
-
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1) {
-            setLayerType(View.LAYER_TYPE_SOFTWARE, borderPaint)
+            setLayerType(View.LAYER_TYPE_SOFTWARE, paint)
         } else {
             setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         }
@@ -65,109 +94,253 @@ open class CustomVoucherView : FrameLayout {
 
     private fun applyAttrs(context: Context, attrs: AttributeSet?) {
         if (attrs != null) {
-            val defaultRadius = dpToPx(4f)
             val attributes = context.obtainStyledAttributes(attrs, R.styleable.CustomVoucherView)
-            cornerRadius = attributes.getDimensionPixelSize(R.styleable.CustomVoucherView_vchCornerRadius, defaultRadius)
-            mScallopRadius = attributes.getDimensionPixelSize(R.styleable.CustomVoucherView_vchScallopRadius, defaultRadius * 2)
-            mScallopRelativePosition = attributes.getFloat(R.styleable.CustomVoucherView_vchScallopRelativePosition, 0.7f)
+            totalJaggedEdge = attributes.getInt(
+                    R.styleable.CustomVoucherView_vchTotalJaggedEdge,
+                    DEFAULT_TOTAL_JAGGED_EDGE
+            )
             if (attributes.hasValue(R.styleable.CustomVoucherView_vchElevation)) {
                 mShadowRadius = attributes.getDimensionPixelOffset(R.styleable.CustomVoucherView_vchElevation, 0)
             }
-            mDashWidth = attributes.getDimensionPixelOffset(R.styleable.CustomVoucherView_vchDashWidth, defaultRadius)
-            mDashGap = attributes.getDimensionPixelOffset(R.styleable.CustomVoucherView_vchDashGap, defaultRadius)
-            mDashColor = attributes.getColor(R.styleable.CustomVoucherView_vchDashColor, resources.getColor(android.R.color.black))
             attributes.recycle()
         }
     }
 
     override fun onDraw(canvas: Canvas) {
-        initVoucherPath()
-        if (borderPaint == null) {
-            borderPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-            borderPaint!!.isAntiAlias = true
-            borderPaint!!.color = Color.WHITE
-            borderPaint!!.strokeWidth = 1f
-            borderPaint!!.style = Paint.Style.FILL_AND_STROKE
-            borderPaint!!.strokeJoin = Paint.Join.BEVEL
-            borderPaint!!.setShadowLayer(mShadowRadius.toFloat(), 0f, (mShadowRadius / 2).toFloat(), Color.GRAY)
-        }
-
-        if (dashPaint == null) {
-            dashPaint = Paint(Paint.ANTI_ALIAS_FLAG)
-            dashPaint!!.style = Paint.Style.STROKE
-            dashPaint!!.pathEffect = DashPathEffect(floatArrayOf(mDashGap.toFloat(), mDashGap.toFloat()), 0f)
-            dashPaint!!.strokeWidth = mDashWidth.toFloat()
-            dashPaint!!.color = mDashColor
-        }
-
-        if (path != null) {
-            canvas.drawPath(path!!, borderPaint!!)
-        }
-        if (linePath != null) {
-            canvas.drawPath(linePath!!, dashPaint!!)
-        }
+        paint.isAntiAlias = true
+        paint.color = Color.WHITE
+        paint.strokeWidth = 0f
+        paint.style = Paint.Style.FILL_AND_STROKE
+        paint.strokeJoin = Paint.Join.BEVEL
+        paint.setShadowLayer(10f, 0f, 5f, Color.GRAY)
+        canvas.drawPath(pathSmoothJaggedEdgeBackgroundLayout, paint)
         super.onDraw(canvas)
+
     }
 
-    private fun initVoucherPath() {
+    private fun initDimensionData() {
+        canvasWidth = width
+        canvasHeight = height
+        minX = paddingLeft
+        maxX = canvasWidth - paddingRight
+        minY = paddingTop
+        maxY = canvasHeight - paddingBottom
+        canvasCleanHeight = maxY - minY
+        totalJaggedAndStraight = totalJaggedEdge * 2 + 1
+        diameter = canvasCleanHeight / totalJaggedAndStraight.toFloat()
+    }
+
+    override fun dispatchDraw(canvas: Canvas) {
+        val savedCanvas = canvas.saveLayer(0f, 0f, width.toFloat(), height.toFloat(), null, Canvas.ALL_SAVE_FLAG)
+        super.dispatchDraw(canvas)
+        paint.reset()
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+        canvas.drawPath(pathSmoothJaggedEdgeOverlayLayout, paint)
+        canvas.restoreToCount(savedCanvas)
+        paint.xfermode = null
+    }
+
+    private fun drawSmoothJagged(path: Path, smoothJaggedSource: String) {
+        var startAngle = 0f
+        var sweepAngle = 0f
+        when (smoothJaggedSource) {
+            LEFT_JAGGED_BOTTOM_TO_TOP -> {
+                startAngle = 90f
+                sweepAngle = -180f
+            }
+            RIGHT_JAGGED_TOP_TO_BOTTOM -> {
+                startAngle = 270f
+                sweepAngle = -180f
+            }
+        }
+        (1..totalJaggedAndStraight).forEach { idx ->
+            if (isOddNumber(idx)) {
+                var lineToX = 0f
+                var lineToY = 0f
+                when (smoothJaggedSource) {
+                    LEFT_JAGGED_BOTTOM_TO_TOP -> {
+                        lineToX = minX.toFloat()
+                        lineToY = maxY.toFloat() - (diameter * idx)
+                    }
+                    RIGHT_JAGGED_TOP_TO_BOTTOM -> {
+                        lineToX = maxX.toFloat()
+                        lineToY = minY.toFloat() + (diameter * idx)
+                    }
+                }
+                path.lineTo(lineToX, lineToY)
+            } else {
+                var left = 0f
+                var top = 0f
+                var right = 0f
+                var bottom = 0f
+                when (smoothJaggedSource) {
+                    LEFT_JAGGED_BOTTOM_TO_TOP -> {
+                        left = minX.toFloat() - (diameter / 2f)
+                        top = (maxY.toFloat() - (diameter * idx))
+                        right = minX.toFloat() + (diameter / 2f)
+                        bottom = (maxY.toFloat() - (diameter * idx) + diameter)
+                    }
+                    RIGHT_JAGGED_TOP_TO_BOTTOM -> {
+                        left = maxX.toFloat() - (diameter / 2f)
+                        top = (minY.toFloat() + (diameter * idx) - diameter)
+                        right = maxX.toFloat() + (diameter / 2f)
+                        bottom = (minY.toFloat() + (diameter * idx))
+                    }
+                }
+                path.arcTo(
+                        RectF(left, top, right, bottom),
+                        startAngle,
+                        sweepAngle
+                )
+            }
+        }
+    }
+
+    private fun isOddNumber(idx: Int): Boolean = idx % 2 != 0
+
+    private fun initSmoothJaggedEdgePathBackground() {
         if (requiresShapeUpdate && width > 0) {
-            if (path == null) {
-                path = Path()
-            } else {
-                path!!.reset()
-            }
-            val canvasWidth = width
-            val canvasHeight = height
-            val minX = paddingLeft
-            val maxX = canvasWidth - paddingRight
-            val minY = paddingTop
-            val maxY = canvasHeight - paddingBottom
-            val objectWidth = maxX - minX
-
-            val scallopXCenterPos = mScallopRelativePosition * objectWidth + minX
-
-            path!!.moveTo((minX + cornerRadius).toFloat(), minY.toFloat())
-            path!!.lineTo(scallopXCenterPos - mScallopRadius, minY.toFloat())
-            path!!.arcTo(RectF(scallopXCenterPos - mScallopRadius,
-                    (minY - mScallopRadius).toFloat(), scallopXCenterPos + mScallopRadius,
-                    (minY + mScallopRadius).toFloat()),
-                    180f, -180f)
-            path!!.lineTo((maxX - cornerRadius).toFloat(), minY.toFloat())
-            path!!.arcTo(RectF(maxX - cornerRadius * 2f, minY.toFloat(), maxX.toFloat(), minY + cornerRadius * 2f), -90f, 90f)
-            path!!.lineTo(maxX.toFloat(), (maxY - cornerRadius).toFloat())
-            path!!.arcTo(RectF(maxX - cornerRadius * 2f, maxY - cornerRadius * 2f, maxX.toFloat(), maxY.toFloat()), 0f, 90f)
-            path!!.lineTo(scallopXCenterPos + mScallopRadius, maxY.toFloat())
-            path!!.arcTo(RectF(scallopXCenterPos - mScallopRadius,
-                    (maxY - mScallopRadius).toFloat(), scallopXCenterPos + mScallopRadius,
-                    (maxY + mScallopRadius).toFloat()),
-                    0f, -180f)
-            path!!.lineTo(scallopXCenterPos - mScallopRadius, maxY.toFloat())
-            path!!.lineTo((minX + cornerRadius).toFloat(), maxY.toFloat())
-            path!!.arcTo(RectF(minX.toFloat(), maxY - cornerRadius * 2f, minX + cornerRadius * 2f, maxY.toFloat()), 90f, 90f)
-            path!!.lineTo(minX.toFloat(), (minY + cornerRadius).toFloat())
-            path!!.arcTo(RectF(minX.toFloat(), minY.toFloat(), minX + cornerRadius * 2f, minY + cornerRadius * 2f), 180f, 90f)
-            path!!.close()
-
-            if (linePath == null) {
-                linePath = Path()
-            } else {
-                linePath!!.reset()
-            }
-            linePath!!.moveTo(scallopXCenterPos, (minY + mScallopRadius).toFloat())
-            linePath!!.lineTo(scallopXCenterPos, (maxY - mScallopRadius).toFloat())
+            pathSmoothJaggedEdgeBackgroundLayout.reset()
+            pathSmoothJaggedEdgeBackgroundLayout.moveTo(minX.toFloat(), minY.toFloat())
+            pathSmoothJaggedEdgeBackgroundLayout.lineTo(maxX.toFloat(), minY.toFloat())
+            drawSmoothJagged(pathSmoothJaggedEdgeBackgroundLayout, RIGHT_JAGGED_TOP_TO_BOTTOM)
+            pathSmoothJaggedEdgeBackgroundLayout.lineTo(maxX.toFloat(), maxY.toFloat())
+            pathSmoothJaggedEdgeBackgroundLayout.lineTo(minX.toFloat(), maxY.toFloat())
+            drawSmoothJagged(pathSmoothJaggedEdgeBackgroundLayout, LEFT_JAGGED_BOTTOM_TO_TOP)
+            pathSmoothJaggedEdgeBackgroundLayout.lineTo(minX.toFloat(), minY.toFloat())
+            pathSmoothJaggedEdgeBackgroundLayout.close()
         }
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
         super.onLayout(changed, left, top, right, bottom)
+        initDimensionData()
+        initSmoothJaggedEdgePathBackground()
+        initSmoothJaggedEdgePathOverlay()
         if (changed) {
             this.requiresShapeUpdate = true
             postInvalidate()
         }
     }
 
+    private fun initSmoothJaggedEdgePathOverlay() {
+        pathSmoothJaggedEdgeOverlayLayout.reset()
+        pathSmoothJaggedEdgeOverlayLayout.moveTo(maxX.toFloat(), minY.toFloat())
+        drawSmoothJagged(pathSmoothJaggedEdgeOverlayLayout, RIGHT_JAGGED_TOP_TO_BOTTOM)
+        pathSmoothJaggedEdgeOverlayLayout.lineTo(maxX.toFloat(), maxY.toFloat())
+        pathSmoothJaggedEdgeOverlayLayout.close()
+        pathSmoothJaggedEdgeOverlayLayout.moveTo(minX.toFloat(), minY.toFloat())
+        drawSmoothJagged(pathSmoothJaggedEdgeOverlayLayout, LEFT_JAGGED_BOTTOM_TO_TOP)
+        pathSmoothJaggedEdgeOverlayLayout.lineTo(minX.toFloat(), maxY.toFloat())
+        pathSmoothJaggedEdgeOverlayLayout.close()
+    }
+
     protected fun dpToPx(dp: Float): Int {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, Resources.getSystem().displayMetrics).toInt()
+    }
+
+    inner class SpanText(
+            stringSource: String,
+            stringToBeSpanned: String
+    ) {
+        private val spannableString: SpannableString = SpannableString(stringSource)
+        private val startIndex = stringSource.indexOf(stringToBeSpanned)
+        private val endIndex = startIndex + stringToBeSpanned.length
+
+        fun addBoldSpanWithFontFamily(fontFamilyName: String): SpanText {
+            if (startIndex == -1)
+                return this
+            if (fontFamilyName.isNotEmpty()) {
+                spannableString.setSpan(
+                        TypefaceSpan(fontFamilyName),
+                        startIndex,
+                        endIndex,
+                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+                )
+            }
+            spannableString.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            return this
+        }
+
+        fun changeTextSize(sizeInDp: Int): SpanText {
+            if (startIndex == -1)
+                return this
+            spannableString.setSpan(
+                    AbsoluteSizeSpan(sizeInDp),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            return this
+        }
+
+        fun getCharSequence(): CharSequence {
+            return spannableString
+        }
+
+
+    }
+
+//    protected fun spanBoldText(stringSource: String, stringToBeSpanned: String): CharSequence {
+//        val spanText = SpannableString(stringSource)
+//        val startIndex = stringSource.indexOf(stringToBeSpanned)
+//        if (startIndex == -1)
+//            return spanText
+//        val endIndex = startIndex + stringToBeSpanned.length
+//        spanText.setSpan(
+//                StyleSpan(Typeface.BOLD),
+//                startIndex,
+//                endIndex,
+//                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+//        )
+//
+//        return spanText
+//    }
+//
+//    protected fun spanChangeTextSize(stringSource: String, stringToBeSpanned: String, sizeInDp :Int): CharSequence {
+//        val spanText = SpannableStringBuilder(stringSource)
+//        val startIndex = stringSource.indexOf(stringToBeSpanned)
+//        if (startIndex == -1)
+//            return spanText
+//        val endIndex = startIndex + stringToBeSpanned.length
+//
+//    }
+
+    inner class CustomTypefaceSpan(family: String, private val newType: Typeface) : TypefaceSpan(family) {
+
+        override fun updateDrawState(ds: TextPaint) {
+            applyCustomTypeFace(ds, newType)
+        }
+
+        override fun updateMeasureState(paint: TextPaint) {
+            applyCustomTypeFace(paint, newType)
+        }
+
+        private fun applyCustomTypeFace(paint: Paint, tf: Typeface) {
+            val oldStyle: Int
+            val old = paint.typeface
+            if (old == null) {
+                oldStyle = 0
+            } else {
+                oldStyle = old.style
+            }
+
+            val fake = oldStyle and tf.style.inv()
+            if (fake and Typeface.BOLD != 0) {
+                paint.isFakeBoldText = true
+            }
+
+            if (fake and Typeface.ITALIC != 0) {
+                paint.textSkewX = -0.25f
+            }
+
+            paint.typeface = tf
+        }
     }
 
 

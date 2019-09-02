@@ -232,7 +232,7 @@ public class UserSession implements UserSessionInterface {
 
     @Override
     public boolean isPowerMerchantIdle() {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(IS_POWER_MERCHANT_IDLE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(IS_POWER_MERCHANT_IDLE, false);
     }
 
@@ -516,7 +516,7 @@ public class UserSession implements UserSessionInterface {
 
     @Override
     public void setIsPowerMerchantIdle(boolean powerMerchantIdle) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(IS_POWER_MERCHANT_IDLE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(IS_POWER_MERCHANT_IDLE, powerMerchantIdle);
         editor.apply();

@@ -2,6 +2,7 @@ package com.tokopedia.applink
 
 import android.content.Context
 import android.net.Uri
+import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
@@ -57,6 +58,7 @@ object DeeplinkDFMapper {
             }
         } else {
             return when {
+//                uncomment this section to enable dynamic feature in hotel
 //                deeplink.startsWith(ApplinkConst.HOTEL) -> {
 //                    getDFDeeplinkIfNotInstalled(context,
 //                            deeplink, MODULE_HOTEL_TRAVEL,

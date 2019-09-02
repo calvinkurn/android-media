@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.cartlist.SimilarProduct;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
@@ -275,7 +276,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarningAndError(CartItemHolderData data) {
         if (data.getCartItemData().isParentHasErrorOrWarning()) {
-            if (!data.getCartItemData().isDisableAllProducts()) {
+            if (!data.getCartItemData().isDisableAllProducts() || (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
                 renderErrorItemHeader(data);
                 renderWarningItemHeader(data);
                 setWarningAndErrorVisibility(data);
@@ -631,8 +632,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
 
-            String similarProductUrl = data.getCartItemData().getSimilarProductUrl();
-            if (!TextUtils.isEmpty(similarProductUrl)) {
+            SimilarProduct similarProduct = data.getCartItemData().getSimilarProduct();
+            if (similarProduct != null) {
                 tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
                 tickerError.setDescriptionClickEvent(new TickerCallback() {
                     @Override
@@ -645,9 +646,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
                     }
                 });
-                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_similar_product_link, similarProductUrl));
+                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_link, similarProduct.getUrl(), similarProduct.getText()));
                 actionListener.onCartItemShowTickerOutOfStock(data.getCartItemData().getOriginData().getProductId());
-            } else {
+            }
+            else {
                 String errorDescription = data.getCartItemData().getErrorMessageDescription();
                 if (!TextUtils.isEmpty(errorDescription)) {
                     tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
