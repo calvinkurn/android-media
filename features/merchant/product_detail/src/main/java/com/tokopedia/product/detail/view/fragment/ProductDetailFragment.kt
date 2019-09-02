@@ -1094,6 +1094,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         })
                         createTicketDialog.setOkOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                            createTicketDialog.dismiss()
                             productInfoViewModel.hitSubmitTicket(data.getParcelableExtra(RESULT_TICKET_DATA), this::onErrorSubmitHelpTicket, this::onSuccessSubmitHelpTicket)
                             showProgressDialog()
                         })
@@ -1191,7 +1192,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onSuccessSubmitHelpTicket(result: SubmitTicketResult) {
         hideProgressDialog()
         if (result.status) {
-            createTicketDialog.dismiss()
             val successTicketDialog = SuccessTicketDialog(activity!!, SuccessTicketDialog.Page.PAGE_ATC)
             successTicketDialog.setOkOnClickListener(View.OnClickListener {
                 successTicketDialog.dismiss()

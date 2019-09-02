@@ -750,6 +750,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         });
         createTicketDialog.setOkOnClickListener(v -> {
             checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
+            createTicketDialog.dismiss();
             shipmentPresenter.processSubmitHelpTicket(checkoutData);
         });
         createTicketDialog.show();
@@ -758,7 +759,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderSubmitHelpTicketSuccess() {
-        createTicketDialog.dismiss();
         SuccessTicketDialog successTicketDialog = new SuccessTicketDialog(getActivity(), SuccessTicketDialog.Page.PAGE_CHECKOUT);
         successTicketDialog.setOkOnClickListener(v -> getActivity().finish());
         successTicketDialog.show();
