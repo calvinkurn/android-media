@@ -887,11 +887,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-                for (info in subscription.activeSubscriptionInfoList) {
-                    if(!info.number.isNullOrEmpty() &&
-                            PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                            PartialRegisterInputUtils.isValidPhone(info.number))
-                        phoneNumbers.add(info.number)
+                if(subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0){
+                    for (info in subscription.activeSubscriptionInfoList) {
+                        if(!info.number.isNullOrEmpty() &&
+                                PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                                PartialRegisterInputUtils.isValidPhone(info.number))
+                            phoneNumbers.add(info.number)
+                    }
                 }
             }else{
                 val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager

@@ -22,7 +22,6 @@ import com.tokopedia.core2.R;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.DbManagerImpl;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.network.apiservices.user.SessionService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -113,7 +112,6 @@ public class DialogLogoutFragment extends DialogFragment {
                                         PersistentCacheManager.instance.delete();
                                         // clear etalase
                                         Router.clearEtalase(getActivity());
-                                        DbManagerImpl.getInstance().removeAllEtalase();
                                         TrackApp.getInstance().getMoEngage().logoutEvent();
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
