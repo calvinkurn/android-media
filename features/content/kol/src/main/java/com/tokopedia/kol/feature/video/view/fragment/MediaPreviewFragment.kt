@@ -22,6 +22,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Header
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -53,6 +55,9 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var feedAnalyticTracker: FeedAnalyticTracker
+
     private lateinit var mediaPreviewViewModel: FeedMediaPreviewViewModel
     private val tagsAdapter by lazy { MediaTagAdapter(mutableListOf(), {
         mediaPreviewViewModel.isMyShop(it)
@@ -72,7 +77,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    override fun getScreenName(): String? = null
+    override fun getScreenName(): String? = FeedAnalyticTracker.Screen.MEDIA_PREIVEW
 
     override fun initInjector() {
         getComponent(KolComponent::class.java).inject(this)
@@ -201,6 +206,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                 buttonTagAction?.buttonType = UnifyButton.Type.MAIN
                 tagsAdapter.updateTags(tags.items)
                 buttonTagAction?.setOnClickListener {
+                    feedAnalyticTracker.eventMediaDetailClickLihat(mediaPreviewViewModel.postId)
                     tagsBottomSheet?.show()
                 }
 
@@ -291,16 +297,23 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         val header = dynamicPost.header
         authorImage.shouldShowWithAction(templateHeader.avatar && header.avatar.isNotBlank()){
             authorImage.loadImageCircle(header.avatar)
+            authorImage.setOnClickListener{onHeaderClicked(header)}
         }
         authorBadge.shouldShowWithAction(templateHeader.avatarBadge && header.avatarBadgeImage.isNotBlank()){
             authorBadge.loadImage(header.avatarBadgeImage, R.drawable.error_drawable)
         }
         authorTitle.shouldShowWithAction(templateHeader.avatarTitle && header.avatarTitle.isNotBlank()){
             authorTitle.text = header.avatarTitle
+            authorTitle.setOnClickListener{onHeaderClicked(header)}
         }
         authorSubtitile.shouldShowWithAction(templateHeader.avatarDate && header.avatarDate.isNotBlank()){
             authorSubtitile.text = TimeConverter.generateTime(context, header.avatarDate)
         }
+    }
+
+    private fun onHeaderClicked(header: Header) {
+        feedAnalyticTracker.eventMediaDetailClickAvatar(mediaPreviewViewModel.postId)
+        RouteManager.route(activity, header.avatarApplink)
     }
 
     private fun bindFooter(footer: PostDetailFooterModel, template: TemplateFooter?) {

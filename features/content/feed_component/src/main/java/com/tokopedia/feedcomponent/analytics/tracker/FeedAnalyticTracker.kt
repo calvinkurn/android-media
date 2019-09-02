@@ -49,6 +49,8 @@ class FeedAnalyticTracker
     }
 
     private object Action {
+        const val CLICK_BUY = "click beli"
+        const val CLICK_SEE = "click lihat"
         const val CLICK_MEDIA = "click media"
         const val CLICK_SEE_ALL = "click lihat semua"
         const val CLICK_HASHTAG = "click hashtag"
@@ -59,7 +61,8 @@ class FeedAnalyticTracker
         const val IMPRESSION_POST = "impression post"
     }
 
-    public object Screen {
+    object Screen {
+        const val MEDIA_PREIVEW = "/feed/media-preview"
         const val TRENDING = "/feed/trending-tab"
         const val HASHTAG = "/feed/hashtag"
         const val HASHTAG_POST_LIST = "/hashtag page - post list"
@@ -75,6 +78,49 @@ class FeedAnalyticTracker
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 31
+     *
+     * @param activityId - postId
+     */
+    fun eventMediaDetailClickAvatar(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_AVATAR,
+                activityId)
+    }
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 32
+     *
+     * @param activityId - postId
+     */
+    fun eventMediaDetailClickLihat(activityId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_SEE,
+                activityId)
+    }
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 34
+     *
+     * @param productId - productId
+     */
+    fun eventMediaDetailClickBuy(productId: String) {
+        trackGeneralEvent(
+                Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_BUY,
+                productId)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
      * Screenshot 35
      *
      * @param activityId - postId
@@ -82,7 +128,7 @@ class FeedAnalyticTracker
     fun eventTrendingClickMedia(activityId: String) {
         trackGeneralEvent(
                 Event.CLICK_FEED,
-                Category.CONTENT_FEED_TIMELINE,
+                Category.CONTENT_EXPLORE_TRENDING,
                 Action.CLICK_MEDIA,
                 activityId)
     }
@@ -97,7 +143,7 @@ class FeedAnalyticTracker
     fun eventTrendingClickSeeAll(activityId: String) {
         trackGeneralEvent(
                 Event.CLICK_FEED,
-                Category.CONTENT_FEED_TIMELINE,
+                Category.CONTENT_EXPLORE_TRENDING,
                 Action.CLICK_SEE_ALL,
                 activityId)
     }
@@ -112,7 +158,7 @@ class FeedAnalyticTracker
     fun eventTrendingClickProfile(activityId: String) {
         trackGeneralEvent(
                 Event.CLICK_FEED,
-                Category.CONTENT_FEED_TIMELINE,
+                Category.CONTENT_EXPLORE_TRENDING,
                 Action.CLICK_AVATAR,
                 activityId)
     }
