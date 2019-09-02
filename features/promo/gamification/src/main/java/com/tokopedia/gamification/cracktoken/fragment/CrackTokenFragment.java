@@ -339,7 +339,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         } else {
             flPrize.setVisibility(View.VISIBLE);
             ImageHandler.loadImageAndCache(ivPrize, homeSmallButton.getImageURL());
-            flPrize.setOnClickListener(v ->ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class));
+            flPrize.setOnClickListener(v -> {
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
+                trackingDailyPrizeBtnClick();
+            });
 
         }
         widgetTokenView.setToken(tokenUser.getTokenAsset());
@@ -373,6 +376,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             widgetEggSource.setOnClickListener(v -> {
                 if (!TextUtils.isEmpty(actionButton.getAppLink()) || !TextUtils.isEmpty(actionButton.getUrl())) {
                     ApplinkUtil.navigateToAssociatedPage(getActivity(), actionButton.getAppLink(), actionButton.getUrl(), CrackTokenActivity.class);
+                    trackingMainGameLainnyaClick(actionButton.getText());
                 }
             });
         } else {
@@ -670,6 +674,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         } else if (widgetTokenView.getTimesFullEggClicked() > 2) {
             if (getContext() != null) {
                 NetworkErrorHelper.showErrorSnackBar(getString(R.string.gf_crack_token_response_error), getContext(), rootView, true);
+                trackingSnackbarError(getString(R.string.gf_crack_token_response_error));
             }
         }
     }
@@ -747,6 +752,33 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                 GamificationEventTracking.Category.EXPIRED_TOKEN,
                 GamificationEventTracking.Action.CLICK_OK,
                 ""
+        ));
+    }
+
+    private void trackingDailyPrizeBtnClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                GamificationEventTracking.Action.CLICK_DAILY_PRIZE,
+                ""
+        ));
+    }
+
+    private void trackingMainGameLainnyaClick(String buttonText) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                GamificationEventTracking.Action.CLICK,
+                buttonText
+        ));
+    }
+
+    private void trackingSnackbarError(String errorText) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.VIEW_LUCKY_EGG,
+                GamificationEventTracking.Category.CRACK_LUCKY_EGG,
+                GamificationEventTracking.Action.VIEW_ERROR,
+                errorText
         ));
     }
 

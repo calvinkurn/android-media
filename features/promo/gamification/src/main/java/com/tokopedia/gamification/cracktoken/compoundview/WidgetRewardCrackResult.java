@@ -24,11 +24,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
 import com.tokopedia.gamification.applink.ApplinkUtil;
 import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.util.HexValidator;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -321,9 +324,42 @@ public class WidgetRewardCrackResult extends FrameLayout implements View.OnClick
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id == R.id.rl_points || id == R.id.rl_loyalty)
-            ApplinkUtil.navigateToAssociatedPage((Activity)getContext(), ApplinkConst.TOKOPOINTS, null, CrackTokenActivity.class);
-        else if(id == R.id. rl_coupons)
-            ApplinkUtil.navigateToAssociatedPage((Activity)getContext(), ApplinkConst.COUPON_LISTING, null, CrackTokenActivity.class);
+        if(id == R.id.rl_points || id == R.id.rl_loyalty) {
+            ApplinkUtil.navigateToAssociatedPage((Activity) getContext(), ApplinkConst.TOKOPOINTS, null, CrackTokenActivity.class);
+            if(id == R.id.rl_points)
+                trackPointsIconClick();
+            else
+                trackLoyaltyIconClick();
+        } else if(id == R.id. rl_coupons) {
+            ApplinkUtil.navigateToAssociatedPage((Activity) getContext(), ApplinkConst.COUPON_LISTING, null, CrackTokenActivity.class);
+            trackKuponIconClick();
+        }
+    }
+
+    private void trackPointsIconClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.EXPIRED_TOKEN,
+                GamificationEventTracking.Action.CLICK_POINT_ICON,
+                ""
+        ));
+    }
+
+    private void trackLoyaltyIconClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.EXPIRED_TOKEN,
+                GamificationEventTracking.Action.CLICK_LOYALTY_ICON,
+                ""
+        ));
+    }
+
+    private void trackKuponIconClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.EXPIRED_TOKEN,
+                GamificationEventTracking.Action.CLICK_KUPON_ICON,
+                ""
+        ));
     }
 }
