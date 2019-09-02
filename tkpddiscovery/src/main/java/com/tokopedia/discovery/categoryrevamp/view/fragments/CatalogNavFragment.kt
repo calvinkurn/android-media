@@ -30,6 +30,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_nav.*
+import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 
 class CatalogNavFragment : BaseCategorySectionFragment(),
@@ -143,18 +144,19 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
                     }
                     catalogNavListAdapter?.removeLoading()
                     if (it.data.count > 0) {
-                        layout_no_data.visibility = View.GONE
+                        showNoDataScreen(false)
                         list.addAll(it.data.items as ArrayList<Visitable<CatalogTypeFactory>>)
                         catalog_recyclerview.adapter?.notifyDataSetChanged()
                         staggeredGridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
                     } else {
-                        layout_no_data.visibility = View.VISIBLE
+                        showNoDataScreen(true)
                     }
                     hideRefreshLayout()
                     reloadFilter(createFilterParam())
                 }
 
                 is Fail -> {
+                    showNoDataScreen(true)
                     catalogNavListAdapter?.removeLoading()
                     hideRefreshLayout()
                 }
@@ -183,7 +185,16 @@ class CatalogNavFragment : BaseCategorySectionFragment(),
                 }
             }
         })
+    }
 
+    private fun showNoDataScreen(toShow: Boolean) {
+        if (toShow) {
+            layout_no_data.visibility = View.VISIBLE
+            txt_no_data_header.text = resources.getText(R.string.category_nav_catalog_no_data_title)
+            txt_no_data_description.text = resources.getText(R.string.category_nav_catalog_no_data_description)
+        } else {
+            layout_no_data.visibility = View.GONE
+        }
 
     }
 

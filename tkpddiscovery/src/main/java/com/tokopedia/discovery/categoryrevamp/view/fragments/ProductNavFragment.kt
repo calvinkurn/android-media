@@ -55,6 +55,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_product_nav.*
+import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
 import kotlin.collections.set
 
@@ -272,13 +273,13 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                     }
 
                     if (it.data.isNotEmpty()) {
-                        layout_no_data.visibility = View.GONE
+                        showNoDataScreen(false)
                         list.addAll(it.data as ArrayList<Visitable<ProductTypeFactory>>)
                         productNavListAdapter?.removeLoading()
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         isPagingAllowed = true
                     } else {
-                        layout_no_data.visibility = View.VISIBLE
+                        showNoDataScreen(true)
                     }
                     hideRefreshLayout()
                     reloadFilter(createFilterParam())
@@ -287,7 +288,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 is Fail -> {
                     productNavListAdapter?.removeLoading()
                     hideRefreshLayout()
-                    layout_no_data.visibility = View.VISIBLE
+                    showNoDataScreen(true)
                     isPagingAllowed = true
                 }
 
@@ -346,6 +347,17 @@ class ProductNavFragment : BaseCategorySectionFragment(),
 
         })
 
+    }
+
+
+    private fun showNoDataScreen(toShow:Boolean){
+        if(toShow){
+            layout_no_data.visibility = View.VISIBLE
+            txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
+            txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
+        }else{
+            layout_no_data.visibility = View.GONE
+        }
     }
 
     private fun initQuickFilter(list: ArrayList<Filter>) {
