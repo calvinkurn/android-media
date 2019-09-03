@@ -42,7 +42,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:backgroud="@color/black"/>
+            android:background="@color/black_12"/>
 
         <LinearLayout
             android:id="@+id/orderList"
@@ -72,7 +72,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:backgroud="@color/black"/>
+            android:background="@color/black_12"/>
 
         <LinearLayout
             android:id="@+id/help"
@@ -102,7 +102,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:backgroud="@color/black"/>
+            android:background="@color/black_12"/>
 
         <LinearLayout
             android:id="@+id/myBills"
