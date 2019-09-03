@@ -12,7 +12,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.text.Spannable
 import android.text.SpannableString
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -40,8 +39,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.core.analytics.AppEventTracking
-import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.core.router.productdetail.PdpRouter
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
@@ -66,7 +63,6 @@ import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStoc
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.CashbackOption
-import com.tokopedia.product.manage.list.constant.ManageTrackingConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.ERROR_CODE_LIMIT_CASHBACK
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
@@ -82,6 +78,7 @@ import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent
 import com.tokopedia.product.manage.list.di.ProductManageModule
+import com.tokopedia.product.manage.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivity
 import com.tokopedia.product.manage.list.view.activity.ProductManageSortActivity
 import com.tokopedia.product.manage.list.view.adapter.ProductManageListAdapter
@@ -97,14 +94,13 @@ import com.tokopedia.product.share.ProductShare
 import com.tokopedia.seller.SellerModuleRouter
 import com.tokopedia.seller.common.utils.KMNumbers
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
-import com.tokopedia.seller.product.manage.constant.*
+import com.tokopedia.seller.product.manage.constant.SortProductOption
 import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
-import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -150,6 +146,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
     private var stockType = BulkBottomSheetType.StockType()
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
+    private var itemsChecked: MutableList<ProductManageViewModel> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_product_manage, container, false)
@@ -160,27 +157,27 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         setHasOptionsMenu(true)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         if (GlobalConfig.isCustomerApp()) {
-            inflater!!.inflate(R.menu.menu_product_manage_dark, menu)
+            inflater.inflate(R.menu.menu_product_manage_dark, menu)
         } else {
-            inflater!!.inflate(R.menu.menu_product_manage, menu)
+            inflater.inflate(R.menu.menu_product_manage, menu)
         }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val itemId = item!!.itemId
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId = item.itemId
         if (itemId == R.id.add_product_menu) {
             item.subMenu.findItem(R.id.label_view_add_image).setOnMenuItemClickListener { item ->
                 startActivity(ProductAddNameCategoryActivity.createInstance(activity))
-                UnifyTracking.eventProductManageTopNav(activity, item.title.toString())
+                ProductManageTracking.eventProductManageTopNav(item.title.toString())
                 true
             }
             item.subMenu.findItem(R.id.label_view_import_from_instagram).setOnMenuItemClickListener { item ->
                 val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
                 startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
-                UnifyTracking.eventProductManageTopNav(activity, item.title.toString())
+                ProductManageTracking.eventProductManageTopNav(item.title.toString())
                 false
             }
         }
@@ -213,6 +210,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 adapter.updateListByCheck(isChecked, index)
             }
         }
+
+        btnBulk.setOnClickListener { bulkBottomSheet.show() }
+
+        searchInputView.closeImageButton.setOnClickListener {
+            searchInputView.searchText = ""
+            onSearchSubmitted("")
+        }
+
     }
 
     private fun initView(view: View) {
@@ -230,8 +235,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun setupBottomSheet() {
-        bulkBottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(context
-        ) {
+        bulkBottomSheet = CloseableBottomSheetDialog.createInstanceCloseableRounded(context) {
             editProductBottomSheet.clearAllData()
             clearEtalaseAndStockData()
         }
@@ -249,22 +253,18 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun renderCheckedView() {
-        if (adapter.totalChecked > 0) {
+        if (itemsChecked.size > 0) {
             containerBtnBulk.visibility = View.VISIBLE
             bulkCountTxt.visibility = View.VISIBLE
             checkBoxView.visibility = View.VISIBLE
-            bulkCountTxt.text = getString(R.string.product_manage_bulk_count, adapter.totalChecked.toString())
+            bulkCountTxt.text = getString(R.string.product_manage_bulk_count, itemsChecked.size.toString())
             bottomActionView.visibility = View.GONE
-
         } else {
             containerBtnBulk.visibility = View.GONE
             checkBoxView.visibility = View.GONE
             bulkCountTxt.visibility = View.GONE
             bottomActionView.visibility = View.VISIBLE
-
         }
-
-        btnBulk.setOnClickListener { v -> bulkBottomSheet.show() }
     }
 
     private val addProductReceiver = object : BroadcastReceiver() {
@@ -274,8 +274,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     intent.getIntExtra(TkpdState.ProductService.STATUS_FLAG, 0) == TkpdState.ProductService.STATUS_DONE) {
                 activity?.run {
                     runOnUiThread {
-                        val productId = intent.extras!!.getString(TkpdState.ProductService.PRODUCT_ID)
-                        productManagePresenter.getPopupsInfo(productId!!)
+                        val productId = intent.extras?.getString(TkpdState.ProductService.PRODUCT_ID)
+                                ?: ""
+                        productManagePresenter.getPopupsInfo(productId)
                         loadInitialData()
                     }
                 }
@@ -315,24 +316,21 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun renderList(list: MutableList<ProductManageViewModel>, hasNextPage: Boolean) {
         super.renderList(list, hasNextPage)
-        val checkedDataList = adapter.checkedDataList
+        /**
+         * Keep checklist after user search or filter
+         */
+        val listPositionChecked = list.withIndex().filter {
+            itemsChecked.map { it.id }.contains(it.value.id)
+        }.map {
+            it.index
+        }.toHashSet()
 
-        if (adapter.totalChecked != 0) {
-            val listPositionChecked = list.withIndex().filter {
-                checkedDataList.map { it }.contains(it.value)
-            }.map {
-                it.index
-            }.toHashSet()
-
-            adapter.setCheckedPositionList(listPositionChecked)
-            adapter.notifyDataSetChanged()
-        }
-
-
+        adapter.setCheckedPositionList(listPositionChecked)
+        adapter.notifyDataSetChanged()
     }
 
     override fun onSearchSubmitted(text: String) {
-        UnifyTracking.eventProductManageSearch(activity)
+        ProductManageTracking.eventProductManageSearch()
         isLoadingInitialData = true
         val tempShopEtalaseViewModels = ArrayList<ProductManageViewModel>()
 
@@ -371,14 +369,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun onErrorEditPrice(t: Throwable?, productId: String?, price: String?, currencyId: String?, currencyText: String?) {
         context?.let {
-            NetworkErrorHelper.createSnackbarWithAction(activity, ViewUtils.getErrorMessage(it, t))
-            {
+            showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
                 productManagePresenter.editPrice(
                         productId ?: "",
                         price ?: "",
                         currencyId ?: "",
                         currencyText ?: "")
-            }.showRetrySnackbar()
+            }
         }
     }
 
@@ -392,26 +389,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onErrorSetCashback(t: Throwable?, productId: String?, cashback: Int) {
-        if (t is MessageErrorException && t.errorCode == ERROR_CODE_LIMIT_CASHBACK) {
-            if (productManagePresenter.isIdlePowerMerchant()) {
-                showIdlePowerMerchantBottomSheet(
-                        getString(R.string.product_manage_feature_name_cashback)
-                )
-            } else if (!productManagePresenter.isPowerMerchant()) {
-                showRegularMerchantBottomSheet(
-                        getString(R.string.product_manage_feature_name_cashback)
-                )
+        context?.let {
+            if (t is MessageErrorException && t.errorCode == ERROR_CODE_LIMIT_CASHBACK) {
+                if (productManagePresenter.isIdlePowerMerchant()) {
+                    showIdlePowerMerchantBottomSheet(getString(R.string.product_manage_feature_name_cashback))
+                } else if (!productManagePresenter.isPowerMerchant()) {
+                    showRegularMerchantBottomSheet(getString(R.string.product_manage_feature_name_cashback))
+                } else {
+                    showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
+                        productManagePresenter.setCashback(productId ?: "", cashback)
+                    }
+                }
             } else {
-                NetworkErrorHelper.createSnackbarWithAction(activity,
-                        ViewUtils.getErrorMessage(activity!!, t)) {
+                showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
                     productManagePresenter.setCashback(productId ?: "", cashback)
-                }.showRetrySnackbar()
+                }
             }
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(activity,
-                    ViewUtils.getErrorMessage(activity!!, t)) {
-                productManagePresenter.setCashback(productId ?: "", cashback)
-            }.showRetrySnackbar()
         }
     }
 
@@ -447,15 +440,34 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onErrorMultipleDeleteProduct(e: Throwable?, listOfResponse: ProductUpdateV3SuccessFailedResponse?) {
-        NetworkErrorHelper.createSnackbarWithAction(activity,
-                getString(R.string.product_manage_bulk_snackbar, listOfResponse?.successResponse?.size.toString(), listOfResponse?.failedResponse?.size.toString())) {
-            //                    productManagePresenter.bulkUpdateProduct();
-        }.showRetrySnackbar()
+        activity?.let {
+            showToasterError(ViewUtils.getErrorMessage(it, e), getString(R.string.close)) {}
+        }
     }
 
     override fun onSuccessMultipleDeleteProduct() {
-        ToasterNormal.show(activity!!, getString(R.string.product_manage_bulk_snackbar_sucess_delete))
+        showToasterNormal(getString(R.string.product_manage_bulk_snackbar_sucess_delete))
         loadInitialData()
+    }
+
+    private fun showToasterNormal(message: String) {
+        ToasterNormal.make(view, message, ToasterNormal.LENGTH_LONG)
+                .setAction(R.string.close) {
+                    //NO OP
+                }.show()
+    }
+
+    private fun showToasterError(message: String, actionLabel: String, listener: () -> Unit) {
+        ToasterError.make(view, message, ToasterError.LENGTH_LONG)
+                .setAction(actionLabel) {
+                    listener.invoke()
+                }.show()
+    }
+
+    private fun showSnackBarWithAction(message: String, listener: () -> Unit) {
+        NetworkErrorHelper.createSnackbarWithAction(activity, message) { listener.invoke() }
+                .showRetrySnackbar()
+
     }
 
     override fun showLoadingProgress() {
@@ -500,14 +512,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 btnGoToPdp = dialog.findViewById(R.id.btn_product_list)
                 txtTipsTrick = dialog.findViewById(R.id.txt_tips_trick)
 
-                btnSubmit.setOnClickListener { v ->
-                    trackerManageCourierButton()
+                btnSubmit.setOnClickListener {
+                    ProductManageTracking.trackerManageCourierButton()
                     RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
                     activity.finish()
                 }
 
-                btnGoToPdp.setOnClickListener { v ->
-                    trackerSeeProduct()
+                btnGoToPdp.setOnClickListener {
+                    ProductManageTracking.trackerSeeProduct()
                     goToPDP(productId)
                     dialog.dismiss()
                 }
@@ -521,7 +533,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
                 val cs = object : ClickableSpan() {
                     override fun onClick(v: View) {
-                        trackerLinkClick()
+                        ProductManageTracking.trackerLinkClick()
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
                         activity.finish()
                     }
@@ -532,31 +544,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 return dialog
             }
         }
-        return Dialog(context)
-    }
-
-    private fun trackerManageCourierButton() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                ManageTrackingConstant.EVENT_ADD_PRODUCT,
-                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
-                ManageTrackingConstant.ACTION_CLICK_MANAGE_COURIER,
-                "")
-    }
-
-    private fun trackerSeeProduct() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                ManageTrackingConstant.EVENT_ADD_PRODUCT,
-                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
-                ManageTrackingConstant.ACTION_SEE_PRODUCT,
-                "")
-    }
-
-    private fun trackerLinkClick() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                ManageTrackingConstant.EVENT_ADD_PRODUCT,
-                ManageTrackingConstant.CATEGORY_ADD_PRODUCT,
-                ManageTrackingConstant.ACTION_LINK,
-                "")
+        return Dialog(context!!)
     }
 
     override fun onErrorGetPopUp(e: Throwable) {
@@ -567,56 +555,69 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         hideLoadingProgress()
         bulkCheckBox.isChecked = false
 
+        /**
+         * When bulk update products, there's possibility one of the product failed to update from server so
+         * this logic use for catch failed update products
+         */
         if (listOfResponse.failedResponse.isNotEmpty()) {
-            ToasterError.make(view,
-                    getString(R.string.product_manage_bulk_snackbar, listOfResponse.successResponse.size.toString(), listOfResponse.failedResponse.size.toString()),
-                    ToasterError.LENGTH_LONG).setAction(R.string.retry_label) {
+            showToasterError(getString(R.string.product_manage_bulk_snackbar, listOfResponse.successResponse.size.toString(), listOfResponse.failedResponse.size.toString()),
+                    getString(R.string.retry_label)) {
                 productManagePresenter.bulkUpdateProduct(productManagePresenter.failedBulkDataMapper(listOfResponse.failedResponse, confirmationProductDataList))
-            }.show()
+            }
         } else {
             confirmationProductDataList.clear()
             editProductBottomSheet.clearAllData()
             clearEtalaseAndStockData()
-            ToasterNormal.make(view, getString(R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()), ToasterNormal.LENGTH_LONG)
-                    .setAction(R.string.close) {
-                        //NO OP
-                    }.show()
+            showToasterNormal(getString(R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()))
         }
+
         adapter.resetCheckedItemSet()
+        itemsChecked.clear()
         renderCheckedView()
         loadInitialData()
     }
 
     override fun onErrorBulkUpdateProduct(e: Throwable?) {
         activity?.let {
-            ToasterError.make(view, ViewUtils.getErrorMessage(it, e))
+            showToasterError(ViewUtils.getErrorMessage(it, e), getString(R.string.close)) {
+                //No OP
+            }
         }
     }
 
-    override fun onItemChecked(t: ProductManageViewModel?, isChecked: Boolean) {
+    override fun onItemChecked(data: ProductManageViewModel, isChecked: Boolean) {
+        if (isChecked) {
+            itemsChecked.add(data)
+        } else {
+            itemsChecked.remove(data)
+        }
         updateBulkLayout()
         renderCheckedView()
     }
 
     private fun updateBulkLayout() {
         val containerFlags = containerChechBoxBulk.layoutParams as AppBarLayout.LayoutParams
-        if (adapter.totalChecked == 1) {
-            containerBtnBulk.visibility = View.VISIBLE
-            btnBulk.visibility = View.VISIBLE
-            checkBoxView.visibility = View.VISIBLE
-            btnBulk.text = getString(R.string.product_manage_change_btn)
-            containerFlags.scrollFlags = 0
-        } else if (adapter.totalChecked > 1) {
-            containerBtnBulk.visibility = View.VISIBLE
-            btnBulk.visibility = View.VISIBLE
-            checkBoxView.visibility = View.VISIBLE
-            btnBulk.text = getString(R.string.product_manage_bulk_change_btn)
-            containerFlags.scrollFlags = 0
-        } else {
-            containerBtnBulk.visibility = View.GONE
-            checkBoxView.visibility = View.GONE
-            btnBulk.visibility = View.GONE
-            containerFlags.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+        when {
+            itemsChecked.size == 1 -> {
+                containerBtnBulk.visibility = View.VISIBLE
+                btnBulk.visibility = View.VISIBLE
+                checkBoxView.visibility = View.VISIBLE
+                btnBulk.text = getString(R.string.product_manage_change_btn)
+                containerFlags.scrollFlags = 0
+            }
+            itemsChecked.size > 1 -> {
+                containerBtnBulk.visibility = View.VISIBLE
+                btnBulk.visibility = View.VISIBLE
+                checkBoxView.visibility = View.VISIBLE
+                btnBulk.text = getString(R.string.product_manage_bulk_change_btn)
+                containerFlags.scrollFlags = 0
+            }
+            else -> {
+                containerBtnBulk.visibility = View.GONE
+                checkBoxView.visibility = View.GONE
+                btnBulk.visibility = View.GONE
+                containerFlags.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+            }
         }
     }
 
@@ -665,22 +666,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             val itemId = it.itemId
             if (itemId == R.id.edit_product_menu) {
                 goToEditProduct(productManageViewModel.id)
-                UnifyTracking.eventProductManageOverflowMenu(activity, it.title.toString())
+                ProductManageTracking.eventProductManageOverflowMenu(it.title.toString())
             } else if (itemId == R.id.duplicat_product_menu) {
                 goToDuplicateProduct(productManageViewModel.id)
-                UnifyTracking.eventProductManageOverflowMenu(activity, it.title.toString())
+                ProductManageTracking.eventProductManageOverflowMenu(it.title.toString())
             } else if (itemId == R.id.delete_product_menu) {
                 val productIdList = ArrayList<String>()
 
                 showDialogActionDeleteProduct(productIdList,
 
-                        DialogInterface.OnClickListener { dialog, which ->
-                            UnifyTracking.eventProductManageOverflowMenu(activity, it.title.toString() + " - " + getString(R.string.label_delete))
+                        DialogInterface.OnClickListener { _, _ ->
+                            ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(R.string.label_delete))
                             productManagePresenter.deleteSingleProduct(productManageViewModel.id)
                         },
 
-                        DialogInterface.OnClickListener { dialog, which ->
-                            UnifyTracking.eventProductManageOverflowMenu(activity, it.title.toString() + " - " + getString(R.string.title_cancel))
+                        DialogInterface.OnClickListener { dialog, _ ->
+                            ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(R.string.title_cancel))
                             dialog.dismiss()
                         })
 
@@ -714,12 +715,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun onSetCashbackClicked(productManageViewModel: ProductManageViewModel) {
         activity?.let {
             if (!GlobalConfig.isSellerApp() && it.application is SellerModuleRouter) {
-                (activity!!.application as SellerModuleRouter).goToGMSubscribe(activity)
+                (it.application as SellerModuleRouter).goToGMSubscribe(it)
                 return
             }
             showOptionCashback(productManageViewModel.productId, productManageViewModel.productPricePlain,
                     productManageViewModel.productCurrencySymbol, productManageViewModel.productCashback)
-
         }
     }
 
@@ -759,10 +759,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 else -> {
                 }
             }
-            UnifyTracking.eventProductManageOverflowMenu(activity, getString(R.string.product_manage_cashback_title) + " - " + it.title)
+            ProductManageTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_cashback_title) + " - " + it.title)
         }
     }
-
 
     private fun getCashbackMenuText(cashback: Int, productPriceSymbol: String, productPricePlain: Double): String {
         var cashbackText = getString(R.string.product_manage_cashback_option_none)
@@ -773,7 +772,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
         return cashbackText
     }
-
 
     fun downloadBitmap(productManageViewModel: ProductManageViewModel) {
         activity?.let {
@@ -793,7 +791,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             productShare.share(data, { showLoadingProgress() }, { hideLoadingProgress() })
         }
     }
-
 
     private fun showDialogVariantPriceLocked() {
         activity?.let {
@@ -820,7 +817,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
-
     private fun goToDuplicateProduct(productId: String) {
         activity?.let {
             val intent = ProductDuplicateActivity.createInstance(it, productId)
@@ -834,19 +830,20 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun showDialogActionDeleteProduct(productIdList: List<String>, onClickListener: DialogInterface.OnClickListener, onCancelListener: DialogInterface.OnClickListener) {
-        val alertDialog = AlertDialog.Builder(activity!!)
-        alertDialog.setTitle(R.string.label_delete)
-        alertDialog.setMessage(R.string.dialog_delete_product)
-        alertDialog.setPositiveButton(R.string.label_delete, onClickListener)
-        alertDialog.setNegativeButton(R.string.title_cancel, onCancelListener)
-        alertDialog.show()
+        activity?.let {
+            val alertDialog = AlertDialog.Builder(it)
+            alertDialog.setTitle(R.string.label_delete)
+            alertDialog.setMessage(R.string.dialog_delete_product)
+            alertDialog.setPositiveButton(R.string.label_delete, onClickListener)
+            alertDialog.setNegativeButton(R.string.title_cancel, onCancelListener)
+            alertDialog.show()
+        }
     }
-
 
     override fun onProductClicked(productManageViewModel: ProductManageViewModel) {
         adapter.notifyDataSetChanged()
         goToPDP(productManageViewModel.productId)
-        UnifyTracking.eventProductManageClickDetail(activity)
+        ProductManageTracking.eventProductManageClickDetail()
     }
 
     /**
@@ -872,9 +869,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun goToConfirmationBottomSheet(isActionDelete: Boolean) {
-        val listChecked = adapter.checkedDataList
-        confirmationProductDataList.clear()
-        confirmationProductDataList = productManagePresenter.mapToProductConfirmationData(isActionDelete, stockType, etalaseType, listChecked)
+        confirmationProductDataList = productManagePresenter.mapToProductConfirmationData(isActionDelete, stockType, etalaseType, itemsChecked)
         val confirmationUpdateProductBottomSheet = ConfirmationUpdateProductBottomSheet.newInstance(confirmationProductDataList)
         confirmationUpdateProductBottomSheet.setListener(this)
         confirmationUpdateProductBottomSheet.show(fragmentManager, "bs_update_product")
@@ -884,7 +879,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         bulkBottomSheet.dismiss()
         productManagePresenter.bulkUpdateProduct(confirmationProductDataList)
     }
-
 
     override fun onItemClicked(t: ProductManageViewModel?) {
         // NO OP
@@ -918,17 +912,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
         when (requestCode) {
-            INSTAGRAM_SELECT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK && intent != null) {
+            INSTAGRAM_SELECT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 val imageUrls = intent.getStringArrayListExtra(PICKER_RESULT_PATHS)
                 val imageDescList = intent.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
-                if (imageUrls != null && imageUrls!!.size > 0) {
+                if (imageUrls != null && imageUrls.size > 0) {
                     ProductDraftListActivity.startInstagramSaveBulkFromLocal(context, imageUrls, imageDescList)
                 }
             }
             REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
                 productManageFilterModel = intent.getParcelableExtra(EXTRA_FILTER_SELECTED)
                 loadInitialData()
-                trackingFilter(productManageFilterModel)
+                ProductManageTracking.trackingFilter(productManageFilterModel, context)
             }
             ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                 val etalaseId = intent.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
@@ -948,34 +942,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 val productManageSortModel: ProductManageSortModel = intent.getParcelableExtra(EXTRA_SORT_SELECTED)
                 sortProductOption = productManageSortModel.id
                 loadInitialData()
-                UnifyTracking.eventProductManageSortProduct(activity, productManageSortModel.titleSort)
+                ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
             }
             else -> super.onActivityResult(requestCode, resultCode, intent)
         }
     }
 
-    private fun trackingFilter(productManageFilterModel: ProductManageFilterModel) {
-        val filters = ArrayList<String>()
-        if (productManageFilterModel.categoryId != ProductManageConstant.FILTER_ALL_CATEGORY.toString()) {
-            filters.add(AppEventTracking.EventLabel.CATEGORY)
-        }
-
-        if (productManageFilterModel.etalaseProductOption != ProductManageConstant.FILTER_ALL_PRODUK) {
-            filters.add(AppEventTracking.EventLabel.ETALASE)
-        }
-
-        if (productManageFilterModel.catalogProductOption != CatalogProductOption.WITH_AND_WITHOUT) {
-            filters.add(AppEventTracking.EventLabel.CATALOG)
-        }
-
-        if (productManageFilterModel.conditionProductOption != ConditionProductOption.ALL_CONDITION) {
-            filters.add(AppEventTracking.EventLabel.CONDITION)
-        }
-
-        if (productManageFilterModel.pictureStatusOption != PictureStatusProductOption.WITH_AND_WITHOUT) {
-            filters.add(AppEventTracking.EventLabel.PICTURE_STATUS)
-        }
-
-        UnifyTracking.eventProductManageFilterProduct(activity, TextUtils.join(",", filters))
-    }
 }

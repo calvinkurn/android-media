@@ -5,14 +5,12 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseListCheckableTypeFactory;
-import com.tokopedia.base.list.seller.common.util.ItemIdType;
 
 /**
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public class ProductManageViewModel implements ItemIdType, Parcelable, Visitable<BaseListCheckableTypeFactory<ProductManageViewModel>> {
-    public static final int TYPE = 1934;
+public class ProductManageViewModel implements Parcelable, Visitable<BaseListCheckableTypeFactory<ProductManageViewModel>> {
     public static final String STOCK_READY_VALUE = "1";
 
     private String productName;
@@ -40,11 +38,6 @@ public class ProductManageViewModel implements ItemIdType, Parcelable, Visitable
     @Override
     public int type(BaseListCheckableTypeFactory<ProductManageViewModel> typeFactory) {
         return typeFactory.type(this);
-    }
-
-    @Override
-    public int getType() {
-        return TYPE;
     }
 
     public int getProductWholesale() {
@@ -123,7 +116,6 @@ public class ProductManageViewModel implements ItemIdType, Parcelable, Visitable
         return productId;
     }
 
-    @Override
     public String getItemId() {
         return productId;
     }

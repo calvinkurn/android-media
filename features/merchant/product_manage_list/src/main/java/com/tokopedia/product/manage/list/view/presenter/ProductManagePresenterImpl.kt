@@ -257,7 +257,6 @@ class ProductManagePresenterImpl @Inject constructor(
         }
     }
 
-
     private fun mapToBulkUpdateParam(confirmationData: List<ConfirmationProductData>): MutableList<ProductUpdateV3Param> {
         val listParam: MutableList<ProductUpdateV3Param> = arrayListOf()
 
@@ -282,24 +281,30 @@ class ProductManagePresenterImpl @Inject constructor(
             confirmationProductData.productId = it.productId
             confirmationProductData.productName = it.productName
             confirmationProductData.productImgUrl = it.imageUrl
+            confirmationProductData.productEtalaseName = etalaseType.etalaseValue
+            confirmationProductData.isVariant = it.isProductVariant
+            confirmationProductDataList.add(confirmationProductData)
+
             if (etalaseType.etalaseId == ETALASE_DEFAULT) {
                 confirmationProductData.productEtalaseId = 0
             } else {
                 confirmationProductData.productEtalaseId = etalaseType.etalaseId
             }
-            confirmationProductData.productEtalaseName = etalaseType.etalaseValue
+
             if (isActionDelete) {
                 confirmationProductData.statusStock = STOCK_DELETED
             } else {
                 confirmationProductData.statusStock = stockType.stockStatus
             }
-            confirmationProductData.isVariant = it.isProductVariant
-            confirmationProductDataList.add(confirmationProductData)
+
         }
         return confirmationProductDataList
 
     }
 
+    /**
+     * Map for delete single product, from option menu product
+     */
     private fun singleDeleteProductMapper(productId: String): List<ProductUpdateV3Param> {
         val param = ProductUpdateV3Param()
         param.productId = productId
@@ -308,6 +313,10 @@ class ProductManagePresenterImpl @Inject constructor(
         return arrayListOf(param)
     }
 
+    /**
+     * Filter the data based on failed data
+     * This use for retry update only the failed data
+     */
     override fun failedBulkDataMapper(failData: List<ProductUpdateV3Response>, confirmationProductDataList: List<ConfirmationProductData>)
             : MutableList<ConfirmationProductData> {
         return confirmationProductDataList.filter {

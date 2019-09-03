@@ -76,7 +76,8 @@ public class ProductDraftDataManager {
             productDraft.setVersion(DBMetaData.DB_VERSION);
             return productDraft;
         }).map(productDraft -> {
-            long id = productDraftDao.updateSingle(productDraft);
+            productDraftDao.updateSingle(productDraft);
+            long id = productId;
             if (id < 1) throw new DraftNotFoundException();
             return id;
         });
@@ -89,7 +90,8 @@ public class ProductDraftDataManager {
             productDraft.setVersion(DBMetaData.DB_VERSION);
             return productDraft;
         }).map(productDraft -> {
-            long id = productDraftDao.updateSingle(productDraft);
+            productDraftDao.updateSingle(productDraft);
+            long id = draftProductId;
             if (id < 1) throw new DraftNotFoundException();
             return id;
         });

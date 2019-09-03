@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.list.view.listener;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 import com.tokopedia.topads.common.data.model.DataDeposit;

@@ -1,9 +1,9 @@
 package com.tokopedia.product.manage.list.view.mapper
 
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListResponse
 import com.tokopedia.product.manage.list.view.model.ProductListManageModelView
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Data
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListResponse
 import javax.inject.Inject
 
 class ProductListMapperView @Inject constructor() {
@@ -21,7 +21,6 @@ class ProductListMapperView @Inject constructor() {
         return productListManageModelView
     }
 
-
     private fun mapToListProducts(productList: List<Data>): List<ProductManageViewModel> {
         val productManageListViewModel = mutableListOf<ProductManageViewModel>()
 
@@ -32,7 +31,6 @@ class ProductListMapperView @Inject constructor() {
         )
         return productManageListViewModel
     }
-
 
     private fun convertData(data: Data): ProductManageViewModel {
         val productManageViewModel = ProductManageViewModel()

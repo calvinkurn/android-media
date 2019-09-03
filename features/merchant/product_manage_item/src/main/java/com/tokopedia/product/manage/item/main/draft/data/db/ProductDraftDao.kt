@@ -9,7 +9,7 @@ interface ProductDraftDao {
     fun insertSingle(draft: ProductDraft): Long
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
-    fun updateSingle(draft: ProductDraft): Int
+    fun updateSingle(draft: ProductDraft)
 
     @Query("SELECT * FROM ${DBMetaData.DB_TABLE} WHERE id = :productId LIMIT 1")
     fun getSingleDraft(productId: Long): ProductDraft?

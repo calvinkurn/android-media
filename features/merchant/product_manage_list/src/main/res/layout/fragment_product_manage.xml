@@ -77,7 +77,7 @@
             android:background="@color/grey_300"/>
     </android.support.design.widget.AppBarLayout>
 
-    <com.tokopedia.core.customwidget.SwipeToRefresh
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
             android:scrollbars="vertical"
             android:clipToPadding="false" />
 
-    </com.tokopedia.core.customwidget.SwipeToRefresh>
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <com.tokopedia.design.button.BottomActionView
         android:id="@+id/bottom_action_view"
