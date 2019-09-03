@@ -53,7 +53,6 @@ import com.tokopedia.search.result.presentation.view.listener.RedirectionListene
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener;
 import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceMonitoringListener;
 import com.tokopedia.search.utils.CountDrawable;
-import com.tokopedia.search.utils.SearchRouter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -124,9 +123,12 @@ public class SearchActivity extends BaseActivity
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
     @Inject RemoteConfig remoteConfig;
+    @Inject LocalCacheHandler localCacheHandler;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
+
+    private static final String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,17 +227,15 @@ public class SearchActivity extends BaseActivity
             buttonCart.setVisibility(View.GONE);
         } else {
             if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true)) {
-                if (getApplication() instanceof SearchRouter) {
-                    Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
-                    if (drawable instanceof LayerDrawable) {
-                        CountDrawable countDrawable = new CountDrawable(this);
-                        int cartCount = ((SearchRouter) getApplication()).getCartCount(this);
-                        countDrawable.setCount(String.valueOf(cartCount));
-                        drawable.mutate();
-                        ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
-                        buttonCart.setImageDrawable(drawable);
-                        buttonCart.setVisibility(View.VISIBLE);
-                    }
+                Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
+                if (drawable instanceof LayerDrawable) {
+                    CountDrawable countDrawable = new CountDrawable(this);
+                    int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
+                    countDrawable.setCount(String.valueOf(cartCount));
+                    drawable.mutate();
+                    ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
+                    buttonCart.setImageDrawable(drawable);
+                    buttonCart.setVisibility(View.VISIBLE);
                 }
             } else {
                 buttonCart.setVisibility(View.GONE);

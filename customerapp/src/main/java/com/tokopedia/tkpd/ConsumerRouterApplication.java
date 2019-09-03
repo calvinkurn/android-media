@@ -283,7 +283,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
 import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
-import com.tokopedia.search.utils.SearchRouter;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -499,8 +498,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OvoPayWithQrRouter,
         OvoP2pRouter,
         TopAdsAutoRouter,
-        KYCRouter,
-        SearchRouter {
+        KYCRouter {
 
     private static final String EXTRA = "extra";
 
