@@ -1215,7 +1215,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                      isFollow: Boolean) {
         if (getUserSession().isLoggedIn) {
             if (type == FollowCta.AUTHOR_USER) {
-                val userIdInt = userIdInt
+                val userIdInt = id.toIntOrZero()
 
                 if (isFollow) {
                     onUnfollowKolClicked(positionInFeed, userIdInt)
