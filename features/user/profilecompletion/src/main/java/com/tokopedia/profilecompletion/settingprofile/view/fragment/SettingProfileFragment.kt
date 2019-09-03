@@ -15,10 +15,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.abstraction.common.utils.view.PhoneNumberUtils
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.kotlin.extensions.view.isEmail
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.view.fragment.AddEmailFragment
@@ -340,15 +342,17 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     false
             )
         }
-
-        if (profileCompletionData.email.isEmpty()) {
+        val isEmailDone = profileCompletionData.isEmailDone
+        if (profileCompletionData.email.isEmpty() || !isEmailDone) {
             email.showEmpty(
                     getString(R.string.subtitle_email_setting_profile),
                     getString(R.string.hint_email_setting_profile),
                     getString(R.string.message_email_setting_profile),
                     false,
                     View.OnClickListener {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL).apply {
+                            putExtra(ApplinkConst.Setting.SETTINGS_ADD_EMAIL, isEmailDone)
+                        }
                         startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
                     }
             )
@@ -423,12 +427,12 @@ class SettingProfileFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData){
+    private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData) {
         dismissLoading()
         bod.isEnabled = profileRoleData.isAllowedChangeDob
     }
 
-    private fun onErrorGetProfileRole(throwable: Throwable){
+    private fun onErrorGetProfileRole(throwable: Throwable) {
         dismissLoading()
         view?.run {
             val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
