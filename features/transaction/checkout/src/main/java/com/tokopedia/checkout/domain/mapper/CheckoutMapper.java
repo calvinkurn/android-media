@@ -27,7 +27,7 @@ public class CheckoutMapper implements ICheckoutMapper {
     public CheckoutData convertCheckoutData(CheckoutResponse checkoutResponse) {
         CheckoutDataResponse checkoutDataResponse = checkoutResponse.getData();
         CheckoutData checkoutData = new CheckoutData();
-        checkoutData.setJsonResponse(new Gson().toJson(checkoutDataResponse));
+        checkoutData.setJsonResponse(new Gson().toJson(checkoutResponse));
         checkoutData.setError(checkoutDataResponse.getSuccess() != 1);
         checkoutData.setErrorMessage(checkoutDataResponse.getError());
         ErrorReporterResponse errorReporterResponse = checkoutResponse.getErrorReporter();
