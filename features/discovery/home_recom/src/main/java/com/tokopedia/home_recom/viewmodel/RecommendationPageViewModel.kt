@@ -105,8 +105,8 @@ open class RecommendationPageViewModel @Inject constructor(
                         1,
                         xSource,
                         pageName,
-                        ref,
-                        productIds), object : Subscriber<List<RecommendationWidget>>() {
+                        productIds,
+                        ref), object : Subscriber<List<RecommendationWidget>>() {
             override fun onNext(t: List<RecommendationWidget>?) {
                 recommendationListModel.value = t
             }
