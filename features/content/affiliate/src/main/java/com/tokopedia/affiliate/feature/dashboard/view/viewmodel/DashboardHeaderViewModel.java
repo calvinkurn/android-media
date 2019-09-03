@@ -4,12 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.AffiliateDashboardItemTypeFactory;
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactory;
 
 /**
  * @author by yfsx on 19/09/18.
  */
-public class DashboardHeaderViewModel implements Visitable<DashboardItemTypeFactory>,Parcelable {
+public class DashboardHeaderViewModel implements Visitable<AffiliateDashboardItemTypeFactory>,Parcelable {
 
     private String saldoString;
     private String seenCount;
@@ -56,7 +57,7 @@ public class DashboardHeaderViewModel implements Visitable<DashboardItemTypeFact
     }
 
     @Override
-    public int type(DashboardItemTypeFactory typeFactory) {
+    public int type(AffiliateDashboardItemTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 

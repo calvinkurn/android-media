@@ -36,7 +36,6 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
     @LayoutRes
     public static final int LAYOUT = R.layout.item_af_dashboard_header;
 
-
     private TextView tvSaldo, tvProfileSeen, tvProductClicked, tvProductBought;
     private LinearLayout layoutProfileSeen, layoutProductClicked, layoutProductBought;
     private ImageView ivSaldo;

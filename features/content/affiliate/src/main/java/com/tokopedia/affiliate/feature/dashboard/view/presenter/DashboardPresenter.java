@@ -47,7 +47,7 @@ public class DashboardPresenter extends BaseDaggerPresenter<DashboardContract.Vi
 
     @Override
     public void checkAffiliate() {
-        checkAffiliateUseCase.execute(new CheckAffiliateSubscriber(getView()));
+//        checkAffiliateUseCase.execute(new CheckAffiliateSubscriber(getView()));
     }
 
     @Override

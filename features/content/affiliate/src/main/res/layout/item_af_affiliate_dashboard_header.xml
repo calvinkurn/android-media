@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_12"
+        android:paddingEnd="@dimen/dp_12"
+        android:orientation="vertical"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardElevation="@dimen/dp_5">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_total_saldo_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:drawableStart="@drawable/ic_saldo_tokopedia"
+                android:drawableLeft="@drawable/ic_saldo_tokopedia"
+                android:drawablePadding="@dimen/dp_5"
+                android:textColor="@color/Neutral_N700_68"
+                app:typographyType="small"
+                android:gravity="center"
+                android:text="Total Saldo Aktif" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_total_saldo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:drawablePadding="@dimen/dp_5"
+                app:typographyType="body_1"
+                app:typographyWeight="bold"
+                android:textColor="@color/black_70"
+                android:layout_alignBaseline="@id/tv_total_saldo_title"
+                android:gravity="center"
+                android:text="Rp110.000" />
+
+            <View
+                android:id="@+id/view_separator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                android:layout_marginTop="@dimen/dp_20"
+                android:background="@color/black_12"
+                android:layout_below="@id/tv_total_saldo"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_affiliate_income_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Neutral_N700_68"
+                android:layout_below="@id/view_separator"
+                android:text="Penghasilan Affiliate"
+                android:layout_marginTop="@dimen/dp_16"
+                app:typographyType="body_3"/>
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_affiliate_income"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/Neutral_N700_68"
+                android:layout_below="@id/view_separator"
+                android:text="Rp10.000"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                app:typographyType="body_3"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
