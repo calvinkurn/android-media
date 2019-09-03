@@ -17,7 +17,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -54,7 +53,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 
@@ -576,9 +574,13 @@ public class ImageHandler {
     }
 
     public static String encodeToBase64(String imagePath) {
+        return encodeToBase64(imagePath, 100);
+    }
+
+    public static String encodeToBase64(String imagePath, int quality) {
         Bitmap bm = BitmapFactory.decodeFile(imagePath);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        bm.compress(Bitmap.CompressFormat.JPEG, quality, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }

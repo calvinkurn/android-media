@@ -34,6 +34,9 @@ object ApplinkConstInternalMarketplace {
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"
+    // NormalCheckoutActivity
+    @JvmField
+    val NORMAL_CHECKOUT = "$INTERNAL_MARKETPLACE/normal-checkout"
 
     // ProductDetailActivity
     @JvmField
@@ -46,6 +49,8 @@ object ApplinkConstInternalMarketplace {
     val PRODUCT_DETAIL_WITH_WAREHOUSE_ID = "$INTERNAL_MARKETPLACE/product-detail/{id}/?warehouse_id={whid}"
     @JvmField
     val PRODUCT_DETAIL_DOMAIN = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/"
+    @JvmField
+    val PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE = "$INTERNAL_MARKETPLACE/product-detail/{shop_domain}/{product_key}/?aff={affiliate_string}"
     // ProductEditActivity
     @JvmField
     val PRODUCT_EDIT_ITEM = "$INTERNAL_MARKETPLACE/product-edit-item/{id}/"
@@ -113,8 +118,19 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
 
+    // SettingFieldActivity
+    @JvmField
+    val USER_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-notification-setting"
+
+    // SettingField for old push notification page(phase 1)
+    @JvmField
+    val USER_PUSH_NOTIFICATION_SETTING = "$INTERNAL_MARKETPLACE/user-push-notification-setting"
+
+    //Report Product
+    @JvmField
+    val REPORT_PRODUCT = "$INTERNAL_MARKETPLACE/product/{id}/report"
+
     // ShopScoreDetailActivity
     @JvmField
     val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
-
 }

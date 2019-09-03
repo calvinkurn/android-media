@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.domain.usecase.GetMentionableUserUseCase.Companion.SEARCH_PROFILE_QUERY
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import dagger.Module
 import dagger.Provides
@@ -19,6 +20,12 @@ class FeedComponentModule {
             context.resources,
             R.raw.query_related_post
         )
+    }
+
+    @Provides
+    @Named(SEARCH_PROFILE_QUERY)
+    fun provideGetMentionableUserQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_search_profile)
     }
 
 }

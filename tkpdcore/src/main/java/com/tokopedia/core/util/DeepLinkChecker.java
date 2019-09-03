@@ -310,7 +310,19 @@ public class DeepLinkChecker {
     }
 
     private static boolean isSMCReferral(List<String> linkSegment) {
-        return (linkSegment.get(0).equals("kupon-thr"));
+        if(linkSegment == null || linkSegment.isEmpty()){
+            return false;
+        }
+
+        String segments = "";
+
+        if (linkSegment.size() == 1){
+            segments = linkSegment.get(0);
+        } else {
+            segments = linkSegment.get(0) + "/" + linkSegment.get(1);
+        }
+
+        return (Arrays.asList("kupon-thr", "seru/games", "seru/referral", "seru/topquest").contains(segments));
     }
 
     private static boolean isHomeRecoomendation(List<String> linkSegment){

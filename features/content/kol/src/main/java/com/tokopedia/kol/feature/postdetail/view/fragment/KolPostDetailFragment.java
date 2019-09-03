@@ -37,6 +37,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
 import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -105,7 +106,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
-        RelatedPostAdapter.RelatedPostListener {
+        RelatedPostAdapter.RelatedPostListener,
+        HighlightAdapter.HighlightListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -193,8 +195,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         swipeToRefresh.setOnRefreshListener(this);
 
         KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,
-                this, this, this, this, this, this,
-                this, this, this, this,
+                this,
+                this, this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
                 this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
@@ -260,6 +270,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             presenter.getRelatedPost(String.valueOf(dynamicPostViewModel.getId()));
         }
         setFooter(postDetailViewModel);
+        recyclerView.clearOnScrollListeners();
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -486,6 +497,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onGoToProfile(String url) {
         onGoToLink(url);
+    }
+
+    @Override
+    public void onClickMentionedProfile(String id) {
+        onGoToLink(ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, id));
     }
 
     @Override
@@ -796,6 +812,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onLikeClick(int positionInFeed, int columnNumber, int id, boolean isLiked) {
+
+    }
+
+    @Override
+    public void onCommentClick(int positionInFeed, int columnNumber, int id) {
+
+    }
+
+    @Override
     public void onShareClick(int positionInFeed, int id, @NotNull String title,
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
@@ -880,6 +906,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                 presenter.trackAffiliate(track.getViewURL());
             }
         }
+    }
+
+    @Override
+    public void onHighlightItemClicked(int positionInFeed, @NotNull String redirectUrl) {
+
     }
 
     @Override
@@ -974,4 +1005,5 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             }
         }
     }
+
 }

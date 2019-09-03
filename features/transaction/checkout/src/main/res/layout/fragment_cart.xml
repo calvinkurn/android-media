@@ -99,7 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_above="@+id/card_footer"
-                    android:layout_below="@+id/card_header"
+                    android:layout_alignParentTop="true"
                     android:orientation="vertical">
 
                     <android.support.v7.widget.RecyclerView
