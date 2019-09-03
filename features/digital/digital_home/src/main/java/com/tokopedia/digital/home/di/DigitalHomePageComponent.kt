@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import dagger.Component
 
 @DigitalHomePageScope
-@Component(modules = [DigitalHomePageModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [DigitalHomePageModule::class, DigitalHomePageViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface DigitalHomePageComponent {
 
 }

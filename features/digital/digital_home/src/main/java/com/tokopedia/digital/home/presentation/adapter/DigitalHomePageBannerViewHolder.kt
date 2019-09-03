@@ -15,10 +15,28 @@ class DigitalHomePageBannerViewHolder(val itemView : View?, val onItemBindListen
         DigitalItemBannerAdapter()
     }
 
-    override fun bind(element: DigitalHomePageBannerModel?) {
-        if(element?.isLoaded?:false){
+    private var bannerList: List<DigitalHomePageBannerModel.Banner>? = listOf()
 
-        }else{
+    override fun bind(element: DigitalHomePageBannerModel?) {
+        itemView.banner?.onPromoAllClickListener = this
+        itemView.banner?.onPromoClickListener = this
+        if (element?.isLoaded?:false) {
+            itemView.banner_shimmering.hide()
+            try {
+                bannerList = element?.bannerList
+                itemView.banner.shouldShowSeeAllButton(bannerList?.isNotEmpty()?:false)
+
+                val promoUrls = arrayListOf<String>()
+                for (slidesModel in bannerList?: listOf()) {
+                    promoUrls.add(slidesModel.imgUrl)
+                }
+                itemView.banner.setPromoList(promoUrls)
+                itemView.banner.buildView()
+            } catch (e: Throwable) {
+
+            }
+        } else{
+            itemView.banner_shimmering.show()
             onItemBindListener.onBannerItemDigitalBind()
         }
     }
