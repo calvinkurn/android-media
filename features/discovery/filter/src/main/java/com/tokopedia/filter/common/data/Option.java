@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 
 import java.util.List;
 
-public final class Option implements Parcelable, Visitable {
+public final class Option implements Parcelable {
 
     public static final String KEY_PRICE_MIN = "pmin";
     public static final String KEY_PRICE_MAX = "pmax";
@@ -286,9 +286,4 @@ public final class Option implements Parcelable, Visitable {
             return new Option[size];
         }
     };
-
-    @Override
-    public int type(Object typeFactory) {
-        return 0;
-    }
 }

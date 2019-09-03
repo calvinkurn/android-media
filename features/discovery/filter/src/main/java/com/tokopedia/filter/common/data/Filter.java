@@ -12,7 +12,7 @@ import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.DynamicFilterTy
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Filter implements Parcelable, Visitable<DynamicFilterTypeFactory> {
+public final class Filter implements Parcelable {
 
     public static final String TEMPLATE_NAME_LOCATION = "template_location";
     public static final String TEMPLATE_NAME_OTHER = "template_other";
@@ -177,9 +177,4 @@ public final class Filter implements Parcelable, Visitable<DynamicFilterTypeFact
             return new Filter[size];
         }
     };
-
-    @Override
-    public int type(DynamicFilterTypeFactory typeFactory) {
-        return 0;
-    }
 }
