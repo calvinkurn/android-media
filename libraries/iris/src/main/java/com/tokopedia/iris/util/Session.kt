@@ -1,4 +1,4 @@
-package com.tokopedia.iris
+package com.tokopedia.iris.util
 
 interface Session {
     fun getUserId(): String
