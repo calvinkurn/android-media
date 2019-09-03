@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -42,6 +43,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -246,7 +248,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onSuccessGetStickyComponent(): (StickyComponentViewModel) -> Unit {
+    private fun onSuccessGetStickyComponent(): (StickyComponentsViewModel) -> Unit {
         return {
             viewState.onStickyComponentUpdated(it)
         }
@@ -357,12 +359,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
                             analytics.eventWatchVideoDuration(it.channelId, viewState.getDurationWatchVideo())
                         }
                     }
-
-                    activity?.let {
-                        if (it.isTaskRoot) {
-                            getInboxChannelsIntent()?.let {startActivity(it)}
-                        }
-                    }
+                    backToChannelList()
                     activity?.finish()
                 }
             }
@@ -523,7 +520,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
     override fun backToChannelList() {
         activity?.let {
             if (it.isTaskRoot) {
-                startActivity(getInboxChannelsIntent())
+                startActivity(RouteManager.getIntent(it, ApplinkConst.HOME))
             }
             it.finish()
             it.onBackPressed()
@@ -582,7 +579,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.onQuickReplyUpdated(it)
     }
 
-    override fun onStickyComponentReceived(it: StickyComponentViewModel) {
+    override fun onStickyComponentReceived(it: StickyComponentsViewModel) {
         viewState.onStickyComponentUpdated(it)
     }
 

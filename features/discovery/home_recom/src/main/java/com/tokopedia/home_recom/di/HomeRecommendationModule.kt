@@ -19,6 +19,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Named
 
+/**
+ * A class module for dagger recommendation page
+ */
 @Module(includes = [TopAdsWishlistModule::class])
 class HomeRecommendationModule {
 

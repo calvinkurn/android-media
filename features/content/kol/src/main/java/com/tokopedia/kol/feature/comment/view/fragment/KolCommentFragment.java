@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -23,6 +22,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter;
+import com.tokopedia.feedcomponent.view.custom.MentionEditText;
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEventTracking;
@@ -41,8 +43,11 @@ import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -51,17 +56,18 @@ import javax.inject.Inject;
  */
 
 public class KolCommentFragment extends BaseDaggerFragment
-        implements KolComment.View, KolComment.View.ViewHolder {
+        implements KolComment.View, KolComment.View.ViewHolder, MentionableUserAdapter.MentionAdapterListener {
 
     public static final String ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT";
     public static final String ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG";
 
     private RecyclerView listComment;
-    private EditText kolComment;
+    private MentionEditText kolComment;
     private ImageView sendButton;
     private ImageView wishlist;
 
     private KolCommentAdapter adapter;
+    private MentionableUserAdapter mentionAdapter;
     private ProgressBar progressBar;
 
     private boolean isFromApplink;
@@ -159,7 +165,7 @@ public class KolCommentFragment extends BaseDaggerFragment
             if (userSession != null && userSession.isLoggedIn()) {
                 presenter.sendComment(
                         getArguments().getInt(KolCommentActivity.ARGS_ID),
-                        kolComment.getText().toString()
+                        kolComment.getRawText()
                 );
             } else {
                 RouteManager.route(getActivity(), ApplinkConst.LOGIN);
@@ -167,7 +173,8 @@ public class KolCommentFragment extends BaseDaggerFragment
 
         });
 
-
+        mentionAdapter = new MentionableUserAdapter(this);
+        kolComment.setAdapter(mentionAdapter);
     }
 
     @Override
@@ -178,6 +185,14 @@ public class KolCommentFragment extends BaseDaggerFragment
     @Override
     public void onGoToProfile(String url) {
         openRedirectUrl(url);
+    }
+
+    @Override
+    public void onClickMentionedProfile(String id) {
+        RouteManager.route(
+                getContext(),
+                ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, id)
+        );
     }
 
     @Override
@@ -309,7 +324,8 @@ public class KolCommentFragment extends BaseDaggerFragment
                 sendKolCommentDomain.getComment(),
                 sendKolCommentDomain.getTime(),
                 sendKolCommentDomain.getDomainUser().isKol(),
-                sendKolCommentDomain.canDeleteComment()
+                sendKolCommentDomain.canDeleteComment(),
+                ""
         ));
 
         kolComment.setText("");
@@ -354,6 +370,16 @@ public class KolCommentFragment extends BaseDaggerFragment
     @Override
     public void disableSendComment() {
         sendButton.setClickable(false);
+    }
+
+    @Override
+    public void shouldGetMentionableUser(@NotNull String keyword) {
+        presenter.getMentionableUserByKeyword(keyword);
+    }
+
+    @Override
+    public void showMentionUserSuggestionList(List<MentionableUserViewModel> userList) {
+        mentionAdapter.setMentionableUser(userList);
     }
 
     private boolean isInfluencer() {

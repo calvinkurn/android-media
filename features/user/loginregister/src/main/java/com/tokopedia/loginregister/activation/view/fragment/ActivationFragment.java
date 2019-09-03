@@ -27,6 +27,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.loginregister.R;
@@ -67,6 +70,7 @@ public class ActivationFragment extends BaseDaggerFragment
 
     private String email = "";
     private String password = "";
+    private String source = "";
 
     @Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -117,8 +121,14 @@ public class ActivationFragment extends BaseDaggerFragment
 
         if (savedInstanceState != null) {
             password = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
-        } else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null) {
+        } else if (getArguments()!= null && getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null) {
             password = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
+        }
+
+        if (savedInstanceState != null) {
+            source = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "");
+        } else if (getArguments()!= null && getArguments().getString(ApplinkConstInternalGlobal.PARAM_SOURCE) != null) {
+            source = getArguments().getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "");
         }
 
     }
@@ -342,7 +352,8 @@ public class ActivationFragment extends BaseDaggerFragment
         Intent autoLoginIntent = LoginActivity.DeepLinkIntents.getAutomaticLogin(
                 getActivity(),
                 email,
-                password);
+                password,
+                source);
         startActivityForResult(
                 autoLoginIntent,
                 REQUEST_AUTO_LOGIN
@@ -369,6 +380,7 @@ public class ActivationFragment extends BaseDaggerFragment
             finishLoadingProgress();
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
+            RouteManager.route(getContext(), ApplinkConst.DISCOVERY_NEW_USER);
         } else if (requestCode == REQUEST_AUTO_LOGIN) {
             finishLoadingProgress();
         }
@@ -379,6 +391,7 @@ public class ActivationFragment extends BaseDaggerFragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, email);
         outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_PW, password);
+        outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source);
         super.onSaveInstanceState(outState);
     }
 

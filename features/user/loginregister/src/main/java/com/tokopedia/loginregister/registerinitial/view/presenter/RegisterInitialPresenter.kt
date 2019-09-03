@@ -12,6 +12,9 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterValidationPojo
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.registerinitial.view.listener.RegisterInitialContract
+import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
+import com.tokopedia.loginregister.ticker.subscriber.TickerInfoRegisterSubscriber
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.sessioncommon.di.SessionModule
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenSubscriber
@@ -21,9 +24,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
-import com.tokopedia.loginregister.ticker.subscriber.TickerInfoRegisterSubscriber
-import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
-
 
 
 /**
@@ -143,12 +143,10 @@ class RegisterInitialPresenter @Inject constructor(
                         view.onGoToSecurityQuestion(email)))
     }
 
-    override fun getUserInfo(shouldGoToCreatePassword : Boolean) {
+    override fun getUserInfo() {
         getProfileUseCase.execute(GetProfileSubscriber(userSession,
                 view.onSuccessGetUserInfo(),
-                view.onErrorGetUserInfo(),
-                view.onGoToCreatePassword(),
-                shouldGoToCreatePassword))
+                view.onErrorGetUserInfo()))
     }
 
     override fun getTickerInfo() {
