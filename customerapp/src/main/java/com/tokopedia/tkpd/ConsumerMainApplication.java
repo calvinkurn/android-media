@@ -173,9 +173,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void doLogoutAccount(Activity activity) {
         super.doLogoutAccount(activity);
-        if (tetraDebugger!= null) {
-            tetraDebugger.setUserId("");
-        }
+        tetraDebugger.setUserId("");
     }
 
     @Override
