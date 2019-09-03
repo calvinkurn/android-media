@@ -18,7 +18,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickRe
 public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickReplyItemViewModel> {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_quick_reply;
+    public static final int LAYOUT = R.layout.item_quick_play_reply;
     private final ChatroomContract.QuickReply viewListener;
     private TextView textHolder;
 
