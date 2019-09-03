@@ -65,11 +65,11 @@ object DeeplinkDFMapper {
 //                            deeplink, MODULE_HOTEL_TRAVEL,
 //                            context.getString(R.string.title_hotel))
 //                }
-//                deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
-//                    getDFDeeplinkIfNotInstalled(context,
-//                        deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
-//                        context.getString(R.string.shop_settings_title))
-//                }
+                deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
+                    getDFDeeplinkIfNotInstalled(context,
+                        deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
+                        context.getString(R.string.shop_settings_title))
+                }
                 else -> null
             }
         }

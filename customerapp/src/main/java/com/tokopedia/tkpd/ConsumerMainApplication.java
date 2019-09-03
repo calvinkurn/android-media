@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
+import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
 import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
@@ -69,6 +70,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.concurrent.TimeUnit;
+
+import kotlin.jvm.functions.Function1;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -146,7 +149,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         NetworkClient.init(getApplicationContext());
 
         if (!com.tokopedia.config.GlobalConfig.DEBUG) {
-            new ANRWatchDog().setANRListener(Crashlytics::logException).start();
+            // do not replace with method reference "Crashlytics::logException", will not work in dynamic feature
+            new ANRWatchDog().setANRListener(new ANRWatchDog.ANRListener() {
+                @Override
+                public void onAppNotResponding(ANRError anrError) {
+                    Crashlytics.logException(anrError);
+                }
+            }).start();
         } else {
             tetraDebugger = TetraDebugger.Companion.instance(context);
             tetraDebugger.init();
@@ -164,7 +173,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void doLogoutAccount(Activity activity) {
         super.doLogoutAccount(activity);
-        tetraDebugger.setUserId("");
+        if (tetraDebugger!= null) {
+            tetraDebugger.setUserId("");
+        }
     }
 
     @Override
@@ -414,7 +425,21 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void setCategoryAbTestingConfig() {
-        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(), this::openNewBelanja, this::openOldBelanja);
+        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(),
+                // do not replace with method reference "this::openNewBelanja", will not work in dynamic feature
+                new Function1<Context, Intent>() {
+                    @Override
+                    public Intent invoke(Context context) {
+                        return ConsumerMainApplication.this.openNewBelanja(context);
+                    }
+                },
+                // do not replace with method reference "this::openOldBelanja", will not work in dynamic feature
+                new Function1<Context, Intent>() {
+                    @Override
+                    public Intent invoke(Context context) {
+                        return ConsumerMainApplication.this.openOldBelanja(context);
+                    }
+                });
     }
 
     Intent openNewBelanja(Context context) {
