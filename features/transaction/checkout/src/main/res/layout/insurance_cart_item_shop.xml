@@ -33,7 +33,7 @@
         android:layout_height="@dimen/dp_40"
         android:layout_marginStart="@dimen/dp_18"
         android:layout_marginLeft="@dimen/dp_18"
-        android:src="@drawable/ic_modal_toko"
+        android:src="@drawable/insurance_default_icon"
         app:layout_constraintStart_toEndOf="@+id/insurance_checkbox"
         app:layout_constraintTop_toTopOf="@+id/insurance_tv_title" />
 
