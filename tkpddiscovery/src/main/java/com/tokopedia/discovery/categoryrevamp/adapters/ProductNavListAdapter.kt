@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.utils.CurrencyFormatHelper
-import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.ProductCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.Productshimmer.model.BigListShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.Productshimmer.model.GridListShimmerModel
 import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.Productshimmer.model.ListShimmerModel
+import com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product.ProductCardViewHolder
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
@@ -158,9 +158,18 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                         item.name,
                         item.id.toString(),
                         CurrencyFormatHelper.convertRupiahToInt(item.price),
-                        position)
+                        position,
+                        getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()),
+                        item.categoryBreadcrumb ?: "")
             }
 
         }
+    }
+
+    private fun getProductItemPath(path: String, id: String): String {
+        if (path.isNotEmpty()) {
+            return "category$path-$id"
+        }
+        return ""
     }
 }

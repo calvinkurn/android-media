@@ -1,5 +1,6 @@
 package com.tokopedia.discovery.categoryrevamp.view.activity
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.view.ViewPager
@@ -24,6 +25,8 @@ import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAda
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
 import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.synthetic.main.activity_category_nav.*
 
 
@@ -92,9 +95,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
         prepareView()
         handleIntent(intent)
+    }
 
+    companion object {
+
+        @JvmStatic
+        fun isCategoryRevampEnabled(context: Context): Boolean {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_CATEGORY_REVAMP, true)
+        }
 
     }
+
 
     private fun handleIntent(intent: Intent) {
         getExtrasFromIntent(intent)

@@ -49,11 +49,21 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
             } else {
                 val id = ((holder.itemView.context) as CategoryNavActivity).getCategoryId()
                 catAnalyticsInstance.eventClickSubCategory(item.id.toString(),
-                        id, id, item.name ?: "", item.url ?: "", position)
+                        id, item.name ?: "", item.url ?: "", position,
+                        getSubCategoryPath(item.url
+                                ?: "", item.id.toString()))
 
                 subCategoryListener.OnSubCategoryClicked(item.id.toString(), item.name ?: "")
             }
         }
+    }
+
+    private fun getSubCategoryPath(path: String, id: String): String {
+        if (path.isNotEmpty()) {
+            val m = path.split("/p/")
+            return "category" + m[1] + "-" + id
+        }
+        return ""
     }
 
 
@@ -73,7 +83,8 @@ class SubCategoryAdapter(private val subCategoryList: MutableList<SubCategoryIte
             val item = subCategoryList[position]
 
             catAnalyticsInstance.eventSubCategoryImpression(((holder.itemView.context) as CategoryNavActivity).getCategoryId(),
-                    item.id.toString(), item.name ?: "", item.url ?: "", position)
+                    item.id.toString(), item.name ?: "", item.url ?: "", position,
+                    getSubCategoryPath(item.url ?: "", item.id.toString()))
         }
     }
 

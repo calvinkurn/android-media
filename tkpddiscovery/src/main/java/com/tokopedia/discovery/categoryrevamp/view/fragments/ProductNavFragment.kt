@@ -350,12 +350,12 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
 
-    private fun showNoDataScreen(toShow:Boolean){
-        if(toShow){
+    private fun showNoDataScreen(toShow: Boolean) {
+        if (toShow) {
             layout_no_data.visibility = View.VISIBLE
             txt_no_data_header.text = resources.getText(R.string.category_nav_product_no_data_title)
             txt_no_data_description.text = resources.getText(R.string.category_nav_product_no_data_description)
-        }else{
+        } else {
             layout_no_data.visibility = View.GONE
         }
     }
@@ -480,7 +480,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun OnDefaultItemClicked() {
-        RouteManager.route(activity, ApplinkConst.CATEGORY_BELANJA)
+        val intent = RouteManager.getIntent(activity, ApplinkConst.CATEGORY_BELANJA)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
     }
 
     override fun OnSubCategoryClicked(id: String, categoryName: String) {
@@ -500,15 +502,26 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             intent.putExtra(SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition)
             startActivityForResult(intent, 1002)
         }
-        catAnalyticsInstance.eventClickProductList(item.id.toString(),
-                mDepartmentId,
-                item.name,
-                CurrencyFormatHelper.convertRupiahToInt(item.price),
-                adapterPosition)
+        if (!item.isTopAds) {
+            catAnalyticsInstance.eventClickProductList(item.id.toString(),
+                    mDepartmentId,
+                    item.name,
+                    CurrencyFormatHelper.convertRupiahToInt(item.price),
+                    adapterPosition,
+                    getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()))
+        }
+
     }
 
     override fun onLongClick(item: ProductsItem, adapterPosition: Int) {
         Log.d("ProductNavFragment", "onLongClick")
+    }
+
+    private fun getProductItemPath(path: String, id: String): String {
+        if (path.isNotEmpty()) {
+            return "category$path-$id"
+        }
+        return ""
     }
 
     override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {

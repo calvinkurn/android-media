@@ -16,6 +16,8 @@ class CategoryPageAnalytics {
         return TrackApp.getInstance().gtm
     }
 
+    // 3
+
     fun eventBackButtonClicked(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
@@ -27,6 +29,8 @@ class CategoryPageAnalytics {
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+    // 4
 
     fun eventSearchBarClicked(category_id: String) {
         val tracker = getTracker()
@@ -40,6 +44,8 @@ class CategoryPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    //5
+
     fun eventDisplayButtonClicked(category_id: String, displayName: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
@@ -52,17 +58,21 @@ class CategoryPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    // 6
+
     fun eventClickProductTab(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "clickCategory",
                 "eventCategory", "category page",
                 "eventAction", "click product tab",
-                "eventLabel", "produk",
+                "eventLabel", "",
                 "categoryId", category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+    // 7
 
     fun eventClickCatalogTab(category_id: String) {
         val tracker = getTracker()
@@ -70,11 +80,13 @@ class CategoryPageAnalytics {
                 "event", "clickCategory",
                 "eventCategory", "category page",
                 "eventAction", "click catalog tab",
-                "eventLabel", "katalog",
+                "eventLabel", "",
                 "categoryId", category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+    // 8
 
     fun eventClickSemuaThumbnail(category_id: String, displayName: String) {
         val tracker = getTracker()
@@ -88,12 +100,14 @@ class CategoryPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
-    fun eventClickSubCategory(sub_category_id: String
-                              , category_id: String,
-                              id: String,
+    // 9
+
+    fun eventClickSubCategory(sub_category_id: String,
+                              category_id: String,
                               creative_name: String,
                               creative_url: String,
-                              position: Int) {
+                              position: Int,
+                              path: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
@@ -104,11 +118,12 @@ class CategoryPageAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", id,
-                "name", "promo slot name",
+                "id", sub_category_id,
+                "name", path,
                 "creative", creative_name,
                 "creative_url", creative_url,
                 "position", position,
+                "category", "",
                 "promo_id", "",
                 "promo_code", "")))
         ))
@@ -116,11 +131,14 @@ class CategoryPageAnalytics {
     }
 
 
+    //10
+
     fun eventSubCategoryImpression(category_id: String,
                                    id: String,
                                    creative_name: String,
                                    creative_url: String,
-                                   position: Int) {
+                                   position: Int,
+                                   path: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
@@ -132,7 +150,7 @@ class CategoryPageAnalytics {
                 "promoClick", DataLayer.mapOf(
                 "promotions", DataLayer.listOf(DataLayer.mapOf(
                 "id", id,
-                "name", "promo slot name",
+                "name", path,
                 "creative", creative_name,
                 "creative_url", creative_url,
                 "position", position,
@@ -143,11 +161,14 @@ class CategoryPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    // 11
+
     fun eventClickProductList(product_id: String,
                               category_id: String,
                               productName: String,
                               price: Int,
-                              position: Int) {
+                              position: Int,
+                              pathList: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "productClick",
@@ -158,14 +179,14 @@ class CategoryPageAnalytics {
                 "ecommerce", DataLayer.mapOf(
                 "click", DataLayer.mapOf(
                 "actionField", DataLayer.mapOf(
-                "list", "category/$category_id")),
+                "list", pathList)),
                 "products", DataLayer.listOf(DataLayer.mapOf(
                 "name", productName,
                 "id", product_id,
                 "price", price,
                 "brand", "",
                 "variant", "",
-                "list", "category/$category_id",
+                "list", pathList,
                 "position", "",
                 "attribution", position)))
         )
@@ -173,11 +194,15 @@ class CategoryPageAnalytics {
     }
 
 
+    // 12
+
     fun eventProductListImpression(category_id: String,
                                    product_name: String,
                                    product_id: String,
                                    price: Int,
-                                   position: Int) {
+                                   position: Int,
+                                   pathList: String,
+                                   categoryPath: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "productView",
@@ -192,13 +217,16 @@ class CategoryPageAnalytics {
                 "id", product_id,
                 "price", price,
                 "brand", "",
-                "category", "",
+                "category", categoryPath,
                 "variant", "",
-                "list", "category/$category_id",
+                "list", pathList,
                 "position", position))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+
+    // 13
 
     fun eventWishistClicked(category_id: String, product_id: String, isWishlisted: Boolean) {
         val tracker = getTracker()
@@ -217,6 +245,8 @@ class CategoryPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    // 14
+
     fun eventSortClicked(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
@@ -228,6 +258,8 @@ class CategoryPageAnalytics {
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+    // 15
 
     fun eventFilterClicked(category_id: String) {
         val tracker = getTracker()
@@ -241,6 +273,8 @@ class CategoryPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    // 16
+
     fun eventQuickFilterClicked(category_id: String, filterName: String, filterValue: Boolean) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
@@ -252,6 +286,8 @@ class CategoryPageAnalytics {
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+    //19  // abhishek
 
     fun eventFilterApplied(category_id: String, filterName: String, filterValue: String) {
         val tracker = getTracker()
@@ -265,6 +301,8 @@ class CategoryPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+    //20
+
     fun eventFilterCategoryChoosen(category_id: String, filterName: String, filterValue: Boolean) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
@@ -276,6 +314,8 @@ class CategoryPageAnalytics {
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }
+
+    // 21
 
     fun eventSortApplied(category_id: String, sortName: String, sortValue: Int) {
         val tracker = getTracker()

@@ -139,4 +139,8 @@ public class RemoteConfigKey {
     public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
 
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
+
+    // category nav
+    public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
+
 }
