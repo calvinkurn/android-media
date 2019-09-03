@@ -2,6 +2,8 @@ package com.tokopedia.home_recom.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /**
@@ -50,6 +52,10 @@ object SimilarProductRecommendationTracking {
     private const val VALUE_NONE_OTHER = "none / other"
     private const val VALUE_IDR = "IDR"
     private const val VALUE_EMPTY = ""
+
+    private fun getTracker(): ContextAnalytics {
+        return TrackApp.getInstance().gtm
+    }
 
     private fun convertRecommendationItemToDataClickObject(item: RecommendationItem,
                                                            list: String,
@@ -163,12 +169,11 @@ object SimilarProductRecommendationTracking {
     }
 
     fun eventClick(
-            trackingQueue: TrackingQueue,
             recommendationItem: RecommendationItem,
             position: String,
             ref: String
     ) {
-        trackingQueue.putEETracking(
+        val data =
                 DataLayer.mapOf(
                         EVENT, EVENT_PRODUCT_CLICK,
                         EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
@@ -186,17 +191,17 @@ object SimilarProductRecommendationTracking {
                         position
                 )
                 )
-                ) as HashMap<String, Any>?
-        )
+                )
+
+        getTracker().sendEnhanceEcommerceEvent(data)
     }
 
     fun eventClickNonLogin(
-            trackingQueue: TrackingQueue,
             recommendationItem: RecommendationItem,
             position: String,
             ref: String
     ) {
-        trackingQueue.putEETracking(
+        val data =
                 DataLayer.mapOf(
                         EVENT, EVENT_PRODUCT_CLICK,
                         EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
@@ -214,25 +219,27 @@ object SimilarProductRecommendationTracking {
                                 position
                             )
                         )
-                ) as HashMap<String, Any>?
-        )
+                )
+        getTracker().sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventClickWishlist(trackingQueue: TrackingQueue, isAddWishlist: Boolean){
-        trackingQueue.putEETracking(DataLayer.mapOf(
+    fun eventClickWishlist(isAddWishlist: Boolean){
+        val data = DataLayer.mapOf(
                 EVENT, EVENT_CLICK_RECOMMENDATION,
                 EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
                 EVENT_ACTION, String.format(EVENT_WISHLIST_RECOMMENDATION, if(isAddWishlist) "add" else "remove"),
                 EVENT_LABEL, VALUE_EMPTY
-        ) as HashMap<String, Any>?)
+        )
+        getTracker().sendEnhanceEcommerceEvent(data)
     }
 
-    fun eventClickBackButton(trackingQueue: TrackingQueue){
-        trackingQueue.putEETracking(DataLayer.mapOf(
+    fun eventClickBackButton() {
+        val data = DataLayer.mapOf(
                 EVENT, EVENT_CLICK_RECOMMENDATION,
                 EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
                 EVENT_ACTION, EVENT_CLICK_BACK_BUTTON,
                 EVENT_LABEL, VALUE_EMPTY
-        ) as HashMap<String, Any>?)
+        )
+        getTracker().sendEnhanceEcommerceEvent(data)
     }
 }

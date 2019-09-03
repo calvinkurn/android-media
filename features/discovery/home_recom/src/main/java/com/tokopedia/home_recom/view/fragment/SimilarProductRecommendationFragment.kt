@@ -147,8 +147,8 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
      * @param position list of position of the item at Adapter, can be [1] or [1,2] for dynamic nested item
      */
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
-        if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(trackingQueue, item, item.position.toString(), ref)
-        else SimilarProductRecommendationTracking.eventClickNonLogin(trackingQueue, item, item.position.toString(), ref)
+        if(recommendationViewModel.isLoggedIn()) SimilarProductRecommendationTracking.eventClick(item, item.position.toString(), ref)
+        else SimilarProductRecommendationTracking.eventClickNonLogin(item, item.position.toString(), ref)
         RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, item.productId.toString()).run {
             putExtra(PDP_EXTRA_UPDATED_POSITION, position.first())
             startActivityForResult(this, REQUEST_FROM_PDP)
@@ -174,7 +174,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
      */
     override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
         if(recommendationViewModel.isLoggedIn()){
-            SimilarProductRecommendationTracking.eventClickWishlist(trackingQueue, isAddWishlist)
+            SimilarProductRecommendationTracking.eventClickWishlist(isAddWishlist)
             if(isAddWishlist){
                 recommendationViewModel.addWishlist(item, callback)
             } else {
