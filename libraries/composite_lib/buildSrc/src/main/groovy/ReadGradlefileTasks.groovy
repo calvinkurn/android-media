@@ -12,7 +12,6 @@ class ReadGradlefileTasks extends DefaultTask{
     def versionMap = new HashMap<String, String>()
 
     String lastRelease
-    def time = 7
     
     def readGradleFile(){
         def reader = new File('tools/version/version.gradle')
