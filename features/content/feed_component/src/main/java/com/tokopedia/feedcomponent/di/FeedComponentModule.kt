@@ -7,6 +7,8 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.domain.usecase.GetMentionableUserUseCase.Companion.SEARCH_PROFILE_QUERY
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -28,6 +30,9 @@ class FeedComponentModule {
     fun provideGetMentionableUserQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_search_profile)
     }
+
+//    @Provides
+//    public fun provideUserSessionInterface(@ApplicationContext context: Context) = UserSession(context)
 
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)

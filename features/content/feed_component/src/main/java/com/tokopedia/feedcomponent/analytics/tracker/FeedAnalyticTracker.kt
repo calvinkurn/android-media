@@ -13,8 +13,8 @@ import kotlin.collections.HashMap
  */
 class FeedAnalyticTracker
 @Inject constructor(
-        private val trackingQueue: TrackingQueue,
-        private val userSessionInterface: UserSessionInterface
+        private val trackingQueue: TrackingQueue
+//        ,private val userSessionInterface: UserSessionInterface
 ) {
 
     private companion object {
@@ -460,8 +460,8 @@ class FeedAnalyticTracker
             EVENT, eventName,
             EVENT_CATEGORY, eventCategory,
             EVENT_ACTION, eventAction,
-            EVENT_LABEL, eventLabel,
-            USER_ID,  userSessionInterface.userId
+            EVENT_LABEL, eventLabel
+//            ,USER_ID,  userSessionInterface.userId
     )
 
     private fun getEcommerceData(data: Any): Map<String, Any> = DataLayer.mapOf(ECOMMERCE, data)

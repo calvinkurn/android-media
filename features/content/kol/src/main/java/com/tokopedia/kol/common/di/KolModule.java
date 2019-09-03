@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
@@ -41,7 +42,7 @@ import retrofit2.Retrofit;
  * @author by milhamj on 06/02/18.
  */
 
-@Module
+@Module(includes = {FeedComponentModule.class})
 public class KolModule {
     private static final int NET_READ_TIMEOUT = 60;
     private static final int NET_WRITE_TIMEOUT = 60;
@@ -56,7 +57,7 @@ public class KolModule {
 
     @KolScope
     @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
