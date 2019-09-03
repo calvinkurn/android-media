@@ -61,6 +61,7 @@ public class ShippingCourierConverter {
                     otd_prev.getAvailable(),
                     otd_prev.getTextLabel(),
                     otd_prev.getTextDetail(),
+                    otd_prev.getUrlDetail(),
                     otd_prev.getValue()
             );
             courierItemData.setOntimeDelivery(otd);

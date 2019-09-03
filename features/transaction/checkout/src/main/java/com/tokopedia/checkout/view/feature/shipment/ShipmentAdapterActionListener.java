@@ -70,7 +70,7 @@ public interface ShipmentAdapterActionListener {
 
     void onPriorityTncClicker();
 
-    void onOntimeDeliveryClicked();
+    void onOntimeDeliveryClicked(String url);
 
     void onNeedUpdateRequestData();
 

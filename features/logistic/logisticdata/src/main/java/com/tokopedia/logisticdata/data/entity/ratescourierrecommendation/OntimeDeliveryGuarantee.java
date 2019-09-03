@@ -17,6 +17,9 @@ public class OntimeDeliveryGuarantee implements Parcelable {
     @SerializedName("text_detail")
     @Expose
     private String textDetail;
+    @SerializedName("url_detail")
+    @Expose
+    private String urlDetail;
     @SerializedName("value")
     @Expose
     private int value;
@@ -64,6 +67,17 @@ public class OntimeDeliveryGuarantee implements Parcelable {
         this.iconUrl = iconUrl;
     }
 
+    public String getUrlDetail() {
+        return urlDetail;
+    }
+
+    public void setUrlDetail(String urlDetail) {
+        this.urlDetail = urlDetail;
+    }
+
+    public OntimeDeliveryGuarantee() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -71,25 +85,24 @@ public class OntimeDeliveryGuarantee implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.available);
+        dest.writeByte(this.available ? (byte) 1 : (byte) 0);
         dest.writeString(this.textLabel);
         dest.writeString(this.textDetail);
-        dest.writeValue(this.value);
+        dest.writeString(this.urlDetail);
+        dest.writeInt(this.value);
         dest.writeString(this.iconUrl);
     }
 
-    public OntimeDeliveryGuarantee() {
-    }
-
     protected OntimeDeliveryGuarantee(Parcel in) {
-        this.available = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.available = in.readByte() != 0;
         this.textLabel = in.readString();
         this.textDetail = in.readString();
-        this.value = (Integer) in.readValue(Integer.class.getClassLoader());
+        this.urlDetail = in.readString();
+        this.value = in.readInt();
         this.iconUrl = in.readString();
     }
 
-    public static final Parcelable.Creator<OntimeDeliveryGuarantee> CREATOR = new Parcelable.Creator<OntimeDeliveryGuarantee>() {
+    public static final Creator<OntimeDeliveryGuarantee> CREATOR = new Creator<OntimeDeliveryGuarantee>() {
         @Override
         public OntimeDeliveryGuarantee createFromParcel(Parcel source) {
             return new OntimeDeliveryGuarantee(source);

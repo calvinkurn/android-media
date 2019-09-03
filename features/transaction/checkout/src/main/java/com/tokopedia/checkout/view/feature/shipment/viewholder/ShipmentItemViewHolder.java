@@ -745,14 +745,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
             shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()) {
                 OntimeDelivery otd = shipmentDetailData.getSelectedCourier().getOntimeDelivery();
-                String html = otd.getText_detail() + ". <a href=\"http://gw-staging.tokopedia.com/otdg_info\">S&K berlaku</a>";
+                String html = otd.getText_detail();
+                String url = otd.getUrl_detail();
                 tickerOtd.setVisibility(View.VISIBLE);
                 tickerOtd.setHtmlDescription(html);
                 tickerOtd.setTickerTitle(otd.getText_label());
                 tickerOtd.setDescriptionClickEvent(new TickerCallback() {
                     @Override
                     public void onDescriptionViewClick(CharSequence charSequence) {
-                        mActionListener.onOntimeDeliveryClicked();
+                        mActionListener.onOntimeDeliveryClicked(url);
                     }
 
                     @Override
