@@ -17,6 +17,7 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
         var LAYOUT = R.layout.bom_item_recomnedation
     }
     private var recommendationCardView = itemView?.findViewById<RecommendationCardView>(R.id.bomRecommendationCardView)
+    private var recomTitle : String = "none/other"
 
     override fun bind(element: OrderListRecomViewModel) {
         recommendationCardView?.setRecommendationModel(element.recommendationItem, this)
@@ -24,23 +25,23 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
         recommendationCardView?.setAddToCartClickListener{
             actionListener?.onCartClicked(element)
         }
-
+        recomTitle = element.recomTitle
     }
 
     override fun onImpressionTopAds(item: RecommendationItem) {
-        orderListAnalytics.eventRecommendationProductImpression(item, item.position)
+        orderListAnalytics.eventRecommendationProductImpression(item, item.position, recomTitle)
     }
 
     override fun onImpressionOrganic(item: RecommendationItem) {
-        orderListAnalytics.eventRecommendationProductImpression(item, item.position)
+        orderListAnalytics.eventRecommendationProductImpression(item, item.position, recomTitle)
     }
 
     override fun onClickTopAds(item: RecommendationItem) {
-        orderListAnalytics.eventEmptyBOMRecommendationProductClick(item, item.position)
+        orderListAnalytics.eventEmptyBOMRecommendationProductClick(item, item.position, recomTitle)
     }
 
     override fun onClickOrganic(item: RecommendationItem) {
-        orderListAnalytics.eventEmptyBOMRecommendationProductClick(item, item.position)
+        orderListAnalytics.eventEmptyBOMRecommendationProductClick(item, item.position, recomTitle)
     }
 
     interface ActionListener{

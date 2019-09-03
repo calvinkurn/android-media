@@ -29,6 +29,7 @@ import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.design.quickfilter.custom.CustomViewRounderCornerFilterView;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -107,10 +108,12 @@ public class OrderListFragment extends BaseDaggerFragment implements
     private Boolean isRecommendation = false;
     private GridLayoutManager layoutManager;
     EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+    private TrackingQueue trackingQueue;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        trackingQueue = new TrackingQueue(getAppContext());
         setRetainInstance(isRetainInstance());
         if (getArguments() != null) {
             setupArguments(getArguments());
@@ -608,6 +611,13 @@ public class OrderListFragment extends BaseDaggerFragment implements
     @Override
     public void onCartClicked(@NotNull Object productModel) {
         presenter.processAddToCart(productModel);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        orderListAnalytics.sendEmptyWishlistProductImpression(trackingQueue);
+        trackingQueue.sendAll();
     }
 }
 

@@ -65,6 +65,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private final GetRecommendationUseCase getRecommendationUseCase;
     private final AddToCartUseCase addToCartUseCase;
     private List<Visitable> orderList = new ArrayList<>();
+    private String recomTitle;
 
     @Inject
     public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase, AddToCartUseCase addToCartUseCase) {
@@ -93,10 +94,10 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 RecommendationWidget recommendationWidget = recommendationWidgets.get(0);
                 List<Visitable> visitables = new ArrayList<>();
                 if (isFirstTime && recommendationWidget.getRecommendationItemList().size() > 0) {
-                    visitables.add(new OrderListRecomTitleViewModel(
-                            !TextUtils.isEmpty(recommendationWidget.getTitle())
-                                    ? recommendationWidget.getTitle()
-                                    : getView().getAppContext().getResources().getString(R.string.order_list_title_recommendation)));
+                    recomTitle = !TextUtils.isEmpty(recommendationWidget.getTitle())
+                            ? recommendationWidget.getTitle()
+                            : getView().getAppContext().getResources().getString(R.string.order_list_title_recommendation);
+                    visitables.add(new OrderListRecomTitleViewModel(recomTitle));
                 }
                 visitables.addAll(getRecommendationVisitables(recommendationWidget));
                 getView().addData(visitables, true);
@@ -114,7 +115,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     private List<Visitable> getRecommendationVisitables(RecommendationWidget recommendationWidget) {
         List<Visitable> recommendationList = new ArrayList<>();
         for (RecommendationItem item : recommendationWidget.getRecommendationItemList()) {
-            recommendationList.add(new OrderListRecomViewModel(item));
+            recommendationList.add(new OrderListRecomViewModel(item, recomTitle));
         }
         return recommendationList;
     }
