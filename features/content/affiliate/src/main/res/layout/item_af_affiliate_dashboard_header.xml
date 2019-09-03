@@ -179,7 +179,7 @@
                 tools:text="38 Kali Dikunjungi" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_total_click"
+                android:id="@+id/tv_total_clicked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/view_separator_2"
