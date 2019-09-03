@@ -399,7 +399,9 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 orderListPresenter.setViewData(order);
                 orderListPresenter.setActionButtonData(order.actionButtons());
                 orderListPresenter.setDotMenuVisibility(order.dotMenu());
-                ImageHandler.loadImageThumbs(context, imgShopAvatar, order.items().get(0).imageUrl());
+                if(order.items().size()>0) {
+                    ImageHandler.loadImageThumbs(context, imgShopAvatar, order.items().get(0).imageUrl());
+                }
                 registerViewClickListener(this, order);
                 itemView.setOnClickListener(this);
             }
