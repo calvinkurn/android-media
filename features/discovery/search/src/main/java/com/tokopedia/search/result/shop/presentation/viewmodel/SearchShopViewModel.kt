@@ -21,6 +21,7 @@ import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 
 class SearchShopViewModel(
@@ -42,8 +43,10 @@ class SearchShopViewModel(
     }
 
     private val searchShopLiveData = MutableLiveData<State<List<Visitable<*>>>>()
+    private val searchShopMutableList = mutableListOf<Visitable<*>>()
     private val searchParameter = searchParameter.toMutableMap()
     private val loadingMoreModel = LoadingMoreModel()
+    private var hasLoadData = false
     private var isHasNextPage = false
 
     init {
@@ -79,28 +82,34 @@ class SearchShopViewModel(
         searchParameter[SearchApiConst.START] = startRow
     }
 
+    fun onViewVisibilityChanges(isVisibleToUser: Boolean, isViewAdded: Boolean) {
+
+    }
+
     fun searchShop() {
         launchCatchError(block = {
             trySearchShop()
         }, onError = {
-            catchSearchShopError(it)
+            catchSearchShopException(it)
         })
     }
 
     private suspend fun trySearchShop() {
-        if (isSearchShopLiveDataContainItems()) return
+        if (isSearchShopListContainItems()) return
 
         updateSearchShopLiveDataStateToLoading()
 
         val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
 
         searchShopFirstPageSuccess(searchShopModel)
-
-        getDynamicFilter()
     }
 
-    private fun isSearchShopLiveDataContainItems(): Boolean {
-        return searchShopLiveData.value?.data?.size ?: 0 > 0
+    private fun isSearchShopListContainItems(): Boolean {
+        return searchShopMutableList.isNotEmpty()
+    }
+
+    private fun isAnotherJobStillRunning(): Boolean {
+        return masterJob.isActive
     }
 
     private fun updateSearchShopLiveDataStateToLoading() {
@@ -141,7 +150,8 @@ class SearchShopViewModel(
 
         val visitableList = createVisitableListFromModel(searchShopModel)
 
-        updateSearchShopLiveDataStateToSuccess(visitableList)
+        updateSearchShopListWithNewData(visitableList)
+        updateSearchShopLiveDataStateToSuccess()
     }
 
     private fun updateIsHasNextPage(searchShopModel: SearchShopModel) {
@@ -224,16 +234,26 @@ class SearchShopViewModel(
         }
     }
 
-    private fun updateSearchShopLiveDataStateToSuccess(visitableList: List<Visitable<*>>) {
-        val searchShopDataList = getSearchShopLiveDataMutableList()
-        searchShopDataList.remove(loadingMoreModel)
-        searchShopDataList.addAll(visitableList)
-
-        searchShopLiveData.postValue(Success(searchShopDataList))
+    private fun updateSearchShopListWithNewData(visitableList: List<Visitable<*>>) {
+        searchShopMutableList.remove(loadingMoreModel)
+        searchShopMutableList.addAll(visitableList)
     }
 
-    private fun getSearchShopLiveDataMutableList() : MutableList<Visitable<*>> {
-        return searchShopLiveData.value?.data?.toMutableList() ?: mutableListOf()
+    private fun updateSearchShopLiveDataStateToSuccess() {
+        searchShopLiveData.postValue(Success(searchShopMutableList))
+    }
+
+    private fun catchSearchShopException(e: Throwable?) {
+        if (e is CancellationException) {
+            catchCancellationException(e)
+        }
+        else {
+            catchSearchShopError(e)
+        }
+    }
+
+    private fun catchCancellationException(e: Throwable) {
+        e.printStackTrace()
     }
 
     private fun catchSearchShopError(e: Throwable?) {
@@ -243,8 +263,7 @@ class SearchShopViewModel(
     }
 
     private fun updateSearchShopLiveDataStateToError() {
-        val searchShopDataList = getSearchShopLiveDataMutableList()
-        searchShopLiveData.postValue(Error("", searchShopDataList))
+        searchShopLiveData.postValue(Error("", searchShopMutableList))
     }
 
     private fun getDynamicFilter() {
@@ -264,10 +283,12 @@ class SearchShopViewModel(
     }
 
     fun searchMoreShop() {
+        if (masterJob.isActive) masterJob.cancel()
+
         launchCatchError(block = {
             trySearchMoreShop()
         }, onError = {
-            catchSearchShopError(it)
+            catchSearchShopException(it)
         })
     }
 
@@ -280,7 +301,7 @@ class SearchShopViewModel(
     }
 
     private fun getTotalShopItemCount(): Int {
-        return searchShopLiveData.value?.data?.count { it is ShopViewModel.ShopItem } ?: 0
+        return searchShopMutableList.count { it is ShopViewModel.ShopItem }
     }
 
     private fun searchShopLoadMoreSuccess(searchShopModel: SearchShopModel?) {
@@ -289,7 +310,9 @@ class SearchShopViewModel(
         updateIsHasNextPage(searchShopModel)
 
         val visitableList = createSearchShopList(searchShopModel)
-        updateSearchShopLiveDataStateToSuccess(visitableList)
+
+        updateSearchShopListWithNewData(visitableList)
+        updateSearchShopLiveDataStateToSuccess()
     }
 
     private fun createSearchShopList(searchShopModel: SearchShopModel): List<Visitable<*>> {
@@ -307,7 +330,7 @@ class SearchShopViewModel(
         launchCatchError(block = {
             tryRetrySearchShop()
         }, onError = {
-            catchSearchShopError(it)
+            catchSearchShopException(it)
         })
     }
 
@@ -321,23 +344,25 @@ class SearchShopViewModel(
     }
 
     private fun isSearchShopLiveDataDoesNotContainItems(): Boolean {
-        return !isSearchShopLiveDataContainItems()
+        return !isSearchShopListContainItems()
     }
 
     fun reloadSearchShop() {
         launchCatchError(block = {
             tryReloadSearchShop()
         }, onError = {
-            catchSearchShopError(it)
+            catchSearchShopException(it)
         })
     }
 
     private suspend fun tryReloadSearchShop() {
-        updateSearchShopLiveDataStateToLoading()
+        clearSearchShopList()
 
-        val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
+        trySearchShop()
+    }
 
-        searchShopFirstPageSuccess(searchShopModel)
+    private fun clearSearchShopList() {
+        searchShopMutableList.clear()
     }
 
     fun getSearchParameterQuery() = (searchParameter[SearchApiConst.Q] ?: "").toString()
