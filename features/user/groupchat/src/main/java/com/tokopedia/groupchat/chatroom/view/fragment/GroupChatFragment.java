@@ -516,7 +516,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private void setupSprintSaleIcon(SprintSaleViewModel sprintSaleViewModel) {
         if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
-                    R.drawable.bg_rounded_pink));
+                    R.drawable.bg_rounded_soft_pink));
             sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
