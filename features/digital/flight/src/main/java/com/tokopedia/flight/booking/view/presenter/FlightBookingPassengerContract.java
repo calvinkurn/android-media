@@ -145,7 +145,6 @@ public interface FlightBookingPassengerContract {
         void showPassengerPassportNumberShouldAlphaNumericError(@StringRes int resId);
 
         String getMissTitle();
-
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -183,5 +182,7 @@ public interface FlightBookingPassengerContract {
         void onNationalityChanged(CountryPhoneCode flightPassportNationalityViewModel);
 
         void onIssuerCountryChanged(CountryPhoneCode flightPassportIssuerCountry);
+
+        void getTravelContactList(String query);
     }
 }

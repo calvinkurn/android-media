@@ -47,6 +47,15 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
         }
     }
 
+    fun getFirstSelectedItem(): String {
+        for (i in 0 until adapter.itemCount) {
+            with(chip_recycler_view.findViewHolderForAdapterPosition(i) as FilterChipAdapter.ViewHolder?) {
+                if (this?.chips?.isSelected == true) return this.chips.text.toString()
+            }
+        }
+        return ""
+    }
+
     override fun onResetChip() {
         for (i in 0 until adapter.itemCount) {
             with(chip_recycler_view.findViewHolderForAdapterPosition(i) as FilterChipAdapter.ViewHolder?) {

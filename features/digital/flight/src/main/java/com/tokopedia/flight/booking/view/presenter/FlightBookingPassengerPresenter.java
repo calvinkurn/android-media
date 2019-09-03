@@ -1,6 +1,8 @@
 package com.tokopedia.flight.booking.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.data.entity.TravelContactListModel;
+import com.tokopedia.common.travel.domain.GetContactListUseCase;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
@@ -9,6 +11,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator;
+import com.tokopedia.flight.common.util.FlightPassengerTitle;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
@@ -34,10 +37,13 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     private final int PLUS_TWENTY = 20;
 
     private FlightPassengerInfoValidator flightPassengerInfoValidator;
+    private GetContactListUseCase getContactListUseCase;
 
     @Inject
-    public FlightBookingPassengerPresenter(FlightPassengerInfoValidator flightPassengerInfoValidator) {
+    public FlightBookingPassengerPresenter(FlightPassengerInfoValidator flightPassengerInfoValidator,
+                                           GetContactListUseCase getContactListUseCase) {
         this.flightPassengerInfoValidator = flightPassengerInfoValidator;
+        this.getContactListUseCase = getContactListUseCase;
     }
 
     @Override
@@ -454,6 +460,12 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         getView().renderPassportIssuerCountry(flightPassportIssuerCountry.getCountryName());
     }
 
+    @Override
+    public void getTravelContactList(String query) {
+        getContactListUseCase.executeRx(query, GetContactListUseCase.Companion.getPARAM_PRODUCT_FLIGHT(), "");
+        //TO DO
+    }
+
     private boolean validateFields(String departureDateString) {
         boolean isValid = true;
         boolean isNeedPassport = !getView().isDomestic();
@@ -561,17 +573,16 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     private int getPassengerTitleId() {
-//        switch (getView().getTitleSpinnerPosition()) {
-        switch (1) {
-            case 1:
+        switch (getView().getPassengerTitle().toLowerCase()) {
+            case FlightPassengerTitle.TUAN:
                 return FlightPassengerTitleType.TUAN;
-            case 2:
+            case FlightPassengerTitle.NYONYA:
                 if (isChildPassenger() || isInfantPassenger()) {
                     return FlightPassengerTitleType.NONA;
                 } else {
                     return FlightPassengerTitleType.NYONYA;
                 }
-            case 3:
+            case  FlightPassengerTitle.NONA:
                 return FlightPassengerTitleType.NONA;
             default:
                 return 0;

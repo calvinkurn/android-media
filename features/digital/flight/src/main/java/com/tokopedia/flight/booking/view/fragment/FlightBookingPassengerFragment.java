@@ -20,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
@@ -43,10 +42,9 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
+import com.tokopedia.flight.common.util.FlightPassengerTitle;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -450,8 +448,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public String getPassengerTitle() {
-        return "";
-        //
+        return rvPassengerTitle.getFirstSelectedItem();
     }
 
     @Override
@@ -687,7 +684,12 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void renderPassengerTitle(String passengerTitle) {
-        //renderpassangertitle
+        rvPassengerTitle.onResetChip();
+        switch (passengerTitle) {
+            case FlightPassengerTitle.TUAN: rvPassengerTitle.initiallySelectedChip(0);
+            case FlightPassengerTitle.NYONYA: rvPassengerTitle.initiallySelectedChip(1);
+            case FlightPassengerTitle.NONA: rvPassengerTitle.initiallySelectedChip(2);
+        }
     }
 
     @Override
