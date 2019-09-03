@@ -135,7 +135,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     }
 
     override fun getAdapterTypeFactory(): ShopProductAdapterTypeFactory {
-        return ShopProductAdapterTypeFactory(this, null, this,
+        return ShopProductAdapterTypeFactory(null, this, null, this,
                 this, null,
                 true, 0, ShopTrackProductTypeDef.PRODUCT
         )

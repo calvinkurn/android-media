@@ -36,8 +36,6 @@ public class DealsContract {
 
         void renderCuratedDealsList(List<CategoryItem> categoryItems);
 
-        void renderAllTrendingDeals(List<ProductItem> items, String title);
-
         void addDealsToCards(CategoryItem categoryItemsViewModels);
 
         RequestParams getParams();

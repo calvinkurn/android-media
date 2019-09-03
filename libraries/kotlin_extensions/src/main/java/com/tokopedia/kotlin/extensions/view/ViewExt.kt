@@ -18,6 +18,9 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
+import android.graphics.Bitmap
+import android.graphics.Canvas
+
 
 /**
  * @author by milhamj on 30/11/18.
@@ -216,6 +219,33 @@ fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintL
     }
 }
 
+fun View.toBitmap(desiredWidth: Int? = null, desiredHeight: Int? = null): Bitmap {
+    val specSize = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    measure(specSize, specSize)
+
+    val width = desiredWidth ?: measuredWidth
+    val height = desiredHeight ?: measuredHeight
+
+    return createBitmap(width, height)
+}
+
+fun View.toSquareBitmap(desiredSize: Int? = null): Bitmap {
+    val specSize = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    measure(specSize, specSize)
+
+    val size = desiredSize ?: if (measuredHeight > measuredWidth) measuredWidth else measuredHeight
+
+    return createBitmap(size, size)
+}
+
+private fun View.createBitmap(width: Int, height: Int): Bitmap {
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val c = Canvas(bitmap)
+    layout(0, 0, width, height)
+    draw(c)
+    return bitmap
+}
+
 fun View.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
     addOnImpressionListener(holder, object : ViewHintListener{
         override fun onViewHint() {
@@ -262,11 +292,11 @@ private fun viewIsVisible(view: View?): Boolean {
 }
 
 
-private fun getScreenWidth(): Int {
+fun getScreenWidth(): Int {
     return Resources.getSystem().displayMetrics.widthPixels
 }
 
-private fun getScreenHeight(): Int {
+fun getScreenHeight(): Int {
     return Resources.getSystem().displayMetrics.heightPixels
 }
 
