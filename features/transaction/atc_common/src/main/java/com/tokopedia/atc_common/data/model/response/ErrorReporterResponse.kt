@@ -9,7 +9,7 @@ data class ErrorReporterResponse(
         @Expose
         var eligible: Boolean = false,
 
-        @SerializedName("description")
+        @SerializedName("texts")
         @Expose
-        var description: String = ""
+        var texts: ErrorReporterTextResponse = ErrorReporterTextResponse()
 )

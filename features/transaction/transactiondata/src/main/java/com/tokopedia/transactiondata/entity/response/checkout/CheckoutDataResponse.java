@@ -20,9 +20,6 @@ public class CheckoutDataResponse {
     @SerializedName("data")
     @Expose
     private Data data;
-    @SerializedName("error_reporter")
-    @Expose
-    private ErrorReporterResponse errorReporterResponse;
 
     public int getSuccess() {
         return success;
@@ -40,7 +37,4 @@ public class CheckoutDataResponse {
         return data;
     }
 
-    public ErrorReporterResponse getErrorReporterResponse() {
-        return errorReporterResponse;
-    }
 }

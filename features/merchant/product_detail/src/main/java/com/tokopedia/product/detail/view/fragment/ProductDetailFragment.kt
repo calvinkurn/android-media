@@ -47,6 +47,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
@@ -126,11 +127,10 @@ import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
-import com.tokopedia.transaction.common.dialog.CreateTicketDialog
 import com.tokopedia.transaction.common.dialog.SuccessTicketDialog
+import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
-import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DESC
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
@@ -1085,18 +1085,22 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             REQUEST_CODE_NORMAL_CHECKOUT -> {
                 if (resultCode == RESULT_CODE_ERROR_TICKET && data != null) {
                     activity?.also { activity ->
-                        val createTicketDialog = CreateTicketDialog(activity, CreateTicketDialog.Page.PAGE_ATC)
+                        val result = data.getParcelableExtra<AddToCartDataModel>(RESULT_TICKET_DATA)
+                        val createTicketDialog = UnifyDialog(activity, UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER)
+                        createTicketDialog.setTitle(result.errorReporter.texts.submitTitle)
+                        createTicketDialog.setDescription(result.errorReporter.texts.submitDescription)
+                        createTicketDialog.setSecondary(result.errorReporter.texts.cancelButton)
                         createTicketDialog.setSecondaryOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickCloseOnHelpPopUpAtc()
                             createTicketDialog.dismiss()
                         })
+                        createTicketDialog.setOk(result.errorReporter.texts.submitButton)
                         createTicketDialog.setOkOnClickListener(View.OnClickListener {
                             productDetailTracking.eventClickReportOnHelpPopUpAtc()
                             createTicketDialog.dismiss()
-                            productInfoViewModel.hitSubmitTicket(data.getParcelableExtra(RESULT_TICKET_DATA), this::onErrorSubmitHelpTicket, this::onSuccessSubmitHelpTicket)
+                            productInfoViewModel.hitSubmitTicket(result, this::onErrorSubmitHelpTicket, this::onSuccessSubmitHelpTicket)
                             showProgressDialog()
                         })
-                        createTicketDialog.setDescription(data.getStringExtra(RESULT_TICKET_DESC))
                         createTicketDialog.show()
                         productDetailTracking.eventViewHelpPopUpWhenAtc()
                     }

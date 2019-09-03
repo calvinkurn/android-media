@@ -109,8 +109,8 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.transaction.common.dialog.CreateTicketDialog;
 import com.tokopedia.transaction.common.dialog.SuccessTicketDialog;
+import com.tokopedia.transaction.common.dialog.UnifyDialog;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
@@ -741,12 +741,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutCartErrorReporter(CheckoutData checkoutData) {
-        CreateTicketDialog createTicketDialog = new CreateTicketDialog(getActivity(), CreateTicketDialog.Page.PAGE_CHECKOUT);
-        createTicketDialog.setDescription(checkoutData.getErrorReporter().getDescription());
+        UnifyDialog createTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER);
+        createTicketDialog.setTitle(checkoutData.getErrorReporter().getTexts().getSubmitTitle());
+        createTicketDialog.setDescription(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
+        createTicketDialog.setSecondary(checkoutData.getErrorReporter().getTexts().getCancelButton());
         createTicketDialog.setSecondaryOnClickListener(v -> {
             checkoutAnalyticsCourierSelection.eventClickCloseOnHelpPopUpInCheckout();
             createTicketDialog.dismiss();
         });
+        createTicketDialog.setOk(checkoutData.getErrorReporter().getTexts().getSubmitButton());
         createTicketDialog.setOkOnClickListener(v -> {
             checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
             createTicketDialog.dismiss();

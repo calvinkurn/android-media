@@ -639,7 +639,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         activity?.run {
             setResult(RESULT_CODE_ERROR_TICKET, Intent().apply {
                 putExtra(RESULT_TICKET_DATA, errorModel)
-                putExtra(RESULT_TICKET_DESC, errorModel.errorReporter.description)
             })
             finish()
         }

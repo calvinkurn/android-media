@@ -592,7 +592,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         val requestParams = RequestParams.create()
         val submitHelpTicketRequest = SubmitHelpTicketRequest()
         submitHelpTicketRequest.apiJsonResponse = addToCartDataModel.responseJson
-        submitHelpTicketRequest.errorMessage = addToCartDataModel.errorReporter.description
+        submitHelpTicketRequest.errorMessage = addToCartDataModel.errorReporter.texts.submitDescription
         if (addToCartDataModel.errorMessage.isNotEmpty()) {
             submitHelpTicketRequest.headerMessage = addToCartDataModel.errorMessage[0]
         }

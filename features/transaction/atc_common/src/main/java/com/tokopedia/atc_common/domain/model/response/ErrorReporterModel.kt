@@ -5,16 +5,16 @@ import android.os.Parcelable
 
 data class ErrorReporterModel(
         var eligible: Boolean = false,
-        var description: String = ""
+        var texts: ErrorReporterTextModel = ErrorReporterTextModel()
 ): Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
-            parcel.readString())
+            parcel.readParcelable(ErrorReporterTextModel::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeByte(if (eligible) 1 else 0)
-        parcel.writeString(description)
+        parcel.writeParcelable(texts, flags)
     }
 
     override fun describeContents(): Int {

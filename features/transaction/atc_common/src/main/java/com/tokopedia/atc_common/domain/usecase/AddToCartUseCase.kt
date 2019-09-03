@@ -6,6 +6,7 @@ import com.tokopedia.atc_common.data.model.response.AddToCartGqlResponse
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
@@ -81,7 +82,13 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
             addToCartGqlResponse.addToCartResponse.let {
                 val errorReporter = ErrorReporterModel()
                 errorReporter.eligible = it.errorReporter.eligible
-                errorReporter.description = it.errorReporter.description
+
+                val errorReporterTextModel = ErrorReporterTextModel()
+                errorReporterTextModel.submitTitle = it.errorReporter.texts.submitTitle
+                errorReporterTextModel.submitDescription = it.errorReporter.texts.submitDescription
+                errorReporterTextModel.submitButton = it.errorReporter.texts.submitButton
+                errorReporterTextModel.cancelButton = it.errorReporter.texts.cancelButton
+                errorReporter.texts = errorReporterTextModel
 
                 val dataModel = DataModel()
                 dataModel.success = it.data.success
