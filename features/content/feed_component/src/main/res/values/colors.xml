@@ -12,4 +12,7 @@
     <color name="color_like_comment_share">#ae31353b</color>
     <color name="background_footer_green">#ebffef</color>
     <color name="clr_aeffffff">#aeffffff</color>
+
+    <color name="share_ig_story_top_bg">#E1E7E5</color>
+    <color name="share_ig_story_bottom_bg">#88D7CF</color>
 </resources>

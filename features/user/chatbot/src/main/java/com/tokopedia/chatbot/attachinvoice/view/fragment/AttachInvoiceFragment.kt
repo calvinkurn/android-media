@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.chatbot.R
@@ -20,6 +21,7 @@ import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
 import com.tokopedia.chatbot.attachinvoice.view.presenter.AttachInvoicePresenter
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
+import com.tokopedia.design.text.SearchInputView
 import javax.inject.Inject
 
 /**
@@ -33,18 +35,42 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
 
     lateinit var activity: AttachInvoiceContract.Activity
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
+    private lateinit var invoiceSearch: SearchInputView
+    private lateinit var invoices: List<InvoiceViewModel>
+    private var hasNextPage: Boolean = false
+    private val EMPTY_STRING = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = super.onCreateView(inflater, container, savedInstanceState)
+        val view = inflater.inflate(R.layout.fragment_attach_invoice, container, false)
+        invoiceSearch = view.findViewById(R.id.search_input_view)
         swipeRefreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
         val recyclerView = super.getRecyclerView(view)
         if (recyclerView is VerticalRecyclerView) {
             recyclerView.clearItemDecoration()
         }
+
+        invoiceSearch.setListener(object : SearchInputView.Listener {
+            override fun onSearchSubmitted(text: String?) {
+                if (invoices.isNotEmpty()){
+                    val filteredList = invoices.filter { it.productTopName.contains(text.toString(), true) || it.invoiceNumber.contains(text.toString(),true) }
+                    isLoadingInitialData = true
+                    renderList(filteredList, false)
+                }
+            }
+
+            override fun onSearchTextChanged(text: String?) {
+            }
+        })
+        invoiceSearch.closeImageButton.setOnClickListener {
+            invoiceSearch.searchText = EMPTY_STRING
+            isLoadingInitialData = true
+            renderList(invoices, hasNextPage)
+        }
+
         return view
     }
 
@@ -92,17 +118,26 @@ class AttachInvoiceFragment : BaseListFragment<InvoiceViewModel, AttachInvoiceLi
     }
 
     override fun addInvoicesToList(invoices: List<InvoiceViewModel>, hasNextPage: Boolean) {
+        this.invoices = invoices
+        this.hasNextPage = hasNextPage
         renderList(invoices, hasNextPage)
     }
 
     override fun hideAllLoadingIndicator() {
-        swipeRefreshLayout!!.isRefreshing = false
+        swipeRefreshLayout?.isRefreshing = false
         super.hideLoading()
     }
 
     override fun showErrorMessage(throwable: Throwable) {
         throwable.printStackTrace()
         hideAllLoadingIndicator()
+    }
+
+    override fun showEmpty() {
+        val emptyModel = EmptyModel()
+        emptyModel.content = getString(R.string.cb_bot_title_no_result)
+        emptyModel.iconRes = R.drawable.chatbot_no_result_image
+        adapter.addElement(emptyModel)
     }
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {

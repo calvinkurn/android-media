@@ -63,6 +63,7 @@ class GetDynamicFeedUseCase @Inject constructor(@ApplicationContext private val 
         const val SOURCE_PROFILE = "profile"
         const val SOURCE_SHOP = "shop"
         const val SOURCE_DETAIL = "detail"
+        const val SOURCE_TRENDING = "trending"
 
         @JvmOverloads
         fun createRequestParams(userId: String, cursor: String = "", source: String, sourceId:

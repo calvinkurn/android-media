@@ -125,13 +125,13 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     internal val drawableIcon: Int
         get() = if (GlobalConfig.isSellerApp())
-            R.drawable.ic_status_bar_notif_sellerapp
+            R.mipmap.ic_statusbar_notif_seller
         else
-            R.drawable.ic_status_bar_notif_customerapp
+            R.mipmap.ic_statusbar_notif_customer
 
     private val drawableLargeIcon: Int
         get() = if (GlobalConfig.isSellerApp())
-            R.drawable.ic_big_notif_sellerapp
+            R.mipmap.ic_big_notif_seller
         else
             R.mipmap.ic_launcher
 
