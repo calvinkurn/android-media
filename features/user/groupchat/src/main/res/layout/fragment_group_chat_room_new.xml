@@ -51,7 +51,7 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/bg_rounded_chat_input"
+                android:background="@drawable/bg_reverse_rounded_chat_input"
                 android:inputType="textMultiLine"
                 android:maxLength="200"
                 android:maxLines="5"
