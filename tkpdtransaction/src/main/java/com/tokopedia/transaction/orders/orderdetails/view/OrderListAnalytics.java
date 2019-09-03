@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -11,6 +12,7 @@ import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -227,6 +229,34 @@ public class OrderListAnalytics {
                                         "variant", "none/other",
                                         "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
                                         "position", String.valueOf(position)))
+                )));
+    }
+
+    public void eventRecommendationAddToCart(OrderListRecomViewModel orderListRecomViewModel, AddToCartDataModel addToCartDataModel){
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent((HashMap<String, Object>) DataLayer.mapOf(
+                "event", "addToCart",
+                "eventCategory", "my purchase list - mp - bom_empty",
+                "eventAction", "click add to cart on my purchase list page",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "add", DataLayer.mapOf("actionField",
+                                DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
+                                        "products", DataLayer.listOf(DataLayer.mapOf(
+                                                "name", orderListRecomViewModel.getRecommendationItem().getName(),
+                                                "id", orderListRecomViewModel.getRecommendationItem().getProductId(),
+                                                "price", orderListRecomViewModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""),
+                                                "brand", "none/other",
+                                                "category", orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs(),
+                                                "variant", "none/other",
+                                                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
+                                                "dimension45", addToCartDataModel.getData().getCartId(),
+                                                "quantity",orderListRecomViewModel.getRecommendationItem().getMinOrder(),
+                                                "shop_id",String.valueOf(orderListRecomViewModel.getRecommendationItem().getShopId()),
+                                                "shop_type",orderListRecomViewModel.getRecommendationItem().getShopType(),
+                                                "shop_name",orderListRecomViewModel.getRecommendationItem().getShopName(),
+                                                "category_id",NONE
+                                                ))))
                 )));
     }
 }

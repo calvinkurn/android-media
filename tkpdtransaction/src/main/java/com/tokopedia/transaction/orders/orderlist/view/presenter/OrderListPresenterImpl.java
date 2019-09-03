@@ -9,6 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.custom.CustomViewRoundedQuickFilterItem;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -26,6 +29,7 @@ import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.CheckBOMSur
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.InsertBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.CheckSurveyResponse;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.InsertSurveyResponse;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListRecomListViewHolder;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomTitleViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListViewModel;
@@ -39,6 +43,8 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContract.View> implements OrderListContract.Presenter {
 
@@ -57,11 +63,13 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     GraphqlUseCase checkBomSurveyUseCase;
     GraphqlUseCase insertBomSurveyUseCase;
     private final GetRecommendationUseCase getRecommendationUseCase;
+    private final AddToCartUseCase addToCartUseCase;
     private List<Visitable> orderList = new ArrayList<>();
 
     @Inject
-    public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase) {
+    public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase, AddToCartUseCase addToCartUseCase) {
         this.getRecommendationUseCase = getRecommendationUseCase;
+        this.addToCartUseCase = addToCartUseCase;
     }
 
     @Override
@@ -234,6 +242,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         if (getRecommendationUseCase != null) {
             getRecommendationUseCase.unsubscribe();
         }
+        if (addToCartUseCase != null) {
+            addToCartUseCase.unsubscribe();
+        }
         super.detachView();
     }
 
@@ -337,4 +348,67 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             }
         });
     }
+
+    public void processAddToCart(Object productModel){
+        getView().displayLoadMore(true);
+
+        int productId = 0;
+        int shopId = 0;
+        String externalSource = "";
+        if (productModel instanceof OrderListRecomViewModel) {
+            OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
+            productId = orderListRecomViewModel.getRecommendationItem().getProductId();
+            shopId = orderListRecomViewModel.getRecommendationItem().getShopId();
+            externalSource = "recommendation_list";
+        }
+        AddToCartRequestParams addToCartRequestParams = new AddToCartRequestParams();
+        addToCartRequestParams.setProductId(productId);
+        addToCartRequestParams.setShopId(shopId);
+        addToCartRequestParams.setQuantity(0);
+        addToCartRequestParams.setNotes("");
+        addToCartRequestParams.setWarehouseId(0);
+        addToCartRequestParams.setAtcFromExternalSource(externalSource);
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams);
+        addToCartUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<AddToCartDataModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        if (getView() != null) {
+                            getView().displayLoadMore(false);
+                            String errorMessage = e.getMessage();
+                            getView().showFailureMessage(errorMessage);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(AddToCartDataModel addToCartDataModel) {
+                        if(getView()!=null) {
+                            getView().displayLoadMore(false);
+                            if (addToCartDataModel.getStatus().equalsIgnoreCase(AddToCartDataModel.STATUS_OK) && addToCartDataModel.getData().getSuccess() == 1) {
+                                getView().triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel);
+                                if (addToCartDataModel.getData().getMessage().size() > 0) {
+                                    getView().showSuccessMessage(addToCartDataModel.getData().getMessage().get(0));
+                                }
+                            } else {
+                                if (addToCartDataModel.getErrorMessage().size() > 0) {
+                                    getView().showFailureMessage(addToCartDataModel.getErrorMessage().get(0));
+                                }
+                            }
+                        }
+
+                    }
+                });
+    }
+
 }

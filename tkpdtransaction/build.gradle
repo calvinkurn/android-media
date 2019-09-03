@@ -76,6 +76,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.atc_common)
 }
 
 apply from: '../publish_local.gradle'

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
 
@@ -57,6 +58,8 @@ public class OrderListContract {
         void addData(List<Visitable> data, Boolean isRecommendation);
 
         void displayLoadMore(boolean isLoadMore);
+
+        void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

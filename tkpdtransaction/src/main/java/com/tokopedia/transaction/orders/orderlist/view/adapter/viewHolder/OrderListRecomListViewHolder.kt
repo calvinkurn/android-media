@@ -9,7 +9,7 @@ import com.tokopedia.transaction.R
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel
 
-class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics) : AbstractViewHolder<OrderListRecomViewModel>(itemView), RecommendationCardView.TrackingListener {
+class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, val actionListener: ActionListener?) : AbstractViewHolder<OrderListRecomViewModel>(itemView), RecommendationCardView.TrackingListener {
 
     companion object {
         @JvmField
@@ -21,6 +21,9 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
     override fun bind(element: OrderListRecomViewModel) {
         recommendationCardView?.setRecommendationModel(element.recommendationItem, this)
         recommendationCardView?.showAddToCartButton()
+        recommendationCardView?.setAddToCartClickListener{
+            actionListener?.onCartClicked(element)
+        }
 
     }
 
@@ -38,5 +41,9 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
 
     override fun onClickOrganic(item: RecommendationItem) {
         orderListAnalytics.eventEmptyBOMRecommendationProductClick(item, item.position)
+    }
+
+    interface ActionListener{
+        fun onCartClicked(productModel: Any)
     }
 }

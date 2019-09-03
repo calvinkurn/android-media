@@ -3,6 +3,7 @@ package com.tokopedia.transaction.orders.orderlist.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.transaction.R
@@ -49,8 +50,17 @@ class OrderListUseCaseModule {
         return GetRecommendationUseCase(recomQuery, graphqlUseCase, userSessionInterface)
     }
 
-    fun providesOrderListPresenterImpl(getRecommendationUseCase: GetRecommendationUseCase): OrderListPresenterImpl {
-        return OrderListPresenterImpl(getRecommendationUseCase)
+    @Provides
+    @OrderListModuleScope
+    @Named("atcMutation")
+    fun provideAddToCartMutation(context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+    }
+
+    @Provides
+    @OrderListModuleScope
+    fun providesOrderListPresenterImpl(getRecommendationUseCase: GetRecommendationUseCase, addToCartUseCase: AddToCartUseCase): OrderListPresenterImpl {
+        return OrderListPresenterImpl(getRecommendationUseCase, addToCartUseCase)
     }
 
 }

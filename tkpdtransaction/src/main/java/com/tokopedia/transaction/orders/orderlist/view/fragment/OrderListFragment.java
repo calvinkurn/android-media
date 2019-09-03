@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -42,9 +43,12 @@ import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListAdapterFactory;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListRecomListViewHolder;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListViewHolder;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl;
 import com.tokopedia.transaction.purchase.interactor.TxOrderNetInteractor;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -55,6 +59,7 @@ import javax.inject.Inject;
 
 
 public class OrderListFragment extends BaseDaggerFragment implements
+        OrderListRecomListViewHolder.ActionListener,
         RefreshHandler.OnRefreshHandlerListener, OrderListContract.View, QuickSingleFilterView.ActionListener, SearchInputView.Listener, SearchInputView.ResetListener, OrderListViewHolder.OnMenuItemListener, View.OnClickListener {
 
     private static final String ORDER_CATEGORY = "orderCategory";
@@ -282,7 +287,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
         refreshHandler.setPullEnabled(true);
         layoutManager = new GridLayoutManager(getContext(), 2);
         layoutManager.setSpanSizeLookup(onSpanSizeLookup());
-        orderListAdapter = new OrderListAdapter(new OrderListAdapterFactory(orderListAnalytics, this));
+        orderListAdapter = new OrderListAdapter(new OrderListAdapterFactory(orderListAnalytics, this, this));
         orderListAdapter.setVisitables(new ArrayList<>());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(orderListAdapter);
@@ -536,6 +541,14 @@ public class OrderListFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel) {
+        if (productModel instanceof OrderListRecomViewModel) {
+            OrderListRecomViewModel orderListRecomViewModel = (OrderListRecomViewModel) productModel;
+            orderListAnalytics.eventRecommendationAddToCart(orderListRecomViewModel, addToCartDataResponseModel);
+        }
+    }
+
+    @Override
     public String getSelectedFilter() {
         return String.valueOf(selectedFilter);
     }
@@ -590,6 +603,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
                 }
             }
         };
+    }
+
+    @Override
+    public void onCartClicked(@NotNull Object productModel) {
+        presenter.processAddToCart(productModel);
     }
 }
 
