@@ -109,7 +109,15 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         moneyInCheckoutViewModel.getCourierRatesLiveData().observe(this, Observer {
             when (it) {
                 is Success -> {
-                    setCourierRatesBottomSheet(it.data)
+                    if(it.data.error?.message.isNullOrEmpty())
+                        setCourierRatesBottomSheet(it.data)
+                    else{
+                        val courierBtn = findViewById<Button>(R.id.courier_btn)
+                        showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
+                        courierBtn.setOnClickListener { v ->
+                            showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
+                        }
+                    }
                 }
             }
         })

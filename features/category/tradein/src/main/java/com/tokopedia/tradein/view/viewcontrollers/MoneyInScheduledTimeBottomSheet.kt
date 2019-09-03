@@ -91,17 +91,13 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
                 timeAdapter.time.clear()
                 for (time in it.scheduleTime)
                     timeAdapter.time.add(time.timeFmt)
+                timeAdapter.time.add("") //Added empty element for better UX
             }
         }
-        timeSpinner?.setMaxValue(timeAdapter.getMaxIndex())
+        timeSpinner?.setMaxValue(timeAdapter.getMaxIndex().minus(1))
         timeSpinner?.setMinValue(timeAdapter.getMinIndex())
-        if (timeAdapter.time.size < 3) {
-            timeSpinner?.setWheelItemCount(timeAdapter.time.size)
-            timeSpinner?.setWrapSelectorWheel(false)
-        } else {
-            timeSpinner?.setWrapSelectorWheel(true)
-            timeSpinner?.setWheelItemCount(3)
-        }
+        timeSpinner?.setWrapSelectorWheel(false)
+        timeSpinner?.setWheelItemCount(3)
         timeAdapter.notifyDataSetChanged()
     }
 

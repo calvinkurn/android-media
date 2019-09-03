@@ -19,7 +19,7 @@ data class MoneyInCourierResponse(
         ) {
             data class Data(
                 @SerializedName("error")
-                val error: Error,
+                val error: Error?,
                 @SerializedName("id")
                 val id: String,
                 @SerializedName("rates_id")
@@ -31,9 +31,9 @@ data class MoneyInCourierResponse(
             ) {
                 data class Error(
                     @SerializedName("id")
-                    val id: String,
+                    val id: String?,
                     @SerializedName("message")
-                    val message: String,
+                    val message: String?,
                     @SerializedName("status")
                     val status: Int 
                 )
