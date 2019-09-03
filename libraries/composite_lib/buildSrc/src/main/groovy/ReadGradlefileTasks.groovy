@@ -7,6 +7,7 @@ class ReadGradlefileTasks extends DefaultTask{
     HashMap<String, Integer> listModule = new HashMap<>()
     HashMap<String, Integer> listNum = new HashMap<>()
     Graph graph
+    Map<String, Integer> versionConfig = new HashMap<String, Integer>()
 
     String lastRelease
     def time = 7
@@ -67,6 +68,54 @@ class ReadGradlefileTasks extends DefaultTask{
         dst << src.text
     }
 
+    void readVersionConfig(){
+        def log = new File("tools/version/config_version.txt")
+
+        log.eachLine { line ->
+            if(!line.isEmpty()&&!line.startsWith("//")){
+                def splits = line.split("=")
+                versionConfig.put(splits[0], splits[1].toInteger())
+            }
+        }
+    }
+
+    static String calculateVersion(String currentVersion, Map<String, Integer> config, boolean incrementOrNot){
+        def tail = config.get("Tail").toInteger()
+        def mid = config.get("Mid").toInteger()
+        def head = config.get("Head").toInteger()
+
+        if(incrementOrNot){
+            def result = [0,0,0]
+            def splits = currentVersion.split("\\.")
+            splits.eachWithIndex { String entry, int i -> result[i] = entry.toInteger() }
+            result[2]++
+            def carry = 0
+            for(int i=result.size()-1; i>=0;i--){
+                def threshold = -1
+                if(i==2)
+                    threshold = tail
+                else if(i==1)
+                    threshold = mid
+                else
+                    threshold = head
+
+                if(carry==0 && i < 2)
+                    break
+
+                // kalau lebih besar threshold reset ke 0, dan tambahkan di setelahnya
+                if(result[i]+1>=threshold){
+                    result[i] = 0
+                    carry = 1
+                }else{
+                    result[i] += carry
+                    carry = 0
+                }
+            }
+            return result.join(".")
+        }else
+            return currentVersion
+    }
+
     void moduleVersionUpdate(){
         def listst = graph.getListTop()
         def log = new File("tools/version/log.txt")
@@ -84,9 +133,11 @@ class ReadGradlefileTasks extends DefaultTask{
                 listVersion.each {
                     if ((it.projectName).equals(module) && line.trim().startsWith("versionName = "))  {
                         String text = line.replace("versionName = ","").replace("\"","")
-                        Float temp = Float.valueOf(text)
-                        temp=temp+Float.valueOf(it.incrementCount)
-                        writer.append("    versionName = \"$temp\"\n")
+//                        Float temp = Float.valueOf(text)
+                        // pecah jadi 3 posisi
+                        def version = calculateVersion(text, versionConfig, it.incrementCount>0)
+//                        temp=temp+Float.valueOf(it.incrementCount)
+                        writer.append("    versionName = \"$version\"\n")
                         tanda = false
                     }else if(line.trim().startsWith("implementation") && line.contains(":")){
                         def text = line.split(":")

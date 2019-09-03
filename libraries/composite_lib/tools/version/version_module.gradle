@@ -6,6 +6,7 @@ task readGradlefile(type: ReadGradlefileTasks){
         listVersion = versionDependency.listVersion
         listTree = versionDependency.listTree
         topList()
+        readVersionConfig()
         moduleVersionUpdate()
     }
 }

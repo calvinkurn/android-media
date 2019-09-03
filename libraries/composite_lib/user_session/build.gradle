@@ -4,7 +4,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 project.ext {
     artifactId = 'user_session'
     groupId = 'com.tokopedia.user.session'
-    versionName = "2.0"
+    versionName = "2.0.0"
     artifactName = "user_session"
 }
 
