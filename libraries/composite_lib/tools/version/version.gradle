@@ -1,7 +1,0 @@
-ext.networkVersionName = "98.0"
-ext.urlVersionName = "20.0"
-ext.cache_managerVersionName = "17.0"
-ext.global_configVersionName = "21.0"
-ext.use_caseVersionName = "16.0"
-ext.user_sessionVersionName = "20.0"
-ext.graphqlVersionName = "104.0"

@@ -118,13 +118,7 @@ subprojects {
     }
 }
 
-task testAja(){
-    project.allprojects{ project->
-        project
-
-    }
-}
-task projectDependencyGraph2 {
+task projectDependencyGraph {
     doLast {
         def rootProjects = []
         def queue = [rootProject]

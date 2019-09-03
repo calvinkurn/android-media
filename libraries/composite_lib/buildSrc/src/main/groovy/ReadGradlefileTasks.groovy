@@ -18,23 +18,22 @@ class ReadGradlefileTasks extends DefaultTask{
         def writer = new File('tools/version/version_temp.gradle')
 
         reader.eachLine{ line ->
-            def tanda = true
+            def mark = true
             listVersion.each {
                 if (line.trim().startsWith("ext.${it.project}VersionName = ")) {
                     String text = line.replace("ext.${it.project}VersionName = ","").replace("\"","")
                     Float temp = Float.valueOf(text)
                     temp=temp+Float.valueOf(it.version)
                     writer.append("ext.${it.project}VersionName = \"$temp\"\n")
-                    tanda = false
+                    mark = false
                 }
             }
-            if(tanda) {
+            if(mark) {
                 writer.append("$line\n")
             }
         }
         reader.delete()
         writer.renameTo("tools/version/version.gradle")
-        //gradleModuleUpdate()
         if(!listVersion.empty){
             File file = new File("tools/version/release_date.txt")
             def newdate = new Date().parse("yyyy-MM-dd HH:mm:ss", lastRelease)
@@ -117,7 +116,6 @@ class ReadGradlefileTasks extends DefaultTask{
             backup.delete()
             copyFile(reader, backup)
             reader.eachLine{ line ->
-                //println line
                 def tanda = true
                 listVersion.each {
                     if ((it.projectName).equals(module) && line.trim().startsWith("versionName = "))  {
@@ -177,9 +175,8 @@ class ReadGradlefileTasks extends DefaultTask{
         }
     }
     def compileModule(String module){
-        return ""
-//        def stdout = new ByteArrayOutputStream()
-//        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint --stacktrace".execute().text
-//        return stdout.toString().trim().replace("'", "").replace(","," ")
+        def stdout = new ByteArrayOutputStream()
+        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint --stacktrace".execute().text
+        return stdout.toString().trim().replace("'", "").replace(","," ")
     }
 }
