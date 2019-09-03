@@ -40,7 +40,7 @@ public class CategoryParentAdapter extends RecyclerView.Adapter<CategoryParentAd
     @Override
     public ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                parent.getContext()).inflate(R.layout.item_category_parent, parent, false
+                parent.getContext()).inflate(R.layout.filter_item_category_parent, parent, false
         );
         return new CategoryParentAdapter.ItemRowHolder(v);
     }

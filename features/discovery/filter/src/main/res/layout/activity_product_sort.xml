@@ -9,7 +9,7 @@
     android:focusableInTouchMode="true"
     android:animateLayoutChanges="true">
 
-    <include layout="@layout/discovery_top_bar_layout"/>
+    <include layout="@layout/filter_top_bar_layout"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

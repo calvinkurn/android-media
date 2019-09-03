@@ -308,7 +308,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
         @Override
         public SelectedFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_state_selected_filter_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.filter_empty_state_selected_filter_item, parent, false);
             return new SelectedFilterItemViewHolder(view, clickListener);
         }
 

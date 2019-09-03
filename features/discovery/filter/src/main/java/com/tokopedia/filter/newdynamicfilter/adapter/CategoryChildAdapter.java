@@ -32,7 +32,7 @@ public class CategoryChildAdapter extends MultiLevelExpIndListAdapter {
     @Override
     public CategoryChildAdapter.ItemRowHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         @SuppressLint("InflateParams") View v = LayoutInflater.from(
-                parent.getContext()).inflate(R.layout.item_category_child, null
+                parent.getContext()).inflate(R.layout.filter_item_category_child, null
         );
         return new CategoryChildAdapter.ItemRowHolder(v);
     }
