@@ -10,6 +10,8 @@ class GetRemoveMacroInsuranceProductSubscriber(val view: ICartListView,
                                                val productId: List<Long>,
                                                val showToaster: Boolean) : Subscriber<GraphqlResponse>() {
 
+    val SUCCESS_RESPONSE_MESSAGE = "Produk Asuransi Dihapus Berhasil"
+
     override fun onError(e: Throwable?) {
         view.hideProgressLoading()
         view.showToastMessageRed(ErrorHandler.getErrorMessage(view.activity, e))
@@ -27,7 +29,7 @@ class GetRemoveMacroInsuranceProductSubscriber(val view: ICartListView,
 
             if (removeInsuranceProductGqlResponse?.response?.removeTransactional?.status!!) {
                 if (showToaster) {
-                    view.showToastMessageGreen("Success in remove insurance product!")
+                    view.showToastMessageGreen(SUCCESS_RESPONSE_MESSAGE)
                 }
                 view.removeInsuranceProductItem(productId)
             } else {
