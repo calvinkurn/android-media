@@ -43,6 +43,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
     private var closeableBottomSheetDialog: CloseableBottomSheetDialog
     private var errorMessage: String? = null
     private var datePicker: SaldoDatePickerUtil
+    private var onBind = true
 
     private val updateInsuranceProductApplicationDetailsArrayList = ArrayList<UpdateInsuranceProductApplicationDetails>()
 
@@ -255,11 +256,17 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                 tvChangeInsuranceApplicationDetails.show()
                 cbSelectInsurance.show()
                 cbSelectInsurance.setOnCheckedChangeListener { buttonView, isChecked ->
-                    insuranceCartShops.shopItemsList[0].digitalProductList[0].optIn = isChecked
-                    insuranceItemActionlistener.onInsuranceSelectStateChanges()
+                    if (!onBind) {
+                        insuranceCartShops.shopItemsList[0].digitalProductList[0].optIn = isChecked
+                        insuranceItemActionlistener.onInsuranceSelectStateChanges()
+                    }
+
                 }
 
+                onBind = true
                 cbSelectInsurance.isChecked = insuranceCartDigitalProduct.optIn
+                onBind = false
+
                 insuranceCartDigitalProduct.optIn = true
 
                 ivDeleteInsurance.show()
