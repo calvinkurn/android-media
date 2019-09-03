@@ -267,8 +267,6 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                 cbSelectInsurance.isChecked = insuranceCartDigitalProduct.optIn
                 onBind = false
 
-                insuranceCartDigitalProduct.optIn = true
-
                 ivDeleteInsurance.show()
                 ivDeleteInsurance.setOnClickListener {
                     val insuranceCartDigitalProductArrayList = ArrayList<InsuranceCartDigitalProduct>()
