@@ -60,6 +60,13 @@ class HomeRecommendationModule {
 
     @Provides
     @HomeRecommendationScope
+    @Named("singleProductRecommendation")
+    fun provideSingleProductRecommendationRawQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources,
+                    R.raw.gql_single_product_recommendation)
+
+    @Provides
+    @HomeRecommendationScope
     @Named("primaryQuery")
     fun providePrimaryProductRawQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources,

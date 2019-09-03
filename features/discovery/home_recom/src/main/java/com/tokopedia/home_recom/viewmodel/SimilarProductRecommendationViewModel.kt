@@ -8,6 +8,9 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home_recom.PARAM_X_SOURCE
+import com.tokopedia.home_recom.model.entity.SingleProductRecommendationEntity
+import com.tokopedia.home_recom.model.mapper.SingleProductRecommendationMapper
+import com.tokopedia.home_recom.repository.SingleProductRecommendationRepository
 import com.tokopedia.home_recom.util.Response
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recommendation_widget_common.data.RecomendationEntity
@@ -15,12 +18,16 @@ import com.tokopedia.recommendation_widget_common.data.mapper.RecommendationEnti
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.domain.model.WishlistModel
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -28,45 +35,118 @@ import javax.inject.Named
  * Created by Lukas on 26/08/19
  */
 open class SimilarProductRecommendationViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
         private val userSessionInterface: UserSessionInterface,
-        private val getRecommendationUseCase: GetRecommendationUseCase,
         private val addWishListUseCase: AddWishListUseCase,
         private val removeWishListUseCase: RemoveWishListUseCase,
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
+        private val singleProductRecommendationRepository: SingleProductRecommendationRepository,
         @Named("Main") val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher){
+
     /**
      * public variable
      */
     val recommendationItem: MutableLiveData<Response<List<RecommendationItem>>> = MutableLiveData()
+    var hasNextPage = true
 
-    fun getSimilarProductRecommendation(page: Int = 0){
-        if(recommendationItem.value == null) recommendationItem.postValue(Response.loading())
+    fun getSimilarProductRecommendation(page: Int = 1, ref: String, productId: String){
+        if(page == 1 && recommendationItem.value != null) recommendationItem.value = null
+        if (recommendationItem.value == null) recommendationItem.postValue(Response.loading())
         else recommendationItem.postValue(Response.loadingMore(recommendationItem.value?.data))
         launchCatchError(block = {
-            val gqlData = withContext(Dispatchers.IO) {
-                val cacheStrategy =
-                        GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-
-                val params = mapOf(
-                        PARAM_X_SOURCE to "android"
-                )
-
-                val gqlRecommendationRequest = GraphqlRequest(
-                        "",
-                        RecomendationEntity::class.java,
-                        params
-                )
-
-                graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
-            }
-            gqlData.getSuccessData<RecomendationEntity>().productRecommendationWidget?.data?.let {
+            val gqlData = singleProductRecommendationRepository.load(page, ref, productId)
+            gqlData.getSuccessData<SingleProductRecommendationEntity>().productRecommendationWidget?.data?.let {
+                hasNextPage = it.pagination.hasNext
                 val productDetailResponse = mapToRecommendationItem(it)
-                recommendationItem.postValue(Response.success(combineList(recommendationItem.value?.data ?: emptyList(), productDetailResponse)))
+                recommendationItem.postValue(Response.success(combineList(recommendationItem.value?.data
+                        ?: emptyList(), productDetailResponse)))
             }
         }, onError = {
             recommendationItem.postValue(Response.error(it.localizedMessage, recommendationItem.value?.data))
+        })
+    }
+
+    /**
+     * [isLoggedIn] is the function get user session is login or not login
+     */
+    fun isLoggedIn() = userSessionInterface.isLoggedIn
+
+    /**
+     * [addWishlist] is the void for handling adding wishlist item
+     * @param model the recommendation item product is clicked
+     * @param callback the callback for handling [added or removed, throwable] to UI
+     */
+    fun addWishlist(model: RecommendationItem, callback: ((Boolean, Throwable?) -> Unit)){
+        if(model.isTopAds){
+            val params = RequestParams.create()
+            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.wishlistUrl)
+            launchCatchError(block = {
+                val data = singleProductRecommendationRepository.addWishlistTopAds(model.wishlistUrl)
+                if(data != null){
+                    callback.invoke(true, null)
+                }else{
+                    callback.invoke(false, Throwable("Terdapat gangguan, silahkan coba lagi"))
+                }
+            }, onError = {
+                callback.invoke(false, it)
+            })
+//            topAdsWishlishedUseCase.execute(params, object : Subscriber<WishlistModel>() {
+//                override fun onCompleted() {
+//                }
+//
+//                override fun onError(e: Throwable) {
+//                    callback.invoke(false, e)
+//                }
+//
+//                override fun onNext(wishlistModel: WishlistModel) {
+//                    if (wishlistModel.data != null) {
+//                        callback.invoke(true, null)
+//                    }
+//                }
+//            })
+        } else {
+            addWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                    callback.invoke(false, Throwable(errorMessage))
+                }
+
+                override fun onSuccessAddWishlist(productId: String?) {
+                    callback.invoke(true, null)
+                }
+
+                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                    // do nothing
+                }
+
+                override fun onSuccessRemoveWishlist(productId: String?) {
+                    // do nothing
+                }
+            })
+        }
+    }
+
+    /**
+     * [addWishlist] is the void for handling removing wishlist item
+     * @param model the recommendation item product is clicked
+     * @param wishlistCallback the callback for handling [added or removed, throwable] to UI
+     */
+    fun removeWishlist(model: RecommendationItem, wishlistCallback: (((Boolean, Throwable?) -> Unit))){
+        removeWishListUseCase.createObservable(model.productId.toString(), userSessionInterface.userId, object: WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                // do nothing
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                // do nothing
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                wishlistCallback.invoke(false, Throwable(errorMessage))
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                wishlistCallback.invoke(true, null)
+            }
         })
     }
 
@@ -74,7 +154,12 @@ open class SimilarProductRecommendationViewModel @Inject constructor(
         return ArrayList(first).apply { addAll(second) }
     }
 
-    private fun mapToRecommendationItem(list: List<RecomendationEntity.RecomendationData>): List<RecommendationItem>{
-        return RecommendationEntityMapper.mappingToRecommendationModel(list)[0].recommendationItemList
+    private fun mapToRecommendationItem(data: SingleProductRecommendationEntity.RecommendationData): List<RecommendationItem>{
+        return SingleProductRecommendationMapper.convertIntoRecommendationList(
+                data.recommendation,
+                data.title,
+                data.pageName,
+                data.layoutType
+        )
     }
 }

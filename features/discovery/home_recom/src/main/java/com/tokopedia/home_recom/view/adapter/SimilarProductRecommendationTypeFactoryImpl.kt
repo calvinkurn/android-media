@@ -3,10 +3,14 @@ package com.tokopedia.home_recom.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
 import com.tokopedia.home_recom.model.datamodel.RecommendationItemDataModel
+import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationItemDataModel
 import com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder
+import com.tokopedia.home_recom.view.viewholder.SimilarProductLoadMoreViewHolder
+import com.tokopedia.home_recom.view.viewholder.SimilarProductRecommendationItemViewHolder
 
 /**
  * Created by Lukas on 26/08/19
@@ -19,8 +23,12 @@ class SimilarProductRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), Si
      * It return viewType for [RecommendationItemDataModel]
      * @param dataModel dataModel for [RecommendationItemViewHolder]
      */
-    override fun type(dataModel: RecommendationItemDataModel): Int {
-        return RecommendationItemDataModel.LAYOUT
+    override fun type(dataModel: SimilarProductRecommendationItemDataModel): Int {
+        return SimilarProductRecommendationItemDataModel.LAYOUT
+    }
+
+    override fun type(viewModel: LoadingMoreModel): Int {
+        return SimilarProductLoadMoreViewHolder.LAYOUT
     }
 
     /**
@@ -40,8 +48,9 @@ class SimilarProductRecommendationTypeFactoryImpl : BaseAdapterTypeFactory(), Si
      */
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when(type){
-            RecommendationItemDataModel.LAYOUT -> RecommendationItemViewHolder(view)
+            RecommendationItemDataModel.LAYOUT -> SimilarProductRecommendationItemViewHolder(view)
             LoadingShimmeringGridViewHolder.LAYOUT -> LoadingShimmeringGridViewHolder(view)
+            SimilarProductLoadMoreViewHolder.LAYOUT -> SimilarProductLoadMoreViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

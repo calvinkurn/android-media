@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
-import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
-import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.*
+import com.tokopedia.home_recom.model.datamodel.SimilarProductRecommendationDataModel
+import com.tokopedia.home_recom.view.viewholder.SimilarProductLoadMoreViewHolder
 
 /**
  * Created by Lukas on 26/08/19
@@ -22,7 +20,7 @@ import com.tokopedia.home_recom.model.datamodel.HomeRecommendationDataModel
  */
 class SimilarProductRecommendationAdapter(
         private val adapterTypeFactory: SimilarProductRecommendationTypeFactoryImpl
-) : BaseListAdapter<HomeRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(adapterTypeFactory) {
+) : BaseListAdapter<SimilarProductRecommendationDataModel, SimilarProductRecommendationTypeFactoryImpl>(adapterTypeFactory) {
 
     /**
      * This override function from [BaseListAdapter]
@@ -47,6 +45,7 @@ class SimilarProductRecommendationAdapter(
             EmptyViewHolder.LAYOUT -> layout.isFullSpan = true
             ErrorNetworkViewHolder.LAYOUT -> layout.isFullSpan = true
             LoadingShimmeringGridViewHolder.LAYOUT -> layout.isFullSpan = true
+            SimilarProductLoadMoreViewHolder.LAYOUT -> layout.isFullSpan = true
         }
         holder.bind(visitables[position])
     }

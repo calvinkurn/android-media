@@ -84,8 +84,10 @@ open class RecommendationPageViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
             }
             gqlData.getSuccessData<PrimaryProductEntity>().productRecommendationProductDetail?.let {
-                val productDetailResponse = it.data.get(0).recommendation.get(0)
-                productInfoDataModel.value = ProductInfoDataModel(productDetailResponse)
+                if(it.data[0].recommendation.isNotEmpty()){
+                    val productDetailResponse = it.data[0].recommendation[0]
+                    productInfoDataModel.value = ProductInfoDataModel(productDetailResponse)
+                }
             }
         }) {
         }
