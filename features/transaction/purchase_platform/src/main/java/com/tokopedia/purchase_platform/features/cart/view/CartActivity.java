@@ -23,16 +23,16 @@ public class CartActivity extends BaseCheckoutActivity {
     private Fragment emptyCartFragment;
     private String cartId;
 
-    @DeepLink(ApplinkConst.CART)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
-        intent.putExtras(extras);
-        if (extras.getString(DeepLink.URI) != null) {
-            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-            intent.setData(uri.build());
-        }
-        return intent;
-    }
+//    @DeepLink(ApplinkConst.CART)
+//    public static Intent getCallingIntent(Context context, Bundle extras) {
+//        Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
+//        intent.putExtras(extras);
+//        if (extras.getString(DeepLink.URI) != null) {
+//            Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+//            intent.setData(uri.build());
+//        }
+//        return intent;
+//    }
 
     @Override
     protected int getLayoutRes() {

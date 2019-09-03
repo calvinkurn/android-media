@@ -1783,21 +1783,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
-        return PersistentCacheManager.instance.getString(TkpdCache.Key.KEY_CACHE_PROMO_CODE, "");
-    }
-
-    @Override
-    public FingerprintInterceptor getFingerPrintInterceptor() {
-        return getAppComponent().fingerprintInterceptor();
-    }
-
-    @Override
-    public Converter.Factory getStringResponseConverter() {
-        return new StringResponseConverter();
-    }
-
-    @Override
     public Intent getContactUsIntent(Context context) {
         return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
     }

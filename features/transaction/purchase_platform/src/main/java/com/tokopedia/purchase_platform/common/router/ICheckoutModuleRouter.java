@@ -7,11 +7,6 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 
-import java.security.PublicKey;
-
-import okhttp3.Interceptor;
-import retrofit2.Converter;
-
 /**
  * @author anggaprasetiyo on 28/02/18.
  */
@@ -29,15 +24,7 @@ public interface ICheckoutModuleRouter {
 
     void checkoutModuleRouterResetBadgeCart();
 
-    String checkoutModuleRouterGetAutoApplyCouponBranchUtil();
-
     Intent getShopPageIntent(Context context, String shopId);
-
-    Interceptor getChuckInterceptor();
-
-    Interceptor getFingerPrintInterceptor();
-
-    Converter.Factory getStringResponseConverter();
 
     Intent getGeolocationIntent(Context context, LocationPass locationPass);
 

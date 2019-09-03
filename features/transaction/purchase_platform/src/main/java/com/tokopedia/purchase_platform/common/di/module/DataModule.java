@@ -69,13 +69,15 @@ public class DataModule {
     @Provides
     @CartChuckApiInterceptorQualifier
     Interceptor provideChuckInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
-        return cartCheckoutModuleRouter.getChuckInterceptor();
+        return null;
+//        return cartCheckoutModuleRouter.getChuckInterceptor();
     }
 
     @Provides
     @CartFingerPrintApiInterceptorQualifier
     Interceptor fingerprintInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
-        return cartCheckoutModuleRouter.getFingerPrintInterceptor();
+        return null;
+//        return cartCheckoutModuleRouter.getFingerPrintInterceptor();
     }
 
     @Provides
@@ -146,7 +148,7 @@ public class DataModule {
         return new Retrofit.Builder()
                 .baseUrl(TransactionDataApiUrl.Cart.BASE_URL)
                 .addConverterFactory(CartResponseConverter.create())
-                .addConverterFactory(cartCheckoutModuleRouter.getStringResponseConverter())
+//                .addConverterFactory(cartCheckoutModuleRouter.getStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
@@ -162,7 +164,7 @@ public class DataModule {
         return new Retrofit.Builder()
                 .baseUrl(TransactionDataApiUrl.TransactionAction.BASE_URL)
                 .addConverterFactory(new TokopediaWsV4ResponseConverter())
-                .addConverterFactory(cartCheckoutModuleRouter.getStringResponseConverter())
+//                .addConverterFactory(cartCheckoutModuleRouter.getStringResponseConverter())
                 .addConverterFactory(GsonConverterFactory.create(new Gson()))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)

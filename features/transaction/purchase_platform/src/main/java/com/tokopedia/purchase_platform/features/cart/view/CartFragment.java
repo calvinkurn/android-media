@@ -34,11 +34,13 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
@@ -1601,7 +1603,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 showMainContainer();
             }
             dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
-            String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
+            String promo = PersistentCacheManager.instance.getString("KEY_CACHE_PROMO_CODE", "");
 //            if (!TextUtils.isEmpty(promo)) {
 //                dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
 //            }
