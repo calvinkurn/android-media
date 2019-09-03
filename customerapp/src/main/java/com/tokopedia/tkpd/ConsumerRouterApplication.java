@@ -179,9 +179,6 @@ import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.gm.subscribe.GMSubscribeInternalRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
-import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
-import com.tokopedia.groupchat.room.view.activity.PlayActivity;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -1961,7 +1958,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGroupChatIntent(Context context, String channelUrl) {
-        return PlayActivity.getCallingIntent(context, channelUrl);
+        return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
     }
 
     @Override
@@ -1971,12 +1968,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getChannelFragment(Bundle bundle) {
-        return ChannelFragment.createInstance();
+        return null;
     }
 
     @Override
     public String getChannelFragmentTag() {
-        return ChannelFragment.class.getSimpleName();
+        return "no-op";
     }
 
     public Intent getInboxChannelsIntent(Context context) {
@@ -2348,7 +2345,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String getDesktopLinkGroupChat() {
-        return ChatroomUrl.DESKTOP_URL;
+        return "https://tokopedia.link/playblog";
     }
 
     @Override
