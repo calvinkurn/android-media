@@ -57,7 +57,8 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
     }
 
     fun selectOnlyOneChip(boolean: Boolean) {
-        adapter.selectOnlyOneChip = boolean
+        //call this only after setItem
+        adapter?.selectOnlyOneChip = boolean
     }
 
     fun initiallySelectedChip(position: Int) {

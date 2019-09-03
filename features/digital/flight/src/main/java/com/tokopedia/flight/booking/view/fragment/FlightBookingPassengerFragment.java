@@ -203,7 +203,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         rvPassengerTitle.listener = (title, isSelected) -> {
 
         };
-        rvPassengerTitle.selectOnlyOneChip(true);
         etBirthDate.setClickable(true);
         etBirthDate.setFocusable(false);
         etBirthDate.setOnClickListener(new View.OnClickListener() {
@@ -270,12 +269,14 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public void renderSpinnerForAdult() {
         String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
         rvPassengerTitle.setItem(new ArrayList(Arrays.asList(entries)), 0);
+        rvPassengerTitle.selectOnlyOneChip(true);
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
         String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
         rvPassengerTitle.setItem(new ArrayList(Arrays.asList(entries)), 0);
+        rvPassengerTitle.selectOnlyOneChip(true);
     }
 
     @Override
