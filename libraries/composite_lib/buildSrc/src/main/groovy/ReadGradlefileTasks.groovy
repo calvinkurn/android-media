@@ -84,32 +84,24 @@ class ReadGradlefileTasks extends DefaultTask{
         def mid = config.get("Mid").toInteger()
         def head = config.get("Head").toInteger()
 
+        def unit = [mid*tail, tail, 1]
+
         if(incrementOrNot){
+            def valueResult = 0
             def result = [0,0,0]
             def splits = currentVersion.split("\\.")
-            splits.eachWithIndex { String entry, int i -> result[i] = entry.toInteger() }
-            result[2]++
-            def carry = 0
-            for(int i=result.size()-1; i>=0;i--){
-                def threshold = -1
-                if(i==2)
-                    threshold = tail
-                else if(i==1)
-                    threshold = mid
-                else
-                    threshold = head
 
-                if(carry==0 && i < 2)
-                    break
+            // total first
+            splits.eachWithIndex { String entry, int i ->
+                valueResult += entry.toInteger()*unit[i]
+            }
 
-                // kalau lebih besar threshold reset ke 0, dan tambahkan di setelahnya
-                if(result[i]+1>=threshold){
-                    result[i] = 0
-                    carry = 1
-                }else{
-                    result[i] += carry
-                    carry = 0
-                }
+            // increment by one
+            valueResult++
+
+            for(int i=0;i<unit.size();i++){
+                result[i] = (valueResult/unit[i]).toInteger()
+                valueResult %= unit[i]
             }
             return result.join(".")
         }else
@@ -120,6 +112,7 @@ class ReadGradlefileTasks extends DefaultTask{
         def listst = graph.getListTop()
         def log = new File("tools/version/log.txt")
         log.delete()
+        def versionMap = new HashMap<String, String>()
         listst.find {
             String module = listNum.get(it)
             def reader = new File("${module}/build.gradle")
@@ -133,18 +126,15 @@ class ReadGradlefileTasks extends DefaultTask{
                 listVersion.each {
                     if ((it.projectName).equals(module) && line.trim().startsWith("versionName = "))  {
                         String text = line.replace("versionName = ","").replace("\"","")
-//                        Float temp = Float.valueOf(text)
-                        // pecah jadi 3 posisi
                         def version = calculateVersion(text, versionConfig, it.incrementCount>0)
-//                        temp=temp+Float.valueOf(it.incrementCount)
                         writer.append("    versionName = \"$version\"\n")
+                        versionMap.put(it.projectName, version)
                         tanda = false
                     }else if(line.trim().startsWith("implementation") && line.contains(":")){
                         def text = line.split(":")
                         if((it.artifactId).equals(text[1])){
                             Float temp = Float.valueOf(text[2].replace("\"",""))
-                            temp=temp+Float.valueOf(it.version)
-                            writer.append("${text[0]}:${text[1]}:$temp\"\n")
+                            writer.append("${text[0]}:${text[1]}:$versionMap.get(${text[1]})\"\n")
                             tanda = false
                         }
                     }
@@ -156,7 +146,6 @@ class ReadGradlefileTasks extends DefaultTask{
             reader.delete()
             writer.renameTo("${module}/build.gradle")
             def saveStatus =  compileModule(module)
-            println saveStatus
             if(saveStatus.contains("BUILD SUCCESSFUL")){
                 log.append("${module} - SUCCESSFUL\n")
                 return false
@@ -191,8 +180,9 @@ class ReadGradlefileTasks extends DefaultTask{
         }
     }
     def compileModule(String module){
-        def stdout = new ByteArrayOutputStream()
-        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint --stacktrace".execute().text
-        return stdout.toString().trim().replace("'", "").replace(","," ")
+        return "$module"
+//        def stdout = new ByteArrayOutputStream()
+//        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint --stacktrace".execute().text
+//        return stdout.toString().trim().replace("'", "").replace(","," ")
     }
 }
