@@ -41,6 +41,7 @@ import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.di.OrderListUseCaseModule;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderListAdapter;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseListener;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.factory.OrderListAdapterFactory;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListRecomListViewHolder;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListViewHolder;
@@ -618,6 +619,17 @@ public class OrderListFragment extends BaseDaggerFragment implements
         super.onPause();
         orderListAnalytics.sendEmptyWishlistProductImpression(trackingQueue);
         trackingQueue.sendAll();
+    }
+
+    @Override
+    public void onWishListClicked(@NotNull Object productModel, boolean isSelected, @NotNull WishListResponseListener wishListResponseListener) {
+        if (productModel instanceof OrderListRecomViewModel) {
+            if(isSelected) {
+                presenter.addWishlist(((OrderListRecomViewModel) productModel).getRecommendationItem(), wishListResponseListener);
+            } else {
+                presenter.removeWishlist(((OrderListRecomViewModel) productModel).getRecommendationItem(), wishListResponseListener);
+            }
+        }
     }
 }
 

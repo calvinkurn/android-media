@@ -6,15 +6,19 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.transaction.R
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListPresenterImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@Module
+@Module(includes = [TopAdsWishlistModule::class])
 class OrderListUseCaseModule {
 
     @Provides
@@ -59,8 +63,16 @@ class OrderListUseCaseModule {
 
     @Provides
     @OrderListModuleScope
-    fun providesOrderListPresenterImpl(getRecommendationUseCase: GetRecommendationUseCase, addToCartUseCase: AddToCartUseCase): OrderListPresenterImpl {
-        return OrderListPresenterImpl(getRecommendationUseCase, addToCartUseCase)
+    fun provideAddWishlistUseCase(@ApplicationContext context: Context): AddWishListUseCase = AddWishListUseCase(context)
+
+    @Provides
+    @OrderListModuleScope
+    fun provideRemoveWishlistUseCase(@ApplicationContext context: Context): RemoveWishListUseCase = RemoveWishListUseCase(context)
+
+    @Provides
+    @OrderListModuleScope
+    fun providesOrderListPresenterImpl(getRecommendationUseCase: GetRecommendationUseCase, addToCartUseCase: AddToCartUseCase, addWishListUseCase: AddWishListUseCase, removeWishListUseCase: RemoveWishListUseCase, topAdsWishlishedUseCase: TopAdsWishlishedUseCase, userSessionInterface: UserSessionInterface): OrderListPresenterImpl {
+        return OrderListPresenterImpl(getRecommendationUseCase, addToCartUseCase, addWishListUseCase, removeWishListUseCase, topAdsWishlishedUseCase, userSessionInterface)
     }
 
 }

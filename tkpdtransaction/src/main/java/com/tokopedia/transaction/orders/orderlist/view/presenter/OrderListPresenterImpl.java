@@ -20,6 +20,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
+import com.tokopedia.topads.sdk.domain.model.WishlistModel;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderlist.data.Data;
 import com.tokopedia.transaction.orders.orderlist.data.FilterStatus;
@@ -29,11 +31,16 @@ import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.CheckBOMSur
 import com.tokopedia.transaction.orders.orderlist.data.surveyrequest.InsertBOMSurveyParams;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.CheckSurveyResponse;
 import com.tokopedia.transaction.orders.orderlist.data.surveyresponse.InsertSurveyResponse;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.WishListResponseListener;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewHolder.OrderListRecomListViewHolder;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomTitleViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,13 +71,26 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     GraphqlUseCase insertBomSurveyUseCase;
     private final GetRecommendationUseCase getRecommendationUseCase;
     private final AddToCartUseCase addToCartUseCase;
+    private final AddWishListUseCase addWishListUseCase;
+    private final RemoveWishListUseCase removeWishListUseCase;
+    private final TopAdsWishlishedUseCase topAdsWishlishedUseCase;
+    private final UserSessionInterface userSessionInterface;
     private List<Visitable> orderList = new ArrayList<>();
     private String recomTitle;
 
     @Inject
-    public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase, AddToCartUseCase addToCartUseCase) {
+    public OrderListPresenterImpl(GetRecommendationUseCase getRecommendationUseCase,
+                                  AddToCartUseCase addToCartUseCase,
+                                  AddWishListUseCase addWishListUseCase,
+                                  RemoveWishListUseCase removeWishListUseCase,
+                                  TopAdsWishlishedUseCase topAdsWishlishedUseCase,
+                                  UserSessionInterface userSessionInterface) {
         this.getRecommendationUseCase = getRecommendationUseCase;
         this.addToCartUseCase = addToCartUseCase;
+        this.addWishListUseCase = addWishListUseCase;
+        this.removeWishListUseCase = removeWishListUseCase;
+        this.topAdsWishlishedUseCase = topAdsWishlishedUseCase;
+        this.userSessionInterface = userSessionInterface;
     }
 
     @Override
@@ -410,6 +430,101 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
                     }
                 });
+    }
+
+    public void addWishlist(RecommendationItem model, WishListResponseListener wishListResponseListener){
+        getView().displayLoadMore(true);
+        if(model.isTopAds()){
+            RequestParams params = RequestParams.create();
+            params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.getWishlistUrl());
+            topAdsWishlishedUseCase.execute(params, new Subscriber<WishlistModel>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (getView() != null) {
+                        getView().displayLoadMore(false);
+                        String errorMessage = e.getMessage();
+                        getView().showFailureMessage(errorMessage);
+                    }
+                }
+
+                @Override
+                public void onNext(WishlistModel wishlistModel) {
+                    if(getView()!=null) {
+                        getView().displayLoadMore(false);
+                        if (wishlistModel.getData() != null) {
+                            wishListResponseListener.onWhishListSuccessResponse(true);
+                            getView().showSuccessMessage(getView().getString(R.string.msg_success_add_wishlist));
+                        }
+                    }
+                }
+            });
+        } else {
+            addWishListUseCase.createObservable(String.valueOf(model.getProductId()), userSessionInterface.getUserId(), new WishListActionListener() {
+                @Override
+                public void onErrorAddWishList(String errorMessage, String productId) {
+                    if (getView() != null) {
+                        getView().displayLoadMore(false);
+                        getView().showFailureMessage(errorMessage);
+                    }
+                }
+
+                @Override
+                public void onSuccessAddWishlist(String productId) {
+                    if(getView()!=null) {
+                        getView().displayLoadMore(false);
+                        wishListResponseListener.onWhishListSuccessResponse(true);
+                        getView().showSuccessMessage(getView().getString(R.string.msg_success_add_wishlist));
+                    }
+                }
+
+                @Override
+                public void onErrorRemoveWishlist(String errorMessage, String productId) {
+
+                }
+
+                @Override
+                public void onSuccessRemoveWishlist(String productId) {
+
+                }
+            });
+        }
+    }
+
+    public void removeWishlist(RecommendationItem model, WishListResponseListener wishListResponseListener){
+        getView().displayLoadMore(true);
+        removeWishListUseCase.createObservable(String.valueOf(model.getProductId()), userSessionInterface.getUserId(), new WishListActionListener() {
+            @Override
+            public void onErrorAddWishList(String errorMessage, String productId) {
+
+            }
+
+            @Override
+            public void onSuccessAddWishlist(String productId) {
+
+            }
+
+            @Override
+            public void onErrorRemoveWishlist(String errorMessage, String productId) {
+                if (getView() != null) {
+                    getView().displayLoadMore(false);
+                    getView().showFailureMessage(errorMessage);
+                }
+            }
+
+            @Override
+            public void onSuccessRemoveWishlist(String productId) {
+                if(getView()!=null) {
+                    getView().displayLoadMore(false);
+                    getView().showSuccessMessage(getView().getString(R.string.msg_success_remove_wishlist));
+                    wishListResponseListener.onWhishListSuccessResponse(false);
+                }
+            }
+        });
     }
 
 }
