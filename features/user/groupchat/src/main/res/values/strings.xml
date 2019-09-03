@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">TkpdStream</string>
 
-    <string name="host_groupchat">groupchat</string>
-    <string name="path_groupchat_channel_id">/.*\\/</string>
+    <string name="schema_internal_applink">tokopedia-android-internal</string>
+
+    <string name="host_groupchat">marketplace</string>
+    <string name="path_groupchat_channel_id">groupchat/.*\\/</string>
 
     <string name="host_groupchat_webview">groupchat</string>
     <string name="path_groupchat_webview">/.*\\/.*\\/</string>

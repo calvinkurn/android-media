@@ -38,7 +38,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/tokopedia_scheme"
+                    android:scheme="@string/schema_internal_applink"
                     android:host="@string/host_groupchat"
                     android:pathPattern="@string/path_groupchat_channel_id"/>
             </intent-filter>
