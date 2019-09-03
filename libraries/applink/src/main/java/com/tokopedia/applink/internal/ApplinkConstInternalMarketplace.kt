@@ -133,4 +133,11 @@ object ApplinkConstInternalMarketplace {
     // ShopScoreDetailActivity
     @JvmField
     val SHOP_SCORE_DETAIL = "$INTERNAL_MARKETPLACE/shop-score-detail"
+
+    // PlayActivity
+    @JvmField
+    val GROUPCHAT_LIST = "$INTERNAL_MARKETPLACE/groupchat"
+
+    @JvmField
+    val GROUPCHAT_DETAIL = "$INTERNAL_MARKETPLACE/groupchat/{channel_id}/"
 }

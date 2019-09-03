@@ -7,6 +7,7 @@ import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.GROUPCHAT_LIST
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
@@ -32,6 +33,7 @@ object DeeplinkDFMapper {
     private val MODULE_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val MODULE_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val MODULE_HOTEL_TRAVEL = "hotel_travel"
+    private val MODULE_GROUPCHAT = "groupchat"
 
     private var manager: SplitInstallManager? = null
 
@@ -64,6 +66,11 @@ object DeeplinkDFMapper {
                     getDFDeeplinkIfNotInstalled(context,
                         deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
                         context.getString(R.string.shop_settings_title))
+                }
+                deeplink.startsWith(GROUPCHAT_LIST) -> {
+                    getDFDeeplinkIfNotInstalled(context,
+                        deeplink, MODULE_GROUPCHAT,
+                        context.getString(R.string.groupchat_title))
                 }
                 else -> null
             }
