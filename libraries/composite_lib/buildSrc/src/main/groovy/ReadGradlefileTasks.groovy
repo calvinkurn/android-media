@@ -8,6 +8,7 @@ class ReadGradlefileTasks extends DefaultTask{
     HashMap<String, Integer> listNum = new HashMap<>()
     Graph graph
     Map<String, Integer> versionConfig = new HashMap<String, Integer>()
+    def versionMap = new HashMap<String, String>()
 
     String lastRelease
     def time = 7
@@ -112,7 +113,6 @@ class ReadGradlefileTasks extends DefaultTask{
         def listst = graph.getListTop()
         def log = new File("tools/version/log.txt")
         log.delete()
-        def versionMap = new HashMap<String, String>()
         listst.find {
             String module = listNum.get(it)
             def reader = new File("${module}/build.gradle")
@@ -133,8 +133,7 @@ class ReadGradlefileTasks extends DefaultTask{
                     }else if(line.trim().startsWith("implementation") && line.contains(":")){
                         def text = line.split(":")
                         if((it.artifactId).equals(text[1])){
-                            Float temp = Float.valueOf(text[2].replace("\"",""))
-                            writer.append("${text[0]}:${text[1]}:$versionMap.get(${text[1]})\"\n")
+                            writer.append("${text[0]}:${text[1]}:$versionMap.get(text[1])\"\n")
                             tanda = false
                         }
                     }
@@ -180,9 +179,8 @@ class ReadGradlefileTasks extends DefaultTask{
         }
     }
     def compileModule(String module){
-        return "$module"
-//        def stdout = new ByteArrayOutputStream()
-//        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint --stacktrace".execute().text
-//        return stdout.toString().trim().replace("'", "").replace(","," ")
+        def stdout = new ByteArrayOutputStream()
+        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint --stacktrace".execute().text
+        return stdout.toString().trim().replace("'", "").replace(","," ")
     }
 }
