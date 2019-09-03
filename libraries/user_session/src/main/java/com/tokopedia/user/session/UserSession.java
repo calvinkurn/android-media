@@ -559,7 +559,6 @@ public class UserSession implements UserSessionInterface {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, null);
-        editor.putString(FULL_NAME, null);
         editor.putString(SHOP_ID, null);
         editor.putString(SHOP_NAME, null);
         editor.putBoolean(IS_LOGIN, false);
@@ -577,7 +576,6 @@ public class UserSession implements UserSessionInterface {
         editor.putString(TWITTER_ACCESS_TOKEN, null);
         editor.putString(TWITTER_ACCESS_TOKEN_SECRET, null);
         editor.putBoolean(TWITTER_SHOULD_POST, false);
-        editor.putString(LOGIN_METHOD, "");
         editor.apply();
     }
 }

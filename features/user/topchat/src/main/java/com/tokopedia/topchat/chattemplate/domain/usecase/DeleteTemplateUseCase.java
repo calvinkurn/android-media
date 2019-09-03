@@ -25,11 +25,13 @@ public class DeleteTemplateUseCase extends UseCase<EditTemplateViewModel> {
 
     @Override
     public Observable<EditTemplateViewModel> createObservable(RequestParams requestParams) {
-        return templateRepository.deleteTemplate(requestParams.getInt("index", 0));
+        return templateRepository.deleteTemplate(requestParams.getInt("index", 0)
+                                                ,requestParams.getBoolean("is_seller", false));
     }
 
-    public static RequestParams generateParam(int index) {
+    public static RequestParams generateParam(int index, Boolean isSeller) {
         RequestParams requestParams = RequestParams.create();
+        requestParams.putBoolean("is_seller", isSeller);
         requestParams.putInt("index", index);
         return requestParams;
     }

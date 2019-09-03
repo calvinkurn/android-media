@@ -73,6 +73,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
 
     private static final int LOGIN_GPLUS = 123453;
     private static final int REQUEST_CODE_LOGIN = 123321;
+    private static final int PICTURE_QUALITY = 60;
     private static boolean isAlreadyFirstRedirect;
     private TkpdWebView WebViewGeneral;
     private OnFragmentInteractionListener mListener;
@@ -438,7 +439,7 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == HCI_CAMERA_REQUEST_CODE && resultCode == RESULT_OK) {
             String imagePath = data.getStringExtra(HCI_KTP_IMAGE_PATH);
-            String base64 = encodeToBase64(imagePath);
+            String base64 = encodeToBase64(imagePath, PICTURE_QUALITY);
             if (imagePath != null) {
                 StringBuilder jsCallbackBuilder = new StringBuilder();
                 jsCallbackBuilder.append("javascript:")

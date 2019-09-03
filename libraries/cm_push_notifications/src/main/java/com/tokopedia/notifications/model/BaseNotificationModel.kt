@@ -27,7 +27,9 @@ data class BaseNotificationModel (
 
     var appLink: String? = null,
     var actionButton: List<ActionButton> = ArrayList(),
-    var customValues: JSONObject? = null,
+
+    var customValues: String? = null,
+
     var type: String? = null,
 
     var channelName: String? = null,
@@ -49,8 +51,9 @@ data class BaseNotificationModel (
 
     var carouselList: List<Carousel> = ArrayList(),
     var gridList: List<Grid> = ArrayList(),
-    var productInfoList : List<ProductInfo>? = ArrayList(),
-    var parentId: Long = 0
+    var productInfoList : List<ProductInfo> = ArrayList(),
+    var parentId: Long = 0,
+    var campaignUserToken: String? = null
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -66,7 +69,7 @@ data class BaseNotificationModel (
             parcel.readParcelable(Media::class.java.classLoader),
             parcel.readString(),
             parcel.createTypedArrayList(ActionButton),
-            null,
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.createTypedArrayList(PersistentButton),
@@ -81,7 +84,8 @@ data class BaseNotificationModel (
             parcel.createTypedArrayList(Carousel),
             parcel.createTypedArrayList(Grid),
             parcel.createTypedArrayList(ProductInfo),
-            parcel.readLong())
+            parcel.readLong(),
+            parcel.readString())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(notificationId)
@@ -96,6 +100,7 @@ data class BaseNotificationModel (
         parcel.writeParcelable(media, flags)
         parcel.writeString(appLink)
         parcel.writeTypedList(actionButton)
+        parcel.writeString(customValues)
         parcel.writeString(type)
         parcel.writeString(channelName)
         parcel.writeTypedList(persistentButtonList)
@@ -110,6 +115,7 @@ data class BaseNotificationModel (
         parcel.writeTypedList(gridList)
         parcel.writeTypedList(productInfoList)
         parcel.writeLong(parentId)
+        parcel.writeString(campaignUserToken)
     }
 
     override fun describeContents(): Int {
@@ -125,4 +131,5 @@ data class BaseNotificationModel (
             return arrayOfNulls(size)
         }
     }
+
 }

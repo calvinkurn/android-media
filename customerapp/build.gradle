@@ -83,18 +83,6 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
-def archiveAPK(variant, output) {
-
-    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-    def originZipAlignedApkFile = output.outputFile;
-    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
-    copy {
-        from "$originZipAlignedApkFile"
-        into getAPKArchiveFolder(variant)
-        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
-    }
-}
-
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -203,11 +191,6 @@ android {
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
 
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    output.versionCodeOverride = (getTkpdVersionCode() * 100);
-                }
-            }
         }
     }
 
@@ -294,6 +277,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.hotel)
+    implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.imagePreviewSlider)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
@@ -336,6 +320,7 @@ dependencies {
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
@@ -555,7 +540,7 @@ dependencies {
     implementation project(rootProject.ext.features.kyc)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
-    implementation (rootProject.ext.debugToolsDependencies.timber){
+    implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     devImplementation project.ext.debugToolsDependencies.blockCanary

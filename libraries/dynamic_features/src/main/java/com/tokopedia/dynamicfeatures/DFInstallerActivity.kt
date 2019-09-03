@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.Toaster
+import timber.log.Timber
 
 /**
  * Activity that handles for installing new dynamic feature module
@@ -87,6 +88,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
+                Timber.w("P3Download Module {$moduleName}")
                 loadAndLaunchModule(moduleName)
             } else {
                 hideProgress()
@@ -172,6 +174,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
+        Timber.w("P3Installed Module {$moduleName}")
         progressGroup.visibility = View.INVISIBLE
         if (launch && manager.installedModules.contains(moduleName)) {
             RouteManager.getIntentNoFallback(this, applink)?.let {
@@ -226,9 +229,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun showFailedMessage(message: String) {
-        if (!GlobalConfig.DEBUG) {
-            Crashlytics.logException(Exception(message))
-        }
+        Timber.w("P3Failed Module {$moduleName}")
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
             message,
             Snackbar.LENGTH_INDEFINITE,
