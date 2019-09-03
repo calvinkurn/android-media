@@ -1,9 +1,8 @@
-package com.tokopedia.common.travel.widget.autocompletetextview
+package com.tokopedia.common.travel.widget
 
 import android.content.Context
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

@@ -71,7 +71,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     private AppCompatTextView tvHeader;
     private AppCompatTextView tvSubheader;
-    private SpinnerTextView spTitle;
     private TkpdHintTextInputLayout tilFirstName;
     private AppCompatEditText etFirstName;
     private TkpdHintTextInputLayout tilLastName;
@@ -82,7 +81,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private RecyclerView rvLuggages;
     private LinearLayout mealsContainer;
     private RecyclerView rvMeals;
-    private AppCompatEditText etSavedPassenger;
     private AppCompatEditText etPassportNumber;
     private AppCompatEditText etPassportExpired;
     private AppCompatEditText etPassportNationality;
@@ -173,7 +171,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
         tvHeader = (AppCompatTextView) view.findViewById(R.id.tv_header);
         tvSubheader = (AppCompatTextView) view.findViewById(R.id.tv_subheader);
-        spTitle = (SpinnerTextView) view.findViewById(R.id.sp_title);
         tilFirstName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_first_name);
         etFirstName = (AppCompatEditText) view.findViewById(R.id.et_first_name);
         tilLastName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_last_name);
@@ -184,7 +181,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         rvLuggages = (RecyclerView) view.findViewById(R.id.rv_luggages);
         mealsContainer = (LinearLayout) view.findViewById(R.id.meals_container);
         rvMeals = (RecyclerView) view.findViewById(R.id.rv_meals);
-        etSavedPassenger = view.findViewById(R.id.et_saved_passenger);
         etPassportNumber = view.findViewById(R.id.et_passport_no);
         etPassportExpired = view.findViewById(R.id.et_passport_expiration_date);
         etPassportNationality = view.findViewById(R.id.et_nationality);
@@ -203,14 +199,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
             @Override
             public void onClick(View v) {
                 presenter.onBirthdateClicked();
-            }
-        });
-        etSavedPassenger.setClickable(true);
-        etSavedPassenger.setFocusable(false);
-        etSavedPassenger.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.onSavedPassengerClicked();
             }
         });
         etPassportExpired.setClickable(true);
@@ -270,15 +258,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void renderSpinnerForAdult() {
         String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
-        spTitle.setEntries(entries);
-        spTitle.setValues(entries);
+        //TODO
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
         String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
-        spTitle.setEntries(entries);
-        spTitle.setValues(entries);
+        //TODO
     }
 
     @Override
@@ -672,12 +658,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void renderPassengerTitle(String passengerTitle) {
-        spTitle.setSpinnerValueByEntries(passengerTitle);
-    }
-
-    @Override
-    public void renderSelectedList(String passengerName) {
-        etSavedPassenger.setText(passengerName);
+        //renderpassangertitle
     }
 
     @Override

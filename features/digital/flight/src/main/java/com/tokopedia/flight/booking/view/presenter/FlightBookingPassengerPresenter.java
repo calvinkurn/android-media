@@ -84,10 +84,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
         if (getView().getCurrentPassengerViewModel().getPassengerId() != null &&
                 !getView().getCurrentPassengerViewModel().getPassengerId().equals("")) {
-            getView().renderSelectedList(String.format("%s %s",
-                    getView().getCurrentPassengerViewModel().getPassengerFirstName(),
-                    getView().getCurrentPassengerViewModel().getPassengerLastName()
-            ));
+            //
         }
 
         renderPassport();
@@ -308,7 +305,6 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         flightBookingPassengerViewModel.setPassengerBirthdate("");
         flightBookingPassengerViewModel.setPassengerTitle("");
 
-        getView().renderSelectedList(getView().getString(R.string.flight_booking_passenger_saved_secondary_hint));
         getView().renderPassengerName("", "");
         getView().renderBirthdate("");
     }
@@ -322,9 +318,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                 FlightDateUtil.stringToDate(getView().getDepartureDateString()),
                 Calendar.YEAR, PLUS_TWENTY);
 
-        getView().renderSelectedList(String.format("%s %s",
-                selectedPassenger.getPassengerFirstName(),
-                selectedPassenger.getPassengerLastName()));
+        //renderselectedlist
 
         FlightBookingPassengerViewModel currentPassengerViewModel = getView().getCurrentPassengerViewModel();
         currentPassengerViewModel.setPassengerId(selectedPassenger.getPassengerId());

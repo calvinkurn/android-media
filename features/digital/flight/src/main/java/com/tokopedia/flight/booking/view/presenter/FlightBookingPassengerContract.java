@@ -84,8 +84,6 @@ public interface FlightBookingPassengerContract {
 
         void renderPassengerTitle(String passengerTitle);
 
-        void renderSelectedList(String passengerName);
-
         void renderPassportExpiredDate(String expiredDateStr);
 
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);

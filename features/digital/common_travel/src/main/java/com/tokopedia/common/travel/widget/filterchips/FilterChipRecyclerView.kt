@@ -1,4 +1,4 @@
-package com.tokopedia.common.travel.widget.filterchipwidget
+package com.tokopedia.common.travel.widget.filterchips
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
@@ -57,7 +57,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
     }
 
     fun selectOnlyOneChip(boolean: Boolean) {
-        adapter?.selectOnlyOneChip = boolean
+        adapter.selectOnlyOneChip = boolean
     }
 
     fun initiallySelectedChip(position: Int) {

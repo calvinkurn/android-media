@@ -1,4 +1,4 @@
-package com.tokopedia.common.travel.widget.filterchipwidget
+package com.tokopedia.common.travel.widget.filterchips
 
 import android.support.annotation.ColorRes
 import android.support.v7.widget.RecyclerView
