@@ -141,10 +141,12 @@ class ReadGradlefileTasks extends DefaultTask{
             writer.renameTo("${module}/build.gradle")
             def saveStatus =  compileModule(module)
             if(saveStatus.contains("BUILD SUCCESSFUL")){
-                log.append("${module} - SUCCESSFUL\n")
+                def version = versionMap.get(text[1])
+                log.append("${module} - ${version} - SUCCESSFUL\n")
                 return false
             }else{
-                log.append("${module} - FAILED\n")
+                def version = versionMap.get(text[1])
+                log.append("${module} - ${version} - FAILED\n")
                 returnBackup()
                 return true
             }
