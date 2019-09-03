@@ -34,6 +34,7 @@ import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
 import com.tokopedia.vouchergame.list.view.adapter.VoucherGameListAdapterFactory
 import com.tokopedia.vouchergame.list.view.adapter.VoucherGameListDecorator
 import com.tokopedia.vouchergame.list.view.adapter.viewholder.VoucherGameListViewHolder
+import com.tokopedia.vouchergame.list.view.model.VoucherGameOperatorAttributes
 import com.tokopedia.vouchergame.list.view.viewmodel.VoucherGameListViewModel
 import kotlinx.android.synthetic.main.fragment_voucher_game_list.*
 import javax.inject.Inject
@@ -67,8 +68,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_TELCO) ?: VoucherGameExtraParam()
-
-            checkAutoSelectOperator()
         }
     }
 
@@ -122,8 +121,12 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         if (::voucherGameExtraParam.isInitialized) outState.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
     }
 
-    private fun checkAutoSelectOperator() {
-        if (voucherGameExtraParam.operatorId.isNotEmpty()) navigateToProductList()
+    private fun checkAutoSelectOperator(operators: List<VoucherGameOperator>) {
+        voucherGameExtraParam.operatorId.toIntOrNull()?.let {
+            operators.firstOrNull { opr -> opr.id == it }?.let {
+                navigateToProductList(it.attributes)
+            }
+        }
     }
 
     private fun initView() {
@@ -163,6 +166,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             showEmpty()
         }
         else {
+            checkAutoSelectOperator(data.operators)
             renderList(data.operators)
 
             operatorTrackingList = data.operators.mapIndexed { index, item ->
@@ -214,7 +218,9 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         }
     }
 
-    override fun onItemClicked(item: Visitable<*>) { }
+    override fun onItemClicked(item: Visitable<*>) {
+
+    }
 
     override fun onItemClicked(operator: VoucherGameOperator) {
         val operatorIndex = operatorTrackingList.indexOfFirst { it.item == operator }
@@ -227,16 +233,13 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         }
 
         voucherGameExtraParam.operatorId = operator.id.toString()
-        navigateToProductList()
+        navigateToProductList(operator.attributes)
     }
 
-    private fun navigateToProductList() {
+    private fun navigateToProductList(operatorData: VoucherGameOperatorAttributes) {
         context?.run {
             val intent = VoucherGameDetailActivity.newInstance(this,
-                    voucherGameExtraParam.categoryId,
-                    voucherGameExtraParam.menuId,
-                    voucherGameExtraParam.operatorId,
-                    voucherGameExtraParam.productId)
+                    voucherGameExtraParam, operatorData)
             startActivityForResult(intent, REQUEST_VOUCHER_GAME_DETAIL)
         }
     }

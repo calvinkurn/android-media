@@ -20,7 +20,11 @@ class VoucherGameBottomSheets: BottomSheets() {
     }
 
     override fun initView(view: View?) {
-        ImageHandler.loadImageWithoutPlaceholder(info_image, imageUrl)
+        if (imageUrl.isNotEmpty()) {
+            image_container.visibility = View.GONE
+        } else {
+            ImageHandler.loadImageWithoutPlaceholder(info_image, imageUrl)
+        }
         info_title.text = title
         info_desc.text = description
     }

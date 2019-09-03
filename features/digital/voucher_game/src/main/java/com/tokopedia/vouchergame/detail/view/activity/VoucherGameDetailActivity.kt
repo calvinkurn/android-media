@@ -4,11 +4,14 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_TELCO
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.di.DaggerVoucherGameDetailComponent
 import com.tokopedia.vouchergame.detail.di.VoucherGameDetailComponent
 import com.tokopedia.vouchergame.detail.view.fragment.VoucherGameDetailFragment
+import com.tokopedia.vouchergame.detail.view.fragment.VoucherGameDetailFragment.Companion.EXTRA_PARAM_OPERATOR_DATA
+import com.tokopedia.vouchergame.list.view.model.VoucherGameOperatorAttributes
 
 /**
  * Created by resakemal on 16/08/19.
@@ -17,13 +20,11 @@ class VoucherGameDetailActivity : BaseVoucherGameActivity(), HasComponent<Vouche
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
-        val voucherGameExtraParam = VoucherGameExtraParam(
-                bundle?.getString(PARAM_CATEGORY_ID) ?: "",
-                bundle?.getString(PARAM_PRODUCT_ID) ?: "",
-                bundle?.getString(PARAM_MENU_ID) ?: "",
-                bundle?.getString(PARAM_OPERATOR_ID) ?: ""
-        )
-        return VoucherGameDetailFragment.newInstance(voucherGameExtraParam)
+        val voucherGameExtraParam: VoucherGameExtraParam =
+                bundle?.getParcelable(EXTRA_PARAM_TELCO) ?: VoucherGameExtraParam()
+        val voucherGameOperatorAttributes: VoucherGameOperatorAttributes =
+                bundle?.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: VoucherGameOperatorAttributes()
+        return VoucherGameDetailFragment.newInstance(voucherGameExtraParam, voucherGameOperatorAttributes)
     }
 
     override fun getComponent(): VoucherGameDetailComponent {
@@ -41,12 +42,12 @@ class VoucherGameDetailActivity : BaseVoucherGameActivity(), HasComponent<Vouche
         const val PARAM_OPERATOR_ID = "operator_id"
         const val PARAM_PRODUCT_ID = "product_id"
 
-        fun newInstance(context: Context, categoryId: String, menuId: String, operatorId: String, productId: String = ""): Intent {
+        fun newInstance(context: Context,
+                        voucherGameExtraParam: VoucherGameExtraParam,
+                        voucherGameOperatorAttributes: VoucherGameOperatorAttributes): Intent {
             val intent = Intent(context, VoucherGameDetailActivity::class.java)
-            intent.putExtra(PARAM_CATEGORY_ID, categoryId)
-            intent.putExtra(PARAM_MENU_ID, menuId)
-            intent.putExtra(PARAM_OPERATOR_ID, operatorId)
-            intent.putExtra(PARAM_PRODUCT_ID, productId)
+            intent.putExtra(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+            intent.putExtra(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorAttributes)
             return intent
         }
 

@@ -45,6 +45,7 @@ import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewMode
 import com.tokopedia.vouchergame.detail.widget.VoucherGameBottomSheets
 import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
+import com.tokopedia.vouchergame.list.view.model.VoucherGameOperatorAttributes
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
 import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import java.util.regex.Pattern
@@ -68,6 +69,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     lateinit var selectedProduct: VoucherGameProduct
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
+    lateinit var voucherGameOperatorData: VoucherGameOperatorAttributes
 
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
@@ -92,6 +94,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_TELCO) ?: VoucherGameExtraParam()
+            voucherGameOperatorData =
+                    it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: VoucherGameOperatorAttributes()
         }
     }
 
@@ -131,13 +135,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+        outState.putParcelable(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorData)
     }
 
     private fun initView() {
-        // Call menu detail query for toolbar title
-        voucherGameExtraParam.menuId.toIntOrNull()?.let {
-            getMenuDetail(it)
-        }
+        setupOperatorDetail()
 
         recycler_view.adapter = adapter
         val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
@@ -177,7 +179,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TelcoCatalogMenuDetail) {
-        (activity as BaseVoucherGameActivity).updateTitle(data.catalog.getOrNull(0)?.label ?: "")
+
     }
 
     override fun showError(t: Throwable) {
@@ -345,21 +347,25 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun setupOperatorDetail() {
-        // TODO: Add menu detail data
-//        product_image.setOnClickListener { showProductInfo() }
-//        help_label.setOnClickListener { showProductInfo() }
-        info_icon.setOnClickListener {
-            voucherGameAnalytics.eventClickInfoButton()
-//            showProductInfo()
+        if (::voucherGameOperatorData.isInitialized) {
+            voucherGameOperatorData.run {
+                product_image.setOnClickListener { showProductInfo(operatorLabel, description) }
+                info_icon.setOnClickListener {
+                    voucherGameAnalytics.eventClickInfoButton()
+                    showProductInfo(operatorLabel, description)
+                }
+                help_label.text = voucherGameOperatorData.helpCta
+                help_label.setOnClickListener { showProductInfo(desc = helpText, imageUrl = helpImage) }
+            }
         }
     }
 
-    private fun showProductInfo(imageUrl: String, title: String, desc: String) {
+    private fun showProductInfo(title: String = "", desc: String, imageUrl: String = "") {
         activity?.let {
             val voucherGameBottomSheets = VoucherGameBottomSheets()
-            voucherGameBottomSheets.imageUrl = imageUrl
             voucherGameBottomSheets.title = title
             voucherGameBottomSheets.description = desc
+            voucherGameBottomSheets.imageUrl = imageUrl
             voucherGameBottomSheets.show(it.supportFragmentManager, TAG_VOUCHER_GAME_INFO)
         }
     }
@@ -383,10 +389,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onItemClicked(product: VoucherGameProduct, position: Int) {
-        val operatorName = (activity as BaseVoucherGameActivity).title.toString()
-        val productIndex = productTrackingList.indexOfFirst { it.item == product }
-        voucherGameAnalytics.eventClickProductCard(operatorName, product.attributes.info,
-                productIndex, productTrackingList[productIndex])
+        if (::voucherGameOperatorData.isInitialized) {
+            val operatorName = voucherGameOperatorData.operatorLabel
+            val productIndex = productTrackingList.indexOfFirst { it.item == product }
+            voucherGameAnalytics.eventClickProductCard(operatorName, product.attributes.info,
+                    productIndex, productTrackingList[productIndex])
+        }
         selectProduct(product, position)
     }
 
@@ -435,9 +443,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        productTrackingList.find { it.item == selectedProduct }?.run {
-            voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                    (activity as BaseVoucherGameActivity).title.toString(), product = this)
+        if (::voucherGameOperatorData.isInitialized) {
+            productTrackingList.find { it.item == selectedProduct }?.run {
+                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
+                        voucherGameOperatorData.operatorLabel, product = this)
+            }
         }
         processCheckout()
     }
@@ -477,12 +487,15 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         const val ITEM_DECORATOR_SIZE = 8
 
+        const val EXTRA_PARAM_OPERATOR_DATA = "EXTRA_PARAM_OPERATOR_DATA"
         const val TAG_VOUCHER_GAME_INFO = "voucherGameInfo"
 
-        fun newInstance(voucherGameExtraParam: VoucherGameExtraParam): Fragment {
+        fun newInstance(voucherGameExtraParam: VoucherGameExtraParam,
+                        voucherGameOperatorAttributes: VoucherGameOperatorAttributes): Fragment {
             val fragment = VoucherGameDetailFragment()
             val bundle = Bundle()
             bundle.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+            bundle.putParcelable(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorAttributes)
             fragment.arguments = bundle
             return fragment
         }

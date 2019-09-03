@@ -6,6 +6,10 @@ query voucherGameProductDetail($menuID: Int!, $operator: String!){
       id
       param_name
       name
+      validations {
+        rule
+        title
+      }
     }
     product {
       name
@@ -20,7 +24,9 @@ query voucherGameProductDetail($menuID: Int!, $operator: String!){
             info
             promo {
               id
+              new_price
             }
+            product_labels
           }
         }
       }
