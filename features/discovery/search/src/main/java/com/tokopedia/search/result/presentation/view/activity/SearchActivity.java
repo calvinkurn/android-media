@@ -230,11 +230,7 @@ public class SearchActivity extends BaseActivity
                     if (drawable instanceof LayerDrawable) {
                         CountDrawable countDrawable = new CountDrawable(this);
                         int cartCount = ((SearchRouter) getApplication()).getCartCount(this);
-                        if (cartCount > 99) {
-                            countDrawable.setCount(getString(R.string.label_max_cart_count));
-                        } else {
-                            countDrawable.setCount(String.valueOf(cartCount));
-                        }
+                        countDrawable.setCount(String.valueOf(cartCount));
                         drawable.mutate();
                         ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
                         buttonCart.setImageDrawable(drawable);
