@@ -21,7 +21,6 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
 
-        initInjector()
         GraphqlClient.init(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -30,10 +29,6 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
                     WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
             )
         }
-    }
-
-    private fun initInjector() {
-        component.inject(this)
     }
 
     override fun getNewFragment(): Fragment = DigitalHomePageFragment.getInstance()

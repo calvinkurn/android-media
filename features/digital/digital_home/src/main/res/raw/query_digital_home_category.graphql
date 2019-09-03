@@ -1,0 +1,14 @@
+{
+  rechargeCatalogMenu(platformID:31){
+    name
+    label
+    app_link
+    sub_menu{
+      name
+      label
+      app_link
+      icon
+      category_ids
+    }
+  }
+}

@@ -1,15 +1,27 @@
 package com.tokopedia.digital.home.presentation.adapter
 
-import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.design.banner.BannerView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
+import com.tokopedia.digital.home.presentation.customview.TravelHomepageBannerViewDynamicBackground
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import kotlinx.android.synthetic.main.layout_digital_home_banner.view.*
 
-class DigitalHomePageBannerViewHolder(val itemView : View?, val onItemBindListener: OnItemBindListener) : AbstractViewHolder<DigitalHomePageBannerModel>(itemView) {
+class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: OnItemBindListener) :
+        AbstractViewHolder<DigitalHomePageBannerModel>(view), BannerView.OnPromoAllClickListener,
+        BannerView.OnPromoClickListener{
+
+    override fun onPromoClick(position: Int) {
+        onItemBindListener.onBannerItemClicked(bannerList?.get(position))
+    }
+
+    override fun onPromoAllClick() {
+        onItemBindListener.onBannerAllItemClicked()
+    }
 
     private val adapterBanner  by lazy {
         DigitalItemBannerAdapter()

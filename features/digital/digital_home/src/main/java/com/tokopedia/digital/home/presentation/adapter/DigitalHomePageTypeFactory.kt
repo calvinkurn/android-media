@@ -7,9 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePagePromoModel
+import com.tokopedia.digital.home.model.DigitalHomePageTransactionModel
+import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 
-class DigitalHomePageTypeFactory : BaseAdapterTypeFactory() {
-    fun type(digitalHomePageBannerModel: DigitalHomePageBannerModel) : Int{
+class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,
+                                 val transactionListener: DigitalHomePageTransactionViewHolder.TransactionListener?)
+    : BaseAdapterTypeFactory() {
+
+    fun type(digitalHomePageBannerModel: DigitalHomePageBannerModel): Int {
         return DigitalHomePageBannerViewHolder.LAYOUT
     }
 
@@ -21,11 +26,16 @@ class DigitalHomePageTypeFactory : BaseAdapterTypeFactory() {
         return DigitalHomePagePromoViewHolder.LAYOUT
     }
 
+    fun type(digitalHomePageTransactionModel: DigitalHomePageTransactionModel): Int {
+        return DigitalHomePageTransactionViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         when (type) {
-            DigitalHomePageBannerViewHolder.LAYOUT -> return DigitalHomePageBannerViewHolder(parent)
-            DigitalHomePageCategoryViewHolder.LAYOUT -> return DigitalHomePageCategoryViewHolder(parent)
-            DigitalHomePagePromoViewHolder.LAYOUT -> return DigitalHomePagePromoViewHolder(parent)
+            DigitalHomePageBannerViewHolder.LAYOUT -> return DigitalHomePageBannerViewHolder(parent, onItemBindListener)
+            DigitalHomePageCategoryViewHolder.LAYOUT -> return DigitalHomePageCategoryViewHolder(parent, onItemBindListener)
+            DigitalHomePagePromoViewHolder.LAYOUT -> return DigitalHomePagePromoViewHolder(parent, onItemBindListener)
+            DigitalHomePageTransactionViewHolder.LAYOUT -> return DigitalHomePageTransactionViewHolder(parent, transactionListener)
         }
         return super.createViewHolder(parent, type)
     }

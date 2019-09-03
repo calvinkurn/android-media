@@ -38,7 +38,7 @@ class DigitalHomePageViewModel  @Inject constructor(
             }.getSuccessData<DigitalHomePageBannerModel>()
             digitalHomePageList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[BANNER_ORDER] = data.response
+                updatedList[BANNER_ORDER] = data
                 updatedList[BANNER_ORDER].isLoaded = true
                 updatedList[BANNER_ORDER].isSuccess = true
                 digitalHomePageList.value = updatedList
@@ -61,7 +61,7 @@ class DigitalHomePageViewModel  @Inject constructor(
             }.getSuccessData<DigitalHomePageCategoryModel>()
             digitalHomePageList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[CATEGORY_ORDER] = data.response
+                updatedList[CATEGORY_ORDER] = data
                 updatedList[CATEGORY_ORDER].isLoaded = true
                 updatedList[CATEGORY_ORDER].isSuccess = true
                 digitalHomePageList.value = updatedList
