@@ -7,6 +7,7 @@ import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetFeedForEditU
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import javax.inject.Inject
@@ -37,7 +38,7 @@ class CreatePostPresenter @Inject constructor(
     override fun fetchContentFormByToken(token: String, type: String) {
         view.showLoading()
         getContentFormUseCase.execute(
-                GetContentFormUseCase.createRequestParams(token, type),
+                GetContentFormUseCase.createRequestParams(token.decodeToUtf8(), type),
                 GetContentFormSubscriber(view, type)
         )
     }

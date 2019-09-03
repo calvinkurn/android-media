@@ -1,5 +1,7 @@
 package com.tokopedia.kotlin.extensions.view
 
+import java.net.URLDecoder
+
 /**
  * @author by nisie on 12/02/19.
  */
@@ -25,3 +27,5 @@ fun String?.toDoubleOrZero(): Double {
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }
+
+fun String.decodeToUtf8() = URLDecoder.decode(this, "UTF-8")
