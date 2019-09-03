@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.di2.PeopleAddressNetworkModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformCommonModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformNetworkModule
+import com.tokopedia.purchase_platform.common.di.PeopleAddressNetworkModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformCommonModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantContract

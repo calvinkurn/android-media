@@ -76,7 +76,8 @@
 
         <service
             android:name="com.tokopedia.purchase_platform.features.cart.view.UpdateCartIntentService"
-            android:exported="false" />
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:enabled="true" />
 
 
     </application>

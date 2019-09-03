@@ -1,22 +1,25 @@
 package com.tokopedia.purchase_platform.features.cart.view;
 
-import android.app.IntentService;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
+import android.support.v4.app.JobIntentService;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
+import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateCartData;
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase;
-import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
-import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
+import com.tokopedia.purchase_platform.features.cart.view.di.DaggerNewCartComponent;
 import com.tokopedia.usecase.RequestParams;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -24,29 +27,28 @@ import rx.Subscriber;
  * @author Irfan Khoirul on 31/07/18.
  */
 
-public class UpdateCartIntentService extends IntentService {
+public class UpdateCartIntentService extends JobIntentService {
 
     public static final String EXTRA_CART_ITEM_DATA_LIST = "EXTRA_CART_ITEM_DATA_LIST";
 
-    private UpdateCartUseCase updateCartUseCase;
-    private UserSession userSession;
+    @Inject
+    UpdateCartUseCase updateCartUseCase;
+
+    @Inject
+    UserSessionInterface userSession;
 
     public UpdateCartIntentService() {
-        super(UpdateCartIntentService.class.getSimpleName());
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-        if (getApplication() != null) {
-            if (updateCartUseCase == null) {
-//                updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
-            }
-            if (userSession == null) {
-                userSession = new UserSession(getApplication());
-            }
-        }
+    public void onCreate() {
+        super.onCreate();
+        initInjector();
+    }
 
-        if (userSession != null && updateCartUseCase != null && intent != null && intent.hasExtra(EXTRA_CART_ITEM_DATA_LIST)) {
+    @Override
+    protected void onHandleWork(@NonNull Intent intent) {
+        if (userSession != null && updateCartUseCase != null && intent.hasExtra(EXTRA_CART_ITEM_DATA_LIST)) {
             List<CartItemData> cartItemDataList = intent.getParcelableArrayListExtra(EXTRA_CART_ITEM_DATA_LIST);
             List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
             for (CartItemData data : cartItemDataList) {
@@ -80,6 +82,14 @@ public class UpdateCartIntentService extends IntentService {
                 }
             });
         }
+    }
+
+    private void initInjector() {
+        BaseMainApplication baseMainApplication = (BaseMainApplication) getApplication();
+        DaggerNewCartComponent.builder()
+                .baseAppComponent(baseMainApplication.getBaseAppComponent())
+                .build()
+                .inject(this);
     }
 
     private TKPDMapParam<String, String> getGeneratedAuthParamNetwork(

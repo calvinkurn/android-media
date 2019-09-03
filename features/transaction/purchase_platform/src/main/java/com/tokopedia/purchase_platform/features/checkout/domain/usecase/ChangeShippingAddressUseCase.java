@@ -1,8 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.domain.usecase;
 
-import com.tokopedia.purchase_platform.common.data.common.repository.ICommonPurchaseRepository;
+import com.tokopedia.purchase_platform.common.data.repository.ICommonPurchaseRepository;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.ShippingAddressDataResponse;
-import com.tokopedia.purchase_platform.features.checkout.data.repository.ICheckoutRepository;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

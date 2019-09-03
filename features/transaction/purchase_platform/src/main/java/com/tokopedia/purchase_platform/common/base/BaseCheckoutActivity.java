@@ -4,17 +4,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.purchase_platform.common.di.component.CartComponent;
-import com.tokopedia.purchase_platform.common.di.component.CartComponentInjector;
 import com.tokopedia.purchase_platform.R;
 
 /**
  * @author anggaprasetiyo on 18/04/18.
  */
-public abstract class BaseCheckoutActivity extends BaseSimpleActivity implements HasComponent<CartComponent> {
+public abstract class BaseCheckoutActivity extends BaseSimpleActivity implements HasComponent<BaseAppComponent> {
 
     protected boolean isAfterRotate;
 
@@ -108,8 +107,7 @@ public abstract class BaseCheckoutActivity extends BaseSimpleActivity implements
     protected abstract void setActionVar();
 
     @Override
-    public CartComponent getComponent() {
-        return (CartComponent) getApplicationContext();
-//        return CartComponentInjector.newInstance(getApplication()).getCartApiServiceComponent();
+    public BaseAppComponent getComponent() {
+        return ((BaseMainApplication) getApplicationContext()).getBaseAppComponent();
     }
 }

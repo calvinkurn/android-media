@@ -34,7 +34,6 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
-import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -64,7 +63,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
-import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
+import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
@@ -233,8 +232,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         boolean hasChanges = dPresenter.dataHasChanged();
 
         try {
-            if (hasChanges && getActivity() != null && getSelectedCartDataList() != null
-                    && getSelectedCartDataList().size() > 0 && !FLAG_BEGIN_SHIPMENT_PROCESS) {
+            Activity activity = getActivity();
+            List<CartItemData> cartItemDataList = getSelectedCartDataList();
+            if (hasChanges && activity != null && cartItemDataList != null
+                    && cartItemDataList.size() > 0 && !FLAG_BEGIN_SHIPMENT_PROCESS) {
                 Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
                 service.putParcelableArrayListExtra(
                         UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())

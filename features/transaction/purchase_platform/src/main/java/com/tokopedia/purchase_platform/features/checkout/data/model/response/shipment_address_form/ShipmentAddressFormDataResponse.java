@@ -6,7 +6,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.mode
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyV2;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldAttributes;
-import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.GlobalCouponAttr;
+import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.PromoSuggestion;
 
 import java.util.ArrayList;

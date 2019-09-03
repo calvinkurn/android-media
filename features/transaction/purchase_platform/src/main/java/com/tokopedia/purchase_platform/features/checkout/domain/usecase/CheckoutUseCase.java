@@ -8,7 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
-import com.tokopedia.purchase_platform.common.data.common.repository.ICommonPurchaseRepository;
+import com.tokopedia.purchase_platform.common.data.repository.ICommonPurchaseRepository;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil;

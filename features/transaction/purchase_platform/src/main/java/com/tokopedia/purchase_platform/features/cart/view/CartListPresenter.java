@@ -52,7 +52,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
-import com.tokopedia.purchase_platform.common.data.common.api.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException;
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest;
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;

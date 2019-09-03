@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.checkout.data.api
 
-import com.tokopedia.purchase_platform.common.data.common.api.CommonPurchaseApiUrl
+import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApiUrl
 
 /**
  * Created by Irfan Khoirul on 2019-08-15.

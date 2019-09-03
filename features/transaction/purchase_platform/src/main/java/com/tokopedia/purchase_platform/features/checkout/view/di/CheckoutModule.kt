@@ -13,8 +13,8 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.base.IMapperUtil
-import com.tokopedia.purchase_platform.common.di2.*
-import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener
+import com.tokopedia.purchase_platform.common.di.*
+import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.purchase_platform.features.checkout.data.api.CheckoutApi
 import com.tokopedia.purchase_platform.features.checkout.data.repository.CheckoutRepository

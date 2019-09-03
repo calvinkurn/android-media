@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
+import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 
 /**
  * @author anggaprasetiyo on 13/03/18.

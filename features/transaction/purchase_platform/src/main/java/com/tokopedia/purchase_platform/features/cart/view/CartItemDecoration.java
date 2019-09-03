@@ -9,7 +9,7 @@ import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartTickerV
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
-import com.tokopedia.purchase_platform.common.feature.promo.PromoGlobalViewHolder;
+import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecentViewViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSectionHeaderViewHolder;

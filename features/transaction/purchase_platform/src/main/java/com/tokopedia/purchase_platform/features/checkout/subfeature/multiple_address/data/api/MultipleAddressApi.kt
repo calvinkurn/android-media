@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.data.api
 
-import com.tokopedia.purchase_platform.common.data.common.api.CartResponse
+import com.tokopedia.purchase_platform.common.data.api.CartResponse
 import retrofit2.Response
 import retrofit2.http.FieldMap
 import retrofit2.http.FormUrlEncoded

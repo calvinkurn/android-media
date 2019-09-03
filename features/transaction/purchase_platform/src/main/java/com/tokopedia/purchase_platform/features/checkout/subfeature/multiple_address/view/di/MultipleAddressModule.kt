@@ -1,10 +1,10 @@
 package com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.di
 
 import com.tokopedia.purchase_platform.common.base.IMapperUtil
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformCommonModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformNetworkModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformQualifier
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformCommonModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.CartMapper
 import com.tokopedia.purchase_platform.features.cart.domain.mapper.ICartMapper

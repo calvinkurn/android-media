@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApply;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoapplyV2;
-import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.GlobalCouponAttr;
+import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.common.data.model.response.Messages;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.PromoSuggestion;
 

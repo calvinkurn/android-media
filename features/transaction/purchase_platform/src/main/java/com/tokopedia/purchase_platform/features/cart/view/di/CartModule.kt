@@ -14,11 +14,9 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.base.IMapperUtil
-import com.tokopedia.purchase_platform.common.base.MapperUtil
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformBaseModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformNetworkModule
-import com.tokopedia.purchase_platform.common.di2.PurchasePlatformQualifier
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
+import com.tokopedia.purchase_platform.common.di.PurchasePlatformQualifier
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator
 import com.tokopedia.purchase_platform.features.cart.data.api.CartApi
 import com.tokopedia.purchase_platform.features.cart.data.repository.CartRepository
@@ -32,7 +30,6 @@ import com.tokopedia.purchase_platform.features.cart.view.CartItemDecoration
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
