@@ -1,23 +1,27 @@
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
-import org.gradle.api.artifacts.ProjectDependency
-import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.TaskAction
 
+// compare git last release with each module release
 class VersionTasks extends DefaultTask {
     def listReleaseDate = []
+    // contoh :  "com.tokopedia.url" -> "graphql"
     ArrayList<TreeModel> listTree = new ArrayList()
+
+    // untuk project yang berubah & punya properties artifact dkk, maka disimpan disini
     ArrayList<VersionModel> listVersion = new ArrayList()
-    def codeVersion = 1
-    def rootProjectTask
+
+    def rootProjectTask // simpan object root projectName
+
+    // should be change to gitLog
     def getVersionName(String module){
         def stdout = new ByteArrayOutputStream()
         stdout = "git log -1 --pretty=\'%ad\' --date=format:\'%Y-%m-%d,%H:%M:%S\' $module".execute().text
         return stdout.toString().trim().replace("'", "").replace(","," ")
     }
+
     @TaskAction
     void versionProcessTask(){
-        def df = "yyyy-MM-dd HH:mm:ss"
         def dot = new File(rootProjectTask.buildDir, 'reports/dependency-graph/project.dot')
         dot.parentFile.mkdirs()
         dot.delete()
@@ -27,24 +31,33 @@ class VersionTasks extends DefaultTask {
         dot << '  node [style=filled, fillcolor="#bbbbbb"];\n'
         dot << '  rankdir=TB;\n'
 
+        // get all projectName
         def rootProjects = []
         def queue = [rootProjectTask]
         while (!queue.isEmpty()) {
             def project = queue.remove(0)
-            rootProjects.add(project)
+            rootProjects.add(project) // simpan semua projectName dan subproject
             queue.addAll(project.childProjects.values())
         }
 
-        def projects = new LinkedHashSet<Project>()
+        def projects = new LinkedHashSet<Project>() // untuk simpan semua dependency dan projectName
+
+        // ini di-sort
+        // key projectName-dependency dan isi string nya
         def dependencies = new LinkedHashMap<Tuple2<Project, Project>, List<String>>()
         def multiplatformProjects = []
         def jsProjects = []
         def androidProjects = []
         def javaProjects = []
 
+
+        // simpan di `dependencies`
+        // semua yang dikerjakan disini `mutable`
+        // BFS ~ semua projectName
         queue = [rootProjectTask]
         while (!queue.isEmpty()) {
             def project = queue.remove(0)
+
             queue.addAll(project.childProjects.values())
 
             if (project.plugins.hasPlugin('org.jetbrains.kotlin.multiplatform')) {
@@ -64,12 +77,11 @@ class VersionTasks extends DefaultTask {
                 config.dependencies.each { dependency ->
                     projects.add(project)
                     projects.add(dependency)
-                    //rootProjects.remove(dependency)
-                    //println " ${project.path} -> ${dependency.group} "
 
                     def graphKey = new Tuple2<Project, Project>(project, dependency)
                     def traits = dependencies.computeIfAbsent(graphKey) { new ArrayList<String>() }
 
+                    // sekarang hanya untuk `implmentation` saja
                     if (config.name.toLowerCase().endsWith('implementation')) {
                         traits.add('style=dotted')
                     }
@@ -79,6 +91,9 @@ class VersionTasks extends DefaultTask {
 
         projects = projects.sort { it.name }
 
+        // semua projectName di list (tapi karena kecampur sama dependency)
+        // untuk module-module yang berubah, mulai versi dari 1
+        // dari semua projectName
         dot << '\n  # Projects\n\n'
         for (project in projects) {
             def traits = []
@@ -98,18 +113,25 @@ class VersionTasks extends DefaultTask {
             } else {
                 traits.add('fillcolor="#eeeeee"')
             }
+
+            // git log in here, kalau tidak kosong
             if(!getVersionName(project.name).isEmpty()){
-                //println project
-                //println new Date().parse(df,getVersionName(project.name))
-                if(new Date().parse(df,listReleaseDate[listReleaseDate.size()-1]) <= new Date().parse(df,getVersionName(project.name)) && !rootProjects.contains(project.name)){
-                    if(!(project.properties.artifactId).equals(null)){
-                        listVersion.add(new VersionModel(project.name,1,project.properties.groupId,project.properties.artifactId,project.properties.artifactName))
-                    }
-                    //println "ini ${project}"
-                    println "${project.artifacts} - ${project.version} - ${project.properties.artifactId}"
-                }else if(new Date().parse(df,listReleaseDate[listReleaseDate.size()-1]) < new Date().parse(df,getVersionName(project.name)) && !rootProjects.contains(project.name)){
-                    if(!(project.properties.artifactId).equals(null)) {
-                        listVersion.add(new VersionModel(project.name, 0, project.properties.groupId, project.properties.artifactId, project.properties.artifactName))
+                def DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
+
+                def lastReleaseDate = new Date().parse(DATE_FORMAT,listReleaseDate[listReleaseDate.size()-1])
+                def gitReleaseDate = new Date().parse(DATE_FORMAT,getVersionName(project.name))
+
+                // kalau date terakhir <= date log terakhir
+                if(lastReleaseDate <= gitReleaseDate){
+                    if(project.properties.artifactId!=null){
+                        // karena diri sendiri berubah, maka versi mulai dari 1
+                        def CHANGES = 1
+                        listVersion.add(new VersionModel(
+                                project.name,
+                                CHANGES,
+                                project.properties.groupId,
+                                project.properties.artifactId,
+                                project.properties.artifactName))
                     }
                 }
             }
@@ -117,9 +139,10 @@ class VersionTasks extends DefaultTask {
             dot << "  \"${project.name}\" [${traits.join(", ")}];\n"
 
         }
-        def unique = listVersion.toUnique { a, b -> a.project <=> b.project }
-        listVersion=unique
 
+        listVersion = listVersion.toUnique { a, b -> a.projectName <=> b.projectName }
+
+        //  print rank to dot
         dot << '\n  {rank = same;'
         for (project in projects) {
             if (rootProjects.contains(project)) {
@@ -131,9 +154,13 @@ class VersionTasks extends DefaultTask {
         dot << '\n  # Dependencies\n\n'
         dependencies.forEach { key, traits ->
             listVersion.each{
-               if(key.second.name.equals(it.project)){
+                // how does this comparision exist
+               if(key.second.name.equals(it.projectName)){
+
                    listTree.add(new TreeModel(key.second.name,key.first.name))
+
                    dot << "  \"${key.second.group}\" -> \"${key.first.name}\""
+                   // fungsi join menambahkan koma untuk lebih dari 1 & di tengah-tengah sebelum akhir
                    if (!traits.isEmpty()) {
                        dot << " [${traits.join(", ")}]"
                    }
@@ -144,21 +171,24 @@ class VersionTasks extends DefaultTask {
 
         dot << '}\n'
 
+        // create `project.dot`
         def p = 'dot -Tpng -O project.dot'.execute([], dot.parentFile)
         p.waitFor()
         if (p.exitValue() != 0) {
             throw new RuntimeException(p.errorStream.text)
         }
+
+        // fix version update if parent is update
+        // linear search `nama project` di dependencies & increment count
+        // graphql
         listTree.each{ tree ->
+            // com.tokopedia.url
             listVersion.each{
-                if(it.project.equals(tree.second)) {
-                    it.version+=codeVersion
+                // url adalah depenendency `graphql` maka tambah increment 1.
+                if(it.projectName.equals(tree.second)) {
+                    it.incrementCount++
                 }
             }
-        }
-
-        listVersion.each{
-            println "${it.project}  - version : ${it.version} "
         }
         println("Project module dependency graph created at ${dot.absolutePath}.png")
     }

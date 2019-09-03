@@ -82,10 +82,10 @@ class ReadGradlefileTasks extends DefaultTask{
                 //println line
                 def tanda = true
                 listVersion.each {
-                    if ((it.project).equals(module) && line.trim().startsWith("versionName = "))  {
+                    if ((it.projectName).equals(module) && line.trim().startsWith("versionName = "))  {
                         String text = line.replace("versionName = ","").replace("\"","")
                         Float temp = Float.valueOf(text)
-                        temp=temp+Float.valueOf(it.version)
+                        temp=temp+Float.valueOf(it.incrementCount)
                         writer.append("    versionName = \"$temp\"\n")
                         tanda = false
                     }else if(line.trim().startsWith("implementation") && line.contains(":")){

@@ -1,12 +1,12 @@
 class VersionModel {
-    def project
-    float version
+    def projectName
+    float incrementCount
     def groupId
     def artifactId
     def artifactName
-    VersionModel(def project, int version, def groupId, def artifactId, def artifactName){
-        this.project = project
-        this.version = version
+    VersionModel(def projectName, int incrementCount, def groupId, def artifactId, def artifactName){
+        this.projectName = projectName
+        this.incrementCount = incrementCount
         this.groupId = groupId
         this.artifactId = artifactId
         this.artifactName = artifactName
