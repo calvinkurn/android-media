@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
 
     <application
-        android:label="Play">
+        android:label="@string/groupchat_title">
 
         <activity
             android:name=".channel.view.activity.ChannelActivity"
@@ -15,20 +15,20 @@
 
         <activity
             android:name=".chatroom.view.activity.GroupChatActivity"
-            android:label="Play"
+            android:label="@string/groupchat_title"
             android:resizeableActivity="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent.Groupchat"
+            android:theme="@style/Theme.Transparent"
             android:configChanges="orientation|screenSize|locale"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
 
         <activity
             android:name=".room.view.activity.PlayActivity"
-            android:label="Play"
+            android:label="@string/groupchat_title"
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent.Groupchat"
+            android:theme="@style/Theme.Transparent"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|locale"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
@@ -38,7 +38,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="@string/schema_internal_applink"
+                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_groupchat"
                     android:pathPattern="@string/path_groupchat_channel_id"/>
             </intent-filter>
@@ -47,7 +47,7 @@
 
         <activity
             android:name=".room.view.activity.PlayWebviewActivity"
-            android:label="Play"
+            android:label="@string/groupchat_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
