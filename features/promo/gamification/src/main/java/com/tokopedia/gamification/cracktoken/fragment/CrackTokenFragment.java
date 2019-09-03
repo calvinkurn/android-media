@@ -231,9 +231,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private void showToolTip() {
         if (!widgetTokenOnBoarding.hasSeenOnBoardingFromPref()) {
             ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
-            CoachMarkItem item = new CoachMarkItem(flPrize, "", getString(R.string.daily_prize_tooltip_text));
+            CoachMarkItem item = new CoachMarkItem(flPrize, getString(R.string.daily_prize_tooltip_text), "");
             coachItems.add(item);
-            CoachMark coachMark = new CoachMarkBuilder().build();
+            CoachMark coachMark = new CoachMarkBuilder().allowNextButton(false).allowPreviousButton(false).build();
 
             coachMark.show(getActivity(), "", coachItems);
         }
@@ -671,7 +671,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         if (activeNetwork == null || !activeNetwork.isConnected()) {
             loadWebViewInBottomsheet();
-        } else if (widgetTokenView.getTimesFullEggClicked() > 2) {
+        } else if (widgetTokenView.getTimesFullEggClicked() % 3 == 0) {
             if (getContext() != null) {
                 NetworkErrorHelper.showErrorSnackBar(getString(R.string.gf_crack_token_response_error), getContext(), rootView, true);
                 trackingSnackbarError(getString(R.string.gf_crack_token_response_error));

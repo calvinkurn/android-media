@@ -51,8 +51,8 @@
         </FrameLayout>
         <ImageView
             android:id="@+id/minimize_img_left"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:visibility="invisible"
             android:layout_gravity="center_vertical|start"
             android:background="@drawable/minimize_button"/>
