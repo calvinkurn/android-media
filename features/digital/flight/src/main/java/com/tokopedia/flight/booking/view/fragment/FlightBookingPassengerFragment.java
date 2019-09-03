@@ -385,11 +385,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     }
 
     @Override
-    public int getTitleSpinnerPosition() {
-        return spTitle.getSpinnerPosition();
-    }
-
-    @Override
     public void hideBirthdayInputView() {
         tilBirthDate.setVisibility(View.GONE);
     }
@@ -421,8 +416,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public String getPassengerTitle() {
-        return spTitle.getSpinnerValue().equalsIgnoreCase(getString(R.string.flight_passenger_choose_salutation))
-                ? "" : spTitle.getSpinnerValue();
+        return "";
+        //
     }
 
     @Override

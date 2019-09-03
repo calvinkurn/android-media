@@ -92,8 +92,6 @@ public interface FlightBookingPassengerContract {
 
         void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected);
 
-        int getTitleSpinnerPosition();
-
         void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
 
         void showPassengerLastNameEmptyError(@StringRes int resId);
