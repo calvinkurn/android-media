@@ -10,16 +10,21 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_CLIENT
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
+import com.tokopedia.sellerorder.list.data.model.SomListFilter
+import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
-import com.tokopedia.sellerorder.list.usecase.GetSomListTickerUseCase.Companion.INPUT_CLIENT
-import com.tokopedia.sellerorder.list.usecase.GetSomListTickerUseCase.Companion.INPUT_SELLER
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.usecase.coroutines.Fail
@@ -36,7 +41,9 @@ class SomListFragment: BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var somListItemAdapter: SomListItemAdapter
-    private var tickerList: List<SomListTicker.Data.OrderTickers.Tickers> = listOf()
+    private var filterList: List<SomListFilter.Data.OrderFilterSom.StatusList> = listOf()
+    private var orderList: List<SomListOrder.Data.OrderList.Order> = listOf()
+    private val listAllOrderStatusId = arrayListOf<List<Int>>()
 
     private val somListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomListViewModel::class.java]
@@ -59,7 +66,7 @@ class SomListFragment: BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        loadTicker()
+        loadInitial()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,85 +77,117 @@ class SomListFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         observingTicker()
-
-        // dummy layout
-        initQuickFilter()
-        initOrderList()
+        observingFilter()
+        observingOrders()
     }
 
-    private fun loadTicker() {
-        somListViewModel.getTickerList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker), INPUT_SELLER, INPUT_CLIENT, true)
+    private fun loadInitial() {
+        somListViewModel.loadSomListData(
+                GraphqlHelper.loadRawString(resources, R.raw.gql_som_ticker),
+                GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter))
     }
 
-    private fun observingTicker() {
-        somListViewModel.tickerListResult.observe(this, Observer {
+    /*private fun loadFilter() {
+        somListViewModel.getFilterList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_filter), true)
+    }
+
+    private fun loadOrders(statusList: List<Int>) {
+        somListViewModel.getOrdersAsync(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), statusList, true).start()
+    }*/
+
+    private fun observingTicker() = somListViewModel.tickerListResult.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    tickerList = it.data
-                    renderInfoTicker()
+                    renderInfoTicker(it.data)
                 }
                 is Fail -> {
                     ticker_info?.visibility = View.GONE
                 }
             }
         })
-    }
 
-    private fun renderInfoTicker() {
-        val listTickerData = arrayListOf<TickerData>()
-        tickerList.forEach {
-            if (it.isActive) {
-                listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true))
+    private fun observingFilter() {
+        somListViewModel.filterListResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    filterList = it.data
+                    loadOrderList(filterList[0].orderStatusIdList)
+                    renderFilter()
+                }
+                is Fail -> {
+                    quick_filter?.visibility = View.GONE
+                }
             }
-        }
+        })
+    }
 
-        context?.let {
-            val adapter = TickerPagerAdapter(it, listTickerData)
-            ticker_info?.addPagerView(adapter, listTickerData)
+    private fun loadOrderList(statusList: List<Int>) {
+        somListViewModel.loadOrderList(GraphqlHelper.loadRawString(resources, R.raw.gql_som_order), statusList)
+    }
+
+    private fun renderInfoTicker(tickerList: List<SomListTicker.Data.OrderTickers.Tickers>) {
+        if (tickerList.isNotEmpty()) {
+            if (tickerList.size > 1) {
+                val listTickerData = arrayListOf<TickerData>()
+                tickerList.forEach {
+                    if (it.isActive) {
+                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true))
+                    }
+                }
+
+                context?.let {
+                    val adapter = TickerPagerAdapter(it, listTickerData)
+                    adapter.setDescriptionClickEvent(object: TickerCallback {
+                        override fun onDescriptionViewClick(link: CharSequence?) {
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                        }
+
+                        override fun onDismiss() {}
+                    })
+                    ticker_info?.addPagerView(adapter, listTickerData)
+                }
+            } else {
+                tickerList.first().let {
+                    ticker_info?.setHtmlDescription(it.body)
+                    ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                }
+                ticker_info?.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(link: CharSequence?) {
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    }
+
+                    override fun onDismiss() {}
+
+                })
+            }
+        } else {
+            ticker_info?.visibility = View.GONE
         }
     }
 
-    private fun initInfoTicker() {
-        val listTickerData = arrayListOf<TickerData>()
-        listTickerData.add(TickerData("Ticker Title1", "Ticker Desc1", Ticker.TYPE_ANNOUNCEMENT, true))
-        listTickerData.add(TickerData("Ticker Title2", "Ticker Desc2", Ticker.TYPE_ANNOUNCEMENT, true))
-        listTickerData.add(TickerData("Ticker Title3", "Ticker Desc3", Ticker.TYPE_ANNOUNCEMENT, true))
-
-        context?.let {
-            val adapter = TickerPagerAdapter(it, listTickerData)
-            ticker_info?.addPagerView(adapter, listTickerData)
-        }
-    }
-
-    private fun initQuickFilter() {
-        //val listQuickFilter = List<QuickFilterItem>(5)
+    private fun renderFilter() {
         val listQuickFilter = arrayListOf<QuickFilterItem>()
+        filterList.forEach {
+            val filterItem = CustomViewQuickFilterItem()
+            filterItem.name = it.orderStatus
+            if (it.orderStatusAmount > 0) filterItem.name += " (" + it.orderStatusAmount + ")"
 
-        val filterItem1 = CustomViewQuickFilterItem()
-        filterItem1.name = "Siap Dikirim nih"
-        filterItem1.setColorBorder(R.color.tkpd_main_green)
-        filterItem1.isSelected = true
-        listQuickFilter.add(filterItem1)
+            if (it.isChecked) {
+                filterItem.setColorBorder(R.color.tkpd_main_green)
+                filterItem.isSelected = true
+            } else {
+                filterItem.setColorBorder(R.color.gray_background)
+                filterItem.isSelected = false
+            }
 
-        val filterItem2 = CustomViewQuickFilterItem()
-        filterItem2.name = "Pesanan mau dibatalin"
-        filterItem2.setColorBorder(R.color.gray_background)
-        listQuickFilter.add(filterItem2)
-
-        val filterItem3 = CustomViewQuickFilterItem()
-        filterItem3.name = "Pesanan Baru"
-        filterItem3.setColorBorder(R.color.gray_background)
-        listQuickFilter.add(filterItem3)
-
-        val filterItem4 = CustomViewQuickFilterItem()
-        filterItem4.name = "Pesanan Lama"
-        filterItem4.setColorBorder(R.color.gray_background)
-        listQuickFilter.add(filterItem4)
+            listQuickFilter.add(filterItem)
+            listAllOrderStatusId.add(it.orderStatusIdList)
+        }
 
         quick_filter.renderFilter(listQuickFilter)
     }
 
-    private fun initOrderList() {
+    /*private fun initOrderList() {
         somListItemAdapter = SomListItemAdapter()
         order_list_rv?.apply {
             layoutManager = LinearLayoutManager(activity)
@@ -162,5 +201,28 @@ class SomListFragment: BaseDaggerFragment() {
 
         somListItemAdapter.somItemList = testSomListItem.toMutableList()
         somListItemAdapter.notifyDataSetChanged()
+    }*/
+
+    private fun observingOrders() {
+        somListViewModel.orderListResult.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    orderList = it.data
+                    renderOrderList()
+                }
+                is Fail -> {
+                    order_list_rv?.visibility = View.GONE
+                }
+            }
+        })
+    }
+
+    private fun renderOrderList() {
+        somListItemAdapter = SomListItemAdapter()
+        order_list_rv?.apply {
+            layoutManager = LinearLayoutManager(activity)
+            adapter = somListItemAdapter
+        }
+        somListItemAdapter.somItemList = orderList.toMutableList()
     }
 }

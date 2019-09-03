@@ -23,9 +23,4 @@ class SomModule {
     @SomScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
-
-    @SomScope
-    @Provides
-    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase =
-            MultiRequestGraphqlUseCase(graphqlRepository)
 }

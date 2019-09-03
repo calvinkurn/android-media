@@ -17,12 +17,13 @@
         android:orientation="vertical">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_status_order"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_32"
             android:background="@color/green_header"
             android:gravity="center"
             app:typographyType="small"
-            android:textStyle="bold"
+            app:typographyWeight="bold"
             tools:text="@string/status_new"/>
 
         <RelativeLayout
@@ -34,12 +35,12 @@
             android:layout_marginBottom="@dimen/dp_18">
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/invoice_label"
+                android:id="@+id/label_invoice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:typographyType="body_3"
                 tools:text="INV/20161025/XVI/X/51234657"
-                android:textStyle="bold"/>
+                app:typographyWeight="bold"/>
 
             <LinearLayout
                 android:id="@+id/ll_product"
@@ -47,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:orientation="horizontal"
-                android:layout_below="@id/invoice_label">
+                android:layout_below="@id/label_invoice">
 
                 <RelativeLayout
                     android:id="@+id/rl_left"
@@ -55,33 +56,42 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="start">
 
-                    <ImageView
-                        android:id="@+id/ic_product"
-                        android:layout_width="@dimen/dp_50"
-                        android:layout_height="@dimen/dp_50"
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/ic_product_card"
+                        android:layout_width="@dimen/dp_52"
+                        android:layout_height="@dimen/dp_52"
                         android:layout_marginEnd="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_8"
-                        android:src="@drawable/ic_store"
-                        tools:ignore="ContentDescription"
-                        android:layout_alignParentTop="true"/>
+                        app:cardCornerRadius="6dp"
+                        app:cardElevation="@dimen/dp_0"
+                        android:layout_margin="5dp"
+                        android:layout_alignParentTop="true">
+
+                        <ImageView
+                            android:id="@+id/ic_product"
+                            android:layout_width="@dimen/dp_52"
+                            android:layout_height="@dimen/dp_52"
+                            tools:ignore="ContentDescription" />
+
+                    </android.support.v7.widget.CardView>
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/date_order"
+                        android:id="@+id/label_date_order"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_toRightOf="@id/ic_product"
-                        android:layout_toEndOf="@id/ic_product"
+                        android:layout_toRightOf="@id/ic_product_card"
+                        android:layout_toEndOf="@id/ic_product_card"
                         app:typographyType="small"
                         tools:text="25 Des 2018"/>
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/name_buyer"
+                        android:id="@+id/label_buyer_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/ic_product"
-                        android:layout_toEndOf="@id/ic_product"
-                        android:layout_below="@id/date_order"
+                        android:layout_toRightOf="@id/ic_product_card"
+                        android:layout_toEndOf="@id/ic_product_card"
+                        android:layout_below="@id/label_date_order"
                         app:typographyType="body_3"
                         android:layout_marginTop="@dimen/dp_2"
                         tools:text="Delia Nelson"/>
@@ -95,7 +105,7 @@
                     android:layout_gravity="end">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/response_due_label"
+                        android:id="@+id/label_due_response"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
@@ -103,18 +113,48 @@
                         app:typographyType="small"
                         android:text="@string/response_due"/>
 
-                    <com.tokopedia.unifyprinciples.Typography
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/ic_label_due_card"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:typographyType="small"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
-                        tools:text="@string/due_day"
+                        app:cardCornerRadius="3dp"
+                        app:cardElevation="@dimen/dp_0"
                         android:background="@drawable/bg_due_response"
-                        android:layout_below="@id/response_due_label"
+                        android:layout_below="@id/label_due_response"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_marginTop="@dimen/dp_9"/>
+                        android:layout_marginTop="@dimen/dp_9">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/ic_time"
+                                android:layout_width="@dimen/dp_12"
+                                android:layout_height="@dimen/dp_12"
+                                app:srcCompat="@drawable/ic_time"
+                                tools:ignore="ContentDescription"
+                                android:paddingTop="@dimen/dp_4"
+                                android:paddingLeft="@dimen/dp_4"
+                                android:paddingStart="@dimen/dp_4"/>
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/label_due_response_value"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:typographyType="small"
+                                app:typographyWeight="bold"
+                                android:textColor="@color/white"
+                                tools:text="@string/due_day"
+                                android:padding="@dimen/dp_4"
+                                android:layout_marginLeft="@dimen/dp_2"
+                                android:layout_marginStart="@dimen/dp_2"/>
+
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
 
                 </RelativeLayout>
 
