@@ -6,10 +6,6 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterFlagSelectedModel;
 
-/**
- * Created by henrypriyono on 10/31/17.
- */
-
 public class EmptySearchModel implements Visitable<BrowseSectionTypeFactory> {
 
     @DrawableRes

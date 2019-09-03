@@ -2,10 +2,6 @@ package com.tokopedia.filter.common.data;
 
 import com.tokopedia.design.list.item.SectionDividedItem;
 
-/**
- * Created by henrypriyono on 8/31/17.
- */
-
 public class OptionWrapper implements SectionDividedItem {
     private Option option;
 

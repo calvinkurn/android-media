@@ -5,10 +5,6 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Gl
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.filter.common.data.Option;
 
-/**
- * Created by henrypriyono on 10/18/17.
- */
-
 public interface ProductListener extends EmptyStateListener {
     void onItemClicked(ProductItem item, int adapterPosition);
 

@@ -46,10 +46,6 @@ import rx.schedulers.Schedulers;
 
 import static android.app.Activity.RESULT_OK;
 
-/**
- * Created by henrypriyono on 12/03/18.
- */
-
 public class BottomSheetFilterView extends BaseCustomView implements BottomSheetDynamicFilterView {
 
     private RecyclerView filterMainRecyclerView;

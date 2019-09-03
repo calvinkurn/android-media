@@ -9,10 +9,6 @@ import com.tokopedia.filter.newdynamicfilter.adapter.viewholder.DynamicFilterDet
 import com.tokopedia.filter.newdynamicfilter.helper.RatingHelper;
 import com.tokopedia.filter.newdynamicfilter.view.DynamicFilterDetailView;
 
-/**
- * Created by henrypriyono on 8/24/17.
- */
-
 public class DynamicFilterDetailRatingAdapter extends DynamicFilterDetailAdapter {
 
     public DynamicFilterDetailRatingAdapter(DynamicFilterDetailView filterDetailView) {
@@ -41,8 +37,17 @@ public class DynamicFilterDetailRatingAdapter extends DynamicFilterDetailAdapter
         @Override
         public void bind(final Option option) {
             super.bind(option);
-            int ratingCount = Integer.parseInt(option.getName());
+            int ratingCount = getRatingCount(option);
             ratingView.setImageResource(RatingHelper.getRatingDrawable(ratingCount));
+        }
+
+        private int getRatingCount(final Option option) {
+            try {
+                return Integer.parseInt(option.getValue());
+            }
+            catch (Exception e) {
+                return 0;
+            }
         }
     }
 }

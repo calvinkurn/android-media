@@ -2,10 +2,6 @@ package com.tokopedia.filter.newdynamicfilter.helper;
 
 import com.tokopedia.filter.R;
 
-/**
- * Created by henrypriyono on 8/24/17.
- */
-
 public class RatingHelper {
     public static int getRatingDrawable(int ratingCount) {
         switch (ratingCount) {

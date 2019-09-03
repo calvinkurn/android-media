@@ -6,10 +6,6 @@ import com.tokopedia.filter.newdynamicfilter.adapter.MultiLevelExpIndListAdapter
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author by alifa on 7/6/17.
- */
-
 public class Category implements MultiLevelExpIndListAdapter.ExpIndData {
 
     private List<Category> children = new ArrayList<>();
