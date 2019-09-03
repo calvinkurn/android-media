@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
@@ -19,6 +20,7 @@ import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract;
 import com.tokopedia.kol.feature.video.view.presenter.VideoDetailPresenter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUseCase;
@@ -156,4 +158,10 @@ public class KolModule {
         return new GetProductIsWishlistedUseCase(rawQuery, gqlUseCase);
     }
 
+    @KolScope
+    @Provides
+    public FeedAnalyticTracker providesFeedAnalyticTracker(TrackingQueue trackingQueue,
+                                                           UserSessionInterface userSessionInterface)  {
+        return new FeedAnalyticTracker(trackingQueue, userSessionInterface);
+    }
 }

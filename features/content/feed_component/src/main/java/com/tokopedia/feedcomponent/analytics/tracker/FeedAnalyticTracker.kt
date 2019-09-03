@@ -14,7 +14,7 @@ import kotlin.collections.HashMap
 class FeedAnalyticTracker
 @Inject constructor(
         private val trackingQueue: TrackingQueue
-//        ,private val userSessionInterface: UserSessionInterface
+        ,private val userSessionInterface: UserSessionInterface
 ) {
 
     private companion object {

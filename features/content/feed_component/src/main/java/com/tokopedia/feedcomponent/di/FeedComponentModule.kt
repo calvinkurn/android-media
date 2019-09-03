@@ -31,9 +31,6 @@ class FeedComponentModule {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_search_profile)
     }
 
-//    @Provides
-//    public fun provideUserSessionInterface(@ApplicationContext context: Context) = UserSession(context)
-
     @Provides
     fun provideTrackingQueue(@ApplicationContext context: Context) = TrackingQueue(context)
 }
