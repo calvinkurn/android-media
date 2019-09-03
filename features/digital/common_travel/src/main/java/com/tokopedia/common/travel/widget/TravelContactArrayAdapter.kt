@@ -15,7 +15,8 @@ import com.tokopedia.common.travel.data.entity.TravelContactListModel
  * @author by jessica on 2019-08-29
  */
 
-class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context, val textViewResourceId: Int,
+class TravelContactArrayAdapter(@get:JvmName("getContext_") val context: Context,
+                                val textViewResourceId: Int,
                                 var items: MutableList<TravelContactListModel.Contact>,
                                 var listener: ContactArrayListener)
     : ArrayAdapter<TravelContactListModel.Contact>(context, textViewResourceId, items) {

@@ -139,7 +139,9 @@
             app:contentInsetStart="0dp"
             app:contentInsetStartWithNavigation="0dp"
             app:layout_anchor="@+id/review_meta_layout"
-            app:layout_collapseMode="pin" />
+            app:layout_collapseMode="pin"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingRight="@dimen/dp_12" />
 
         <View
             android:layout_width="match_parent"

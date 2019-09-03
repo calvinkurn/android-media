@@ -99,7 +99,6 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         til_contact_name.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_title))
 
         context?.let {
-            //TO DO: CHANGE CONTACT OBJECT
             travelContactArrayAdapter = TravelContactArrayAdapter(it, R.layout.layout_travel_autocompletetv, arrayListOf(), this)
             (til_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 

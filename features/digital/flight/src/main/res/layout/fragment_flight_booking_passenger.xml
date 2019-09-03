@@ -74,7 +74,7 @@
                 android:layout_weight="1"
                 android:hint="@string/flight_booking_passenger_first_name_hint">
 
-                <android.support.v7.widget.AppCompatEditText
+                <android.support.v7.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/et_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -117,11 +117,12 @@
 
             <com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView
                 android:id="@+id/rv_passenger_title"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_4"
                 android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginBottom="@dimen/dp_15" />
+                android:layout_marginBottom="@dimen/dp_15"
+                />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_birth_date"

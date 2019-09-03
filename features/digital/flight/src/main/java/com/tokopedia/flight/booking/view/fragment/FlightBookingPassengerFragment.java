@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -18,13 +19,16 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter;
+import com.tokopedia.common.travel.data.entity.TravelContactListModel;
+import com.tokopedia.common.travel.widget.TravelContactArrayAdapter;
 import com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
@@ -55,7 +59,8 @@ import javax.inject.Inject;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FlightBookingPassengerFragment extends BaseDaggerFragment implements FlightBookingPassengerContract.View {
+public class FlightBookingPassengerFragment extends BaseDaggerFragment implements FlightBookingPassengerContract.View,
+        TravelContactArrayAdapter.ContactArrayListener {
     public static final String EXTRA_PASSENGER = "EXTRA_PASSENGER";
     public static final String EXTRA_LUGGAGES = "EXTRA_LUGGAGES";
     public static final String EXTRA_MEALS = "EXTRA_MEALS";
@@ -76,7 +81,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private AppCompatTextView tvHeader;
     private AppCompatTextView tvSubheader;
     private TkpdHintTextInputLayout tilFirstName;
-    private AppCompatEditText etFirstName;
+    private AppCompatAutoCompleteTextView etFirstName;
     private TkpdHintTextInputLayout tilLastName;
     private AppCompatEditText etLastName;
     private TkpdHintTextInputLayout tilBirthDate;
@@ -105,6 +110,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private String selectedPassengerId;
     private String requestId;
     private boolean isDomestic = true;
+
+    private TravelContactArrayAdapter travelContactArrayAdapter;
 
     public FlightBookingPassengerFragment() {
         // Required empty public constructor
@@ -178,7 +185,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         tvHeader = (AppCompatTextView) view.findViewById(R.id.tv_header);
         tvSubheader = (AppCompatTextView) view.findViewById(R.id.tv_subheader);
         tilFirstName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_first_name);
-        etFirstName = (AppCompatEditText) view.findViewById(R.id.et_first_name);
+        etFirstName = (AppCompatAutoCompleteTextView) view.findViewById(R.id.et_first_name);
         tilLastName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_last_name);
         etLastName = (AppCompatEditText) view.findViewById(R.id.et_last_name);
         rvPassengerTitle = (FilterChipRecyclerView) view.findViewById(R.id.rv_passenger_title);
@@ -203,6 +210,17 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         rvPassengerTitle.listener = (title, isSelected) -> {
 
         };
+
+        travelContactArrayAdapter = new TravelContactArrayAdapter(getContext(), com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv,
+                new ArrayList(), this);
+        etFirstName.setAdapter(travelContactArrayAdapter);
+        etFirstName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                autofillPassengerContact(travelContactArrayAdapter.getItem(position));
+            }
+        });
+
         etBirthDate.setClickable(true);
         etBirthDate.setFocusable(false);
         etBirthDate.setOnClickListener(new View.OnClickListener() {
@@ -238,6 +256,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         return view;
     }
 
+    private void autofillPassengerContact(TravelContactListModel.Contact contact) {
+        //autofill
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -267,14 +289,14 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
 
     @Override
     public void renderSpinnerForAdult() {
-        String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_adult_titles);
         rvPassengerTitle.setItem(new ArrayList(Arrays.asList(entries)), 0);
         rvPassengerTitle.selectOnlyOneChip(true);
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
-        String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
+        String[] entries = getResources().getStringArray(R.array.flight_child_infant_titles);
         rvPassengerTitle.setItem(new ArrayList(Arrays.asList(entries)), 0);
         rvPassengerTitle.selectOnlyOneChip(true);
     }
@@ -764,6 +786,11 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private void navigateToChooseIssuerCountry() {
         startActivityForResult(FlightBookingNationalityActivity.createIntent(getContext(),
                 getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY);
+    }
+
+    @Override
+    public String getFilterText() {
+        return "";
     }
 
     public interface OnFragmentInteractionListener {
