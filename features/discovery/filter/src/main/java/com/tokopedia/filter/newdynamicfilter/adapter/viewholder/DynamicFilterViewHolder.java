@@ -1,17 +1,17 @@
 package com.tokopedia.filter.newdynamicfilter.adapter.viewholder;
 
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.CompoundButton;
 
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.filter.common.data.Filter;
 
 /**
  * Created by henrypriyono on 8/11/17.
  */
 
-public abstract class DynamicFilterViewHolder extends AbstractViewHolder<Filter> {
+public abstract class DynamicFilterViewHolder extends RecyclerView.ViewHolder {
 
     public DynamicFilterViewHolder(View itemView) {
         super(itemView);
@@ -31,4 +31,6 @@ public abstract class DynamicFilterViewHolder extends AbstractViewHolder<Filter>
 
         switchView.setOnCheckedChangeListener(onCheckedChangeListener);
     }
+
+    public abstract void bind(Filter filter);
 }
