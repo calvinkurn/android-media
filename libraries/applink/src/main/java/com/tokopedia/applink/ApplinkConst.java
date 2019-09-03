@@ -352,6 +352,7 @@ public interface ApplinkConst {
         String EXTRA_NEED_REFRESH = "extra_need_refresh";
         String TRACKER_ATTRIBUTION = "tracker_attribution";
         String TRACKER_LIST_NAME = "tracker_list_name";
+        String EXTRA_REFERENCE = "reference";
 
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
     }
