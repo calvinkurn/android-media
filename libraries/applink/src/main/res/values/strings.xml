@@ -7,4 +7,14 @@
     <string name="host_product" translatable="false">product</string>
     <string name="path_add" translatable="false">/add</string>
     <string name="shop_settings_title">Pengaturan Toko</string>
+
+
+    <!--Groupchat-->
+    <string name="groupchat_title">Play</string>
+
+    <string name="host_groupchat">marketplace</string>
+    <string name="path_groupchat_channel_id">groupchat/.*\\/</string>
+
+    <string name="host_groupchat_webview">groupchat</string>
+    <string name="path_groupchat_webview">/.*\\/.*\\/</string>
 </resources>
