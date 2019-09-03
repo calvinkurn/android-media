@@ -42,6 +42,8 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
@@ -121,6 +123,7 @@ public class SearchActivity extends BaseActivity
 
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
+    @Inject RemoteConfig remoteConfig;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -221,20 +224,25 @@ public class SearchActivity extends BaseActivity
         if (!userSession.isLoggedIn()) {
             buttonCart.setVisibility(View.GONE);
         } else {
-            if (getApplication() instanceof SearchRouter) {
-                Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
-                if (drawable instanceof LayerDrawable) {
-                    CountDrawable countDrawable = new CountDrawable(this);
-                    int cartCount = ((SearchRouter) getApplication()).getCartCount(this);
-                    if (cartCount > 99) {
-                        countDrawable.setCount(getString(R.string.label_max_cart_count));
-                    } else {
-                        countDrawable.setCount(String.valueOf(cartCount));
+            if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true)) {
+                if (getApplication() instanceof SearchRouter) {
+                    Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
+                    if (drawable instanceof LayerDrawable) {
+                        CountDrawable countDrawable = new CountDrawable(this);
+                        int cartCount = ((SearchRouter) getApplication()).getCartCount(this);
+                        if (cartCount > 99) {
+                            countDrawable.setCount(getString(R.string.label_max_cart_count));
+                        } else {
+                            countDrawable.setCount(String.valueOf(cartCount));
+                        }
+                        drawable.mutate();
+                        ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
+                        buttonCart.setImageDrawable(drawable);
+                        buttonCart.setVisibility(View.VISIBLE);
                     }
-                    drawable.mutate();
-                    ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
-                    buttonCart.setImageDrawable(drawable);
                 }
+            } else {
+                buttonCart.setVisibility(View.GONE);
             }
         }
     }
@@ -250,6 +258,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void moveToCartActivity() {
+        searchTracking.eventActionClickCartButton(searchParameter.getSearchQuery());
         RouteManager.route(this, ApplinkConstInternalMarketplace.CART);
     }
 

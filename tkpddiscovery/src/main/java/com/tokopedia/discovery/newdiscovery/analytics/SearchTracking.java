@@ -657,4 +657,13 @@ public class SearchTracking {
     private String generateWishlistClickEventLabel(String keyword, String productId) {
         return keyword + " - " + productId;
     }
+
+    public void eventActionClickCartButton(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                "cartClick",
+                SearchEventTracking.Category.EventSearchResult,
+                SearchEventTracking.Action.CLICK_CART_BUTTON,
+                keyword
+        );
+    }
 }
