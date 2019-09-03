@@ -14,12 +14,12 @@ import kotlinx.android.synthetic.main.item_hotel_promo.view.*
  */
 class HotelPromoViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
-    fun bind(element: HotelPromoEntity, listener: HotelPromoAdapter.PromoClickListener?) {
+    fun bind(element: HotelPromoEntity, listener: HotelPromoAdapter.PromoClickListener?, position: Int) {
         with(itemView) {
             ImageHandler.loadImageWithoutPlaceholder(this.iv_hotel_promo, element.attributes.imageUrl)
 
             this.setOnClickListener {
-                listener?.onPromoClicked(element)
+                listener?.onPromoClicked(element, position)
                 RouteManager.route(context, element.attributes.linkUrl)
             }
         }

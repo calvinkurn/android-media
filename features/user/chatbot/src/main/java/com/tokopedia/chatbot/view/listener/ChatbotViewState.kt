@@ -2,10 +2,11 @@ package com.tokopedia.chatbot.view.listener
 
 import android.app.Activity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -32,5 +33,7 @@ interface ChatbotViewState : BaseChatViewState {
     fun onImageUpload(it: ImageUploadViewModel)
 
     fun scrollToBottom()
+
+    fun showDividerViewOnConnection(connectionDividerViewModel: ConnectionDividerViewModel)
 
 }

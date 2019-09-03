@@ -14,16 +14,16 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
+import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.data.Filter
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener
-import com.tokopedia.discovery.newdiscovery.search.adapter.SearchSectionPagerAdapter
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
-import com.tokopedia.discovery.newdiscovery.search.model.SearchSectionItem
 import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -60,11 +60,11 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         bottomSheetFilterView?.launchFilterBottomSheet()
     }
 
-    private var searchSectionPagerAdapter: SearchSectionPagerAdapter? = null
+    private var categorySectionPagerAdapter: CategoryNavigationPagerAdapter? = null
     private var isForceSwipeToShop: Boolean = false
     private var activeTabPosition: Int = 0
 
-    val searchSectionItemList = ArrayList<SearchSectionItem>()
+    private val categorySectionItemList = ArrayList<CategorySectionItem>()
 
     private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
 
@@ -217,7 +217,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     private fun applyFilter(filterParameter: Map<String, String>) {
-        val selectedFragment = searchSectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
 
         val presentFilterList = selectedFragment.getSelectedFilter()
         if (presentFilterList.size < filterParameter.size) {
@@ -243,25 +243,25 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     private fun loadSection() {
-        populateTab(searchSectionItemList)
+        populateTab(categorySectionItemList)
 
-        searchSectionPagerAdapter = SearchSectionPagerAdapter(supportFragmentManager)
-        searchSectionPagerAdapter!!.setData(searchSectionItemList)
-        pager.adapter = searchSectionPagerAdapter
+        categorySectionPagerAdapter = CategoryNavigationPagerAdapter(supportFragmentManager)
+        categorySectionPagerAdapter?.setData(categorySectionItemList)
+        pager.adapter = categorySectionPagerAdapter
         tabs.setupWithViewPager(pager)
 
         setActiveTab()
     }
 
-    private fun populateTab(searchSectionItemList: ArrayList<SearchSectionItem>) {
+    private fun populateTab(searchSectionItemList: ArrayList<CategorySectionItem>) {
         initFragments()
         addFragmentsToList(searchSectionItemList)
 
     }
 
-    private fun addFragmentsToList(searchSectionItemList: ArrayList<SearchSectionItem>) {
-        searchSectionItemList.add(SearchSectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName)))
-        searchSectionItemList.add(SearchSectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
+    private fun addFragmentsToList(searchSectionItemList: ArrayList<CategorySectionItem>) {
+        searchSectionItemList.add(CategorySectionItem("Produk", ProductNavFragment.newInstance(departmentId, departmentName)))
+        searchSectionItemList.add(CategorySectionItem("Katalog", CatalogNavFragment.newInstance(departmentId, departmentName)))
     }
 
     private fun initFragments() {

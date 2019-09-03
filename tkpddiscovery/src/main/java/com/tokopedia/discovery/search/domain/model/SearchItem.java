@@ -8,31 +8,33 @@ import com.google.gson.annotations.SerializedName;
 
 public class SearchItem {
     @SerializedName("keyword")
-    private String keyword;
+    private String keyword = "";
     @SerializedName("url")
-    private String url;
+    private String url = "";
     @SerializedName("recom")
-    private String recom;
+    private String recom = "";
     @SerializedName("applink")
-    private String applink;
+    private String applink = "";
     @SerializedName("sc")
-    private String sc;
+    private String sc = "";
     @SerializedName("imageURI")
-    private String imageURI;
+    private String imageURI = "";
     @SerializedName("isOfficial")
-    private boolean isOfficial;
+    private boolean isOfficial = false;
     @SerializedName("location")
-    private String location;
+    private String location = "";
     @SerializedName("id")
-    private String itemId;
+    private String itemId = "";
     @SerializedName("price")
-    private String price;
+    private String price = "";
     @SerializedName("affiliate_username")
-    private String affiliateUserName;
+    private String affiliateUserName = "";
     @SerializedName("iskol")
-    private boolean isKOL;
+    private boolean isKOL = false;
     @SerializedName("post_count")
-    private int postCount;
+    private int postCount = 0;
+    @SerializedName("icon_url")
+    private String shopBadgeIconUrl = "";
 
     public String getItemId() {
         return itemId;
@@ -146,6 +148,14 @@ public class SearchItem {
 
     public void setPostCount(int postCount) {
         this.postCount = postCount;
+    }
+
+    public void setShopBadgeIconUrl(String shopBadgeIconUrl) {
+        this.shopBadgeIconUrl = shopBadgeIconUrl;
+    }
+
+    public String getShopBadgeIconUrl() {
+        return this.shopBadgeIconUrl;
     }
 }
 

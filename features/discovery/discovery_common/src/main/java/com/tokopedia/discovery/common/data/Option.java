@@ -63,6 +63,9 @@ public final class Option implements Parcelable {
     @SerializedName("icon")
     @Expose
     String iconUrl;
+    @SerializedName("description")
+    @Expose
+    String description;
     @SerializedName(value="is_popular", alternate={"isPopular"})
     @Expose
     boolean isPopular;
@@ -179,6 +182,14 @@ public final class Option implements Parcelable {
         this.iconUrl = iconUrl;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getInputState() {
         return inputState;
     }
@@ -236,6 +247,7 @@ public final class Option implements Parcelable {
         dest.writeString(this.valMin);
         dest.writeString(this.valMax);
         dest.writeString(this.iconUrl);
+        dest.writeString(this.description);
         dest.writeByte(this.isPopular ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isNew ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.levelTwoCategoryList);
@@ -255,6 +267,7 @@ public final class Option implements Parcelable {
         this.valMin = in.readString();
         this.valMax = in.readString();
         this.iconUrl = in.readString();
+        this.description = in.readString();
         this.isPopular = in.readByte() != 0;
         this.isNew = in.readByte() != 0;
         this.levelTwoCategoryList = in.createTypedArrayList(LevelTwoCategory.CREATOR);

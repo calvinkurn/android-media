@@ -9,6 +9,7 @@ public class ShopSearch extends BaseItemAutoCompleteSearch
 
     private String location;
     private boolean isOfficial;
+    private String shopBadgeIconUrl;
 
     @Override
     public int type(SearchTypeFactory typeFactory) {
@@ -31,4 +32,11 @@ public class ShopSearch extends BaseItemAutoCompleteSearch
         isOfficial = official;
     }
 
+    public void setShopBadgeIconUrl(String shopBadgeIconUrl) {
+        this.shopBadgeIconUrl = shopBadgeIconUrl;
+    }
+
+    public String getShopBadgeIconUrl() {
+        return this.shopBadgeIconUrl;
+    }
 }

@@ -78,10 +78,14 @@ public class OrderDetails {
     @Expose
     private String helpLink;
 
+    @SerializedName("requestCancelInfo")
+    @Expose
+    private RequestCancelInfo requestCancelInfo;
+
     static final String ATTRIBUTE_BOUGHT_DATE = "Tanggal Pembelian";
     static final String ATTRIBUTE_ID = "id";
 
-    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo,String helpLink) {
+    public OrderDetails(Status status, ConditionalInfo conditionalInfo, List<Title> title, Invoice invoice, OrderToken orderToken, List<Detail> detail, List<AdditionalInfo> additionalInfo, List<Pricing> pricing, PaymentMethod paymentMethod, List<PayMethod> payMethods, PaymentData paymentData, ContactUs contactUs, List<ActionButton> actionButtons, List<Items> items, DriverDetails driverDetails, DropShipper dropShipper, ShopInfo shopInfo,String helpLink, RequestCancelInfo requestCancelInfo) {
         this.status = status;
         this.conditionalInfo = conditionalInfo;
         this.title = title;
@@ -100,6 +104,7 @@ public class OrderDetails {
         this.dropShipper = dropShipper;
         this.shopInfo = shopInfo;
         this.helpLink = helpLink;
+        this.requestCancelInfo = requestCancelInfo;
     }
 
     public Status status() {
@@ -182,10 +187,14 @@ public class OrderDetails {
         return helpLink;
     }
 
+    public RequestCancelInfo getRequestCancelInfo() {
+        return requestCancelInfo;
+    }
     @Override
     public String toString() {
         return "[OrderDetails:{"
                 + "status="+status +","
+                + "requestCancelInfo="+requestCancelInfo +","
                 + "conditionalInfo="+conditionalInfo +","
                 + "title="+title +","
                 + "invoice="+invoice +","

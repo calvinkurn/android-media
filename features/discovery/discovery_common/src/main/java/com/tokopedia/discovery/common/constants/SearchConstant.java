@@ -63,10 +63,6 @@ public interface SearchConstant {
         String PATH_BROWSE_CATALOG = "search/v2.1/catalog";
     }
 
-    interface Tome {
-        String PATH_IS_FAVORITE_SHOP = "v1/user/isfollowing";
-    }
-
     interface DynamicFilter {
         String GET_DYNAMIC_FILTER_USE_CASE = "get_dynamic_filter_use_case";
         String GET_DYNAMIC_FILTER_V4_USE_CASE = "get_dynamic_filter_v4_use_case";
@@ -107,5 +103,12 @@ public interface SearchConstant {
 
     interface SearchProfile {
         String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
+    }
+
+    interface SearchTabPosition {
+        int TAB_FIRST_POSITION = 0;
+        int TAB_SECOND_POSITION = 1;
+        int TAB_THIRD_POSITION = 2;
+        int TAB_FORTH_POSITION = 3;
     }
 }

@@ -1,0 +1,58 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+android {
+    configurations {
+        all {
+            resolutionStrategy {
+                force "android.arch.core:runtime:1.1.1"
+            }
+        }
+    }
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ['targetModuleName': 'graphql']
+            }
+        }
+    }
+}
+
+project.ext {
+    artifactId = 'graphql'
+    groupId = 'com.tokopedia.graphql'
+    versionName = "1.0.3"
+    artifactName = "graphql"
+}
+
+
+
+dependencies {
+    implementation "com.tokopedia.usecase:usecase:2.24"
+    implementation rootProject.ext.miscDependencies.gson
+    implementation "com.tokopedia.url:url:1.0.1"
+    implementation "com.tokopedia.user.session:user_session:1.0.6"
+    implementation "com.tokopedia.config:global_config:1.0.2"
+    implementation "com.tokopedia.network:network:1.0.2"
+    //room
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+
+    implementation rootProject.ext.miscDependencies.dagger
+    kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation "com.jakewharton.timber:timber:4.7.1"
+}
+
+apply from: '../publish_local.gradle'

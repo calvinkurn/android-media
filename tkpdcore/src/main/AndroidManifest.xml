@@ -100,14 +100,6 @@
             android:label="@string/title_activity_shop_location"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.manage.people.address.activity.AddAddressActivity"
-            android:label="@string/title_activity_add_address"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity"
-            android:label="@string/title_activity_choose_address"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.manage.people.notification.activity.ManageNotificationActivity"
             android:label="@string/title_activity_manage_notification"
             android:screenOrientation="portrait" />
@@ -225,10 +217,6 @@
             android:label="@string/title_activity_manage_people_profile"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity"
-            android:label="@string/title_activity_manage_people_address"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.core.manage.general.ManageWebViewActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -254,16 +242,10 @@
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->
-        <service
-            android:name="com.tokopedia.core.manage.people.profile.intentservice.ManagePeopleProfileIntentService"
-            android:exported="false" />
         <service android:name="com.tokopedia.core.service.HUDIntent" />
         <service
             android:name="com.tokopedia.core.product.intentservice.ProductInfoIntentService"
             android:exported="false" > </service>
-        <service
-            android:name="com.tokopedia.core.service.DownloadService"
-            android:exported="false" />
 
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->
