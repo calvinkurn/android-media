@@ -58,15 +58,6 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
     }
 
     /**
-     * [onPause] is override from [BaseSimpleActivity]
-     * this void override with added extra sendAllTracking
-     */
-    override fun onPause() {
-        super.onPause()
-        TrackingQueue(this).sendAll()
-    }
-
-    /**
      * [getComponent] is override from [BaseSimpleActivity]
      * this function will handle dependency injection with return dagger component
      * for a whole fragment it will show at this activity
@@ -98,7 +89,6 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      */
     override fun onBackPressed() {
         RecommendationPageTracking.eventUserClickBack()
-        RouteManager.route(this, ApplinkConst.HOME)
         this.finish()
     }
 }

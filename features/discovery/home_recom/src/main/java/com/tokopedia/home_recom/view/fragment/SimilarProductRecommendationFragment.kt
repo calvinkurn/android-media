@@ -92,6 +92,14 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
             }
         }
     }
+    /**
+     * [onPause] is override from [BaseListFragment]
+     * this void override with added extra sendAllTracking
+     */
+    override fun onPause() {
+        super.onPause()
+        trackingQueue.sendAll()
+    }
 
     override fun getAdapterTypeFactory(): SimilarProductRecommendationTypeFactoryImpl = adapterFactory
 
