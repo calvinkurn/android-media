@@ -52,32 +52,6 @@
                 android:paddingRight="@dimen/dp_4"
                 tools:text="Usia diatas 12 tahun" />
 
-            <com.tokopedia.design.text.TkpdHintTextInputLayout
-                android:id="@+id/til_saved_passenger"
-                style="@style/HintTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_5"
-                android:layout_marginBottom="@dimen/dp_15"
-                android:clickable="true"
-                android:focusable="false"
-                android:hint="@string/flight_booking_passenger_saved_hint">
-
-                <com.tokopedia.design.component.EditTextCompat
-                    android:id="@+id/et_saved_passenger"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clickable="true"
-                    android:editable="false"
-                    android:focusable="false"
-                    android:paddingEnd="10dp"
-                    android:paddingRight="10dp"
-                    android:singleLine="true"
-                    android:text="@string/flight_booking_passenger_saved_secondary_hint"
-                    android:textColor="@color/font_black_primary_70"
-                    app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
-            </com.tokopedia.design.text.TkpdHintTextInputLayout>
-
             <android.support.v7.widget.AppCompatTextView
                 style="@style/TextView.Micro.Bold"
                 android:layout_width="match_parent"
@@ -89,16 +63,6 @@
                 android:paddingEnd="@dimen/dp_4"
                 android:paddingRight="@dimen/dp_4"
                 android:text="@string/flight_passenger_data_diri_label" />
-
-            <com.tokopedia.design.text.SpinnerTextView
-                android:id="@+id/sp_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_5"
-                android:layout_marginBottom="@dimen/dp_15"
-                android:clickable="true"
-                android:focusable="false"
-                app:spinner_hint="@string/flight_passenger_choose_salutation_title" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_first_name"
@@ -177,6 +141,7 @@
                     android:textColor="@color/font_black_primary_70"
                     app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
+
         </LinearLayout>
 
         <LinearLayout
@@ -188,7 +153,8 @@
             android:orientation="vertical"
             android:paddingTop="@dimen/dp_10"
             android:paddingBottom="@dimen/dp_10"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <android.support.v7.widget.AppCompatTextView
                 style="@style/TextView.Micro.Bold"
