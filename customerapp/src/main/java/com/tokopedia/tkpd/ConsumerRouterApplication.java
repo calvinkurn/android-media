@@ -498,7 +498,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OvoPayWithQrRouter,
         OvoP2pRouter,
         TopAdsAutoRouter,
-        KYCRouter {
+        KYCRouter{
 
     private static final String EXTRA = "extra";
 
