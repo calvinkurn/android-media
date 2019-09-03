@@ -1,3 +1,4 @@
+import groovy.time.TimeCategory
 import org.gradle.api.DefaultTask
 
 class ReadGradlefileTasks extends DefaultTask{
@@ -18,7 +19,6 @@ class ReadGradlefileTasks extends DefaultTask{
         def writer = new File('tools/version/version_temp.gradle')
 
         reader.eachLine{ line ->
-            println line
             def tanda = true
             listVersion.each {
                 if (line.trim().startsWith("ext.${it.project}VersionName = ")) {
@@ -38,9 +38,10 @@ class ReadGradlefileTasks extends DefaultTask{
         //gradleModuleUpdate()
         if(!listVersion.empty){
             File file = new File("tools/version/release_date.txt")
-            println lastRelease
             def newdate = new Date().parse("yyyy-MM-dd HH:mm:ss", lastRelease)
-            newdate +=time
+            use( TimeCategory ){
+                newdate += 30.minutes
+            }
             file << "\n"
             file.append(newdate.format("yyyy-MM-dd HH:mm:ss"))
         }
@@ -50,15 +51,11 @@ class ReadGradlefileTasks extends DefaultTask{
         subprojects.each{
             listModule.put("${it.name}",num)
             listNum.put(num,"${it.name}")
-           // println " ${it.name} $num"
             num++
         }
         graph = new Graph(listModule.size())
         listTree.each{ tree ->
             graph.addEdge(listModule.get("${tree.first}"),listModule.get("${tree.second}"))
-            println listModule.get("${tree.first}")
-            println listModule.get("${tree.second}")
-            println "${tree.first} - ${tree.second}"
         }
         graph.topologicalSort()
 
@@ -133,7 +130,8 @@ class ReadGradlefileTasks extends DefaultTask{
                     }else if(line.trim().startsWith("implementation") && line.contains(":")){
                         def text = line.split(":")
                         if((it.artifactId).equals(text[1])){
-                            writer.append("${text[0]}:${text[1]}:$versionMap.get(text[1])\"\n")
+                            def version = versionMap.get(text[1])
+                            writer.append("${text[0]}:${text[1]}:$version\"\n")
                             tanda = false
                         }
                     }
@@ -145,20 +143,21 @@ class ReadGradlefileTasks extends DefaultTask{
             reader.delete()
             writer.renameTo("${module}/build.gradle")
             def saveStatus =  compileModule(module)
-            if(saveStatus.contains("BUILD SUCCESSFUL")){
+//            if(saveStatus.contains("BUILD SUCCESSFUL")){
                 log.append("${module} - SUCCESSFUL\n")
                 return false
-            }else{
-                log.append("${module} - FAILED\n")
-                returnBackup()
-                return true
-            }
+//            }else{
+//                log.append("${module} - FAILED\n")
+//                returnBackup()
+//                return true
+//            }
         }
         if(!listVersion.empty){
             File file = new File("tools/version/release_date.txt")
-            println lastRelease
             def newdate = new Date().parse("yyyy-MM-dd HH:mm:ss", lastRelease)
-            newdate +=time
+            use( TimeCategory ){
+                newdate += 30.minutes
+            }
             file << "\n"
             file.append(newdate.format("yyyy-MM-dd HH:mm:ss"))
         }
@@ -179,8 +178,9 @@ class ReadGradlefileTasks extends DefaultTask{
         }
     }
     def compileModule(String module){
-        def stdout = new ByteArrayOutputStream()
-        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint --stacktrace".execute().text
-        return stdout.toString().trim().replace("'", "").replace(","," ")
+        return ""
+//        def stdout = new ByteArrayOutputStream()
+//        stdout = "./gradlew assemble artifactoryPublish  -p $module --parallel -x lint --stacktrace".execute().text
+//        return stdout.toString().trim().replace("'", "").replace(","," ")
     }
 }
