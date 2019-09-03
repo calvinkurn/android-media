@@ -16,6 +16,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.payment.activity.TopPayActivity
@@ -43,6 +44,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     private var addrId: Int = -1
     private lateinit var destination: String
     private var isCourierSet: Boolean = false
+    private var isTimeSet: Boolean = false
 
     companion object {
         const val MONEY_IN_DEFAULT_ADDRESS = "MONEY_IN_DEFAULT_ADDRESS"
@@ -159,6 +161,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
+        resetRateAndTime()
         val courierBtn = findViewById<Button>(R.id.courier_btn)
         spId = data.services[0].products[0].shipper.shipperProduct.id
         val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
@@ -170,6 +173,27 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         moneyInCourierBottomSheet.setActionListener(this)
         val totalPaymentValue = findViewById<TextView>(R.id.tv_total_payment_value) as TextView
         totalPaymentValue.text = data.services[0].products[0].price.text
+    }
+
+    private fun resetRateAndTime() {
+        val courierLabel = findViewById<Typography>(R.id.courier_label) as Typography
+        val courierPrice = findViewById<Typography>(R.id.courier_price) as Typography
+        val courierButton = findViewById<Button>(R.id.courier_btn) as Button
+        val retrieverTimeLabel = findViewById<Typography>(R.id.retriever_time_label) as Typography
+        val retrieverTime = findViewById<Typography>(R.id.retriever_time) as Typography
+        val retrieverTimeButton = findViewById<Button>(R.id.retrival_time_btn) as Button
+        courierLabel.text = getString(R.string.choose_courier)
+        courierPrice.hide()
+        courierButton.text = getString(R.string.choose)
+        MethodChecker.setBackground(courierButton, MethodChecker.getDrawable(this, R.drawable.bg_green_rounded_tradein))
+        courierButton.setTextColor(MethodChecker.getColor(this, R.color.white))
+        retrieverTimeLabel.text = getString(R.string.retrieval_time)
+        retrieverTime.hide()
+        retrieverTimeButton.text = getString(R.string.choose)
+        MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.bg_green_rounded_tradein))
+        retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.white))
+        isCourierSet = false
+        isTimeSet = false
     }
 
     override fun onCourierButtonClick(shipperName: String?, price: String?) {
@@ -232,11 +256,11 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
         val btBuy = findViewById<Button>(R.id.bt_buy)
         btBuy.setOnClickListener {
-            if (::scheduleTime.isInitialized && isCourierSet) {
+            if (isTimeSet && isCourierSet) {
                 moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.maxTimeUnix, scheduleTime.minTimeUnix)
             } else if (!isCourierSet) {
                 showMessage(getString(R.string.select_shipping))
-            } else if (!::scheduleTime.isInitialized) {
+            } else if (!isTimeSet) {
                 showMessage(getString(R.string.select_fetch_time))
             }
         }
