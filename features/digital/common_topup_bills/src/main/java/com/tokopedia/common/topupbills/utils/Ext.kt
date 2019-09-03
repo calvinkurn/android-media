@@ -1,4 +1,4 @@
-package com.tokopedia.common.topupbills
+package com.tokopedia.common.topupbills.utils
 
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException

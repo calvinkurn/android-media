@@ -59,7 +59,7 @@ class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCas
 
     fun createBannerParams(menuID: Int): Map<String,Any> {
         val params: MutableMap<String, Any> = mutableMapOf()
-        params.put(PARAM_MENU_ID, menuID)
+        params[PARAM_MENU_ID] = menuID
         return params
     }
 

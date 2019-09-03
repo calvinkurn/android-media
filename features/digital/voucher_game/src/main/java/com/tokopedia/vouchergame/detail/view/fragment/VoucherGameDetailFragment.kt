@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -18,13 +20,16 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TelcoEnquiryMainInfo
+import com.tokopedia.common.topupbills.utils.AnalyticUtils.Companion.getVisibleItemsOfViewType
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_TELCO
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
+import com.tokopedia.vouchergame.common.VoucherGameAnalytics
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
@@ -41,6 +46,7 @@ import com.tokopedia.vouchergame.detail.widget.VoucherGameBottomSheets
 import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
+import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -63,6 +69,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
 
+    @Inject
+    lateinit var voucherGameAnalytics: VoucherGameAnalytics
+    lateinit var productTrackingList: List<TopupBillsTrackImpressionItem<VoucherGameProduct>>
+
     private var inputFieldCount = 0
     lateinit var enquiryData: List<VoucherGameEnquiryFields>
     var isEnquired = false
@@ -81,7 +91,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
 
         arguments?.let {
-            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_TELCO)
+            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_TELCO) ?: VoucherGameExtraParam()
         }
     }
 
@@ -141,6 +151,20 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
         recycler_view.layoutManager = layoutManager
         recycler_view.addItemDecoration(VoucherGameProductDecorator(ITEM_DECORATOR_SIZE, resources))
+        recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    if (::productTrackingList.isInitialized) {
+                        voucherGameAnalytics.impressionProductCard(getVisibleItemsOfViewType(
+                                productTrackingList,
+                                recycler_view,
+                                VoucherGameProductViewHolder.LAYOUT,
+                                this@VoucherGameDetailFragment::updateTrackingList))
+                    }
+                }
+            }
+        })
 
         checkout_view.setVisibilityLayout(false)
         checkout_view.setListener(this)
@@ -175,8 +199,17 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
             // Show first input field (guaranteed to have an input field)
             val firstField = enquiryData[0]
+//            input_field_1.setLabel(firstField.paramName)
+//            input_field_1.setHint(firstField.paramName)
             input_field_1.setLabel(firstField.name)
             input_field_1.setHint(firstField.name)
+
+            input_field_1.ac_input.setOnTouchListener { _, event ->
+                if (event.action == MotionEvent.ACTION_UP) {
+                    voucherGameAnalytics.eventInputNumber()
+                }
+                false
+            }
 
             // Hide second field if there is only one field, setup second field otherwise
             when (inputFieldCount) {
@@ -270,6 +303,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         if (dataCollection.isEmpty()) adapter.showEmpty()
         else {
             val listData = mutableListOf<Visitable<*>>()
+            val trackingList = mutableListOf<VoucherGameProduct>()
             for (productList in dataCollection) {
                 // Create new instance to prevent adding copy of products
                 // to adapter data (set products to empty list)
@@ -278,9 +312,23 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
                 if (productList.products.isNotEmpty())  {
                     listData.addAll(productList.products)
+                    trackingList.addAll(productList.products)
                 }
             }
+
+            productTrackingList = trackingList.mapIndexed { index, item ->
+                TopupBillsTrackImpressionItem(item, index)
+            }
             adapter.renderList(listData)
+            recycler_view.post {
+                if (::productTrackingList.isInitialized) {
+                    voucherGameAnalytics.impressionProductCard(getVisibleItemsOfViewType(
+                            productTrackingList,
+                            recycler_view,
+                            VoucherGameProductViewHolder.LAYOUT,
+                            this@VoucherGameDetailFragment::updateTrackingList))
+                }
+            }
         }
     }
 
@@ -296,11 +344,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun setupProductInfo() {
+    private fun setupOperatorDetail() {
         // TODO: Add menu detail data
 //        product_image.setOnClickListener { showProductInfo() }
 //        help_label.setOnClickListener { showProductInfo() }
-//        info_icon.setOnClickListener { showProductInfo() }
+        info_icon.setOnClickListener {
+            voucherGameAnalytics.eventClickInfoButton()
+//            showProductInfo()
+        }
     }
 
     private fun showProductInfo(imageUrl: String, title: String, desc: String) {
@@ -332,6 +383,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onItemClicked(product: VoucherGameProduct, position: Int) {
+        val operatorName = (activity as BaseVoucherGameActivity).title.toString()
+        val productIndex = productTrackingList.indexOfFirst { it.item == product }
+        voucherGameAnalytics.eventClickProductCard(operatorName, product.attributes.info,
+                productIndex, productTrackingList[productIndex])
         selectProduct(product, position)
     }
 
@@ -380,6 +435,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
+        productTrackingList.find { it.item == selectedProduct }?.run {
+            voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
+                    (activity as BaseVoucherGameActivity).title.toString(), product = this)
+        }
         processCheckout()
     }
 
@@ -408,6 +467,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
             processToCart()
         }
+    }
+
+    private fun updateTrackingList(data: List<TopupBillsTrackImpressionItem<VoucherGameProduct>>) {
+        productTrackingList = data
     }
 
     companion object {

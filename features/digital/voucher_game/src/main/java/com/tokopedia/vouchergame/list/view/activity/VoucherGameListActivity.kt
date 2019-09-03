@@ -50,4 +50,9 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
             return intent
         }
     }
+
+    override fun onBackPressed() {
+        (fragment as VoucherGameListFragment).onBackPressed()
+        super.onBackPressed()
+    }
 }

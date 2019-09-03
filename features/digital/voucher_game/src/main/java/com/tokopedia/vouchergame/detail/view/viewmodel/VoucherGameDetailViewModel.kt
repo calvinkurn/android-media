@@ -39,10 +39,8 @@ class VoucherGameDetailViewModel @Inject constructor(private val graphqlReposito
 
     fun createParams(menuID: Int, operator: String): Map<String, Any> {
         val params: MutableMap<String, Any> = mutableMapOf()
-        params.put(PARAM_MENU_ID, menuID)
-        params.put(PARAM_OPERATOR, operator)
-//        params.put(PARAM_MENU_ID, 10)
-//        params.put(PARAM_OPERATOR, "472")
+        params[PARAM_MENU_ID] = menuID
+        params[PARAM_OPERATOR] = operator
         return params
     }
 
