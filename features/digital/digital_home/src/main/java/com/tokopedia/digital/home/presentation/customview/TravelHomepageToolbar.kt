@@ -1,4 +1,4 @@
-package com.tokopedia.travel.homepage.presentation.customview
+package com.tokopedia.digital.home.presentation.customview
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable

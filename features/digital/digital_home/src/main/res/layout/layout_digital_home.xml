@@ -24,7 +24,7 @@
             android:layout_height="match_parent" />
         <!--</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>-->
 
-        <com.tokopedia.travel.homepage.presentation.customview.TravelHomepageToolbar
+        <com.tokopedia.digital.home.presentation.customview.TravelHomepageToolbar
             android:id="@+id/digital_homepage_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

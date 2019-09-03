@@ -39,6 +39,11 @@
                 app:typographyType="small" />
         </LinearLayout>
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:backgroud="@color/black"/>
+
         <LinearLayout
             android:id="@+id/orderList"
             android:layout_width="0dp"
@@ -64,6 +69,11 @@
                 app:typographyType="small" />
         </LinearLayout>
 
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:backgroud="@color/black"/>
+
         <LinearLayout
             android:id="@+id/help"
             android:layout_width="0dp"
@@ -88,6 +98,11 @@
                 android:text="@string/digital_home_label_help"
                 app:typographyType="small" />
         </LinearLayout>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:backgroud="@color/black"/>
 
         <LinearLayout
             android:id="@+id/myBills"
