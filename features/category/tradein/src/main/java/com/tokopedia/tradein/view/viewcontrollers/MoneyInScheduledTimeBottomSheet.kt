@@ -50,9 +50,17 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         for (date in scheduleDate) {
             dateAdapter.date.add(date.dateFmt)
         }
+        dateAdapter.date.add("") //Added empty element for better UX
         dateSpinner = view?.findViewById(R.id.date_spinner)
         timeSpinner = view?.findViewById(R.id.time_spinner)
-        dateSpinner?.setAdapter(dateAdapter)
+        dateSpinner?.apply {
+            setAdapter(dateAdapter)
+            setMaxValue(dateAdapter.getMaxIndex().minus(1))
+            setMinValue(dateAdapter.getMinIndex())
+            setWrapSelectorWheel(false)
+            setWheelItemCount(3)
+        }
+
         timeSpinner?.setAdapter(timeAdapter)
         currentDate = dateSpinner?.getCurrentItem()
         changeTimeByDate()
