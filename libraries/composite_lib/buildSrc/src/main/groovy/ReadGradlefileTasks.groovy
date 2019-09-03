@@ -140,14 +140,14 @@ class ReadGradlefileTasks extends DefaultTask{
             reader.delete()
             writer.renameTo("${module}/build.gradle")
             def saveStatus =  compileModule(module)
-//            if(saveStatus.contains("BUILD SUCCESSFUL")){
+            if(saveStatus.contains("BUILD SUCCESSFUL")){
                 log.append("${module} - SUCCESSFUL\n")
                 return false
-//            }else{
-//                log.append("${module} - FAILED\n")
-//                returnBackup()
-//                return true
-//            }
+            }else{
+                log.append("${module} - FAILED\n")
+                returnBackup()
+                return true
+            }
         }
         if(!listVersion.empty){
             File file = new File("tools/version/release_date.txt")
