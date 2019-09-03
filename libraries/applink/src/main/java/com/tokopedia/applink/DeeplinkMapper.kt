@@ -1,6 +1,7 @@
 package com.tokopedia.applink
 
 import android.content.Context
+import android.net.Uri
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.digital.DeeplinkMapperDigital
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
@@ -57,15 +58,27 @@ object DeeplinkMapper {
      * for example: tokopedia://product/{id} conflicts with tokopedia://product/add
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
-        return when (deeplink) {
+         when (deeplink) {
             ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.DISCOVERY_SEARCH -> return ApplinkConstInternalDiscovery.SEARCH_RESULT
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-            ApplinkConst.GROUPCHAT_LIST-> return ApplinkConstInternalMarketplace.GROUPCHAT_LIST
+            ApplinkConst.GROUPCHAT_LIST -> return ApplinkConstInternalMarketplace.GROUPCHAT_LIST
             ApplinkConst.GROUPCHAT_DETAIL -> return ApplinkConstInternalMarketplace.GROUPCHAT_DETAIL
-            else -> ""
         }
+        when {
+            specialNavigationMapper(deeplink, ApplinkConst.Play.HOST) -> {
+                return ApplinkConstInternalMarketplace.GROUPCHAT_DETAIL
+            }
+        }
+        return ""
+    }
+
+    private fun specialNavigationMapper(deeplink: String, host: String): Boolean {
+        val uri = Uri.parse(deeplink)
+        return uri.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME
+                && uri.host == host
+                && uri.pathSegments.size > 0
     }
 
     /**
