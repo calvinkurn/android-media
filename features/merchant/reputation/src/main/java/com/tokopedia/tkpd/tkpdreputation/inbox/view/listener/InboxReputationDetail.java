@@ -6,6 +6,7 @@ import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,8 @@ public interface InboxReputationDetail {
         void onGoToProfile(int reviewerId);
 
         void onGoToShopInfo(int shopId);
+
+        UserSessionInterface getUserSession();
     }
 
     interface Presenter extends CustomerPresenter<View> {

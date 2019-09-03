@@ -44,7 +44,7 @@ public class ReviewProductListMapper {
             productReviewModelContent.setReviewAttachment(generateImageAttachmentModel(review));
             productReviewModelContent.setReviewIsAnonymous(review.getReviewAnonymous() == 1);
             productReviewModelContent.setReviewStar(review.getProductRating());
-            productReviewModelContent.setSellerName(dataResponseReviewProduct.getOwner().getUser().getUserFullName());
+            productReviewModelContent.setSellerName(dataResponseReviewProduct.getOwner().getShop().getShopName());
             productReviewModelContent.setReviewTime(getReviewCreateTime(review));
             productReviewModelContent.setReviewMessage(review.getReviewMessage());
             productReviewModelContent.setReviewerName(review.getUser().getFullName());
@@ -72,7 +72,7 @@ public class ReviewProductListMapper {
             productReviewModelContent.setReviewAttachment(generateImageAttachmentModel(review));
             productReviewModelContent.setReviewIsAnonymous(review.getReviewAnonymous() == 1);
             productReviewModelContent.setReviewStar(review.getReviewStar());
-            productReviewModelContent.setSellerName(dataResponseReviewHelpful.getOwner().getUser().getUserFullName());
+            productReviewModelContent.setSellerName(dataResponseReviewHelpful.getOwner().getShop().getShopName());
             productReviewModelContent.setReviewTime(getReviewCreateTime(review));
             productReviewModelContent.setReviewMessage(review.getReviewMessage());
             productReviewModelContent.setReviewerName(review.getUser().getFullName());
@@ -129,7 +129,7 @@ public class ReviewProductListMapper {
             shopReviewModelContent.setReviewAttachment(generateImageAttachmentModel(review));
             shopReviewModelContent.setReviewIsAnonymous(review.getReviewAnonymous() == 1);
             shopReviewModelContent.setReviewStar(review.getProductRating());
-            shopReviewModelContent.setSellerName(dataResponseReviewShop.getOwner().getUser().getUserFullName());
+            shopReviewModelContent.setSellerName(dataResponseReviewShop.getOwner().getShop().getShopName());
             shopReviewModelContent.setReviewTime(getReviewCreateTime(review));
             shopReviewModelContent.setReviewMessage(review.getReviewMessage());
             shopReviewModelContent.setReviewerName(review.getUser().getFullName());

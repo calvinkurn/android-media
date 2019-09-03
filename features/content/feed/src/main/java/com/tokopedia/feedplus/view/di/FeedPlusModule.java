@@ -8,14 +8,18 @@ import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.FeedAuthInterceptor;
 import com.tokopedia.feedplus.data.api.FeedUrl;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsDetailUseCase;
+import com.tokopedia.feedplus.view.listener.DynamicFeedContract;
 import com.tokopedia.feedplus.view.listener.FeedPlusDetail;
+import com.tokopedia.feedplus.view.presenter.DynamicFeedPresenter;
 import com.tokopedia.feedplus.view.presenter.FeedPlusDetailPresenter;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
 import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
 import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
@@ -115,6 +119,14 @@ public class FeedPlusModule {
                 addWishlistUseCase,
                 removeWishlistUseCase,
                 userSession);
+    }
+
+    @FeedPlusScope
+    @Provides
+    DynamicFeedContract.Presenter provideDynamicFeedPresenter(UserSessionInterface userSession,
+                                                              GetDynamicFeedUseCase getDynamicFeedUseCase,
+                                                              LikeKolPostUseCase likeKolPostUseCase) {
+        return new DynamicFeedPresenter(userSession, getDynamicFeedUseCase, likeKolPostUseCase);
     }
 
     //SHOP COMMON

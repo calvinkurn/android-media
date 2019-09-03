@@ -27,7 +27,7 @@ import javax.annotation.RegEx
 class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecommendationComponent>{
     companion object{
         const val PRODUCT_ID = "PRODUCT_ID"
-        private const val REF = "ref"
+        private const val REF = "REF"
 
         @JvmStatic
         fun newInstance(context: Context) = Intent(context, HomeRecommendationActivity::class.java)
@@ -43,69 +43,15 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         }
     }
 
-    object DeeplinkIntents{
-        /**
-         * [getDefaultCallingIntent] for handling deeplink without product id with pattern "tokopedia://rekomendasi/?ref={ref}"
-         * @param context the default context
-         * @param extras the default extras
-         */
-        @JvmStatic
-        @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE)
-        fun getDefaultCallingIntent(context: Context, extras: Bundle): Intent{
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", "")
-        }
-
-        /**
-         * [getDefaultCallingIntent] for handling deeplink with product id with pattern "tokopedia://rekomendasi/{product_id}/?ref={ref}"
-         * @param context the default context
-         * @param extras the default extras
-         */
-        @JvmStatic
-        @DeepLink(ApplinkConst.RECOMMENDATION_PAGE)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, uri.lastPathSegment, "") ?: Intent()
-        }
-
-        /**
-         * [getDefaultCallingIntent] for handling deeplink without product id with pattern "tokopedia://rekomendasi/?ref={ref}"
-         * @param context the default context
-         * @param extras the default extras
-         */
-        @JvmStatic
-        @DeepLink(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE_WITH_REF)
-        fun getDefaultCallingIntentWithRef(context: Context, extras: Bundle): Intent{
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context, ApplinkConstInternalMarketplace.HOME_RECOMMENDATION, "", uri.getQueryParameter(REF) ?: "")
-        }
-
-        /**
-         * [getDefaultCallingIntent] for handling deeplink with product id with pattern "tokopedia://rekomendasi/{product_id}/?ref={ref}"
-         * @param context the default context
-         * @param extras the default extras
-         */
-        @JvmStatic
-        @DeepLink(ApplinkConst.RECOMMENDATION_PAGE_WITH_REF)
-        fun getCallingIntentWithRef(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)) ?: return Intent()
-            return RouteManager.getIntent(context,
-                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
-                    uri.lastPathSegment,
-                    uri.getQueryParameter(REF) ?: "") ?: Intent()
-        }
-    }
-
     /**
      * [getNewFragment] is override from [BaseSimpleActivity]
      * @return default fragment it will shown at activity
      */
     override fun getNewFragment(): Fragment {
-        return if(intent.data != null && intent?.data?.pathSegments?.isNotEmpty() == true){
-            val isNumber = intent?.data?.lastPathSegment?.matches("-?\\d+(\\.\\d+)?".toRegex()) ?: false
-            RecommendationFragment.newInstance(if(isNumber) intent?.data?.lastPathSegment ?: "" else "", intent?.data?.getQueryParameter(REF) ?: "")
-        } else if (intent.hasExtra(PRODUCT_ID) && intent.hasExtra(REF)) {
+        return if(intent.hasExtra(PRODUCT_ID) && intent.hasExtra(REF)) {
             RecommendationFragment.newInstance(intent.getStringExtra(PRODUCT_ID), intent.getStringExtra(REF))
+        } else if(intent.data != null && intent.data?.scheme == ApplinkConst.APPLINK_CUSTOMER_SCHEME){
+            RecommendationFragment.newInstance(intent.data?.lastPathSegment ?: "", intent.data?.getQueryParameter("ref") ?: "")
         } else {
             RecommendationFragment.newInstance()
         }

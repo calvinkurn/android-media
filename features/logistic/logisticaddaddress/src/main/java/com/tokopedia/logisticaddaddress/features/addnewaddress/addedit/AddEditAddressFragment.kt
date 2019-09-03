@@ -34,12 +34,13 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper
+import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.district_recommendation.DistrictRecommendationBottomSheetFragment
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
@@ -47,7 +48,6 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocompl
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autofill.AutofillDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_recommendation.DistrictRecommendationItemUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
@@ -65,7 +65,7 @@ import javax.inject.Inject
 class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
         ResultCallback<LocationSettingsResult>, AddEditAddressListener,
-        DistrictRecommendationBottomSheetFragment.ActionListener,
+        DiscomBottomSheetFragment.ActionListener,
         AutocompleteBottomSheetListener,
         PinpointMapListener,
         ZipCodeChipsAdapter.ActionListener, IOnBackPressed,
@@ -778,7 +778,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     private fun showDistrictRecommendationBottomSheet() {
         val districtRecommendationBottomSheetFragment =
-                DistrictRecommendationBottomSheetFragment.newInstance()
+                DiscomBottomSheetFragment.newInstance()
         districtRecommendationBottomSheetFragment.setActionListener(this)
         districtRecommendationBottomSheetFragment.show(fragmentManager, "")
     }
@@ -918,20 +918,20 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     override fun onConnectionFailed(p0: ConnectionResult) {
     }
 
-    override fun onGetDistrict(districtRecommendationItemUiModel: DistrictRecommendationItemUiModel) {
-        val provinceName = districtRecommendationItemUiModel.provinceName
-        val cityName = districtRecommendationItemUiModel.cityName
-        val districtName = districtRecommendationItemUiModel.districtName
+    override fun onGetDistrict(districtAddress: Address) {
+        val provinceName = districtAddress.provinceName
+        val cityName = districtAddress.cityName
+        val districtName = districtAddress.districtName
         val districtSelected = "$provinceName, $cityName, $districtName"
 
         et_kota_kecamatan_mismatch.setText(districtSelected)
         saveAddressDataModel?.selectedDistrict = districtSelected
-        saveAddressDataModel?.cityId = districtRecommendationItemUiModel.cityId
-        saveAddressDataModel?.provinceId = districtRecommendationItemUiModel.provinceId
-        saveAddressDataModel?.districtId = districtRecommendationItemUiModel.districtId
+        saveAddressDataModel?.cityId = districtAddress.cityId
+        saveAddressDataModel?.provinceId = districtAddress.provinceId
+        saveAddressDataModel?.districtId = districtAddress.districtId
         saveAddressDataModel?.latitude = ""
         saveAddressDataModel?.longitude = ""
-        saveAddressDataModel?.zipCodes = districtRecommendationItemUiModel.zipCodes
+        saveAddressDataModel?.zipCodes = districtAddress.zipCodes
         autoCompletePresenter.getAutocomplete(districtName)
     }
 

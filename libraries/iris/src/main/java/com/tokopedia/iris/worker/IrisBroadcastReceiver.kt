@@ -3,8 +3,8 @@ package com.tokopedia.iris.worker
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.tokopedia.iris.DEFAULT_MAX_ROW
-import com.tokopedia.iris.MAX_ROW
+import com.tokopedia.iris.util.DEFAULT_MAX_ROW
+import com.tokopedia.iris.util.MAX_ROW
 import rx.Observable
 import rx.schedulers.Schedulers
 

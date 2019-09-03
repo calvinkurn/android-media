@@ -3,9 +3,12 @@ package com.tokopedia.iris.data.network
 import android.content.Context
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
-import com.tokopedia.iris.*
-
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.iris.util.*
+import com.tokopedia.network.NetworkRouter
+import com.tokopedia.network.interceptor.FingerprintInterceptor
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import org.json.JSONObject
@@ -18,6 +21,7 @@ import java.util.concurrent.TimeUnit
 class ApiService(private val context: Context) {
 
     private val session: Session = IrisSession(context)
+    private val userSession: UserSessionInterface = UserSession(context)
     private var apiInterface: ApiInterface? = null
 
     fun makeRetrofitService(): ApiInterface {
@@ -49,11 +53,15 @@ class ApiService(private val context: Context) {
                 .connectTimeout(15000, TimeUnit.MILLISECONDS)
                 .writeTimeout(10000, TimeUnit.MILLISECONDS)
                 .readTimeout(10000, TimeUnit.MILLISECONDS)
-
+        addFringerInterceptor(builder)
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(ChuckInterceptor(context))
         }
         return builder.build()
+    }
+
+    private fun addFringerInterceptor(builder:OkHttpClient.Builder){
+        builder.addInterceptor(FingerprintInterceptor(context.applicationContext as NetworkRouter, userSession))
     }
 
     companion object {
