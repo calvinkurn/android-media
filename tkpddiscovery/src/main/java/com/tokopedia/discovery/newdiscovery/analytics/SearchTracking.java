@@ -660,7 +660,7 @@ public class SearchTracking {
 
     public void eventActionClickCartButton(String keyword) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                "cartClick",
+                SearchEventTracking.Event.SEARCH_RESULT,
                 SearchEventTracking.Category.EventSearchResult,
                 SearchEventTracking.Action.CLICK_CART_BUTTON,
                 keyword
