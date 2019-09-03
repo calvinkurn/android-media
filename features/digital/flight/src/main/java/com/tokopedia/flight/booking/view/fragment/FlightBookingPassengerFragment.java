@@ -24,7 +24,8 @@ import android.widget.LinearLayout;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
-import com.tokopedia.design.text.SpinnerTextView;
+import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter;
+import com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
@@ -41,7 +42,10 @@ import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.passenger.view.activity.FlightPassengerListActivity;
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -87,6 +91,8 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     private AppCompatEditText etPassportIssuerCountry;
     private AppCompatButton buttonSubmit;
     private LinearLayout passportContainer;
+
+    private FilterChipRecyclerView rvPassengerTitle;
 
     private FlightBookingPassengerViewModel viewModel;
     private List<FlightBookingAmenityMetaViewModel> luggageViewModels;
@@ -175,6 +181,7 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
         etFirstName = (AppCompatEditText) view.findViewById(R.id.et_first_name);
         tilLastName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_last_name);
         etLastName = (AppCompatEditText) view.findViewById(R.id.et_last_name);
+        rvPassengerTitle = (FilterChipRecyclerView) view.findViewById(R.id.rv_passenger_title);
         tilBirthDate = (TkpdHintTextInputLayout) view.findViewById(R.id.til_birth_date);
         etBirthDate = (AppCompatEditText) view.findViewById(R.id.et_birth_date);
         luggageContainer = (LinearLayout) view.findViewById(R.id.luggage_container);
@@ -193,6 +200,10 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                 presenter.onSaveButtonClicked();
             }
         });
+        rvPassengerTitle.listener = (title, isSelected) -> {
+
+        };
+        rvPassengerTitle.selectOnlyOneChip(true);
         etBirthDate.setClickable(true);
         etBirthDate.setFocusable(false);
         etBirthDate.setOnClickListener(new View.OnClickListener() {
@@ -258,13 +269,13 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     @Override
     public void renderSpinnerForAdult() {
         String[] entries = getResources().getStringArray(R.array.flight_adult_spinner_titles);
-        //TODO
+        rvPassengerTitle.setItem(new ArrayList(Arrays.asList(entries)), 0);
     }
 
     @Override
     public void renderSpinnerForChildAndInfant() {
         String[] entries = getResources().getStringArray(R.array.flight_child_infant_spinner_titles);
-        //TODO
+        rvPassengerTitle.setItem(new ArrayList(Arrays.asList(entries)), 0);
     }
 
     @Override

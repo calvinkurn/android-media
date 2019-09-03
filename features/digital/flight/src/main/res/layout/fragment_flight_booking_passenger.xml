@@ -109,15 +109,19 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_5"
                 android:text="@string/flight_booking_passenger_title_hint"
-                app:typographyType="body_3"
-                android:layout_marginTop="@dimen/dp_5"/>
+                app:typographyType="body_3" />
 
             <com.tokopedia.common.travel.widget.filterchips.FilterChipRecyclerView
                 android:id="@+id/rv_passenger_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/dp_15"/>
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginBottom="@dimen/dp_15" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_birth_date"
