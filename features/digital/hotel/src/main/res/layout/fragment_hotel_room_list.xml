@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <com.tokopedia.hotel.roomlist.widget.FilterChipRecyclerView
+                    <com.tokopedia.common.travel.widget.filterchipwidget.FilterChipRecyclerView
                         android:id="@+id/filter_recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />

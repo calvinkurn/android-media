@@ -1,26 +1,26 @@
-package com.tokopedia.hotel.roomlist.widget
+package com.tokopedia.common.travel.widget.filterchipwidget
 
 import android.support.annotation.ColorRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.common.travel.R
 import com.tokopedia.design.text.Chips
-import com.tokopedia.hotel.R
 
 /**
  * @author by jessica on 18/04/19
  */
 
-class ChipAdapter(val list: List<String>, val listener: OnClickListener,
+class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
                   val onResetChipListener: ResetChipListener,
                   @ColorRes val selectedColor: Int = com.tokopedia.design.R.color.black_56)
-    : RecyclerView.Adapter<ChipAdapter.ViewHolder>() {
+    : RecyclerView.Adapter<FilterChipAdapter.ViewHolder>() {
 
     var selectOnlyOneChip = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
-            = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_chip, parent, false))
+            = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.widget_filter_chip_item, parent, false))
 
     override fun getItemCount(): Int = list.size
 

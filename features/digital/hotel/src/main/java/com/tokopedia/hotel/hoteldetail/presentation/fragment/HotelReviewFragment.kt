@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.travel.widget.filterchipwidget.FilterChipAdapter
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
@@ -18,7 +19,6 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.ReviewAdapterTypeFac
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReviewViewModel
-import com.tokopedia.hotel.roomlist.widget.ChipAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_review.*
@@ -28,7 +28,7 @@ import javax.inject.Inject
  * @author by jessica on 29/04/19
  */
 
-class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFactory>(), ChipAdapter.OnClickListener {
+class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFactory>(), FilterChipAdapter.OnClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

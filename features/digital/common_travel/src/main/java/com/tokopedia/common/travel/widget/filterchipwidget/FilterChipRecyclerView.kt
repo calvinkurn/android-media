@@ -1,21 +1,21 @@
-package com.tokopedia.hotel.roomlist.widget
+package com.tokopedia.common.travel.widget.filterchipwidget
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.util.AttributeSet
 import android.view.View
+import com.tokopedia.common.travel.R
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.hotel.R
 import kotlinx.android.synthetic.main.widget_filter_chip_recycler_view.view.*
 
 /**
  * @author by jessica on 18/04/19
  */
 
-class FilterChipRecyclerView : BaseCustomView, ChipAdapter.ResetChipListener {
+class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListener {
 
-    lateinit var listener: ChipAdapter.OnClickListener
-    lateinit var adapter: ChipAdapter
+    lateinit var listener: FilterChipAdapter.OnClickListener
+    lateinit var adapter: FilterChipAdapter
 
     constructor(context: Context) : super(context) {
         init()
@@ -42,14 +42,14 @@ class FilterChipRecyclerView : BaseCustomView, ChipAdapter.ResetChipListener {
 
     fun setItem(strings: ArrayList<String>, selectedTextColor: Int = 0) {
         if (listener != null) {
-            adapter = ChipAdapter(strings, listener, this, selectedTextColor)
+            adapter = FilterChipAdapter(strings, listener, this, selectedTextColor)
             chip_recycler_view.adapter = adapter
         }
     }
 
     override fun onResetChip() {
         for (i in 0 until adapter.itemCount) {
-            with(chip_recycler_view.findViewHolderForAdapterPosition(i) as ChipAdapter.ViewHolder?) {
+            with(chip_recycler_view.findViewHolderForAdapterPosition(i) as FilterChipAdapter.ViewHolder?) {
                 this?.chips?.isSelected = false
                 this?.setTextColor(com.tokopedia.design.R.color.black_56)
             }
@@ -62,7 +62,7 @@ class FilterChipRecyclerView : BaseCustomView, ChipAdapter.ResetChipListener {
 
     fun initiallySelectedChip(position: Int) {
         if (position < adapter.itemCount) {
-            with(chip_recycler_view.findViewHolderForAdapterPosition(position) as ChipAdapter.ViewHolder?) {
+            with(chip_recycler_view.findViewHolderForAdapterPosition(position) as FilterChipAdapter.ViewHolder?) {
                 this?.chips?.isSelected = true
             }
         }

@@ -129,7 +129,7 @@
             android:layout_height="@dimen/dp_1"
             android:background="@drawable/bg_line_separator" />
 
-        <com.tokopedia.hotel.roomlist.widget.FilterChipRecyclerView
+        <com.tokopedia.common.travel.widget.filterchipwidget.FilterChipRecyclerView
             android:id="@+id/filter_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
