@@ -262,13 +262,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightSearchPresenter.fetchSearchData(flightSearchPassData, flightAirportCombineModelList)
     }
 
-    override fun fetchSortAndFilterData() {
+    override fun fetchSortAndFilterData(fromCombo: Boolean) {
         setUpProgress()
         if (adapter.itemCount == 0) {
             showLoading()
         }
 
-        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true)
+        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, true,  fromCombo)
     }
 
     override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
@@ -409,9 +409,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         val departureAirport = flightSearchMetaViewModel.departureAirport
         val arrivalAirport = flightSearchMetaViewModel.arrivalAirport
         val flightAirportCombineModel = flightAirportCombineModelList.getData(departureAirport, arrivalAirport)
-        val localListAirline = flightAirportCombineModel.airlines
-        localListAirline.addAll(flightSearchMetaViewModel.airlines)
-        flightAirportCombineModel.airlines = localListAirline
+        val localAirlines = flightAirportCombineModel.airlines
+        localAirlines.addAll(flightSearchMetaViewModel.airlines)
+        flightAirportCombineModel.airlines = localAirlines
         val size: Int = flightAirportCombineModelList.data.size
         val halfProgressAmount: Int = divideTo(divideTo(MAX_PROGRESS, size), 2)
         if (!flightAirportCombineModel.isHasLoad) {
@@ -801,8 +801,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private val SAVED_IS_COMBINE_DONE = "svd_is_combine_done"
         private val DEFAULT_DIMENS_MULTIPLIER = 0.5f
         private val PADDING_SEARCH_LIST = 60
-        private val FLIGHT_SEARCH_P1_TRACE = "mp_flight_search_p1"
-        private val FLIGHT_SEARCH_P2_TRACE = "mp_flight_search_p2"
+        private val FLIGHT_SEARCH_P1_TRACE = "tr_flight_search_p1"
+        private val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
         private val MAX_DATE_ADDITION_YEAR = 1
 
         fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {

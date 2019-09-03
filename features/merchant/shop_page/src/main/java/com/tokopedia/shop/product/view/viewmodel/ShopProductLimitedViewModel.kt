@@ -11,7 +11,14 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
+import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
+import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
+import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
+import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.ClaimBenefitMembershipUseCase
+import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetMembershipUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
@@ -34,14 +41,16 @@ import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
 
-class ShopProductLimitedViewModel @Inject constructor(private val userSession: UserSessionInterface,
+class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMembershipUseCase: ClaimBenefitMembershipUseCase,
+                                                      private val getMembershipUseCase: GetMembershipUseCase,
+                                                      private val userSession: UserSessionInterface,
                                                       private val getShopFeaturedProductUseCase: GetShopFeaturedProductUseCase,
                                                       private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
                                                       private val getShopProductUseCase: GqlGetShopProductUseCase,
                                                       private val addWishListUseCase: AddWishListUseCase,
                                                       private val removeWishlistUseCase: RemoveWishListUseCase,
                                                       private val gqlRepository: GraphqlRepository,
-                                                      dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+                                                      dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val isEtalaseEmpty: Boolean
         get() = etalaseResponse.value?.let { (it as? Success)?.data?.isEmpty() } ?: true
@@ -60,25 +69,27 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
     fun isMyShop(shopId: String) = userSession.shopId == shopId
 
     val featuredProductResponse = MutableLiveData<Result<List<ShopProductViewModel>>>()
+    val membershipStampResponse = MutableLiveData<Result<MembershipStampProgress>>()
     val etalaseResponse = MutableLiveData<Result<List<ShopEtalaseViewModel>>>()
     val productResponse = MutableLiveData<Result<Pair<Boolean, List<ShopProductViewModel>>>>()
     val productHighlightResp = MutableLiveData<List<List<ShopProductViewModel>>>()
     val etalaseHighLight = mutableListOf<ShopEtalaseViewModel>()
+    val claimMembershipResp = MutableLiveData<Result<MembershipClaimBenefitResponse>>()
 
-    fun getFeaturedProduct(shopId: String, isForceRefresh: Boolean = false){
+    fun getFeaturedProduct(shopId: String, isForceRefresh: Boolean = false) {
         getShopFeaturedProductUseCase.params = GetShopFeaturedProductUseCase.createParams(shopId.toInt())
         getShopFeaturedProductUseCase.isFromCacheFirst = !isForceRefresh
 
-        launchCatchError( block = {
-            featuredProductResponse.value = Success( withContext(Dispatchers.IO)
-                {getShopFeaturedProductUseCase.executeOnBackground()}.map { it.toProductViewModel(isMyShop(shopId))})
-        }){
+        launchCatchError(block = {
+            featuredProductResponse.value = Success(withContext(Dispatchers.IO)
+            { getShopFeaturedProductUseCase.executeOnBackground() }.map { it.toProductViewModel(isMyShop(shopId)) })
+        }) {
             featuredProductResponse.value = Fail(it)
         }
 
     }
 
-    fun getShopEtalase(shopId: String){
+    fun getShopEtalase(shopId: String) {
         val params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, true, false, isMyShop(shopId))
         getShopEtalaseByShopUseCase.execute(params, object : Subscriber<ArrayList<ShopEtalaseModel>>() {
             override fun onNext(list: ArrayList<ShopEtalaseModel>?) {
@@ -99,9 +110,31 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         })
     }
 
+    fun claimMembershipBenefit(questId: Int) {
+        claimBenefitMembershipUseCase.params = ClaimBenefitMembershipUseCase.createRequestParams(questId)
+
+        launchCatchError(block = {
+            claimMembershipResp.value = Success(claimBenefitMembershipUseCase.executeOnBackground())
+        }) {
+            claimMembershipResp.value = Fail(it)
+        }
+    }
+
+    fun getMembershipStamp(shopId: Int, isForceRefresh: Boolean) {
+        getMembershipUseCase.params = GetMembershipUseCase.createRequestParams(shopId)
+        getMembershipUseCase.isFromCacheFirst = isForceRefresh
+        launchCatchError(block = {
+            membershipStampResponse.value = withContext(Dispatchers.IO) {
+                Success(getMembershipUseCase.executeOnBackground())
+            }
+        }) {
+            membershipStampResponse.value = Fail(it)
+        }
+    }
+
     fun getShopProduct(shopId: String, page: Int = 1, perPage: Int = 10, sortId: Int = 0,
-                       etalase: String = "", search: String = "", isForceRefresh: Boolean = false){
-        with(filterInput){
+                       etalase: String = "", search: String = "", isForceRefresh: Boolean = false) {
+        with(filterInput) {
             this.page = page
             this.perPage = perPage
             this.etalaseMenu = etalase
@@ -112,50 +145,52 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, filterInput)
         getShopProductUseCase.isFromCacheFirst = !isForceRefresh
 
-        launchCatchError( block = {
-            val getProductResp = withContext(Dispatchers.IO) {getShopProductUseCase.executeOnBackground()}
+        launchCatchError(block = {
+            val getProductResp = withContext(Dispatchers.IO) { getShopProductUseCase.executeOnBackground() }
             productResponse.value = if (getProductResp.errors.isNotEmpty())
                 Fail(MessageErrorException(getProductResp.errors))
             else
                 Success(isHasNextPage(page, perPage, getProductResp.totalData)
                         to getProductResp.data.map { it.toProductViewModel(isMyShop(shopId)) })
-        }){
+        }) {
             productResponse.value = Fail(it)
         }
     }
 
-    fun getShopProductsEtalaseHighlight(shopId: String, isForceRefresh: Boolean = false){
+    fun getShopProductsEtalaseHighlight(shopId: String, isForceRefresh: Boolean = false) {
         launchCatchError(block = {
             productHighlightResp.value =
-                    etalaseHighLight.map { ShopProductFilterInput(1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
-                            "", it.etalaseId, getSort(it.etalaseId)) }
-                        .map {
-                            val params = GqlGetShopProductUseCase.createParams(shopId, it)
-                            val cacheStrategy = GraphqlCacheStrategy
-                                    .Builder(if (isForceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
-                            val gqlRequest = GraphqlRequest(getShopProductUseCase.gqlQuery, ShopProduct.Response::class.java, params)
-                            async(Dispatchers.IO) {
-                                try {
-                                    val resp = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
-                                    if (resp.getError(ShopProduct.Response::class.java)?.isNotEmpty() != true){
-                                        val gqlProduct = resp.getData<ShopProduct.Response>(ShopProduct.Response::class.java).getShopProduct
-                                        if (gqlProduct.errors.isNotEmpty()){
-                                            null
-                                        } else {
-                                            gqlProduct.data.map { product -> product.toProductViewModel(isMyShop(shopId)) }
-                                        }
-                                    } else null
+                    etalaseHighLight.map {
+                        ShopProductFilterInput(1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
+                                "", it.etalaseId, getSort(it.etalaseId))
+                    }
+                            .map {
+                                val params = GqlGetShopProductUseCase.createParams(shopId, it)
+                                val cacheStrategy = GraphqlCacheStrategy
+                                        .Builder(if (isForceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
+                                val gqlRequest = GraphqlRequest(getShopProductUseCase.gqlQuery, ShopProduct.Response::class.java, params)
+                                async(Dispatchers.IO) {
+                                    try {
+                                        val resp = gqlRepository.getReseponse(listOf(gqlRequest), cacheStrategy)
+                                        if (resp.getError(ShopProduct.Response::class.java)?.isNotEmpty() != true) {
+                                            val gqlProduct = resp.getData<ShopProduct.Response>(ShopProduct.Response::class.java).getShopProduct
+                                            if (gqlProduct.errors.isNotEmpty()) {
+                                                null
+                                            } else {
+                                                gqlProduct.data.map { product -> product.toProductViewModel(isMyShop(shopId)) }
+                                            }
+                                        } else null
 
-                                } catch (t: Throwable){
-                                    null
+                                    } catch (t: Throwable) {
+                                        null
+                                    }
                                 }
-                            }
-                        }.map { it.await() }.filterNotNull();
-        }){}
+                            }.map { it.await() }.filterNotNull();
+        }) {}
     }
 
     private fun getSort(etalaseId: String?): Int {
-        return when(etalaseId){
+        return when (etalaseId) {
             SOLD_ETALASE -> ORDER_BY_MOST_SOLD
             DISCOUNT_ETALASE -> ORDER_BY_LAST_UPDATE
             else -> 0
@@ -170,7 +205,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         addWishListUseCase.createObservable(productId, userId, listener)
     }
 
-    fun clearEtalaseCache(){
+    fun clearEtalaseCache() {
         getShopEtalaseByShopUseCase.clearCache()
     }
 
@@ -192,7 +227,7 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
                 it.discountPercentage = percentageAmount.toString()
                 it.imageUrl = imageUri
                 it.totalReview = totalReview
-                if (isRated){
+                if (isRated) {
                     it.rating = rating.toDoubleOrZero()
                 }
                 if (cashback) {
@@ -236,7 +271,30 @@ class ShopProductLimitedViewModel @Inject constructor(private val userSession: U
         }
     }
 
-    companion object{
+    fun itemMembershipMapper(data: MembershipStampProgress): MutableList<BaseMembershipViewModel> {
+
+        val url = data.membershipStampProgress.infoMessage.membershipCta.url
+
+        if (!data.membershipStampProgress.isUserRegistered) {
+            return mutableListOf(
+                    ItemUnregisteredViewModel(bannerTitle = data.membershipStampProgress.infoMessage.title,
+                            btnText = data.membershipStampProgress.infoMessage.membershipCta.text,
+                            url = url))
+        } else if (data.membershipStampProgress.membershipProgram.membershipQuests.isNotEmpty()) {
+            val listOfMembershipQuests: MutableList<BaseMembershipViewModel> = mutableListOf()
+            val quests = data.membershipStampProgress.membershipProgram.membershipQuests
+            var count = 1
+            listOfMembershipQuests.addAll(quests.map {
+                it.startCountTxt = count
+                count += it.targetProgress
+                ItemRegisteredViewModel(it, url)
+            })
+            return listOfMembershipQuests
+        }
+        return mutableListOf()
+    }
+
+    companion object {
         private const val SOLD_ETALASE = "sold"
         private const val DISCOUNT_ETALASE = "discount"
         private const val ORDER_BY_LAST_UPDATE = 3

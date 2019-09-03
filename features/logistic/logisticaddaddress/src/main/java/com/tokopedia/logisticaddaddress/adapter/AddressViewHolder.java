@@ -1,5 +1,6 @@
 package com.tokopedia.logisticaddaddress.adapter;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
@@ -7,6 +8,7 @@ import android.widget.TextView;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -41,6 +43,9 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
     private View editBtn, deleteBtn, defaultBtn, layoutMap, noLocationLabel, bottomView;
     private GoogleMap googleMap;
 
+    private String mCurrentLat = DEFAULT_LATITUDE;
+    private String mCurrentLong = DEFAULT_LONGITUDE;
+
     @LayoutRes
     public static final int LAYOUT = R.layout.logistic_item_manage_people_address;
 
@@ -67,15 +72,18 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
     @Override
     public void bind(AddressViewModel element) {
         setVisibility(element);
-        setTitle(element);
-        setAddress(element);
-        setGoogleMap(googleMap, element);
+        addressName.setText(element.getAddressName());
+        addressDetail.setText(element.getAddressFull());
+        mCurrentLat = element.getLatitude();
+        mCurrentLong = element.getLongitude();
+        setGoogleMap();
         setListener(element);
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        setGoogleMap();
     }
 
     private void setVisibility(AddressViewModel viewModel) {
@@ -83,12 +91,6 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
             defaultBtn.setVisibility(View.VISIBLE);
         } else {
             defaultBtn.setVisibility(View.GONE);
-        }
-
-        if (googleMap != null) {
-            layoutMap.setVisibility(View.VISIBLE);
-        } else {
-            layoutMap.setVisibility(View.GONE);
         }
 
         if ((viewModel.getLatitude() == null || viewModel.getLatitude().isEmpty())
@@ -100,42 +102,17 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
 
     }
 
-    private void setTitle(AddressViewModel viewModel) {
-        addressName.setText(viewModel.getAddressName());
-    }
-
-    private void setAddress(AddressViewModel viewModel) {
-        addressDetail.setText(viewModel.getAddressFull());
-    }
-
     private void setListener(AddressViewModel viewModel) {
-        editBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.setActionEditButton(viewModel);
-            }
-        });
-
-        deleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.setActionDeleteButton(viewModel);
-            }
-        });
-
-        defaultBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                listener.setActionDefaultButtonClicked(viewModel);
-            }
-        });
+        editBtn.setOnClickListener(view -> listener.setActionEditButton(viewModel));
+        deleteBtn.setOnClickListener(view -> listener.setActionDeleteButton(viewModel));
+        defaultBtn.setOnClickListener(view -> listener.setActionDefaultButtonClicked(viewModel));
     }
 
-    private void setGoogleMap(GoogleMap googleMap, AddressViewModel viewModel) {
+    private void setGoogleMap() {
         if (googleMap != null) {
-
-            double latitude = Double.parseDouble(getLatitude(viewModel.getLatitude()));
-            double longitude = Double.parseDouble(getLongitude(viewModel.getLongitude()));
+            layoutMap.setVisibility(View.VISIBLE);
+            double latitude = getLatitude();
+            double longitude = getLongitude();
             LatLng latLng = new LatLng(latitude, longitude);
 
             googleMap.getUiSettings().setMapToolbarEnabled(false);
@@ -152,22 +129,26 @@ public class AddressViewHolder extends AbstractViewHolder<AddressViewModel> impl
                     // which is navigate to default Google Map Apps
                 }
             });
-        }
+        } else layoutMap.setVisibility(View.GONE);
     }
 
-    private String getLatitude(String latitude) {
-        if (latitude == null || latitude.isEmpty()) {
-            return DEFAULT_LATITUDE;
-        } else {
-            return latitude;
+    private Double getLatitude() {
+        double lat = 0.0;
+        try {
+            lat = Double.parseDouble(mCurrentLat);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
+        return lat;
     }
 
-    private String getLongitude(String longitude) {
-        if (longitude == null || longitude.isEmpty()) {
-            return DEFAULT_LONGITUDE;
-        } else {
-            return longitude;
+    private Double getLongitude() {
+        double longitude = 0.0;
+        try {
+            longitude = Double.parseDouble(mCurrentLong);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
+        return longitude;
     }
 }
