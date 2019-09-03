@@ -105,7 +105,7 @@ public class SortProductActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_sort, menu);
+        getMenuInflater().inflate(R.menu.filter_menu_sort, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -143,7 +143,7 @@ public class SortProductActivity extends BaseActivity {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.sort_list_item, parent, false);
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.filter_sort_list_item, parent, false);
             return new ViewHolder(v);
         }
 
