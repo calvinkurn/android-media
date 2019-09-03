@@ -243,8 +243,8 @@ android {
         }
     }
 
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
 
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
 }
 
 dependencies {
