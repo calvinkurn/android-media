@@ -43,6 +43,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewState
 import com.tokopedia.groupchat.room.view.viewstate.PlayViewStateImpl
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -247,7 +248,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         }
     }
 
-    private fun onSuccessGetStickyComponent(): (StickyComponentViewModel) -> Unit {
+    private fun onSuccessGetStickyComponent(): (StickyComponentsViewModel) -> Unit {
         return {
             viewState.onStickyComponentUpdated(it)
         }
@@ -578,7 +579,7 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         viewState.onQuickReplyUpdated(it)
     }
 
-    override fun onStickyComponentReceived(it: StickyComponentViewModel) {
+    override fun onStickyComponentReceived(it: StickyComponentsViewModel) {
         viewState.onStickyComponentUpdated(it)
     }
 

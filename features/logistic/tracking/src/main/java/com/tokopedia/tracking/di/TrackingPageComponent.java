@@ -10,7 +10,7 @@ import dagger.Component;
  */
 
 @TrackingPageScope
-@Component(modules = TrackingPageModule.class, dependencies = BaseAppComponent.class)
+@Component(modules = {TrackingPageModule.class, GqlQueryModule.class}, dependencies = BaseAppComponent.class)
 public interface TrackingPageComponent {
 
     void inject(TrackingPageFragment fragment);
