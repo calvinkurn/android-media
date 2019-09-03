@@ -11,7 +11,6 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
-import com.tokopedia.normalcheckout.view.NormalCheckoutTracking.Companion.PRODUCT_DETAIL_PAGE
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.Action.PRODUCT_VIEW

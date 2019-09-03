@@ -4,6 +4,9 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.purchase_platform.R;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartTickerData;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.SimilarProduct;
+import com.tokopedia.purchase_platform.features.cart.data.model.response.TickerData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;

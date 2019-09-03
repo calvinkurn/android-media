@@ -56,6 +56,7 @@ import com.tokopedia.purchase_platform.common.data.common.api.CartResponseErrorE
 import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCartRequest;
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
 import com.tokopedia.purchase_platform.common.utils.CartApiRequestParamGenerator;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;

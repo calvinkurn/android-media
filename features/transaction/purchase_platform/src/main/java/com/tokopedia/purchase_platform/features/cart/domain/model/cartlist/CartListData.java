@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartTickerData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo.data.model.response.GlobalCouponAttr;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;

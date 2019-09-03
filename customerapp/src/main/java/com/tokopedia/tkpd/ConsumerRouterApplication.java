@@ -203,7 +203,6 @@ import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.linker.model.LinkerShareResult;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationActivity;
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticcart.cod.view.CodActivity;

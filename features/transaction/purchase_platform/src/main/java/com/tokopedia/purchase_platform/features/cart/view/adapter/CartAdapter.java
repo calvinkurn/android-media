@@ -8,11 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartTickerErrorData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupData;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoActionListener;
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartSelectAllViewHolder;
+import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartTickerViewHolder;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartItemTickerErrorHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.promo.PromoGlobalViewHolder;
@@ -34,6 +37,7 @@ import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentVi
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartSectionHeaderHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartTickerHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.purchase_platform.common.feature.seller_cashback.ShipmentSellerCashbackModel;

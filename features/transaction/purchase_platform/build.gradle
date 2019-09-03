@@ -35,6 +35,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig

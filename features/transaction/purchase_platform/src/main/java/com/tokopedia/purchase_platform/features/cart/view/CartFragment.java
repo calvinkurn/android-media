@@ -68,6 +68,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartTickerData;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView;
@@ -88,6 +89,7 @@ import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecentVi
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartSectionHeaderHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartShopHolderData;
+import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartTickerHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistHolderData;
 import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity;

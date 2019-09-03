@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
-import com.tokopedia.checkout.view.common.utils.Utils;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.unifyprinciples.Typography;

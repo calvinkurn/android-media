@@ -46,7 +46,6 @@ import com.tokopedia.tkpd.home.wishlist.mapper.WishlistProductMapper;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;

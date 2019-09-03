@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.common.utils
+package com.tokopedia.purchase_platform.common.utils
 
 import android.os.Build
 import android.text.Html

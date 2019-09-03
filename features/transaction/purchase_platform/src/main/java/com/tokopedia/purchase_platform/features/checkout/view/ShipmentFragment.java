@@ -29,7 +29,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.checkout.view.common.utils.Utils;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;

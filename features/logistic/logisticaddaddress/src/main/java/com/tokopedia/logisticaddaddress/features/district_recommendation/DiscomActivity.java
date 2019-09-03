@@ -12,7 +12,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 
 import static com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomContract.Constant.ARGUMENT_DATA_TOKEN;
 

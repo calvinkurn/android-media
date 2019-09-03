@@ -65,7 +65,7 @@
 
         <activity
             android:name="com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity"
-            android:label="@string/checkout_module_title_shipping_dest_new"
+            android:label="@string/checkout_module_title_activity_checkout"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

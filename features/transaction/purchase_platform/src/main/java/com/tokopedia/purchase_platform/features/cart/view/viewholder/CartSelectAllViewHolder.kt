@@ -1,9 +1,9 @@
-package com.tokopedia.checkout.view.feature.cartlist.viewholder
+package com.tokopedia.purchase_platform.features.cart.view.viewholder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.tokopedia.checkout.R
-import com.tokopedia.checkout.view.feature.cartlist.ActionListener
+import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.cart.view.ActionListener
 import kotlinx.android.synthetic.main.item_select_all.view.*
 
 class CartSelectAllViewHolder(itemView: View, val actionListener: ActionListener): RecyclerView.ViewHolder(itemView) {
