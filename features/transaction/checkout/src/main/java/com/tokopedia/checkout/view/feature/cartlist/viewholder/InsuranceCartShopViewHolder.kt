@@ -99,7 +99,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
             }
 
             if (!TextUtils.isEmpty(insuranceCartDigitalProduct.productInfo.iconUrl)) {
-                ImageHandler.loadImage(ivInsuranceIcon.context, ivInsuranceIcon, insuranceCartDigitalProduct.productInfo.iconUrl, R.drawable.ic_modal_toko)
+                ImageHandler.loadImageRounded2(ivInsuranceIcon.context, ivInsuranceIcon, insuranceCartDigitalProduct.productInfo.iconUrl)
             }
 
             if (TextUtils.isEmpty(insuranceCartDigitalProduct.productInfo.linkName)) {
