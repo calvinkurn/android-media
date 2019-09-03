@@ -9,11 +9,11 @@ import dagger.Provides
 
 @SearchScope
 @Module
-class LocalCacheHandlerModule {
+class CartLocalCacheHandlerModule {
 
     @SearchScope
     @Provides
-    fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
+    fun provideCartLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, "CART")
     }
 }
