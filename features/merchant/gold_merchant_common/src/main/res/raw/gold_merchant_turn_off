@@ -1,5 +1,5 @@
-mutation goldTurnOffSubscription{
-  goldTurnOffSubscription(autoExtend:false){
+mutation goldTurnOffSubscription($quest_data: [questData]){
+  goldTurnOffSubscription(autoExtend:false, quest : $quest_data){
     header{
       process_time
       message

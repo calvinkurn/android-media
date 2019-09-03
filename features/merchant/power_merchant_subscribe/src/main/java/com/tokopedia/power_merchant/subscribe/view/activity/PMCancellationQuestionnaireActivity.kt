@@ -1,0 +1,315 @@
+package com.tokopedia.power_merchant.subscribe.view.activity
+
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.os.Handler
+import android.support.design.widget.Snackbar
+import android.support.v4.app.Fragment
+import android.view.MenuItem
+import android.view.View
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
+import com.tokopedia.abstraction.base.view.model.StepperModel
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
+import com.tokopedia.gm.common.utils.PowerMerchantTracking
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.power_merchant.subscribe.R
+import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
+import com.tokopedia.power_merchant.subscribe.model.*
+import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment
+import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireIntroFragment
+import com.tokopedia.power_merchant.subscribe.view.viewmodel.PMCancellationQuestionnaireViewModel
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
+
+class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<BaseAppComponent?> {
+    var listQuestionModel: MutableList<PMCancellationQuestionnaireModel> = mutableListOf()
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+    @Inject
+    lateinit var powerMerchantTracking: PowerMerchantTracking
+
+    private lateinit var viewModel: PMCancellationQuestionnaireViewModel
+
+    private val listFragment by lazy {
+        ArrayList<Fragment>()
+    }
+
+    val pmCancellationQuestionnaireStepperModel by lazy {
+        stepperModel as PMCancellationQuestionnaireStepperModel
+    }
+
+    companion object {
+        fun newInstance(context: Context): Intent {
+            return Intent(context, PMCancellationQuestionnaireActivity::class.java)
+        }
+    }
+
+    override fun getListFragment(): MutableList<Fragment> {
+        return listFragment
+    }
+
+    private fun generateFragment(data: PMCancellationQuestionnaireData) {
+        listQuestionModel = mutableListOf(
+                PMCancellationQuestionnaireRateModel(
+                        1,
+                        "rate",
+                        "Ratingzzz?"
+                ),
+                PMCancellationQuestionnaireMultipleOptionModel(
+                        1,
+                        "multi_option",
+                        "Kenapa Anda ingin berhenti menjadi Power Merchant?",
+                        listOf(
+                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
+                                        1,
+                                        "Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya"
+                                ),
+                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
+                                        2,
+                                        "Toko saya sudah punya pelanggan setia"
+                                )
+                        )
+                ),
+                PMCancellationQuestionnaireMultipleOptionModel(
+                        1,
+                        "multi_option",
+                        "Kenapa Anda ingin berhenti menjadi Power Merchant?",
+                        listOf(
+                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
+                                        1,
+                                        "Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya"
+                                ),
+                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
+                                        2,
+                                        "Toko saya sudah punya pelanggan setia"
+                                )
+                        )
+                ),
+                PMCancellationQuestionnaireMultipleOptionModel(
+                        1,
+                        "multi_option",
+                        "Kenapa Anda ingin berhenti menjadi Power Merchant?",
+                        listOf(
+                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
+                                        1,
+                                        "Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya"
+                                ),
+                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
+                                        2,
+                                        "Toko saya sudah punya pelanggan setia"
+                                )
+                        )
+                ),
+                PMCancellationQuestionnaireMultipleOptionModel(
+                        1,
+                        "multi_option",
+                        "Kenapa Anda ingin berhenti menjadi Power Merchant?",
+                        listOf(
+                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
+                                        1,
+                                        "Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya"
+                                ),
+                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
+                                        2,
+                                        "Toko saya sudah punya pelanggan setia"
+                                )
+                        )
+                )
+        )
+        val expiredDate = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,
+                DateFormatUtils.FORMAT_D_MMMM_YYYY,
+                data.goldGetPmOsStatus.result.data.powerMerchant.expiredTime)
+        listQuestionModel.forEachIndexed { position, questionModel ->
+            pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer.add(
+                    PMCancellationQuestionnaireAnswerModel(
+                            questionModel.question
+                    )
+            )
+            if (position == 0 && questionModel is PMCancellationQuestionnaireRateModel) {
+                listFragment.add(PowerMerchantCancellationQuestionnaireIntroFragment.createInstance(
+                        position,
+                        expiredDate,
+                        questionModel
+                ))
+            } else if (questionModel is PMCancellationQuestionnaireMultipleOptionModel) {
+                listFragment.add(PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment.createInstance(
+                        position,
+                        questionModel
+                ))
+            } else {
+                pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer.removeAt(position)
+            }
+        }
+        setMaxProgressStepper(listFragment.size.toFloat())
+        setupFragment(null)
+        refreshCurrentProgressStepper()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
+        initViewModel()
+        initStepperModel(savedInstanceState)
+        super.onCreate(savedInstanceState)
+        getPMCancellationQuestionnaireData()
+        observePMCancellationQuestionnaireData()
+    }
+
+    private fun getPMCancellationQuestionnaireData() {
+        viewModel.getPMCancellationQuestionnaireData(userSessionInterface.shopId)
+    }
+
+    private fun initStepperModel(data: Bundle?) {
+        stepperModel = data?.let {
+            data.getParcelable(STEPPER_MODEL_EXTRA) as PMCancellationQuestionnaireStepperModel
+        } ?: PMCancellationQuestionnaireStepperModel()
+    }
+
+    private fun observePMCancellationQuestionnaireData() {
+        viewModel.pmCancellationQuestionnaireData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    Handler().postDelayed({
+                        generateFragment(it.data)
+                    }, 2000)
+                }
+                is Fail -> {
+                    showToasterRequestError(it.throwable, View.OnClickListener {
+                        viewModel.getPMCancellationQuestionnaireData(userSessionInterface.shopId)
+                    })
+                }
+            }
+        })
+    }
+
+    private fun showToasterRequestError(throwable: Throwable, onClickListener: View.OnClickListener) {
+        Toaster.showErrorWithAction(
+                findViewById(android.R.id.content),
+                ErrorHandler.getErrorMessage(this, throwable),
+                Snackbar.LENGTH_LONG,
+                getString(R.string.error_cancellation_tryagain),
+                onClickListener
+        )
+    }
+
+    private fun showToasterCurrentQuestionNotAnswered() {
+        Toaster.showErrorWithAction(
+                findViewById(android.R.id.content),
+                getString(R.string.pm_cancellation_questionnaire_some_question_not_answered_label),
+                Snackbar.LENGTH_LONG,
+                getString(R.string.close),
+                View.OnClickListener {}
+        )
+    }
+
+    private fun initViewModel() {
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(PMCancellationQuestionnaireViewModel::class.java)
+    }
+
+    private fun initInjector() {
+        component?.let {
+            DaggerPowerMerchantSubscribeComponent.builder()
+                    .baseAppComponent(it)
+                    .build().inject(this)
+        }
+    }
+
+    fun isFinalPage(): Boolean = currentPosition == listFragment.size
+
+    override fun updateToolbarTitle() {}
+
+    override fun updateToolbarTitle(title: String?) {}
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        sendClickOptionBackButtonTrackingEvent()
+        val itemId = item.itemId
+        return if (itemId == android.R.id.home) {
+            finish()
+            false
+        } else {
+            super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun sendClickOptionBackButtonTrackingEvent() {
+        when {
+            isFirstPage() -> powerMerchantTracking.eventPMCancellationClickOptionBackButtonFirstPage()
+            isFinalPage() -> powerMerchantTracking.eventPMCancellationClickOptionBackButtonLastPage()
+            else -> powerMerchantTracking.eventPMCancellationClickOptionBackButtonMiddlePage()
+        }
+    }
+
+    fun goToPreviousPage() {
+        sendClickBackButtonTrackingEvent()
+        onBackEvent()
+    }
+
+    override fun goToNextPage(stepperModel: StepperModel) {
+        if (pmCancellationQuestionnaireStepperModel.isCurrentQuestionAnswered(currentPosition)) {
+            if (isFinalPage()) {
+                sendClickSendAnswerButtonTrackingEvent()
+                sendAnswer()
+            } else {
+                sendClickNextQuestionButtonTrackingEvent()
+                super.goToNextPage(stepperModel)
+            }
+        } else
+            showToasterCurrentQuestionNotAnswered()
+    }
+
+    private fun sendClickSendAnswerButtonTrackingEvent() {
+        powerMerchantTracking.eventPMCancellationQuestionnaireClickSendAnswer()
+    }
+
+    private fun sendClickNextQuestionButtonTrackingEvent() {
+        when {
+            isFirstPage() -> {
+                val rating = pmCancellationQuestionnaireStepperModel
+                        .listQuestionnaireAnswer[currentPosition - 1].answers[0].toInt()
+                powerMerchantTracking.eventPMCancellationClickNextQuestionButtonFirstPage(rating)
+            }
+            else -> powerMerchantTracking.eventPMCancellationClickNextQuestionButtonMiddlePage()
+        }
+    }
+
+    private fun sendClickBackButtonTrackingEvent() {
+        when {
+            isFirstPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonFirstPage()
+            isFinalPage() -> powerMerchantTracking.eventPMCancellationClickBackButtonMiddlePage()
+            else -> powerMerchantTracking.eventPMCancellationClickBackButtonLastPage()
+        }
+    }
+
+    private fun isFirstPage() = currentPosition == 1
+
+    private fun sendAnswer() {
+        viewModel.sendQuestionDataAndTurnOffAutoExtend(
+                pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer
+        )
+    }
+
+    override fun getComponent(): BaseAppComponent? {
+        application?.let {
+            return (it as BaseMainApplication).baseAppComponent
+        }
+        return null
+    }
+}

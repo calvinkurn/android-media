@@ -3,21 +3,19 @@ package com.tokopedia.power_merchant.subscribe.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.model.StepperModel
+import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 
-class PMCancellationQuestionnaireStepperModel() : StepperModel {
-
-    var star: Int = 0
-
-    var listChoice = ArrayList<ArrayList<Int>>()
-
-    constructor(parcel: Parcel) : this() {
-        star = parcel.readInt()
-        listChoice = parcel.readArrayList(ArrayList::class.java.classLoader) as ArrayList<ArrayList<Int>>
-    }
+data class PMCancellationQuestionnaireStepperModel(
+        var listQuestionnaireAnswer: MutableList<PMCancellationQuestionnaireAnswerModel> = mutableListOf()
+) : StepperModel {
+    constructor(parcel: Parcel) : this(
+            mutableListOf<PMCancellationQuestionnaireAnswerModel>().apply {
+                parcel.readList(this, PMCancellationQuestionnaireAnswerModel::class.java.classLoader)
+            }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(star)
-        parcel.writeList(listChoice)
+        parcel.writeList(listQuestionnaireAnswer)
     }
 
     override fun describeContents(): Int {
@@ -33,4 +31,9 @@ class PMCancellationQuestionnaireStepperModel() : StepperModel {
             return arrayOfNulls(size)
         }
     }
+
+    fun isCurrentQuestionAnswered(currentPosition: Int): Boolean {
+        return listQuestionnaireAnswer[currentPosition - 1].answers.isNotEmpty()
+    }
+
 }

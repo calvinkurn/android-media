@@ -127,4 +127,12 @@ public abstract class BaseStepperActivity extends BaseToolbarActivity implements
     public void updateToolbarTitle(String title) {
         getSupportActionBar().setTitle(title);
     }
+
+    public void setMaxProgressStepper(float maxProgress) {
+        progressStepper.setMax(maxProgress);
+    }
+
+    public void refreshCurrentProgressStepper(){
+        progressStepper.setProgress(currentPosition);
+    }
 }

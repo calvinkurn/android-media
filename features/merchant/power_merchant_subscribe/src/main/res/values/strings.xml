@@ -89,6 +89,7 @@
     <string name="pm_cancellation_questionnaire_intro_rating_3_star">Cukup</string>
     <string name="pm_cancellation_questionnaire_intro_rating_4_star">Puas</string>
     <string name="pm_cancellation_questionnaire_intro_rating_5_star">Sangat Puas</string>
+    <string name="pm_cancellation_questionnaire_some_question_not_answered_label">Pastikan semua pertanyaan sudah dijawab</string>
     <string name="label_back">Kembali</string>
     <string name="label_send_answer">Kirim Jawaban</string>
 
