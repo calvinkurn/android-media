@@ -15,6 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponDetailActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
@@ -40,6 +42,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(itemView);
             itemView.setOnClickListener(v -> {
                 // Do whatever you want on clicking the item
+                RouteManager.route(v.getContext(), ApplinkConstant.COUPON_LISTING);
             });
         }
     }
@@ -141,6 +144,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                         && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                     holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
                     holder.progressTimer.setVisibility(View.VISIBLE);
+                    holder.value.setVisibility(View.VISIBLE);
                     holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                         @Override
                         public void onTick(long l) {
@@ -151,9 +155,9 @@ public class CouponListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                             holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
                             holder.value.setTextColor(ContextCompat.getColor(holder.value.getContext(), R.color.medium_green));
                             holder.progressTimer.setProgress((int) l / 1000);
-                            holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                            holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
                                     holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
-                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                    holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_small),
                                     holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
                         }
 

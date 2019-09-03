@@ -780,8 +780,7 @@ public class ExploreSectionPagerAdapter extends PagerAdapter {
         if (content.getLayoutCatalogAttr().getCatalogList() != null) {
             view.setPadding(0, view.getPaddingTop(), 0, 0);
             RecyclerView rvCarousel = view.findViewById(R.id.rv_carousel);
-
-            rvCarousel.addItemDecoration(new CarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
+            rvCarousel.addItemDecoration(new NonCarouselItemDecoration(mLayoutInflater.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4)));
             rvCarousel.setLayoutManager(new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false));
             CouponListAdapter adapter = new CouponListAdapter(content.getLayoutCouponAttr().getCouponList());
             rvCarousel.setAdapter(adapter);
