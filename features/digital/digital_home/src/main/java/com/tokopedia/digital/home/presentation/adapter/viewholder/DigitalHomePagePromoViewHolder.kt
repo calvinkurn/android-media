@@ -1,10 +1,10 @@
-package com.tokopedia.digital.home.presentation.adapter
+package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.holder.BaseViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePagePromoModel
+import com.tokopedia.digital.home.presentation.adapter.adapter.DigitalItemPromoAdapter
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 
 class DigitalHomePagePromoViewHolder(itemView : View?, val onItemBindListener: OnItemBindListener) : AbstractViewHolder<DigitalHomePagePromoModel>(itemView) {

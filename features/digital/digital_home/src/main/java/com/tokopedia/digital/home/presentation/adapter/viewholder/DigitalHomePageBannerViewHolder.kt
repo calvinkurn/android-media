@@ -1,11 +1,10 @@
-package com.tokopedia.digital.home.presentation.adapter
+package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.banner.BannerView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
-import com.tokopedia.digital.home.presentation.customview.TravelHomepageBannerViewDynamicBackground
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -13,7 +12,22 @@ import kotlinx.android.synthetic.main.layout_digital_home_banner.view.*
 
 class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: OnItemBindListener) :
         AbstractViewHolder<DigitalHomePageBannerModel>(view), BannerView.OnPromoAllClickListener,
-        BannerView.OnPromoClickListener{
+        BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener {
+    override fun onPromoDragStart() {
+        //do nothing
+    }
+
+    override fun onPromoDragEnd() {
+        //do nothing
+    }
+
+    override fun onPromoLoaded() {
+        //do nothing
+    }
+
+    override fun onPromoScrolled(position: Int) {
+        //do nothing
+    }
 
     override fun onPromoClick(position: Int) {
         onItemBindListener.onBannerItemClicked(bannerList?.get(position))
@@ -23,15 +37,14 @@ class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: 
         onItemBindListener.onBannerAllItemClicked()
     }
 
-    private val adapterBanner  by lazy {
-        DigitalItemBannerAdapter()
-    }
-
     private var bannerList: List<DigitalHomePageBannerModel.Banner>? = listOf()
 
     override fun bind(element: DigitalHomePageBannerModel?) {
         itemView.banner?.onPromoAllClickListener = this
         itemView.banner?.onPromoClickListener = this
+        itemView.banner?.onPromoScrolledListener = this
+        itemView.banner?.setOnPromoLoadedListener(this)
+        itemView.banner?.setOnPromoDragListener(this)
         if (element?.isLoaded?:false) {
             itemView.banner_shimmering.hide()
             try {
@@ -49,7 +62,7 @@ class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: 
             }
         } else{
             itemView.banner_shimmering.show()
-            onItemBindListener.onBannerItemDigitalBind()
+            onItemBindListener.onBannerItemDigitalBind(element?.isLoadFromCloud)
         }
     }
 

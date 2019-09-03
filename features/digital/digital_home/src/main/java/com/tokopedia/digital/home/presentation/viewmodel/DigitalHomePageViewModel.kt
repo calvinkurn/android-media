@@ -5,13 +5,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.domain.GetSortListHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.model.DigitalHomePagePromoModel
-import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageItemModel
+import com.tokopedia.digital.home.model.DigitalHomePageItemModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,16 +25,22 @@ class DigitalHomePageViewModel  @Inject constructor(
 
     val digitalHomePageList = MutableLiveData<List<DigitalHomePageItemModel>>()
 
-    fun getInitialList() {
-        val list: List<DigitalHomePageItemModel> = getSortListHomePageUseCase.getSortEmptyList()
+    fun getInitialList(isLoadFromCloud: Boolean) {
+        val list: List<DigitalHomePageItemModel> = getSortListHomePageUseCase.getSortEmptyList(isLoadFromCloud)
         digitalHomePageList.value = list
     }
 
-    fun getBannerList(rawQuery: String){
+    fun getBannerList(rawQuery: String, isLoadFromCloud: Boolean){
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
                 val graphqlRequest = GraphqlRequest(rawQuery, DigitalHomePageBannerModel::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy : GraphqlCacheStrategy
+                if(isLoadFromCloud) {
+                    graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                }else{
+                    graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                }
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<DigitalHomePageBannerModel>()
             digitalHomePageList.value?.let {
                 val updatedList = it.toMutableList()
@@ -53,11 +59,17 @@ class DigitalHomePageViewModel  @Inject constructor(
         }
     }
 
-    fun getCategoryList(rawQuery: String){
+    fun getCategoryList(rawQuery: String, isLoadFromCloud: Boolean){
         launchCatchError(block = {
             val data = withContext(Dispatchers.Default){
                 val graphqlRequest = GraphqlRequest(rawQuery, DigitalHomePageCategoryModel::class.java)
-                graphqlRepository.getReseponse(listOf(graphqlRequest))
+                var graphQlCacheStrategy : GraphqlCacheStrategy
+                if(isLoadFromCloud) {
+                    graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                }else{
+                    graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                }
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<DigitalHomePageCategoryModel>()
             digitalHomePageList.value?.let {
                 val updatedList = it.toMutableList()
@@ -105,7 +117,8 @@ class DigitalHomePageViewModel  @Inject constructor(
 
     companion object {
         val BANNER_ORDER = 0
-        val CATEGORY_ORDER = 1
-        val PROMO_ORDER = 2
+        val TRANSACTION_ORDER = 1
+        val CATEGORY_ORDER = 2
+        val PROMO_ORDER = 3
     }
 }

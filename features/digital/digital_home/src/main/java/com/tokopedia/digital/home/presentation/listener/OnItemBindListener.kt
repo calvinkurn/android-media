@@ -4,8 +4,8 @@ import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 
 interface OnItemBindListener {
-    fun onBannerItemDigitalBind()
-    fun onCategoryItemDigitalBind()
+    fun onBannerItemDigitalBind(loadFromCloud: Boolean?)
+    fun onCategoryItemDigitalBind(loadFromCloud: Boolean?)
     fun onPromoItemDigitalBind()
     fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?)
     fun onBannerItemClicked(element : DigitalHomePageBannerModel.Banner?)

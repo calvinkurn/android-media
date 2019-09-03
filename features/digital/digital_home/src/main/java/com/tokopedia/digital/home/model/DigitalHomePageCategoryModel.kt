@@ -2,8 +2,6 @@ package com.tokopedia.digital.home.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageBannerViewHolder
-import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageItemModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
 
 class DigitalHomePageCategoryModel(@SerializedName("rechargeCatalogMenu")
@@ -15,7 +13,7 @@ class DigitalHomePageCategoryModel(@SerializedName("rechargeCatalogMenu")
 
     data class Subtitle(@SerializedName("name")
                       @Expose
-                      val name: Int = 0,
+                      val name: String = "",
                       @SerializedName("label")
                       @Expose
                       val label: String = "",
@@ -28,7 +26,7 @@ class DigitalHomePageCategoryModel(@SerializedName("rechargeCatalogMenu")
 
     data class Submenu(@SerializedName("name")
                        @Expose
-                       val name: Int = 0,
+                       val name: String = "",
                        @SerializedName("label")
                        @Expose
                        val label: String = "",

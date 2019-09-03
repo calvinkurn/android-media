@@ -8,18 +8,19 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.digital.home.APPLINK_HOME_FAV_LIST
+import com.tokopedia.digital.home.APPLINK_HOME_MYBILLS
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
-import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageItemModel
-import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTransactionViewHolder
+import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
@@ -82,12 +83,41 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         }
     }
 
-    override fun onBannerItemDigitalBind() {
-        viewModel.getBannerList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner))
+    override fun getScreenName(): String {
+        return ""
     }
 
-    override fun onCategoryItemDigitalBind() {
-        viewModel.getCategoryList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category))
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
+    override fun hasInitialSwipeRefresh(): Boolean {
+        return true
+    }
+
+    override fun initInjector() {
+        getComponent(DigitalHomePageComponent::class.java).inject(this)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        viewModel.digitalHomePageList.observe(this, Observer {
+            clearAllData()
+            it?.run { renderList(this) }
+        })
+    }
+
+    override fun loadData(page: Int) {
+        viewModel.getInitialList(swipeToRefresh?.isRefreshing?:false)
+    }
+
+    override fun onBannerItemDigitalBind(loadFromCloud: Boolean?) {
+        viewModel.getBannerList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner), loadFromCloud?:true)
+    }
+
+    override fun onCategoryItemDigitalBind(loadFromCloud: Boolean?) {
+        viewModel.getCategoryList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category), loadFromCloud?:true)
     }
 
     override fun onPromoItemDigitalBind() {
@@ -111,45 +141,23 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onItemClicked(t: DigitalHomePageItemModel?) {
-
+        // do nothing
     }
-
-    override fun getScreenName(): String {
-        return ""
-    }
-
-    override fun initInjector() {
-        getComponent(DigitalHomePageComponent::class.java).inject(this)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        viewModel.digitalHomePageList.observe(this, Observer {
-            clearAllData()
-            it?.run { renderList(this) }
-        })
-    }
-
-    override fun loadData(page: Int) {
-        viewModel.getInitialList()
-    }
-
 
     override fun onClickFavNumber() {
-
+        RouteManager.route(activity, APPLINK_HOME_FAV_LIST)
     }
 
     override fun onClickOrderList() {
-
+        RouteManager.route(activity, ApplinkConst.DIGITAL_ORDER)
     }
 
     override fun onClickHelp() {
-
+        RouteManager.route(activity, ApplinkConst.CONTACT_US_NATIVE)
     }
 
     override fun onClickMyBills() {
-
+        RouteManager.route(activity, APPLINK_HOME_MYBILLS)
     }
 
     companion object{

@@ -8,6 +8,10 @@ import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePagePromoModel
 import com.tokopedia.digital.home.model.DigitalHomePageTransactionModel
+import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageBannerViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageCategoryViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePagePromoViewHolder
+import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
 
 class DigitalHomePageTypeFactory(val onItemBindListener: OnItemBindListener,

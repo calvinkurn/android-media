@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.presentation.adapter
+package com.tokopedia.digital.home.presentation.adapter.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
