@@ -32,6 +32,9 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
         holder.quickFilterText.setOnClickListener {
             quickFilterListener.onQuickFilterSelected(option)
         }
+        holder.filterNewIcon.setOnClickListener {
+            quickFilterListener.onQuickFilterSelected(option)
+        }
     }
 
     private fun bindFilterNewIcon(holder: ViewHolder, option: Option) {
