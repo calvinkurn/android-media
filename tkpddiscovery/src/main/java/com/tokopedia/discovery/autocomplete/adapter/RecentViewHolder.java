@@ -14,7 +14,7 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.adapter.decorater.SpacingItemDecoration;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.RecentSearch;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 
