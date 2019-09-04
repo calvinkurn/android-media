@@ -11,7 +11,6 @@ import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -514,7 +513,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onLongClick(item: ProductsItem, adapterPosition: Int) {
-        Log.d("ProductNavFragment", "onLongClick")
     }
 
     private fun getProductItemPath(path: String, id: String): String {
@@ -557,7 +555,6 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     }
 
     override fun onProductImpressed(item: ProductsItem, adapterPosition: Int) {
-        Log.d("ProductNavFragment", "onProductImpressed")
     }
 
 
@@ -568,14 +565,14 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
-            catAnalyticsInstance.eventQuickFilterClicked(mDepartmentId, option.name, true)
+            catAnalyticsInstance.eventQuickFilterClicked(mDepartmentId, option, true)
         } else {
             val filter = getSelectedFilter()
             filter.remove(option.key)
             applyFilterToSearchParameter(filter)
             setSelectedFilter(filter)
             reloadData()
-            catAnalyticsInstance.eventQuickFilterClicked(mDepartmentId, option.name, false)
+            catAnalyticsInstance.eventQuickFilterClicked(mDepartmentId, option, false)
         }
 
     }
