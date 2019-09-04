@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.crashlytics.android.Crashlytics;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -28,6 +29,8 @@ import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.di.component.AccountSettingComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -36,6 +39,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
+import static com.tokopedia.home.account.AccountConstants.Analytics.KYC;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DATA;
 
