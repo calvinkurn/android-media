@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.view.listener;
 
-import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.filter.common.data.Option;
 
 public interface QuickFilterListener {
 

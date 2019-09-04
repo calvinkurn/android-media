@@ -1,5 +1,6 @@
 package com.tokopedia.groupchat.chatroom.domain.pojo
 
+import com.google.gson.JsonObject
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -11,9 +12,12 @@ data class StickyComponentPojo(
         
         @SerializedName("sticky_component")
         @Expose
-        var stickyComponent: StickyComponentData = StickyComponentData()
-) {
-}
+        var stickyComponent: StickyComponentData = StickyComponentData(),
+
+        @SerializedName("sticky_components")
+        @Expose
+        var stickyComponents: List<StickyComponentData> = arrayListOf()
+)
 
 class StickyComponentData (
         @SerializedName("component_id")
@@ -39,7 +43,25 @@ class StickyComponentData (
         var stickyTime: Int = 0,
         @SerializedName("related_button_id")
         @Expose
-        var relatedButton: Int = 0
+        var relatedButton: Int = 0,
+        @SerializedName("attribute_data")
+        @Expose
+        var attributeData: JsonObject? = null
 ){
         constructor() : this("")
 }
+
+class AttributeStickyComponentData (
+        @SerializedName("shop_id")
+        @Expose
+        var shopId: String = "",
+        @SerializedName("product_id")
+        @Expose
+        var productId: String = "",
+        @SerializedName("min_quantity")
+        @Expose
+        var minQuantity: Int = 0,
+        @SerializedName("shop_name")
+        @Expose
+        var shopName: String = ""
+)

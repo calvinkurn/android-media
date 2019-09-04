@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
@@ -16,6 +17,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
@@ -49,6 +52,9 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -70,6 +76,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.Date;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -173,6 +180,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             LogWrapper.instance.setLogentriesToken(LOGENTRIES_TOKEN);
         }
         TimberWrapper.init(this);
+
+        initializeAbTestVariant();
+
     }
 
     @Override
@@ -221,6 +231,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             e.printStackTrace();
         }
     }
+
+    private void initializeAbTestVariant() {
+        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
+        Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
+        RemoteConfigInstance.initAbTestPlatform(this);
+        Long current = new Date().getTime();
+
+        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+            RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
+        }
+    }
+
+    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
 
     private void setVersionCode() {
         try {
