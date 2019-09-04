@@ -37,9 +37,7 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
         btnNext?.setOnClickListener {
             listener.goToConfirmationBottomSheet(false)
         }
-
         setInitialData(createDefaultObject())
-
     }
 
     fun setResultValue(etalaseValue: BulkBottomSheetType.EtalaseType?, stockValue: BulkBottomSheetType.StockType?) {
@@ -62,5 +60,4 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
         btnNext?.isEnabled = false
         editAdapter.clearData(createDefaultObject())
     }
-
 }

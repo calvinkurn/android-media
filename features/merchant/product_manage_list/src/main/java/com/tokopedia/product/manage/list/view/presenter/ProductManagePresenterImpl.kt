@@ -93,6 +93,7 @@ class ProductManagePresenterImpl @Inject constructor(
             override fun onNext(productListResponse: ProductListResponse) {
                 if (productListResponse.getProductList.data.isEmpty()) {
                     view.onLoadListEmpty()
+                    return
                 }
 
                 val productListManageModelView = productListMapperView.mapIntoViewModel(productListResponse)

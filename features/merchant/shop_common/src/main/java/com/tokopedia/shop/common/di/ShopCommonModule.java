@@ -152,6 +152,4 @@ public class ShopCommonModule {
     public String provideQueryShopScore(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_query_shop_score);
     }
-
-
 }
