@@ -4,15 +4,20 @@
     <string name="sellerapp_scheme" translatable="false">sellerapp</string>
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
+    <string name="host_marketplace">marketplace</string>
+
+    <!--Product Page-->
     <string name="host_product" translatable="false">product</string>
     <string name="path_add" translatable="false">/add</string>
-    <string name="shop_settings_title">Pengaturan Toko</string>
 
+    <!--Shop Settings-->
+    <string name="shop_settings_title">Pengaturan Toko</string>
 
     <!--Groupchat-->
     <string name="groupchat_title">Play</string>
+    <string name="host_groupchat">groupchat</string>
+    <string name="path_groupchat">/groupchat</string>
 
-    <string name="host_groupchat">marketplace</string>
     <string name="path_groupchat_channel_id">/groupchat/.*\\/</string>
 
     <string name="host_groupchat_webview">/groupchat</string>
