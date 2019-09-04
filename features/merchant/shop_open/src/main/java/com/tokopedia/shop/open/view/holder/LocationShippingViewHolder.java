@@ -84,19 +84,19 @@ public class LocationShippingViewHolder {
     }
 
     private void setErrorEmptyCity() {
-        cityTextInputLayout.setError(root.getContext().getString(R.string.shop_open_error_city_not_filled));
+        cityTextInputLayout.setError(root.getContext().getString(com.tokopedia.seller.R.string.shop_open_error_city_not_filled));
         cityTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }
 
     private void setErrorEmptyPostalCode() {
-        postalCodeTextInputLayout.setError(root.getContext().getString(R.string.shop_open_postal_code_must_be_filled));
+        postalCodeTextInputLayout.setError(root.getContext().getString(com.tokopedia.seller.R.string.shop_open_postal_code_must_be_filled));
         postalCodeTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }
 
     private void setErrorLengthPostalCode() {
-        postalCodeTextInputLayout.setError(root.getContext().getString(R.string.shop_open_postal_code_minimum_5_char));
+        postalCodeTextInputLayout.setError(root.getContext().getString(com.tokopedia.seller.R.string.shop_open_postal_code_minimum_5_char));
         postalCodeTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }

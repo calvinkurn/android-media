@@ -142,7 +142,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         selectedCourierServiceIdWrapper = courierListViewGroup.getSelectedCourierList();
         List<String> courierIdList = selectedCourierServiceIdWrapper.getSelectedServiceIdList();
         if (courierIdList.size() == 0) {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.shop_open_error_min_1_courier_must_be_selected));
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(com.tokopedia.seller.R.string.shop_open_error_min_1_courier_must_be_selected));
             return false;
         }
         return true;
@@ -250,9 +250,9 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public void onDisabledHeaderClicked(Courier courier) {
         AlertDialog.Builder alertDialogBuilder;
         if (courier.isExpressCourierId()) {
-            alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.shop_open_error_courier_cannot_activate_pinpoint_title))
-                    .setMessage(getString(R.string.shop_open_error_courier_cannot_activate_pinpoint_desc))
+            alertDialogBuilder = new AlertDialog.Builder(getActivity(), com.tokopedia.seller.R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(com.tokopedia.seller.R.string.shop_open_error_courier_cannot_activate_pinpoint_title))
+                    .setMessage(getString(com.tokopedia.seller.R.string.shop_open_error_courier_cannot_activate_pinpoint_desc))
                     .setNegativeButton(getString(com.tokopedia.seller.R.string.label_exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -266,9 +266,9 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
                         }
                     });
         } else {
-            alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.shop_open_error_courier_cannot_activate_title))
-                    .setMessage(getString(R.string.shop_open_error_courier_cannot_activate_desc))
+            alertDialogBuilder = new AlertDialog.Builder(getActivity(), com.tokopedia.design.R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(com.tokopedia.seller.R.string.shop_open_error_courier_cannot_activate_title))
+                    .setMessage(getString(com.tokopedia.seller.R.string.shop_open_error_courier_cannot_activate_desc))
                     .setPositiveButton(getString(com.tokopedia.abstraction.R.string.close), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
