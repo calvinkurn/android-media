@@ -350,9 +350,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     getString(R.string.message_email_setting_profile),
                     false,
                     View.OnClickListener {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL).apply {
-                            putExtra(ApplinkConst.Setting.SETTINGS_ADD_EMAIL, isEmailDone)
-                        }
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_EMAIL)
                         startActivityForResult(intent, REQUEST_CODE_ADD_EMAIL)
                     }
             )

@@ -355,8 +355,4 @@ public interface ApplinkConst {
 
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
     }
-
-    interface Setting {
-        String SETTINGS_ADD_EMAIL = "isEmailDone";
-    }
 }
