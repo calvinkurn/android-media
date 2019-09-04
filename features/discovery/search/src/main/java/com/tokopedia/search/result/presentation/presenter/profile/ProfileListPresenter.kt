@@ -3,12 +3,11 @@ package com.tokopedia.search.result.presentation.presenter.profile
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.model.FollowResponseModel
 import com.tokopedia.search.result.domain.model.SearchProfileModel
 import com.tokopedia.search.result.presentation.ProfileListSectionContract
-import com.tokopedia.search.result.presentation.mapper.ProfileListViewModelMapper
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
