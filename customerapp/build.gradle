@@ -243,7 +243,8 @@ android {
         }
     }
 
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
+                       rootProject.ext.dynamicFeatures.shopOpen]
 
 }
 

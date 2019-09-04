@@ -50,6 +50,7 @@ include "features:fintech:mitra_toppers"
 
 include "dynamic-features:travel:hotel_travel"
 include "dynamic-features:merchant:shop_settings"
+include "dynamic-features:merchant:shop_open"
 
 include "features:fintech:home_credit"
 include "features:fintech:reksa_dana"

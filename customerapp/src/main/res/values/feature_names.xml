@@ -5,4 +5,10 @@
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
+
+    <!-- Dynamic feature for Open Shop-->
+    <string name="title_open_shop">Buka Toko Gratis</string>
+    <string name="title_shop_postal_code">Kode Pos</string>
+    <string name="title_shop_is_active">Toko Sudah Aktif</string>
+    <string name="title_shop_setting">Pengaturan Toko</string>
 </resources>
