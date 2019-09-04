@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
@@ -78,6 +79,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     private var inputFieldCount = 0
     lateinit var enquiryData: List<VoucherGameEnquiryFields>
     var isEnquired = false
+        set(value) {
+            field = value
+            toggleCheckoutButton()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -170,6 +175,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         checkout_view.setVisibilityLayout(false)
         checkout_view.setListener(this)
+        toggleCheckoutButton()
     }
 
     override fun processEnquiry(data: TelcoEnquiryData) {
@@ -259,6 +265,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                     // Reset error label
                     setInputFieldsError(false)
 
+                // Enquiry query is not ready, temporarily validate enquiry
+                    isEnquired = true
 //                toggleEnquiryLoadingBar(true)
 //                val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
 //                getEnquiry(clientNumber, voucherGameExtraParam.operatorId)
@@ -299,8 +307,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun renderProducts(data: VoucherGameDetailData) {
-        product_name.text = data.product.text
-
         val dataCollection = data.product.dataCollections
         if (dataCollection.isEmpty()) adapter.showEmpty()
         else {
@@ -349,6 +355,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     private fun setupOperatorDetail() {
         if (::voucherGameOperatorData.isInitialized) {
             voucherGameOperatorData.run {
+                product_name.text = operatorLabel
+                ImageHandler.LoadImage(product_image, imageUrl)
+
                 product_image.setOnClickListener { showProductInfo(operatorLabel, description) }
                 info_icon.setOnClickListener {
                     voucherGameAnalytics.eventClickInfoButton()
@@ -437,8 +446,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     private fun showCheckoutView() {
         checkout_view.setVisibilityLayout(true)
         checkout_view.setTotalPrice(selectedProduct.attributes.promo?.newPrice ?: selectedProduct.attributes.price)
+    }
 
-        // Disable continue button if fields are not valid
+    private fun toggleCheckoutButton() {
         checkout_view.setBuyButtonState(isEnquired)
     }
 

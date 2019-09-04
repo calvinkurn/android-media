@@ -15,7 +15,7 @@ class VoucherGameListViewHolder(val view: View, val listener: OnClickListener) :
 
     override fun bind(operator: VoucherGameOperator) {
         with(itemView) {
-            ImageHandler.loadImageWithoutPlaceholderAndError(item_image, operator.attributes.imageUrl)
+            ImageHandler.LoadImage(item_image, operator.attributes.imageUrl)
             product_title.text = operator.attributes.name
 
             item_container.setOnClickListener { listener.onItemClicked(operator) }

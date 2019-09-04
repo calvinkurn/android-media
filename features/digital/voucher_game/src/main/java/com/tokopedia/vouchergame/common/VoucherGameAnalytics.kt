@@ -287,7 +287,7 @@ class VoucherGameAnalytics {
                     EnhanceEccomerce.PRICE, attributes.price,
 //                        EnhanceEccomerce.CATEGORY, categoryName,
                     "list", operatorName,
-                    "quantity"
+                    "quantity", 1
             ))
         }
 
