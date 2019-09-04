@@ -24,6 +24,7 @@ import com.tokopedia.groupchat.room.view.listener.PlayContract
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.RxWebSocket
 import com.tokopedia.websocket.WebSocketException
@@ -116,13 +117,13 @@ class PlayPresenter @Inject constructor(
     }
 
     override fun getStickyComponents(channelId: String?,
-                                     onSuccessGetStickyComponent: (StickyComponentViewModel) -> Unit,
+                                     onSuccessGetStickyComponent: (StickyComponentsViewModel) -> Unit,
                                      onErrorGetStickyComponent: (String) -> Unit) {
 
         getStickyComponentUseCase.execute(
                 GetDynamicButtonsUseCase.createParams(channelId),
-                object : Subscriber<StickyComponentViewModel>() {
-                    override fun onNext(t: StickyComponentViewModel?) {
+                object : Subscriber<StickyComponentsViewModel>() {
+                    override fun onNext(t: StickyComponentsViewModel?) {
                         if (t != null) {
                             onSuccessGetStickyComponent(t)
                         }
@@ -197,7 +198,7 @@ class PlayPresenter @Inject constructor(
                         is DynamicButtonsViewModel -> view.updateDynamicButton(it)
                         is BackgroundViewModel -> view.onBackgroundUpdated(it)
                         is SprintSaleAnnouncementViewModel -> view.onSprintSaleReceived(it)
-                        is StickyComponentViewModel -> view.onStickyComponentReceived(it)
+                        is StickyComponentsViewModel -> view.onStickyComponentReceived(it)
                         is VideoStreamViewModel -> view.onVideoStreamUpdated(it)
                         else -> {
                             view.addIncomingMessage(it)

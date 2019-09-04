@@ -52,16 +52,6 @@
             android:label="@string/title_activity_contact_us"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity"
-            android:hardwareAccelerated="true"
-            android:label="@string/title_activity_inbox_ticket"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.tokopedia.contactus.inboxticket.activity.InboxTicketDetailActivity"
-            android:hardwareAccelerated="true"
-            android:label="@string/title_activity_inbox_ticket_detail"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity"
             android:screenOrientation="portrait" />
         <activity

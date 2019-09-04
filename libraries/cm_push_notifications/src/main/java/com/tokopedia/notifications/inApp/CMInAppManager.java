@@ -149,8 +149,10 @@ public class CMInAppManager implements CmInAppListener {
     public void handlePushPayload(RemoteMessage remoteMessage) {
         try {
             CMInApp cmInApp = CmInAppBundleConvertor.getCmInApp(remoteMessage);
-            if (null != cmInApp)
+            if (null != cmInApp) {
+                cmInApp.currentTime = System.currentTimeMillis();
                 putDataToStore(cmInApp);
+            }
         } catch (Exception e) {
         }
     }
@@ -188,6 +190,11 @@ public class CMInAppManager implements CmInAppListener {
     @Override
     public void onCMInAppClosed() {
 
+    }
+
+    @Override
+    public void onCMInAppInflateException(CMInApp inApp) {
+        RulesManager.getInstance().dataInflateError(inApp.id);
     }
 }
 

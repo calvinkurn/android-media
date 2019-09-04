@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout;
+import com.tokopedia.collapsing.tab.layout.ExpandingLineView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;

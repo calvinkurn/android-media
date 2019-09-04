@@ -23,6 +23,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import android.media.MediaPlayer
+import java.lang.Exception
 
 /**
  * @author by stevenfredian on 14/05/19.
@@ -146,23 +147,31 @@ class OnboardingFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        videoView?.let {
-            if (!it.isPlaying) {
-                if (isVideoPrepared) {
-                    it.start()
-                } else {
-                    it.setOnPreparedListener { mp ->
-                        isVideoPrepared = true
-                        mp?.isLooping = true
-                        mp?.start()
+        try {
+            videoView?.let {
+                if (!it.isPlaying) {
+                    if (isVideoPrepared) {
+                        it.start()
+                    } else {
+                        it.setOnPreparedListener { mp ->
+                            isVideoPrepared = true
+                            mp?.isLooping = true
+                            mp?.start()
+                        }
                     }
                 }
             }
-        }
+        } catch (e: Exception) {}
     }
 
     override fun onPageUnSelected() {
-        videoView?.pause()
+        try {
+            videoView?.let {
+                if (it.isPlaying && isVideoPrepared) {
+                    it.pause()
+                }
+            }
+        } catch (e: Exception) {}
     }
 
     private fun getTitleMsg(): String {
