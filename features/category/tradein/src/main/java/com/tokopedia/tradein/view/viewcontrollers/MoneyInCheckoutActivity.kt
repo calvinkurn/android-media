@@ -111,6 +111,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         moneyInCheckoutViewModel.getCourierRatesLiveData().observe(this, Observer {
             when (it) {
                 is Success -> {
+                    resetRateAndTime()
                     if(it.data.error?.message.isNullOrEmpty())
                         setCourierRatesBottomSheet(it.data)
                     else{
@@ -161,7 +162,6 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     private fun setCourierRatesBottomSheet(data: RatesV4.Data) {
-        resetRateAndTime()
         val courierBtn = findViewById<Button>(R.id.courier_btn)
         spId = data.services[0].products[0].shipper.shipperProduct.id
         val moneyInCourierBottomSheet = MoneyInCourierBottomSheet.newInstance(
@@ -229,6 +229,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         MethodChecker.setBackground(retrieverTimeButton, MethodChecker.getDrawable(this, R.drawable.rect_white_rounded_stroke_gray_trade_in))
         retrieverTimeButton.text = getString(R.string.change_time)
         retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
+        isTimeSet = true
     }
 
     private fun setAddressView(recipientAddress: KeroGetAddress.Data) {
