@@ -137,6 +137,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
                 onBackPressed();
             }
         });
+        buttonReset.setVisibility(View.VISIBLE);
         buttonReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
