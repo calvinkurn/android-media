@@ -47,9 +47,9 @@ class TravelHomepageTrackingUtil {
     fun travelHomepageImpressionBanner(item: TravelHomepageBannerModel.Banner, position: Int) {
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
-                NAME, "${item.attribute.description} - slider banner",
+                NAME, "${item.attribute.promoCode} - slider banner",
                 POSITION, position,
-                ID, item.id,
+                ID, item.id.toInt(),
                 CREATIVE, "$CREATIVE_PREFIX${item.attribute.promoCode}",
                 CREATIVE_URL, item.attribute.imageUrl
         ))
@@ -60,16 +60,16 @@ class TravelHomepageTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, TRAVEL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, BANNER_IMPRESSION,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item.attribute.promoCode}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_VIEW, DataLayer.mapOf(PROMOTIONS, products))
                 ))
     }
 
     fun travelHomepageClickBanner(item: TravelHomepageBannerModel.Banner, position: Int) {
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
-                NAME, "${item.attribute.description} - slider banner",
+                NAME, "${item.attribute.promoCode} - slider banner",
                 POSITION, position,
-                ID, item.id,
+                ID, item.id.toInt(),
                 CREATIVE, "$CREATIVE_PREFIX${item.attribute.promoCode}",
                 CREATIVE_URL, item.attribute.imageUrl
         ))
@@ -80,7 +80,7 @@ class TravelHomepageTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, TRAVEL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, BANNER_CLICK,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item.attribute.promoCode}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, products))
                 ))
     }
 
@@ -104,11 +104,11 @@ class TravelHomepageTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, TRAVEL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, DYNAMIC_ICON_CLICK,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item.product}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, products))
                 ))
     }
 
-    fun travelHomepageClickOrder(position: String, categoryName: String) {
+    fun travelHomepageClickOrder(position: Int, categoryName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, ORDER_CLICK, "$position - $categoryName")
     }
 
@@ -116,11 +116,11 @@ class TravelHomepageTrackingUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, ORDER_CLICK_ALL, CLICK)
     }
 
-    fun travelHomepageClickRecentSearch(position: String, categoryName: String) {
+    fun travelHomepageClickRecentSearch(position: Int, categoryName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, RECENT_SEARCH_CLICK, "$position - $categoryName")
     }
 
-    fun travelHomepageClickPopularSearch(position: String, categoryName: String) {
+    fun travelHomepageClickPopularSearch(position: Int, categoryName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, POPULAR_SEARCH_CLICK, "$position - $categoryName")
     }
 
@@ -143,7 +143,7 @@ class TravelHomepageTrackingUtil {
                 TrackAppUtils.EVENT_LABEL, "$position - ${item.product}",
                 ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(
                 ACTION_FIELD, DataLayer.mapOf("list", "/best deals"),
-                PRODUCTS, DataLayer.listOf(products)
+                PRODUCTS, products
         ))
         ))
     }
@@ -168,7 +168,7 @@ class TravelHomepageTrackingUtil {
                         TrackAppUtils.EVENT_CATEGORY, TRAVEL_HOMEPAGE_CATEGORY,
                         TrackAppUtils.EVENT_ACTION, POPULAR_DESTINATION_CLICK,
                         TrackAppUtils.EVENT_LABEL, "$position - ${item.attributes.title}",
-                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, DataLayer.listOf(products)))
+                        ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, products))
                 ))
     }
 

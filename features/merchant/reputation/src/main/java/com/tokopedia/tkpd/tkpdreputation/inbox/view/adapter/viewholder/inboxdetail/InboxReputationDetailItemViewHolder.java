@@ -201,13 +201,6 @@ public class InboxReputationDetailItemViewHolder extends
             });
         }
 
-        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
-                || element.isReviewSkipped()) {
-            giveReview.setVisibility(View.GONE);
-        } else {
-            giveReview.setVisibility(View.VISIBLE);
-        }
-
         if (!element.isReviewHasReviewed()) {
             viewReview.setVisibility(View.GONE);
             seeReplyLayout.setVisibility(View.GONE);
@@ -277,6 +270,14 @@ public class InboxReputationDetailItemViewHolder extends
             }
 
 
+        }
+
+        if (element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
+                || element.isReviewSkipped()
+                || isOwnProduct(element)) {
+            giveReview.setVisibility(View.GONE);
+        } else {
+            giveReview.setVisibility(View.VISIBLE);
         }
 
         giveReview.setOnClickListener(new View.OnClickListener() {
@@ -435,6 +436,12 @@ public class InboxReputationDetailItemViewHolder extends
         return element.isReviewIsEditable()
                 || element.getTab() == InboxReputationActivity.TAB_BUYER_REVIEW
                 || !TextUtils.isEmpty(element.getProductName());
+    }
+
+    private boolean isOwnProduct(InboxReputationDetailItemViewModel element) {
+        return viewListener.getUserSession()
+                .getShopId()
+                .equals(String.valueOf(element.getShopId()));
     }
 
     private View.OnClickListener onReviewOverflowClicked(final InboxReputationDetailItemViewModel element) {

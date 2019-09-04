@@ -31,12 +31,12 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.discovery.common.data.Filter;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
+import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
@@ -282,7 +282,6 @@ public class SearchActivity extends BaseActivity
         if (isViewPagerCurrentItemPositionIsInvalid()) return;
 
         Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
-
         if (fragmentItem instanceof SearchSectionFragment) {
             SearchSectionFragment selectedFragment = (SearchSectionFragment) fragmentItem;
 

@@ -55,11 +55,12 @@ object DeeplinkDFMapper {
             }
         } else {
             return when {
-                deeplink.startsWith(ApplinkConst.HOTEL) -> {
-                    getDFDeeplinkIfNotInstalled(context,
-                            deeplink, MODULE_HOTEL_TRAVEL,
-                            context.getString(R.string.title_hotel))
-                }
+//                uncomment this section to enable dynamic feature in hotel
+//                deeplink.startsWith(ApplinkConst.HOTEL) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                            deeplink, MODULE_HOTEL_TRAVEL,
+//                            context.getString(R.string.title_hotel))
+//                }
                 deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
                     getDFDeeplinkIfNotInstalled(context,
                         deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
