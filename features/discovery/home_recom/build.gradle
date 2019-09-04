@@ -1,31 +1,10 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
-apply plugin: 'io.hansel.preprocessor.module'
-apply plugin: 'de.mannodermaus.android-junit5'
 
 android{
-    sourceSets.each {
-        it.java.srcDirs += "src/$it.name/kotlin"
-    }
-
     testOptions {
         unitTests {
             includeAndroidResources = true
-        }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-            jacocoOptions {
-                html.enabled = true
-                xml.enabled = true
-                csv.enabled = true
-            }
-        }
-        unitTests.all {
-            testLogging.events = ["passed", "skipped", "failed"]
         }
     }
 }
@@ -38,13 +17,7 @@ buildscript {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         mavenCentral()
         jcenter()
-        maven { url 'https://hansel.io/maven' }
         google()
-    }
-
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
-        classpath "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0"
     }
 }
 
@@ -83,13 +56,6 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.miscDependencies.coroutineCore
 
-    // Test Spek
-    testImplementation "org.junit.platform:junit-platform-runner:1.5.1"
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.50'
-    testImplementation 'org.spekframework.spek2:spek-dsl-jvm:2.0.6'
-    testRuntimeOnly "org.spekframework.spek2:spek-runner-junit5:2.0.6"
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:1.3.41"
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.5.1'
     
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

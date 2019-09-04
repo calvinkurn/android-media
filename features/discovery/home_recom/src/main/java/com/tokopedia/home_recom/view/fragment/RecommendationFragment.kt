@@ -164,7 +164,6 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
                 renderList(mapDataModel(recommendationList))
             }
         })
-        loadData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
