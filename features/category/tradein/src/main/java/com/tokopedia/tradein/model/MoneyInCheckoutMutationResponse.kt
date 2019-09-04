@@ -15,17 +15,17 @@ data class MoneyInCheckoutMutationResponse(
             @SerializedName("data")
             val data: CheckoutData,
             @SerializedName("header")
-            val header: Header
+            val header: Header?
         ) {
             data class Header(
                 @SerializedName("error_code")
-                val errorCode: String,
+                val errorCode: String?,
                 @SerializedName("messages")
                 val messages: List<Any>,
                 @SerializedName("process_time")
                 val processTime: Double,
                 @SerializedName("reason")
-                val reason: String
+                val reason: String?
             )
 
             data class CheckoutData(
