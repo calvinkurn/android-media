@@ -1,7 +1,7 @@
 package com.tokopedia.sellerapp;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * @author by milhamj on 2019-08-22.
