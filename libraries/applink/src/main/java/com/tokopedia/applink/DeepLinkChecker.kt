@@ -47,6 +47,7 @@ object DeepLinkChecker {
     const val CONTACT_US =30
     const val SIMILAR_PRODUCT = 31
 
+    const val HOTEL = 31
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 

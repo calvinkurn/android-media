@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.media.AudioAttributes;
@@ -16,6 +17,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
@@ -49,6 +52,9 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.logger.LogWrapper;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation_common.category.CategoryNavigationConfig;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.fcm.ApplinkResetReceiver;
@@ -68,7 +74,9 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.Date;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -77,12 +85,22 @@ import java.util.concurrent.TimeUnit;
 public class ConsumerMainApplication extends ConsumerRouterApplication implements
         MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener,
-        CharacterPerMinuteInterface
-{
+        CharacterPerMinuteInterface {
 
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
+
+    private final String[] LOGENTRIES_TOKEN = new String[]
+            {Arrays.toString(new char[]{48, 56, 102, 99, 100, 49, 52, 56, 45, 49, 52, 97, 97, 45, 52,
+                    100, 56, 57, 45, 97, 99, 54, 55, 45, 52, 102, 55, 48, 102, 101, 102,
+                    100, 50, 102, 51, 55}),
+            Arrays.toString(new char[]{54, 48, 54, 54, 52, 101, 97, 55, 45, 52, 100, 54, 49,
+                    45, 52, 100, 102, 49, 45, 98, 51, 57, 99, 45, 51, 54, 53, 100,
+                    99, 54, 52, 55, 97, 99, 101, 100}),
+            Arrays.toString(new char[]{51, 51, 97, 99, 99, 56, 101, 55, 45, 49, 98, 53, 99, 45,
+                    52, 48, 51, 101, 45, 98, 100, 51, 49, 45, 55, 99, 49, 101, 54, 49, 98, 98,
+                    101, 102, 50, 99})};
 
     CharacterPerMinuteActivityLifecycleCallbacks callback;
     private TetraDebugger tetraDebugger;
@@ -152,13 +170,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             tetraDebugger.init();
         }
 
-        if(callback == null) {
+        if (callback == null) {
             callback = new CharacterPerMinuteActivityLifecycleCallbacks(this);
         }
         registerActivityLifecycleCallbacks(callback);
 
         LogWrapper.init(this);
+        if (LogWrapper.instance != null) {
+            LogWrapper.instance.setLogentriesToken(LOGENTRIES_TOKEN);
+        }
         TimberWrapper.init(this);
+
+        initializeAbTestVariant();
+
     }
 
     @Override
@@ -207,6 +231,19 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             e.printStackTrace();
         }
     }
+
+    private void initializeAbTestVariant() {
+        SharedPreferences sharedPreferences = getSharedPreferences(AbTestPlatform.Companion.getSHARED_PREFERENCE_AB_TEST_PLATFORM(), Context.MODE_PRIVATE);
+        Long timestampAbTest = sharedPreferences.getLong(AbTestPlatform.Companion.getKEY_SP_TIMESTAMP_AB_TEST(), 0);
+        RemoteConfigInstance.initAbTestPlatform(this);
+        Long current = new Date().getTime();
+
+        if (current >= timestampAbTest + TimeUnit.HOURS.toMillis(1)) {
+            RemoteConfigInstance.getInstance().getABTestPlatform().fetch(getRemoteConfigListener());
+        }
+    }
+
+    protected AbTestPlatform.Listener getRemoteConfigListener() { return null; }
 
     private void setVersionCode() {
         try {

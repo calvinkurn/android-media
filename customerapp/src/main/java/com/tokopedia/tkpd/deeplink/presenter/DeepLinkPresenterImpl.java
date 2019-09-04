@@ -18,7 +18,9 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.DeepLinkChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConsInternalHome;
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalTravel;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
@@ -215,6 +217,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 case DeepLinkChecker.INVOICE:
                     openInvoice(linkSegment, uriData);
                     screenName = AppScreen.SCREEN_DOWNLOAD_INVOICE;
+                    break;
+                case DeepLinkChecker.HOTEL:
+                    RouteManager.route(context, ApplinkConstInternalTravel.DASHBOARD_HOTEL);
+                    screenName = "";
                     break;
                 /*
                 case RECHARGE:

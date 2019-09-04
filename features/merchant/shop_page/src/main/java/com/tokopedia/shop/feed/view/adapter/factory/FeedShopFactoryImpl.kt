@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -17,6 +18,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.FeedRe
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.FeedRecommendationViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
@@ -44,6 +46,7 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
                           private val gridItemListener: GridPostAdapter.GridItemListener,
                           private val videoViewListener: VideoViewHolder.VideoViewListener,
                           private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener,
+                          private val highlightListener: HighlightAdapter.HighlightListener,
                           private val userSession : UserSessionInterface):
         BaseAdapterTypeFactory(), DynamicFeedTypeFactory, FeedShopTypeFactory {
 
@@ -69,6 +72,10 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
 
     override fun type(emptyFeedShopViewModel: EmptyFeedShopViewModel): Int {
         return EmptyFeedShopViewHolder.LAYOUT
+    }
+
+    override fun type(highlightViewModel: HighlightViewModel): Int {
+        return 0
     }
 
     @Suppress("UNCHECKED_CAST")
