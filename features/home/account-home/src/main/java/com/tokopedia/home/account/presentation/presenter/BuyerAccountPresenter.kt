@@ -41,7 +41,6 @@ class BuyerAccountPresenter(
             getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
                     X_SOURCE_RECOM_WIDGET,
                     AKUN_PAGE,
-                    "",
                     ArrayList()),
                     object : Subscriber<List<RecommendationWidget>>() {
                         override fun onStart() {
@@ -74,7 +73,6 @@ class BuyerAccountPresenter(
                     page,
                     X_SOURCE_RECOM_WIDGET,
                     AKUN_PAGE,
-                    "",
                     ArrayList()),
                     object : Subscriber<List<RecommendationWidget>>() {
                         override fun onStart() {

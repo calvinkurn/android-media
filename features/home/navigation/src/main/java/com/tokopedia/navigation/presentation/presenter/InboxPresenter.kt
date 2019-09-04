@@ -62,7 +62,6 @@ class InboxPresenter @Inject constructor(
         getRecommendationUseCase.execute(getRecommendationUseCase.getRecomParams(0,
                 X_SOURCE_RECOM_WIDGET,
                 INBOX_PAGE,
-                "",
                 ArrayList()),
                 object : Subscriber<List<RecommendationWidget>>() {
                     override fun onStart() {
@@ -95,7 +94,6 @@ class InboxPresenter @Inject constructor(
                 page,
                 X_SOURCE_RECOM_WIDGET,
                 INBOX_PAGE,
-                "",
                 ArrayList()),
                 object : Subscriber<List<RecommendationWidget>>() {
                     override fun onStart() {

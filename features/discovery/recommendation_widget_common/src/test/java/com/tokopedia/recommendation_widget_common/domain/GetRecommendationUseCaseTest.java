@@ -50,7 +50,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE(),
                 GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                "",
+                any(),
                 any()
         );
         int requestParamsId = requestParams.getInt(GetRecommendationUseCase.Companion.getUSER_ID(),
@@ -68,7 +68,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE(),
                 GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                "",
+                any(),
                 any()
         );
         int requestParamsPageNumber = requestParams.getInt(GetRecommendationUseCase.Companion.getPAGE_NUMBER(),
@@ -88,7 +88,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 dummyXSource,
                 GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                "",
+                any(),
                 any()
         );
         String requestXSource = requestParams.getString(GetRecommendationUseCase.Companion.getX_SOURCE(),
@@ -108,7 +108,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 dummyXSource,
                 GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                "",
+                any(),
                 any()
         );
         String requestXSource = requestParams.getString(GetRecommendationUseCase.Companion.getX_SOURCE(),
@@ -129,7 +129,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 dummyXSource,
                 GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                "",
+                any(),
                 any()
         );
         String requestXDevice = requestParams.getString(GetRecommendationUseCase.Companion.getX_DEVICE(),
@@ -150,7 +150,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE(),
                 dummyPageName,
-                "",
+                any(),
                 any()
         );
         String requestPageName = requestParams.getString(GetRecommendationUseCase.Companion.getPAGE_NAME(),
@@ -170,7 +170,7 @@ public class GetRecommendationUseCaseTest {
                 dummyPageNumber,
                 dummyPageName,
                 GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
-                "",
+                any(),
                 any()
         );
         String requestPageName = requestParams.getString(GetRecommendationUseCase.Companion.getPAGE_NAME(),
