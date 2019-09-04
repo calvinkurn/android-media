@@ -64,6 +64,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
+import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_ACTIVE_TAB_POSITION;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
@@ -127,8 +128,6 @@ public class SearchActivity extends BaseActivity
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
-
-    private static final String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,23 +222,31 @@ public class SearchActivity extends BaseActivity
 
     private void configureButtonCart() {
         if (!userSession.isLoggedIn()) {
-            buttonCart.setVisibility(View.GONE);
+            hideButtonCart();
         } else {
             if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true)) {
                 Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
                 if (drawable instanceof LayerDrawable) {
-                    CountDrawable countDrawable = new CountDrawable(this);
-                    int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
-                    countDrawable.setCount(String.valueOf(cartCount));
-                    drawable.mutate();
-                    ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
-                    buttonCart.setImageDrawable(drawable);
-                    buttonCart.setVisibility(View.VISIBLE);
+                    showButtonCart(drawable);
                 }
             } else {
-                buttonCart.setVisibility(View.GONE);
+                hideButtonCart();
             }
         }
+    }
+
+    private void showButtonCart(Drawable drawable) {
+        CountDrawable countDrawable = new CountDrawable(this);
+        int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
+        countDrawable.setCount(String.valueOf(cartCount));
+        drawable.mutate();
+        ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
+        buttonCart.setImageDrawable(drawable);
+        buttonCart.setVisibility(View.VISIBLE);
+    }
+
+    private void hideButtonCart() {
+        buttonCart.setVisibility(View.GONE);
     }
 
     private void moveToAutoCompleteActivity() {

@@ -14,71 +14,70 @@ import android.support.v4.content.ContextCompat;
 import com.tokopedia.search.R;
 
 public class CountDrawable extends Drawable {
-    private Paint mBadgePaint;
-    private Paint mTextPaint;
-    private Rect mTxtRect = new Rect();
+    private Paint badgePaint;
+    private Paint textPaint;
+    private Rect txtRect = new Rect();
 
-    private String mCount = "";
-    private boolean mWillDraw;
+    private String count = "";
+    private boolean willDraw;
 
     public CountDrawable(Context context) {
-        float mTextSize = context.getResources().getDimension(R.dimen.sp_8);
+        createBadgePaint(context);
+        createTextPaint(context);
+    }
 
-        mBadgePaint = new Paint();
-        mBadgePaint.setColor(ContextCompat.getColor(context.getApplicationContext(), R.color.red_800));
-        mBadgePaint.setAntiAlias(true);
-        mBadgePaint.setStyle(Paint.Style.FILL);
+    private void createTextPaint(Context context) {
+        textPaint = new Paint();
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTypeface(Typeface.DEFAULT);
+        textPaint.setTextSize(context.getResources().getDimension(R.dimen.sp_8));
+        textPaint.setAntiAlias(true);
+        textPaint.setTextAlign(Paint.Align.CENTER);
+    }
 
-        mTextPaint = new Paint();
-        mTextPaint.setColor(Color.WHITE);
-        mTextPaint.setTypeface(Typeface.DEFAULT);
-        mTextPaint.setTextSize(mTextSize);
-        mTextPaint.setAntiAlias(true);
-        mTextPaint.setTextAlign(Paint.Align.CENTER);
+    private void createBadgePaint(Context context) {
+        badgePaint = new Paint();
+        badgePaint.setColor(ContextCompat.getColor(context.getApplicationContext(), R.color.red_800));
+        badgePaint.setAntiAlias(true);
+        badgePaint.setStyle(Paint.Style.FILL);
     }
 
     @Override
     public void draw(Canvas canvas) {
 
-        if (!mWillDraw) {
+        if (!willDraw) {
             return;
         }
         Rect bounds = getBounds();
         float width = bounds.right - bounds.left;
         float height = bounds.bottom - bounds.top;
 
-        // Position the badge in the top-right quadrant of the icon.
-
-        /*Using Math.max rather than Math.min */
-
         float radius = ((Math.max(width, height) / 2)) / 2;
         float centerX = (width - radius - 1) +5;
         float centerY = radius -5;
-        if(mCount.length() <= 2){
-            // Draw badge circle.
-            canvas.drawCircle(centerX, centerY, (int)(radius+5.5), mBadgePaint);
+        if(count.length() <= 2){
+            canvas.drawCircle(centerX, centerY, (int)(radius+5.5), badgePaint);
         }
         else{
-            canvas.drawCircle(centerX, centerY, (int)(radius+6.5), mBadgePaint);
+            canvas.drawCircle(centerX, centerY, (int)(radius+6.5), badgePaint);
         }
-        // Draw badge count text inside the circle.
-        mTextPaint.getTextBounds(mCount, 0, mCount.length(), mTxtRect);
-        float textHeight = mTxtRect.bottom - mTxtRect.top;
+        textPaint.getTextBounds(count, 0, count.length(), txtRect);
+        float textHeight = txtRect.bottom - txtRect.top;
         float textY = centerY + (textHeight / 2f);
-        if(mCount.length() > 2)
-            canvas.drawText("99+", centerX, textY, mTextPaint);
+        if(count.length() > 2)
+            canvas.drawText("99+", centerX, textY, textPaint);
         else
-            canvas.drawText(mCount, centerX, textY, mTextPaint);
+            canvas.drawText(count, centerX, textY, textPaint);
     }
 
     /*
     Sets the count (i.e notifications) to display.
      */
     public void setCount(String count) {
-        mCount = count;
+        this.count = count;
 
         // Only draw a badge if there are notifications.
-        mWillDraw = !count.equalsIgnoreCase("0");
+        willDraw = !count.equalsIgnoreCase("0");
         invalidateSelf();
     }
 
