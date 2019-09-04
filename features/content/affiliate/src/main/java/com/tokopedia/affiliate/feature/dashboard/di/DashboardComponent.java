@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.dashboard.di;
 
 import com.tokopedia.affiliate.common.di.AffiliateComponent;
 import com.tokopedia.affiliate.feature.dashboard.view.fragment.AffiliateDashboardFragment;
+import com.tokopedia.affiliate.feature.dashboard.view.fragment.AffiliateProductBoughtFragment;
 import com.tokopedia.affiliate.feature.dashboard.view.fragment.CommissionDetailFragment;
 import com.tokopedia.affiliate.feature.dashboard.view.fragment.DashboardFragment;
 
@@ -19,6 +20,8 @@ import dagger.Component;
 public interface DashboardComponent {
 
     void inject(DashboardFragment dashboardFragment);
+
+    void inject(AffiliateProductBoughtFragment affiliateProductBoughtFragment);
 
     void inject(AffiliateDashboardFragment dashboardFragment);
 
