@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.*
@@ -15,7 +15,7 @@ import com.tokopedia.search.result.presentation.view.fragment.ShopListFragment
 class SearchSectionPagerAdapter(
         fragmentManager: FragmentManager,
         private val searchParameter: SearchParameter
-) : FragmentPagerAdapter(fragmentManager) {
+) : FragmentStatePagerAdapter(fragmentManager) {
 
     private var productListFragment: ProductListFragment? = null
     private var catalogListFragment: CatalogListFragment? = null
