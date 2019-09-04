@@ -948,10 +948,10 @@ public class GroupChatAnalytics {
                 EVENT_NAME, "addToCart",
                 EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
                 EVENT_ACTION, EVENT_ACTION_CLICK_ATC,
-                EVENT_LABEL, "sticky_product",
+                EVENT_LABEL, "sticky product",
                 ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
                         "click", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "groupchat/sticky"),
+                                "actionField", DataLayer.mapOf("list", "/groupchat/sticky"),
                                 "products", DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 "name", productName,
