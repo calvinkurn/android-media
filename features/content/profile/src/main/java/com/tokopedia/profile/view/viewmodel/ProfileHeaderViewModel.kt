@@ -24,6 +24,9 @@ data class ProfileHeaderViewModel(
         const val ZERO = "0"
     }
 
+    val formattedAffiliateName: String
+        get() = "@$affiliateName"
+
     override fun type(typeFactory: ProfileTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }

@@ -90,6 +90,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     private lateinit var lendingSeoAdapter: LendingSeoAdapter
 
     private var observable: Subscription? = null
+    private var tanpaAgunanFragmentInstance: TanpaAgunanFragment? = null
 
     private var parterDataList: ArrayList<GqlLendingPartnerData> = ArrayList()
 
@@ -192,6 +193,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
                 showCategoryLayout()
                 lendingCategoryAdpater = LendingCategoryAdapter(gqlLendingDataResponse.leCategory.categoryData)
                 setupCategoryLayout()
+                tanpaAgunanFragmentInstance?.setCategoryData(gqlLendingDataResponse.leCategory.categoryData)
+
             } else {
                 hideCategoryLayout()
             }
@@ -341,13 +344,15 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun populateOneTabItem() {
+        tanpaAgunanFragmentInstance = getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)
         instantLoanItemList.add(InstantLoanItem(getPageTitle(PINJAMAN_ONLINE_TAB_POSITION),
-                getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)))
+                tanpaAgunanFragmentInstance))
     }
 
     private fun populateTwoTabItem() {
+        tanpaAgunanFragmentInstance = getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)
         instantLoanItemList.add(InstantLoanItem(getPageTitle(PINJAMAN_ONLINE_TAB_POSITION),
-                getTanpaAgunanFragment(PINJAMAN_ONLINE_TAB_POSITION)))
+                tanpaAgunanFragmentInstance))
         instantLoanItemList.add(InstantLoanItem(getPageTitle(DANA_INSTAN_TAB_POSITION),
                 getDanaInstantFragment(DANA_INSTAN_TAB_POSITION)))
     }
