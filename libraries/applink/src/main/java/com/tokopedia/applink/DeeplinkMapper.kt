@@ -62,6 +62,8 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.DISCOVERY_SEARCH -> return ApplinkConstInternalDiscovery.SEARCH_RESULT
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+            ApplinkConst.CART -> return ApplinkConstInternalMarketplace.CART
+            ApplinkConst.CHECKOUT -> return ApplinkConstInternalMarketplace.CHECKOUT
             else -> ""
         }
     }

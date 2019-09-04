@@ -672,7 +672,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     val intent = ShipmentActivity.createInstance(this, ShipmentFormRequest.BundleBuilder().build())
                     startActivity(intent)
                 } else {
-                    val cartUriString = ApplinkConstInternalMarketplace.CART
+                    val cartUriString = ApplinkConst.CART
                     val intent = RouteManager.getIntent(this, cartUriString)
                     intent?.run {
                         putExtra(EXTRA_CART_ID, cartId)

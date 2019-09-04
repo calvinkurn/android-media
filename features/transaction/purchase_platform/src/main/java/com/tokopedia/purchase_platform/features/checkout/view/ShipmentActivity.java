@@ -6,14 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
-import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
-import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
-import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
+import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -35,16 +33,16 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     private ShipmentFragment shipmentFragment;
 
-    @DeepLink(ApplinkConst.CHECKOUT)
-    public static Intent getCallingIntent(Context context, Bundle extras) {
-        Intent intent = new Intent(context, ShipmentActivity.class).putExtras(extras);
-        intent.putExtras(extras);
-        if (extras.getString(CartConstant.CHECKOUT_LEASING_ID) != null) {
-            Uri.Builder uri = Uri.parse(extras.getString(CartConstant.CHECKOUT_LEASING_ID)).buildUpon();
-            intent.setData(uri.build());
-        }
-        return intent;
-    }
+//    @DeepLink(ApplinkConst.CHECKOUT)
+//    public static Intent getCallingIntent(Context context, Bundle extras) {
+//        Intent intent = new Intent(context, ShipmentActivity.class).putExtras(extras);
+//        intent.putExtras(extras);
+//        if (extras.getString(CartConstant.CHECKOUT_LEASING_ID) != null) {
+//            Uri.Builder uri = Uri.parse(extras.getString(CartConstant.CHECKOUT_LEASING_ID)).buildUpon();
+//            intent.setData(uri.build());
+//        }
+//        return intent;
+//    }
 
     public static Intent createInstance(Context context,
                                         PromoStackingData promoData,
