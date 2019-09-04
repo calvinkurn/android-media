@@ -25,6 +25,7 @@ object ProductTrackingConstant {
         const val CLICK_ON_LOGIN_STICKY_WIDGET = "click on login sticky widget"
         const val CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET = "click on button close login sticky widget"
         const val VIEW_LOGIN_STICKY_WIDGET = "view login sticky widget"
+        const val CLICK_APPLY_LEASING = "click - ajukan kredit"
 
     }
 
