@@ -47,11 +47,21 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
         private const val SPAN_COUNT = 2
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
+        private const val SAVED_PRODUCT_ID = "saved_product_id"
+        private const val SAVED_REF = "saved_ref"
         private const val REQUEST_FROM_PDP = 399
 
         fun newInstance(productId: String = "", ref: String = "") = SimilarProductRecommendationFragment().apply {
             this.ref = ref
             this.productId = productId
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        savedInstanceState?.let{
+            productId = it.getString(SAVED_PRODUCT_ID) ?: ""
+            ref = it.getString(SAVED_REF) ?: ""
         }
     }
 
@@ -92,6 +102,13 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
             }
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(SAVED_PRODUCT_ID, productId)
+        outState.putString(SAVED_REF, ref)
+    }
+
     /**
      * [onPause] is override from [BaseListFragment]
      * this void override with added extra sendAllTracking
