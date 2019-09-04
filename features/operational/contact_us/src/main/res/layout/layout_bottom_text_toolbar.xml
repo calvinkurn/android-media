@@ -52,7 +52,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@drawable/rounded_grey_rectangle_border"
-        android:hint="@string/type_here"
+        android:hint="@string/contact_us_type_here"
         android:includeFontPadding="false"
         android:lineSpacingExtra="6sp"
         android:maxLines="4"
