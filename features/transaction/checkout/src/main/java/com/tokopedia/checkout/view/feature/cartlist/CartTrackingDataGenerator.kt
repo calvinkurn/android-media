@@ -43,8 +43,8 @@ class CartTrackingDataGenerator @Inject constructor() {
     private fun getProductBundle(cartItemData: CartItemData?): Bundle {
         val productBundle = Bundle().apply {
             cartItemData?.apply {
-                putString(FirebaseAnalytics.Param.ITEM_ID, originData.productId)
-                putString(FirebaseAnalytics.Param.ITEM_NAME, originData.productName)
+                putString(FirebaseAnalytics.Param.ITEM_ID, originData.productId ?: "")
+                putString(FirebaseAnalytics.Param.ITEM_NAME, originData.productName ?: "")
                 putString(FirebaseAnalytics.Param.ITEM_BRAND, DEFAULT_VALUE_NONE_OTHER)
                 putString(FirebaseAnalytics.Param.ITEM_CATEGORY,
                         if (TextUtils.isEmpty(originData.category)) DEFAULT_VALUE_NONE_OTHER
@@ -62,8 +62,8 @@ class CartTrackingDataGenerator @Inject constructor() {
                 putString("dimension56", originData.warehouseId.toString())
                 putString("dimension48", originData.weightPlan.toString())
                 putString("dimension45", originData.cartId.toString())
-                putString("dimension49", originData.promoCodes)
-                putString("dimension59", originData.promoDetails)
+                putString("dimension49", originData.promoCodes ?: "")
+                putString("dimension59", originData.promoDetails ?: "")
             }
         }
 
