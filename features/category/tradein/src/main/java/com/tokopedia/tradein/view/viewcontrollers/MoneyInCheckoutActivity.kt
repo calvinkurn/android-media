@@ -154,7 +154,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                 }
                 is MutationCheckoutError -> {
                     showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
-                        moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.maxTimeUnix, scheduleTime.minTimeUnix)
+                        moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
                     }
                 }
             }
@@ -258,7 +258,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         val btBuy = findViewById<Button>(R.id.bt_buy)
         btBuy.setOnClickListener {
             if (isTimeSet && isCourierSet) {
-                moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.maxTimeUnix, scheduleTime.minTimeUnix)
+                moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
             } else if (!isCourierSet) {
                 showMessage(getString(R.string.select_shipping))
             } else if (!isTimeSet) {

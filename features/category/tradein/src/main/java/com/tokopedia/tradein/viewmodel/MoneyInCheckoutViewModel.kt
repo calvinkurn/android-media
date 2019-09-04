@@ -25,6 +25,10 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
     private val checkoutDataLiveData = MutableLiveData<Result<CheckoutData.Data>>()
     private var errorLiveData: MutableLiveData<MoneyInCheckoutState> = MutableLiveData()
 
+    companion object{
+        private const val SUCCESS = 1
+    }
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -101,10 +105,10 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
             request["params"] = params
 
             val response = repository?.getGQLData(query, MoneyInCheckoutMutationResponse.ResponseData::class.java, request) as MoneyInCheckoutMutationResponse.ResponseData
-            if(response.checkoutGeneral.header?.errorCode!=null) {
-                errorLiveData.value = MutationCheckoutError(response.checkoutGeneral.header.messages.joinToString())
-            } else {
+            if (response.checkoutGeneral.data.success == SUCCESS) {
                 checkoutDataLiveData.value = Success(response.checkoutGeneral.data.data)
+            } else {
+                errorLiveData.value = MutationCheckoutError(response.checkoutGeneral.header.messages.joinToString())
             }
         }, onError = {
             it.printStackTrace()
