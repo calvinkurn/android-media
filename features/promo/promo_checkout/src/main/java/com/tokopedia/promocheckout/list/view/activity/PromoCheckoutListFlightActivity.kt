@@ -5,13 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
+import com.tokopedia.promocheckout.list.PromoCheckoutListComponentInstance
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.view.fragment.BasePromoCheckoutListFragment
 import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDigitalFragment
 import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListFlightFragment
 
-class PromoCheckoutListFlightActivity : BaseSimpleActivity() {
+class PromoCheckoutListFlightActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {
 
     override fun getNewFragment(): Fragment {
         return PromoCheckoutListFlightFragment.createInstance(
@@ -20,6 +23,10 @@ class PromoCheckoutListFlightActivity : BaseSimpleActivity() {
                 intent?.extras?.getString(PromoCheckoutListFlightFragment.EXTRA_CART_ID, ""),
                 intent?.extras?.getInt(BasePromoCheckoutListFragment.PAGE_TRACKING, 1) ?: 1
         )
+    }
+
+    override fun getComponent(): PromoCheckoutListComponent {
+        return PromoCheckoutListComponentInstance.getPromoCheckoutListComponent(application)
     }
 
     companion object {

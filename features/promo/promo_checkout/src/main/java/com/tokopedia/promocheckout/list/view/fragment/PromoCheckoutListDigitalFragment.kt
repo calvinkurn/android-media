@@ -1,13 +1,9 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.constant.IRouterConstant
-import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
@@ -15,8 +11,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
-import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
@@ -24,7 +19,7 @@ import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalP
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import javax.inject.Inject
 
-class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
+open class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
 
     @Inject
     lateinit var promoCheckoutListDigitalPresenter: PromoCheckoutListDigitalPresenter
@@ -45,6 +40,10 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
         super.onItemClicked(promoCheckoutListModel)
+        navigateToPromoDetail(promoCheckoutListModel)
+    }
+
+    open fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
         startActivityForResult(PromoCheckoutDetailDigitalActivity.newInstance(
                 activity, promoCheckoutListModel?.code ?: "", false, promoDigitalModel, pageTracking), REQUEST_CODE_PROMO_DETAIL)
     }
@@ -75,12 +74,7 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     }
 
     override fun initInjector() {
-        super.initInjector()
-        DaggerPromoCheckoutListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .promoCheckoutListModule(PromoCheckoutListModule())
-                .build()
-                .inject(this)
+        getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
 
     override fun onDestroyView() {

@@ -1,44 +1,30 @@
 package com.tokopedia.promocheckout.list.view.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
-import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
-import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
-import com.tokopedia.promocheckout.common.view.model.PromoData
-import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailFlightActivity
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
-import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListFlightPresenter
 import javax.inject.Inject
 
-class PromoCheckoutListFlightFragment : BasePromoCheckoutListFragment(), PromoCheckoutListContract.View {
+class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), PromoCheckoutListContract.View {
 
     @Inject
     lateinit var promoCheckoutListFlightPresenter: PromoCheckoutListFlightPresenter
 
     var cartID: String = ""
 
-    override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
     override var categoryId: Int = 27
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true
-        promoCode = arguments?.getString(EXTRA_PROMO_CODE) ?: ""
         cartID = arguments?.getString(EXTRA_CART_ID) ?: ""
-        pageTracking = arguments?.getInt(PAGE_TRACKING) ?: 1
         promoCheckoutListFlightPresenter.attachView(this)
     }
 
-    override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-        super.onItemClicked(promoCheckoutListModel)
+    override fun navigateToPromoDetail(promoCheckoutListModel: PromoCheckoutListModel?) {
         startActivityForResult(PromoCheckoutDetailFlightActivity.newInstance(
                 activity, promoCheckoutListModel?.code ?: "", cartID, false, pageTracking), REQUEST_CODE_PROMO_DETAIL)
     }
@@ -47,23 +33,8 @@ class PromoCheckoutListFlightFragment : BasePromoCheckoutListFragment(), PromoCh
         if (promoCode.isNotEmpty()) promoCheckoutListFlightPresenter.checkPromoCode(cartID, promoCode)
     }
 
-    override fun onSuccessCheckPromo(data: DataUiModel) {
-        trackSuccessCheckPromoCode(data)
-        val intent = Intent()
-        val promoData = PromoData(data.isCoupon, data.codes[0],
-                data.message.text, data.titleDescription, state = data.message.state.mapToStatePromoCheckout())
-        intent.putExtra(EXTRA_PROMO_DATA, promoData)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
-    }
-
     override fun initInjector() {
-        super.initInjector()
-        DaggerPromoCheckoutListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .promoCheckoutListModule(PromoCheckoutListModule())
-                .build()
-                .inject(this)
+        getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
 
     override fun onDestroyView() {
