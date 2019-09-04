@@ -37,12 +37,12 @@ import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttribut
 import com.tokopedia.chatbot.domain.subscriber.*
 import com.tokopedia.chatbot.domain.usecase.*
 import com.tokopedia.chatbot.view.listener.ChatbotContract
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ATTACHMENT_TYPE_FIFTEEN
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ATTACHMENT_TYPE_FOURTEEN
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ATTACHMENT_TYPE_SIXTEEN
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ATTACHMENT_TYPE_THIRTEEN
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.TEXT_HIDE
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -84,10 +84,10 @@ class ChatbotPresenter @Inject constructor(
     object companion{
         const val ERROR_CODE ="400"
         const val TEXT_HIDE = "hide"
-        const val ATTACHMENT_TYPE_THIRTEEN = "13"
-        const val ATTACHMENT_TYPE_FOURTEEN = "14"
-        const val ATTACHMENT_TYPE_FIFTEEN = "15"
-        const val ATTACHMENT_TYPE_SIXTEEN = "16"
+        const val OPEN_CSAT = "13"
+        const val UPDATE_TOOLBAR = "14"
+        const val CHAT_DIVIDER_DEBUGGING = "15"
+        const val LIVE_CHAT_DIVIDER = "16"
     }
 
     override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
@@ -150,23 +150,23 @@ class ChatbotPresenter @Inject constructor(
 
                     val attachmentType = chatResponse.attachment?.type
 
-                    if (attachmentType == ATTACHMENT_TYPE_THIRTEEN) {
+                    if (attachmentType == OPEN_CSAT) {
                         val csatResponse: WebSocketCsatResponse =Gson().fromJson(webSocketResponse.getData(),
                                 WebSocketCsatResponse::class.java)
                         view.openCsat(csatResponse)
                     }
 
-                    if (attachmentType== ATTACHMENT_TYPE_FOURTEEN){
+                    if (attachmentType== UPDATE_TOOLBAR){
                         val tool = Gson().fromJson(chatResponse.attachment?.attributes, ToolbarAttributes::class.java)
                         view.updateToolbar(tool.profileName,tool.profileImage)
                     }
 
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
-                    if (attachmentType == ATTACHMENT_TYPE_FIFTEEN) {
+                    if (attachmentType == CHAT_DIVIDER_DEBUGGING) {
                         val model = ConnectionDividerViewModel(liveChatDividerAttribute?.divider?.label, false, SHOW_TEXT, null)
                         view.onReceiveConnectionEvent(model)
                     }
-                    if(attachmentType == ATTACHMENT_TYPE_SIXTEEN){
+                    if(attachmentType == LIVE_CHAT_DIVIDER){
                         mappingQueueDivider(liveChatDividerAttribute)
                     }
 
