@@ -1256,13 +1256,29 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun goToCourier(
-            productId: String,
-            shipment: List<ShopShipment>,
-            bbInfos: List<BBInfo>
-    ) {
+    private fun onShipmentClicked() {
+        productDetailTracking.eventShippingClicked()
+        if (productInfoViewModel.isUserSessionActive()) {
+            val productP3value = productInfoViewModel.productInfoP3resp.value
+            if (!productP3value?.ratesModel?.services.isNullOrEmpty()) {
+                gotoRateEstimation()
+            } else {
+                goToCourier()
+            }
+        } else {
+            goToCourier()
+        }
+    }
+
+    private fun goToCourier() {
         activity?.let {
-            startActivity(CourierActivity.createIntent(it, productId, shipment, bbInfos))
+            if (productInfo != null && shopInfo != null) {
+                startActivity(CourierActivity.createIntent(it,
+                        productInfo?.basic?.id?.toString() ?: "",
+                        shopInfo?.shipments ?: listOf(),
+                        shopInfo?.bbInfo ?: listOf()
+                ))
+            }
         }
     }
 
@@ -1300,19 +1316,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
-                val userSession = UserSession(it)
-                productStatsView.renderClickShipping(it) {
-                    productDetailTracking.eventShippingClicked()
-                    if (userSession.isLoggedIn) {
-                        gotoRateEstimation()
-                    } else {
-                        goToCourier(
-                                productInfo?.basic?.id?.toString() ?: "",
-                                shopInfo.shipments,
-                                shopInfo.bbInfo
-                        )
-                    }
-                }
+                productStatsView.renderClickShipping(it, ::onShipmentClicked)
             }
             productDetailTracking.sendScreen(
                     shopInfo.shopCore.shopID,
