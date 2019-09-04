@@ -122,7 +122,7 @@ class ReadGradlefileTasks extends DefaultTask{
                         String text = line.replace("versionName = ","").replace("\"","")
                         def version = calculateVersion(text, versionConfig, it.incrementCount>0)
                         writer.append("    versionName = \"$version\"\n")
-                        versionMap.put(it.projectName, version)
+                        versionMap.put(it.artifactId, version)
                         tanda = false
                     }else if(line.trim().startsWith("implementation") && line.contains(":")){
                         def text = line.split(":")
@@ -141,11 +141,11 @@ class ReadGradlefileTasks extends DefaultTask{
             writer.renameTo("${module}/build.gradle")
             def saveStatus =  compileModule(module)
             if(saveStatus.contains("BUILD SUCCESSFUL")){
-                def version = versionMap.get(text[1])
+                def version = versionMap.get(module)
                 log.append("${module} - ${version} - SUCCESSFUL\n")
                 return false
             }else{
-                def version = versionMap.get(text[1])
+                def version = versionMap.get(module)
                 log.append("${module} - ${version} - FAILED\n")
                 returnBackup()
                 return true
