@@ -101,7 +101,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static final String PARAM_TICKET_T_ID = "id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
     private CloseableBottomSheetDialog helpFullBottomSheet, closeComplainBottomSheet,servicePrioritiesBottomSheet;
-    private List<CommentsItem> commentsItems = new ArrayList<>();
+    private List<CommentsItem> commentsItems;
     private boolean iscloseAllow = false;
 
     @DeepLink(ApplinkConst.TICKET_DETAIL)
@@ -127,6 +127,9 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void renderMessageList(Tickets ticketDetail) {
         commentsItems = ticketDetail.getComments();
+        if(commentsItems ==null){
+            commentsItems = new ArrayList<>();
+        }
         iscloseAllow = ticketDetail.isAllowClose();
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
 
