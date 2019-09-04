@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.data.filter.FilterResponse
-import com.tokopedia.discovery.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams

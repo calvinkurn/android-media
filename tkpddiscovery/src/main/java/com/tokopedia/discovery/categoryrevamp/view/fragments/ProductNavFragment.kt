@@ -44,8 +44,8 @@ import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListene
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.data.Filter
-import com.tokopedia.discovery.common.data.Option
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -57,7 +57,6 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.android.synthetic.main.fragment_product_nav.*
 import kotlinx.android.synthetic.main.layout_nav_no_product.*
 import javax.inject.Inject
-import kotlin.collections.set
 
 
 class ProductNavFragment : BaseCategorySectionFragment(),
@@ -66,6 +65,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         ProductCardListener,
         SubCategoryListener,
         WishListActionListener {
+
     override fun getDepartMentId(): String {
         return mDepartmentId
     }

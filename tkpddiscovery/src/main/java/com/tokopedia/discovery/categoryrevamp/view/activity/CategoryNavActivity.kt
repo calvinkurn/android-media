@@ -21,10 +21,10 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySection
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
-import com.tokopedia.discovery.common.data.Filter
-import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
-import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
+import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.synthetic.main.activity_category_nav.*

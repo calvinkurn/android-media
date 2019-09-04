@@ -19,16 +19,16 @@ import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
-import com.tokopedia.discovery.common.data.DataValue
-import com.tokopedia.discovery.common.data.Filter
-import com.tokopedia.discovery.common.data.Option
-import com.tokopedia.discovery.common.data.Sort
-import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
-import com.tokopedia.discovery.newdynamicfilter.controller.FilterController
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper
-import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper
+import com.tokopedia.filter.common.data.DataValue
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
+import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
+import com.tokopedia.filter.newdynamicfilter.helper.SortHelper
+import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import java.util.*
 import kotlin.collections.HashMap
 

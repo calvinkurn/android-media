@@ -5,7 +5,7 @@ import android.arch.lifecycle.ViewModel
 import com.tokopedia.discovery.categoryrevamp.data.catalogModel.SearchCatalog
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.CatalogUseCase
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.DynamicFilterUseCase
-import com.tokopedia.discovery.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

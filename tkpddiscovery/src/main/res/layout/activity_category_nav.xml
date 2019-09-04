@@ -203,12 +203,12 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView
+    <com.tokopedia.filter.widget.BottomSheetFilterView
         android:id="@+id/bottomSheetFilter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
         app:behavior_hideable="true"
-        app:layout_behavior="com.tokopedia.discovery.newdiscovery.widget.UserLockBottomSheetBehavior" />
+        app:layout_behavior="com.tokopedia.filter.widget.UserLockBottomSheetBehavior" />
 
 </android.support.design.widget.CoordinatorLayout>

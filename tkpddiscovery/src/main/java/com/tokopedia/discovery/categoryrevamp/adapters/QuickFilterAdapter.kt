@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
-import com.tokopedia.discovery.common.data.Filter
-import com.tokopedia.discovery.common.data.Option
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 
 class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
                          val quickFilterListener: QuickFilterListener) : RecyclerView.Adapter<QuickFilterAdapter.ViewHolder>() {
