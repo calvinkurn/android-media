@@ -3,7 +3,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter;
 import android.content.Context;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;

@@ -189,6 +189,7 @@ public class TabAutoCompleteViewHolder extends AbstractViewHolder<TabAutoComplet
             model.setImageUrl(item.getImageURI());
             model.setOfficial(item.isOfficial());
             model.setLocation(item.getLocation());
+            model.setShopBadgeIconUrl(item.getShopBadgeIconUrl());
             list.add(model);
         }
         return list;

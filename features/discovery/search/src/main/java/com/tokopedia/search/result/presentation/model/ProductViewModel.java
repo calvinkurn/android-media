@@ -3,9 +3,8 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.discovery.common.data.DataValue;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.search.result.domain.model.SearchProductModel;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 

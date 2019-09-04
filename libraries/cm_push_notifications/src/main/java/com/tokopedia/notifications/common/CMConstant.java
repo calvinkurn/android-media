@@ -4,6 +4,12 @@ package com.tokopedia.notifications.common;
  * Created by Ashwani Tyagi on 18/10/18.
  */
 public interface CMConstant {
+
+    interface RemoteKeys{
+        String KEY_IS_INAPP_ENABLE = "app_cm_inapp_enable";
+    }
+
+
     String EXTRA_NOTIFICATION_ID = "notification_id";
     String EXTRA_BASE_MODEL = "extra_base_model";
     String EXTRA_PRODUCT_INFO = "extra_product_info";

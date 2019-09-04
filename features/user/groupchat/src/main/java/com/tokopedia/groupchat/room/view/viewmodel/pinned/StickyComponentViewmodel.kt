@@ -7,14 +7,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 /**
  * @author by yfsx on 14/02/19.
  */
-data class StickyComponentViewModel (val componentId : String = "",
+data class StickyComponentViewModel constructor(val componentId : String = "",
                                      val componentType: String = "",
                                      val imageUrl: String = "",
                                      val title: String = "",
                                      val subtitle: String = "",
                                      val redirectUrl : String = "",
                                      val stickyTime : Int = 0,
-                                     val relatedButton : Int = 0) : Visitable<Any>, Parcelable {
+                                     val relatedButton : Int = 0,
+                                     var attributeData : String = "") : Visitable<Any>, Parcelable {
 
     constructor(parcel: Parcel) : this(
             parcel.readString(),
@@ -24,7 +25,8 @@ data class StickyComponentViewModel (val componentId : String = "",
             parcel.readString(),
             parcel.readString(),
             parcel.readInt(),
-            parcel.readInt()) {
+            parcel.readInt(),
+            parcel.readString()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -36,6 +38,7 @@ data class StickyComponentViewModel (val componentId : String = "",
         parcel.writeString(redirectUrl)
         parcel.writeInt(stickyTime)
         parcel.writeInt(relatedButton)
+        parcel.writeString(attributeData)
     }
 
     override fun describeContents(): Int {
@@ -43,9 +46,6 @@ data class StickyComponentViewModel (val componentId : String = "",
     }
 
     companion object CREATOR : Parcelable.Creator<StickyComponentViewModel> {
-
-        const val TYPE = "sticky_component"
-        const val TYPE_CLOSE = "sticky_component_close"
         const val TYPE_PRODUCT = "product"
 
         override fun createFromParcel(parcel: Parcel): StickyComponentViewModel {

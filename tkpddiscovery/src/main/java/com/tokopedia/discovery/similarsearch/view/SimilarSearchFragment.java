@@ -192,7 +192,6 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
         mAdapter.setWishlistButtonEnabled(adapterPosition, true);
     }
 
-
     @Override
     public String getUserId() {
         return userSession.getUserId();
@@ -224,6 +223,9 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
 
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
+        int adapterPosition = mAdapter.getIndex(productId);
+        if (adapterPosition < 0 || adapterPosition >= mAdapter.getItemCount()) return;
+
         enableWishlistButton(mAdapter.getIndex(productId));
         mAdapter.notifyItemChanged(mAdapter.getIndex(productId));
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);

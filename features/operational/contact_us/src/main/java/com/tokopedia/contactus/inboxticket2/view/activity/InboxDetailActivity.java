@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
@@ -13,12 +12,10 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.applink.ApplinkConst;
@@ -102,6 +99,8 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static final String IS_OFFICIAL_STORE = "is_official_store";
     private CloseableBottomSheetDialog helpFullBottomSheet, closeComplainBottomSheet,servicePrioritiesBottomSheet;
     List<CommentsItem> commentsItems = new ArrayList<>();
+
+    private boolean isSendButtonEnabled = false;
 
     @DeepLink(ApplinkConst.TICKET_DETAIL)
     public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
@@ -408,7 +407,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     void sendMessage() {
         ((InboxDetailContract.InboxDetailPresenter) mPresenter).sendMessage();
-        edMessage.setHint(R.string.type_here);
+        edMessage.setHint(R.string.contact_us_type_here);
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickSubmitReply,
@@ -494,7 +493,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         rvSelectedImages.setVisibility(View.GONE);
         edMessage.getText().clear();
         setSubmitButtonEnabled(false);
-        edMessage.setHint(R.string.type_here);
+        edMessage.setHint(R.string.contact_us_type_here);
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
         rvMessageList.setPadding(0, 0, 0,
@@ -577,7 +576,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void setSubmitButtonEnabled(boolean enabled) {
-        ivSendButton.setClickable(enabled);
+        isSendButtonEnabled = enabled;
         if (enabled) {
             ivSendButton.setColorFilter(getResources().getColor(R.color.green_nob));
         } else {
@@ -666,7 +665,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         } else if (id == R.id.btn_inactive_1 || id == R.id.btn_inactive_2 || id == R.id.btn_inactive_3 || id == R.id.btn_inactive_4 || id == R.id.btn_inactive_5) {
             onEmojiClick(view);
         } else if (id == R.id.iv_send_button) {
-            sendMessage();
+            sendMessage(isSendButtonEnabled);
         } else if (id == R.id.txt_hyper || id == R.id.tv_view_transaction) {
             onClickListener(view);
         } else if (id == R.id.iv_next_down || id == R.id.iv_previous_up) {
@@ -773,6 +772,16 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void onClickClose() {
         servicePrioritiesBottomSheet.dismiss();
+    }
+
+    private void sendMessage(boolean isSendButtonEnabled) {
+
+        if (isSendButtonEnabled){
+            sendMessage();
+        }else{
+            Toaster.Companion.showErrorWithAction(getRootView(),this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, SNACKBAR_OK,v1 -> {
+            });
+        }
     }
 }
 
