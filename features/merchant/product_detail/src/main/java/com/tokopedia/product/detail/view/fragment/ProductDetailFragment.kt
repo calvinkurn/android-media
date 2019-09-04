@@ -127,7 +127,6 @@ import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
-import com.tokopedia.transaction.common.dialog.SuccessTicketDialog
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
@@ -1194,7 +1193,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun onSuccessSubmitHelpTicket(result: SubmitTicketResult) {
         hideProgressDialog()
         if (result.status) {
-            val successTicketDialog = SuccessTicketDialog(activity!!, SuccessTicketDialog.Page.PAGE_ATC)
+            val successTicketDialog = UnifyDialog(activity!!, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
+            successTicketDialog.setTitle("Title")
+            successTicketDialog.setDescription("Desc")
+            successTicketDialog.setOk("OK")
             successTicketDialog.setOkOnClickListener(View.OnClickListener {
                 successTicketDialog.dismiss()
             })

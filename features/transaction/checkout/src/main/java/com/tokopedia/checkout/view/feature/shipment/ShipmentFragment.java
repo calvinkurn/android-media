@@ -109,9 +109,9 @@ import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.transaction.common.dialog.SuccessTicketDialog;
 import com.tokopedia.transaction.common.dialog.UnifyDialog;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
@@ -760,8 +760,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void renderSubmitHelpTicketSuccess() {
-        SuccessTicketDialog successTicketDialog = new SuccessTicketDialog(getActivity(), SuccessTicketDialog.Page.PAGE_CHECKOUT);
+    public void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult) {
+        UnifyDialog successTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER);
+        successTicketDialog.setTitle("Title");
+        successTicketDialog.setDescription("desc");
+        successTicketDialog.setOk("ok");
         successTicketDialog.setOkOnClickListener(v -> getActivity().finish());
         successTicketDialog.show();
     }

@@ -1902,7 +1902,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     public void onNext(SubmitTicketResult submitTicketResult) {
                         getView().hideLoading();
                         if (submitTicketResult.getStatus()) {
-                            getView().renderSubmitHelpTicketSuccess();
+                            getView().renderSubmitHelpTicketSuccess(submitTicketResult);
                         } else {
                             getView().showToastError(submitTicketResult.getMessage());
                         }
