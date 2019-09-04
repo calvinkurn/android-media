@@ -90,7 +90,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         val tvChangeRecipientAddress = findViewById<Typography>(R.id.tv_change_recipient_address) as Typography
         tvChangeRecipientAddress.setOnClickListener {
             val intent = CartAddressChoiceActivity.createInstance(this,
-                    CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST)
+                    CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN)
             startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE)
         }
     }
@@ -290,8 +290,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                                 addressModel.addressName,
                                 addressModel.addressName,
                                 addressModel.cityId.toInt(),
-                                addressModel.cityName,
-                                addressModel.countryName,
+                                addressModel.cityName?:"",
+                                addressModel.countryName?:"",
                                 addressModel.destinationDistrictId.toInt(),
                                 addressModel.destinationDistrictName,
                                 addressModel.isSelected,
@@ -318,7 +318,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
 
     private fun onResultFromPayment(resultCode: Int) {
         when (resultCode) {
-            TopPayActivity.PAYMENT_SUCCESS -> {
+            TopPayActivity.PAYMENT_SUCCESS, Activity.RESULT_OK -> {
                 setResult(Activity.RESULT_OK, null)
                 finish()
             }

@@ -118,7 +118,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (TRADEIN_TYPE == 2) {
+        if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
             tncStringId = R.string.money_in_tnc;
         } else {
@@ -183,6 +183,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         mTvGoToProductDetails.setText(R.string.sell_now);
                         mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal());
+                        goToHargaFinal();
                         break;
                     case NOT_DIAGNOSED:
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
@@ -220,7 +221,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         if (Constants.LAKU6_BASEURL.equals(Constants.LAKU6_BASEURL_STAGING))
             campaignId = Constants.CAMPAIGN_ID_STAGING;
         laku6TradeIn = Laku6TradeIn.getInstance(context, campaignId,
-                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL);
+                Constants.APPID, Constants.APIKEY, Constants.LAKU6_BASEURL, TRADEIN_TEST_TYPE);
         requestPermission();
     }
 
@@ -339,43 +340,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         } else if (requestCode == APP_SETTINGS) {
             requestPermission();
         }
-    }
-
-    private boolean errorPriceNotElligible(int oldMinPrice) {
-        if (oldMinPrice > tradeInHomeViewModel.getTradeInParams().getNewPrice()) {
-            String notElligible = getString(R.string.not_elligible_price_high);
-            SpannableString spannableString = new SpannableString(notElligible);
-            ClickableSpan clickableSpan = new ClickableSpan() {
-                @Override
-                public void onClick(View widget) {
-                    showTnC(tncStringId);
-                }
-            };
-            tvIndicateive.setVisibility(View.GONE);
-            mTvGoToProductDetails.setText(R.string.go_to_product_details);
-            mTvGoToProductDetails.setOnClickListener(v -> {
-                sendGeneralEvent("clickTradeIn",
-                        "trade in start page",
-                        "click kembali ke detail produk",
-                        "");
-                finish();
-            });
-            int greenColor = getResources().getColor(R.color.green_nob);
-            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
-            spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            mTvPriceElligible.setText(spannableString);
-            mTvPriceElligible.setVisibility(View.VISIBLE);
-            mButtonRemove.setVisibility(View.VISIBLE);
-            mButtonRemove.setOnClickListener(view -> {
-                mTvPriceElligible.setVisibility(View.GONE);
-                mButtonRemove.setVisibility(View.GONE);
-            });
-            mTvPriceElligible.setClickable(true);
-            mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
-            return true;
-        }
-        return false;
     }
 
     @Override

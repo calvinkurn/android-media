@@ -16,7 +16,14 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
     public static final int TRADEIN_HOME_REQUEST = 22345;
     public static final int APP_SETTINGS = 9988;
-    protected int TRADEIN_TYPE = 1;
+    public static final int TRADEIN_OFFLINE = 0;
+    public static final int TRADEIN_ONLINE = 1;
+    public static final int TRADEIN_MONEYIN = 2;
+    public static final String TRADEIN_EXCHANGE  = "exchange";
+    public static final String TRADEIN_MONEY_IN  = "money-in";
+    protected String TRADEIN_TEST_TYPE =TRADEIN_EXCHANGE;
+    protected int TRADEIN_TYPE = TRADEIN_OFFLINE;
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -33,10 +40,11 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        TRADEIN_TYPE = getIntent().getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, 1);
+        TRADEIN_TYPE = getIntent().getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, TRADEIN_OFFLINE);
         super.onCreate(savedInstanceState);
-        if (TRADEIN_TYPE == 2) {
+        if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             toolbar.setTitle(R.string.money_in);
+            TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
         }
         setSupportActionBar(toolbar);
     }

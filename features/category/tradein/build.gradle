@@ -42,6 +42,7 @@ dependencies {
         exclude group: 'com.google.firebase'
         exclude group: 'com.google.android.gms'
         exclude group: 'com.android.support.constraint'
+        exclude group: 'com.github.scottyab'
     }
     implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.miscDependencies.dagger

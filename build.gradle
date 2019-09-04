@@ -10,7 +10,6 @@ apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
 apply plugin: 'idea'
 
-
 buildscript {
     ext.jacocoVersion = '0.8.2'
     repositories {
@@ -197,3 +196,10 @@ idea.module {
     excludeDirs += file('.okbuck/')
     excludeDirs += file('buck-out/')
 }
+
+//Installing Git Hooks
+task installGitHooks(type: Copy) {
+    ("cp " + rootProject.rootDir+ "/git_hooks/pre-commit " + rootProject.rootDir+ "/.git/hooks/pre-commit").execute()
+    Runtime.getRuntime().exec("chmod -R +x .git/hooks/")
+}
+clean.dependsOn installGitHooks
