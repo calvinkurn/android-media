@@ -105,8 +105,6 @@ open class RecommendationPageViewModel @Inject constructor(
         getRecommendationUseCase.execute(
                 getRecommendationUseCase.getRecomParams(
                         1,
-                        xSource,
-                        pageName,
                         productIds,
                         ref), object : Subscriber<List<RecommendationWidget>>() {
             override fun onNext(t: List<RecommendationWidget>?) {

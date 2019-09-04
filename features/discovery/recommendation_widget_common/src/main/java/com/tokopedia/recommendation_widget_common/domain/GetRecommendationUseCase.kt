@@ -73,8 +73,6 @@ constructor(
     }
 
     fun getRecomParams(pageNumber: Int,
-                       xSource: String,
-                       pageName: String,
                        productIds: List<String>,
                        ref: String = ""): RequestParams {
         val params = RequestParams.create()
@@ -87,18 +85,6 @@ constructor(
         }
         params.putInt(PAGE_NUMBER, pageNumber)
         params.putString(PRODUCT_IDS, productIdsString)
-
-        if(xSource.isEmpty()) {
-            params.putString(X_SOURCE, DEFAULT_VALUE_X_SOURCE)
-        } else {
-            params.putString(X_SOURCE, xSource)
-        }
-
-        if(pageName.isEmpty()) {
-            params.putString(PAGE_NAME, DEFAULT_PAGE_NAME)
-        } else {
-            params.putString(PAGE_NAME, pageName)
-        }
         params.putString(REF, ref)
         params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
         return params
