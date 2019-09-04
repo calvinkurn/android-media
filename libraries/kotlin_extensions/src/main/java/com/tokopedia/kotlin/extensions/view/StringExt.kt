@@ -28,4 +28,4 @@ fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }
 
-fun String.decodeToUtf8() = URLDecoder.decode(this, "UTF-8")
+fun String.decodeToUtf8(): String = URLDecoder.decode(this, "UTF-8")

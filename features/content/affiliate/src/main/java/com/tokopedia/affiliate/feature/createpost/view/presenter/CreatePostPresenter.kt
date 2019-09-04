@@ -38,7 +38,14 @@ class CreatePostPresenter @Inject constructor(
     override fun fetchContentFormByToken(token: String, type: String) {
         view.showLoading()
         getContentFormUseCase.execute(
-                GetContentFormUseCase.createRequestParams(token.decodeToUtf8(), type),
+                GetContentFormUseCase.createRequestParams(
+                        try {
+                            token.decodeToUtf8()
+                        } catch (e: Exception) {
+                            token
+                        },
+                        type
+                ),
                 GetContentFormSubscriber(view, type)
         )
     }
