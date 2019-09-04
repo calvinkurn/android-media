@@ -81,7 +81,7 @@ class ShopOpenCreateReadyFragment : BaseDaggerFragment() {
 
         spanText.setSpan(StyleSpan(Typeface.BOLD),
                 0, 47, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spanText.setSpan(ForegroundColorSpan(resources.getColor(R.color.tkpd_main_green)),
+        spanText.setSpan(ForegroundColorSpan(resources.getColor(com.tokopedia.design.R.color.tkpd_main_green)),
                 spanText.length - 7, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         spanText.setSpan(StyleSpan(Typeface.BOLD),
                 spanText.length -7, spanText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
