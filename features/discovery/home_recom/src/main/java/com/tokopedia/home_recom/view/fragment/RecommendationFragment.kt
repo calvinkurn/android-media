@@ -92,6 +92,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         private const val SPAN_COUNT = 2
         private const val SHARE_PRODUCT_TITLE = "Bagikan Produk Ini"
         private const val SAVED_PRODUCT_ID = "saved_product_id"
+        private const val SAVED_REF = "saved_ref"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition"
@@ -111,6 +112,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
         clearProductInfoView()
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
+            ref = it.getString(SAVED_REF) ?: ""
         }
         activity?.let {
             trackingQueue = TrackingQueue(it)
@@ -136,6 +138,7 @@ class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel, Home
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_PRODUCT_ID, productId)
+        outState.putString(SAVED_REF, ref)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
