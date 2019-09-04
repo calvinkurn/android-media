@@ -27,7 +27,7 @@ class TwitterAuthenticator(
     }
 
     companion object {
-        private const val CALLBACK_URL = "https://localhost"
+        private const val CALLBACK_URL = "https://tokopedia.com/twitter/auth/android"
 
         private val callbackUrlSubject = PublishSubject.create<TwitterAuthenticationState>()
 
