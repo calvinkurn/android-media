@@ -19,9 +19,11 @@ class DigitalHomePageCategoryViewHolder(itemView: View?, val onItemBindListener:
         itemView?.category_recycler_view.layoutManager = layoutManager
         if (element?.isLoaded ?: false) {
             itemView?.categoryShimmering.hide()
+            itemView?.category_recycler_view.show()
             itemView?.category_recycler_view.adapter = DigitalItemCategoryAdapter(element?.listSubtitle, onItemBindListener)
         } else {
             itemView?.categoryShimmering.show()
+            itemView?.category_recycler_view.hide()
             onItemBindListener.onCategoryItemDigitalBind(element?.isLoadFromCloud)
         }
     }

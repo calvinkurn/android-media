@@ -4,5 +4,6 @@
     img_url
     title
     app_link
+    filename
   }
 }

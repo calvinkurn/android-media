@@ -53,7 +53,7 @@ class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: 
 
                 val promoUrls = arrayListOf<String>()
                 for (slidesModel in bannerList?: listOf()) {
-                    promoUrls.add(slidesModel.imgUrl)
+                    promoUrls.add(slidesModel.filename)
                 }
                 itemView.banner.setPromoList(promoUrls)
                 itemView.banner.buildView()

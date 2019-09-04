@@ -23,5 +23,8 @@ class DigitalHomePageBannerModel(@SerializedName("rechargeBanner")
                       val title: String = "",
                       @SerializedName("app_link")
                       @Expose
-                      val applink: String = "")
+                      val applink: String = "",
+                      @SerializedName("filename")
+                      @Expose
+                      val filename: String = "")
 }

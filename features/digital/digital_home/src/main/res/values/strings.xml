@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">digital_home</string>
+    <string name="digital_home_app_name"><![CDATA[Topup & Tagihan]]></string>
     <string name="digital_subhomepage_name"><![CDATA[Topup & Tagihan]]></string>
     <string name="digital_home_label_favourite_number">Nomor Favorit</string>
     <string name="digital_home_label_order_list">Daftar Transaksi</string>
