@@ -37,9 +37,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setCrashLog();
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
