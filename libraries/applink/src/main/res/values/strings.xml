@@ -4,8 +4,6 @@
     <string name="sellerapp_scheme" translatable="false">sellerapp</string>
     <string name="internal_scheme" translatable="false">tokopedia-android-internal</string>
 
-    <string name="host_marketplace">marketplace</string>
-
     <!--Product Page-->
     <string name="host_product" translatable="false">product</string>
     <string name="path_add" translatable="false">/add</string>
