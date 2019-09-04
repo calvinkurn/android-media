@@ -133,7 +133,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onBannerAllItemClicked() {
-        RouteManager.route(activity, ApplinkConst.PROMO)
+        RouteManager.route(activity, ApplinkConst.PROMO_LIST)
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
