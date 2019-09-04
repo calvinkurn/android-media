@@ -20,7 +20,7 @@ interface PromoCheckoutListContract {
     }
 
     interface Presenter : CustomerPresenter<View>{
-        fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources)
+        fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources, hasLastSeen: Boolean = false)
         fun getListLastSeen(categoryIDs: List<Int>, resources: Resources)
     }
 }
