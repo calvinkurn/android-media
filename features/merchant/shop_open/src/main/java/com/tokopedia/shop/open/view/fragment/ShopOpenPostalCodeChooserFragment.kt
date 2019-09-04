@@ -3,11 +3,14 @@ package com.tokopedia.shop.open.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.data.model.PostalCodeTypeFactory
 import com.tokopedia.shop.open.data.model.PostalCodeViewModel
@@ -33,6 +36,14 @@ class ShopOpenPostalCodeChooserFragment : BaseSearchListFragment<PostalCodeViewM
                         putStringArrayList(ARGUMENT_DATA_POSTAL_CODE, postalCode)
                     }
                 }
+    }
+
+    override fun getSearchInputView(view: View?): SearchInputView {
+        return view?.findViewById<View>(R.id.search_input_view) as SearchInputView
+    }
+
+    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
+        return view?.findViewById<View>(R.id.swipe_refresh_layout) as SwipeToRefresh
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
