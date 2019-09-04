@@ -191,7 +191,13 @@ public class DealsPopularLocationAdapter extends BaseAdapter<Location> {
             } else {
                 locationName.setText(location.getName());
             }
-            locAddress.setText(location.getAddress());
+            if (!TextUtils.isEmpty(location.getAddress())) {
+                locAddress.setVisibility(View.VISIBLE);
+                locAddress.setText(location.getAddress());
+            } else {
+                locAddress.setVisibility(View.GONE);
+            }
+
             if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
                 locType.setVisibility(View.VISIBLE);
                 locType.setText(location.getLocType().getDisplayName());

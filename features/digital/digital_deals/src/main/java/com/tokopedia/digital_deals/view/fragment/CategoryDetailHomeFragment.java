@@ -400,8 +400,14 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
         requestParams.putInt(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoriesModel.getCategoryId());
         Location location = Utils.getSingletonInstance().getLocation(getContext());
-        if (location != null)
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        if (location != null) {
+            if (!TextUtils.isEmpty(location.getCoordinates())) {
+                requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+            }
+            if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+                requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+            }
+        }
         return requestParams;
     }
 

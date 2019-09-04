@@ -169,8 +169,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !tvLocationName.getText().equals(location.getName())) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            Toaster.Companion.showNormal(mainContent, location.getName(), Snackbar.LENGTH_SHORT);
-//            Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s, %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            });
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();
@@ -182,12 +182,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
-        if (location != null) {
+        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
+            mPresenter.getLocations();
+        } else if (location != null){
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();
-        } else {
-            mPresenter.getLocations(true);
         }
     }
 
@@ -576,11 +576,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-//        if (location.getCityId() != 0) {
-//            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getCityId());
-//        } else {
-//            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
-//        }
         if (!TextUtils.isEmpty(location.getCoordinates())) {
             requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
         }
@@ -710,7 +705,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
+    public void startLocationFragment() {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         Fragment fragment = SelectLocationBottomSheet.createInstance(tvLocationName.getText().toString(), location);
         getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up)
@@ -744,6 +739,14 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
+    public void updateInitialLocation(List<Location> locations) {
+        Utils.getSingletonInstance().updateLocation(getContext(), locations.get(0));
+        tvLocationName.setText(locations.get(0).getName());
+        mPresenter.getDealsList(true);
+        mPresenter.getBrandsHome();
+    }
+
+    @Override
     public void openCategoryDetail(CategoriesModel categoriesModel, List<CategoriesModel> categoriesModels) {
         if (dealsCategoryBottomSheet != null) {
             dealsCategoryBottomSheet.dismiss();
@@ -768,7 +771,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
             tvLocationName.setText(location.getName());
-            Toaster.Companion.showNormalWithAction(mainContent, location.getName(), Snackbar.LENGTH_SHORT, "Oke", v1 -> {
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s, %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
             });
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();

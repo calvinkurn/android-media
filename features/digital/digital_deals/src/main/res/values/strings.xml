@@ -118,5 +118,7 @@
     <string name="coachicon_previous">&lt;</string>
     <string name="voucher">Voucher</string>
     <string name="location_search_hint">Lokasi hits, wilayah, atau kota</string>
+    <string name="location_deals_changed_toast">Kamu sedang melihat pilihan Deals di</string>
+    <string name="location_deals_changed_toast_oke">Oke</string>
 
 </resources>

@@ -93,13 +93,11 @@
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rv_city_results"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_8"
                         android:layout_marginRight="@dimen/dp_8"
                         android:layout_marginBottom="@dimen/dp_16"
-                        app:layoutManager="android.support.v7.widget.GridLayoutManager"
-                        app:spanCount="@integer/int_3"
                         tools:listitem="@layout/location_item"
                         tools:visibility="visible" />
 

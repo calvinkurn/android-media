@@ -22,6 +22,7 @@ import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
+import com.tokopedia.digital_deals.domain.getusecase.GetInitialLocationUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
@@ -75,6 +76,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private final String CAROUSEL = "carousel";
     private final String TOP = "top";
     private GetDealsListRequestUseCase getDealsListRequestUseCase;
+    private GetInitialLocationUseCase getInitialLocationUseCase;
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextDealPageUseCase getNextDealPageUseCase;
     private ArrayList<CategoryItem> categoryItems;
@@ -95,12 +97,13 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
 
     @Inject
-    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, DealsAnalytics dealsAnalytics) {
+    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetInitialLocationUseCase getInitialLocationUseCase, DealsAnalytics dealsAnalytics) {
         this.getDealsListRequestUseCase = getDealsListRequestUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextDealPageUseCase = getNextDealPageUseCase;
         this.getSearchLocationListRequestUseCase = getSearchLocationListRequestUseCase;
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
+        this.getInitialLocationUseCase = getInitialLocationUseCase;
         this.dealsAnalytics = dealsAnalytics;
     }
 
@@ -119,6 +122,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
         if (getCategoryDetailRequestUseCase != null) {
             getCategoryDetailRequestUseCase.unsubscribe();
+        }
+        if (getInitialLocationUseCase != null) {
+            getInitialLocationUseCase.unsubscribe();
         }
         stopBannerSlide();
     }
@@ -192,7 +198,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
             getView().navigateToActivityRequest(searchIntent, DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY);
         } else if (id == R.id.tv_location_name || id == R.id.toolbar_title) {
-            getLocations(false);
+            getView().startLocationFragment();
         } else if (id == R.id.action_menu_favourite) {
 
         } else if (id == R.id.action_promo) {
@@ -547,8 +553,36 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         dealsAnalytics.sendEventDealsDigitalView(action, label);
     }
 
-    public void getLocations(boolean isForFirstime) {
-        getView().startLocationFragment(mTopLocations, false);
+    public void getLocations() {
+        RequestParams params = RequestParams.create();
+        params.putInt("id", Utils.LOCATION_ID);
+        getInitialLocationUseCase.setRequestParams(params);
+        getInitialLocationUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                if (getView() == null) {
+                    return;
+                }
+                Type token = new TypeToken<DataResponse<LocationResponse>>() {
+                }.getType();
+                RestResponse restResponse = typeRestResponseMap.get(token);
+                DataResponse dataResponse = restResponse.getData();
+                LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
+                if (locationResponse != null && locationResponse.getLocations() != null) {
+                    getView().updateInitialLocation(locationResponse.getLocations());
+                }
+            }
+        });
     }
 
     public void sendScreenNameEvent(String screenName) {

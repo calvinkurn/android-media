@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -19,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexDirection;
+import com.google.android.flexbox.FlexboxLayoutManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.digital_deals.R;
@@ -142,8 +143,9 @@ public class SelectLocationBottomSheet extends BaseDaggerFragment implements Dea
 
     @Override
     public void renderPopularCities(List<Location> locationList, String... searchText) {
-        rvSearchResults.setLayoutManager(new GridLayoutManager(getContext(), 3,
-                GridLayoutManager.VERTICAL, false));
+        FlexboxLayoutManager layoutManager = new FlexboxLayoutManager(getContext());
+        layoutManager.setFlexDirection(FlexDirection.ROW);
+        rvSearchResults.setLayoutManager(layoutManager);
         rvSearchResults.setAdapter(new DealsLocationAdapter(locationList, this, selectedLocation));
     }
 
