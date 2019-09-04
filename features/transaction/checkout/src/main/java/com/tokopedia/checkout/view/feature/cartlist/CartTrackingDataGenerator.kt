@@ -54,8 +54,8 @@ class CartTrackingDataGenerator @Inject constructor() {
                 putDouble(FirebaseAnalytics.Param.PRICE, originData.pricePlanInt.toDouble())
                 putLong(FirebaseAnalytics.Param.QUANTITY, updatedData.quantity.toLong())
                 putString("dimension45", originData.cartId.toString())
-                putBoolean("dimension54", isFulfillment)
-                putBoolean("dimension53", originData.priceOriginal > 0)
+                putString("dimension54", isFulfillment.toString())
+                putString("dimension53", (originData.priceOriginal > 0).toString())
                 putString("dimension80",
                         if (TextUtils.isEmpty(originData.trackerAttribution)) EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                         else originData.trackerAttribution)
