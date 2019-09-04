@@ -102,7 +102,7 @@ class MoneyInCheckoutViewModel(application: Application) : BaseViewModel(applica
 
             val response = repository?.getGQLData(query, MoneyInCheckoutMutationResponse.ResponseData::class.java, request) as MoneyInCheckoutMutationResponse.ResponseData
             if(response.checkoutGeneral.header?.errorCode!=null) {
-                errorLiveData.value = MutationCheckoutError(response.checkoutGeneral.header.messages.toString())
+                errorLiveData.value = MutationCheckoutError(response.checkoutGeneral.header.messages.joinToString())
             } else {
                 checkoutDataLiveData.value = Success(response.checkoutGeneral.data.data)
             }
