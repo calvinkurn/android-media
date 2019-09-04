@@ -171,7 +171,7 @@ open class PlayViewStateImpl(
         chatRecyclerView.layoutManager = layoutManager
         chatRecyclerView.adapter = adapter
         val itemDecoration = SpaceItemDecoration(view.context
-                .resources.getDimension(R.dimen.space_play_chat).toInt())
+                .resources.getDimension(com.tokopedia.groupchat.R.dimen.space_play_chat).toInt())
         chatRecyclerView.addItemDecoration(itemDecoration)
 
         chatRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -201,7 +201,7 @@ open class PlayViewStateImpl(
         quickReplyRecyclerView.adapter = quickReplyAdapter
 
         val quickReplyItemDecoration = QuickReplyItemDecoration(view.context
-                .resources.getDimension(R.dimen.dp_16).toInt())
+                .resources.getDimension(com.tokopedia.design.R.dimen.dp_16).toInt())
         quickReplyRecyclerView.addItemDecoration(quickReplyItemDecoration)
 
         var dynamicButtonTypeFactory = DynamicButtonTypeFactoryImpl(
@@ -209,7 +209,7 @@ open class PlayViewStateImpl(
 
         dynamicButtonRecyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         var buttonSpace = SpaceItemDecoration(activity.getResources()
-                .getDimension(R.dimen.dp_8).toInt(), 2)
+                .getDimension(com.tokopedia.design.R.dimen.dp_8).toInt(), 2)
         dynamicButtonAdapter = DynamicButtonsAdapter(dynamicButtonTypeFactory)
         dynamicButtonRecyclerView.adapter = dynamicButtonAdapter
         dynamicButtonRecyclerView.addItemDecoration(buttonSpace)
@@ -401,7 +401,7 @@ open class PlayViewStateImpl(
 
     override fun onKeyboardHidden() {
         showWidgetAboveInput(true)
-        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.transparent))
+        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.design.R.color.transparent))
         sendButton.hide()
         dynamicButtonRecyclerView.show()
         scrollToBottom()
@@ -417,7 +417,7 @@ open class PlayViewStateImpl(
 
     private fun onKeyboardShown() {
         showWidgetAboveInput(false)
-        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, R.color.play_transparent))
+        inputTextWidget.setBackgroundColor(MethodChecker.getColor(view.context, com.tokopedia.groupchat.R.color.play_transparent))
         sendButton.show()
         dynamicButtonRecyclerView.hide()
 //            setSprintSaleIcon(null)
@@ -757,7 +757,7 @@ open class PlayViewStateImpl(
 
     override fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?) {
 
-        toolbar.setBackgroundResource(R.color.transparent)
+        toolbar.setBackgroundResource(com.tokopedia.design.R.color.transparent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 0f
         }
@@ -765,8 +765,8 @@ open class PlayViewStateImpl(
         toolbar.findViewById<TextView>(R.id.toolbar_title).text = title
         setToolbarParticipantCount(view.context, TextFormatter.format(totalView))
 
-        toolbar.findViewById<TextView>(R.id.toolbar_title).setTextColor(MethodChecker.getColor(activity, R.color.white))
-        toolbar.findViewById<TextView>(R.id.toolbar_subtitle).setTextColor(MethodChecker.getColor(activity, R.color.white))
+        toolbar.findViewById<TextView>(R.id.toolbar_title).setTextColor(MethodChecker.getColor(activity, com.tokopedia.design.R.color.white))
+        toolbar.findViewById<TextView>(R.id.toolbar_subtitle).setTextColor(MethodChecker.getColor(activity, com.tokopedia.design.R.color.white))
 
         when {
             title != null -> setVisibilityHeader(View.VISIBLE)
@@ -778,9 +778,9 @@ open class PlayViewStateImpl(
         sponsorHelper.hideSponsor()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.elevation = 10f
-            toolbar.setBackgroundResource(R.color.white)
+            toolbar.setBackgroundResource(com.tokopedia.design.R.color.white)
         } else {
-            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow)
+            toolbar.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow)
         }
         var title = toolbar.findViewById<TextView>(R.id.toolbar_title)
         var subtitle = toolbar.findViewById<TextView>(R.id.toolbar_subtitle)
@@ -788,8 +788,8 @@ open class PlayViewStateImpl(
         toolbar.findViewById<TextView>(R.id.toolbar_live).hide()
         title.text = getStringResource(R.string.play_title)
         subtitle.text = ""
-        title.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
-        subtitle.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
+        title.setTextColor(MethodChecker.getColor(title.context, com.tokopedia.design.R.color.black_70))
+        subtitle.setTextColor(MethodChecker.getColor(title.context, com.tokopedia.design.R.color.black_70))
     }
 
     override fun errorViewShown(): Boolean {
@@ -1250,9 +1250,9 @@ open class PlayViewStateImpl(
 
             val fadingEdgeLength = when (it){
                 VideoVerticalHelper.VERTICAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
-                VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_8)
+                VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
                 else -> {
-                    view.context.resources.getDimensionPixelSize(R.dimen.dp_24)
+                    view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_24)
                 }
             }
             chatRecyclerView.setFadingEdgeLength(fadingEdgeLength)
