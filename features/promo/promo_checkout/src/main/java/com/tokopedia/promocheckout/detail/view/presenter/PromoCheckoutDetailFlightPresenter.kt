@@ -108,6 +108,6 @@ class PromoCheckoutDetailFlightPresenter(private val getDetailCouponMarketplaceU
     }
 
     companion object {
-        data class FlightCheckVoucherError(val id: Int, val status: Int, val title: String)
+        data class FlightCheckVoucherError(val id: String, val status: String, val title: String)
     }
 }

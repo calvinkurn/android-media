@@ -16,10 +16,9 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
 
     var cartID: String = ""
 
-    override var categoryId: Int = 27
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        categoryId = FLIGHT_CATEGORY_ID
         cartID = arguments?.getString(EXTRA_CART_ID) ?: ""
         promoCheckoutListFlightPresenter.attachView(this)
     }
@@ -43,6 +42,8 @@ class PromoCheckoutListFlightFragment : PromoCheckoutListDigitalFragment(), Prom
     }
 
     companion object {
+
+        val FLIGHT_CATEGORY_ID = 27
         val EXTRA_CART_ID = "EXTRA_CART_ID"
 
         fun createInstance(isCouponActive: Boolean?, promoCode: String?, cartID: String?, pageTracking: Int?): PromoCheckoutListFlightFragment {
