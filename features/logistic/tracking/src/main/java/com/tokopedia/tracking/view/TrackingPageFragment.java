@@ -327,7 +327,7 @@ public class TrackingPageFragment extends BaseDaggerFragment implements ITrackin
 
     private void fetchData() {
         presenter.onGetTrackingData(mOrderId);
-        if (mTrackingUrl != null) presenter.onGetRetryAvailability(mOrderId);
+        if (mTrackingUrl != null && !mTrackingUrl.isEmpty()) presenter.onGetRetryAvailability(mOrderId);
     }
 
     @Override
