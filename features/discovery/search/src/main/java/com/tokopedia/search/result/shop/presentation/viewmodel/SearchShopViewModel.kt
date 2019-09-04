@@ -82,8 +82,11 @@ class SearchShopViewModel(
         searchParameter[SearchApiConst.START] = startRow
     }
 
-    fun onViewVisibilityChanges(isVisibleToUser: Boolean, isViewAdded: Boolean) {
-
+    fun onViewVisibilityChanged(isVisibleToUser: Boolean, isViewAdded: Boolean) {
+        if (isVisibleToUser && isViewAdded && !hasLoadData) {
+            hasLoadData = true
+            searchShop()
+        }
     }
 
     fun searchShop() {
@@ -95,8 +98,6 @@ class SearchShopViewModel(
     }
 
     private suspend fun trySearchShop() {
-        if (isSearchShopListContainItems()) return
-
         updateSearchShopLiveDataStateToLoading()
 
         val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
@@ -283,8 +284,6 @@ class SearchShopViewModel(
     }
 
     fun searchMoreShop() {
-        if (masterJob.isActive) masterJob.cancel()
-
         launchCatchError(block = {
             trySearchMoreShop()
         }, onError = {

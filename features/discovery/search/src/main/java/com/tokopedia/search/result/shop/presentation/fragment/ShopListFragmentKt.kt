@@ -200,7 +200,7 @@ class ShopListFragmentKt:
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 
-        searchShopViewModel?.onViewVisibilityChanges(isVisibleToUser, isAdded)
+        searchShopViewModel?.onViewVisibilityChanged(isVisibleToUser, isAdded)
     }
 
     override fun getScreenName(): String {
