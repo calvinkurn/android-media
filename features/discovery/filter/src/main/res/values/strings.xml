@@ -20,4 +20,6 @@
     <string name="title_category">Kategori</string>
     <string name="title_sort_but">Urutkan</string>
     <string name="title_close">Tutup</string>
+    <string name="see_all">Lihat Semua</string>
+    <string name="filter">Filter</string>
 </resources>
