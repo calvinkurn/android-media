@@ -68,10 +68,14 @@ object DeeplinkMapper {
         }
         when {
             specialNavigationMapper(deeplink, ApplinkConst.Play.HOST) -> {
-                return ApplinkConstInternalMarketplace.GROUPCHAT_DETAIL
+                return UriUtil.buildUri(ApplinkConstInternalMarketplace.GROUPCHAT_DETAIL, getSegments(deeplink).first())
             }
         }
         return ""
+    }
+
+    private fun getSegments(deeplink: String): List<String> {
+        return Uri.parse(deeplink).pathSegments
     }
 
     private fun specialNavigationMapper(deeplink: String, host: String): Boolean {
