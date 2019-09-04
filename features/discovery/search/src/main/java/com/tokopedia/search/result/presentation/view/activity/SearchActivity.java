@@ -197,7 +197,6 @@ public class SearchActivity extends BaseActivity
         configureSupportActionBar();
         setSearchTextViewDrawableLeft();
         configureToolbarOnClickListener();
-        configureButtonCart();
     }
 
     private void configureSupportActionBar() {
@@ -602,6 +601,7 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
+        configureButtonCart();
         unregisterShake();
     }
 
