@@ -51,6 +51,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.videoUploader)
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.calendar
     implementation project(rootProject.ext.features.feedComponent)
 
     implementation rootProject.ext.miscDependencies.dagger

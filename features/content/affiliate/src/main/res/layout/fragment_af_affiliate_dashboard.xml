@@ -235,6 +235,7 @@
                 android:weightSum="2">
 
                 <LinearLayout
+                    android:id="@+id/ll_start_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_24"
@@ -269,6 +270,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/ll_end_date"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_24"
