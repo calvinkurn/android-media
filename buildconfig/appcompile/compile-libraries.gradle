@@ -23,7 +23,6 @@ include 'libraries:locationmanager'
 include "libraries:logger"
 include 'libraries:iris'
 //include 'libraries:iris_no_op'
-include "libraries:network"
 include "libraries:pagination"
 include "libraries:oms"
 include "libraries:push_notification"
