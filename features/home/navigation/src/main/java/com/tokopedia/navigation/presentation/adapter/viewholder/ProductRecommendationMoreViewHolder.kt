@@ -12,12 +12,12 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.NotifcenterProductRecommendationAdapter
+import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 
 class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     private val moreCount = itemView.findViewById<TextView>(R.id.tvMoreCount)
     private val thumbnail = itemView.findViewById<ImageView>(R.id.iv_product)
-    private val SOURCE = "notifcenter"
 
     fun bind(products: List<ProductData>, position: Int, totalProducts: Int) {
         val productData = products[position]
@@ -31,7 +31,7 @@ class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHol
                     itemView.context,
                     ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
                     productData.productId,
-                    SOURCE
+                    NotificationUpdateItemViewModel.SOURCE
             )
         }
     }

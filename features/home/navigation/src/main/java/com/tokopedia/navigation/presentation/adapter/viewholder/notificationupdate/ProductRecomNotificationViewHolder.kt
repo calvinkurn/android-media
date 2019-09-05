@@ -4,6 +4,8 @@ import android.support.annotation.LayoutRes
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.adapter.NotifcenterProductRecommendationAdapter
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
@@ -32,6 +34,32 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationU
     override fun bindNotificationPayload(element: NotificationUpdateItemViewModel) {
         layoutAdapter.updateProductRecommendation(element.products)
         layoutAdapter.updateTotalProductCount(element.totalProduct)
+    }
+
+    override fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
+        itemView.setOnClickListener {
+            RouteManager.route(
+                    itemView.context,
+                    ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,
+                    getLastShowedProductId(element),
+                    NotificationUpdateItemViewModel.SOURCE
+            )
+        }
+    }
+
+    private fun getLastShowedProductId(element: NotificationUpdateItemViewModel): String {
+        val products = element.products
+        val lastItemPosition = products.size - 1
+        val lastMaxSeenPosition = NotifcenterProductRecommendationAdapter.MAX_ITEM - 1
+        val lastPosition = if (products.size >= NotifcenterProductRecommendationAdapter.MAX_ITEM) {
+            lastMaxSeenPosition
+        } else {
+            lastItemPosition
+        }
+
+        return if (lastPosition >= 0) {
+            element.products[lastPosition].productId
+        } else { "0" }
     }
 
     companion object {

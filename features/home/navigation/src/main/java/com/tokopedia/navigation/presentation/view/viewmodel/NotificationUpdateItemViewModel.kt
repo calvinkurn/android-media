@@ -75,6 +75,8 @@ class NotificationUpdateItemViewModel(
         var TYPE_WISHLIST = 3
         var TYPE_BANNER_2X1 = 4
 
+        const val SOURCE = "notifcenter"
+
         @JvmField
         val CREATOR: Parcelable.Creator<NotificationUpdateItemViewModel> = object : Parcelable.Creator<NotificationUpdateItemViewModel> {
             override fun createFromParcel(`in`: Parcel): NotificationUpdateItemViewModel {

@@ -39,7 +39,7 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
         bindOnNotificationClick(element)
     }
 
-    protected fun bindBackgroundColor(element: NotificationUpdateItemViewModel) {
+    protected open fun bindBackgroundColor(element: NotificationUpdateItemViewModel) {
         val color: Int = if (element.isRead) {
             MethodChecker.getColor(container.context, R.color.white)
         } else {
@@ -48,21 +48,21 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
         container.setBackgroundColor(color)
     }
 
-    protected fun bindNotificationHeader(element: NotificationUpdateItemViewModel) {
+    protected open fun bindNotificationHeader(element: NotificationUpdateItemViewModel) {
         time.text = element.time
         type.text = element.sectionTitle
         convertTypeUser(element)
         ImageHandler.loadImage2(icon, element.iconUrl, R.drawable.ic_loading_toped_new)
     }
 
-    protected fun bindNotificationContent(element: NotificationUpdateItemViewModel) {
+    protected open fun bindNotificationContent(element: NotificationUpdateItemViewModel) {
         title.text = element.title
         body.text = element.body
     }
 
     abstract fun bindNotificationPayload(element: NotificationUpdateItemViewModel)
 
-    protected fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
+    protected open fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
         container.setOnClickListener {
             listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
             element.isRead = true
