@@ -37,6 +37,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
 import static com.tokopedia.home.account.AccountConstants.Analytics.KYC;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
@@ -144,7 +145,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     @Override
-    public void showErroNoConnection() {
+    public void showErrorNoConnection() {
         hideLoading();
         showError(getString(R.string.error_no_internet_connection));
     }
@@ -241,8 +242,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         if (userSession.hasShop()) {
             goToKyc();
         } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
-                    getIntentCreateShop(getContext()));
+            startActivity(RouteManager.getIntent(getContext(), OPEN_SHOP));
         }
     }
 

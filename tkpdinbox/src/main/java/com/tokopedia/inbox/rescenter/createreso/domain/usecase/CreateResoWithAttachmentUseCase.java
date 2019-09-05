@@ -102,7 +102,7 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
     private Func1<CreateResoRequestDomain, Observable<List<UploadDomain>>>
     getObservableUploadAttachment(final List<AttachmentViewModel> attachmentList) {
         return createResoRequestDomain -> {
-            if (attachmentList != null && attachmentList.size() !=0) {
+            if (attachmentList != null && attachmentList.size() != 0) {
                 return Observable.from(attachmentList)
                         .flatMap((Func1<AttachmentViewModel, Observable<UploadDomain>>) attachmentViewModel -> {
                             if (attachmentViewModel.isImage()) {

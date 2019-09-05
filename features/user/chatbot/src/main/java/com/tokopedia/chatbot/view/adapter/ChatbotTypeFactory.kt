@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
+import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
@@ -22,4 +23,5 @@ interface ChatbotTypeFactory : AdapterTypeFactory{
 
     fun type(chatBubble: ChatActionSelectionBubbleViewModel): Int
 
+    fun type(connectionDividerViewModel: ConnectionDividerViewModel): Int
 }
