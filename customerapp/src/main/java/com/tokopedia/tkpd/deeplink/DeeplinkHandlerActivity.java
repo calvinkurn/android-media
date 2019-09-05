@@ -30,8 +30,6 @@ import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
 import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
-import com.tokopedia.purchase_platform.applink.PurchasePlatformAppLinkModule;
-import com.tokopedia.purchase_platform.applink.PurchasePlatformAppLinkModuleLoader;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
@@ -199,7 +197,6 @@ import rx.schedulers.Schedulers;
         ExploreApplinkModule.class,
         InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
-        PurchasePlatformAppLinkModule.class,
         HowtopayApplinkModule.class,
         CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
@@ -273,7 +270,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new ExploreApplinkModuleLoader(),
                     new InterestPickApplinkModuleLoader(),
                     new TrackingAppLinkModuleLoader(),
-                    new PurchasePlatformAppLinkModuleLoader(),
                     new HowtopayApplinkModuleLoader(),
                     new CustomerCareApplinkModuleLoader(),
                     new TopChatAppLinkModuleLoader(),

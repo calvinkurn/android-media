@@ -57,13 +57,15 @@ object DeeplinkMapper {
      * for example: tokopedia://product/{id} conflicts with tokopedia://product/add
      */
     private fun getRegisteredNavigationFromTokopedia(deeplink: String): String {
-        return when (deeplink) {
-            ApplinkConst.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
-            ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
-            ApplinkConst.DISCOVERY_SEARCH -> return ApplinkConstInternalDiscovery.SEARCH_RESULT
-            ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
-            ApplinkConst.CART -> return ApplinkConstInternalMarketplace.CART
-            ApplinkConst.CHECKOUT -> return ApplinkConstInternalMarketplace.CHECKOUT
+        return when {
+            deeplink.equals(ApplinkConst.PRODUCT_ADD, false) -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
+            deeplink.equals(ApplinkConst.SETTING_PROFILE, false) -> return ApplinkConstInternalGlobal.SETTING_PROFILE
+            deeplink.equals(ApplinkConst.DISCOVERY_SEARCH, false) -> return ApplinkConstInternalDiscovery.SEARCH_RESULT
+            deeplink.equals(ApplinkConst.SETTING_NOTIFICATION, false) -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+            deeplink.equals(ApplinkConst.CART, false) -> return ApplinkConstInternalMarketplace.CART
+            deeplink.contains(ApplinkConst.CHECKOUT) -> {
+                return deeplink.replace(ApplinkConst.CHECKOUT, ApplinkConstInternalMarketplace.CHECKOUT)
+            }
             else -> ""
         }
     }

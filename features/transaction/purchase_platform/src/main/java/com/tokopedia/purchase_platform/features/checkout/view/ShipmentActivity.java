@@ -33,17 +33,6 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     private ShipmentFragment shipmentFragment;
 
-//    @DeepLink(ApplinkConst.CHECKOUT)
-//    public static Intent getCallingIntent(Context context, Bundle extras) {
-//        Intent intent = new Intent(context, ShipmentActivity.class).putExtras(extras);
-//        intent.putExtras(extras);
-//        if (extras.getString(CartConstant.CHECKOUT_LEASING_ID) != null) {
-//            Uri.Builder uri = Uri.parse(extras.getString(CartConstant.CHECKOUT_LEASING_ID)).buildUpon();
-//            intent.setData(uri.build());
-//        }
-//        return intent;
-//    }
-
     public static Intent createInstance(Context context,
                                         PromoStackingData promoData,
                                         CartPromoSuggestionHolderData cartPromoSuggestionHolderData,
@@ -114,7 +103,8 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     protected Fragment getNewFragment() {
         String leasingId = "";
         if (getIntent().getData() != null) {
-            leasingId = String.valueOf(getIntent().getData());
+            Uri deepLink = getIntent().getData();
+            leasingId = deepLink.getQueryParameter(CartConstant.CHECKOUT_LEASING_ID);
         }
         shipmentFragment = ShipmentFragment.newInstance(
                 getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
