@@ -37,4 +37,8 @@ public interface FlightBookingComponent {
     void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingActivity flightBookingActivity);
 
     void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingFragment flightBookingFragment);
+
+    void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity flightBookingPassengerActivity);
+
+    void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingPassengerFragment flightBookingPassengerFragment);
 }
