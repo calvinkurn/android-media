@@ -102,6 +102,7 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption
 import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel
 import com.tokopedia.topads.common.data.model.DataDeposit
+import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -497,7 +498,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     override fun onSuccessGetFreeClaim(dataDeposit: DataDeposit) {
         val freeDeposit = dataDeposit.freeDeposit
 
-        if (freeDeposit.nominal > 0 && freeDeposit.status == 1) {
+        if (freeDeposit.nominal > 0 && freeDeposit.status == DEPOSIT_ACTIVE) {
             topAdsWidgetFreeClaim.setContent(MethodChecker.fromHtml(getString(R.string.free_claim_template, freeDeposit.nominalFmt,
                     freeDeposit.remainingDays.toString() + "", TOPADS_FREE_CLAIM_URL)))
             topAdsWidgetFreeClaim.visibility = View.VISIBLE
@@ -601,7 +602,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         if (isChecked) {
             itemsChecked.add(data)
         } else {
-            itemsChecked.remove(data)
+            /**
+             * When refresh the data , it will keept the check
+             * but the id *ex:ProductManageViewModel@12xxx will also update
+             * then we cant remove it from itemsChecked because the id is different.
+             */
+            val checkedData = itemsChecked.find {
+                it.id.contains(data.id)
+            }
+            itemsChecked.remove(checkedData)
         }
         updateBulkLayout()
         renderCheckedView()

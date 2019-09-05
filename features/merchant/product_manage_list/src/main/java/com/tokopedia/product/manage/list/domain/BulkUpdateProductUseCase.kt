@@ -32,11 +32,7 @@ class BulkUpdateProductUseCase @Inject constructor(@Named(GQL_UPDATE_PRODUCT) pr
 
         return Observable.from(listResponse)
                 .flatMap {
-                    val variables = HashMap<String, Any>()
-                    variables[PARAM_INPUT] = it
-                    val graphqlRequest = GraphqlRequest(gqlQuery, ProductUpdateV3Response::class.java, variables)
-                    graphqlUseCase.clearRequest()
-                    graphqlUseCase.addRequest(graphqlRequest)
+                    addParamSingleInput(it)
 
                     graphqlUseCase.createObservable(requestParams).flatMap { response ->
                         val data: ProductUpdateV3Response = response.getData(ProductUpdateV3Response::class.java)
@@ -47,17 +43,32 @@ class BulkUpdateProductUseCase @Inject constructor(@Named(GQL_UPDATE_PRODUCT) pr
                         Observable.just(data)
                     }
                 }.toList().flatMap {
-                    val productUpdateV3SuccessFailedResponse = ProductUpdateV3SuccessFailedResponse()
-
-                    it.forEachIndexed { index, productResponse ->
-                        productResponse.productUpdateV3Data.productId = listResponse[index].productId
-                        if (productResponse.productUpdateV3Data.isSuccess) {
-                            productUpdateV3SuccessFailedResponse.successResponse.add(productResponse)
-                        } else {
-                            productUpdateV3SuccessFailedResponse.failedResponse.add(productResponse)
-                        }
-                    }
-                    Observable.just(productUpdateV3SuccessFailedResponse)
+                    Observable.just(mapIntoSuccessFailed(it, listResponse))
                 }
+    }
+
+    private fun addParamSingleInput(productV3Param: ProductUpdateV3Param) {
+        val variables = HashMap<String, Any>()
+        variables[PARAM_INPUT] = productV3Param
+        val graphqlRequest = GraphqlRequest(gqlQuery, ProductUpdateV3Response::class.java, variables)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+    }
+
+    private fun mapIntoSuccessFailed(listProductUpdateV3Response: MutableList<ProductUpdateV3Response>,
+                                     listResponse: List<ProductUpdateV3Param>): ProductUpdateV3SuccessFailedResponse {
+
+        val productUpdateV3SuccessFailedResponse = ProductUpdateV3SuccessFailedResponse()
+
+        listProductUpdateV3Response.forEachIndexed { index, productResponse ->
+            productResponse.productUpdateV3Data.productId = listResponse[index].productId
+            if (productResponse.productUpdateV3Data.isSuccess) {
+                productUpdateV3SuccessFailedResponse.successResponse.add(productResponse)
+            } else {
+                productUpdateV3SuccessFailedResponse.failedResponse.add(productResponse)
+            }
+        }
+
+        return productUpdateV3SuccessFailedResponse
     }
 }

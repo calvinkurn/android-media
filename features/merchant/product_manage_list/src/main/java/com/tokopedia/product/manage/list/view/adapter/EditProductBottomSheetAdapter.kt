@@ -37,7 +37,7 @@ class EditProductBottomSheetAdapter(private val listener: EditProductBottomSheet
     fun setDataResult(etalaseValue: BulkBottomSheetType.EtalaseType?, stockValue: BulkBottomSheetType.StockType?) {
         if (etalaseValue != null) {
             data.getOrNull(0)?.editValue = etalaseValue.etalaseValue
-            (data.getOrNull(0) as BulkBottomSheetType.EtalaseType).etalaseId = etalaseValue.etalaseId
+            (data.getOrNull(0) as? BulkBottomSheetType.EtalaseType)?.etalaseId = etalaseValue.etalaseId
         } else if (stockValue != null) {
             data.getOrNull(1)?.editValue = stockValue.getStockStatusProductView()
         }
