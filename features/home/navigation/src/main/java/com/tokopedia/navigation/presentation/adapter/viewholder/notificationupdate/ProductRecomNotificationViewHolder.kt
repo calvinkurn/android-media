@@ -31,6 +31,7 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationU
 
     override fun bindNotificationPayload(element: NotificationUpdateItemViewModel) {
         layoutAdapter.updateProductRecommendation(element.products)
+        layoutAdapter.updateTotalProductCount(element.totalProduct)
     }
 
     companion object {

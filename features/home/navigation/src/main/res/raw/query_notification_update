@@ -36,6 +36,7 @@ query get_notification_update($page: Int!, $typeId: Int!, $tagId: Int!, $lastNot
         url
         image_url
       }
+      total_product
     }
     user_info {
       user_id

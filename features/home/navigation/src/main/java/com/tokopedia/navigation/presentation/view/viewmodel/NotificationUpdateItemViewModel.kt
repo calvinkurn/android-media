@@ -20,6 +20,7 @@ class NotificationUpdateItemViewModel(
         var appLink: String = "",
         var hasShop: Boolean = false,
         var typeLink: Int = 0,
+        var totalProduct: Int = 0,
         var products: List<ProductData> = emptyList()
 ) : Visitable<NotificationUpdateTypeFactory>, Parcelable {
 
@@ -40,6 +41,7 @@ class NotificationUpdateItemViewModel(
         appLink = `in`.readString()
         hasShop = `in`.readInt() != 0
         typeLink = `in`.readInt()
+        totalProduct = `in`.readInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -55,6 +57,7 @@ class NotificationUpdateItemViewModel(
         parcel.writeString(appLink)
         parcel.writeInt(if (hasShop) 1 else 0)
         parcel.writeInt(typeLink)
+        parcel.writeInt(totalProduct)
     }
 
     override fun describeContents(): Int {

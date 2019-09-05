@@ -19,9 +19,9 @@ class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHol
     private val thumbnail = itemView.findViewById<ImageView>(R.id.iv_product)
     private val SOURCE = "notifcenter"
 
-    fun bind(products: List<ProductData>, position: Int) {
+    fun bind(products: List<ProductData>, position: Int, totalProducts: Int) {
         val productData = products[position]
-        val more = getMoreProductCount(products)
+        val more = getMoreProductCount(products, totalProducts)
 
         ImageHandler.loadImage2(thumbnail, productData.imageUrl, R.drawable.ic_loading_toped_new)
         moreCount.text = more
@@ -36,8 +36,8 @@ class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHol
         }
     }
 
-    private fun getMoreProductCount(products: List<ProductData>): String {
-        return "+${30 - getShowedProductCount(products)}"
+    private fun getMoreProductCount(products: List<ProductData>, totalProducts: Int): String {
+        return "+${totalProducts - getShowedProductCount(products)}"
     }
 
     private fun getShowedProductCount(products: List<ProductData>): Int {

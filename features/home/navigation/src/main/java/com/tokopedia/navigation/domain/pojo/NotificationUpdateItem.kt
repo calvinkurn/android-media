@@ -70,7 +70,10 @@ data class NotificationUpdateItem(
         var dataNotification: DataNotification,
         @SerializedName("product_data")
         @Expose
-        var productData: List<ProductData>
+        var productData: List<ProductData>,
+        @SerializedName("total_product")
+        @Expose
+        var totalProducts: Int = 0
 )
 
 data class ProductData(

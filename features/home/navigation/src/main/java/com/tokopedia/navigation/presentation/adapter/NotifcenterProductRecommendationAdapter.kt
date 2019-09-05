@@ -10,6 +10,7 @@ import java.lang.IllegalStateException
 class NotifcenterProductRecommendationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var products: List<ProductData> = emptyList()
+    private var totalProduct = products.size
     private val TYPE_PRODUCT = 0
     private val TYPE_PRODUCT_LOAD_MROE = 1
 
@@ -48,13 +49,17 @@ class NotifcenterProductRecommendationAdapter : RecyclerView.Adapter<RecyclerVie
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         when (viewHolder) {
             is ProductRecommendationViewHolder -> viewHolder.bind(products[position])
-            is ProductRecommendationMoreViewHolder -> viewHolder.bind(products, position)
+            is ProductRecommendationMoreViewHolder -> viewHolder.bind(products, position, totalProduct)
         }
     }
 
     fun updateProductRecommendation(products: List<ProductData>) {
         this.products = products
         notifyDataSetChanged()
+    }
+
+    fun updateTotalProductCount(totalProduct: Int) {
+        this.totalProduct = totalProduct
     }
 
     companion object {
