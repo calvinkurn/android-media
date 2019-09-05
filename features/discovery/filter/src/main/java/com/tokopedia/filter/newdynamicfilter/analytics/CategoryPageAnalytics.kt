@@ -327,7 +327,7 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventFilterCategoryChoosen(category_id: String, filterName: String?, filterValue: String?, isInsideDetail: Boolean, isActive: Boolean) {
         val tracker = getTracker()
 
-        var eventAction = "click-$filterName-$filterValue-"
+        var eventAction = "click-$filterName:$filterValue-"
         eventAction = if (isInsideDetail) {
             eventAction + "inside lihat semua"
         } else {
