@@ -555,12 +555,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void removeInsuranceDataItem(List<Long> productIdList) {
         try {
             for (Long productId : productIdList) {
+                int position = 0;
                 for (Object item : cartDataList) {
+                    position++;
                     if (item instanceof InsuranceCartShops) {
                         for (InsuranceCartShopItems insuranceCartShopItems : ((InsuranceCartShops) item).getShopItemsList()) {
                             if (insuranceCartShopItems.getProductId() == productId) {
                                 cartDataList.remove(item);
-                                notifyDataSetChanged();
+                                notifyItemRemoved(position);
                                 break;
                             }
                         }
