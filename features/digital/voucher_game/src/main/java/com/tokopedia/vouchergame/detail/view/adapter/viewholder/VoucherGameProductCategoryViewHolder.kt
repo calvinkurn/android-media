@@ -15,8 +15,7 @@ class VoucherGameProductCategoryViewHolder(itemView: View) : AbstractViewHolder<
 
     override fun bind(data: VoucherGameProductData.DataCollection) {
         with(itemView) {
-//            title_label.text = data.name
-            title_label.text = "Test"
+            title_label.text = data.name
         }
     }
 

@@ -192,7 +192,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             TopupBillsTrackImpressionItem(item, index)
         }
 
-        promo_banner.setPagerAdapter(BannerViewPagerAdapter(data.map { it.imageUrl }) {
+        promo_banner.setPagerAdapter(BannerViewPagerAdapter(data.map { it.imageFilename }) {
             val banner = data[it]
             voucherGameAnalytics.eventClickBanner(bannerTrackingList[it])
             RouteManager.route(context, banner.applinkUrl)
