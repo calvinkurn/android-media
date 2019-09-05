@@ -241,6 +241,22 @@ public class SearchActivity extends BaseActivity
     private void onPageSelected(int position) {
         this.isForceSwipeToShop = false;
         this.activeTabPosition = position;
+
+        trackSelectedPage(position);
+    }
+
+    private void trackSelectedPage(int position) {
+        switch (position) {
+            case TAB_FIRST_POSITION:
+                SearchTracking.eventSearchResultTabClick(this, productTabTitle);
+                break;
+            case TAB_SECOND_POSITION:
+                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
+                break;
+            case TAB_THIRD_POSITION:
+                SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
+                break;
+        }
     }
 
     private void initBottomSheetListener() {
@@ -430,11 +446,6 @@ public class SearchActivity extends BaseActivity
             public void onTabReselected(TabLayout.Tab tab) {
                 SearchActivity.this.onTabReselected(tab.getPosition());
             }
-
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                SearchActivity.this.onTabSelected(tab.getPosition());
-            }
         });
     }
 
@@ -478,20 +489,6 @@ public class SearchActivity extends BaseActivity
     private void profileListFragmentExecuteBackToTop() {
         if (searchSectionPagerAdapter.getProfileListFragment() != null) {
             searchSectionPagerAdapter.getProfileListFragment().backToTop();
-        }
-    }
-
-    private void onTabSelected(int tabPosition) {
-        switch (tabPosition) {
-            case TAB_FIRST_POSITION:
-                SearchTracking.eventSearchResultTabClick(this, productTabTitle);
-                break;
-            case TAB_SECOND_POSITION:
-                SearchTracking.eventSearchResultTabClick(this, catalogTabTitle);
-                break;
-            case TAB_THIRD_POSITION:
-                SearchTracking.eventSearchResultTabClick(this, shopTabTitle);
-                break;
         }
     }
 
