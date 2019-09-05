@@ -2,8 +2,7 @@ package com.tokopedia.chatbot.domain.pojo.livechatdivider
 
 import com.google.gson.annotations.SerializedName
 
-
-data class Attributes(
+data class LiveChatDividerAttributes(
 
         @SerializedName("devider")
         val divider: Divider?,
