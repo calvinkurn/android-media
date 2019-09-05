@@ -3,6 +3,7 @@ package com.tokopedia.core.gcm;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.support.v4.util.Preconditions;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.tokopedia.core.gcm.data.RegisterDeviceInteractor;
 import com.tokopedia.core.gcm.model.DeviceRegistrationDataResponse;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 import static com.tokopedia.core.gcm.Constants.REGISTRATION_STATUS_OK;
 
@@ -93,7 +95,9 @@ public class GCMHandler {
             if (googleAPI.isUserResolvableError(result)) {
                 googleAPI.getErrorDialog(activity, result,
                         PLAY_SERVICES_RESOLUTION_REQUEST, dialog -> {
-
+                            Timber.w("P3User Have Problems with Google Play Service | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+                                    + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
+                                    + " | "+Build.TAGS);
                         }).show();
             }
 
