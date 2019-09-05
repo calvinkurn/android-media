@@ -88,7 +88,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         val dialog = UnifyDialog(activity as Activity, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
         dialog.setTitle(getString(R.string.title_change_email_dialog))
         dialog.setDescription(getString(R.string.cannot_change_email))
-        dialog.setOk(getString(R.string.title_ok))
+        dialog.setOk(getString(com.tokopedia.abstraction.R.string.title_ok))
         dialog.setOkOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
     }
@@ -145,7 +145,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun initSettingProfileData() {
         showLoading()
-        profileInfoViewModel.getUserProfileInfo()
+        profileInfoViewModel.getUserProfileInfo(context!!)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -201,7 +201,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun refreshProfile() {
         showLoading(true)
-        profileInfoViewModel.getUserProfileInfo()
+        profileInfoViewModel.getUserProfileInfo(context!!)
     }
 
     private fun onSuccessAddGender(data: Intent?) {
@@ -257,7 +257,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
                 } else {
                     showLoading(true)
-                    profileInfoViewModel.uploadProfilePicture(savedLocalImageUrl)
+                    profileInfoViewModel.uploadProfilePicture(context!!, savedLocalImageUrl)
                 }
 
             } else {
