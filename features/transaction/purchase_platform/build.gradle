@@ -93,6 +93,6 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.basemvvm)
-    implementation project(rootProject.ext.features.payment)
+    //-------------------------------------------------------------------//
 
 }

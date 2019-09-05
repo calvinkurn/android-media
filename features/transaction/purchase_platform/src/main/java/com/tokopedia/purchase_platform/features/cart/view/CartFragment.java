@@ -42,10 +42,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
-import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
@@ -1634,15 +1634,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartRecyclerView.setAdapter(cartAdapter);
         }
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
-        if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
+        if (resultCode == PaymentConstant.PAYMENT_CANCELLED) {
             showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module));
             dPresenter.processResetAndRefreshCartData();
-        } else if (resultCode == TopPayActivity.PAYMENT_SUCCESS) {
+        } else if (resultCode == PaymentConstant.PAYMENT_SUCCESS) {
             showToastMessageGreen(getString(R.string.message_payment_success));
             checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
             refreshHandler.setRefreshing(true);
             dPresenter.processInitialGetCartData(getCartId(), false, false);
-        } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
+        } else if (resultCode == PaymentConstant.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
             sendAnalyticsScreenName(getScreenName());
             refreshHandler.setRefreshing(true);

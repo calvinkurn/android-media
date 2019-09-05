@@ -22,11 +22,11 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -37,7 +37,6 @@ import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
@@ -962,13 +961,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 ?: activity?.getString(R.string.default_request_error_unknown), Snackbar.LENGTH_LONG).show()
     }
 
-    override fun navigateCheckoutToPayment(paymentPassData: PaymentPassData) {
-        if (activity != null) startActivityForResult(
-                TopPayActivity.createInstance(activity, paymentPassData),
-                TopPayActivity.REQUEST_CODE)
-        activity?.finish()
-    }
-
     override fun navigateCheckoutToThankYouPage(appLink: String) {
         if (activity != null) startActivity(RouteManager.getIntent(activity, appLink))
         activity?.finish()
@@ -984,6 +976,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     override fun showData(viewModels: ArrayList<Visitable<*>>) { /* no op we use onSuccess */
     }
 
+    override fun navigateCheckoutToPayment(paymentPassData: PaymentPassData) {}
     override fun showBottomSheetError(title: String, message: String, action: String, enableRetry: Boolean) {}
     override fun showErrorNotAvailable(message: String) {}
     override fun updateFragmentViewModel(atcResponseModel: AtcResponseModel) {}

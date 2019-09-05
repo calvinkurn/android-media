@@ -18,15 +18,48 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
+import com.tokopedia.common.payment.PaymentConstant
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.fingerprint.view.FingerPrintDialog
+import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
+import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticdata.data.constant.InsuranceConstant
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
+import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
+import com.tokopedia.purchase_platform.common.utils.FingerprintUtil
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListener
+import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
+import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
 import com.tokopedia.purchase_platform.features.express_checkout.data.constant.MAX_QUANTITY
+import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.AtcResponseModel
+import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.WholesalePriceModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.CheckoutProfileBottomSheet
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.CheckoutProfileFragmentListener
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.viewmodel.ProfileViewModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.adapter.CheckoutVariantAdapter
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.adapter.CheckoutVariantAdapterTypeFactory
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.di.DaggerCheckoutVariantComponent
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.util.isOnboardingStateHasNotShown
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.util.setOnboardingStateHasNotShown
@@ -34,42 +67,7 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.vi
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
-import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant
-import com.tokopedia.logisticdata.data.constant.InsuranceConstant
-import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.payment.activity.TopPayActivity
-import com.tokopedia.common.payment.model.PaymentPassData
-import com.tokopedia.fingerprint.view.FingerPrintDialog
-import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
-import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
-import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
-import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_EXPRESS_CHECKOUT
-import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListener
-import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
-import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.AtcResponseModel
-import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.WholesalePriceModel
-import com.tokopedia.logisticcart.shipping.model.*
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
-import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
-import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest
-import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
-import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
-import com.tokopedia.purchase_platform.common.utils.FingerprintUtil
-import com.tokopedia.usecase.RequestParams
 import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import rx.Observable
 import rx.Subscriber
@@ -616,10 +614,12 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun navigateCheckoutToPayment(paymentPassData: PaymentPassData) {
-        if (activity != null) startActivityForResult(
-            TopPayActivity.createInstance(activity, paymentPassData),
-            TopPayActivity.REQUEST_CODE)
-        activity?.finish()
+        activity?.run {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalPayment.PAYMENT_CHECKOUT)
+            intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData)
+            startActivityForResult(intent, PaymentConstant.REQUEST_CODE)
+            finish()
+        }
     }
 
     override fun navigateCheckoutToThankYouPage(appLink: String) {

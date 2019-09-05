@@ -51,6 +51,7 @@ import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.common.network.util.NetworkClient;
+import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
@@ -1531,17 +1532,17 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public int getTopPayPaymentSuccessCode() {
-        return TopPayActivity.PAYMENT_SUCCESS;
+        return PaymentConstant.PAYMENT_SUCCESS;
     }
 
     @Override
     public int getTopPayPaymentFailedCode() {
-        return TopPayActivity.PAYMENT_FAILED;
+        return PaymentConstant.PAYMENT_FAILED;
     }
 
     @Override
     public int getTopPayPaymentCancelCode() {
-        return TopPayActivity.PAYMENT_CANCELLED;
+        return PaymentConstant.PAYMENT_CANCELLED;
     }
 
     @Override

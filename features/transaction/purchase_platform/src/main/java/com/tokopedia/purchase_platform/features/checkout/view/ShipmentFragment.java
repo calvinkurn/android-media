@@ -28,8 +28,9 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.purchase_platform.common.utils.Utils;
+import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
@@ -55,7 +56,6 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
-import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
@@ -84,13 +84,14 @@ import com.tokopedia.purchase_platform.common.data.model.request.checkout.Checko
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
+import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
+import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
@@ -723,9 +724,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         paymentPassData.setCallbackSuccessUrl(checkoutData.getCallbackSuccessUrl());
         paymentPassData.setCallbackFailedUrl(checkoutData.getCallbackFailedUrl());
         paymentPassData.setQueryString(checkoutData.getQueryString());
-        startActivityForResult(
-                TopPayActivity.createInstance(getActivity(), paymentPassData),
-                TopPayActivity.REQUEST_CODE);
+
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPayment.PAYMENT_CHECKOUT);
+        intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
+        startActivityForResult(intent, PaymentConstant.REQUEST_CODE);
     }
 
     @Override
@@ -1141,7 +1143,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == TopPayActivity.REQUEST_CODE) {
+        if (requestCode == PaymentConstant.REQUEST_CODE) {
             onResultFromPayment(resultCode);
         } else if ((requestCode == REQUEST_CHOOSE_PICKUP_POINT)
                 && resultCode == Activity.RESULT_OK) {
@@ -1202,10 +1204,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromPayment(int resultCode) {
         if (getActivity() != null) {
-            if (resultCode == TopPayActivity.PAYMENT_CANCELLED || resultCode == TopPayActivity.PAYMENT_FAILED) {
+            if (resultCode == PaymentConstant.PAYMENT_CANCELLED || resultCode == PaymentConstant.PAYMENT_FAILED) {
                 shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, null, getDeviceId(), getCheckoutLeasingId());
             } else {
-                getActivity().setResult(TopPayActivity.PAYMENT_SUCCESS);
+                getActivity().setResult(PaymentConstant.PAYMENT_SUCCESS);
                 getActivity().finish();
             }
         }
