@@ -6,6 +6,7 @@ import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardUseC
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.CheckAffiliateSubscriber
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetAffiliateDashboardSubscriber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -21,10 +22,10 @@ class AffiliateDashboardPresenter
         checkAffiliateUseCase.execute(CheckAffiliateSubscriber(view))
     }
 
-    override fun loadDashboardDetail() {
+    override fun loadDashboardDetail(startDate: Date?, endDate: Date?) {
         getDashboardUseCase.run {
             clearRequest()
-            addRequest(request)
+            addRequest(getRequest(startDate, endDate))
             execute(GetAffiliateDashboardSubscriber(view))
         }
     }

@@ -2,7 +2,6 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.AppCompatImageView
@@ -22,6 +21,8 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.viewpager.Affiliat
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboardPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -29,6 +30,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 /**
  * Created by jegul on 2019-09-02.
@@ -54,12 +56,24 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var vpProductBought: ViewPager
     private lateinit var llStartDate: LinearLayout
     private lateinit var llEndDate: LinearLayout
+    private lateinit var tvStartDate: TextView
+    private lateinit var tvEndDate: TextView
+    private lateinit var llCheckBalance: LinearLayout
 
     private lateinit var calendarBottomSheet: CloseableBottomSheetDialog
     private lateinit var calendarView: View
 
-    private var startDate: Date? = null
-    private var endDate: Date? = null
+    private lateinit var directBoughtFragment: AffiliateProductBoughtFragment
+    private lateinit var indirectBoughtFragment: AffiliateProductBoughtFragment
+
+    private val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+    private var startDate by Delegates.observable<Date?>(null) { _, _, newValue ->
+        if (::tvStartDate.isInitialized) tvStartDate.text = newValue?.let(dateFormatter::format) ?: ""
+    }
+    private var endDate by Delegates.observable<Date?>(null) { _, _, newValue ->
+        if (::tvEndDate.isInitialized) tvEndDate.text = newValue?.let(dateFormatter::format) ?: ""
+    }
 
     override val ctx: Context?
         get() = context
@@ -98,20 +112,27 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             vpProductBought = findViewById(R.id.vp_product_bought)
             llStartDate = findViewById(R.id.ll_start_date)
             llEndDate = findViewById(R.id.ll_end_date)
+            tvStartDate = findViewById(R.id.tv_start_date)
+            tvEndDate = findViewById(R.id.tv_end_date)
+            llCheckBalance = findViewById(R.id.ll_check_balance)
         }
     }
 
     private fun setupView(view: View) {
         fragmentManager?.let {
+            if (!::directBoughtFragment.isInitialized) directBoughtFragment = AffiliateProductBoughtFragment.newInstance(1)
+            if (!::indirectBoughtFragment.isInitialized) indirectBoughtFragment = AffiliateProductBoughtFragment.newInstance(2)
             vpProductBought.adapter = AffiliateProductBoughtPagerAdapter(it, listOf(
-                    AffiliateProductBoughtFragment.newInstance(1),
-                    AffiliateProductBoughtFragment.newInstance(2)
+                    directBoughtFragment,
+                    indirectBoughtFragment
             ))
         }
         vpProductBought.layoutParams.height = getScreenHeight() / 2
         tlProductBought.setupWithViewPager(vpProductBought)
         llStartDate.setOnClickListener { openCalendarPicker() }
         llEndDate.setOnClickListener { openCalendarPicker() }
+
+        llCheckBalance.setOnClickListener { onCheckBalanceClicked() }
     }
 
     override fun hideLoading() {
@@ -133,12 +154,18 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     override fun onSuccessCheckAffiliate(isAffiliate: Boolean) {
-        if (isAffiliate) presenter.loadDashboardDetail()
+        if (isAffiliate) presenter.loadDashboardDetail(startDate, endDate)
         else closePage()
     }
 
     override fun onUserNotLoggedIn() {
         closePage()
+    }
+
+    private fun onCheckBalanceClicked() {
+        if(RouteManager.isSupportApplink(context, ApplinkConst.DEPOSIT)) {
+            RouteManager.route(context, ApplinkConst.DEPOSIT)
+        }
     }
 
     private fun openCalendarPicker() {
@@ -150,7 +177,9 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private fun initCalendarView(): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fragment_af_filter_date, null, false)
         val ivClose = view.findViewById<AppCompatImageView>(R.id.iv_close)
-        ivClose.setOnClickListener { calendarBottomSheet.dismiss() }
+        ivClose.setOnClickListener {
+            calendarBottomSheet.dismiss()
+        }
         return view
     }
 
@@ -166,29 +195,45 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             )
             unifyCalendar.layoutParams.height = getScreenHeight()/2
             setCancelable(false)
+            setOnDismissListener {
+                if (startDate != null && endDate == null) startDate = null
+                onDateChanged()
+            }
         }
         return bottomSheet
     }
 
     private fun initCalendar(calendar: UnifyCalendar) {
         val pickerView = calendar.calendarPickerView
-        val calendarPickerView = pickerView.init(getMinDate(), getMaxDate(), emptyList())
+        val maxDate = getMaxDate()
+        val calendarPickerView = pickerView.init(getMinDate(), maxDate, emptyList())
                 .inMode(CalendarPickerView.SelectionMode.RANGE)
+        pickerView.setOnDateSelectedListener(getOnSelectedDateListener())
 
         if (startDate != null && endDate != null) {
             calendarPickerView.withSelectedDates(listOf(startDate, endDate))
-        } else pickerView.scrollToDate(Calendar.getInstance().time)
+        } else calendarPickerView.withSelectedDate(getCurrentDate())
     }
 
     private fun getMinDate(): Date {
-        val minDate = "2005-01-01"
+        val minDate = "2009-01-01"
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return dateFormatter.parse(minDate)
     }
 
     private fun getMaxDate(): Date {
-        val currentTime = Calendar.getInstance()
-        currentTime.set(Calendar.DAY_OF_MONTH, currentTime.getActualMaximum(Calendar.DAY_OF_MONTH))
+        val maxTime = Calendar.getInstance(Locale.getDefault())
+        maxTime.set(Calendar.DAY_OF_MONTH, maxTime.getActualMaximum(Calendar.DAY_OF_MONTH))
+        maxTime.add(Calendar.MONTH, 1)
+        maxTime.set(Calendar.HOUR_OF_DAY, 0)
+        maxTime.set(Calendar.MINUTE, 0)
+        maxTime.set(Calendar.SECOND, 0)
+        maxTime.set(Calendar.MILLISECOND, 0)
+        return maxTime.time
+    }
+
+    private fun getCurrentDate(): Date {
+        val currentTime = Calendar.getInstance(Locale.getDefault())
         currentTime.set(Calendar.HOUR_OF_DAY, 0)
         currentTime.set(Calendar.MINUTE, 0)
         currentTime.set(Calendar.SECOND, 0)
@@ -196,6 +241,37 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         return currentTime.time
     }
 
+    private fun getOnSelectedDateListener(): CalendarPickerView.OnDateSelectedListener {
+        return object : CalendarPickerView.OnDateSelectedListener {
+            override fun onDateSelected(date: Date) {
+                if ((startDate != null && endDate != null) ||
+                        (startDate == null && endDate == null) ||
+                        (endDate == null && date.before(startDate))) {
+                            startDate = date
+                            endDate = null
+                        }
+                else if (startDate != null && endDate == null && date.after(startDate)) {
+                    endDate = date
+                    calendarBottomSheet.dismiss()
+                }
+            }
+
+            override fun onDateUnselected(date: Date) {
+
+            }
+        }
+    }
+
+    private fun onDateChanged() {
+        presenter.loadDashboardDetail(startDate, endDate)
+        directBoughtFragment.loadData(0)
+        indirectBoughtFragment.loadData(0)
+    }
 
     private fun closePage() = activity?.finish()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
 }

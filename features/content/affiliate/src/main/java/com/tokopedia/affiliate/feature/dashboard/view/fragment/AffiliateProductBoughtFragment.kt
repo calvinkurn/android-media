@@ -75,6 +75,7 @@ class AffiliateProductBoughtFragment : BaseListFragment<DashboardItemViewModel, 
     }
 
     override fun loadData(page: Int) {
+        if (page == 0) cursor = ""
         presenter.loadProductBoughtByType(type, cursor)
     }
 
@@ -83,6 +84,7 @@ class AffiliateProductBoughtFragment : BaseListFragment<DashboardItemViewModel, 
     }
 
     override fun onSuccessLoadMoreDashboardItem(itemList: List<DashboardItemViewModel>, cursor: String) {
+        if (this.cursor.isEmpty()) clearAllData()
         renderList(itemList)
         this.cursor = if (itemList.isEmpty()) "" else cursor
     }
