@@ -667,6 +667,7 @@ class TopChatRoomPresenter @Inject constructor(
             putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
+            putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.TOPCHAT)
         }
     }
 }
