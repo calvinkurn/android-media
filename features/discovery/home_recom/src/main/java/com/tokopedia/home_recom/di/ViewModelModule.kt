@@ -34,5 +34,5 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(SimilarProductRecommendationViewModel::class)
-    internal abstract fun similarProductRecommendationViewModule(viewModel: SimilarProductRecommendationViewModel): ViewModel
+    internal abstract fun similarProductRecommendationViewModel(viewModel: SimilarProductRecommendationViewModel): ViewModel
 }
