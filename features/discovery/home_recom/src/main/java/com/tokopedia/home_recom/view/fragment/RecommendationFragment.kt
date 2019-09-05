@@ -145,7 +145,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         setHasOptionsMenu(true)
         disableLoadMore()
         getRecyclerView(view).layoutManager = recyclerViewLayoutManager
-        recommendationWidgetViewModel.productInfoDataModel.observe(this, Observer {
+        recommendationWidgetViewModel.productInfoDataModel.observe(viewLifecycleOwner, Observer {
             it?.let {
                 primaryProduct ->
                 displayProductInfo(primaryProduct)
@@ -158,7 +158,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             }
         })
 
-        recommendationWidgetViewModel.recommendationListModel.observe(this, Observer {
+        recommendationWidgetViewModel.recommendationListModel.observe(viewLifecycleOwner, Observer {
             it?.let { recommendationList ->
                 clearAllData()
                 renderList(mapDataModel(recommendationList))

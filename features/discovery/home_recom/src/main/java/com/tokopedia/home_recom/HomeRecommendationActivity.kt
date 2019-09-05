@@ -74,8 +74,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
         return when(item?.itemId){
             android.R.id.home -> {
                 RecommendationPageTracking.eventUserClickBack()
-                RouteManager.route(this, ApplinkConst.HOME)
-                this.finish()
+                onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -89,6 +88,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      */
     override fun onBackPressed() {
         RecommendationPageTracking.eventUserClickBack()
+        if(isTaskRoot) RouteManager.getIntent(this, ApplinkConst.HOME)
         this.finish()
     }
 }

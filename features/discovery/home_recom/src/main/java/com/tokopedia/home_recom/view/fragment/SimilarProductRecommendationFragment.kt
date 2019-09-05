@@ -74,7 +74,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
             layoutManager = recyclerViewLayoutManager
         }
         enableLoadMore()
-        recommendationViewModel.recommendationItem.observe(this, Observer {
+        recommendationViewModel.getRecommendationItem().observe(viewLifecycleOwner, Observer {
             it?.let {
                 when {
                     it.status.isLoading() || it.status.isLoadMore()  -> showLoading()
