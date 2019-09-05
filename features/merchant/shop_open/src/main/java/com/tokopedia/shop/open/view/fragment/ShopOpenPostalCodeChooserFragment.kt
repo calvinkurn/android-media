@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -38,12 +39,16 @@ class ShopOpenPostalCodeChooserFragment : BaseSearchListFragment<PostalCodeViewM
                 }
     }
 
-    override fun getSearchInputView(view: View?): SearchInputView {
-        return view?.findViewById<View>(R.id.search_input_view) as SearchInputView
+    override fun getSearchInputView(view: View): SearchInputView {
+        return view.findViewById<View>(R.id.search_input_view) as SearchInputView
     }
 
-    override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
-        return view?.findViewById<View>(R.id.swipe_refresh_layout) as SwipeToRefresh
+    override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
+        return view.findViewById<View>(R.id.swipe_refresh_layout) as SwipeToRefresh
+    }
+
+    override fun getRecyclerView(view: View): RecyclerView {
+        return view.findViewById<View>(R.id.recycler_view) as RecyclerView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
