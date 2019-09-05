@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
@@ -59,6 +60,10 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_LOGIN) {
                 processToCart()
+            } else if (requestCode == REQUEST_CODE_CART_DIGITAL) {
+                data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let {
+                    NetworkErrorHelper.showSnackbar(activity, it)
+                }
             }
         }
     }
