@@ -11,6 +11,7 @@
         android:layout_marginTop="@dimen/dp_8"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
+        app:closeButtonVisibility="gone"
         app:descriptionText="@string/duration_header_ticker"
         app:tickerShapeType="loose"
         app:tickerType="announcement" />

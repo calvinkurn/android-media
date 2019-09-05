@@ -225,6 +225,7 @@
             android:layout_marginBottom="@dimen/dp_16"
             app:tickerShapeType="loose"
             app:tickerType="announcement"
+            app:closeButtonVisibility="gone"
             tools:layout_height="50dp" />
 
     </LinearLayout>
