@@ -41,8 +41,6 @@ class VideoHorizontalHelper(
             setChatListHasSpaceOnTop.invoke(HORIZONTAL_WITH_VIDEO)
         }
         remoteConfig = FirebaseRemoteConfigImpl(activity)
-
-        setYoutubeLandscapeEnabled()
     }
 
     fun showVideo() {
@@ -58,6 +56,7 @@ class VideoHorizontalHelper(
 
     fun assignPlayer(youTubePlayer: YouTubePlayer) {
         this.youTubePlayer = youTubePlayer
+        setYoutubeLandscapeEnabled()
     }
 
     fun hideAllToggle() {
