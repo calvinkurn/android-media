@@ -1,11 +1,14 @@
-package com.tokopedia.discovery.categoryrevamp.analytics
+package com.tokopedia.filter.newdynamicfilter.analytics
 
+import android.content.Context
 import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
 
-class CategoryPageAnalytics {
+class CategoryPageAnalytics : FilterTracking() {
+    var catId: String = ""
 
     companion object {
         val catAnalyticsInstance: CategoryPageAnalytics by lazy { CategoryPageAnalytics() }
@@ -231,9 +234,9 @@ class CategoryPageAnalytics {
     fun eventWishistClicked(category_id: String, product_id: String, isWishlisted: Boolean) {
         val tracker = getTracker()
         val eventAction: String = if (isWishlisted) {
-            "add"
+            "add wishlist"
         } else {
-            "remove"
+            "remove wishlist"
         }
         val map = DataLayer.mapOf(
                 "event", "clickCategory",
@@ -275,13 +278,13 @@ class CategoryPageAnalytics {
 
     // 16
 
-    fun eventQuickFilterClicked(category_id: String, filterName: String, filterValue: Boolean) {
+    fun eventQuickFilterClicked(category_id: String, option: Option, filterValue: Boolean) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "clickCategory",
                 "eventCategory", "category page",
                 "eventAction", "quick filter",
-                "eventLabel", "$filterName-$filterValue",
+                "eventLabel", "${option.name}-${option.value}" + "-" + filterValue.toString(),
                 "categoryId", category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
@@ -303,13 +306,21 @@ class CategoryPageAnalytics {
 
     //20
 
-    fun eventFilterCategoryChoosen(category_id: String, filterName: String, filterValue: Boolean) {
+    fun eventFilterCategoryChoosen(category_id: String, filterName: String?, filterValue: String?, isInsideDetail: Boolean, isActive: Boolean) {
         val tracker = getTracker()
+
+        var eventAction = "click-$filterName-$filterValue-"
+        eventAction = if (isInsideDetail) {
+            eventAction + "inside lihat semua"
+        } else {
+            eventAction + "outside lihat semua"
+        }
+
         val map = DataLayer.mapOf(
                 "event", "clickCategory",
                 "eventCategory", "category page",
-                "eventAction", "click$filterName:$filterValue",
-                "eventLabel", filterValue,
+                "eventAction", eventAction,
+                "eventLabel", isActive.toString(),
                 "categoryId", category_id
         )
         tracker.sendEnhanceEcommerceEvent(map)
@@ -329,4 +340,26 @@ class CategoryPageAnalytics {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
+
+    override fun eventSearchResultFilterJourney(context: Context?, filterName: String?, filterValue: String?, isInsideDetail: Boolean, isActive: Boolean) {
+        eventFilterCategoryChoosen(catId, filterName, filterValue,isInsideDetail,isActive )
+    }
+
+    override fun eventSearchResultApplyFilterDetail(context: Context?, filterName: String?) {
+    }
+
+    override fun eventSearchResultBackFromFilterDetail(context: Context?, filterName: String?) {
+    }
+
+    override fun eventSearchResultNavigateToFilterDetail(context: Context?, filterName: String?) {
+    }
+
+    override fun eventSearchResultOpenFilterPageProduct(context: Context?) {
+    }
+
+    override fun eventSearchResultOpenFilterPageCatalog(context: Context?) {
+    }
+
+    override fun eventSearchResultOpenFilterPageShop(context: Context?) {
+    }
 }

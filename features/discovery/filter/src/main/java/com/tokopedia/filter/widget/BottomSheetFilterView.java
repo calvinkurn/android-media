@@ -27,7 +27,7 @@ import com.tokopedia.filter.newdynamicfilter.DynamicFilterLocationActivity;
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterAdapter;
 import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.BottomSheetDynamicFilterTypeFactoryImpl;
 import com.tokopedia.filter.newdynamicfilter.adapter.typefactory.DynamicFilterTypeFactory;
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.DiscoveryTrackingFactory;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterDbHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterDetailActivityRouter;
@@ -118,9 +118,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             launchFilterCategoryPage(filter);
         } else {
             enrichWithInputState(filter);
-
-
-            FilterTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), filter.getTitle());
+            DiscoveryTrackingFactory.getmInstance().eventSearchResultNavigateToFilterDetail(callback.getActivity(), filter.getTitle());
             FilterDetailActivityRouter.launchDetailActivity(callback.getActivity(), filter, true);
         }
     }
@@ -130,7 +128,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         CategoryFilterModel selectedCategory = FilterHelper.getSelectedCategoryDetails(filter, categoryId);
         String selectedCategoryRootId = selectedCategory != null ? selectedCategory.getCategoryRootId() : "";
 
-        FilterTracking.eventSearchResultNavigateToFilterDetail(callback.getActivity(), getResources().getString(R.string.title_category));
+        DiscoveryTrackingFactory.getmInstance().eventSearchResultNavigateToFilterDetail(callback.getActivity(), getResources().getString(R.string.title_category));
         FilterDetailActivityRouter.launchCategoryActivity(callback.getActivity(),
                 filter, selectedCategoryRootId, categoryId, true);
     }
@@ -154,7 +152,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
-        FilterTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, isChecked);
+        DiscoveryTrackingFactory.getmInstance().eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, isChecked);
         filterController.setFilter(option, isChecked);
         applyFilter();
     }
@@ -170,7 +168,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         filterController.setFilter(OptionHelper.generateOptionFromUniqueId(uniqueId), false, true);
 
         String key = OptionHelper.parseKeyFromUniqueId(uniqueId);
-        FilterTracking.eventSearchResultFilterJourney(getContext(), key, "", false, false);
+        DiscoveryTrackingFactory.getmInstance().eventSearchResultFilterJourney(getContext(), key, "", false, false);
         updateResetButtonVisibility();
     }
 
@@ -181,7 +179,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         filterController.setFilter(textInputOption, true, true);
 
         String key = textInputOption.getKey();
-        FilterTracking.eventSearchResultFilterJourney(getContext(), key, textInput, false, true);
+        DiscoveryTrackingFactory.getmInstance().eventSearchResultFilterJourney(getContext(), key, textInput, false, true);
         updateResetButtonVisibility();
     }
 
@@ -198,7 +196,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public void removeSelectedOption(Option option, String filterTitle) {
         if (Option.KEY_CATEGORY.equals(option.getKey())) {
-            FilterTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
+            DiscoveryTrackingFactory.getmInstance().eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, false);
             filterController.setFilter(option, false, true);
             applyFilter();
         } else {
@@ -299,7 +297,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void selectCategory(Option option, String filterTitle) {
-        FilterTracking.eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, true);
+        DiscoveryTrackingFactory.getmInstance().eventSearchResultFilterJourney(getContext(), filterTitle, option.getName(), false, true);
         filterController.setFilter(option, true, true);
         applyFilter();
     }

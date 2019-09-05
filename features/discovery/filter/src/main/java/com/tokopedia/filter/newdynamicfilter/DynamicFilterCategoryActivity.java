@@ -14,7 +14,7 @@ import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.newdynamicfilter.adapter.CategoryChildAdapter;
 import com.tokopedia.filter.newdynamicfilter.adapter.CategoryParentAdapter;
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.DiscoveryTrackingFactory;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 
 import org.parceler.Parcels;
@@ -148,7 +148,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
             categoryChildAdapter.toggleSelectedChildbyId(category.getId());
         } else {
             if (isUsingTracking) {
-                FilterTracking.eventSearchResultFilterJourney(
+                DiscoveryTrackingFactory.getmInstance().eventSearchResultFilterJourney(
                         this,
                         getResources().getString(R.string.title_category),
                         category.getName(), true, true);

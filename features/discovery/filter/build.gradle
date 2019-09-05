@@ -37,4 +37,5 @@ dependencies {
     implementation rootProject.ext.miscDependencies.parcelerApi
     annotationProcessor rootProject.ext.miscDependencies.parceler
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
+    implementation rootProject.ext.playServicesDependencies.analytics
 }
