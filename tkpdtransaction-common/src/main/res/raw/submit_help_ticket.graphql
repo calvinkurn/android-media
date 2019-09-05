@@ -5,6 +5,11 @@ mutation submit_help_ticket($ErrorDetail: TicketErrorDetailData){
     data {
       success
       message
+      texts {
+        submit_title
+        submit_description
+        success_button
+      }
     }
   }
 }

@@ -762,9 +762,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult) {
         UnifyDialog successTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER);
-        successTicketDialog.setTitle("Title");
-        successTicketDialog.setDescription("desc");
-        successTicketDialog.setOk("ok");
+        successTicketDialog.setTitle(submitTicketResult.getTexts().getSubmitTitle());
+        successTicketDialog.setDescription(submitTicketResult.getTexts().getSubmitDescription());
+        successTicketDialog.setOk(submitTicketResult.getTexts().getSuccessButton());
         successTicketDialog.setOkOnClickListener(v -> getActivity().finish());
         successTicketDialog.show();
     }

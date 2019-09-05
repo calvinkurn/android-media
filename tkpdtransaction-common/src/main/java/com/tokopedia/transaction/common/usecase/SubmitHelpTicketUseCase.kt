@@ -4,6 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketGqlResponse
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketText
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -36,6 +37,11 @@ class SubmitHelpTicketUseCase @Inject constructor(@Named(QUERY_NAME) val querySt
                         if (submitHelpTicket.data.message.isNotEmpty()) {
                             submitTicketResult.message = submitHelpTicket.data.message[0]
                         }
+                        val submitTicketText = SubmitTicketText()
+                        submitTicketText.submitTitle = submitHelpTicket.data.texts.submitTitle
+                        submitTicketText.submitDescription = submitHelpTicket.data.texts.submitDescription
+                        submitTicketText.successButton = submitHelpTicket.data.texts.successButton
+                        submitTicketResult.texts = submitTicketText
                     } else {
                         submitTicketResult.status = false
                         if (submitHelpTicket.errorMessages.isNotEmpty()) {

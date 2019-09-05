@@ -9,5 +9,8 @@ data class SubmitTicketDataResponse(
         val success: Int = 0,
         @SerializedName("message")
         @Expose
-        val message: ArrayList<String> = arrayListOf()
+        val message: ArrayList<String> = arrayListOf(),
+        @SerializedName("texts")
+        @Expose
+        val texts: SubmitTicketTextResponse = SubmitTicketTextResponse()
 )

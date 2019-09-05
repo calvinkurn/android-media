@@ -1194,9 +1194,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         hideProgressDialog()
         if (result.status) {
             val successTicketDialog = UnifyDialog(activity!!, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
-            successTicketDialog.setTitle("Title")
-            successTicketDialog.setDescription("Desc")
-            successTicketDialog.setOk("OK")
+            successTicketDialog.setTitle(result.texts.submitTitle)
+            successTicketDialog.setDescription(result.texts.submitDescription)
+            successTicketDialog.setOk(result.texts.successButton)
             successTicketDialog.setOkOnClickListener(View.OnClickListener {
                 successTicketDialog.dismiss()
             })
