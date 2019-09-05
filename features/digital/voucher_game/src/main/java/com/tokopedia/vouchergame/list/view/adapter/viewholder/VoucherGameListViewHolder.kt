@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import kotlinx.android.synthetic.main.item_voucher_game.view.*
+import java.beans.Visibility
 
 /**
  * @author by resakemal on 12/08/19
@@ -17,6 +18,10 @@ class VoucherGameListViewHolder(val view: View, val listener: OnClickListener) :
         with(itemView) {
             ImageHandler.LoadImage(item_image, operator.attributes.imageUrl)
             product_title.text = operator.attributes.name
+            if (operator.attributes.operatorLabel.isNotEmpty()) {
+                promo_label.visibility = View.VISIBLE
+                promo_label.text = operator.attributes.operatorLabel.joinToString(limit = 2)
+            }
 
             item_container.setOnClickListener { listener.onItemClicked(operator) }
         }

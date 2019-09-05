@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
@@ -185,7 +186,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TelcoCatalogMenuDetail) {
-
+        (activity as BaseSimpleActivity).updateTitle(data.catalog[0].label)
     }
 
     override fun showError(t: Throwable) {
@@ -355,13 +356,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     private fun setupOperatorDetail() {
         if (::voucherGameOperatorData.isInitialized) {
             voucherGameOperatorData.run {
-                product_name.text = operatorLabel
+                product_name.text = name
                 ImageHandler.LoadImage(product_image, imageUrl)
 
-                product_image.setOnClickListener { showProductInfo(operatorLabel, description) }
+                product_image.setOnClickListener { showProductInfo(name, description) }
                 info_icon.setOnClickListener {
                     voucherGameAnalytics.eventClickInfoButton()
-                    showProductInfo(operatorLabel, description)
+                    showProductInfo(name, description)
                 }
                 help_label.text = voucherGameOperatorData.helpCta
                 help_label.setOnClickListener { showProductInfo(desc = helpText, imageUrl = helpImage) }
@@ -399,10 +400,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onItemClicked(product: VoucherGameProduct, position: Int) {
         if (::voucherGameOperatorData.isInitialized) {
-            val operatorName = voucherGameOperatorData.operatorLabel
             val productIndex = productTrackingList.indexOfFirst { it.item == product }
-            voucherGameAnalytics.eventClickProductCard(operatorName, product.attributes.info,
-                    productIndex, productTrackingList[productIndex])
+            voucherGameAnalytics.eventClickProductCard(voucherGameOperatorData.name,
+                    product.attributes.info, productIndex, productTrackingList[productIndex])
         }
         selectProduct(product, position)
     }
@@ -456,7 +456,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         if (::voucherGameOperatorData.isInitialized) {
             productTrackingList.find { it.item == selectedProduct }?.run {
                 voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                        voucherGameOperatorData.operatorLabel, product = this)
+                        voucherGameOperatorData.name, product = this)
             }
         }
         processCheckout()

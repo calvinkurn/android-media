@@ -13,7 +13,7 @@ query voucherGameProductList($menuID: Int!){
         help_cta
         help_text
         help_image
-        operator_label
+        operator_labels
       }
     }
   }

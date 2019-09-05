@@ -28,9 +28,9 @@ class VoucherGameOperatorAttributes(
         @SerializedName("help_image")
         @Expose
         val helpImage: String = "",
-        @SerializedName("operator_label")
+        @SerializedName("operator_labels")
         @Expose
-        val operatorLabel: String = ""
+        val operatorLabel: List<String> = listOf()
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -41,7 +41,7 @@ class VoucherGameOperatorAttributes(
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
-            parcel.readString()
+            parcel.createStringArrayList()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -52,7 +52,7 @@ class VoucherGameOperatorAttributes(
         parcel.writeString(helpCta)
         parcel.writeString(helpText)
         parcel.writeString(helpImage)
-        parcel.writeString(operatorLabel)
+        parcel.writeStringList(operatorLabel)
     }
 
     override fun describeContents(): Int {
