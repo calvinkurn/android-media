@@ -409,7 +409,16 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
         if (item is FlashSaleSubmissionProductItem) {
             val criteria = item.campaign.criteria
             val stockInput = StringUtils.convertToNumeric(etStock.text.toString(), true)
+            context?.run {
+                tilStock.setHelper(getString(R.string.flash_sale_min_stock_x,criteria.stockMin))
+            }
             if (stockInput < 0 || stockInput < criteria.stockMin) {
+                tilStock.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
+                return false
+            } else if(stockInput > 25){
+                context?.run {
+                    tilStock.setHelper(getString(R.string.flash_sale_min_stock_x,25))
+                }
                 tilStock.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
                 return false
             } else {
