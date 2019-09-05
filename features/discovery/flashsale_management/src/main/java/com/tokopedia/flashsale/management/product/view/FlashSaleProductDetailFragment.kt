@@ -415,9 +415,9 @@ class FlashSaleProductDetailFragment : BaseDaggerFragment() {
             if (stockInput < 0 || stockInput < criteria.stockMin) {
                 tilStock.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
                 return false
-            } else if(stockInput > 25){
+            } else if(stockInput > criteria.maxCustomStock){
                 context?.run {
-                    tilStock.setHelper(getString(R.string.flash_sale_min_stock_x,25))
+                    tilStock.setHelper(getString(R.string.flash_sale_max_stock_x,criteria.maxCustomStock))
                 }
                 tilStock.setHelperTextAppearance(R.style.TextAppearance_Design_Error)
                 return false
