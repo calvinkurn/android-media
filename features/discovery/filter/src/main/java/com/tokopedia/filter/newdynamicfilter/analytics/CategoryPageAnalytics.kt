@@ -9,6 +9,8 @@ import com.tokopedia.track.interfaces.Analytics
 
 class CategoryPageAnalytics : FilterTracking() {
     var catId: String = ""
+    val KEY_EVENT_NAME = "clickCategory"
+    val KEY_EVENT_CATEGORY = "category page"
 
     companion object {
         val catAnalyticsInstance: CategoryPageAnalytics by lazy { CategoryPageAnalytics() }
@@ -24,8 +26,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventBackButtonClicked(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click back button",
                 "eventLabel", "",
                 "categoryId", category_id
@@ -38,8 +40,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventSearchBarClicked(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click search bar",
                 "eventLabel", "",
                 "categoryId", category_id
@@ -52,8 +54,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventDisplayButtonClicked(category_id: String, displayName: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click display",
                 "eventLabel", displayName,
                 "categoryId", category_id
@@ -66,8 +68,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventClickProductTab(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click product tab",
                 "eventLabel", "",
                 "categoryId", category_id
@@ -80,8 +82,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventClickCatalogTab(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click catalog tab",
                 "eventLabel", "",
                 "categoryId", category_id
@@ -94,8 +96,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventClickSemuaThumbnail(category_id: String, displayName: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click category thumbnail",
                 "eventLabel", "",
                 "categoryId", category_id
@@ -114,7 +116,7 @@ class CategoryPageAnalytics : FilterTracking() {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoClick",
-                "eventCategory", "category page",
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click subcategory",
                 "eventLabel", "$sub_category_id-$creative_name",
                 "categoryId", category_id,
@@ -145,7 +147,7 @@ class CategoryPageAnalytics : FilterTracking() {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "promoView",
-                "eventCategory", "category page",
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "subcategory impression",
                 "eventLabel", "",
                 "categoryId", category_id,
@@ -175,7 +177,7 @@ class CategoryPageAnalytics : FilterTracking() {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "productClick",
-                "eventCategory", "category page",
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click product list",
                 "eventLabel", product_id,
                 "categoryId", category_id,
@@ -209,7 +211,7 @@ class CategoryPageAnalytics : FilterTracking() {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 "event", "productView",
-                "eventCategory", "category page",
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "product list impression",
                 "eventLabel", "",
                 "categoryId", category_id,
@@ -239,8 +241,8 @@ class CategoryPageAnalytics : FilterTracking() {
             "remove wishlist"
         }
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", eventAction,
                 "eventLabel", product_id,
                 "categoryId", category_id
@@ -253,8 +255,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventSortClicked(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click sort",
                 "eventLabel", "",
                 "categoryId", category_id
@@ -267,8 +269,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventFilterClicked(category_id: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "click filter",
                 "eventLabel", "",
                 "categoryId", category_id
@@ -281,8 +283,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventQuickFilterClicked(category_id: String, option: Option, filterValue: Boolean) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "quick filter",
                 "eventLabel", "${option.name}-${option.value}" + "-" + filterValue.toString(),
                 "categoryId", category_id
@@ -295,8 +297,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventFilterApplied(category_id: String, filterName: String, filterValue: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "apply filter",
                 "eventLabel", "$filterName-$filterValue",
                 "categoryId", category_id
@@ -317,8 +319,8 @@ class CategoryPageAnalytics : FilterTracking() {
         }
 
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", eventAction,
                 "eventLabel", isActive.toString(),
                 "categoryId", category_id
@@ -331,8 +333,8 @@ class CategoryPageAnalytics : FilterTracking() {
     fun eventSortApplied(category_id: String, sortName: String, sortValue: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", "category page",
+                "event", KEY_EVENT_NAME,
+                "eventCategory", KEY_EVENT_CATEGORY,
                 "eventAction", "apply sort - $sortName",
                 "eventLabel", sortValue,
                 "categoryId", category_id
