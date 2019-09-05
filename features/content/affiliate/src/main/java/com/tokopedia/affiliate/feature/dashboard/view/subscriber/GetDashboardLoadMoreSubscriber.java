@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.subscriber;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuery;
-import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
+import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateProductBoughtContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import java.util.ArrayList;
@@ -14,10 +14,9 @@ import rx.Subscriber;
  */
 public class GetDashboardLoadMoreSubscriber extends Subscriber<GraphqlResponse> {
 
-    private DashboardContract.View mainView;
+    private AffiliateProductBoughtContract.View mainView;
 
-
-    public GetDashboardLoadMoreSubscriber(DashboardContract.View mainView) {
+    public GetDashboardLoadMoreSubscriber(AffiliateProductBoughtContract.View mainView) {
         this.mainView = mainView;
     }
 
@@ -29,7 +28,7 @@ public class GetDashboardLoadMoreSubscriber extends Subscriber<GraphqlResponse> 
     @Override
     public void onError(Throwable e) {
         mainView.hideLoading();
-        mainView.onErrorGetDashboardItem(ErrorHandler.getErrorMessage(mainView.getContext(), e));
+        mainView.onErrorGetDashboardItem(ErrorHandler.getErrorMessage(mainView.getCtx(), e));
     }
 
     @Override

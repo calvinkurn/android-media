@@ -1,12 +1,9 @@
 package com.tokopedia.affiliate.feature.dashboard.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.affiliate.common.domain.usecase.CheckAffiliateUseCase
 import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardLoadMoreUseCase
-import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateProductBoughtContract
-import com.tokopedia.affiliate.feature.dashboard.view.subscriber.CheckAffiliateSubscriber
-import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetAffiliateDashboardSubscriber
+import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetDashboardLoadMoreSubscriber
 import javax.inject.Inject
 
 /**
@@ -21,6 +18,12 @@ class AffiliateProductBoughtPresenter
         getDashboardLoadMoreUseCase.run {
             clearRequest()
             addRequest(getRequest(type, cursor))
+            execute(GetDashboardLoadMoreSubscriber(view))
         }
+    }
+
+    override fun detachView() {
+        super.detachView()
+        getDashboardLoadMoreUseCase.unsubscribe()
     }
 }

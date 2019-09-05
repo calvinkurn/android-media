@@ -1,6 +1,8 @@
 package com.tokopedia.affiliate.feature.dashboard.view.fragment
 
+import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +36,9 @@ class AffiliateProductBoughtFragment : BaseListFragment<DashboardItemViewModel, 
         }
     }
 
+    override val ctx: Context?
+        get() = context
+
     private var cursor: String = ""
 
     private val type: Int by lazy { arguments?.getInt(EXTRA_TYPE) ?: 0 }
@@ -47,6 +52,11 @@ class AffiliateProductBoughtFragment : BaseListFragment<DashboardItemViewModel, 
                 onItemClicked(item)
             }
         })
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        presenter.attachView(this)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onItemClicked(t: DashboardItemViewModel?) {
@@ -66,5 +76,23 @@ class AffiliateProductBoughtFragment : BaseListFragment<DashboardItemViewModel, 
 
     override fun loadData(page: Int) {
         presenter.loadProductBoughtByType(type, cursor)
+    }
+
+    override fun onErrorGetDashboardItem(error: String) {
+
+    }
+
+    override fun onSuccessLoadMoreDashboardItem(itemList: List<DashboardItemViewModel>, cursor: String) {
+        renderList(itemList)
+        this.cursor = if (itemList.isEmpty()) "" else cursor
+    }
+
+    override fun hideLoading() {
+        super.hideLoading()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 }

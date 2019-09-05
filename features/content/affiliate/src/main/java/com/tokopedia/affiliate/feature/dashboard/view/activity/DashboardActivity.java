@@ -39,7 +39,7 @@ public class DashboardActivity extends BaseSimpleActivity {
         menu.add(Menu.NONE, R.id.action_help, 0, "");
         MenuItem menuItem = menu.findItem(R.id.action_help); // OR THIS
         menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        menuItem.setIcon(MethodChecker.getDrawable(this, R.drawable.ic_bantuan));
+        menuItem.setIcon(MethodChecker.getDrawable(this, R.drawable.ic_info_help));
         return true;
     }
 

@@ -52,6 +52,7 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
 
     private DashboardHeaderViewModel mappingHeader(DashboardHeaderPojo pojo) {
         return new DashboardHeaderViewModel(
+                "",
                 pojo.getTotalCommission(),
                 pojo.getProfileView(),
                 pojo.getProductClick(),

@@ -24,6 +24,10 @@ public class DashboardQuery {
     @Expose
     private DashboardQuotaStatus postQuota;
 
+    @SerializedName("balance")
+    @Expose
+    private DashboardBalance balance;
+
     public DashboardProduct getProduct() {
         return product;
     }
@@ -54,5 +58,13 @@ public class DashboardQuery {
 
     public void setPostQuota(DashboardQuotaStatus postQuota) {
         this.postQuota = postQuota;
+    }
+
+    public DashboardBalance getBalance() {
+        return balance;
+    }
+
+    public void setBalance(DashboardBalance balance) {
+        this.balance = balance;
     }
 }

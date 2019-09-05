@@ -28,4 +28,8 @@ query GetDashboard() {
     formatted
     number
   }
+  balance {
+    seller_usable
+    buyer_usable
+  }
 }

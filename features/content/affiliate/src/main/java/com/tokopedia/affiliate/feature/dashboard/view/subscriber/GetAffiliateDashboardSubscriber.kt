@@ -1,9 +1,11 @@
 package com.tokopedia.affiliate.feature.dashboard.view.subscriber
 
+import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardBalance
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardHeaderPojo
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuery
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
 
@@ -18,7 +20,7 @@ class GetAffiliateDashboardSubscriber(
         mainView.hideLoading()
         val query = response.getData<DashboardQuery>(DashboardQuery::class.java)
         mainView.onSuccessGetDashboardItem(
-                mappingHeader(query.affiliateStats)
+                mappingHeader(query.affiliateStats, query.balance)
         )
     }
 
@@ -30,8 +32,9 @@ class GetAffiliateDashboardSubscriber(
         mainView.hideLoading()
     }
 
-    private fun mappingHeader(pojo: DashboardHeaderPojo) = pojo.let {
+    private fun mappingHeader(pojo: DashboardHeaderPojo, balance: DashboardBalance) = pojo.let {
         DashboardHeaderViewModel(
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(balance.buyerUsable + balance.sellerUsable, false),
                 it.totalCommission,
                 it.profileView,
                 it.productClick,

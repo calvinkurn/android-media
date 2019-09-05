@@ -18,6 +18,7 @@ import javax.inject.Inject;
 public class GetDashboardLoadMoreUseCase extends GraphqlUseCase {
     private final Context context;
     private final static String PARAM_CURSOR = "cursor";
+    private final static String PARAM_TYPE = "type";
 
     @Inject
     public GetDashboardLoadMoreUseCase(@ApplicationContext Context context) {
@@ -35,6 +36,7 @@ public class GetDashboardLoadMoreUseCase extends GraphqlUseCase {
     public static RequestParams getParam(int type, String cursor) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_CURSOR, cursor);
+        params.putInt(PARAM_TYPE, type);
         return params;
     }
 }

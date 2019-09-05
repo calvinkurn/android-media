@@ -19,6 +19,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.viewpager.Affiliat
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboardPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import javax.inject.Inject
 
 /**
@@ -85,10 +86,11 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private fun setupView(view: View) {
         fragmentManager?.let {
             vpProductBought.adapter = AffiliateProductBoughtPagerAdapter(it, listOf(
-                    AffiliateProductBoughtFragment.newInstance(0),
-                    AffiliateProductBoughtFragment.newInstance(1)
+                    AffiliateProductBoughtFragment.newInstance(1),
+                    AffiliateProductBoughtFragment.newInstance(2)
             ))
         }
+        vpProductBought.layoutParams.height = getScreenHeight()/2
         tlProductBought.setupWithViewPager(vpProductBought)
     }
 
@@ -97,7 +99,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel) {
-        tvTotalSaldo.text = MethodChecker.fromHtml(header.saldoString)
+        tvTotalSaldo.text = MethodChecker.fromHtml(header.totalSaldoAktif)
         tvAffiliateIncome.text = MethodChecker.fromHtml(header.saldoString)
         tvTotalViewed.text = MethodChecker.fromHtml(header.seenCount)
         tvTotalClicked.text = MethodChecker.fromHtml(header.clickCount)

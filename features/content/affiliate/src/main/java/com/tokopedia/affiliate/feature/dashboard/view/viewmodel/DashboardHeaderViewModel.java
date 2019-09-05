@@ -11,16 +11,26 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardI
  */
 public class DashboardHeaderViewModel implements Visitable<DashboardItemTypeFactory>,Parcelable {
 
+    private String totalSaldoAktif;
     private String saldoString;
     private String seenCount;
     private String clickCount;
     private String buyCount;
 
-    public DashboardHeaderViewModel(String saldoString, String seenCount, String clickCount, String buyCount) {
+    public DashboardHeaderViewModel(String totalSaldoAktif, String saldoString, String seenCount, String clickCount, String buyCount) {
+        this.totalSaldoAktif = totalSaldoAktif;
         this.saldoString = saldoString;
         this.seenCount = seenCount;
         this.clickCount = clickCount;
         this.buyCount = buyCount;
+    }
+
+    public String getTotalSaldoAktif() {
+        return totalSaldoAktif;
+    }
+
+    public void setTotalSaldoAktif(String totalSaldoAktif) {
+        this.totalSaldoAktif = totalSaldoAktif;
     }
 
     public String getSaldoString() {

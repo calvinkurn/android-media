@@ -126,5 +126,6 @@
     <string name="choose_date">Pilih Tanggal</string>
     <string name="bought_from_post">Dibeli dari Post</string>
     <string name="bought_from_traffic">Dibeli dari Traffic</string>
+    <string name="posted_product">Produk Dipost</string>
 
 </resources>

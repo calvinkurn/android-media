@@ -28,4 +28,10 @@ class AffiliateDashboardPresenter
             execute(GetAffiliateDashboardSubscriber(view))
         }
     }
+
+    override fun detachView() {
+        super.detachView()
+        getDashboardUseCase.unsubscribe()
+        checkAffiliateUseCase.unsubscribe()
+    }
 }
