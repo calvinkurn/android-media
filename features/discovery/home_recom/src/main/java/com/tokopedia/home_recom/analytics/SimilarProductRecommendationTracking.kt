@@ -19,6 +19,7 @@ object SimilarProductRecommendationTracking {
     private const val EVENT_PRODUCT_CLICK = "productClick"
     private const val EVENT_CLICK_RECOMMENDATION = "clickRecommendation"
     private const val EVENT_WISHLIST_RECOMMENDATION = "%s - wishlist on product recommendation"
+    private const val EVENT_WISHLIST_RECOMMENDATION_NON_LOGIN = "add - wishlist on product recommendation - non login"
     private const val EVENT_CLICK_BACK_BUTTON = "click - back button"
 
     private const val EVENT_CATEGORY_SIMILAR_PRODUCT = "similar product recommendation page"
@@ -228,6 +229,16 @@ object SimilarProductRecommendationTracking {
                 EVENT, EVENT_CLICK_RECOMMENDATION,
                 EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
                 EVENT_ACTION, String.format(EVENT_WISHLIST_RECOMMENDATION, if(isAddWishlist) "add" else "remove"),
+                EVENT_LABEL, VALUE_EMPTY
+        )
+        getTracker().sendEnhanceEcommerceEvent(data)
+    }
+
+    fun eventClickWishlistNonLogin(){
+        val data = DataLayer.mapOf(
+                EVENT, EVENT_CLICK_RECOMMENDATION,
+                EVENT_CATEGORY, EVENT_CATEGORY_SIMILAR_PRODUCT,
+                EVENT_ACTION, EVENT_WISHLIST_RECOMMENDATION_NON_LOGIN,
                 EVENT_LABEL, VALUE_EMPTY
         )
         getTracker().sendEnhanceEcommerceEvent(data)

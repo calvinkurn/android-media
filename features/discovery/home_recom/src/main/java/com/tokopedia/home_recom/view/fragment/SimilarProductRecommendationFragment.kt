@@ -198,6 +198,7 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                 recommendationViewModel.removeWishlist(item, callback)
             }
         }else{
+            SimilarProductRecommendationTracking.eventClickWishlistNonLogin()
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
