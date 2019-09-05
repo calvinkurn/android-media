@@ -69,14 +69,13 @@ public abstract class SearchSectionFragment
     protected static final int START_ROW_FIRST_TIME_LOAD = 0;
 
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
-    private static final String EXTRA_SELECTED_FILTER = "EXTRA_SELECTED_FILTER";
     private static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     public static final String EXTRA_DATA = "EXTRA_DATA";
     public static final String EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME";
-    public static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
-    public static final String EXTRA_FILTER_PARAMETER = "EXTRA_FILTER_PARAMETER";
+    public static final String EXTRA_CALLER_SCREEN_NAME = "EXTRA_CALLER_SCREEN_NAME";
+    public static final String EXTRA_QUERY_PARAMETERS = "EXTRA_QUERY_PARAMETERS";
     public static final String EXTRA_SELECTED_FILTERS = "EXTRA_SELECTED_FILTERS";
     protected static final String EXTRA_FRAGMENT_POSITION = "EXTRA_FRAGMENT_POSITION";
 
@@ -308,7 +307,7 @@ public abstract class SearchSectionFragment
                 clearDataFilterSort();
                 reloadData();
             } else if (requestCode == getFilterRequestCode()) {
-                Map<String, String> filterParameter = getMapFromIntent(data, EXTRA_FILTER_PARAMETER);
+                Map<String, String> filterParameter = getMapFromIntent(data, EXTRA_QUERY_PARAMETERS);
                 Map<String, String> activeFilterParameter = getMapFromIntent(data, EXTRA_SELECTED_FILTERS);
 
                 SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), activeFilterParameter);
@@ -426,8 +425,8 @@ public abstract class SearchSectionFragment
         if (searchParameter == null) return;
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.FILTER);
-        intent.putExtra(EXTRA_FILTER_LIST, getScreenName());
-        intent.putExtra(EXTRA_FILTER_PARAMETER, searchParameter.getSearchParameterHashMap());
+        intent.putExtra(EXTRA_CALLER_SCREEN_NAME, getScreenName());
+        intent.putExtra(EXTRA_QUERY_PARAMETERS, searchParameter.getSearchParameterHashMap());
 
         startActivityForResult(intent, getFilterRequestCode());
 
@@ -523,8 +522,6 @@ public abstract class SearchSectionFragment
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
-        outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
         outState.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
     }
@@ -554,8 +551,6 @@ public abstract class SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
-        setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
-        setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         fragmentPosition = savedInstanceState.getInt(EXTRA_FRAGMENT_POSITION);
     }

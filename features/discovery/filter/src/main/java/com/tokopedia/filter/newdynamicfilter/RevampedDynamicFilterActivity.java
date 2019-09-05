@@ -54,9 +54,9 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
 
     public static final int REQUEST_CODE = 219;
     public static final String EXTRA_SELECTED_FILTERS = "EXTRA_SELECTED_FILTERS";
-    public static final String EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST";
+    public static final String EXTRA_CALLER_SCREEN_NAME = "EXTRA_CALLER_SCREEN_NAME";
     public static final String EXTRA_SELECTED_FLAG_FILTER = "EXTRA_SELECTED_FLAG_FILTER";
-    public static final String EXTRA_FILTER_PARAMETER = "EXTRA_FILTER_PARAMETER";
+    public static final String EXTRA_QUERY_PARAMETERS = "EXTRA_QUERY_PARAMETERS";
 
     public static final String FILTER_CHECKED_STATE_PREF = "filter_checked_state";
     public static final String FILTER_TEXT_PREF = "filter_text";
@@ -64,10 +64,10 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     public static final String FILTER_SELECTED_CATEGORY_ID_PREF = "filter_selected_category_id";
     public static final String FILTER_SELECTED_CATEGORY_NAME_PREF = "filter_selected_category_name";
 
-    public static Intent createInstance(Context context, String filterID, HashMap<String, String> searchParameter, @Nullable FilterFlagSelectedModel flagFilterHelper) {
+    public static Intent createInstance(Context context, String callerScreenName, HashMap<String, String> searchParameter, @Nullable FilterFlagSelectedModel flagFilterHelper) {
         Intent intent = new Intent(context, RevampedDynamicFilterActivity.class);
-        intent.putExtra(EXTRA_FILTER_LIST, filterID);
-        intent.putExtra(EXTRA_FILTER_PARAMETER, searchParameter);
+        intent.putExtra(EXTRA_CALLER_SCREEN_NAME, callerScreenName);
+        intent.putExtra(EXTRA_QUERY_PARAMETERS, searchParameter);
 
         if(flagFilterHelper != null) {
             intent.putExtra(EXTRA_SELECTED_FLAG_FILTER, flagFilterHelper);
@@ -168,7 +168,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private List<Filter> getFilterListFromDbManager(DynamicFilterDbManager manager) throws RuntimeException {
-        String data = DynamicFilterDbManager.getFilterData(this, getIntent().getStringExtra(EXTRA_FILTER_LIST));
+        String data = DynamicFilterDbManager.getFilterData(this, getIntent().getStringExtra(EXTRA_CALLER_SCREEN_NAME));
         if (data == null) {
             throw new RuntimeException("error get filter cache");
         } else {
@@ -202,7 +202,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
     }
 
     private Map<String, String> getSearchParameterFromIntent() {
-        Map<?, ?> searchParameterMapIntent = (Map<?, ?>)getIntent().getSerializableExtra(EXTRA_FILTER_PARAMETER);
+        Map<?, ?> searchParameterMapIntent = (Map<?, ?>)getIntent().getSerializableExtra(EXTRA_QUERY_PARAMETERS);
 
         Map<String, String> searchParameter = new HashMap<>(searchParameterMapIntent.size());
 
@@ -358,7 +358,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         HashMap<String, String> filterParameterHashMap = new HashMap<>(filterController.getParameter());
         HashMap<String, String> activeFilterParameterHashMap = new HashMap<>(filterController.getActiveFilterMap());
 
-        intent.putExtra(EXTRA_FILTER_PARAMETER, filterParameterHashMap);
+        intent.putExtra(EXTRA_QUERY_PARAMETERS, filterParameterHashMap);
         intent.putExtra(EXTRA_SELECTED_FILTERS, activeFilterParameterHashMap);
         intent.putExtra(EXTRA_SELECTED_FLAG_FILTER, getFilterFlagSelected());
 

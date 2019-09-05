@@ -59,8 +59,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
     private static final String EXTRA_FILTER = "EXTRA_FILTER";
     private static final String EXTRA_SORT = "EXTRA_SORT";
-    private static final String EXTRA_SELECTED_FILTER = "EXTRA_SELECTED_FILTER";
-    private static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     private static final String EXTRA_IS_GETTING_DYNNAMIC_FILTER = "EXTRA_IS_GETTING_DYNNAMIC_FILTER";
     private static final String EXTRA_FLAG_FILTER_HELPER = "EXTRA_FLAG_FILTER_HELPER";
@@ -466,8 +464,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelableArrayList(EXTRA_FILTER, getFilters());
         outState.putParcelableArrayList(EXTRA_SORT, getSort());
-        outState.putSerializable(EXTRA_SELECTED_FILTER, getSelectedFilter());
-        outState.putSerializable(EXTRA_SELECTED_SORT, getSelectedSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
         outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
         outState.putParcelable(EXTRA_FLAG_FILTER_HELPER, getFlagFilterHelper());
@@ -510,8 +506,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         setFilterData(savedInstanceState.<Filter>getParcelableArrayList(EXTRA_FILTER));
         setSortData(savedInstanceState.<Sort>getParcelableArrayList(EXTRA_SORT));
-        setSelectedFilter((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_FILTER));
-        setSelectedSort((HashMap<String, String>) savedInstanceState.getSerializable(EXTRA_SELECTED_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
         setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
