@@ -30,9 +30,6 @@ data class ProductsItem(
         @field:SerializedName("rating")
         var rating: Int = 0,
 
-        //@field:SerializedName("childs")
-        //val childs: List<Int?>? = null,
-
         @field:SerializedName("categoryName")
         val categoryName: String? = null,
 
@@ -59,9 +56,6 @@ data class ProductsItem(
 
         @field:SerializedName("stock")
         val stock: Int? = null,
-
-        // @field:SerializedName("wholesalePrice")
-        // val wholesalePrice: List<Any?>? = null,
 
         @field:SerializedName("categoryID")
         var categoryID: Int? = null,
@@ -119,7 +113,6 @@ data class ProductsItem(
             parcel.readValue(Boolean::class.java.classLoader) as Boolean,
             parcel.readValue(Boolean::class.java.classLoader) as Boolean,
             parcel.readInt(),
-            // TODO("childs"),
             parcel.readString(),
             parcel.readValue(Int::class.java.classLoader) as Int,
             parcel.readValue(Int::class.java.classLoader) as Int,
@@ -129,7 +122,6 @@ data class ProductsItem(
             parcel.readString(),
             parcel.readValue(Int::class.java.classLoader) as? Int,
             parcel.readValue(Int::class.java.classLoader) as? Int,
-            //TODO("wholesalePrice"),
             parcel.readValue(Int::class.java.classLoader) as? Int,
             parcel.readString(),
             parcel.readValue(Int::class.java.classLoader) as? Int,

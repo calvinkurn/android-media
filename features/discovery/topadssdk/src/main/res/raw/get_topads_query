@@ -38,6 +38,7 @@ query ($params: String){
           quantity_min_format
         }
         count_talk_format
+        count_review_format
         category {
           id
         }

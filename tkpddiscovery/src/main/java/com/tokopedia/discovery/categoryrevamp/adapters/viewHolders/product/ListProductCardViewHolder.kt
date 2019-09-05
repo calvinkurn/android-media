@@ -5,14 +5,14 @@ import android.view.View
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.ProductCardListener
 import com.tokopedia.productcard.v2.ProductCardView
-import kotlinx.android.synthetic.main.product_card_list.view.*
+import kotlinx.android.synthetic.main.category_product_card_list.view.*
 
 class ListProductCardViewHolder(itemView: View,productCardListener: ProductCardListener) : ProductCardViewHolder(itemView,productCardListener) {
 
     companion object {
         @LayoutRes
         @JvmField
-        val LAYOUT = R.layout.product_card_list
+        val LAYOUT = R.layout.category_product_card_list
     }
 
 

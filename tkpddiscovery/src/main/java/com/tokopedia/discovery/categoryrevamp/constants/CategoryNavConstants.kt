@@ -23,15 +23,9 @@ class CategoryNavConstants {
         const val IDENTIFIER = "identifier"
         const val INTERMEDIARY = "intermediary"
         const val SAFESEARCH = "safeSearch"
-
         const val QUERY = "query"
         const val ST = "st"
-
-
         const val FILTER = "filter"
-
-
-
     }
 
 

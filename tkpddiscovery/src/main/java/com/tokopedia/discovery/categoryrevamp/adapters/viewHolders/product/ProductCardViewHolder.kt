@@ -54,7 +54,6 @@ abstract class ProductCardViewHolder(itemView: View,
 
     protected fun initProductCardContainer(productItem: ProductsItem) {
         getProductCardView()?.setOnLongClickListener {
-            //productListener.onLongClick(productItem, adapterPosition)
             true
         }
 
@@ -67,10 +66,6 @@ abstract class ProductCardViewHolder(itemView: View,
         getProductCardView()?.setImageProductVisible(true)
 
         setImageProductUrl(productItem)
-
-        /*   getProductCardView()?.setImageProductViewHintListener(productItem) {
-          productListener.onProductImpressed(productItem, adapterPosition)
-          }*/
     }
 
     protected fun setImageProductUrl(productItem: ProductsItem) {
@@ -181,7 +176,7 @@ abstract class ProductCardViewHolder(itemView: View,
 
     protected fun loadShopBadgesIcon(url: String) {
         if (!TextUtils.isEmpty(url)) {
-            val view = LayoutInflater.from(context).inflate(R.layout.search_product_card_badge_layout, null)
+            val view = LayoutInflater.from(context).inflate(R.layout.category_product_card_badge_layout, null)
 
             ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {

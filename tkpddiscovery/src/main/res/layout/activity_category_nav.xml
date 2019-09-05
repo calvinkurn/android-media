@@ -151,7 +151,7 @@
                     android:layout_marginStart="@dimen/dp_4"
                     android:layout_marginLeft="@dimen/dp_4"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:background="@drawable/bg_corner"
+                    android:background="@drawable/category_bg_corner"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toStartOf="@+id/img_display_button"
                     app:layout_constraintStart_toEndOf="@+id/action_up_btn"
