@@ -24,6 +24,7 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.handler.UserAuthenticationAnalytics;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -31,7 +32,6 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
@@ -39,6 +39,9 @@ import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl;
 
 import java.util.List;
+
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+import static com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl.DISCOVER_LOGIN;
 
 /**
  * Created by stevenfredian on 10/5/16.
@@ -300,7 +303,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
 //            }
         }
         switch (type) {
-            case DownloadService.DISCOVER_LOGIN:
+            case DISCOVER_LOGIN:
                 showProgress(false);
                 snackbar = SnackbarManager.make(getActivity(), "Gagal mendownload provider", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Coba lagi", retryDiscover());
@@ -387,7 +390,8 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
                         .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             } else {
-                intent = SellerRouter.getActivityShopCreateEdit(getActivity());
+                intent = RouteManager.getIntent(getContext(), OPEN_SHOP);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             }
             intent.putExtra(HomeRouter.EXTRA_INIT_FRAGMENT,

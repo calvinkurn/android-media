@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.data.mapper.dynamicfilter;
 
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.search.result.data.response.GqlDynamicFilterResponse;
 
