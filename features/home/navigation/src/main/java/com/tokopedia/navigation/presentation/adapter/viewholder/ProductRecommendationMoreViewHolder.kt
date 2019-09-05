@@ -37,7 +37,16 @@ class ProductRecommendationMoreViewHolder(itemView: View) : RecyclerView.ViewHol
     }
 
     private fun getMoreProductCount(products: List<ProductData>): String {
-        return "+${products.size - (NotifcenterProductRecommendationAdapter.MAX_ITEM - 1)}"
+        return "+${30 - getShowedProductCount(products)}"
+    }
+
+    private fun getShowedProductCount(products: List<ProductData>): Int {
+        val showCount = NotifcenterProductRecommendationAdapter.MAX_ITEM - 1
+        return if (products.size >= showCount) {
+            showCount
+        } else {
+            products.size
+        }
     }
 
     companion object {
