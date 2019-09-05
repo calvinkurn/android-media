@@ -106,7 +106,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
         public void bindData(Location location) {
             locationName.setText(location.getName());
-            ImageHandler.loadImage(context, locImage, location.getImageApp(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, locImage, location.getIcon(), R.color.grey_1100, R.color.grey_1100);
             itemView.setOnClickListener(this);
         }
 

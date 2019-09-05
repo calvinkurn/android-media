@@ -116,7 +116,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
-            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s, %s", this.getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
             });
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
@@ -255,14 +255,14 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         if (!TextUtils.isEmpty(location.getCoordinates())) {
             requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
         }
-        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
-            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
-        }
-        if (location.getCityId() != 0) {
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getCityId());
-        } else {
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
-        }
+//        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+//            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+//        }
+//        if (location.getCityId() != 0) {
+//            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getCityId());
+//        } else {
+//            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+//        }
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND_AND_PRODUCT);
         if (!TextUtils.isEmpty(categoryId)) {
             requestParams.putString(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoryId);
@@ -521,7 +521,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
-            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s, %s", this.getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
             });
             mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }

@@ -169,7 +169,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !tvLocationName.getText().equals(location.getName())) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s, %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
             });
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
@@ -590,11 +590,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        if (location.getCityId() != 0) {
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getCityId());
-        } else {
-            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
-        }
         if (!TextUtils.isEmpty(location.getCoordinates())) {
             requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
         }
@@ -771,7 +766,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
             tvLocationName.setText(location.getName());
-            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s, %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
             });
             mPresenter.getDealsList(true);
             mPresenter.getBrandsHome();
