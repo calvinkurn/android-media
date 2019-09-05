@@ -37,9 +37,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.coachmark.CoachMark;
-import com.tokopedia.coachmark.CoachMarkBuilder;
-import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.GamificationRouter;
@@ -100,6 +97,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private WidgetTokenOnBoarding widgetTokenOnBoarding;
     private ProgressBar progressBar;
     private TextView infoTitlePage;
+    private FrameLayout crackLayoutTooltip;
 
     private ImageView imageRemainingToken;
     private TextView tvCounter;
@@ -140,6 +138,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         rootView = inflater.inflate(R.layout.fragment_crack_token, container, false);
 
         ivContainer = rootView.findViewById(R.id.iv_container);
+        crackLayoutTooltip = rootView.findViewById(R.id.tooltip_crack_layout);
         ivPrize = rootView.findViewById(R.id.daily_prize);
         flPrize = rootView.findViewById(R.id.fl_prize);
         textCountdownTimer = rootView.findViewById(R.id.text_countdown_timer);
@@ -230,12 +229,10 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void showToolTip() {
         if (!widgetTokenOnBoarding.hasSeenOnBoardingFromPref()) {
-            ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
-            CoachMarkItem item = new CoachMarkItem(flPrize, getString(R.string.daily_prize_tooltip_text), "");
-            coachItems.add(item);
-            CoachMark coachMark = new CoachMarkBuilder().allowNextButton(false).allowPreviousButton(false).build();
-
-            coachMark.show(getActivity(), "", coachItems);
+            crackLayoutTooltip.setVisibility(View.VISIBLE);
+            crackLayoutTooltip.setOnClickListener(v -> crackLayoutTooltip.setVisibility(View.GONE));
+        } else {
+            crackLayoutTooltip.setVisibility(View.GONE);
         }
     }
 
@@ -339,11 +336,11 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         } else {
             flPrize.setVisibility(View.VISIBLE);
             ImageHandler.loadImageAndCache(ivPrize, homeSmallButton.getImageURL());
-            flPrize.setOnClickListener(v -> {
+            ivPrize.setOnClickListener(v -> {
+                crackLayoutTooltip.setVisibility(View.GONE);
                 ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
                 trackingDailyPrizeBtnClick();
             });
-
         }
         widgetTokenView.setToken(tokenUser.getTokenAsset());
         widgetTokenView.setListener(new WidgetTokenView.WidgetTokenListener() {
@@ -663,6 +660,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         bottomSheet.setCustomContentView(view, "", false);
         bottomSheet.show();
     }
+
     @Override
     public void onErrorCrackToken(final CrackResultEntity crackResult) {
         ConnectivityManager cm =

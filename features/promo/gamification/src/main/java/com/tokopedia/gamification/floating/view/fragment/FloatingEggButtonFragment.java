@@ -120,14 +120,14 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
 
         if (minimizeButtonLeft.getRotation() == newAngleOfMinimizeBtn) {
             shiftEggTowardsLeftOrRight(newAngleOfMinimizeBtn, oldAngleOfMinimizeBtn, vgFloatingEgg.getX(),
-                    vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + 0.88f * minimizeButtonLeft.getWidth() );
+                    vgFloatingEgg.getX() - vgFloatingEgg.getWidth() + minimizeButtonLeft.getWidth() );
             if (isRight)
                 isMinimized = false;
             else
                 isMinimized = true;
         } else {
             shiftEggTowardsLeftOrRight(oldAngleOfMinimizeBtn, newAngleOfMinimizeBtn, vgFloatingEgg.getX(),
-                    vgFloatingEgg.getX() + vgFloatingEgg.getWidth() - 0.88f * minimizeButtonLeft.getWidth());
+                    vgFloatingEgg.getX() + vgFloatingEgg.getWidth() - minimizeButtonLeft.getWidth());
             if (isRight)
                 isMinimized = true;
             else
@@ -516,7 +516,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (TextUtils.isEmpty(sumTokenString)) {
             tvFloatingCounter.setVisibility(View.GONE);
         } else {
-            tvFloatingCounter.setText(sumTokenString);
+           // tvFloatingCounter.setText(sumTokenString);
             tvFloatingCounter.setVisibility(View.VISIBLE);
         }
 
