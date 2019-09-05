@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.tradein.R
-import com.tokopedia.tradein.Utils
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
@@ -52,6 +51,7 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         const val MONEY_IN_REQUEST_CHECKOUT = 8952
         const val MONEY_IN_ORDER_VALUE = "MONEY_IN_PRICE"
         const val MONEY_IN_HARDWARE_ID = "HARDWARE_ID"
+        const val STATUS_SUCCESS = 2
     }
 
     override fun initView() {
@@ -240,15 +240,15 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         val tvRecipientPhone = findViewById<Typography>(R.id.tv_recipient_phone) as Typography
         val priceAmount = findViewById<Typography>(R.id.price_amount) as Typography
 
-        if (recipientAddress.status == 2) {
+        if (recipientAddress.status == STATUS_SUCCESS) {
             tvAddressStatus.visibility = View.VISIBLE
         } else {
             tvAddressStatus.visibility = View.GONE
         }
-        tvAddressName.text = Utils.getHtmlFormat(recipientAddress.addrName)
-        tvRecipientName.text = Utils.getHtmlFormat(recipientAddress.receiverName)
+        tvAddressName.text = MethodChecker.fromHtml(recipientAddress.addrName)
+        tvRecipientName.text = MethodChecker.fromHtml(recipientAddress.receiverName)
         tvRecipientPhone.text = recipientAddress.phone
-        tvRecipientAddress.text = Utils.getHtmlFormat(getFullAddress(recipientAddress))
+        tvRecipientAddress.text = MethodChecker.fromHtml(getFullAddress(recipientAddress))
         priceAmount.text = orderValue
 
         destination = "${(recipientAddress.district)}|${(recipientAddress.postalCode)}|${(recipientAddress.latitude)},${(recipientAddress.longitude)}"
@@ -323,10 +323,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                 finish()
             }
             TopPayActivity.PAYMENT_FAILED -> {
-                showMessage(getString(R.string.alert_payment_canceled_or_failed_money_in))
+                showMessage(getString(R.string.money_in_alert_payment_canceled_or_failed))
             }
             TopPayActivity.PAYMENT_CANCELLED -> {
-                showMessage(getString(R.string.alert_payment_canceled_money_in))
+                showMessage(getString(R.string.money_in_alert_payment_canceled))
             }
             else -> {
 
