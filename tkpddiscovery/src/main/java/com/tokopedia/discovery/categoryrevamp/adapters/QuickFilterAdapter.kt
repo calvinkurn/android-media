@@ -4,11 +4,11 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.QuickFilterListener
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.unifyprinciples.Typography
 
 class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
                          val quickFilterListener: QuickFilterListener) : RecyclerView.Adapter<QuickFilterAdapter.ViewHolder>() {
@@ -56,7 +56,7 @@ class QuickFilterAdapter(private var quickFilterList: ArrayList<Filter>,
 
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val quickFilterText = itemView.findViewById<TextView>(R.id.quick_filter_text)
+        val quickFilterText = itemView.findViewById<Typography>(R.id.quick_filter_text)
         val itemContainer = itemView.findViewById<View>(R.id.filter_item_container)
         val filterNewIcon = itemView.findViewById<View>(R.id.filter_new_icon)
     }

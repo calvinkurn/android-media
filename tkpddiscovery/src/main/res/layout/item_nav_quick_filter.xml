@@ -24,8 +24,9 @@
         android:visibility="gone"
         app:srcCompat="@drawable/ic_new" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/quick_filter_text"
+        app:typographyType="body_2"
         style="@style/TextView.Small.BlackSecondary"
         tools:text="superstar" />
 
