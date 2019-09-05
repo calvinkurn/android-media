@@ -121,6 +121,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-profile-phone-verification"
 
+    // PhoneVerificationProfileActivity
+    // tokopedia-android-internal://global/setting-bank
+    @JvmField
+    val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
+
     @JvmField
     val DYNAMIC_FEATURE_INSTALL_BASE= "$INTERNAL_GLOBAL/dynamic-features-install/"
 

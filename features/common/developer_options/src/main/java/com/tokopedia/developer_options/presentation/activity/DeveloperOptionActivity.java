@@ -141,7 +141,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         });
 
         vForceCrash.setOnClickListener(v -> {
-            throw new RuntimeException("Throw Runtime Exception");
+//            throw new RuntimeException("Throw Runtime Exception");
+            RouteManager.route(this, ApplinkConst.SETTING_BANK);
         });
 
         vDevOptionRN.setOnClickListener(v ->
