@@ -13,25 +13,11 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 
 public interface ICheckoutModuleRouter {
 
-    Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            boolean couponActive, String additionalStringData, int pageTracking,
-            String cartString, Promo promo
-    );
-
-    Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            boolean couponActive, String additionalStringData, boolean isOneClickShipment, int pageTracking,
-            Promo promo);
-
     void checkoutModuleRouterResetBadgeCart();
 
     Intent getShopPageIntent(Context context, String shopId);
 
     Intent getGeolocationIntent(Context context, LocationPass locationPass);
-
-    Intent getPromoCheckoutDetailIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking, Promo promo);
-
-    Intent getPromoCheckoutListIntentWithCode(String promoCode, boolean promoCouponActive, boolean oneClickShipment, int pageTracking,
-                                              Promo promo);
 
     Intent getCodPageIntent(Context context, Data data);
 

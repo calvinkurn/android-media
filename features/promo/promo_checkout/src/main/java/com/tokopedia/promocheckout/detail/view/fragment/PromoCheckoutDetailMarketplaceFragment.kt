@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
+import com.tokopedia.promocheckout.common.data.*
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.EXTRA_CLASHING_DATA
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
@@ -132,12 +133,6 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     companion object {
-        val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
-        val EXTRA_IS_USE = "EXTRA_IS_USE"
-        val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
-        val PAGE_TRACKING = "PAGE_TRACKING"
-        val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
-
         fun createInstance(codeCoupon: String, isUse: Boolean, oneClickShipment: Boolean, pageTracking: Int,
                            promo: Promo): PromoCheckoutDetailMarketplaceFragment {
             val promoCheckoutDetailFragment = PromoCheckoutDetailMarketplaceFragment()

@@ -25,7 +25,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
@@ -39,6 +38,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -48,6 +48,7 @@ import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListB
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
+import com.tokopedia.promocheckout.common.data.ConstantKt;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
@@ -690,10 +691,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (wishlist.getId().equalsIgnoreCase(productId)) {
                 if (FLAG_IS_CART_EMPTY) {
                     sendAnalyticsOnClickProductWishlistOnEmptyCart(String.valueOf(position),
-                        dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position));
+                            dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position));
                 } else {
                     sendAnalyticsOnClickProductWishlistOnCartList(String.valueOf(position),
-                        dPresenter.generateWishlistProductClickDataLayer(wishlist, position));
+                            dPresenter.generateWishlistProductClickDataLayer(wishlist, position));
                 }
             }
             position++;
@@ -710,10 +711,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (recentView.getId().equalsIgnoreCase(productId)) {
                 if (FLAG_IS_CART_EMPTY) {
                     sendAnalyticsOnClickProductRecentViewOnEmptyCart(String.valueOf(position),
-                        dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position));
+                            dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position));
                 } else {
                     sendAnalyticsOnClickProductRecentViewOnCartList(String.valueOf(position),
-                        dPresenter.generateRecentViewProductClickDataLayer(recentView, position));
+                            dPresenter.generateRecentViewProductClickDataLayer(recentView, position));
                 }
             }
             position++;
@@ -736,8 +737,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         if (recommendationItemClick != null) {
-                sendAnalyticsOnClickProductRecommendation(String.valueOf(position),
-                        dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
+            sendAnalyticsOnClickProductRecommendation(String.valueOf(position),
+                    dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
         }
 
         onProductClicked(productId);
@@ -1511,14 +1512,32 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         Promo promo = generateCheckPromoFirstStepParam();
 
-        startActivityForResult(
-                checkoutModuleRouter
-                        .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                cartListData.isPromoCouponActive(),
-                                new Gson().toJson(updateCartRequestList), TrackingPromoCheckoutConstantKt.getFROM_CART(),
-                                "", promo
-                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-        );
+        Intent intent = getIntentToPromoList(promo);
+        startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+    }
+
+    @NotNull
+    private Intent getIntentToPromoList(Promo promo) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_MARKETPLACE);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, cartListData.isPromoCouponActive());
+        bundle.putString(ConstantKt.getPROMO_CODE(), "");
+        bundle.putBoolean(ConstantKt.getONE_CLICK_SHIPMENT(), false);
+        bundle.putInt(ConstantKt.getPAGE_TRACKING(), TrackingPromoCheckoutConstantKt.getFROM_CART());
+        bundle.putParcelable(ConstantKt.getCHECK_PROMO_FIRST_STEP_PARAM(), promo);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    @NotNull
+    private Intent getIntentToPromoDetail(Promo promo, PromoStackingData promoStackingData) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE);
+        intent.putExtra(ConstantKt.getEXTRA_KUPON_CODE(), promoStackingData.getPromoCodeSafe());
+        intent.putExtra(ConstantKt.getEXTRA_IS_USE(), true);
+        intent.putExtra(ConstantKt.getONE_CLICK_SHIPMENT(), false);
+        intent.putExtra(ConstantKt.getPAGE_TRACKING(), TrackingPromoCheckoutConstantKt.getFROM_CART());
+        intent.putExtra(ConstantKt.getCHECK_PROMO_CODE_FIRST_STEP_PARAM(), promo);
+        return intent;
     }
 
     @Override
@@ -1526,11 +1545,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         Promo promo = generateCheckPromoFirstStepParam();
 
         if (promoStackingData.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoStackingData.getPromoCodeSafe(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+            Intent intent = getIntentToPromoDetail(promo, promoStackingData);
+            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(promoStackingData.getPromoCodeSafe(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+            Intent intent = getIntentToPromoList(promo);
+            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 

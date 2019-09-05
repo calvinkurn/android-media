@@ -65,6 +65,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.promoCheckoutCommon)
 }
 
 apply from: '../../../publish_local.gradle'
