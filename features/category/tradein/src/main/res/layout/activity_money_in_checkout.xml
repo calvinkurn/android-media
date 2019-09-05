@@ -347,4 +347,6 @@
         app:layout_constraintTop_toBottomOf="@+id/seperator_4"
         app:typographyType="body_2" />
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+
+</RelativeLayout>
