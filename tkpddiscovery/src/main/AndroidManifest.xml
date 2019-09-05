@@ -28,6 +28,7 @@
         </activity>
         <activity
             android:name=".catalogrevamp.ui.CatalogDetailPageActivity"
+            android:label="@string/title_activity_catalog"
             android:screenOrientation="portrait">
 
             <intent-filter android:autoVerify="true">
@@ -42,6 +43,10 @@
 
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".catalogrevamp.ui.CatalogGalleryActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".newdynamicfilter.RevampedDynamicFilterActivity"
             android:label="Filter"

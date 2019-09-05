@@ -85,7 +85,7 @@ data class ProductCatalogResponse(
                     @SerializedName("image_url")
                     val imageUrl: String,
                     @SerializedName("image_url_700")
-                    val imageUrl700: String,
+                    val imageUrl700: String?,
                     @SerializedName("is_primary")
                     val isPrimary: Boolean
                 ) : Parcelable

@@ -10,18 +10,20 @@ import com.tkpd.library.ui.view.LinearLayoutManager
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.adapter.CatalogGalleyRecyclerViewAdapter
 import com.tokopedia.discovery.catalogrevamp.adapter.CatalogImageAdapter
+import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.discovery.catalogrevamp.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.CatalogImage
 import kotlinx.android.synthetic.main.fragment_catalog_gallery.*
 
 class CatalogGalleryFragment : Fragment(), CatalogGalleyRecyclerViewAdapter.Listener {
     private var catalogImages: ArrayList<CatalogImage>? = null
     private var currentImage: Int = -1
-    private var listener: Listener? = null
     private lateinit var catalogGalleyRecyclerViewAdapter:CatalogGalleyRecyclerViewAdapter
 
     companion object {
         private const val ARG_EXTRA_IMAGES = "ARG_EXTRA_IMAGES"
         private const val ARG_EXTRA_CURRENT_IMAGE = "ARG_EXTRA_CURRENT_IMAGE"
+        private const val LEFT = "left"
+        private const val RIGHT = "right"
 
         fun newInstance(currentItem: Int, catalogImages: ArrayList<CatalogImage>): CatalogGalleryFragment {
             val fragment = CatalogGalleryFragment()
@@ -48,6 +50,7 @@ class CatalogGalleryFragment : Fragment(), CatalogGalleyRecyclerViewAdapter.List
 
         if (catalogImages != null) {
             val catalogImageAdapter = CatalogImageAdapter(catalogImages!!, null)
+            var previousPosition: Int = -1
             view_pager_intermediary.adapter = catalogImageAdapter
             view_pager_intermediary.setCurrentItem(currentImage, true)
             view_pager_intermediary.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
@@ -56,6 +59,13 @@ class CatalogGalleryFragment : Fragment(), CatalogGalleyRecyclerViewAdapter.List
                 override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
 
                 override fun onPageSelected(position: Int) {
+                    when {
+                        previousPosition >= 0 -> when {
+                            previousPosition > position -> CatalogDetailPageAnalytics.trackEventSwipeIndexPicture(LEFT)
+                            previousPosition < position -> CatalogDetailPageAnalytics.trackEventSwipeIndexPicture(RIGHT)
+                        }
+                    }
+                    previousPosition = position
                     catalogGalleyRecyclerViewAdapter.changeSelectedPosition(position)
                     catalogGalleyRecyclerViewAdapter.notifyDataSetChanged()
                 }
@@ -67,22 +77,14 @@ class CatalogGalleryFragment : Fragment(), CatalogGalleyRecyclerViewAdapter.List
         }
 
         cross.setOnClickListener {
-            listener?.onCrossClick()
+            activity?.finish()
         }
     }
 
     override fun onImageClick(adapterPosition: Int) {
+        CatalogDetailPageAnalytics.trackEventClickIndexPicture(adapterPosition)
         view_pager_intermediary.setCurrentItem(adapterPosition, true)
         catalogGalleyRecyclerViewAdapter.changeSelectedPosition(adapterPosition)
         catalogGalleyRecyclerViewAdapter.notifyDataSetChanged()
     }
-
-    fun setListener(listener: Listener){
-        this.listener = listener
-    }
-
-    interface Listener {
-        fun onCrossClick()
-    }
-
 }

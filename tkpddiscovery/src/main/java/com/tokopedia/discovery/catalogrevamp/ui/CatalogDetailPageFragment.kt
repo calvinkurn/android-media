@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,12 +15,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.adapter.CatalogImageAdapter
+import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.discovery.catalogrevamp.di.CatalogComponent
 import com.tokopedia.discovery.catalogrevamp.di.DaggerCatalogComponent
 import com.tokopedia.discovery.catalogrevamp.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog
 import com.tokopedia.discovery.catalogrevamp.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_catalog_detail_page.*
@@ -27,22 +30,24 @@ import javax.inject.Inject
 
 class CatalogDetailPageFragment : Fragment(),
         HasComponent<CatalogComponent>,
-        CatalogImageAdapter.Listener,
-        CatalogGalleryFragment.Listener
+        CatalogImageAdapter.Listener
 {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
-    private var categoryId: String = ""
+    private var catalogId: String = ""
     private lateinit var catalogImage: ArrayList<Catalog.CatalogImage>
     private lateinit var fragment: CatalogGalleryFragment
     private lateinit var catalog: Catalog
+    private var listener: Listener? = null
 
     companion object {
         private const val TAG_FRAGMENT = "TAG_FRAGMENT"
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val LEFT = "left"
+        private const val RIGHT = "right"
 
         fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
@@ -66,12 +71,12 @@ class CatalogDetailPageFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
         component.inject(this)
         if (arguments != null) {
-            categoryId = arguments!!.getString(ARG_EXTRA_CATALOG_ID, "")
+            catalogId = arguments!!.getString(ARG_EXTRA_CATALOG_ID, "")
         }
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
-            catalogDetailPageViewModel.getProductCatalog(categoryId)
+            catalogDetailPageViewModel.getProductCatalog(catalogId)
         }
         setObservers()
     }
@@ -91,21 +96,43 @@ class CatalogDetailPageFragment : Fragment(),
         })
     }
 
+    fun setListener(listener: Listener){
+        this.listener = listener
+    }
+
     private fun setUI(catalog: Catalog) {
-        catalog_toolbar.title = catalog.name
         val marketPrice = "${catalog.marketPrice[0].minFmt} - ${catalog.marketPrice[0].maxFmt}"
         marketprice.text = marketPrice
         setBanner(catalog.catalogImage)
         setTopThreeSpecs(catalog.topthreespec)
         complete_specifications.setOnClickListener {
+            CatalogDetailPageAnalytics.trackEventClickSpecification()
             val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalog.description, catalog.specification)
             catalogSpecsAndDetailView.show(childFragmentManager, "")
         }
+        listener?.deliverCatalogShareData(generateCatalogShareData(catalog.url, catalogId), catalog.name)
     }
 
     private fun setBanner(catalogImage: ArrayList<Catalog.CatalogImage>) {
         val catalogImageAdapter = CatalogImageAdapter(catalogImage, this)
+        var previousPosition: Int = -1
         view_pager_intermediary.adapter = catalogImageAdapter
+        view_pager_intermediary.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(p0: Int) {}
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
+
+            override fun onPageSelected(position: Int) {
+                when {
+                    previousPosition >= 0 -> when {
+                        previousPosition > position -> CatalogDetailPageAnalytics.trackEventSwipeCatalogPicture(LEFT)
+                        previousPosition < position -> CatalogDetailPageAnalytics.trackEventSwipeCatalogPicture(RIGHT)
+                    }
+                }
+                previousPosition = position
+            }
+
+        })
         indicator_intermediary.fillColor = MethodChecker.getColor(context, R.color.g_500)
         indicator_intermediary.pageColor = MethodChecker.getColor(context, R.color.tp_ticker_indicator_default_color)
         indicator_intermediary.setViewPager(view_pager_intermediary)
@@ -116,21 +143,12 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     override fun onImageClick() {
+        CatalogDetailPageAnalytics.trackEventClickCatalogPicture()
         showImage(view_pager_intermediary.currentItem)
     }
 
-    override fun onCrossClick() {
-        onBackPress()
-    }
-
     private fun showImage(currentItem: Int) {
-        fragment = CatalogGalleryFragment.newInstance(currentItem, catalogImage)
-        fragment.setListener(this)
-        childFragmentManager.beginTransaction()
-                .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
-                .replace(R.id.frame_layout, fragment, TAG_FRAGMENT)
-                .addToBackStack(TAG_FRAGMENT)
-                .commit()
+        context?.startActivity(CatalogGalleryActivity.newIntent(context, currentItem, catalogImage))
     }
 
     private fun setTopThreeSpecs(topthreespec: ArrayList<Catalog.Topthreespec>) {
@@ -155,4 +173,17 @@ class CatalogDetailPageFragment : Fragment(),
         }
     }
 
+    private fun generateCatalogShareData(catalogUrl: String, catalogId: String): LinkerData {
+        return LinkerData.Builder.getLinkerBuilder()
+                .setId(catalogId)
+                .setName(activity?.getString(com.tokopedia.core2.R.string.message_share_catalog))
+                .setType(LinkerData.CATALOG_TYPE)
+                .setTextContent(activity?.getString(com.tokopedia.core2.R.string.share_text_content))
+                .setUri(catalogUrl)
+                .build()
+    }
+
+    interface Listener{
+        fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String)
+    }
 }
