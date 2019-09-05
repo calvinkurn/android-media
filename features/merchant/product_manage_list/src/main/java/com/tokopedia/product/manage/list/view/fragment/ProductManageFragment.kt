@@ -39,6 +39,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.core.router.productdetail.PdpRouter
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
@@ -63,10 +65,12 @@ import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStoc
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.CashbackOption
+import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.ERROR_CODE_LIMIT_CASHBACK
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_SORT_SELECTED
+import com.tokopedia.product.manage.list.constant.ProductManageListConstant.HASSHOWNBTN
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQUEST_CODE_FILTER
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQUEST_CODE_SORT
@@ -148,12 +152,19 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
     private var itemsChecked: MutableList<ProductManageViewModel> = mutableListOf()
 
+
+    lateinit var prefs: SharedPreferences
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_product_manage, container, false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val prefKey = this.javaClass.name + ".pref"
+        context?.let {
+            prefs = it.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
+        }
         setHasOptionsMenu(true)
     }
 
@@ -218,6 +229,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             onSearchSubmitted("")
         }
 
+        displayOnBoardingCheck()
     }
 
     private fun initView(view: View) {
@@ -611,6 +623,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 checkBoxView.visibility = View.VISIBLE
                 btnBulk.text = getString(R.string.product_manage_bulk_change_btn)
                 containerFlags.scrollFlags = 0
+                displayOnBoardingButton()
             }
             else -> {
                 containerBtnBulk.visibility = View.GONE
@@ -618,6 +631,30 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 btnBulk.visibility = View.GONE
                 containerFlags.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
             }
+        }
+    }
+
+    private fun displayOnBoardingButton() {
+        if (!prefs.getBoolean(HASSHOWNBTN, false)) {
+            val coachMark = CoachMarkBuilder().build()
+            val coachMarkItem = ArrayList<CoachMarkItem>()
+            coachMarkItem.add(CoachMarkItem(btnBulk,
+                    getString(R.string.coachmark_title_btn),
+                    getString(R.string.coachmark_desc_btn)))
+            prefs.edit().putBoolean(HASSHOWNBTN, true).apply()
+            coachMark.show(activity, "SampleCoachMark", coachMarkItem)
+        }
+    }
+
+    private fun displayOnBoardingCheck() {
+        if (!prefs.getBoolean(ProductManageListConstant.HASSHOWNCHECKED, false)) {
+            val coachMark = CoachMarkBuilder().build()
+            val coachMarkItem = ArrayList<CoachMarkItem>()
+            coachMarkItem.add(CoachMarkItem(bulkCheckBox,
+                    getString(R.string.coachmark_title_checkbox),
+                    getString(R.string.coachmark_desc_checkbox)))
+            prefs.edit().putBoolean(ProductManageListConstant.HASSHOWNCHECKED, true).apply()
+            coachMark.show(activity, "SampleCoachMark", coachMarkItem)
         }
     }
 

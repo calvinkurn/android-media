@@ -55,6 +55,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.coach_mark
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     implementation rootProject.ext.supportLibDependencies.constraintLayout

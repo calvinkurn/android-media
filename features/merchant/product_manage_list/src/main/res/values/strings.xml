@@ -66,5 +66,10 @@
     <string name="product_manage_bulk_snackbar_sucess">%1$s produk berhasil diubah</string>
     <string name="product_manage_bulk_snackbar_sucess_delete">Produk berhasil dihapus</string>
 
+    <string name="coachmark_title_checkbox">Pilih produk sekaligus</string>
+    <string name="coachmark_desc_checkbox">Lebih mudah atur produk, tinggal pilih produk-produk yang ingin dikelola.</string>
+    <string name="coachmark_title_btn">Klik dan ubah</string>
+    <string name="coachmark_desc_btn">Pilih aktivitas produk yang ingin kamu ubah dengan klik tombol ‘Ubah Sekaligus’.</string>
+
 
 </resources>

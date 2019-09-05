@@ -2,6 +2,8 @@ package com.tokopedia.product.manage.list.constant
 
 object ProductManageListConstant {
 
+    const val HASSHOWNCHECKED = "hashShownChecked"
+    const val HASSHOWNBTN = "hashShownBtn"
     const val ERROR_CODE_LIMIT_CASHBACK = "422"
     const val INSTAGRAM_SELECT_REQUEST_CODE = 3860
     const val ETALASE_PICKER_REQUEST_CODE = 1111
