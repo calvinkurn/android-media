@@ -32,8 +32,6 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
     fun fetchProductListing(params: RequestParams) {
         getProductListUseCase.execute(params, object : Subscriber<ProductListResponse>() {
             override fun onNext(productListResponse: ProductListResponse?) {
-                Log.d("fetchProductList", "onNext")
-
                 productListResponse?.let { productResponse ->
                     (productResponse.searchProduct)?.let { searchProduct ->
                         searchProduct.products?.let { productList ->
@@ -47,11 +45,9 @@ class ProductNavViewModel @Inject constructor(var categoryProductUseCase: Catego
             }
 
             override fun onCompleted() {
-                Log.d("fetchProductList", "onCompleted")
             }
 
             override fun onError(e: Throwable?) {
-                Log.d("fetchProductList", "onError")
             }
         })
     }
