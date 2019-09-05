@@ -422,7 +422,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (hasLoadRecommendation) {
-                    dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
+                    dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), cartAdapter.getAllCartItemProductId());
                 }
             }
         };
@@ -1257,7 +1257,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
 
             if (recommendationList == null) {
-                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
+                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), cartAdapter.getAllCartItemProductId());
             } else {
                 renderRecommendation(null);
             }
