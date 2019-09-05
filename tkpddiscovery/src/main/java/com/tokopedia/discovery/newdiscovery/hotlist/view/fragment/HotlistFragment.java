@@ -594,7 +594,7 @@ public class HotlistFragment extends BrowseSectionFragment
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == getSortRequestCode()) {
                 setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
-                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
+                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_SORT_NAME);
                 HotlistPageTracking.eventHotlistSort(getActivity(),selectedSortName);
                 clearDataFilterSort();
                 showBottomBarNavigation(false);

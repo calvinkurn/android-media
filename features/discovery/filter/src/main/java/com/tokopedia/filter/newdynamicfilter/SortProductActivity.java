@@ -29,9 +29,9 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class SortProductActivity extends BaseActivity {
 
-    public static final String EXTRA_DATA = "EXTRA_DATA";
+    public static final String EXTRA_SORT_DATA = "EXTRA_SORT_DATA";
     public static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
-    public static final String EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME";
+    public static final String EXTRA_SELECTED_SORT_NAME = "EXTRA_SELECTED_SORT_NAME";
     public static final String SCREEN_SORT_PRODUCT = "Sort Produk Activity";
 
     RecyclerView recyclerView;
@@ -46,7 +46,7 @@ public class SortProductActivity extends BaseActivity {
 
     public static Intent createInstance(Context context, ArrayList<Sort> sort, HashMap<String, String> selectedSort) {
         Intent intent = new Intent(context, SortProductActivity.class);
-        intent.putParcelableArrayListExtra(EXTRA_DATA, sort);
+        intent.putParcelableArrayListExtra(EXTRA_SORT_DATA, sort);
         if (selectedSort != null) {
             intent.putExtra(EXTRA_SELECTED_SORT, selectedSort);
         }
@@ -72,7 +72,7 @@ public class SortProductActivity extends BaseActivity {
                 onBackPressed();
             }
         });
-        data = getIntent().getExtras().getParcelableArrayList(EXTRA_DATA);
+        data = getIntent().getExtras().getParcelableArrayList(EXTRA_SORT_DATA);
         generateSelectedKeyValue((HashMap<String, String>) getIntent().getSerializableExtra(EXTRA_SELECTED_SORT));
         adapter = new ListAdapter(data, selectedKey, selectedValue, new OnItemClickListener() {
             @Override
@@ -81,7 +81,7 @@ public class SortProductActivity extends BaseActivity {
                 HashMap<String, String> params = new HashMap<>();
                 params.put(sort, ob);
                 intent.putExtra(EXTRA_SELECTED_SORT, params);
-                intent.putExtra(EXTRA_SELECTED_NAME, label);
+                intent.putExtra(EXTRA_SELECTED_SORT_NAME, label);
                 setResult(RESULT_OK, intent);
                 finish();
             }

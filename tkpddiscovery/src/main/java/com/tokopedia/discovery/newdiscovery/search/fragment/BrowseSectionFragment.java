@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -277,7 +276,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == getSortRequestCode()) {
                 setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
-                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
+                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_SORT_NAME);
                 UnifyTracking.eventSearchResultSort(getActivity(),getScreenName(), selectedSortName);
                 clearDataFilterSort();
                 showBottomBarNavigation(false);

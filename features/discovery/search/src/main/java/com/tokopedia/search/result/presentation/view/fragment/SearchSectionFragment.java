@@ -25,6 +25,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.filter.common.manager.FilterSortManager;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
@@ -69,14 +70,8 @@ public abstract class SearchSectionFragment
     protected static final int START_ROW_FIRST_TIME_LOAD = 0;
 
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
-    private static final String EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
-    public static final String EXTRA_DATA = "EXTRA_DATA";
-    public static final String EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME";
-    public static final String EXTRA_CALLER_SCREEN_NAME = "EXTRA_CALLER_SCREEN_NAME";
-    public static final String EXTRA_QUERY_PARAMETERS = "EXTRA_QUERY_PARAMETERS";
-    public static final String EXTRA_SELECTED_FILTERS = "EXTRA_SELECTED_FILTERS";
     protected static final String EXTRA_FRAGMENT_POSITION = "EXTRA_FRAGMENT_POSITION";
 
     private SearchNavigationListener searchNavigationListener;
@@ -294,30 +289,36 @@ public abstract class SearchSectionFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == getSortRequestCode()) {
-                setSelectedSort(new HashMap<>(getMapFromIntent(data, EXTRA_SELECTED_SORT)));
-                String selectedSortName = data.getStringExtra(EXTRA_SELECTED_NAME);
-                searchTracking.eventSearchResultSort(getScreenName(), selectedSortName);
-
-                if(searchParameter != null) {
-                    searchParameter.getSearchParameterHashMap().putAll(getSelectedSort());
-                }
-
-                clearDataFilterSort();
-                reloadData();
-            } else if (requestCode == getFilterRequestCode()) {
-                Map<String, String> filterParameter = getMapFromIntent(data, EXTRA_QUERY_PARAMETERS);
-                Map<String, String> activeFilterParameter = getMapFromIntent(data, EXTRA_SELECTED_FILTERS);
-
-                SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), activeFilterParameter);
-
-                applyFilterToSearchParameter(filterParameter);
-                setSelectedFilter(new HashMap<>(filterParameter));
-                clearDataFilterSort();
-                reloadData();
+        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, new FilterSortManager.Callback() {
+            @Override
+            public void onFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters) {
+                handleFilterResult(queryParams, selectedFilters);
             }
+
+            @Override
+            public void onSortResult(Map<String, String> selectedSort, String selectedSortName) {
+                handleSortResult(selectedSort, selectedSortName);
+            }
+        });
+    }
+
+    private void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters) {
+        SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), selectedFilters);
+
+        applyFilterToSearchParameter(queryParams);
+        setSelectedFilter(new HashMap<>(queryParams));
+        clearDataFilterSort();
+        reloadData();
+    }
+
+    private void handleSortResult(Map<String, String> selectedSort, String selectedSortName) {
+        setSelectedSort(new HashMap<>(selectedSort));
+        searchTracking.eventSearchResultSort(getScreenName(), selectedSortName);
+        if(searchParameter != null) {
+            searchParameter.getSearchParameterHashMap().putAll(getSelectedSort());
         }
+        clearDataFilterSort();
+        reloadData();
     }
 
     private Map<String, String> getMapFromIntent(Intent data, String extraName) {
@@ -410,7 +411,7 @@ public abstract class SearchSectionFragment
         if (bottomSheetListener != null && isUsingBottomSheetFilter) {
             openBottomSheetFilter();
         } else {
-            openFilterPage();
+            FilterSortManager.openFilterPage(this, getScreenName(), searchParameter.getSearchParameterHashMap());
         }
     }
 
@@ -421,20 +422,6 @@ public abstract class SearchSectionFragment
         bottomSheetListener.launchFilterBottomSheet();
     }
 
-    protected void openFilterPage() {
-        if (searchParameter == null) return;
-
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.FILTER);
-        intent.putExtra(EXTRA_CALLER_SCREEN_NAME, getScreenName());
-        intent.putExtra(EXTRA_QUERY_PARAMETERS, searchParameter.getSearchParameterHashMap());
-
-        startActivityForResult(intent, getFilterRequestCode());
-
-        if (getActivity() != null) {
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
-        }
-    }
-
     protected boolean isFilterDataAvailable() {
         return filters != null && !filters.isEmpty();
     }
@@ -442,25 +429,9 @@ public abstract class SearchSectionFragment
     protected void openSortActivity() {
         if(getActivity() == null) return;
 
-        if (isSortDataAvailable()) {
-            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalDiscovery.SORT);
-            intent.putParcelableArrayListExtra(EXTRA_DATA, sort);
-            if (getSelectedSort() != null) {
-                intent.putExtra(EXTRA_SELECTED_SORT, getSelectedSort());
-            }
-
-            startActivityForResult(intent, getSortRequestCode());
-
-            if(getActivity() != null) {
-                getActivity().overridePendingTransition(R.anim.pull_up, R.anim.fade_out);
-            }
-        } else {
+        if (!FilterSortManager.openSortActivity(this, sort, getSelectedSort())) {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_sort_data_not_ready));
         }
-    }
-
-    private boolean isSortDataAvailable() {
-        return sort != null && !sort.isEmpty();
     }
 
     @Override
