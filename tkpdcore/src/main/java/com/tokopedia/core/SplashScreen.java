@@ -87,6 +87,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onResume() {
         super.onResume();
+        GCMHandler.isPlayServicesAvailable(this);
         moveToHome();
     }
 
