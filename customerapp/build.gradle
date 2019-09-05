@@ -83,18 +83,6 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
-def archiveAPK(variant, output) {
-
-    String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-    def originZipAlignedApkFile = output.outputFile;
-    def renameAPKFile = renameAPKFile(variant, density, output.versionCodeOverride);
-    copy {
-        from "$originZipAlignedApkFile"
-        into getAPKArchiveFolder(variant)
-        rename("$originZipAlignedApkFile.name", "$renameAPKFile")
-    }
-}
-
 buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
@@ -203,32 +191,7 @@ android {
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
 
-            if (allowSplit()) {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
-                    }
-                    variant.assemble.doLast {
-                        variant.outputs.each { output ->
-                            if (output.zipAlign) {
-                                archiveAPK(variant, output);
-                            }
-                        }
-                    }
-                }
-            }
         }
-    }
-
-    splits {
-        density {
-            enable allowSplit()
-            reset()
-            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
-            compatibleScreens 'small', 'normal', 'large', 'xlarge'
-        }
-
     }
 
     defaultConfig {
@@ -280,6 +243,9 @@ android {
         }
     }
 
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
+//                       rootProject.ext.dynamicFeatures.profileCompletion
+    ]
 
 }
 
@@ -300,7 +266,6 @@ dependencies {
     implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
@@ -314,6 +279,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyalty)
     implementation project(rootProject.ext.features.flight)
     implementation project(rootProject.ext.features.hotel)
+    implementation project(rootProject.ext.features.travelHomepage)
     implementation project(rootProject.ext.features.imagePreviewSlider)
     implementation project(rootProject.ext.features.reputation)
     implementation project(rootProject.ext.features.transactiondata)
@@ -357,6 +323,7 @@ dependencies {
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
@@ -369,6 +336,7 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
+    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.browse)
     implementation project(rootProject.ext.features.notifCenter)
@@ -397,10 +365,9 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.onboarding)
-    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
 
 
@@ -457,6 +424,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.profileCompletion)
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
@@ -575,7 +543,7 @@ dependencies {
     implementation project(rootProject.ext.features.kyc)
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.logger)
-    implementation (rootProject.ext.debugToolsDependencies.timber){
+    implementation(rootProject.ext.debugToolsDependencies.timber) {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     devImplementation project.ext.debugToolsDependencies.blockCanary

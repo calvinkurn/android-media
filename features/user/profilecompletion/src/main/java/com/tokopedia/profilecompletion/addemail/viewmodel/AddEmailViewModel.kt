@@ -1,9 +1,12 @@
 package com.tokopedia.profilecompletion.addemail.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
+import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
@@ -17,14 +20,14 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class AddEmailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
-                                            private val rawQueries: Map<String, String>,
                                             private val graphqlUseCase: GraphqlUseCase<AddEmailPojo>)
     : BaseViewModel(dispatcher) {
 
     val mutateAddEmailResponse = MutableLiveData<Result<AddEmailResult>>()
 
-    fun mutateAddEmail(email: String, otpCode: String) {
-        rawQueries[ProfileCompletionQueriesConstant.MUTATION_ADD_EMAIL]?.let { query ->
+    fun mutateAddEmail(context: Context, email: String, otpCode: String) {
+
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_email)?.let { query ->
 
             val params = mapOf(PARAM_EMAIL to email,
                     PARAM_OTP_CODE to otpCode)
@@ -37,6 +40,7 @@ class AddEmailViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
                     onSuccessMutateAddEmail(email),
                     onErrorMutateAddEmail()
             )
+
         }
 
     }

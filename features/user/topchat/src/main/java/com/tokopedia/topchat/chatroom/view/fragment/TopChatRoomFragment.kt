@@ -66,6 +66,7 @@ import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.TopChatRouter
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
 import java.lang.IllegalStateException
@@ -107,6 +108,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     val TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE = 112
     val REQUEST_GO_TO_SETTING_TEMPLATE = 113
     val REQUEST_GO_TO_SETTING_CHAT = 114
+    val REQUEST_GO_TO_NORMAL_CHECKOUT = 115
 
     var seenAttachedProduct = HashSet<Int>()
 
@@ -199,7 +201,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
             getViewState().onSetCustomMessage(customMessage)
-            presenter.getTemplate()
+            presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
             activity?.run {
                 val data = Intent()
@@ -484,7 +486,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun goToSettingTemplate() {
-        val intent = TemplateChatActivity.createInstance(context)
+        var isSeller = getUserSession().shopId == shopId.toString()
+        val intent = TemplateChatActivity.createInstance(context, isSeller)
         activity?.let {
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
             it.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
@@ -513,7 +516,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_GO_TO_SETTING_TEMPLATE -> {
-                presenter.getTemplate()
+                presenter.getTemplate(getUserSession().shopId == shopId.toString())
             }
 
             TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
@@ -530,6 +533,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             REQUEST_GO_TO_SHOP -> onReturnFromShopPage(resultCode, data)
 
             REQUEST_GO_TO_SETTING_CHAT -> onReturnFromChatSetting(resultCode, data)
+
+            REQUEST_GO_TO_NORMAL_CHECKOUT -> onReturnFromNormalCheckout(resultCode, data)
+        }
+    }
+
+    private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
+        if (resultCode != RESULT_OK) return
+        if (data == null) return
+        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE) ?: return
+        view?.let {
+            Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
         }
     }
 
@@ -640,16 +654,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        activity?.let {
-            val router = (it.application as TopChatRouter)
-            (viewState as TopChatViewState)?.sendAnalyticsClickATC(element)
-            var shopId = this.shopId
-            if(shopId == 0) {
-                shopId = element.shopId
-            }
-            presenter.addProductToCart(router, element, onError(), onSuccessAddToCart(),
-                    shopId)
-        }
+        val atcPageIntent = presenter.getAtcPageIntent(context, element)
+        startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
 
     private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
@@ -866,6 +872,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun notifyAttachmentsSent() {
         getViewState().clearAttachmentPreview()
+    }
+
+    override fun getShopName(): String {
+        return opponentName
     }
 
     override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {

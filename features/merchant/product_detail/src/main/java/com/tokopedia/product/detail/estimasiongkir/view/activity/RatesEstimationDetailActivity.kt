@@ -20,22 +20,10 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
         val shopDomain = intent.getStringExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN)
         val weight = intent.getFloatExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, 0f)
         val weightUnit = intent.getStringExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT)
-        val forDeliveryInfo = intent.getBooleanExtra(RatesEstimationConstant.PARAM_FOR_DELIVERY_INFO, false)
-
-
         return RatesEstimationDetailFragment.createInstance(shopDomain, weight, weightUnit,
                 if (intent.hasExtra(RatesEstimationConstant.PARAM_ORIGIN))
                     intent.getStringExtra(RatesEstimationConstant.PARAM_ORIGIN)
-                else null, forDeliveryInfo)
-    }
-
-    override fun setupLayout(savedInstanceState: Bundle?) {
-        super.setupLayout(savedInstanceState)
-        val forDeliveryInfo = intent.getBooleanExtra(RatesEstimationConstant.PARAM_FOR_DELIVERY_INFO, false)
-
-        if (supportActionBar != null && forDeliveryInfo) {
-            supportActionBar!!.title = getString(R.string.delivery_label)
-        }
+                else null)
     }
 
     override fun getComponent(): RatesEstimationComponent {
@@ -47,13 +35,12 @@ class RatesEstimationDetailActivity : BaseSimpleActivity(), HasComponent<RatesEs
     companion object {
 
         @JvmStatic
-        fun createIntent(context: Context, shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String?, forDeliveryInfo: Boolean): Intent {
+        fun createIntent(context: Context, shopDomain: String, productWeight: Float, productWeightUnit: String, origin: String?): Intent {
             return Intent(context, RatesEstimationDetailActivity::class.java)
                     .putExtra(RatesEstimationConstant.PARAM_SHOP_DOMAIN, shopDomain)
                     .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT, productWeight)
                     .putExtra(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
                     .putExtra(RatesEstimationConstant.PARAM_ORIGIN, origin)
-                    .putExtra(RatesEstimationConstant.PARAM_FOR_DELIVERY_INFO, forDeliveryInfo)
         }
     }
 }

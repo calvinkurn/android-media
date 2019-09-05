@@ -3,7 +3,7 @@ package com.tokopedia.discovery.autocomplete.usecase;
 import android.text.TextUtils;
 
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepository;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.usecase.RequestParams;

@@ -1,0 +1,18 @@
+query GetCuratedProductDetail($affiliatedProductID: Int!){
+    affiliatedProductDetail(affiliatedProductID: $affiliatedProductID) {
+        price
+        priceFormatted
+        isActive
+        commission
+        commissionFormatted
+        totalClick
+        totalSold
+        totalCommission
+        totalCommissionFormatted
+        shopID
+        shopName
+        productID
+        productName
+        productImg
+    }
+}

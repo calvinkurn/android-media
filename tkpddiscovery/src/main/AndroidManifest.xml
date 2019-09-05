@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.discovery">
 
     <application
@@ -22,79 +23,6 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_discovery"
                     android:path="@string/path_catalog"/>
-
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".newdynamicfilter.RevampedDynamicFilterActivity"
-            android:label="Filter"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden">
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_discovery"
-                    android:path="@string/path_filter"/>
-
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".newdynamicfilter.DynamicFilterColorActivity"
-            android:label="Warna"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
-        <activity
-            android:name=".newdynamicfilter.DynamicFilterLocationActivity"
-            android:label="Lokasi"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
-        <activity
-            android:name=".newdynamicfilter.DynamicFilterRatingActivity"
-            android:label="Rating"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".newdynamicfilter.DynamicFilterDetailGeneralActivity"
-            android:label="Filter"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
-        <activity
-            android:name=".newdynamicfilter.DynamicFilterDetailBrandActivity"
-            android:label="Brand"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
-        <activity
-            android:name=".newdynamicfilter.DynamicFilterCategoryActivity"
-            android:label="Kategori"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".activity.SortProductActivity"
-            android:label="Urutkan"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.Tokopedia3">
-
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="@string/internal_scheme"
-                    android:host="@string/host_discovery"
-                    android:path="@string/path_sort"/>
 
             </intent-filter>
         </activity>
@@ -128,7 +56,14 @@
             android:screenOrientation="portrait"
             android:label="@string/image_search_title"
             android:windowSoftInputMode="adjustNothing">
-            <intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".imagesearch.search.ImageSearchActivity"
+            android:label="@string/image_search_title"
+            android:screenOrientation="portrait" >
+            <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="image/jpeg" />
@@ -142,12 +77,17 @@
                 <data android:mimeType="image/png" />
                 <data android:mimeType="image/jpg" />
             </intent-filter>
-
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_discovery"
+                    android:path="@string/path_image_search_result"/>
+            </intent-filter>
         </activity>
-        <activity
-            android:name=".imagesearch.search.ImageSearchActivity"
-            android:label=""
-            android:screenOrientation="portrait" />
+
         <activity android:name=".imagesearch.search.ImageSearchImagePickerActivity"
             android:theme="@style/Theme.White"
             android:label="@string/choose_image"

@@ -22,18 +22,19 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.design.price.DynamicBackgroundSeekBar;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.common.data.DataValue;
-import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -136,11 +137,14 @@ public class ProductListFragment
 
     private FilterController quickFilterController = new FilterController();
 
-    public static ProductListFragment newInstance(SearchParameter searchParameter) {
+    public static ProductListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
+        args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
+        
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
+
         return productListFragment;
     }
 
@@ -158,6 +162,7 @@ public class ProductListFragment
     private void loadDataFromArguments() {
         if(getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
+            setFragmentPosition(getArguments().getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
@@ -723,7 +728,6 @@ public class ProductListFragment
         isListEmpty = true;
         adapter.setGlobalNavViewModel(globalNavViewModel);
         adapter.showEmptyState(getActivity(), getQueryKey(), isFilterActive(), getString(R.string.product_tab_title).toLowerCase());
-        SearchTracking.eventSearchNoResult(getActivity(), getQueryKey(), getScreenName(), getSelectedFilter());
     }
 
     @Override
@@ -852,6 +856,13 @@ public class ProductListFragment
     public void setAdditionalParams(String additionalParams) {
         if (!TextUtils.isEmpty(additionalParams)) {
             this.additionalParams = additionalParams;
+        }
+    }
+
+    @Override
+    public void setAutocompleteApplink(String autocompleteApplink) {
+        if (redirectionListener != null) {
+            redirectionListener.setAutocompleteApplink(autocompleteApplink);
         }
     }
 
@@ -1055,6 +1066,11 @@ public class ProductListFragment
     public void redirectSearchToAnotherPage(String applink) {
         redirectionListener.startActivityWithApplink(applink);
         finishActivity();
+    }
+
+    @Override
+    public void sendTrackingForNoResult(String resultCode, String alternativeKeyword) {
+        SearchTracking.eventSearchNoResult(getQueryKey(), getScreenName(), getSelectedFilter(), alternativeKeyword, resultCode);
     }
 
     private void finishActivity() {

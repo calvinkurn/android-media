@@ -32,11 +32,17 @@ public interface KolFollowingList {
         void onErrorLoadMoreKolFollowingList(String error);
 
         void onListItemClicked(KolFollowingViewModel item);
+
+        boolean isOpenFollowerPage();
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void getKolFollowingList(int userId);
 
         void getKolLoadMore(int userId, String cursor);
+
+        void getFollowersList(int userId);
+
+        void getFollowersLoadMore(int userId, String cursor);
     }
 }
