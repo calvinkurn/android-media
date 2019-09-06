@@ -22,7 +22,7 @@ import com.tokopedia.flight.FlightModuleRouter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
-import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity
+import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.adapter.*
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment
@@ -312,7 +312,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     override fun navigateToPassengerInfoDetail(viewModel: FlightBookingPassengerViewModel, isMandatoryDoB: Boolean, departureDate: String, requestId: String) {
         startActivityForResult(
                 FlightBookingPassengerActivity.getCallingIntent(
-                        activity,
+                        activity as Activity,
                         getDepartureTripId(),
                         getReturnTripId(),
                         viewModel,
