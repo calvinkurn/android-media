@@ -85,7 +85,7 @@
     <string name="brands">Brands</string>
     <string name="brand_category">Brand %s</string>
     <string name="empty_deals_text">Deals belum tersedia di kota Anda</string>
-    <string name="deals_brand_detail_location">Deals di %s\u0020</string>
+    <string name="deals_brand_detail_location">Deals di Sekitar %s\u0020</string>
     <string name="phone_number">Nomor Telepon</string>
     <string name="text_discount_promo">Diskon Promo</string>
     <string name="title_activity_login">Masuk</string>
@@ -108,8 +108,8 @@
     <string name="no_brand_text">Yaah, Deals yang kamu cari nggak ketemu</string>
     <string name="no_brand_subtext">Coba cari lagi pakai kata kunci lain, yuk!</string>
     <string name="brand_count_text">Lihat brand lain terkait \'%1$s\' (%2$d)</string>
-    <string name="coachicon_title_location">Lihat Deals di kota populer</string>
-    <string name="coachicon_description_location">Mau liburan ke luar kota? Cek Deals yang ada di kota tujuan</string>
+    <string name="coachicon_title_location">Bebas pilih lokasi Deals</string>
+    <string name="coachicon_description_location">Berburu Deals di mall favorit sampai tempat nongkrong andalan jadi makin gampang!</string>
     <string name="coachicon_title_searchbar">Temukan beragam brand menarik</string>
     <string name="coachicon_title_promo">Beli Deals jadi makin hemat</string>
     <string name="coachicon_description_searchbar">Jangan lewatkan Deals dari banyak brand favorit</string>

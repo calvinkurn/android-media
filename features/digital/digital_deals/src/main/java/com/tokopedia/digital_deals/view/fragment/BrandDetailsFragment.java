@@ -245,9 +245,6 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             if (!TextUtils.isEmpty(location.getCoordinates())) {
                 requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
             }
-            if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
-                requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
-            }
         }
         return requestParams;
     }
