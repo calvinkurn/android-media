@@ -13,8 +13,6 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 
 public interface ICheckoutModuleRouter {
 
-    void checkoutModuleRouterResetBadgeCart();
-
     Intent getShopPageIntent(Context context, String shopId);
 
     Intent getGeolocationIntent(Context context, LocationPass locationPass);

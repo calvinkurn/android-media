@@ -1418,7 +1418,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         FLAG_IS_CART_EMPTY = true;
         enableSwipeRefresh();
         sendAnalyticsOnDataCartIsEmpty();
-        checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
         showEmptyCartContainer();
         notifyBottomCartParent();
         if (cartRecyclerView.getItemDecorationCount() > 0) {
@@ -1658,7 +1657,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             dPresenter.processResetAndRefreshCartData();
         } else if (resultCode == PaymentConstant.PAYMENT_SUCCESS) {
             showToastMessageGreen(getString(R.string.message_payment_success));
-            checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
             refreshHandler.setRefreshing(true);
             dPresenter.processInitialGetCartData(getCartId(), false, false);
         } else if (resultCode == PaymentConstant.PAYMENT_FAILED) {

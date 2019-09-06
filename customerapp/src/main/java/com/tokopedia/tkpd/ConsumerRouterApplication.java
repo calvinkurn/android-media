@@ -1752,11 +1752,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void checkoutModuleRouterResetBadgeCart() {
-        CartBadgeNotificationReceiver.resetBadgeCart(getAppContext());
-    }
-
-    @Override
     public Intent getContactUsIntent(Context context) {
         return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
     }

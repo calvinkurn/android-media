@@ -711,7 +711,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         showToastNormal(getString(R.string.message_payment_succeded_transaction_module));
         RouteManager.route(getActivity(), ApplinkConst.PURCHASE_CONFIRMED);
         if (getActivity() != null) {
-            checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
             getActivity().finish();
         }
     }
