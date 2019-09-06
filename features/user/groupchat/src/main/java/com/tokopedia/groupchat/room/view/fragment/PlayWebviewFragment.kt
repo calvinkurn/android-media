@@ -24,7 +24,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.groupchat.room.di.PlayComponent
 import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 
-import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -270,7 +269,7 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
 
     private fun openHomePage() {
         activity?.run {
-            startActivity((applicationContext as GroupChatModuleRouter).getHomeIntent(this))
+            startActivity(RouteManager.getIntent(this, ApplinkConst.HOME))
             finish()
         }
 

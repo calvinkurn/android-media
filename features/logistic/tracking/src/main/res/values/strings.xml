@@ -16,4 +16,7 @@
     <string name="warning_courier_invalid">Apabila masih tidak ada update status pengiriman
 setelah 3 x 24 jam, ada beberapa kemungkinan:</string>
     <string name="label_tracking_activity">Lacak</string>
+    <string name="find_new_driver">Cari Driver Baru</string>
+    <string name="retry_dateline_info"><![CDATA[Tunggu <b>%s</b> untuk mencari driver baru]]></string>
+    <string name="finding_new_driver">Mencari driver baru...</string>
 </resources>

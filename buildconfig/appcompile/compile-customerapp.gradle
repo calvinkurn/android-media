@@ -37,6 +37,7 @@ include "features:digital:travel_homepage"
 include "features:discovery:category_common"
 include "features:discovery:discovery_common"
 include 'features:discovery:productcard'
+include 'features:discovery:filter'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:home"
 //include "features:discovery:home_no_op"
@@ -49,6 +50,7 @@ include "features:discovery:search"
 include "features:fintech:mitra_toppers"
 
 include "dynamic-features:travel:hotel_travel"
+include "dynamic-features:user:profilecompletion"
 include "dynamic-features:merchant:shop_settings"
 include "dynamic-features:merchant:shop_open"
 

@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager;
 import com.tokopedia.discovery.autocomplete.adapter.decorater.SpacingItemDecoration;
-import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;

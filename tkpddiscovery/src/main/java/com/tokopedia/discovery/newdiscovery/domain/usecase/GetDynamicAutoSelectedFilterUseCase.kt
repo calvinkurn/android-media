@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.domain.usecase
 
-import com.tokopedia.discovery.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
