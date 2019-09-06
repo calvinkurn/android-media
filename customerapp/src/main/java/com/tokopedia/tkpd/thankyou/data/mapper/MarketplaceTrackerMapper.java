@@ -1,6 +1,8 @@
 package com.tokopedia.tkpd.thankyou.data.mapper;
 
 
+import android.text.TextUtils;
+
 import com.tokopedia.core.analytics.PurchaseTracking;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
@@ -68,11 +70,28 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         if (isResponseValid(response)) {
             paymentData = response.body().getData().getPayment();
             newBuyerFlag = response.body().getData().isNewBuyerFlag();
-            new MonthlyNewBuyerSource().executeMonthlyNewBuyerCheck(MainApplication.getAppContext(), getMonthlyNewBuyerSubscriber(),
-                    String.valueOf(response.body().getData().getPayment().getOrders().get(0).getOrderId()));
+            String orderId = getOrderId(response);
+            if(!TextUtils.isEmpty(orderId)) {
+                new MonthlyNewBuyerSource().executeMonthlyNewBuyerCheck(MainApplication.getAppContext(), getMonthlyNewBuyerSubscriber(),
+                        String.valueOf(response.body().getData().getPayment().getOrders().get(0).getOrderId()));
+            }
+            else{
+                executeSendPaymentTracking(false);
+            }
             return true;
         }
         return false;
+    }
+
+    private String getOrderId(Response<GraphqlResponse<PaymentGraphql>> response){
+        if(response != null && response.body() != null && response.body().getData() != null &&
+        response.body().getData().getPayment() != null && response.body().getData().getPayment().getOrders() != null &&
+                response.body().getData().getPayment().getOrders().size() > 0){
+            return String.valueOf(response.body().getData().getPayment().getOrders().get(0).getOrderId());
+        }
+        else {
+            return "";
+        }
     }
 
     private void executeSendPaymentTracking(boolean monthlyNewbuyer){
