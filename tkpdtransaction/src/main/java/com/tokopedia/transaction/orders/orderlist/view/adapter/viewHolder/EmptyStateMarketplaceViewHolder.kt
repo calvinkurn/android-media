@@ -18,8 +18,12 @@ class EmptyStateMarketplaceViewHolder(itemView: View?) : AbstractViewHolder<Empt
         var LAYOUT = R.layout.order_list_empty_state_marketplace
     }
     private val tryAgain = itemView?.findViewById<TextView>(R.id.tryAgain)
+    private val heading = itemView?.findViewById<TextView>(R.id.empty_state_marketplace_heading)
+    private val subText = itemView?.findViewById<TextView>(R.id.empty_state_marketplace_sub_text)
 
     override fun bind(element: EmptyStateMarketplaceViewModel?) {
         tryAgain?.hide()
+        heading?.text = getString(R.string.tkpdtransaction_lets_hunt_fav_stuff)
+        subText?.text = getString(R.string.tkpdtransaction_buy_dream_items)
     }
 }
