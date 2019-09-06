@@ -117,6 +117,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val DISTRICT_RECOMMENDATION_SHOP_SETTINGS = "$INTERNAL_MARKETPLACE/district-recommendation-shop-settings"
 
+    //GeolocationActivity
+    @JvmField
+    val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
+
     // OnboardingActivity
     @JvmField
     val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"

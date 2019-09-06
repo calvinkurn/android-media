@@ -15,8 +15,6 @@ public interface ICheckoutModuleRouter {
 
     Intent getShopPageIntent(Context context, String shopId);
 
-    Intent getGeolocationIntent(Context context, LocationPass locationPass);
-
     Intent getCodPageIntent(Context context, Data data);
 
 }

@@ -28,6 +28,7 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
@@ -127,6 +128,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity.EXTRA_IS_FROM_MARKETPLACE_CART;
 import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
 
 /**
@@ -1045,8 +1047,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
         }
         if (getActivity() != null) {
-            Intent intent = checkoutModuleRouter.getGeolocationIntent(getActivity(), locationPass);
-            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+            navigateToPinpointActivity(locationPass);
         }
     }
 
@@ -2103,7 +2104,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         }
-        Intent intent = checkoutModuleRouter.getGeolocationIntent(getActivity(), locationPass);
+
+        navigateToPinpointActivity(locationPass);
+    }
+
+    private void navigateToPinpointActivity(LocationPass locationPass) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(LogisticCommonConstant.EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putBoolean(EXTRA_IS_FROM_MARKETPLACE_CART, true);
+        intent.putExtras(bundle);
         startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
     }
 

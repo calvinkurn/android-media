@@ -1640,11 +1640,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getGeolocationIntent(Context context, LocationPass locationPass) {
-        return GeolocationActivity.createInstance(context, locationPass, true);
-    }
-
-    @Override
     public Intent getPhoneVerificationActivationIntent(Context context) {
         return PhoneVerificationActivationActivity.getCallingIntent(context);
     }
