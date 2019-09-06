@@ -89,7 +89,7 @@ public class SearchActivity extends BaseActivity
         );
     }
 
-    private Toolbar toolbar;
+    private Toolbar toolbark;
     private FrameLayout container;
     private ProgressBar loadingView;
     private TabLayout tabLayout;
