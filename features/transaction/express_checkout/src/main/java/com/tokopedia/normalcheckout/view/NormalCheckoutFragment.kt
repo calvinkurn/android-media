@@ -132,6 +132,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            shopName: String? = "",
                            isOneClickShipment: Boolean,
                            isNeedRefresh: Boolean,
+                           reference: String?,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
@@ -149,6 +150,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putBoolean(ApplinkConst.Transaction.EXTRA_OCS, isOneClickShipment)
                     putBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, isNeedRefresh)
                     putParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                    putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
                 }
             }
 
@@ -718,11 +720,17 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         this, quantity,
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
-                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false)
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false,
+                        getPageReference()
+                )
             }
         }, onRetryWhenError = {
             addToCart()
         })
+    }
+
+    private fun getPageReference(): String {
+        return arguments?.getString(ApplinkConst.Transaction.EXTRA_REFERENCE, "") ?: ""
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
