@@ -46,6 +46,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
     private ProgressBar pbLoading;
 
     private ShippingCourierBottomsheetListener shippingCourierBottomsheetListener;
+    private RecipientAddressModel mRecipientAddress;
 
     @Inject
     ShippingCourierContract.Presenter presenter;
@@ -130,8 +131,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
         initializeInjector();
         presenter.attachView(this);
         if (getArguments() != null) {
-            RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
-            presenter.setRecipientAddressModel(recipientAddressModel);
+            mRecipientAddress = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             List<ShippingCourierViewModel> shippingCourierViewModels =
                     getArguments().getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
@@ -176,7 +176,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
         boolean isCod = productData.getCodProductData() != null && (productData.getCodProductData().getIsCodAvailable() == 1);
         if (shippingCourierBottomsheetListener != null) {
             shippingCourierBottomsheetListener.onCourierChoosen(
-                    shippingCourierViewModel, courierItemData, presenter.getRecipientAddressModel(), cartPosition, isCod,
+                    shippingCourierViewModel, courierItemData, mRecipientAddress, cartPosition, isCod,
                     !TextUtils.isEmpty(productData.getPromoCode()), isNeedPinpoint);
         }
         dismiss();
