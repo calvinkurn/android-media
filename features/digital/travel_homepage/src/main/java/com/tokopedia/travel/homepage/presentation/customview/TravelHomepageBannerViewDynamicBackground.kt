@@ -53,10 +53,10 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
         cardBannerView = view.findViewById(R.id.card_banner_view)
 
-        bannerSeeAll.setMargin(resources.getDimensionPixelSize(R.dimen.dp_5), resources.getDimensionPixelSize(R.dimen.dp_5),
-                resources.getDimensionPixelSize(R.dimen.dp_16), resources.getDimensionPixelSize(R.dimen.dp_5))
-        bannerIndicator.setMargin(resources.getDimensionPixelSize(R.dimen.dp_16), resources.getDimensionPixelSize(R.dimen.dp_5),
-                resources.getDimensionPixelSize(R.dimen.dp_5), resources.getDimensionPixelSize(R.dimen.dp_5))
+        bannerSeeAll.setMargin(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5), resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5),
+                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16), resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5))
+        bannerIndicator.setMargin(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16), resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5),
+                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5), resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (::cardBannerView.isInitialized) {
@@ -93,10 +93,10 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
         if (bannerRecyclerView.itemDecorationCount == 0) {
             bannerRecyclerView.addItemDecoration(
                     TravelHomepageBannerViewDecorator(
-                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_2),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_2))
+                            context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_2),
+                            context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_2))
             )
         }
 
