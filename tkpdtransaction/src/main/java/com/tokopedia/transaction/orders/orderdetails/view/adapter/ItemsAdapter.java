@@ -1,6 +1,5 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -18,12 +17,10 @@ import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.ApplinkOMSConstant;
-import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.EntityAddress;
 import com.tokopedia.transaction.orders.orderdetails.data.Header;
@@ -117,10 +114,10 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         this.position = position;
-        if(holder instanceof  ItemViewHolder) {
+        if (holder instanceof ItemViewHolder) {
             ((ItemViewHolder) holder).setIndex(position);
             ((ItemViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
-        } else{
+        } else {
             ((DefaultViewHolder) holder).setIndex(position);
             ((DefaultViewHolder) holder).bindData(itemsList.get(position), holder.getItemViewType());
         }
@@ -133,7 +130,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return ITEM_DEALS_SHORT;
             else
                 return ITEM_DEALS;
-        } else if(itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID){
+        } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID) {
             return ITEM_EVENTS;
         } else {
             return ITEM_DEFAULT;
@@ -574,7 +571,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         void bindData(final Items item, int itemType) {
             MetaDataInfo metaDataInfo = null;
-            boolean hasViews=false;
+            boolean hasViews = false;
 
             if (item.getMetaData() != null) {
                 Gson gson = new Gson();
@@ -635,7 +632,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     tapActionLayout.setVisibility(View.GONE);
                     presenter.setActionButton(item.getTapActions(), ItemsAdapter.this, getIndex(), true);
                 }
-                if(!hasViews){
+                if (!hasViews) {
                     customTicketView1.setVisibility(View.GONE);
                     itemView.findViewById(R.id.divider1).setVisibility(View.GONE);
                 } else {
@@ -701,7 +698,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         private void setActionButtonClick(TextView view, ActionButton actionButton) {
             if (actionButton.getControl().equalsIgnoreCase(KEY_REDIRECT)) {
-                if (!TextUtils.isEmpty(actionButton.getBody().toString())&& !TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
+                if (!TextUtils.isEmpty(actionButton.getBody().toString()) && !TextUtils.isEmpty(actionButton.getBody().getAppURL())) {
                     if (view == null)
                         RouteManager.route(context, actionButton.getBody().getAppURL());
                     else

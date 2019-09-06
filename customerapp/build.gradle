@@ -243,7 +243,9 @@ android {
         }
     }
 
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
+//                       rootProject.ext.dynamicFeatures.profileCompletion
+    ]
 
 }
 
@@ -362,10 +364,9 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.onboarding)
-    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
 
 
@@ -422,6 +423,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.location
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.profileCompletion)
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
