@@ -38,6 +38,9 @@ class NotificationUpdateAnalytics @Inject constructor() {
         // Action
         val ACTION_VIEW_PRODUCT_THUMBNAIL = "view on product thumbnail"
         val ACTION_CLICK_PRODUCT_THUMBNAIL = "click on product thumbnail"
+
+        // Label
+        val LABEL_UPDATE_NOTIF_CENTER = "tab update / recomm page from notif center"
     }
 
     // #NC1
@@ -109,7 +112,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
                 EVENT_NAME, NAME_EVENT_PRODUCT_VIEW,
                 EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION, ACTION_VIEW_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, "",
+                EVENT_LABEL, LABEL_UPDATE_NOTIF_CENTER,
                 ECOMMERCE, DataLayer.mapOf(
                     "currencyCode", "IDR",
                     "impressions", impressions
@@ -125,7 +128,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
                 EVENT_NAME, NAME_EVENT_PRODUCT_CLICK,
                 EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
                 EVENT_ACTION, ACTION_CLICK_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, "",
+                EVENT_LABEL, LABEL_UPDATE_NOTIF_CENTER,
                 ECOMMERCE, DataLayer.mapOf(
                     "click", DataLayer.mapOf(
                         "actionField", DataLayer.mapOf("list", "/notifcenter"),
