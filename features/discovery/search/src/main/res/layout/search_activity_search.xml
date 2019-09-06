@@ -182,10 +182,6 @@
 
     <com.tokopedia.filter.widget.BottomSheetFilterView
         android:id="@+id/bottomSheetFilter"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        app:behavior_hideable="true"
-        app:layout_behavior="com.tokopedia.filter.widget.UserLockBottomSheetBehavior"/>
+        style="@style/BottomSheetFilterStyle"/>
 
 </android.support.design.widget.CoordinatorLayout>
