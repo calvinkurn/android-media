@@ -575,6 +575,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onSuccessCrackToken(final CrackResultEntity crackResult) {
+        crackLayoutTooltip.setVisibility(View.GONE);
         stopTimer();
         hideInfoTitle();
         vibrate();

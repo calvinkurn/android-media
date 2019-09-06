@@ -516,7 +516,7 @@ public class FloatingEggButtonFragment extends BaseDaggerFragment implements Flo
         if (TextUtils.isEmpty(sumTokenString)) {
             tvFloatingCounter.setVisibility(View.GONE);
         } else {
-           // tvFloatingCounter.setText(sumTokenString);
+            tvFloatingCounter.setText(sumTokenString);
             tvFloatingCounter.setVisibility(View.VISIBLE);
         }
 

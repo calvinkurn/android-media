@@ -29,14 +29,16 @@
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/floating_counter_width"
+                android:padding="@dimen/dp_2"
+                android:minWidth="@dimen/dp_22"
+                android:layout_height="@dimen/dp_22"
                 android:layout_gravity="center_vertical|end"
                 android:background="@drawable/circle_red_shadow"
                 android:gravity="center"
                 android:layout_marginRight="@dimen/dp_6"
                 android:layout_marginBottom="@dimen/dp_16"
                 android:textColor="@color/white"
-                android:text="99+"/>
+                tools:text="99+"/>
 
             <TextView
                 android:id="@+id/tv_floating_timer"
@@ -58,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginTop="@dimen/dp_10"
             android:layout_gravity="center_vertical|start"
             android:background="@drawable/minimize_button"/>
     </FrameLayout>
