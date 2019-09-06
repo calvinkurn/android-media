@@ -46,10 +46,12 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
@@ -63,14 +65,13 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
-import com.tokopedia.normalcheckout.constant.ATC_ONLY
-import com.tokopedia.normalcheckout.constant.ProductAction
-import com.tokopedia.normalcheckout.constant.TRADEIN_BUY
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.normalcheckout.constant.*
 import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_LEASING
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -124,6 +125,10 @@ import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
+import com.tokopedia.transaction.common.dialog.UnifyDialog
+import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 import com.tokopedia.unifycomponents.Toaster
@@ -159,6 +164,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private var affiliateString: String? = null
     private var isFromDeeplink: Boolean = false
     private var isAffiliate: Boolean = false
+    private var isLeasing: Boolean = false
 
     lateinit var headerView: PartialHeaderView
     lateinit var productStatsView: PartialProductStatisticView
@@ -666,8 +672,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         trackerListName,
                         shopInfo?.goldOS?.shopTypeString,
                         shopInfo?.shopCore?.name,
-                        isOcsCheckoutType)
-                if (::tradeInParams.isInitialized) {
+                        isOcsCheckoutType,
+                        isLeasing)
+                if(::tradeInParams.isInitialized) {
                     intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,
@@ -808,9 +815,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             R.id.container_ready -> onValuePropositionClick(R.id.container_ready)
             R.id.container_ori -> onValuePropositionClick(R.id.container_ori)
             R.id.container_guarantee_7_days -> onValuePropositionClick(R.id.container_guarantee_7_days)
-
+            R.id.btn_apply_leasing -> onApplyLeasingClicked()
             else -> {
             }
+        }
+    }
+
+    private fun onApplyLeasingClicked(){
+        productInfo?.run {
+            productDetailTracking.eventClickApplyLeasing(
+                    parentProductId,
+                    variant.isVariant
+            )
+            goToNormalCheckout(APPLY_CREDIT)
         }
     }
 
@@ -1075,7 +1092,30 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
+                if (resultCode == RESULT_CODE_ERROR_TICKET && data != null) {
+                    activity?.also { activity ->
+                        val result = data.getParcelableExtra<AddToCartDataModel>(RESULT_TICKET_DATA)
+                        val createTicketDialog = UnifyDialog(activity, UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER)
+                        createTicketDialog.apply {
+                            setTitle(result.errorReporter.texts.submitTitle)
+                            setDescription(result.errorReporter.texts.submitDescription)
+                            setSecondary(result.errorReporter.texts.cancelButton)
+                            setSecondaryOnClickListener(View.OnClickListener {
+                                this.dismiss()
+                                productDetailTracking.eventClickCloseOnHelpPopUpAtc()
+                            })
+                            setOk(result.errorReporter.texts.submitButton)
+                            setOkOnClickListener(View.OnClickListener {
+                                this.dismiss()
+                                productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                                showProgressDialog()
+                                productInfoViewModel.hitSubmitTicket(result, this@ProductDetailFragment::onErrorSubmitHelpTicket, this@ProductDetailFragment::onSuccessSubmitHelpTicket)
+                            })
+                            show()
+                        }
+                        productDetailTracking.eventViewHelpPopUpWhenAtc()
+                    }
+                } else if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
                         //refresh product by selected variant/product
                         val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
@@ -1154,6 +1194,35 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             else ->
                 super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun onErrorSubmitHelpTicket(e: Throwable?) {
+        hideProgressDialog()
+        view?.also {
+            Toaster.showError(it, ErrorHandler.getErrorMessage(context, e), BaseToaster.LENGTH_SHORT)
+        }
+    }
+
+    private fun onSuccessSubmitHelpTicket(result: SubmitTicketResult) {
+        hideProgressDialog()
+        if (result.status) {
+            activity?.also {
+                val successTicketDialog = UnifyDialog(it, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
+                successTicketDialog.apply {
+                    setTitle(result.texts.submitTitle)
+                    setDescription(result.texts.submitDescription)
+                    setOk(result.texts.successButton)
+                    setOkOnClickListener(View.OnClickListener {
+                        this.dismiss()
+                    })
+                    show()
+                }
+            }
+        } else {
+            view?.also {
+                Toaster.showError(it, result.message, BaseToaster.LENGTH_SHORT)
+            }
         }
     }
 
@@ -1458,6 +1527,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         productInfo = data
         et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo?.category?.name)
         shouldShowCod = data.shouldShowCod
+        isLeasing = data.basic.isLeasing
         headerView.renderData(data)
         varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
@@ -1552,12 +1622,11 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (userInputVariant == null && data.variant.isVariant && data.variant.parentID != productId) {
             userInputVariant = productId
         }
-
+        actionButtonView.isLeasing = isLeasing
         if (affiliateString.hasValue()) {
             productInfoViewModel.hitAffiliateTracker(affiliateString
                     ?: "", productInfoViewModel.deviceId)
         }
-
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
                         || shopInfo?.allowManage == true),

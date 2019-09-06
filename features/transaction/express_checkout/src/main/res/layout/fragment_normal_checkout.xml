@@ -144,6 +144,20 @@
                 android:textColor="@color/white"
                 android:textSize="14sp"
                 android:textStyle="bold" />
+
+            <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/btn_apply_leasing"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_40"
+                android:layout_margin="@dimen/dp_8"
+                android:gravity="center"
+                android:text="@string/label_button_apply_credit"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:visibility="gone"
+                app:buttonCompatSize="big"
+                app:buttonCompatType="transaction"
+                tools:visibility="gone" />
         </LinearLayout>
 
     </LinearLayout>
