@@ -147,6 +147,8 @@ public class RemoteConfigKey {
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
 
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
+
+    public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
     public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
 
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
