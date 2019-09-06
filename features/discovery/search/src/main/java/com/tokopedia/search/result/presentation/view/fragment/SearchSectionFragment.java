@@ -517,17 +517,6 @@ public abstract class SearchSectionFragment
         }
     }
 
-    protected RecyclerView.OnScrollListener getRecyclerViewBottomSheetScrollListener() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING && bottomSheetListener != null) {
-                    bottomSheetListener.closeFilterBottomSheet();
-                }
-            }
-        };
-    }
-
     public void onBottomSheetHide() {
         SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }

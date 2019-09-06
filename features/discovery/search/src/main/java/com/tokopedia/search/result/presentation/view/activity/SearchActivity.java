@@ -223,7 +223,7 @@ public class SearchActivity extends BaseActivity
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                bottomSheetFilterView.closeView();
+
             }
 
             @Override
@@ -259,16 +259,6 @@ public class SearchActivity extends BaseActivity
             public void onHide() {
                 showBottomNavigation();
                 sendBottomSheetHideEventForProductList();
-            }
-
-            @Override
-            public boolean isSearchShown() {
-                return false;
-            }
-
-            @Override
-            public void hideKeyboard() {
-                KeyboardHandler.hideSoftKeyboard(SearchActivity.this);
             }
 
             @Override
@@ -666,16 +656,6 @@ public class SearchActivity extends BaseActivity
     @Override
     public void setFilterResultCount(String formattedResultCount) {
         bottomSheetFilterView.setFilterResultCount(formattedResultCount);
-    }
-
-    @Override
-    public void closeFilterBottomSheet() {
-        bottomSheetFilterView.closeView();
-    }
-
-    @Override
-    public boolean isBottomSheetShown() {
-        return bottomSheetFilterView.isBottomSheetShown();
     }
 
     @Override

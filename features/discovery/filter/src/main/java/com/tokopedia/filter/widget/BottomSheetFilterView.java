@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
@@ -103,7 +104,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         loadingView.setVisibility(View.GONE);
     }
 
-    public void closeView() {
+    private void closeView() {
         if (bottomSheetBehavior != null
                 && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN
                 && buttonFinish.getVisibility() == View.VISIBLE) {
@@ -159,7 +160,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         applyFilter();
     }
 
-    public void updateResetButtonVisibility() {
+    private void updateResetButtonVisibility() {
         if (buttonReset != null) {
             buttonReset.setVisibility(filterController.isFilterActive() ? View.VISIBLE : View.GONE);
         }
@@ -232,7 +233,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    callback.hideKeyboard();
+                    KeyboardHandler.hideSoftKeyboard(callback.getActivity());
                 }
             }
         });
@@ -258,7 +259,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if (newState == BottomSheetBehavior.STATE_HIDDEN && !callback.isSearchShown()) {
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
                     callback.onHide();
                 } else {
                     callback.onShow();
@@ -304,7 +305,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         applyFilter();
     }
 
-    public boolean isBottomSheetShown() {
+    private boolean isBottomSheetShown() {
         return bottomSheetBehavior != null
                 && bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_HIDDEN;
     }
@@ -318,7 +319,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         }
     }
 
-    public void applyFilter() {
+    private void applyFilter() {
         updateResetButtonVisibility();
         loadingView.setVisibility(View.VISIBLE);
         buttonFinish.setText("");
@@ -425,8 +426,6 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         void onApplyFilter(Map<String, String> filterParameter);
         void onShow();
         void onHide();
-        boolean isSearchShown();
-        void hideKeyboard();
         AppCompatActivity getActivity();
     }
 }

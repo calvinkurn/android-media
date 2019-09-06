@@ -266,7 +266,6 @@ public class ProductListFragment
     }
 
     private void setupListener() {
-        recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
 
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
 
