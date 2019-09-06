@@ -278,7 +278,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         isPagingAllowed = true
                     } else {
-                        showNoDataScreen(true)
+                        if(list.isEmpty()){
+                            showNoDataScreen(true)
+                        }
                     }
                     hideRefreshLayout()
                     reloadFilter(createFilterParam())
@@ -287,7 +289,9 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 is Fail -> {
                     productNavListAdapter?.removeLoading()
                     hideRefreshLayout()
-                    showNoDataScreen(true)
+                    if(list.isEmpty()) {
+                        showNoDataScreen(true)
+                    }
                     isPagingAllowed = true
                 }
 
