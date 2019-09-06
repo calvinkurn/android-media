@@ -34,6 +34,8 @@ object DeeplinkDFMapper {
     private val MODULE_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val MODULE_HOTEL_TRAVEL = "hotel_travel"
     private val MODULE_USER_PROFILE_COMPLETION = "profilecompletion"
+    private val MODULE_HOMEPAGE_TRAVEL = "homepage_travel"
+
 
     private var manager: SplitInstallManager? = null
 
@@ -73,6 +75,11 @@ object DeeplinkDFMapper {
 //                        deeplink, MODULE_USER_PROFILE_COMPLETION,
 //                        context.getString(R.string.applink_profile_completion_title))
 //                }
+                deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE) -> {
+                    getDFDeeplinkIfNotInstalled(context,
+                            deeplink, MODULE_HOMEPAGE_TRAVEL,
+                            context.getString(R.string.title_travel_homepage))
+                }
                 else -> null
             }
         }
