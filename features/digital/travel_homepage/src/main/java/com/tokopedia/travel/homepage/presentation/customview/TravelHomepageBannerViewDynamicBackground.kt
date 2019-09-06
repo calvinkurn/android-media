@@ -47,9 +47,9 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
         val view = View.inflate(context, R.layout.travel_homepage_card_banner_dynamic_background, this)
         view.findViewById<View>(R.id.overlay_round).background = MethodChecker.getDrawable(
                 view.context, R.drawable.background_banner_image_mask)
-        bannerRecyclerView = view.findViewById(R.id.banner_recyclerview)
-        bannerIndicator = view.findViewById(R.id.banner_indicator_container)
-        bannerSeeAll = view.findViewById(R.id.banner_see_all)
+        bannerRecyclerView = view.findViewById(com.tokopedia.banner.R.id.banner_recyclerview)
+        bannerIndicator = view.findViewById(com.tokopedia.banner.R.id.banner_indicator_container)
+        bannerSeeAll = view.findViewById(com.tokopedia.banner.R.id.banner_see_all)
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
         cardBannerView = view.findViewById(R.id.card_banner_view)
 
@@ -84,7 +84,7 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
     }
 
     override fun buildView() {
-        bannerSeeAll.setTextColor(ContextCompat.getColor(context, R.color.medium_green))
+        bannerSeeAll.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.medium_green))
         bannerSeeAll.typeface = Typeface.DEFAULT
         super.buildView()
         banner_root.visibility = View.VISIBLE
