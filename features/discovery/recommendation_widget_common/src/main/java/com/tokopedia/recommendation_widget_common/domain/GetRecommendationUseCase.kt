@@ -74,6 +74,7 @@ constructor(
 
     fun getRecomParams(pageNumber: Int,
                        productIds: List<String>,
+
                        ref: String = ""): RequestParams {
         val params = RequestParams.create()
         val productIdsString = TextUtils.join(",", productIds)
