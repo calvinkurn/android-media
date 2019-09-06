@@ -110,4 +110,5 @@
     <string name="moneyin_harga_tnc"><![CDATA[Dengan klik jual sekarang, Kamu menyetujui Syarat & Ketentuan Langsung Laku Tokopedia.]]></string>
     <string name="moneyin_text_not_upto_15min">Kurang dari 15 menit!
 \nCek fungsi plus kondisi fisik</string>
+    <string name="tradein_requires_permission_for_diagnostic">Perkenankan izin yang hilang untuk memulai memeriksa fungsi</string>
 </resources>

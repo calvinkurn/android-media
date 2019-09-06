@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
@@ -70,17 +71,21 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private BroadcastReceiver laku6GTMReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent != null && "laku6-gtm".equals(intent.getAction())) {
-                String page = intent.getStringExtra("page");
-                String action = intent.getStringExtra("action");
-                String value = intent.getStringExtra("value");
-                if ("cek fisik".equals(page)) {
-                    if ("click salin".equals(action) || "click social share".equals(action))
-                        sendGeneralEvent("clickTradeIn", "cek fisik trade in", action, value);
-                } else if ("cek fungsi trade in".equals(page)) {
-                    sendGeneralEvent("clickTradeIn", "cek fungsi trade in", action, value);
-                } else if ("cek fisik result trade in".equals(page)) {
-                    sendGeneralEvent("viewTradeIn", "cek fisik result trade in", action, value);
+            if (intent != null && TradeInGTMConstants.ACTION_LAKU6_GTM.equals(intent.getAction())) {
+                String page = intent.getStringExtra(TradeInGTMConstants.PAGE);
+                String action = intent.getStringExtra(TradeInGTMConstants.ACTION);
+                String value = intent.getStringExtra(TradeInGTMConstants.VALUE);
+                if (TradeInGTMConstants.CEK_FISIK.equals(page)) {
+                    if (TradeInGTMConstants.CLICK_SALIN.equals(action)
+                            || TradeInGTMConstants.CLICK_SOCIAL_SHARE.equals(action))
+                        sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                                TradeInGTMConstants.CEK_FISIK_TRADE_IN, action, value);
+                } else if (TradeInGTMConstants.CEK_FUNGSI_TRADE_IN.equals(page)) {
+                    sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                            TradeInGTMConstants.CEK_FUNGSI_TRADE_IN, action, value);
+                } else if (TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN.equals(page)) {
+                    sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
+                            TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN, action, value);
                 }
             }
         }
@@ -133,11 +138,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 tvIndicateive.setVisibility(View.GONE);
                 mTvGoToProductDetails.setText(closeButtonText);
                 mTvGoToProductDetails.setOnClickListener(v -> {
-                    sendGeneralEvent("clickTradeIn",
-                            "trade in start page",
-                            "click kembali ke detail produk",
-                            "");
-
+                    sendGoToProductDetailGTM();
                     finish();
                 });
             } else {
@@ -154,10 +155,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         tvIndicateive.setVisibility(View.GONE);
                         mTvGoToProductDetails.setText(closeButtonText);
                         mTvGoToProductDetails.setOnClickListener(v -> {
-                            sendGeneralEvent("clickTradeIn",
-                                    "trade in start page",
-                                    "click kembali ke detail produk",
-                                    "");
+                            sendGoToProductDetailGTM();
                             finish();
                         });
                         int greenColor = getResources().getColor(R.color.green_nob);
@@ -190,9 +188,9 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
                         mTvGoToProductDetails.setOnClickListener(v -> {
                             laku6TradeIn.startGUITest();
-                            sendGeneralEvent("clickTradeIn",
-                                    "trade in start page",
-                                    "click mulai cek fungsi",
+                            sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                                    TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE,
+                                    TradeInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
                                     "");
 
                         });
@@ -206,6 +204,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
             }
         }));
         getPriceFromSDK(this);
+    }
+
+    private void sendGoToProductDetailGTM() {
+        sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE,
+                TradeInGTMConstants.ACTION_KEMBALI_KE_DETAIL_PRODUK,
+                "");
     }
 
     private void goToHargaFinal() {
@@ -297,11 +302,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                     if (result == PackageManager.PERMISSION_DENIED) {
                         mTvGoToProductDetails.setText(closeButtonText);
                         mTvGoToProductDetails.setOnClickListener(v -> {
-                            sendGeneralEvent("clickTradeIn",
-                                    "trade in start page",
-                                    "click kembali ke detail produk",
-                                    "");
-
+                            sendGoToProductDetailGTM();
                             finish();
                         });
                         if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permissions[i])) {
@@ -314,7 +315,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                                         this.startActivityForResult(intent, APP_SETTINGS);
                                     });
                         } else {
-                            showMessageWithAction("Perkenankan izin yang hilang untuk memulai memeriksa fungsi",
+                            showMessageWithAction(getString(R.string.tradein_requires_permission_for_diagnostic),
                                     getString(R.string.title_ok), (v) -> requestPermission());
                         }
                         return;
