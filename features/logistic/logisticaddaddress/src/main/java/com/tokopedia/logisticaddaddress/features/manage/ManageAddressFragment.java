@@ -203,12 +203,12 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
-        com.tokopedia.logisticaddaddress.domain.model.Token token1 = new TokenMapper().reverseTokenModel(token);
+        com.tokopedia.logisticaddaddress.domain.model.Token tempToken = new TokenMapper().reverseTokenModel(token);
         if (data == null) {
             if (isAddNewAddressEnabled()) {
                 AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_USER_NEW);
                 startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token1,
+                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, tempToken,
                         false, false, false, null,
                         false), REQUEST_CODE_PARAM_CREATE);
 

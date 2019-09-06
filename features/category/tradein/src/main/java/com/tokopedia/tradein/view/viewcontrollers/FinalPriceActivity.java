@@ -43,6 +43,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private int checkoutString = R.string.buy_now;
     private int hargeTncString = R.string.harga_tnc;
     private int tncStringId = R.string.tradein_tnc;
+    private final static String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
     /**
      * price_valid_until
      */
@@ -92,10 +93,6 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         View dividerModel = findViewById(R.id.divider_model);
         View space = findViewById(R.id.space);
 
-        /*tv_model_name,tv_tnc,tv_final_price,tv_final_amount,
-        divider_model,tv_valid_till,space,carc_background_white,tv_model,tv_button_pay_or_ktp,divider2,
-        tv_title,tv_device_review*/
-
         viewsTradeIn.add(mTvTnc);
         viewsTradeIn.add(mTvValidTill);
         viewsTradeIn.add(mTvSellingPrice);
@@ -125,8 +122,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
-            checkoutString = R.string.sell_now;
-            hargeTncString = R.string.harga_tnc_moneyin;
+            checkoutString = R.string.moneyin_sell_now;
+            hargeTncString = R.string.moneyin_harga_tnc;
             tncStringId = R.string.money_in_tnc;
             tradeInStringId = R.string.money_in;
         }
@@ -199,7 +196,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
 
     private void renderDetails(DeviceDataResponse deviceDataResponse) {
         TradeInParams tradeInData = viewModel.getTradeInParams();
-        tvTitle.setText(String.format(getString(R.string.price_elligible), getString(tradeInStringId)));
+        tvTitle.setText(String.format(getString(R.string.moneyin_price_elligible), getString(tradeInStringId)));
         if (tradeInData != null && TRADEIN_TYPE != TRADEIN_MONEYIN) {
             mTvModelNew.setText(tradeInData.getProductName());
             mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getNewPrice(), true));
@@ -264,8 +261,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
                     finish();
                     break;
                 case PINPOINT_ACTIVITY_REQUEST_CODE:
-                    Parcelable parcelableExtra = data.getParcelableExtra("EXTRA_ADDRESS_NEW");
-                    if (data.hasExtra("EXTRA_ADDRESS_NEW") && parcelableExtra != null) {
+                    Parcelable parcelableExtra = data.getParcelableExtra(EXTRA_ADDRESS_NEW);
+                    if (data.hasExtra(EXTRA_ADDRESS_NEW) && parcelableExtra != null) {
                         Intent goToCheckout = new Intent(this, MoneyInCheckoutActivity.class);
                         goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_NEW_ADDRESS, parcelableExtra);
                         goToCheckout.putExtra(MoneyInCheckoutActivity.MONEY_IN_ORDER_VALUE, orderValue);

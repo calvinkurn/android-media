@@ -156,9 +156,9 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
                 if (isAddNewAddressEnabled()) {
                     AddNewAddressAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
-                    com.tokopedia.logisticaddaddress.domain.model.Token token1 = new TokenMapper().reverseTokenModel(token);
+                    com.tokopedia.logisticaddaddress.domain.model.Token tempToken = new TokenMapper().reverseTokenModel(token);
                     startActivityForResult(PinpointMapActivity.newInstance(this,
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token1,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, tempToken,
                             false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 } else {

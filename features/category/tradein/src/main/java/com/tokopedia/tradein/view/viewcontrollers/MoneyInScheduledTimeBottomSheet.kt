@@ -47,6 +47,7 @@ class MoneyInScheduledTimeBottomSheet : BottomSheets() {
         if (arguments != null) {
             scheduleDate = arguments!!.getParcelableArrayList(KEY_SCHEDULE_DATA)
         }
+        dateAdapter.date.clear()
         for (date in scheduleDate) {
             dateAdapter.date.add(date.dateFmt)
         }
