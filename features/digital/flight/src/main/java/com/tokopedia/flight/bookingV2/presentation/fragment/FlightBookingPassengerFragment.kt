@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
@@ -102,8 +103,8 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
-        //getContactList
 
+        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
