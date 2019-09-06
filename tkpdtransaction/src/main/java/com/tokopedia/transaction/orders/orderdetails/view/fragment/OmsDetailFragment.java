@@ -240,7 +240,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if (invoice.invoiceUrl().equals("")) {
+        if (!invoice.invoiceUrl().contains("https://")) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(new View.OnClickListener() {

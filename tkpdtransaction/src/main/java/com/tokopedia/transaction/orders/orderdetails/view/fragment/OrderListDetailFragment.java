@@ -182,7 +182,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if (invoice.invoiceUrl().equals("")) {
+        if (!invoice.invoiceUrl().contains("https://")) {
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
