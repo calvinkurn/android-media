@@ -55,6 +55,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
     public ValueCallback<Uri[]> callbackAfterL;
     public final static int ATTACH_FILE_REQUEST = 1;
     private static final String EXTRA_URL = "url";
+    private static final String POST= "POST";
 
     private class MyWebViewClient extends WebChromeClient {
         @Override
@@ -163,24 +164,31 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
             return onOverrideUrl(request.getUrl());
         }
 
+        // Operational Tribe requirement
+        // Here is the path to determine if it is contact-us, create step
+        // If this path is found, we add the fingerprint header
+        private static final String CONTACT_US_PATH = "/contact-us/";
+        private static final String CREATE_STEP_PATH = "/create/step/";
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             // When user create help ticket, it will put the fingerprint data to header
             // to add the useful information of the android device.
-            String urlString = request.getUrl().toString();
-            if ("POST".equals(request.getMethod()) &&
-                    urlString.contains("/contact-us/") &&
-                    urlString.contains("/create/step/") &&
-                    getContext().getApplicationContext() instanceof NetworkRouter) {
-                NetworkRouter networkRouter = (NetworkRouter) getContext().getApplicationContext();
-                FingerprintModel fingerprintModel = networkRouter.getFingerprintModel();
-                String fingerprintHashData = fingerprintModel.getFingerprintHash();
-                String fingerprintHash = AuthUtil.md5(fingerprintHashData + "+" +
-                        new UserSession(getContext()).getUserId());
-                Map<String, String> requestHeader = request.getRequestHeaders();
-                requestHeader.put(FINGERPRINT_HASH, fingerprintHash);
-                requestHeader.put(FINGERPRINT_DATA, fingerprintHashData);
+            if (getContext()!= null) {
+                String urlString = request.getUrl().toString();
+                if (POST.equals(request.getMethod()) &&
+                        urlString.contains(CONTACT_US_PATH) &&
+                        urlString.contains(CREATE_STEP_PATH) &&
+                        getContext().getApplicationContext() instanceof NetworkRouter) {
+                    NetworkRouter networkRouter = (NetworkRouter) getContext().getApplicationContext();
+                    FingerprintModel fingerprintModel = networkRouter.getFingerprintModel();
+                    String fingerprintHashData = fingerprintModel.getFingerprintHash();
+                    String fingerprintHash = AuthUtil.md5(fingerprintHashData + "+" +
+                            new UserSession(getContext()).getUserId());
+                    Map<String, String> requestHeader = request.getRequestHeaders();
+                    requestHeader.put(FINGERPRINT_HASH, fingerprintHash);
+                    requestHeader.put(FINGERPRINT_DATA, fingerprintHashData);
+                }
             }
             return super.shouldInterceptRequest(view, request);
         }
