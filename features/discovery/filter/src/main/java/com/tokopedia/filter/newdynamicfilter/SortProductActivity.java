@@ -1,6 +1,5 @@
 package com.tokopedia.filter.newdynamicfilter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,20 +37,9 @@ public class SortProductActivity extends BaseActivity {
     View buttonClose;
     private TextView topBarTitle;
     private ListAdapter adapter;
-    public static final String SORT_ACTION_INTENT = "com.tokopedia.core" + ".SORT";
-    private static final String TAG = SortProductActivity.class.getSimpleName();
     private ArrayList<Sort> data;
     private String selectedKey;
     private String selectedValue;
-
-    public static Intent createInstance(Context context, ArrayList<Sort> sort, HashMap<String, String> selectedSort) {
-        Intent intent = new Intent(context, SortProductActivity.class);
-        intent.putParcelableArrayListExtra(EXTRA_SORT_DATA, sort);
-        if (selectedSort != null) {
-            intent.putExtra(EXTRA_SELECTED_SORT, selectedSort);
-        }
-        return intent;
-    }
 
     @Override
     public String getScreenName() {

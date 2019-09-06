@@ -31,8 +31,6 @@ import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.common.data.Sort;
 import com.tokopedia.filter.common.manager.FilterSortManager;
-import com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity;
-import com.tokopedia.filter.newdynamicfilter.SortProductActivity;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -398,19 +396,9 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     }
 
     protected void openSortActivity() {
-        if (isSortDataAvailable()) {
-            Intent intent = SortProductActivity.createInstance(
-                    getActivity(), getSort(), getSelectedSort()
-            );
-            startActivityForResult(intent, getSortRequestCode());
-            getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
-        } else {
+        if (!FilterSortManager.openSortActivity(this, sort, getSelectedSort())) {
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_sort_data_not_ready));
         }
-    }
-
-    private boolean isSortDataAvailable() {
-        return sort != null && !sort.isEmpty();
     }
 
     @Override
