@@ -23,12 +23,17 @@ class DashboardItemTypeFactoryImpl(private val listener: OnClickListener) : Base
         override fun onDashboardItemClickedListener(item: DashboardItemViewModel) {
             mainView.onItemClicked(item)
         }
+
+        override fun onBuyClick(appLink: String) {
+
+        }
     }) {
         this.mainView = mainView
     }
 
     interface OnClickListener {
         fun onDashboardItemClickedListener(item: DashboardItemViewModel)
+        fun onBuyClick(appLink: String)
     }
 
     override fun type(dashboardItemViewModel: DashboardItemViewModel): Int {
@@ -47,7 +52,7 @@ class DashboardItemTypeFactoryImpl(private val listener: OnClickListener) : Base
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         val abstractViewHolder: AbstractViewHolder<*>
         if (viewType == DashboardItemViewHolder.LAYOUT) {
-            abstractViewHolder = DashboardItemViewHolder(view, listener::onDashboardItemClickedListener)
+            abstractViewHolder = DashboardItemViewHolder(view, listener::onDashboardItemClickedListener, listener::onBuyClick)
         } else if (viewType == DashboardHeaderViewHolder.LAYOUT) {
             abstractViewHolder = DashboardHeaderViewHolder(view, mainView)
         } else if (viewType == EmptyDashboardViewHolder.LAYOUT) {

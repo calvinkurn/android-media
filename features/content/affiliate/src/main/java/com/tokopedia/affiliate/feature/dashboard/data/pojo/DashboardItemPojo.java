@@ -41,6 +41,9 @@ public class DashboardItemPojo {
     @SerializedName("productCommission")
     @Expose
     private String productCommission;
+    @SerializedName("createPostAppLink")
+    @Expose
+    private String createPostAppLink;
 
     public String getId() {
         return id;
@@ -106,4 +109,11 @@ public class DashboardItemPojo {
         this.productCommission = productCommission;
     }
 
+    public String getCreatePostAppLink() {
+        return createPostAppLink;
+    }
+
+    public void setCreatePostAppLink(String createPostAppLink) {
+        this.createPostAppLink = createPostAppLink;
+    }
 }

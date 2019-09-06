@@ -9,6 +9,8 @@ query GetDashboardLoadMore($type: Int, $cursor: String) {
       totalClick
       commission
       productCommission
+      createPostAppLink
+      productRating
     }
     pagination {
       nextCursor

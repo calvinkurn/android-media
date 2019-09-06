@@ -88,7 +88,9 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
                     pojo.getProductCommission() != null ? pojo.getProductCommission() : "",
                     pojo.isIsActive(),
                     pojo.isIsActive() ? activeSection : inactiveSection,
-                    (type != null) && (index == 0 || pojoList.get(index).isIsActive() != pojo.isIsActive()));
+                    (type != null) && (index == 0 || pojoList.get(index-1).isIsActive() != pojo.isIsActive()),
+                    type,
+                    pojo.getCreatePostAppLink());
             itemList.add(item);
         }
         return itemList;

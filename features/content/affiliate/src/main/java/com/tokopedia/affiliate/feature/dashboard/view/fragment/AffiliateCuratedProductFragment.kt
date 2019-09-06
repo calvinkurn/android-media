@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardI
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateCuratedProductContract
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateProductBoughtPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
+import com.tokopedia.applink.RouteManager
 import javax.inject.Inject
 
 /**
@@ -48,6 +49,10 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         return DashboardItemTypeFactoryImpl(object : DashboardItemTypeFactoryImpl.OnClickListener {
             override fun onDashboardItemClickedListener(item: DashboardItemViewModel) {
                 onItemClicked(item)
+            }
+
+            override fun onBuyClick(appLink: String) {
+                openApplink(appLink)
             }
         })
     }
@@ -94,5 +99,11 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    private fun openApplink(applink: String) {
+        if (RouteManager.isSupportApplink(context, applink)) {
+            RouteManager.route(context, applink)
+        }
     }
 }

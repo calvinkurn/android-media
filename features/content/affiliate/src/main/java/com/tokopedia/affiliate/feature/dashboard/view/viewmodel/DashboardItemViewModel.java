@@ -21,10 +21,13 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
     private boolean isActive;
     private String sectionName;
     private boolean shouldShowSection;
+    private Integer type;
+    private String createPostApplink;
 
     public DashboardItemViewModel(String id, String imageUrl, String title, String value,
                                   String itemClicked, String itemSold,
-                                  String productCommission, boolean isActive, String sectionName, boolean shouldShowSection) {
+                                  String productCommission, boolean isActive, String sectionName, boolean shouldShowSection,
+                                  Integer type, String createPostApplink) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.title = title;
@@ -35,6 +38,8 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.isActive = isActive;
         this.sectionName = sectionName;
         this.shouldShowSection = shouldShowSection;
+        this.type = type;
+        this.createPostApplink = createPostApplink;
     }
 
     public String getId() {
@@ -111,6 +116,22 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
 
     public void setShouldShowSection(boolean shouldShowSection) {
         this.shouldShowSection = shouldShowSection;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public String getCreatePostApplink() {
+        return createPostApplink;
+    }
+
+    public void setCreatePostApplink(String createPostApplink) {
+        this.createPostApplink = createPostApplink;
     }
 
     @Override
