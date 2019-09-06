@@ -234,8 +234,10 @@ repositories {
 
 afterEvaluate {
     dependencies {
-        liveDevImplementation rootProject.ext.instabugDependencies.instabug
-        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
+        stagingDevDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
+        stagingProdDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
+        liveDevDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
+        liveProdDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
     }
 }
 

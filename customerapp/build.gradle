@@ -249,6 +249,15 @@ android {
 
 }
 
+afterEvaluate {
+    dependencies {
+        stagingDevDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
+        stagingProdDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
+        liveDevDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
+        liveProdDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
+    }
+}
+
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
