@@ -67,6 +67,7 @@ class OrderListRecomListViewHolder(itemView: View?, var orderListAnalytics: Orde
     override fun onWhishListSuccessResponse(isSelected: Boolean) {
         this.isSelected = isSelected
         setWishlistDrawable()
+        orderListAnalytics.sendWishListClickEvent(isSelected)
     }
 
     interface ActionListener{

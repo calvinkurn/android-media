@@ -71,6 +71,9 @@ public class OrderListAnalytics {
     private static final String SCREEN_NAME = "/digital/deals/thanks";
     private static final String ACTION_CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
     private static final String NONE = "none/other";
+    private static final String RECOMMENDATION_PRODUCT_EVENT_CATEGORY = "my purchase list - mp - bom_empty";
+    private static final String ADD_WISHLIST = "click add - wishlist on product recommendation";
+    private static final String REMOVE_WISHLIST = "click remove - wishlist on product recommendation";
     private List<Object> dataLayerList = new ArrayList<>();
     private String recomTitle;
 
@@ -275,5 +278,14 @@ public class OrderListAnalytics {
                                                 "category_id",NONE
                                                 ))))
                 )));
+    }
+
+    public void sendWishListClickEvent(Boolean isAdd) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        PRODUCT_EVENT_NAME,
+                        RECOMMENDATION_PRODUCT_EVENT_CATEGORY,
+                        isAdd ? ADD_WISHLIST : REMOVE_WISHLIST,
+                        recomTitle));
     }
 }
