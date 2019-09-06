@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -45,15 +46,13 @@ import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
-import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
-import com.tokopedia.normalcheckout.constant.ATC_ONLY
-import com.tokopedia.normalcheckout.constant.ProductAction
-import com.tokopedia.normalcheckout.constant.TRADEIN_BUY
+import com.tokopedia.normalcheckout.constant.*
 import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.normalcheckout.presenter.NormalCheckoutViewModel
 import com.tokopedia.normalcheckout.router.NormalCheckoutRouter
 import com.tokopedia.payment.activity.TopPayActivity
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_LEASING
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
@@ -93,6 +92,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     var tempQuantity = quantity
     var isTradeIn = 0
     var isOcs = true
+    var isLeasing = true
     var selectedVariantId: String? = null
     var placeholderProductImage: String? = null
     @ProductAction
@@ -110,6 +110,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
 
     companion object {
+        const val EXTRA_IS_LEASING = "is_leasing"
         const val EXTRA_CART_ID = "cart_id"
 
         const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
@@ -120,6 +121,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562
         const val REQUEST_CODE_LOGIN_THEN_BUY = 563
         const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
+        const val REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT = 565
 
         fun createInstance(shopId: String?, productId: String?,
                            notes: String? = "", quantity: Int? = 0,
@@ -132,6 +134,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            shopName: String? = "",
                            isOneClickShipment: Boolean,
                            isNeedRefresh: Boolean,
+                           isLeasing: Boolean,
                            reference: String?,
                            tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
@@ -142,18 +145,20 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putInt(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity ?: 0)
                     putInt(ApplinkConst.Transaction.EXTRA_ACTION, action)
                     putString(ApplinkConst.Transaction.EXTRA_PRODUCT_IMAGE, placeholderProductImage)
-                    putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId ?: "")
-                    putString(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution ?: "")
+                    putString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId
+                            ?: "")
+                    putString(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution
+                            ?: "")
                     putString(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName ?: "")
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopType ?: "")
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName ?: "")
                     putBoolean(ApplinkConst.Transaction.EXTRA_OCS, isOneClickShipment)
                     putBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, isNeedRefresh)
                     putParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
+                    putBoolean(EXTRA_IS_LEASING, isLeasing)
                     putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
                 }
             }
-
             return fragment
         }
     }
@@ -282,6 +287,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     tv_trade_in.setOnClickListener(null)
                     doCheckoutAction(TRADEIN_BUY)
                 }
+                REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT -> {
+                    goToApplyLeasing()
+                }
             }
         }
     }
@@ -385,6 +393,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             } else {
                 button_buy_partial.background = ContextCompat.getDrawable(activity as Context, R.drawable.bg_button_orange_enabled)
             }
+            if (isLeasing) {
+                button_cart.gone()
+                button_buy_partial.gone()
+                btn_apply_leasing.visible()
+            }
         } else { // sellerapp or warehouse product or owner
             showFullButton(!productInfo.basic.isActive(), productInfo.isPreorderActive, false)
         }
@@ -479,6 +492,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             shopName = argument.getString(ApplinkConst.Transaction.EXTRA_SHOP_NAME)
             tradeInParams = argument.getParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS)
             isOcs = argument.getBoolean(ApplinkConst.Transaction.EXTRA_OCS)
+            isLeasing = argument.getBoolean(EXTRA_IS_LEASING)
         }
         if (savedInstanceState == null) {
             if (argument != null) {
@@ -527,6 +541,21 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             }
             doCheckoutAction(action)
         }
+        btn_apply_leasing.setOnClickListener {
+            if (!viewModel.isUserSessionActive()) {
+                context?.run {
+                    //do tracking
+                    if (action == APPLY_CREDIT) {
+                        startActivityForResult(
+                                RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                                REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT
+                        )
+                    }
+                }
+                return@setOnClickListener
+            }
+            goToApplyLeasing()
+        }
         tv_trade_in.setTrackListener { trackClickTradeIn() }
         button_cart.setOnClickListener {
             if (hasError()) {
@@ -542,6 +571,19 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                 addToCart()
             }
         }
+    }
+
+    private fun goToApplyLeasing() {
+        val urlApplyLeasingWithProductId = String.format(
+                URL_APPLY_LEASING,
+                productId
+        )
+        val webViewUrl = String.format(
+                "%s?url=%s",
+                ApplinkConst.WEBVIEW,
+                urlApplyLeasingWithProductId
+        )
+        RouteManager.route(context, webViewUrl)
     }
 
     override fun onDestroy() {
@@ -634,14 +676,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    private fun sendBranchAddToCardEvent(){
-        if(selectedProductInfo != null) {
+    private fun sendBranchAddToCardEvent() {
+        if (selectedProductInfo != null) {
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, createLinkerData(selectedProductInfo,
                     (UserSession(activity)).userId)))
         }
     }
 
-    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData{
+    private fun createLinkerData(productInfo: ProductInfo?, userId: String?): LinkerData {
         var linkerData = LinkerData()
         linkerData.id = productInfo?.basic?.id.toString()
         linkerData.price = productInfo?.basic?.price?.toInt().toString()
