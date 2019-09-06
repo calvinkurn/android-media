@@ -24,8 +24,6 @@ public interface ShippingCourierContract {
         void hideLoading();
 
         void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList);
-
-        Activity getActivity();
     }
 
     interface Presenter extends CustomerPresenter<View> {
