@@ -1,11 +1,9 @@
-package com.tokopedia.power_merchant.subscribe.model
+package com.tokopedia.power_merchant.subscribe.view.model
 
-import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 
-abstract class PMCancellationQuestionnaireModel(
-        var priority: Int,
+abstract class PMCancellationQuestionnaireQuestionModel(
         var type : String,
         var question: String
 ): Parcelable{
@@ -16,7 +14,6 @@ abstract class PMCancellationQuestionnaireModel(
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeInt(priority)
         parcel.writeString(type)
         parcel.writeString(question)
     }

@@ -1,4 +1,4 @@
-package com.tokopedia.power_merchant.subscribe.model
+package com.tokopedia.power_merchant.subscribe.view.model
 
 import android.os.Parcel
 import android.os.Parcelable

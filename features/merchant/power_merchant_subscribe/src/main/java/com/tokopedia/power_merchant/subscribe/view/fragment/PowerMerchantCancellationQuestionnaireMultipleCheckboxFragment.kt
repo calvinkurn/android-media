@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
 import com.tokopedia.power_merchant.subscribe.R
-import com.tokopedia.power_merchant.subscribe.model.PMCancellationQuestionnaireMultipleOptionModel
-import com.tokopedia.power_merchant.subscribe.model.PMCancellationQuestionnaireStepperModel
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.view.*

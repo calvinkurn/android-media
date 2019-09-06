@@ -1,16 +1,13 @@
-package com.tokopedia.power_merchant.subscribe.model
+package com.tokopedia.power_merchant.subscribe.view.model
 
-import android.annotation.SuppressLint
 import android.os.Parcel
 import android.os.Parcelable
 
 class PMCancellationQuestionnaireRateModel(
-        priority: Int,
         type: String,
         question: String
-) : PMCancellationQuestionnaireModel(priority, type, question) {
+) : PMCancellationQuestionnaireQuestionModel(type, question) {
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
             parcel.readString() ?: "",
             parcel.readString() ?: ""
     )

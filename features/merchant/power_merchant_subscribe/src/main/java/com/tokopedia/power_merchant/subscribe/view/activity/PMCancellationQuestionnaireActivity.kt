@@ -22,7 +22,7 @@ import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
-import com.tokopedia.power_merchant.subscribe.model.*
+import com.tokopedia.power_merchant.subscribe.view.model.*
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireIntroFragment
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PMCancellationQuestionnaireViewModel
@@ -33,8 +33,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<BaseAppComponent?> {
-    var listQuestionModel: MutableList<PMCancellationQuestionnaireModel> = mutableListOf()
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     @Inject
@@ -63,77 +61,12 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
     }
 
     private fun generateFragment(data: PMCancellationQuestionnaireData) {
-        listQuestionModel = mutableListOf(
-                PMCancellationQuestionnaireRateModel(
-                        1,
-                        "rate",
-                        "Ratingzzz?"
-                ),
-                PMCancellationQuestionnaireMultipleOptionModel(
-                        1,
-                        "multi_option",
-                        "Kenapa Anda ingin berhenti menjadi Power Merchant?",
-                        listOf(
-                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
-                                        1,
-                                        "Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya"
-                                ),
-                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
-                                        2,
-                                        "Toko saya sudah punya pelanggan setia"
-                                )
-                        )
-                ),
-                PMCancellationQuestionnaireMultipleOptionModel(
-                        1,
-                        "multi_option",
-                        "Kenapa Anda ingin berhenti menjadi Power Merchant?",
-                        listOf(
-                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
-                                        1,
-                                        "Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya"
-                                ),
-                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
-                                        2,
-                                        "Toko saya sudah punya pelanggan setia"
-                                )
-                        )
-                ),
-                PMCancellationQuestionnaireMultipleOptionModel(
-                        1,
-                        "multi_option",
-                        "Kenapa Anda ingin berhenti menjadi Power Merchant?",
-                        listOf(
-                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
-                                        1,
-                                        "Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya"
-                                ),
-                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
-                                        2,
-                                        "Toko saya sudah punya pelanggan setia"
-                                )
-                        )
-                ),
-                PMCancellationQuestionnaireMultipleOptionModel(
-                        1,
-                        "multi_option",
-                        "Kenapa Anda ingin berhenti menjadi Power Merchant?",
-                        listOf(
-                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
-                                        1,
-                                        "Saya tidak merasakan efek Power Merchant ke toko dan penjualan saya"
-                                ),
-                                PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
-                                        2,
-                                        "Toko saya sudah punya pelanggan setia"
-                                )
-                        )
-                )
-        )
-        val expiredDate = DateFormatUtils.formatDate(DateFormatUtils.FORMAT_YYYY_MM_DD,
+        val formattedExpiredDate = DateFormatUtils.formatDate(
+                DateFormatUtils.FORMAT_YYYY_MM_DD,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
-                data.goldGetPmOsStatus.result.data.powerMerchant.expiredTime)
-        listQuestionModel.forEachIndexed { position, questionModel ->
+                data.expiredDate
+        )
+        data.listQuestion.forEachIndexed { position, questionModel ->
             pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer.add(
                     PMCancellationQuestionnaireAnswerModel(
                             questionModel.question
@@ -142,7 +75,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
             if (position == 0 && questionModel is PMCancellationQuestionnaireRateModel) {
                 listFragment.add(PowerMerchantCancellationQuestionnaireIntroFragment.createInstance(
                         position,
-                        expiredDate,
+                        formattedExpiredDate,
                         questionModel
                 ))
             } else if (questionModel is PMCancellationQuestionnaireMultipleOptionModel) {

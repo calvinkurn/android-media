@@ -4,8 +4,16 @@ import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.domain.interactor.DeactivatePowerMerchantUseCase
+import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaireResponse
+import com.tokopedia.power_merchant.subscribe.data.model.Question
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMCancellationQuestionnaireDataUseCase
-import com.tokopedia.power_merchant.subscribe.model.PMCancellationQuestionnaireData
+import com.tokopedia.power_merchant.subscribe.domain.model.PMCancellationQuestionnaireDataUseCaseModel
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireData
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireQuestionModel
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireQuestionModel.Companion.TYPE_MULTIPLE_OPTION
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireQuestionModel.Companion.TYPE_RATE
+import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireRateModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,9 +35,15 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
     fun getPMCancellationQuestionnaireData(shopId: String) {
         getPMCancellationQuestionnaireDataUseCase.execute(
                 GetPMCancellationQuestionnaireDataUseCase.createRequestParams(shopId),
-                object : Subscriber<PMCancellationQuestionnaireData>() {
-                    override fun onNext(data: PMCancellationQuestionnaireData) {
-                        pmCancellationQuestionnaireData.value = Success(data)
+                object : Subscriber<PMCancellationQuestionnaireDataUseCaseModel>() {
+                    override fun onNext(data: PMCancellationQuestionnaireDataUseCaseModel) {
+                        val expiredDate = data.goldGetPmOsStatus.result.data.powerMerchant.expiredTime
+                        val questionData = generateQuestionsData(data.goldCancellationQuestionnaire)
+                        val cancellationQuestionnaireData = PMCancellationQuestionnaireData(
+                                expiredDate,
+                                questionData
+                        )
+                        pmCancellationQuestionnaireData.value = Success(cancellationQuestionnaireData)
                     }
 
                     override fun onCompleted() {
@@ -40,6 +54,46 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
                     }
 
                 }
+        )
+    }
+
+    private fun generateQuestionsData(
+            goldCancellationQuestionnaire: GoldCancellationsQuestionaireResponse
+    ): MutableList<PMCancellationQuestionnaireQuestionModel> {
+        val questionsData = mutableListOf<PMCancellationQuestionnaireQuestionModel>()
+        for (questionData in goldCancellationQuestionnaire.data.questionList) {
+            when (questionData.questionType) {
+                TYPE_RATE -> {
+                    questionsData.add(createRateQuestion(questionData))
+                }
+                TYPE_MULTIPLE_OPTION -> {
+                    questionsData.add(createMultipleOptionQuestion(questionData))
+                }
+            }
+        }
+        return questionsData
+    }
+
+    private fun createMultipleOptionQuestion(
+            questionData: Question
+    ): PMCancellationQuestionnaireMultipleOptionModel {
+        val options = mutableListOf<PMCancellationQuestionnaireMultipleOptionModel.OptionModel>()
+        for (option in questionData.option) {
+            options.add(PMCancellationQuestionnaireMultipleOptionModel.OptionModel(
+                    option.value
+            ))
+        }
+        return PMCancellationQuestionnaireMultipleOptionModel(
+                questionData.questionType,
+                questionData.question,
+                options
+        )
+    }
+
+    private fun createRateQuestion(questionData: Question): PMCancellationQuestionnaireRateModel {
+        return PMCancellationQuestionnaireRateModel(
+                questionData.questionType,
+                questionData.question
         )
     }
 

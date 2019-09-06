@@ -1,16 +1,14 @@
-package com.tokopedia.power_merchant.subscribe.model
+package com.tokopedia.power_merchant.subscribe.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
 
 class PMCancellationQuestionnaireMultipleOptionModel(
-        priority: Int,
         type: String,
         questionString: String,
         var listOptionModel: List<OptionModel>
-) : PMCancellationQuestionnaireModel(priority,type, questionString) {
+) : PMCancellationQuestionnaireQuestionModel(type, questionString) {
     constructor(parcel: Parcel) : this(
-            parcel.readInt(),
             parcel.readString() ?: "",
             parcel.readString() ?: "" ,
             parcel.createTypedArrayList(OptionModel) ?: listOf()
@@ -36,16 +34,13 @@ class PMCancellationQuestionnaireMultipleOptionModel(
     }
 
     data class OptionModel(
-            var priority: Int,
             var value: String
     ) : Parcelable {
         constructor(parcel: Parcel) : this(
-                parcel.readInt(),
                 parcel.readString() ?: ""
         )
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeInt(priority)
             parcel.writeString(value)
         }
 
