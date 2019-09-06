@@ -205,8 +205,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
         llContent.setVisibility(View.VISIBLE);
     }
 
-    @Override
-    public void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList) {
+    private void showErrorPage(String message, ShipmentCartItemModel shipmentCartItemModel, int cartPosition, List<ShopShipment> shopShipmentList) {
         pbLoading.setVisibility(View.GONE);
         llContent.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
