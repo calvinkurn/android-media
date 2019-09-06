@@ -477,12 +477,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                     .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                     .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                     .voucherCodeCopied("")
-            if (inputFieldCount in 1..2) {
-                checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
-            }
-            if (inputFieldCount == 2) {
-                checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
-            }
+//            if (inputFieldCount in 1..2) {
+//                checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
+//            }
+//            if (inputFieldCount == 2) {
+//                checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
+//            }
+            checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber("404988375")
+            checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId("12444")
             checkoutPassData = checkoutPassDataBuilder.build()
 
             processToCart()
