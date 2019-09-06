@@ -122,6 +122,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
         action_back.setOnClickListener { activity?.onBackPressed() }
         mediaPreviewViewModel.getPostDetail()
+        feedAnalyticTracker.eventOpenMediaPreview()
     }
 
     override fun onDestroy() {

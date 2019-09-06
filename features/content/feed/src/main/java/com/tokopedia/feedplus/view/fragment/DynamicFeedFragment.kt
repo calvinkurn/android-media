@@ -79,6 +79,8 @@ class DynamicFeedFragment:
         presenter.attachView(this)
         rv_dynamic_feed.adapter = adapter
         rv_dynamic_feed.layoutManager = LinearLayoutManager(activity)
+        feedAnalyticTracker.eventOpenTrendingPage()
+
     }
 
     private fun initViewListener() {

@@ -74,6 +74,16 @@ class FeedAnalyticTracker
         const val CREATIVE = "creative"
         const val POSITION = "position"
     }
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 39
+     *
+     * @param activityId - postId
+     */
+    fun eventOpenMediaPreview() {
+        trackOpenScreenEvent(Screen.MEDIA_PREIVEW)
+    }
 
     /**
      *
@@ -116,6 +126,17 @@ class FeedAnalyticTracker
                 Category.CONTENT_FEED_TIMELINE,
                 Action.CLICK_BUY,
                 productId)
+    }
+
+    /**
+     *
+     * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
+     * Screenshot 42
+     *
+     * @param activityId - postId
+     */
+    fun eventOpenTrendingPage() {
+        trackOpenScreenEvent(Screen.TRENDING)
     }
 
     /**
