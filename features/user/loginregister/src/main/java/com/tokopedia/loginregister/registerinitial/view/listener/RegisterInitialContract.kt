@@ -87,7 +87,7 @@ interface RegisterInitialContract {
 
         fun validateRegister(id: String)
 
-        fun getUserInfo(shouldGoToCreatePassword : Boolean = true)
+        fun getUserInfo()
 
         fun getTickerInfo()
     }

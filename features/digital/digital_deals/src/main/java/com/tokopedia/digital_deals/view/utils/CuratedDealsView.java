@@ -85,9 +85,9 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
                         }
                     }
                 });
+
             }
         }
-
     }
 
     @Override

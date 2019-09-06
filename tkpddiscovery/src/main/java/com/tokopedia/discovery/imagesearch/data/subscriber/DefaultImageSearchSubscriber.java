@@ -10,7 +10,7 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.discovery.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract;
 import com.tokopedia.discovery.newdiscovery.base.DefaultSearchSubscriber;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -19,17 +19,9 @@ import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-
-/**
- * Created by sachinbansal on 1/18/18.
- */
 
 public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
         extends DefaultSearchSubscriber {
-
-    List<String> productIDList = new ArrayList<>();
 
     public DefaultImageSearchSubscriber(D2 discoveryView) {
         super(null, discoveryView, true);
@@ -85,7 +77,6 @@ public class DefaultImageSearchSubscriber<D2 extends BaseDiscoveryContract.View>
             return;
         }
 
-        discoveryView.onHandleImageSearchResponseSuccess();
         discoveryView.onHandleImageResponseSearch(model);
     }
 }

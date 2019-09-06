@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,24 +28,26 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
+import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
+import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
 import com.tokopedia.chatbot.view.adapter.viewholder.factory.ChatBotChatMenuFactory
@@ -58,6 +59,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
 import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -69,7 +71,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.IllegalStateException
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
 import javax.inject.Inject
@@ -79,8 +80,7 @@ import javax.inject.Inject
  */
 class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         AttachedInvoiceSelectionListener, QuickReplyListener,
-        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener {
-
+        ChatActionListBubbleListener, ChatRatingListener, TypingListener, View.OnClickListener,ChatbotActivity.OnBackPressed {
 
     override fun clearChatText() {
         replyEditText.setText("")
@@ -103,6 +103,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     lateinit var replyEditText: EditText
 
     lateinit var mCsatResponse: WebSocketCsatResponse
+    private var isBackAllowed = true
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
@@ -240,11 +241,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         return {
 
             val list = it.listChat.filter {
-               !(it is FallbackAttachmentViewModel && it.message.isEmpty())
+                !(it is FallbackAttachmentViewModel && it.message.isEmpty())
             }
 
             updateViewData(it)
-            renderList(list , it.canLoadMore)
+            renderList(list, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it)
             checkShowLoading(it.canLoadMore)
             presenter.sendReadEvent(messageId)
@@ -372,7 +373,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     private fun onSuccessSubmitCsatRating(): (String) -> Unit {
         hideCsatRatingView()
-        return { str->
+        return { str ->
             view?.let {
                 Toaster.showNormalWithAction(it, str, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
             }
@@ -549,5 +550,50 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun createChatMenuFactory(): ChatMenuFactory {
         return ChatBotChatMenuFactory()
+    }
+
+
+    override fun showErrorToast(it: Throwable) {
+        view?.let { mView -> Toaster.showErrorWithAction(mView, it.message.toString(), Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { }) }
+    }
+
+    override fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel) {
+        getViewState().showDividerViewOnConnection(connectionDividerViewModel)
+    }
+
+    override fun isBackAllowed(isBackAllowed: Boolean) {
+        this.isBackAllowed = isBackAllowed
+    }
+
+    override fun onClickLeaveQueue() {
+        presenter.OnClickLeaveQueue()
+    }
+
+    override fun updateToolbar(profileName: String?, profileImage: String?) {
+        if (activity is ChatbotActivity){
+            (activity as ChatbotActivity).upadateToolbar(profileName,profileImage)
+        }
+    }
+
+    override fun onBackPressed() {
+        if(!isBackAllowed){
+            val dialog = Dialog(context as Activity, Dialog.Type.PROMINANCE)
+            dialog.setTitle(context?.getString(R.string.cb_bot_leave_the_queue))
+            dialog.setDesc(context?.getString(R.string.cb_bot_leave_the_queue_desc_one))
+            dialog.setBtnOk(context?.getString(R.string.cb_bot_ok_text))
+            dialog.setBtnCancel(context?.getString(R.string.cb_bot_cancel_text))
+            dialog.setOnOkClickListener{
+                presenter.OnClickLeaveQueue()
+                (activity as ChatbotActivity).finish()
+
+            }
+            dialog.setOnCancelClickListener{
+                dialog.dismiss()
+            }
+            dialog.setCancelable(true)
+            dialog.show()
+        }else{
+            (activity as ChatbotActivity).finish()
+        }
     }
 }

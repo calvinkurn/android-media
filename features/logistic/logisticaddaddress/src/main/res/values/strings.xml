@@ -89,6 +89,7 @@
     <string name="et_no_ponsel_hint">No Ponsel</string>
     <string name="et_detail_address_hint">Tulis No. Rumah, Blok, RT/RW</string>
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
+    <string name="tv_detail_address_placeholder">Tulis No. Rumah, Blok, RT/RW, dll</string>
     <string name="detail_alamat">Detail Alamat</string>
     <string name="invalid_title">Oops, lokasimu tidak dikenal</string>
     <string name="invalid_desc">Tenang, kamu tetap dapat memilih lokasi ini dengan menambahkan detail alamat secara jelas.</string>

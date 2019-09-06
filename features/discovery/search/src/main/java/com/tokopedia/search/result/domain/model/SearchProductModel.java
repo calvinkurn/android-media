@@ -2,8 +2,8 @@ package com.tokopedia.search.result.domain.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.discovery.common.data.DataValue;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -96,12 +96,18 @@ public class SearchProductModel {
         @SerializedName("count")
         @Expose
         private int count;
+        @SerializedName("response_code")
+        @Expose
+        private String responseCode;
         @SerializedName("count_text")
         @Expose
         private String countText;
         @SerializedName("additional_params")
         @Expose
         private String additionalParams;
+        @SerializedName("autocomplete_applink")
+        @Expose
+        private String autocompleteApplink;
         @SerializedName("redirection")
         @Expose
         private Redirection redirection = new Redirection();
@@ -139,12 +145,20 @@ public class SearchProductModel {
             return count;
         }
 
+        public String getResponseCode() {
+            return responseCode;
+        }
+
         public String getCountText() {
             return countText;
         }
 
         public String getAdditionalParams() {
             return additionalParams;
+        }
+
+        public String getAutocompleteApplink() {
+            return autocompleteApplink;
         }
 
         public Redirection getRedirection() {

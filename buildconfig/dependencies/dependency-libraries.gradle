@@ -29,13 +29,13 @@ ext {
             trackingOptimizer     : "com.tokopedia.trackingoptimizer:trackingoptimizer:${tkpdTrackingOptimizerVersion}",
             videoplayer           : "com.tokopedia.videoplayer:videoplayer:${tkpdVideoplayerVersion}",
             youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
-            usecase               : "com.tokopedia.usecase:usecase:2.24",
+            usecase               : "com.tokopedia.usecase:usecase:1.0.1",
             cachemanager          : "com.tokopedia.cachemanager:cachemanager:2.24",
-            globalconfig          : "com.tokopedia.config:global_config:1",
-            graphql               : "com.tokopedia.graphql:graphql:1",
-            network               : "com.tokopedia.network:network:1",
-            url                   : "com.tokopedia.url:url:1",
-            usersession           : "com.tokopedia.user.session:user_session:1.0.1"
+            globalconfig          : "com.tokopedia.config:global_config:1.0.2",
+            graphql               : "com.tokopedia.graphql:graphql:1.0.4",
+            network               : "com.tokopedia.network:network:1.0.2",
+            url                   : "com.tokopedia.url:url:1.0.1",
+            usersession           : "com.tokopedia.user.session:user_session:1.0.6"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -67,6 +67,7 @@ ext {
             pushNotif         : ":libraries:push_notification",
             reactNative       : ":libraries:react_native",
             remoteConfig      : ":libraries:remote_config",
+            sharedata         : ":libraries:sharedata",
             travelCalendar    : ":libraries:travel_calendar",
             trackingOptimizer : ":libraries:tracking_optimizer",
             videoRecorder     : ":libraries:video_recorder",
@@ -82,8 +83,8 @@ ext {
             design            : ":tkpddesign",
             track             : ":libraries:track",
             graphView         :":libraries:graph_view",
-//            iris              : ":libraries:iris",
-            iris              : ":libraries:iris_no_op",
+            iris              : ":libraries:iris",
+//            iris              : ":libraries:iris_no_op",
             cpm              : ":libraries:cpm",
             banner            : ":libraries:unify:unify_compositions:banner",
             collapsingTabLayout: ":libraries:collapsing_tab_layout",

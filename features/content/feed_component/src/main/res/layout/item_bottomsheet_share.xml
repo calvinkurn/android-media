@@ -28,7 +28,6 @@
             android:gravity="center_horizontal"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textAllCaps="false"
             android:fontFamily="sans-serif-medium"
             android:layout_marginLeft="@dimen/dp_16"/>
 

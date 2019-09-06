@@ -134,6 +134,7 @@ public interface ApplinkConst {
     String INSURANCE_ORDER = "tokopedia://insurance/order";
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
+    String HOTEL = "tokopedia://hotel";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";
@@ -201,6 +202,7 @@ public interface ApplinkConst {
 
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
+    String SETTING_NOTIFICATION = "tokopedia://settings/notification";
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL = "tokopedia://content/{post_id}";
@@ -327,6 +329,7 @@ public interface ApplinkConst {
     }
 
     interface Play {
+        String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
         String PARAM_HAS_TITLEBAR = "titlebar";
         String PARAM_URL = "url";
     }
@@ -350,6 +353,7 @@ public interface ApplinkConst {
         String EXTRA_NEED_REFRESH = "extra_need_refresh";
         String TRACKER_ATTRIBUTION = "tracker_attribution";
         String TRACKER_LIST_NAME = "tracker_list_name";
+        String EXTRA_REFERENCE = "reference";
 
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
     }
