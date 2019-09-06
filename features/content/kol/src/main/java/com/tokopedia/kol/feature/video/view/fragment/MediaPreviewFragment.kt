@@ -53,6 +53,8 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     var buttonTagAction: UnifyButton? = null
 
+    var postAuthor = ""
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
@@ -63,6 +65,14 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         mediaPreviewViewModel.isMyShop(it)
     }, this::toggleWishlist){
         postTagItem, isMyShop ->
+            feedAnalyticTracker.eventMediaDetailClickBuy(
+                    postAuthor,
+                    postTagItem.id,
+                    postTagItem.text,
+                    postTagItem.price,
+                    1,
+                    postTagItem.shop[0].shopId.toIntOrZero(),
+                    "")
             if (isMyShop) onGoToLink(postTagItem.applink)
             else checkAddToCart(postTagItem)
     } }
@@ -77,7 +87,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    override fun getScreenName(): String? = FeedAnalyticTracker.Screen.MEDIA_PREIVEW
+    override fun getScreenName(): String? = FeedAnalyticTracker.Screen.MEDIA_PREVIEW
 
     override fun initInjector() {
         getComponent(KolComponent::class.java).inject(this)
@@ -239,6 +249,14 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                         buttonTagAction?.text = getString(R.string.string_posttag_buy)
                     }
                     buttonTagAction?.setOnClickListener {
+                        feedAnalyticTracker.eventMediaDetailClickBuy(
+                                postAuthor,
+                                tagItem.id,
+                                tagItem.text,
+                                tagItem.price,
+                                1,
+                                tagItem.shop[0].shopId.toIntOrZero(),
+                                "")
                         checkAddToCart(tagItem)
                     }
                     action_favorite.visible()
@@ -296,6 +314,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
         val templateHeader = dynamicPost.template.cardpost.header
         val header = dynamicPost.header
+        postAuthor = header.followCta.authorType
         authorImage.shouldShowWithAction(templateHeader.avatar && header.avatar.isNotBlank()){
             authorImage.loadImageCircle(header.avatar)
             authorImage.setOnClickListener{onHeaderClicked(header)}

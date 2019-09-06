@@ -20,6 +20,7 @@ class FeedAnalyticTracker
     private companion object {
         private const val USER_ID = "user_id"
         const val ECOMMERCE = "ecommerce"
+        const val PRODUCTS = "products"
 
         const val PROMOTIONS = "promotions"
     }
@@ -31,6 +32,9 @@ class FeedAnalyticTracker
 
         const val PROMO_CLICK = "promoClick"
         const val PROMO_VIEW = "promoView"
+        const val ACTION_FIELD = "actionField"
+        const val LIST = "list"
+        const val ADD = "add"
     }
 
     private object Category {
@@ -62,7 +66,7 @@ class FeedAnalyticTracker
     }
 
     object Screen {
-        const val MEDIA_PREIVEW = "/feed/media-preview"
+        const val MEDIA_PREVIEW = "/feed/media-preview"
         const val TRENDING = "/feed/trending-tab"
         const val HASHTAG = "/feed/hashtag"
         const val HASHTAG_POST_LIST = "/hashtag page - post list"
@@ -74,6 +78,18 @@ class FeedAnalyticTracker
         const val CREATIVE = "creative"
         const val POSITION = "position"
     }
+    private object Product {
+        const val ID = "id"
+        const val NAME = "name"
+        const val PRICE = "price"
+        const val QTY = "quantity"
+        const val SHOP_ID = "shop_id"
+        const val SHOP_NAME = "shop_name"
+        const val MEDIA_PREVIEW = "/feed media preview - {role} post"
+        const val MEDIA_PREVIEW_TAG = "{role}"
+        const val CURRENCY_CODE = "currencyCode"
+        const val CURRENCY_CODE_IDR = "IDR"
+    }
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
@@ -82,7 +98,7 @@ class FeedAnalyticTracker
      * @param activityId - postId
      */
     fun eventOpenMediaPreview() {
-        trackOpenScreenEvent(Screen.MEDIA_PREIVEW)
+        trackOpenScreenEvent(Screen.MEDIA_PREVIEW)
     }
 
     /**
@@ -120,12 +136,37 @@ class FeedAnalyticTracker
      *
      * @param productId - productId
      */
-    fun eventMediaDetailClickBuy(productId: String) {
+    fun eventMediaDetailClickBuy(role:String,
+                                 productId: String,
+                                 productName: String,
+                                 price: String,
+                                 quantity: Int,
+                                 shopId: Int,
+                                 shopName: String) {
         trackGeneralEvent(
                 Event.CLICK_FEED,
                 Category.CONTENT_FEED_TIMELINE,
                 Action.CLICK_BUY,
                 productId)
+        trackEnhancedEcommerceEvent(Event.CLICK_FEED,
+                Category.CONTENT_FEED_TIMELINE,
+                Action.CLICK_BUY,
+                productId,
+                DataLayer.mapOf(
+                        Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
+                        Event.ADD, getAddData(
+                            role,
+                            getProductsData(listOf(
+                                    getProductData(
+                                            productId,
+                                            productName,
+                                            price,
+                                            quantity,
+                                            shopId,
+                                            shopName)))
+                        )
+                )
+        )
     }
 
     /**
@@ -505,5 +546,37 @@ class FeedAnalyticTracker
         Promotion.NAME, name,
         Promotion.CREATIVE, creative,
         Promotion.POSITION, position
+    )
+
+
+    private fun getAddData(
+            role: String,
+            productDataList: List<Any>
+    ): Map<String, Any> =  DataLayer.mapOf(
+            Event.ACTION_FIELD, getActionFieldData(role),
+            PRODUCTS, productDataList
+            )
+
+    private fun getActionFieldData(role: String
+    ): Map<String, Any> = DataLayer.mapOf(Event.LIST, Product.MEDIA_PREVIEW.replace(Product.MEDIA_PREVIEW_TAG,role))
+
+    private fun getProductsData(
+            productDataList: List<Any>
+    ): List<Any> = DataLayer.listOf(productDataList)
+
+    private fun getProductData(
+            id: String,
+            name: String,
+            price: String,
+            quantity: Int,
+            shopId: Int,
+            shopName: String
+    ): Map<String, Any> = DataLayer.mapOf(
+            Product.ID, id,
+            Product.NAME, name,
+            Product.PRICE, price,
+            Product.QTY, quantity,
+            Product.SHOP_ID, shopId,
+            Product.SHOP_NAME, shopName
     )
 }
