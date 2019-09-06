@@ -73,7 +73,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
             String orderId = getOrderId(response);
             if(!TextUtils.isEmpty(orderId)) {
                 new MonthlyNewBuyerSource().executeMonthlyNewBuyerCheck(MainApplication.getAppContext(), getMonthlyNewBuyerSubscriber(),
-                        String.valueOf(response.body().getData().getPayment().getOrders().get(0).getOrderId()));
+                        orderId);
             }
             else{
                 executeSendPaymentTracking(false);
