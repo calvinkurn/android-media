@@ -14,6 +14,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.model.*
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -85,9 +86,9 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
             }
         })
 
-        TrackApp.getInstance().gtm.sendGeneralEvent("viewTradeIn",
-                "harga final trade in",
-                "view harga final",
+        TrackApp.getInstance().gtm.sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
+                TradeInGTMConstants.CATEGORY_TRADEIN_HARGA_FINAL,
+                TradeInGTMConstants.ACTION_VIEW_HARGA_FINAL,
                 "")
     }
 
