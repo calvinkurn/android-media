@@ -32,7 +32,6 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:textAlignment="center"
-                android:maxWidth="@dimen/dp_50"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"

@@ -7,7 +7,9 @@ interface OnItemBindListener {
     fun onBannerItemDigitalBind(loadFromCloud: Boolean?)
     fun onCategoryItemDigitalBind(loadFromCloud: Boolean?)
     fun onPromoItemDigitalBind()
-    fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?)
-    fun onBannerItemClicked(element : DigitalHomePageBannerModel.Banner?)
+    fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, i: Int)
+    fun onBannerItemClicked(element: DigitalHomePageBannerModel.Banner?, position: Int)
     fun onBannerAllItemClicked()
+    fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, i: Int)
+    fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int)
 }

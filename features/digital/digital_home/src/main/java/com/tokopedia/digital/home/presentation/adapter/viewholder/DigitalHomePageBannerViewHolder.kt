@@ -26,11 +26,11 @@ class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: 
     }
 
     override fun onPromoScrolled(position: Int) {
-        //do nothing
+        onItemBindListener.onBannerImpressionTrack(bannerList?.get(position), position+1)
     }
 
     override fun onPromoClick(position: Int) {
-        onItemBindListener.onBannerItemClicked(bannerList?.get(position))
+        onItemBindListener.onBannerItemClicked(bannerList?.get(position), position)
     }
 
     override fun onPromoAllClick() {

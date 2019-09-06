@@ -24,7 +24,10 @@ class DigitalHomePageCategoryModel(@SerializedName("rechargeCatalogMenu")
                       @Expose
                       val submenu: List<Submenu> = listOf())
 
-    data class Submenu(@SerializedName("name")
+    data class Submenu(@SerializedName("id")
+                       @Expose
+                       val id: String = "",
+                       @SerializedName("name")
                        @Expose
                        val name: String = "",
                        @SerializedName("label")

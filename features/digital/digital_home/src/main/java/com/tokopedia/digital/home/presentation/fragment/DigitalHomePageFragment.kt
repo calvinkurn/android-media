@@ -20,6 +20,7 @@ import com.tokopedia.digital.home.di.DigitalHomePageComponent
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
@@ -29,6 +30,8 @@ import javax.inject.Inject
 
 class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, DigitalHomePageTypeFactory>(), OnItemBindListener, DigitalHomePageTransactionViewHolder.TransactionListener {
 
+    @Inject
+    lateinit var trackingUtil : DigitalHomeTrackingUtil
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
@@ -124,16 +127,26 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         //nothing to do, api not ready yet
     }
 
-    override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?) {
+    override fun onCategoryItemClicked(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
+        trackingUtil.eventCategoryClick(element, position)
         RouteManager.route(activity, element?.applink)
     }
 
-    override fun onBannerItemClicked(element: DigitalHomePageBannerModel.Banner?) {
+    override fun onBannerItemClicked(element: DigitalHomePageBannerModel.Banner?, position: Int) {
+        trackingUtil.eventBannerClick(element, position)
         RouteManager.route(activity, element?.applink)
     }
 
     override fun onBannerAllItemClicked() {
         RouteManager.route(activity, ApplinkConst.PROMO_LIST)
+    }
+
+    override fun onBannerImpressionTrack(banner: DigitalHomePageBannerModel.Banner?, position: Int) {
+        trackingUtil.eventBannerImpression(banner, position)
+    }
+
+    override fun onCategoryImpression(element: DigitalHomePageCategoryModel.Submenu?, position: Int) {
+        trackingUtil.eventCategoryImpression(element, position)
     }
 
     override fun getAdapterTypeFactory(): DigitalHomePageTypeFactory {
@@ -145,18 +158,22 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onClickFavNumber() {
+        trackingUtil.eventClickFavNumber()
         RouteManager.route(activity, APPLINK_HOME_FAV_LIST)
     }
 
     override fun onClickOrderList() {
+        trackingUtil.eventClickOrderList()
         RouteManager.route(activity, ApplinkConst.DIGITAL_ORDER)
     }
 
     override fun onClickHelp() {
+        trackingUtil.eventClickHelp()
         RouteManager.route(activity, ApplinkConst.CONTACT_US_NATIVE)
     }
 
     override fun onClickMyBills() {
+        trackingUtil.eventClickLangganan()
         RouteManager.route(activity, APPLINK_HOME_MYBILLS)
     }
 
