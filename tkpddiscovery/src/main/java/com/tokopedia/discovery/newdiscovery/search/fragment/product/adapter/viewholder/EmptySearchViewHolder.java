@@ -23,12 +23,12 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.base.adapter.Item;
@@ -308,7 +308,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchModel> 
 
         @Override
         public SelectedFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.empty_state_selected_filter_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.filter_empty_state_selected_filter_item, parent, false);
             return new SelectedFilterItemViewHolder(view, clickListener);
         }
 
