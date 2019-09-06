@@ -18,7 +18,7 @@
             android:label="@string/groupchat_title"
             android:resizeableActivity="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent"
+            android:theme="@style/Theme.Groupchat.Transparent"
             android:configChanges="orientation|screenSize|locale"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
 
@@ -28,7 +28,7 @@
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Transparent"
+            android:theme="@style/Theme.Groupchat.Transparent"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation|locale"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize">
             <intent-filter>
