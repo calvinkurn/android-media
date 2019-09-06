@@ -111,4 +111,9 @@ public interface SearchConstant {
         int TAB_THIRD_POSITION = 2;
         int TAB_FORTH_POSITION = 3;
     }
+
+    interface Cart {
+        String CART_LOCAL_CACHE_NAME = "CART";
+        String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
+    }
 }
