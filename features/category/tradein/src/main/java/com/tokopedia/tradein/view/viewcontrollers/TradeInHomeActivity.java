@@ -181,7 +181,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         tvIndicateive.setVisibility(View.GONE);
                         mTvModelName.setText(homeResult.getDeviceDisplayName());
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
-                        mTvGoToProductDetails.setText(R.string.sell_now);
+                        mTvGoToProductDetails.setText(R.string.moneyin_sell_now);
                         mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal());
                         goToHargaFinal();
                         break;

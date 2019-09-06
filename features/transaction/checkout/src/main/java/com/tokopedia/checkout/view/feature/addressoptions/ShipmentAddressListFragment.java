@@ -482,9 +482,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 if (isAddNewAddressEnabled()) {
                     AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
-                    com.tokopedia.logisticaddaddress.domain.model.Token token1 = new TokenMapper().reverseTokenModel(token);
+                    com.tokopedia.logisticaddaddress.domain.model.Token tempToken = new TokenMapper().reverseTokenModel(token);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token1,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, tempToken,
                             false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
@@ -501,9 +501,9 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
 
                 if (isAddNewAddressEnabled()) {
                     AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_CART_EXISTING_USER);
-                    com.tokopedia.logisticaddaddress.domain.model.Token token1 = new TokenMapper().reverseTokenModel(token);
+                    com.tokopedia.logisticaddaddress.domain.model.Token tempToken = new TokenMapper().reverseTokenModel(token);
                     startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token1,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, tempToken,
                             false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED);
 
