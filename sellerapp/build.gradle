@@ -203,7 +203,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
-        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
     }
 
     // Specifies 4 flavor dimensions.
@@ -229,15 +229,6 @@ android {
 repositories {
     flatDir {
         dirs 'libs'
-    }
-}
-
-afterEvaluate {
-    dependencies {
-        stagingDevDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
-        stagingProdDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
-        liveDevDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
-        liveProdDebugImplementation rootProject.ext.debugToolsDependencies.leakCanary
     }
 }
 
@@ -421,6 +412,8 @@ dependencies {
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
+
+    devImplementation project.ext.debugToolsDependencies.leakCanary
 
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
