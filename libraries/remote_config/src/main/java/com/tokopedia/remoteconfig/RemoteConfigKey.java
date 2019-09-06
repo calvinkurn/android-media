@@ -149,5 +149,7 @@ public class RemoteConfigKey {
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
     public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
 
+    public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
+
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
 }

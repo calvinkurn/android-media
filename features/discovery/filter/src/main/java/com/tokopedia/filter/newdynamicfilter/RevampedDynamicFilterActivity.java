@@ -113,6 +113,7 @@ public class RevampedDynamicFilterActivity extends BaseActivity implements Dynam
         buttonClose = findViewById(R.id.top_bar_close_button);
         buttonClose.setOnClickListener(v -> onBackPressed());
         buttonReset = findViewById(R.id.top_bar_button_reset);
+        buttonReset.setVisibility(View.VISIBLE);
         buttonReset.setOnClickListener(v -> resetAllFilter());
         buttonApply = findViewById(R.id.button_finish);
         buttonApply.setOnClickListener(v -> applyFilter());
