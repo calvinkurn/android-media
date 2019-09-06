@@ -6,4 +6,6 @@ package com.tokopedia.sellerorder.common.util
 object SomConsts {
     const val PARAM_SELLER = "seller"
     const val PARAM_CLIENT = "desktop"
+
+    const val TAB_ACTIVE = "tab_active"
 }

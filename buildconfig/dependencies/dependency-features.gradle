@@ -149,6 +149,7 @@ ext {
             reputation              : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon        : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             seller                  : "com.tokopedia.seller:seller:${tkpdSellerVersion}",
+            sellerorder             : "com.tokopedia.transaction:sellerorder:${tkpdSellerVersion}",
             session                 : "com.tokopedia.session:session:${tkpdSessionVersion}",
             shopCommon              : "com.tokopedia.shop:shop-common:${tkpdShopVersion}",
             shopEtalasePicker           : "com.tokopedia.shopetalasepicker:shop-etalase-picker:${tkpdShopVersion}",
@@ -368,6 +369,6 @@ ext {
             ovo                             : ":features:fintech:ovo_pay_with_qr",
             agerestriction                  : ":features:category:age_restriction",
             merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
-            sellerOrder                     : ":features:transaction:sellerorder"
+            sellerorder                     : ":features:transaction:sellerorder"
     ]
 }

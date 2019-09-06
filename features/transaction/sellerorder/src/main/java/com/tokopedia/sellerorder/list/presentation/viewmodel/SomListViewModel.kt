@@ -23,19 +23,17 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val tickerListResult = MutableLiveData<Result<MutableList<SomListTicker.Data.OrderTickers.Tickers>>>()
     val filterListResult = MutableLiveData<Result<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>>()
     val orderListResult = MutableLiveData<Result<MutableList<SomListOrder.Data.OrderList.Order>>>()
-    // val dummyStatusList = ArrayList<Int>()
 
     fun loadSomListData(tickerQuery: String, filterQuery: String) {
-        // dummyStatusList.add(220)
         launch {
             getTickerList(tickerQuery)
             getFilterList(filterQuery)
         }
     }
 
-    fun loadOrderList(orderQuery: String, statusList: List<Int>) {
+    fun loadOrderList(orderQuery: String, paramOrder: SomListOrderParam) {
         launch {
-            getOrderList(orderQuery, statusList)
+            getOrderList(orderQuery, paramOrder)
         }
     }
 
@@ -76,8 +74,7 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         }
     }
 
-    suspend fun getOrderList(rawQuery: String, statusList: List<Int>) {
-        val requestOrderParams = SomListOrderParam("", "", "", FILTER_STATUS, statusList, SORT_BY)
+    suspend fun getOrderList(rawQuery: String, requestOrderParams: SomListOrderParam) {
         val orderParams = mapOf(PARAM_INPUT to requestOrderParams)
         try {
             val orderListData = async {
@@ -95,27 +92,11 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
         }
     }
 
-    /*private suspend fun getTickerListAsync(rawQuery: String, requestBy: String, client: String, fromCloud: Boolean) {
-            tickerListResult.value = tickerUseCase.execute(rawQuery, requestBy, client, fromCloud)
-        }
-    }
-
-    fun getFilters(rawQuery: String, fromCloud: Boolean) = launch {
-            filterListResult.value = somListFilterUseCase.execute(rawQuery, fromCloud)
-    }
-
-    fun getOrdersAsync(rawQuery: String, statusList: List<Int>, fromCloud: Boolean) = async(start = CoroutineStart.LAZY) {
-        orderListResult.value = somListOrderUseCase.execute(rawQuery, statusList, fromCloud)
-    }*/
-
     companion object {
         const val PARAM_INPUT = "input"
 
         private val POJO_TICKER = SomListTicker.Data::class.java
         private val POJO_FILTER = SomListFilter.Data::class.java
         private val POJO_ORDER = SomListOrder.Data::class.java
-
-        private val FILTER_STATUS = 999
-        private val SORT_BY = 2
     }
 }

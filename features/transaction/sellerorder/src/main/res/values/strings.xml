@@ -7,4 +7,14 @@
     <string name="status_new">Pesanan Baru</string>
     <string name="date">date</string>
     <string name="due_day">1 hari</string>
+    <string name="same_day">Same Day</string>
+
+    <string name="empty_filter_title">Tidak Ada Pesanan dengan Filter Ini</string>
+    <string name="empty_filter_desc">Ubah filter untuk menemukan pesanan yang sesuai</string>
+    <string name="empty_search_title">Hasil pencarian tidak ditemukan untuk tanggal</string>
+    <string name="empty_search_desc">Gunakan kata kunci yang relevan (Nama Pembeli, No. Invoice, Tanggal belanja)</string>
+    <string name="empty_peluang_title">Tidak Ada Pesanan</string>
+    <string name="empty_peluang_desc">Cek Peluang dan ambil pesanan yang tidak diproses penjual lain.</string>
+    <string name="btn_cek_peluang">Cek Peluang</string>
+    <string name="key_all_order">all_order</string>
 </resources>

@@ -28,6 +28,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -55,6 +57,10 @@ import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_CONFIRM_SHIPPING;
+import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_DONE;
+import static com.tokopedia.seller.selling.view.activity.ActivitySellingTransaction.EXTRA_KEY_IN_SHIPPING;
+
 /**
  * @author okasurya on 8/1/18.
  */
@@ -73,6 +79,8 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     public final static int TAB_POSITION_SHIPPED = 3;
     public final static int TAB_POSITION_DELIVERED = 4;
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
+
+    public static final String EXTRA_TAB_ACTIVE = "tab_active";
 
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
@@ -108,29 +116,38 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP)
     public static Intent getIntentReadyToShip(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        /*Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, CustomerAppSellerTransactionActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_READY_TO_SHIP)
-                .putExtras(extras);
+                .putExtras(extras);*/
+
+        return RouteManager.getIntent(context, ApplinkConstInternalOrder.READY_TO_SHIP)
+                .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_CONFIRM_SHIPPING);
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_SHIPPED)
     public static Intent getIntentShipped(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        /*Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, CustomerAppSellerTransactionActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SHIPPED)
-                .putExtras(extras);
+                .putExtras(extras);*/
+
+        return RouteManager.getIntent(context, ApplinkConstInternalOrder.SHIPPED)
+                .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
     }
 
     @DeepLink(ApplinkConst.SELLER_PURCHASE_DELIVERED)
     public static Intent getIntentDelivered(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
+        /*Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, CustomerAppSellerTransactionActivity.class)
                 .setData(uri.build())
                 .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_DELIVERED)
-                .putExtras(extras);
+                .putExtras(extras);*/
+
+        return RouteManager.getIntent(context, ApplinkConstInternalOrder.DELIVERED)
+                .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_DONE);
     }
 
     public static Intent getIntentAllTransaction(Context context, Bundle extras) {

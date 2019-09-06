@@ -16,3 +16,8 @@ val Date.relativeWeekDay: String
         else if (now.get(Calendar.DATE) - calActive.get(Calendar.DATE) == 1) "Kemarin"
         else format.format(this)
     }
+
+ fun Date.toFormattedString(format: String, locale: Locale = Locale.getDefault()): String {
+    val formatter = SimpleDateFormat(format, locale)
+    return formatter.format(this)
+}

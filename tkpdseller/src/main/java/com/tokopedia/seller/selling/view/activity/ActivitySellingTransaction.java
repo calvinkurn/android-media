@@ -26,6 +26,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.DownloadResultReceiver;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdActivity;
@@ -76,6 +78,13 @@ public class ActivitySellingTransaction extends TkpdActivity
     public final static int TAB_POSITION_SELLING_SHIPPING_STATUS = 4;
     public final static int TAB_POSITION_SELLING_TRANSACTION_LIST = 5;
 
+    public static final String EXTRA_TAB_ACTIVE = "tab_active";
+    public static final String EXTRA_KEY_NEW_ORDER = "new_order";
+    public static final String EXTRA_KEY_CONFIRM_SHIPPING = "confirm_shipping";
+    public static final String EXTRA_KEY_IN_SHIPPING = "in_shipping";
+    public static final String EXTRA_KEY_DONE = "done";
+    public static final String EXTRA_KEY_ALL_ORDER = "all_order";
+
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
     FragmentManager fragmentManager;
@@ -106,7 +115,9 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_NEW_ORDER)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentNewOrder(context, extras);
+            // return CustomerAppSellerTransactionActivity.getIntentNewOrder(context, extras);
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_NEW_ORDER);
         }
     }
 
@@ -119,7 +130,9 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_CONFIRM_SHIPPING)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentReadyToShip(context, extras);
+            // return CustomerAppSellerTransactionActivity.getIntentReadyToShip(context, extras);
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_CONFIRM_SHIPPING);
         }
     }
 
@@ -132,7 +145,9 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_SHIPPING_STATUS)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentShipped(context, extras);
+            // return CustomerAppSellerTransactionActivity.getIntentShipped(context, extras);
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.NEW_ORDER)
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_IN_SHIPPING);
         }
     }
 
@@ -145,7 +160,9 @@ public class ActivitySellingTransaction extends TkpdActivity
                     .putExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_SELLING_TRANSACTION_LIST)
                     .putExtras(extras);
         } else {
-            return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
+            // return CustomerAppSellerTransactionActivity.getIntentAllTransaction(context, extras);
+            return RouteManager.getIntent(context, ApplinkConstInternalOrder.HISTORY)
+                    .putExtra(EXTRA_TAB_ACTIVE, EXTRA_KEY_ALL_ORDER);
         }
     }
 
