@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -53,6 +54,10 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCodStatus
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopCommitment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
+import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -61,6 +66,8 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.*
+import rx.Observer
+import rx.Subscription
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -70,6 +77,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                                                private val addWishListUseCase: AddWishListUseCase,
                                                private val removeWishlistUseCase: RemoveWishListUseCase,
                                                private val trackAffiliateUseCase: TrackAffiliateUseCase,
+                                               private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                                @Named("Main")
                                                val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -93,6 +101,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         get() = userSessionInterface.deviceId
 
     private var lazyNeedForceUpdate = false
+
+    private var submitTicketSubscription: Subscription? = null
 
     fun getProductInfo(productParams: ProductParams, forceRefresh: Boolean = false) {
         if (forceRefresh){
@@ -532,6 +542,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         removeWishlistUseCase.unsubscribe()
         addWishListUseCase.unsubscribe()
         trackAffiliateUseCase.cancelJobs()
+        submitTicketSubscription?.unsubscribe()
     }
 
     fun loadMore() {
@@ -575,6 +586,35 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }) {
             it.debugTrace()
         }
+    }
+
+    fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
+        val requestParams = RequestParams.create()
+        val submitHelpTicketRequest = SubmitHelpTicketRequest()
+        submitHelpTicketRequest.apply {
+            apiJsonResponse = addToCartDataModel.responseJson
+            errorMessage = addToCartDataModel.errorReporter.texts.submitDescription
+            if (addToCartDataModel.errorMessage.isNotEmpty()) {
+                headerMessage = addToCartDataModel.errorMessage[0]
+            }
+            page = SubmitHelpTicketUseCase.PAGE_ATC
+            requestUrl = SubmitHelpTicketUseCase.GQL_REQUEST_URL
+        }
+        requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest)
+        submitTicketSubscription = submitHelpTicketUseCase.createObservable(requestParams).subscribe(object : Observer<SubmitTicketResult> {
+            override fun onError(e: Throwable?) {
+                e?.printStackTrace()
+                onErrorSubmitHelpTicket(e)
+            }
+
+            override fun onNext(t: SubmitTicketResult) {
+                onNextSubmitHelpTicket(t)
+            }
+
+            override fun onCompleted() {
+                submitTicketSubscription = null
+            }
+        })
     }
 
     companion object {
