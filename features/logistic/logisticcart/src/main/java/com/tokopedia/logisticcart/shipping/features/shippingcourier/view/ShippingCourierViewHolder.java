@@ -33,13 +33,10 @@ public class ShippingCourierViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPromoPotency;
 
     private int cartPosition;
-    // set true if has courier promo, whether own courier or other courier
-    private boolean hasCourierPromo;
 
-    public ShippingCourierViewHolder(View itemView, int cartPosition, boolean hasCourierPromo) {
+    public ShippingCourierViewHolder(View itemView, int cartPosition) {
         super(itemView);
         this.cartPosition = cartPosition;
-        this.hasCourierPromo = hasCourierPromo;
 
         tvCourier = itemView.findViewById(R.id.tv_courier);
         tvPrice = itemView.findViewById(R.id.tv_price);

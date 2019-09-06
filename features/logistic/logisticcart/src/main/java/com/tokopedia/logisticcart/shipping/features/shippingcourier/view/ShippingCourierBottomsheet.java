@@ -148,14 +148,6 @@ public class ShippingCourierBottomsheet extends BottomSheets
         shippingCourierAdapter.setShippingCourierAdapterListener(this);
         shippingCourierAdapter.setShippingCourierViewModels(presenter.getShippingCourierViewModels());
         shippingCourierAdapter.setCartPosition(cartPosition);
-        boolean hasCourierPromo = false;
-        for (ShippingCourierViewModel shippingCourierViewModel : presenter.getShippingCourierViewModels()) {
-            if (!TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode())) {
-                hasCourierPromo = true;
-                break;
-            }
-        }
-        shippingCourierAdapter.setHasCourierPromo(hasCourierPromo);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
         rvCourier.setLayoutManager(linearLayoutManager);
