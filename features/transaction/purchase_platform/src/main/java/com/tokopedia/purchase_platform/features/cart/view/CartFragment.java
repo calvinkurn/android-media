@@ -72,7 +72,6 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartTickerData;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData;
@@ -110,6 +109,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.applink.ApplinkConst.Transaction.EXTRA_SHOP_ID;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -158,8 +159,6 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     RecyclerView.ItemDecoration cartItemDecoration;
     @Inject
     CheckoutAnalyticsCart cartPageAnalytics;
-    @Inject
-    ICheckoutModuleRouter checkoutModuleRouter;
     @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
 
@@ -792,11 +791,13 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onCartShopNameClicked(CartShopHolderData cartShopHolderData) {
+    public void onCartShopNameClicked(@NotNull CartShopHolderData cartShopHolderData) {
         sendAnalyticsOnClickShopNameCartItem(cartShopHolderData.getShopGroupData().getShopName());
-        navigateToActivity(checkoutModuleRouter.getShopPageIntent(
-                getActivity(), cartShopHolderData.getShopGroupData().getShopId()
-        ));
+
+        if (getActivity() != null) {
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SHOP, cartShopHolderData.getShopGroupData().getShopId());
+            getActivity().startActivity(intent);
+        }
     }
 
     @Override

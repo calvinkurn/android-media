@@ -45,7 +45,6 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
@@ -106,7 +105,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     @Inject
     lateinit var analyticsTracker: ExpressCheckoutAnalyticsTracker
 
-    private lateinit var router: ICheckoutModuleRouter
     private lateinit var adapter: CheckoutVariantAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var fragmentListener: CheckoutVariantFragmentListener
@@ -178,7 +176,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         fragmentListener = context as CheckoutVariantFragmentListener
-        router = context.applicationContext as ICheckoutModuleRouter
     }
 
     override fun onDetach() {

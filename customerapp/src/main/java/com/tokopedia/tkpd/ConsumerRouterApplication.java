@@ -55,7 +55,6 @@ import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
-import com.tokopedia.logisticcart.cod.view.CodActivity;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
@@ -98,12 +97,10 @@ import com.tokopedia.core.model.share.ShareData;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
-import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.peoplefave.fragment.PeopleFavoritedShopFragment;
-import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.router.CustomerRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -123,7 +120,6 @@ import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
@@ -138,7 +134,6 @@ import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.model.DealDetailPassData;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
-import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -206,8 +201,6 @@ import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity;
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
-import com.tokopedia.logisticcart.cod.view.CodActivity;
-import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
@@ -239,7 +232,6 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
@@ -257,7 +249,6 @@ import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
-import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
@@ -266,11 +257,6 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
-import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
-import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.features.cart.view.CartActivity;
 import com.tokopedia.purchase_platform.features.cart.view.CartFragment;
 import com.tokopedia.purchase_platform.features.checkout.view.CartConstant;
@@ -376,7 +362,6 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -444,7 +429,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ShopModuleRouter,
         LoyaltyModuleRouter,
         ITkpdLoyaltyModuleRouter,
-        ICheckoutModuleRouter,
         GamificationRouter,
         ProfileModuleRouter,
         ReactNativeRouter,
@@ -2239,11 +2223,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public String logisticUploadRouterGetApplicationBuildFlavor() {
         return BuildConfig.FLAVOR;
-    }
-
-    @Override
-    public Intent getCodPageIntent(Context context, Data data) {
-        return CodActivity.newIntent(context, data);
     }
 
     @Override

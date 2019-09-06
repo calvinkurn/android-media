@@ -93,7 +93,6 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.utils.Utils;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
@@ -129,6 +128,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import static com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity.EXTRA_IS_FROM_MARKETPLACE_CART;
+import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
 import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
 
 /**
@@ -189,8 +189,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    @Inject
-    ICheckoutModuleRouter checkoutModuleRouter;
     @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
     @Inject
@@ -787,8 +785,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToCodConfirmationPage(Data data, CheckoutRequest checkoutRequest) {
-        Intent intent = checkoutModuleRouter.getCodPageIntent(getContext(), data);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.COD);
         intent.putExtra(EXTRA_CHECKOUT_REQUEST, checkoutRequest);
+        intent.putExtra(EXTRA_COD_DATA, data);
         startActivity(intent);
     }
 

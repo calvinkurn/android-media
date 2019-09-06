@@ -10,7 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter;
 import com.tokopedia.purchase_platform.common.utils.FingerprintUtil;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.CodCheckoutRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.cod.CodResponse;
@@ -32,13 +31,10 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
     private String mFingerPrintPublicKey;
 
     private Context context;
-    private ICheckoutModuleRouter checkoutModuleRouter;
 
     @Inject
-    public CodCheckoutUseCase(@ApplicationContext Context context,
-                              ICheckoutModuleRouter checkoutModuleRouter) {
+    public CodCheckoutUseCase(@ApplicationContext Context context) {
         this.context = context;
-        this.checkoutModuleRouter = checkoutModuleRouter;
     }
 
     public GraphqlRequest getRequest(CheckoutRequest carts, boolean isOneClickShipment) {
@@ -57,8 +53,7 @@ public class CodCheckoutUseCase extends GraphqlUseCase {
     }
 
     private void setFingerPrintParams() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkoutModuleRouter != null
-                && FingerprintUtil.getEnableFingerprintPayment(context)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && FingerprintUtil.getEnableFingerprintPayment(context)) {
             PublicKey publicKey = FingerPrintDialog.generatePublicKey(context);
             if (publicKey != null) {
                 mFingerPrintPublicKey = FingerPrintDialog.getPublicKey(publicKey);

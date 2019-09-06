@@ -51,7 +51,6 @@ import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
 import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
 import com.tokopedia.purchase_platform.common.constant.ProductAction
 import com.tokopedia.purchase_platform.common.constant.TRADEIN_BUY
-import com.tokopedia.purchase_platform.common.router.ICheckoutModuleRouter
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.AtcResponseModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantActionListener
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantItemDecorator
@@ -83,7 +82,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private val normalCheckoutTracking: NormalCheckoutTracking by lazy {
         NormalCheckoutTracking()
     }
-    private lateinit var router: ICheckoutModuleRouter
     private lateinit var adapter: CheckoutVariantAdapter
 
     var shopId: String? = null
@@ -827,13 +825,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context?.run {
-            if (applicationContext is ICheckoutModuleRouter) {
-                router = applicationContext as ICheckoutModuleRouter
-            } else {
-                activity?.finish()
-            }
-        }
+//        context?.run {
+//            if (applicationContext is Application) {
+//                router = applicationContext as ICheckoutModuleRouter
+//            } else {
+//                activity?.finish()
+//            }
+//        }
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {

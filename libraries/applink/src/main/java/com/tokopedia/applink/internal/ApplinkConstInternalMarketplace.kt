@@ -121,6 +121,10 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val GEOLOCATION = "$INTERNAL_MARKETPLACE/geolocation"
 
+    //DistrictRecommendationShopSettingsActivity
+    @JvmField
+    val COD = "$INTERNAL_MARKETPLACE/cod"
+
     // OnboardingActivity
     @JvmField
     val ONBOARDING = "$INTERNAL_MARKETPLACE/onboarding"
