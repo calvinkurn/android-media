@@ -1,5 +1,6 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -23,10 +24,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.base.di.component.DaggerAppComponent;
-import com.tokopedia.core.base.di.module.AppModule;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.core.base.di.component.DaggerAppComponent;
+import com.tokopedia.core.base.di.module.AppModule;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionComponent;
 import com.tokopedia.profilecompletion.domain.EditUserProfileUseCase;
@@ -34,7 +38,6 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionContract;
 import com.tokopedia.profilecompletion.view.presenter.ProfileCompletionPresenter;
 import com.tokopedia.profilecompletion.view.util.ProgressBarAnimation;
-import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.profilecompletion.view.viewmodel.ProfileCompletionViewModel;
 import com.tokopedia.session.R;
 import com.tokopedia.user.session.UserSession;
@@ -50,6 +53,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
 
     private static final String DEFAULT_EMPTY_BDAY = "0001-01-01T00:00:00Z";
     private static final String ARGS_DATA = "ARGS_DATA";
+    private static final int REQUEST_CODE_PIN = 200;
     ProgressBar progressBar;
     ViewPager viewPager;
     TextView percentText;
@@ -204,7 +208,17 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         } else if (profileCompletionViewModel.getCompletion() == 100) {
             ((ProfileCompletionActivity) getActivity()).onFinishedForm();
         } else {
-            getActivity().finish();
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING);
+            startActivityForResult(intent, REQUEST_CODE_PIN);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_PIN){
+            if(getActivity() != null)
+                getActivity().finish();
         }
     }
 

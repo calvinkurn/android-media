@@ -100,6 +100,16 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_BOD = "$INTERNAL_GLOBAL/add-bod"
 
+    // AddPinActivity
+    // tokopedia-android-internal://global/add-pin
+    @JvmField
+    val ADD_PIN = "$INTERNAL_GLOBAL/add-pin"
+
+    // PinOnboardingActivity
+    // tokopedia-android-internal://global/add-pin-onboarding
+    @JvmField
+    val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
+
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     @JvmField

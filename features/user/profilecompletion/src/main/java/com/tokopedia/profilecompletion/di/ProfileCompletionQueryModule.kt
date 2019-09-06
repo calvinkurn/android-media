@@ -11,6 +11,7 @@ import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
+import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
 import com.tokopedia.profilecompletion.settingprofile.data.SubmitProfilePictureData
@@ -130,4 +131,56 @@ class ProfileCompletionQueryModule {
     @Provides
     fun provideUserValidateGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<UserValidatePojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.MUTATION_CREATE_PIN)
+    fun provideRawMutationCreatePin(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_create_pin)
+
+    @Provides
+    fun provideAddPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<AddPinPojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.MUTATION_UPDATE_PIN)
+    fun provideRawMutationUpdatePin(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_update_pin)
+
+    @Provides
+    fun provideUpdatePinGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<ChangePinPojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.QUERY_CHECK_PIN)
+    fun provideRawQueryCheckPin(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_check_pin)
+
+    @Provides
+    fun provideCheckPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<CheckPinPojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.QUERY_STATUS_PIN)
+    fun provideRawQueryStatusPin(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_status_pin)
+
+
+    @Provides
+    fun provideStatusPinGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<StatusPinPojo> = GraphqlUseCase(graphqlRepository)
+
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.QUERY_VALIDATE_PIN)
+    fun provideRawQueryValidatePin(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_validate_pin)
+
+
+    @Provides
+    fun provideValidatePinGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<ValidatePinPojo> = GraphqlUseCase(graphqlRepository)
 }
