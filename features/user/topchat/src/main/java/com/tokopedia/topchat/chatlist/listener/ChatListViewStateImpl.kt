@@ -9,9 +9,4 @@ import javax.annotation.Nonnull
 class ChatListViewStateImpl(
         @Nonnull open val view: View) : ChatListViewState{
 
-    var floatingButton: FloatingActionButton
-
-    init {
-        floatingButton = view.findViewById(R.id.fab)
-    }
 }

@@ -120,4 +120,10 @@ yang ditemukan</string>
     <string name="menu_chat_filter">Filter</string>
     <string name="menu_chat_setting">Pengaturan</string>
     <string name="search_chat_by_username">Cari nama pengguna</string>
+
+
+    <string name="filter_chat_all">Semua</string>
+    <string name="filter_chat_unread">Belum Dibaca</string>
+    <string name="filter_chat_read">Sudah Dibaca</string>
+    <string name="filter_chat_unreplied">Belum Dibalas</string>
 </resources>

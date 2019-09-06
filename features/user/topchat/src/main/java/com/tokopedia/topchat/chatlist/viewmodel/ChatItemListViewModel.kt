@@ -3,7 +3,12 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
 import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Fail
@@ -20,21 +25,35 @@ class ChatItemListViewModel
                                                 private val rawQueries: Map<String, String>,
                                                 dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
+    private val arrayFilterParam = arrayListOf(
+            PARAM_FILTER_ALL,
+            PARAM_FILTER_UNREAD,
+            PARAM_FILTER_READ,
+            PARAM_FILTER_UNREPLIED
+    )
+
     val mutateChatListResponse = MutableLiveData<Result<ChatListPojo>>()
 
     fun queryGetChatListMessage(
             page: Int,
+            filterIndex: Int,
+            tab: String
+    ) {
+
+        queryGetChatListMessage(page, arrayFilterParam[filterIndex],tab)
+    }
+
+    private fun queryGetChatListMessage(
+            page: Int,
             filter: String,
-            tab: String,
-            perPage: Int
+            tab: String
             ) {
 
         rawQueries[ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE]?.let { query ->
             val params = mapOf(
                     ChatListQueriesConstant.PARAM_PAGE to page,
                     ChatListQueriesConstant.PARAM_FILTER to filter,
-                    ChatListQueriesConstant.PARAM_TAB to tab,
-                    ChatListQueriesConstant.PARAM_PER_PAGE to perPage
+                    ChatListQueriesConstant.PARAM_TAB to tab
 
             )
 

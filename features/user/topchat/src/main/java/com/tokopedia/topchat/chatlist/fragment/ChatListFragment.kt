@@ -15,10 +15,10 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
@@ -29,7 +29,6 @@ import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.listener.*
-import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
@@ -41,6 +40,7 @@ import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import java.util.ArrayList
 import javax.inject.Inject
 
 
@@ -70,6 +70,9 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private var mViewCreated = false
     private var sightTag = ""
 
+
+    var filterChecked = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         performanceMonitoring = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
@@ -83,17 +86,17 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.menu_chat_search -> {
-                RouteManager.route(activity, ApplinkConstInternalMarketplace.CHAT_SEARCH)
-                true
-            }
+//            R.id.menu_chat_search -> {
+//                RouteManager.route(activity, ApplinkConstInternalMarketplace.CHAT_SEARCH)
+//                true
+//            }
             R.id.menu_chat_filter -> {
                 showFilterDialog()
                 true
             }
-            R.id.menu_chat_setting -> {
-                true
-            }
+//            R.id.menu_chat_setting -> {
+//                true
+//            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -168,12 +171,14 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
 
         when {
+            //not found on list
             index == -1 -> {
                 val attributes = ItemChatAttributesPojo(newChat.message, newChat.contact)
                 val item = ItemChatListPojo(newChat.messageId, attributes, "")
                 adapter.list.add(0, item)
                 adapter.notifyItemInserted(0)
             }
+            //found on list, not the first
             index > 0 -> {
 
                 (existingThread as ItemChatListPojo).attributes?.lastReplyMessage = newChat.message
@@ -183,17 +188,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 adapter.notifyItemRangeChanged(0, index+1)
                 animateWhenOnTop()
 
-//                (existingThread as ItemChatListPojo).attributes?.lastReplyMessage = newChat.message
-//
-//                var old= adapter.list
-//                var new= old.toCollection(mutableListOf())
-//
-//                new.removeAt(index)
-//                new.add(0, existingThread)
-//
-//                adapter.notifyChanges(old, new)
-//                animateWhenOnTop()
             }
+            //found on list, and the first item
             else -> {
                 (existingThread as ItemChatListPojo).attributes?.lastReplyMessage = newChat.message
                 existingThread.attributes?.unreads = existingThread.attributes?.unreads.toZeroIfNull() + 1
@@ -231,7 +227,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun onFailGetChatList(throwable: Throwable) {
-        debug("tevxxF", throwable.toString())
+
     }
 
 
@@ -265,7 +261,29 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun showFilterDialog() {
+        activity?.let {
+            val menus = Menus(it)
 
+            val arrayFilterString = arrayListOf(
+                    it.getString(R.string.filter_chat_all),
+                    it.getString(R.string.filter_chat_unread),
+                    it.getString(R.string.filter_chat_read),
+                    it.getString(R.string.filter_chat_unreplied)
+            )
+            val itemMenus = ArrayList<Menus.ItemMenus>()
+            for ((index, title) in arrayFilterString.withIndex()) {
+                if(index == filterChecked) itemMenus.add(Menus.ItemMenus(title, true))
+                else itemMenus.add(Menus.ItemMenus(title, false))
+            }
+            menus.setTitle(getString(R.string.label_filter))
+            menus.itemMenuList = itemMenus
+            menus.setOnItemMenuClickListener { itemMenusClicked, pos ->
+                filterChecked = pos-1
+                loadInitialData()
+                menus.dismiss()
+            }
+            menus.show()
+        }
     }
 
     override fun getScreenName(): String {
@@ -279,9 +297,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun loadData(page: Int) {
         chatItemListViewModel.queryGetChatListMessage(
                 page,
-                ChatListQueriesConstant.PARAM_FILTER_ALL,
-                sightTag,
-                10)
+                filterChecked,
+                sightTag)
     }
 
     override fun onSwipeRefresh() {
