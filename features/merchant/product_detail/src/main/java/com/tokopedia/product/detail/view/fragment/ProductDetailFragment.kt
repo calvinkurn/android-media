@@ -1090,15 +1090,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         createTicketDialog.setDescription(result.errorReporter.texts.submitDescription)
                         createTicketDialog.setSecondary(result.errorReporter.texts.cancelButton)
                         createTicketDialog.setSecondaryOnClickListener(View.OnClickListener {
-                            productDetailTracking.eventClickCloseOnHelpPopUpAtc()
                             createTicketDialog.dismiss()
+                            productDetailTracking.eventClickCloseOnHelpPopUpAtc()
                         })
                         createTicketDialog.setOk(result.errorReporter.texts.submitButton)
                         createTicketDialog.setOkOnClickListener(View.OnClickListener {
-                            productDetailTracking.eventClickReportOnHelpPopUpAtc()
                             createTicketDialog.dismiss()
-                            productInfoViewModel.hitSubmitTicket(result, this::onErrorSubmitHelpTicket, this::onSuccessSubmitHelpTicket)
+                            productDetailTracking.eventClickReportOnHelpPopUpAtc()
                             showProgressDialog()
+                            productInfoViewModel.hitSubmitTicket(result, this::onErrorSubmitHelpTicket, this::onSuccessSubmitHelpTicket)
                         })
                         createTicketDialog.show()
                         productDetailTracking.eventViewHelpPopUpWhenAtc()

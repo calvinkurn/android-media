@@ -64,7 +64,6 @@ import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
 import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
-import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DESC
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
