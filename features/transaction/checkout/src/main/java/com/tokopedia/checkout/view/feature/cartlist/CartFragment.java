@@ -94,6 +94,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -2291,11 +2292,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
+    public void renderRecommendation(@Nullable RecommendationWidget recommendationWidget) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
 
-        if (recommendationItems != null) {
+        if (recommendationWidget != null) {
             // Render from API
+            List<RecommendationItem> recommendationItems = recommendationWidget.getRecommendationItemList();
             for (RecommendationItem recommendationItem : recommendationItems) {
                 CartRecommendationItemHolderData cartRecommendationItemHolderData =
                         new CartRecommendationItemHolderData(recommendationItem);
@@ -2311,7 +2313,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         CartSectionHeaderHolderData cartSectionHeaderHolderData = null;
         if (endlessRecyclerViewScrollListener.getCurrentPage() == 0) {
             cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
-            cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
+            if (recommendationWidget == null || TextUtils.isEmpty(recommendationWidget.getTitle())) {
+                cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
+            } else {
+                cartSectionHeaderHolderData.setTitle(recommendationWidget.getTitle());
+            }
         }
 
         if (cartRecommendationItemHolderDataList.size() > 0) {
