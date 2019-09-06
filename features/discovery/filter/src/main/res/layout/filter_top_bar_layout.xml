@@ -22,6 +22,14 @@
         android:text="@string/filter"
         android:layout_marginLeft="32dp"
         style="@style/TextView.TitleBig.Bold" />
+
+    <TextView
+        android:id="@+id/top_bar_button_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/filter_button_reset_text"
+        style="@style/TextView.Small.Green.Bold"
+        android:visibility="gone"
         />
 
 </LinearLayout>
