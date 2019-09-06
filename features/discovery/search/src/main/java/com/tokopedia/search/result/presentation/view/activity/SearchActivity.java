@@ -246,8 +246,8 @@ public class SearchActivity extends BaseActivity
     private void initBottomSheetListener() {
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
-            public void onApplyFilter(Map<String, String> filterParameter) {
-                applyFilter(filterParameter);
+            public void onApplyFilter(Map<String, String> queryParams) {
+                applyFilter(queryParams);
             }
 
             @Override
@@ -278,15 +278,15 @@ public class SearchActivity extends BaseActivity
         });
     }
 
-    private void applyFilter(Map<String, String> filterParameter) {
+    private void applyFilter(Map<String, String> queryParams) {
         if (isViewPagerCurrentItemPositionIsInvalid()) return;
 
         Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
         if (fragmentItem instanceof SearchSectionFragment) {
             SearchSectionFragment selectedFragment = (SearchSectionFragment) fragmentItem;
 
-            selectedFragment.applyFilterToSearchParameter(filterParameter);
-            selectedFragment.setSelectedFilter(new HashMap<>(filterParameter));
+            selectedFragment.refreshSearchParameter(queryParams);
+            selectedFragment.refreshFilterController(new HashMap<>(queryParams));
             selectedFragment.clearDataFilterSort();
             selectedFragment.reloadData();
         }

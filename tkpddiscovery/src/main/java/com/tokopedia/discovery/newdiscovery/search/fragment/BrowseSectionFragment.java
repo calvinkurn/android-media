@@ -30,9 +30,9 @@ import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.common.data.Sort;
+import com.tokopedia.filter.common.manager.FilterSortManager;
 import com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.filter.newdynamicfilter.SortProductActivity;
-import com.tokopedia.filter.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -40,6 +40,7 @@ import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.tokopedia.core.home.helper.ProductFeedHelper.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.core.home.helper.ProductFeedHelper.PORTRAIT_COLUMN_MAIN;
@@ -77,7 +78,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private ArrayList<Filter> filters;
     private HashMap<String, String> selectedSort;
     protected HashMap<String, String> selectedFilter;
-    private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
 
     @Override
@@ -273,27 +273,43 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == getSortRequestCode()) {
-                setSelectedSort((HashMap<String, String>) data.getSerializableExtra(SortProductActivity.EXTRA_SELECTED_SORT));
-                String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_SORT_NAME);
-                UnifyTracking.eventSearchResultSort(getActivity(),getScreenName(), selectedSortName);
-                clearDataFilterSort();
-                showBottomBarNavigation(false);
-                reloadData();
-            } else if (requestCode == getFilterRequestCode()) {
-                setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
-                setSelectedFilter((HashMap<String, String>) data.getSerializableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS));
-                if (getActivity() instanceof HotlistActivity) {
-                    HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
-                } else {
-                    SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
-                }
-                showBottomBarNavigation(false);
-                updateDepartmentId(getFlagFilterHelper().getCategoryId());
-                reloadData();
+        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, new FilterSortManager.Callback() {
+            @Override
+            public void onFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                       List<Option> selectedOptions) {
+                handleFilterResult(queryParams, selectedFilters, selectedOptions);
             }
+
+            @Override
+            public void onSortResult(Map<String, String> selectedSort, String selectedSortName) {
+                handleSortResult(selectedSort, selectedSortName);
+            }
+        });
+    }
+
+    private void handleSortResult(Map<String, String> selectedSort, String selectedSortName) {
+        setSelectedSort(new HashMap<>(selectedSort));
+        sendSortTracking(selectedSortName);
+        clearDataFilterSort();
+        showBottomBarNavigation(false);
+        reloadData();
+    }
+
+    protected void sendSortTracking(String selectedSortName) {
+        UnifyTracking.eventSearchResultSort(getActivity(),getScreenName(), selectedSortName);
+    }
+
+    protected void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                      List<Option> selectedOptions) {
+        setSelectedFilter(selectedFilter);
+        clearDataFilterSort();
+        if (getActivity() instanceof HotlistActivity) {
+            HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
+        } else {
+            SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
         }
+        showBottomBarNavigation(false);
+        reloadData();
     }
 
     private void setFilterData(List<Filter> filters) {
@@ -353,14 +369,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         this.selectedFilter = selectedFilter;
     }
 
-    public void setFlagFilterHelper(FilterFlagSelectedModel flagFilterHelper) {
-        this.flagFilterHelper = flagFilterHelper;
-    }
-
-    protected FilterFlagSelectedModel getFlagFilterHelper() {
-        return flagFilterHelper;
-    }
-
     public void clearDataFilterSort() {
         if (filters != null) {
             this.filters.clear();
@@ -382,12 +390,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         if(getSelectedFilter() == null) {
             setSelectedFilter(new HashMap<>());
         }
-
-        Intent intent = RevampedDynamicFilterActivity.createInstance(
-                getActivity(), getScreenName(), getSelectedFilter(), getFlagFilterHelper()
-        );
-        startActivityForResult(intent, getFilterRequestCode());
-        getActivity().overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out);
+        FilterSortManager.openFilterPage(this, getScreenName(), getSelectedFilter());
     }
 
     protected boolean isFilterDataAvailable() {
@@ -465,7 +468,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         outState.putParcelableArrayList(EXTRA_SORT, getSort());
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
         outState.putBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER, isGettingDynamicFilter);
-        outState.putParcelable(EXTRA_FLAG_FILTER_HELPER, getFlagFilterHelper());
     }
 
     public abstract void reloadData();
@@ -507,7 +509,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         setSortData(savedInstanceState.<Sort>getParcelableArrayList(EXTRA_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
-        setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
     }
 
     public void onBottomSheetHide() {
@@ -520,19 +521,12 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         String optionValue = OptionHelper.parseValueFromUniqueId(uniqueId);
 
         if (Option.KEY_CATEGORY.equals(optionKey)) {
-            getFlagFilterHelper().setCategoryId("");
-            getFlagFilterHelper().setSelectedCategoryName("");
-            getFlagFilterHelper().setSelectedCategoryRootId("");
             getSelectedFilter().remove(Option.KEY_CATEGORY);
         } else if (Option.KEY_PRICE_MIN.equals(optionKey) ||
                 Option.KEY_PRICE_MAX.equals(optionKey)) {
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MIN);
-            getFlagFilterHelper().getSavedTextInput().remove(Option.KEY_PRICE_MAX);
             getSelectedFilter().remove(Option.KEY_PRICE_MIN);
             getSelectedFilter().remove(Option.KEY_PRICE_MAX);
         } else {
-            getFlagFilterHelper().getSavedCheckedState().remove(uniqueId);
-
             String mapValue = getSelectedFilter().get(optionKey);
             mapValue = removeValue(mapValue, optionValue);
 

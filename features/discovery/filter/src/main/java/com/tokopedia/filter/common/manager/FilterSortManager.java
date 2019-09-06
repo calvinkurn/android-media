@@ -7,16 +7,19 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.filter.R;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.common.data.Sort;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity.EXTRA_CALLER_SCREEN_NAME;
 import static com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity.EXTRA_QUERY_PARAMETERS;
 import static com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity.EXTRA_SELECTED_FILTERS;
+import static com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity.EXTRA_SELECTED_OPTIONS;
 import static com.tokopedia.filter.newdynamicfilter.SortProductActivity.EXTRA_SORT_DATA;
 import static com.tokopedia.filter.newdynamicfilter.SortProductActivity.EXTRA_SELECTED_SORT_NAME;
 import static com.tokopedia.filter.newdynamicfilter.SortProductActivity.EXTRA_SELECTED_SORT;
@@ -72,7 +75,8 @@ public class FilterSortManager {
             } else if (requestCode == FILTER_REQUEST_CODE) {
                 Map<String, String> queryParams = getMapFromIntent(data, EXTRA_QUERY_PARAMETERS);
                 Map<String, String> selectedFilters = getMapFromIntent(data, EXTRA_SELECTED_FILTERS);
-                callback.onFilterResult(queryParams, selectedFilters);
+                List<Option> selectedOptions = data.getParcelableArrayListExtra(EXTRA_SELECTED_OPTIONS);
+                callback.onFilterResult(queryParams, selectedFilters, selectedOptions);
 
             }
         }
@@ -94,7 +98,7 @@ public class FilterSortManager {
     }
 
     public interface Callback {
-        void onFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters);
+        void onFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters, List<Option> selectedOptions);
         void onSortResult(Map<String, String> selectedSort, String selectedSortName);
     }
 }

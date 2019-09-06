@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.design.price.DynamicBackgroundSeekBar;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
@@ -613,9 +612,9 @@ public class ProductListFragment
 
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed);
 
-        Map<String, String> parameterFromFilter = quickFilterController.getParameter();
-        applyFilterToSearchParameter(parameterFromFilter);
-        setSelectedFilter(new HashMap<>(parameterFromFilter));
+        Map<String, String> queryParams = quickFilterController.getParameter();
+        refreshSearchParameter(queryParams);
+        refreshFilterController(new HashMap<>(queryParams));
 
         clearDataFilterSort();
         reloadData();

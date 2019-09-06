@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.view.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -20,7 +19,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
@@ -291,7 +289,8 @@ public abstract class SearchSectionFragment
         super.onActivityResult(requestCode, resultCode, data);
         FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, new FilterSortManager.Callback() {
             @Override
-            public void onFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters) {
+            public void onFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                       List<Option> selectedOptions) {
                 handleFilterResult(queryParams, selectedFilters);
             }
 
@@ -305,8 +304,8 @@ public abstract class SearchSectionFragment
     private void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters) {
         SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), selectedFilters);
 
-        applyFilterToSearchParameter(queryParams);
-        setSelectedFilter(new HashMap<>(queryParams));
+        refreshSearchParameter(queryParams);
+        refreshFilterController(new HashMap<>(queryParams));
         clearDataFilterSort();
         reloadData();
     }
@@ -319,21 +318,6 @@ public abstract class SearchSectionFragment
         }
         clearDataFilterSort();
         reloadData();
-    }
-
-    private Map<String, String> getMapFromIntent(Intent data, String extraName) {
-        Serializable serializableExtra = data.getSerializableExtra(extraName);
-
-        if(serializableExtra == null) return new HashMap<>();
-
-        Map<?, ?> filterParameterMapIntent = (Map<?, ?>)data.getSerializableExtra(extraName);
-        Map<String, String> filterParameter = new HashMap<>(filterParameterMapIntent.size());
-
-        for(Map.Entry<?, ?> entry: filterParameterMapIntent.entrySet()) {
-            filterParameter.put(entry.getKey().toString(), entry.getValue().toString());
-        }
-
-        return filterParameter;
     }
 
     private void setFilterData(List<Filter> filters) {
@@ -386,11 +370,11 @@ public abstract class SearchSectionFragment
     }
 
     @Override
-    public void setSelectedFilter(HashMap<String, String> selectedFilter) {
+    public void refreshFilterController(HashMap<String, String> queryParams) {
         if(filterController == null || getFilters() == null) return;
 
         List<Filter> initializedFilterList = FilterHelper.initializeFilterList(getFilters());
-        filterController.initFilterController(selectedFilter, initializedFilterList);
+        filterController.initFilterController(queryParams, initializedFilterList);
     }
 
     public void clearDataFilterSort() {
@@ -554,7 +538,7 @@ public abstract class SearchSectionFragment
         Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
 
         removeFilterFromFilterController(option);
-        applyFilterToSearchParameter(filterController.getParameter());
+        refreshSearchParameter(filterController.getParameter());
         clearDataFilterSort();
         reloadData();
     }
@@ -587,11 +571,11 @@ public abstract class SearchSectionFragment
         }
     }
 
-    public void applyFilterToSearchParameter(Map<String, String> filterParameter) {
+    public void refreshSearchParameter(Map<String, String> queryParams) {
         if(searchParameter == null) return;
 
         this.searchParameter.getSearchParameterHashMap().clear();
-        this.searchParameter.getSearchParameterHashMap().putAll(filterParameter);
+        this.searchParameter.getSearchParameterHashMap().putAll(queryParams);
     }
 
     protected List<Option> getOptionListFromFilterController() {

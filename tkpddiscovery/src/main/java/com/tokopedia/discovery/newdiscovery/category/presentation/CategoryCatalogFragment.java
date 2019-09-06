@@ -40,6 +40,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.Ca
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -56,6 +57,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -89,6 +91,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
     CatalogPresenter presenter;
     @Inject
     UserSessionInterface userSession;
+    private List<Option> selectedOptions;
 
     public static CategoryCatalogFragment createInstanceByQuery(String query) {
         CategoryCatalogFragment fragment = new CategoryCatalogFragment();
@@ -278,7 +281,15 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public List<Option> getSelectedFilterAsOptionList() {
-        return null;
+        return OptionHelper.combinePriceFilterIfExists(selectedOptions,
+                getResources().getString(R.string.empty_state_selected_filter_price_name));
+    }
+
+    @Override
+    protected void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
+                                      List<Option> selectedOptions) {
+        super.handleFilterResult(queryParams, selectedFilters, selectedOptions);
+        this.selectedOptions = selectedOptions;
     }
 
     protected void setupAdapter() {
@@ -382,7 +393,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
-            catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
+            catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getString(R.string.catalog_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
