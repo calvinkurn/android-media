@@ -328,4 +328,8 @@
         <key>android_customer_enable_cashshield</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>app_enable_category_revamp</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
