@@ -54,6 +54,7 @@
     <string name="product_detail">Detail Produk</string>
     <string name="quantity_total">Jumlah</string>
     <string name="label_desc">Deskripsi</string>
+    <string name="label_spec">Spesifikasi</string>
     <string name="label_report_type">Jenis Laporan</string>
     <string name="label_report_product">Laporkan Produk</string>
 

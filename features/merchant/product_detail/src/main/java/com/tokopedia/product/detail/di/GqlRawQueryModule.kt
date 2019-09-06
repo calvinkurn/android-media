@@ -194,4 +194,11 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.MUTATION_AFFILIATE_TRACKING)
     fun provideAffiliataTracking(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_af_tracking)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_CATALOG)
+    fun provideProductCategory(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_catalog)
 }
