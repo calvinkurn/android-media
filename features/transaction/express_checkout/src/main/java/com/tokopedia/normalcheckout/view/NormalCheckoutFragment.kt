@@ -134,8 +134,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            shopName: String? = "",
                            isOneClickShipment: Boolean,
                            isNeedRefresh: Boolean,
-                           tradeInParams: TradeInParams?,
-                           isLeasing: Boolean ): NormalCheckoutFragment {
+                           isLeasing: Boolean,
+                           reference: String?,
+                           tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
@@ -155,6 +156,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, isNeedRefresh)
                     putParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                     putBoolean(EXTRA_IS_LEASING, isLeasing)
+                    putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
                 }
             }
             return fragment
@@ -760,11 +762,17 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         this, quantity,
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
-                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false)
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false,
+                        getPageReference()
+                )
             }
         }, onRetryWhenError = {
             addToCart()
         })
+    }
+
+    private fun getPageReference(): String {
+        return arguments?.getString(ApplinkConst.Transaction.EXTRA_REFERENCE, "") ?: ""
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
