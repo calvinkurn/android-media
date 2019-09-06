@@ -29,7 +29,7 @@ constructor(
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
-                    val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity.RecommendationData::class.java)
+                    val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity::class.java)
                     mapToRecommendationItem(entity.productRecommendationWidget?.data)
                 }
     }
