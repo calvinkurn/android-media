@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,8 @@ import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateCuratedP
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateProductBoughtPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import javax.inject.Inject
 
 /**
@@ -42,6 +45,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     private val type: Int? by lazy { if (arguments?.containsKey(EXTRA_TYPE) == true) arguments?.getInt(EXTRA_TYPE) else null }
 
+    private lateinit var cvSort: CardView
+
     @Inject
     lateinit var presenter: AffiliateProductBoughtPresenter
 
@@ -59,7 +64,24 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter.attachView(this)
-        return inflater.inflate(R.layout.fragment_af_product_bought, container, false)
+        return inflater.inflate(R.layout.fragment_af_curated_product, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView(view)
+        setupView(view)
+    }
+
+    private fun initView(view: View) {
+        view.run {
+            cvSort = findViewById(R.id.cv_sort)
+        }
+    }
+
+    private fun setupView(view: View) {
+        if (type == null) cvSort.visible() else cvSort.gone()
+        cvSort.setOnClickListener { showSortBottomSheet() }
     }
 
     override fun onItemClicked(t: DashboardItemViewModel?) {
@@ -105,5 +127,9 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         if (RouteManager.isSupportApplink(context, applink)) {
             RouteManager.route(context, applink)
         }
+    }
+
+    private fun showSortBottomSheet() {
+
     }
 }
