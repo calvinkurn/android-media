@@ -81,7 +81,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
             val addToCartGqlResponse = it.getData<AddToCartGqlResponse>(AddToCartGqlResponse::class.java)
             addToCartGqlResponse.addToCartResponse.let {
                 val errorReporter = ErrorReporterModel()
-                errorReporter.eligible = true
+                errorReporter.eligible = it.errorReporter.eligible
 
                 val errorReporterTextModel = ErrorReporterTextModel()
                 errorReporterTextModel.submitTitle = it.errorReporter.texts.submitTitle
@@ -91,7 +91,7 @@ class AddToCartUseCase @Inject constructor(@Named("atcMutation") private val que
                 errorReporter.texts = errorReporterTextModel
 
                 val dataModel = DataModel()
-                dataModel.success = 0
+                dataModel.success = it.data.success
                 dataModel.cartId = it.data.cartId
                 dataModel.productId = it.data.productId
                 dataModel.quantity = it.data.quantity
