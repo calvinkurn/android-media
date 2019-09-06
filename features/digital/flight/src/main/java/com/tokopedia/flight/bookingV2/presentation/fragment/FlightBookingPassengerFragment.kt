@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
+import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
 import com.tokopedia.flight.booking.di.FlightBookingComponent
@@ -41,7 +42,7 @@ import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPasseng
 import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_RETURN
 import com.tokopedia.flight.bookingV2.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.common.util.FlightPassengerInfoValidator
+import com.tokopedia.flight.common.util.FlightPassengerTitle
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import java.util.*
 import javax.inject.Inject
@@ -92,7 +93,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             bookingViewModel = viewModelProvider.get(FlightBookingViewModel::class.java)
         }
-        //masukkin observe validate data on submit
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -116,17 +116,16 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                 travelContactArrayAdapter.updateItem(it.toMutableList())
             }
         })
+
+        //upsert listener observe
     }
 
     private fun initView () {
         context?.let {
-            //render layout!!
             tv_header.text = passengerModel.headerTitle
 
             renderViewBasedOnType()
-
-            //autofill based on passenger models
-
+            renderPassengerData()
             renderPassport()
 
             travelContactArrayAdapter = TravelContactArrayAdapter(it,
@@ -162,6 +161,45 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                 startActivityForResult(FlightBookingNationalityActivity.createIntent(context,
                         getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY)
             }
+        }
+    }
+
+    fun renderPassengerData() {
+        if (!passengerModel.passengerFirstName.isNullOrBlank()) {
+            et_first_name.setText(passengerModel.passengerFirstName)
+            et_last_name.setText(passengerModel.passengerLastName)
+        }
+
+        if (passengerModel.passengerTitle != null) {
+            renderPassengerTitle(passengerModel.passengerTitle)
+        } // check current passenger
+        if (passengerModel.passengerBirthdate != null)
+            et_birth_date.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
+                    FlightDateUtil.DEFAULT_VIEW_FORMAT, passengerModel.passengerBirthdate))
+
+        if (isAdultPassenger()) {
+            val entries = resources.getStringArray(R.array.flight_adult_titles)
+            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0)
+            rv_passenger_title.selectOnlyOneChip(true)
+        } else {
+            val entries = resources.getStringArray(R.array.flight_child_infant_titles)
+            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0)
+            rv_passenger_title.selectOnlyOneChip(true)
+        }
+        rv_passenger_title.listener = object : FilterChipAdapter.OnClickListener {
+            override fun onChipClickListener(string: String, isSelected: Boolean) {
+                // add action update model
+            }
+
+        }
+    }
+
+    fun renderPassengerTitle(passengerTitle: String) {
+        rv_passenger_title.onResetChip()
+        when (passengerTitle) {
+            FlightPassengerTitle.TUAN -> rv_passenger_title.initiallySelectedChip(0);
+            FlightPassengerTitle.NYONYA -> rv_passenger_title.initiallySelectedChip(1);
+            FlightPassengerTitle.NONA -> rv_passenger_title.initiallySelectedChip(2);
         }
     }
 
@@ -301,18 +339,16 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     fun renderViewBasedOnType() {
         if (isAdultPassenger()) {
             tv_subheader.text = getString(R.string.flight_booking_passenger_adult_subtitle)
-            // render title for adult
             if (isMandatoryDoB() || isDomestic) til_birth_date.visibility = View.VISIBLE else View.GONE
         } else {
-            // render title for child and infant
             til_birth_date.visibility = View.VISIBLE
             if (isChildPassenger()) tv_subheader.text = getString(R.string.flight_booking_passenger_child_subtitle)
             else getString(R.string.flight_booking_passenger_infant_subtitle)
         }
 
         if (isAdultPassenger() || isChildPassenger()) {
-            if (luggageModels.isNotEmpty()) {}//render luggage
-            if (mealModels.isNotEmpty()) {} // render meals
+            if (luggageModels.isNotEmpty()) { renderPassengerLuggages(luggageModels, passengerModel.flightBookingLuggageMetaViewModels) }
+            if (mealModels.isNotEmpty()) { renderPassengerMeals(mealModels, passengerModel.flightBookingMealMetaViewModels) }
         }
     }
 
@@ -323,7 +359,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         val depatureDate = FlightDateUtil.stringToDate(depatureDate)
 
         if (isChildPassenger()) {
-            // child age 2 - 12
             minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWELVE)
             minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, PLUS_ONE)
             maxDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWO)
@@ -332,9 +367,8 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             maxDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWELVE)
             selectedDate = maxDate
         } else {
-            // for Infant
             minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWO)
-            minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.DATE, PLUS_ONE)
+            minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, PLUS_ONE)
             maxDate = FlightDateUtil.getCurrentDate()
             selectedDate = maxDate
         }
@@ -357,7 +391,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         val datePicker = DatePickerDialog(activity!!, DatePickerDialog.OnDateSetListener {
             view, year, month, dayOfMonth ->
 //            presenter.onBirthdateChange(year, month, dayOfMonth, minDate, maxDate)
-            // VALIDATE DATE AND SHOW IN PAGES (call viewmodel)
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
         if (minDate != null) datePicker1.minDate = minDate.time
