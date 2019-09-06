@@ -172,6 +172,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     public void getCategoryDetails(boolean showProgressBar) {
         if (showProgressBar)
             getView().showProgressBar();
+        getCategoryDetailRequestUseCase.setCategoryUrl(getView().getCategoryUrl());
         getCategoryDetailRequestUseCase.setRequestParams(getView().getCategoryParams());
         getCategoryDetailRequestUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override

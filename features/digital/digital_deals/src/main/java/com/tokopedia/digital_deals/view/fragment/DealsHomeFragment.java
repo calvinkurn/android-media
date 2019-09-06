@@ -465,7 +465,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
                             mPresenter.sendSeeAllTrendingDealsEvent();
-                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals), categoryItem.getItems(), 0);
+                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals), 0);
                         }
                     }
                 });
@@ -775,6 +775,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
 
     public interface OpenTrendingDeals {
-        void replaceFragment(String url, String title, List<ProductItem> items, int position);
+        void replaceFragment(String url, String title, int position);
     }
 }

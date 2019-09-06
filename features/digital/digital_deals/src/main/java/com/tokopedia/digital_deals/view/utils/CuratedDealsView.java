@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -10,20 +11,13 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.support.annotation.Nullable;
 import android.widget.TextView;
 
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
-import com.tokopedia.digital_deals.view.adapter.TrendingDealsAdapter;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
-import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
-
-import org.w3c.dom.Text;
-
-import java.util.List;
 
 public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapter.INavigateToActivityRequest {
 
@@ -87,7 +81,7 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
-                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), dealTitle.getText().toString(), categoryItem.getItems(), homePosition);
+                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), dealTitle.getText().toString(), homePosition);
                         }
                     }
                 });
@@ -98,6 +92,6 @@ public class CuratedDealsView extends LinearLayout implements DealsCategoryAdapt
 
     @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
-        ((Activity)context).startActivityForResult(intent, requestCode);
+        ((Activity) context).startActivityForResult(intent, requestCode);
     }
 }

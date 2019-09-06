@@ -10,7 +10,5 @@ public interface TrendingDealsCallBacks {
 
     String getToolBarTitle();
 
-    List<ProductItem> getCategoryItems();
-
     int getHomePosition();
 }

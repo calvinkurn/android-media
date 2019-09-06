@@ -384,14 +384,27 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     };
 
     @Override
-    public String getCategoryParams() {
-        Uri uri = null;
+    public String getCategoryUrl() {
+        if (categoriesModel != null && !TextUtils.isEmpty(categoriesModel.getCategoryUrl())) {
+            return categoriesModel.getCategoryUrl();
+        } else {
+            return "";
+        }
+    }
+
+    @Override
+    public RequestParams getCategoryParams() {
+        RequestParams params = RequestParams.create();
         Location location = Utils.getSingletonInstance().getLocation(getContext());
         if (location != null) {
-            uri = Utils.replaceUriParameter(Uri.parse(categoriesModel.getCategoryUrl()), Utils.QUERY_PARAM_CITY_ID, String.valueOf(location.getId()));
-            return uri.toString();
+            if (!TextUtils.isEmpty(location.getCoordinates())) {
+                params.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+            }
+            if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+                params.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+            }
         }
-        return categoriesModel.getCategoryUrl();
+        return params;
     }
 
     @Override

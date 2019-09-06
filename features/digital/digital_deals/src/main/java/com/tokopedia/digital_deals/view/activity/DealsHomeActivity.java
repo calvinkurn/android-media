@@ -33,7 +33,6 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     private DealsHomeFragment dealsHomeFragment;
     private String title;
     private String url;
-    private List<ProductItem> categoryItems;
     private int position;
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS})
@@ -77,20 +76,14 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     }
 
     @Override
-    public List<ProductItem> getCategoryItems() {
-        return categoryItems;
-    }
-
-    @Override
     public int getHomePosition() {
         return position;
     }
 
     @Override
-    public void replaceFragment(String url, String title, List<ProductItem> items, int position) {
+    public void replaceFragment(String url, String title, int position) {
         this.url = url;
         this.title = title;
-        this.categoryItems = items;
         this.position = position;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
