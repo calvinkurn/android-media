@@ -408,6 +408,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
 
         SharedPreferences stickyPref = getActivity().getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE);
         stickyPref.edit().clear().apply();
+
     }
 
     @Override
