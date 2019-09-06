@@ -44,6 +44,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -351,8 +352,6 @@ import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
-import com.tokopedia.topads.dashboard.TopAdsDashboardInternalRouter;
-import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
@@ -478,7 +477,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         RecentViewRouter,
         MerchantVoucherModuleRouter,
         LinkerRouter,
-        TopAdsDashboardRouter,
         DigitalRouter,
         TopAdsRouter,
         CMRouter,
@@ -2757,25 +2755,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     @NonNull
-    public Intent getTopAdsDetailShopIntent(@NonNull Context context) {
-        return new Intent();
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsKeywordListIntent(@NonNull Context context) {
-        return new Intent();
-    }
-
-    @Override
-    @NonNull
     public Intent getTopAdsAddingPromoOptionIntent(@NonNull Context context) {
-        return new Intent();
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsProductAdListIntent(@NonNull Context context) {
         return new Intent();
     }
 
@@ -2922,13 +2902,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     @NonNull
     public Intent getTopAdsDashboardIntent(@NonNull Context context) {
-        return TopAdsDashboardInternalRouter.getTopAdsdashboardIntent(context);
+        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL);
     }
 
     @Override
     @NonNull
     public Intent getTopAdsAddCreditIntent(@NonNull Context context) {
-        return TopAdsDashboardInternalRouter.getTopAdsAddCreditIntent(context);
+        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT);
     }
 
     @Override

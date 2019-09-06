@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.showcase.ShowCaseContentPosition
 import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
@@ -22,7 +23,6 @@ import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.auto.view.widget.ToasterAutoAds
 import com.tokopedia.topads.common.data.util.ApplinkUtil
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.TopAdsDashboardRouter
 import com.tokopedia.topads.dashboard.TopAdsDashboardTracking
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant
 import com.tokopedia.topads.dashboard.data.utils.ShowCaseDialogFactory
@@ -44,9 +44,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (application is TopAdsDashboardRouter) {
-            tracker = TopAdsDashboardTracking(application as TopAdsDashboardRouter)
-        }
+        tracker = TopAdsDashboardTracking()
         actionSendAnalyticsIfFromPushNotif()
     }
 
@@ -67,23 +65,19 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
 
     override fun onBackPressed() {
         if (isTaskRoot) {
+            val applinkConst = if (GlobalConfig.isCustomerApp()) ApplinkConst.HOME else ApplinkConst.SellerApp.SELLER_APP_HOME
             if (intent.extras?.getBoolean(TopAdsDashboardConstant.EXTRA_APPLINK_FROM_PUSH, false) == true) {
-                val homeIntent = (application as TopAdsDashboardRouter).getHomeIntent(this)
+                val homeIntent = RouteManager.getIntent(this, applinkConst)
                 startActivity(homeIntent)
                 finish()
             } else
             //coming from deeplink
-                if (application is TopAdsDashboardRouter) {
-                    val router = application as TopAdsDashboardRouter
-                    try {
-                        val intent = Intent(this, router.getHomeClass(this))
-                        this.startActivity(intent)
-                        this.finish()
-                        return
-                    } catch (e: ClassNotFoundException) {
-                        e.printStackTrace()
-                    }
-
+                try {
+                    this.startActivity(RouteManager.getIntent(this, applinkConst))
+                    this.finish()
+                    return
+                } catch (e: ClassNotFoundException) {
+                    e.printStackTrace()
                 }
         }
         super.onBackPressed()

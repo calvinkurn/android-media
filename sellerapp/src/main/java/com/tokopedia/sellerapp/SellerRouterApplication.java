@@ -22,6 +22,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
 import com.tokopedia.broadcast.message.BroadcastMessageInternalRouter;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
@@ -170,8 +171,6 @@ import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
 import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
-import com.tokopedia.topads.dashboard.TopAdsDashboardInternalRouter;
-import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActivity;
@@ -217,7 +216,6 @@ public abstract class SellerRouterApplication extends MainApplication
         NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         ChangePasswordRouter, WithdrawRouter,
         PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
-        TopAdsDashboardRouter,
         TopAdsManagementRouter,
         TopAdsAutoRouter,
         BroadcastMessageRouter,
@@ -1246,26 +1244,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NonNull
     @Override
-    public Intent getTopAdsDetailShopIntent(@NonNull Context context) {
-        return TopAdsManagementInternalRouter.getTopAdsDetailShopIntent(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getTopAdsKeywordListIntent(@NonNull Context context) {
-        return TopAdsManagementInternalRouter.getTopAdsKeywordListIntent(context);
-    }
-
-    @NonNull
-    @Override
     public Intent getTopAdsAddingPromoOptionIntent(@NonNull Context context) {
         return TopAdsManagementInternalRouter.getTopAdsAddingPromoOptionIntent(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getTopAdsProductAdListIntent(@NonNull Context context) {
-        return TopAdsManagementInternalRouter.getTopAdsProductAdListIntent(context);
     }
 
     @NonNull
@@ -1310,13 +1290,13 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     @NonNull
     public Intent getTopAdsDashboardIntent(@NonNull Context context) {
-        return TopAdsDashboardInternalRouter.getTopAdsdashboardIntent(context);
+        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL);
     }
 
     @Override
     @NonNull
     public Intent getTopAdsAddCreditIntent(@NonNull Context context) {
-        return TopAdsDashboardInternalRouter.getTopAdsAddCreditIntent(context);
+        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT);
     }
 
     @Override

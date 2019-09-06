@@ -11,6 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTI
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 
 /**
  * Dynamic Feature Deeplink Mapper
@@ -34,6 +35,7 @@ object DeeplinkDFMapper {
     private val MODULE_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val MODULE_HOTEL_TRAVEL = "hotel_travel"
     private val MODULE_USER_PROFILE_COMPLETION = "profilecompletion"
+    private val MODULE_TOPADS_DASHBOARD = "topads_dashboard"
 
     private var manager: SplitInstallManager? = null
 
@@ -73,6 +75,11 @@ object DeeplinkDFMapper {
 //                        deeplink, MODULE_USER_PROFILE_COMPLETION,
 //                        context.getString(R.string.applink_profile_completion_title))
 //                }
+                deeplink.startsWith(TOPADS_DASHBOARD_CUSTOMER) -> {
+                    getDFDeeplinkIfNotInstalled(context,
+                        deeplink, MODULE_TOPADS_DASHBOARD,
+                        context.getString(R.string.applink_topads_dashboard_title))
+                }
                 else -> null
             }
         }

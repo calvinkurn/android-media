@@ -7,19 +7,19 @@ import android.os.Bundle
 
 interface TopAdsDashboardRouter {
 
-    fun getTopAdsDetailShopIntent(context: Context): Intent
-    fun getTopAdsKeywordListIntent(context: Context): Intent
-    fun getTopAdsAddingPromoOptionIntent(context: Context): Intent
-    fun getTopAdsProductAdListIntent(context: Context): Intent
-    fun getTopAdsGroupAdListIntent(context: Context): Intent
-    fun getTopAdsGroupNewPromoIntent(context: Context): Intent
-    fun getTopAdsKeywordNewChooseGroupIntent(context: Context, isPositive: Boolean, groupId: String?): Intent
+    fun getTopAdsDetailShopIntent(context: Context): Intent //ok
+    fun getTopAdsKeywordListIntent(context: Context): Intent //ok
+    fun getTopAdsAddingPromoOptionIntent(context: Context): Intent //ok
+    fun getTopAdsProductAdListIntent(context: Context): Intent //ok
+    fun getTopAdsGroupAdListIntent(context: Context): Intent //ok
+    fun getTopAdsGroupNewPromoIntent(context: Context): Intent //ok
+    fun getTopAdsKeywordNewChooseGroupIntent(context: Context, isPositive: Boolean, groupId: String?): Intent //ok
     fun getHomeIntent(context: Context): Intent
 
     @Throws(ClassNotFoundException::class)
-    fun getHomeClass(context: Context): Class<*>
+    fun getHomeClass(context: Context): Class<*> //ok
     fun isSupportedDelegateDeepLink(url: String): Boolean
-    fun actionNavigateByApplinksUrl(activity: Activity, url: String, bundle: Bundle)
+    fun actionNavigateByApplinksUrl(activity: Activity, url: String, bundle: Bundle) //ok
 
-    fun openTopAdsDashboardApplink(context: Context)
+    fun openTopAdsDashboardApplink(context: Context) //ok
 }
