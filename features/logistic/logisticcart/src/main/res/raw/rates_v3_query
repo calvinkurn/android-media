@@ -20,6 +20,7 @@
       address_id:"$address_id"
       preorder:$preorder
       trade_in:$trade_in
+      vehicle_leasing:$vehicle_leasing
   }) {
   ratesv3 {
     id

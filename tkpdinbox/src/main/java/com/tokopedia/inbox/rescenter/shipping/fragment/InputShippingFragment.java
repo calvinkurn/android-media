@@ -19,13 +19,12 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.ResCenterAttachment;
+import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core2.R2;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
@@ -50,8 +49,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.OnClick;
 import retrofit2.Retrofit;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
@@ -70,28 +67,19 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     public static final String URL_IMG = "https://ecs7.tokopedia.net/img/android/others/img_awb_example.png";
     private static final int REQUEST_CODE_IMAGE_RESI = 3124;
     private PermissionCheckerHelper permissionCheckerHelper;
-
-
-    @BindView(R2.id.ref_number)
-    EditText shippingRefNum;
-    @BindView(R2.id.spinner_kurir)
-    Spinner shippingSpinner;
-    @BindView(R2.id.error_spinner)
-    TextView errorSpinner;
-    @BindView(R2.id.list_upload_proof)
-    RecyclerView listAttachment;
-    @BindView(R2.id.loading)
-    View loadingView;
-    @BindView(R2.id.main_view)
-    View mainView;
-    @BindView(R2.id.confirm_button)
-    TextView confirmButton;
-    ImageView imgAwb;
+    private EditText shippingRefNum;
+    private Spinner shippingSpinner;
+    private TextView errorSpinner;
+    private RecyclerView listAttachment;
+    private View loadingView;
+    private View mainView;
+    private TextView confirmButton;
+    private ImageView imgAwb;
 
     private AttachmentAdapter attachmentAdapter;
     private InputShippingParamsGetModel paramsModel;
     private UploadImageShippingResCenterDialog uploadImageDialog;
-    private ArrayList<AttachmentResCenterVersion2DB> attachmentData;
+    private ArrayList<ResCenterAttachment> attachmentData;
     private ResolutionShippingComponent daggerShippingComponent;
 
     private boolean isConfirmButtonEnabled = false;
@@ -104,7 +92,6 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
         return fragment;
     }
 
-    @OnClick(R2.id.confirm_button)
     public void setOnConfirmButtonClick() {
         if (paramsModel.isFromChat()) {
             if (paramsModel.isEdit())
@@ -138,12 +125,12 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     }
 
     @Override
-    public ArrayList<AttachmentResCenterVersion2DB> getAttachmentData() {
+    public ArrayList<ResCenterAttachment> getAttachmentData() {
         return attachmentData;
     }
 
     @Override
-    public void setAttachmentData(ArrayList<AttachmentResCenterVersion2DB> attachmentData) {
+    public void setAttachmentData(ArrayList<ResCenterAttachment> attachmentData) {
         this.attachmentData = attachmentData;
     }
 
@@ -204,7 +191,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     protected void initialPresenter() {
-        presenter = new InputShippingFragmentImpl(this);
+        presenter = new InputShippingFragmentImpl(getActivity().getApplication(), this);
     }
 
     @Override
@@ -224,9 +211,26 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     protected void initView(View view) {
-        imgAwb = (ImageView) view.findViewById(R.id.img_awb);
+        settingUpVariables(view);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setOnConfirmButtonClick();
+            }
+        });
         ImageHandler.LoadImage(imgAwb, URL_IMG);
         renderAttachmentAdapter();
+    }
+
+    private void settingUpVariables(View view) {
+        shippingRefNum = view.findViewById(R.id.ref_number);
+        shippingSpinner = view.findViewById(R.id.spinner_kurir);
+        errorSpinner = view.findViewById(R.id.error_spinner);
+        listAttachment = view.findViewById(R.id.list_upload_proof);
+        loadingView = view.findViewById(R.id.loading);
+        mainView = view.findViewById(R.id.main_view);
+        confirmButton = view.findViewById(R.id.confirm_button);
+        imgAwb = view.findViewById(R.id.img_awb);
     }
 
     @Override
@@ -440,7 +444,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
         if (requestCode == REQUEST_CODE_IMAGE_RESI && resultCode == Activity.RESULT_OK && data!= null) {
             uploadImageDialog.processImageDataFromGallery(data, new BaseUploadImageDialog.UploadImageDialogListener() {
                 @Override
-                public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
+                public void onSuccess(List<ResCenterAttachment> data) {
                     attachmentData.clear();
                     attachmentData.addAll(data);
                     attachmentAdapter.notifyDataSetChanged();
@@ -477,10 +481,12 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     public void onClickOpenAttachment(View view, final int position) {
+        ResCenterAttachmentRepository resCenterRepository = new ResCenterAttachmentRepository(getActivity().getApplication());
+
         uploadImageDialog.showRemoveDialog(new UploadImageShippingResCenterDialog.onRemoveAttachmentListener() {
             @Override
             public void onRemoveClickListener() {
-                attachmentData.get(position).delete();
+                resCenterRepository.deleteAttachment(attachmentData.get(position));
                 attachmentData.remove(position);
                 attachmentAdapter.notifyItemRemoved(position);
             }

@@ -70,6 +70,9 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         return view
     }
 
+    override fun getSwipeRefreshLayoutResourceId() = 0
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     fun onSuccessGetResult(reviews: HotelReview.ReviewData) {
         showHotelMetaReview(true)
         super.renderList(reviews.reviewList, reviews.hasNext)
@@ -99,7 +102,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
                 getString(R.string.hotel_review_filter_second_rank),
                 getString(R.string.hotel_review_filter_third_rank)),
-                R.color.snackbar_border_normal)
+                com.tokopedia.design.R.color.snackbar_border_normal)
         filter_recycler_view.selectOnlyOneChip(true)
 
         //initially select recent search chip

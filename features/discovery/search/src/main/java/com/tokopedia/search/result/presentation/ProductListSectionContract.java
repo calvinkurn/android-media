@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.presentation;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.discovery.common.data.DataValue;
-import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.common.data.Option;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
@@ -64,6 +64,8 @@ public interface ProductListSectionContract {
 
         void setAdditionalParams(String additionalParams);
 
+        void setAutocompleteApplink(String autocompleteApplink);
+
         void sendTrackingEventAppsFlyerViewListingSearch(JSONArray afProdIds, String query, ArrayList<String> prodIdArray);
 
         void sendTrackingEventMoEngageSearchAttempt(String query, boolean hasProductList, HashMap<String, String> category);
@@ -93,6 +95,8 @@ public interface ProductListSectionContract {
         void sendTrackingWishlistNonLogin(String productId, boolean wishlistAction);
 
         void redirectSearchToAnotherPage(String applink);
+
+        void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

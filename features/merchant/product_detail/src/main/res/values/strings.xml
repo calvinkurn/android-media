@@ -82,6 +82,7 @@
     <string name="label_see_all_talk">Lihat Semua Diskusi (%1$s)</string>
     <string name="title_other_product">Produk Lainnya dari Toko Ini</string>
     <string name="title_topads_product">Produk Terkait dengan Barang Ini</string>
+    <string name="pdp_title_recommended_product">Produk Rekomendasi</string>
     <string name="service_title_format">%1$s (%2$s)</string>
     <string name="see_message">Lihat Pesan</string>
     <string name="shipping_etd_text">(%1$s)</string>
@@ -127,7 +128,10 @@
     <string name="value_proposition_desc_ready">Stok barang di Official Store dijamin tersedia. Transaksi dibatalkan penjual? Kami akan beri kamu cashback sebagai kompensasi.</string>
     <string name="value_proposition_title_original">Pasti ori</string>
     <string name="value_proposition_desc_original">Semua barang di Official Store Tokopedia dijamin asli. Kalau terbukti palsu, uangmu akan dikembalikan 2x lipat.</string>
+    <string name="recom_go_to_wishlist">Lihat Wishlist</string>
     <string name="mau_akses_semua_fitur">Mau akses semua fitur?</string>
     <string name="masuk_yuk">Masuk yuk</string>
+    <string name="atc_done_add_product_success">Produk berhasil ditambahkan</string>
+    <string name="atc_done_see_cart">Lihat Keranjang</string>
 
 </resources>
