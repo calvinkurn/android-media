@@ -237,7 +237,7 @@ public class SearchActivity extends BaseActivity
 
     private void showButtonCart(Drawable drawable) {
         CountDrawable countDrawable = new CountDrawable(this);
-        int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 1);
+        int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
         countDrawable.setCount(String.valueOf(cartCount));
         drawable.mutate();
         ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);
