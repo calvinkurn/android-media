@@ -6,8 +6,16 @@ import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardUseC
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.CheckAffiliateSubscriber
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetAffiliateDashboardSubscriber
+import com.tokopedia.calendar.Legend
+import com.tokopedia.common.travel.data.entity.TravelCalendarHoliday
+import com.tokopedia.common.travel.domain.TravelCalendarHolidayUseCase
+import com.tokopedia.common.travel.utils.TravelDateUtil
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.*
 import java.util.*
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created by jegul on 2019-09-02.
@@ -15,8 +23,14 @@ import javax.inject.Inject
 class AffiliateDashboardPresenter
 @Inject constructor(
         private val getDashboardUseCase: GetDashboardUseCase,
-        private val checkAffiliateUseCase: CheckAffiliateUseCase
-) : BaseDaggerPresenter<AffiliateDashboardContract.View>(), AffiliateDashboardContract.Presenter {
+        private val checkAffiliateUseCase: CheckAffiliateUseCase,
+        private val travelCalendarHolidayUseCase: TravelCalendarHolidayUseCase
+) : BaseDaggerPresenter<AffiliateDashboardContract.View>(), AffiliateDashboardContract.Presenter, CoroutineScope {
+
+    private val job = SupervisorJob()
+
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
 
     override fun checkAffiliate() {
         checkAffiliateUseCase.execute(CheckAffiliateSubscriber(view))
@@ -30,9 +44,33 @@ class AffiliateDashboardPresenter
         }
     }
 
+    override fun loadHolidayList() {
+        view.showLoading()
+        launch {
+            val result = travelCalendarHolidayUseCase.execute()
+            withContext(Dispatchers.Main) {
+                when (result) {
+                    is Success -> view.onGetHolidayList(mappingHolidayData(result.data))
+                    is Fail -> view.onErrorGetHoliday(result.throwable)
+                }
+                view.hideLoading()
+            }
+        }
+    }
+
     override fun detachView() {
         super.detachView()
         getDashboardUseCase.unsubscribe()
         checkAffiliateUseCase.unsubscribe()
+        job.cancel()
+    }
+
+    private fun mappingHolidayData(holidayData: TravelCalendarHoliday.HolidayData): ArrayList<Legend> {
+        val legendList = arrayListOf<Legend>()
+        for (holiday in holidayData.data) {
+            legendList.add(Legend(TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, holiday.attribute.date),
+                    holiday.attribute.label))
+        }
+        return legendList
     }
 }

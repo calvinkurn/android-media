@@ -26,9 +26,12 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderV
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
+import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
+import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -50,6 +53,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     @Inject
     lateinit var presenter: AffiliateDashboardPresenter
 
+    private lateinit var llDashboard: LinearLayout
     private lateinit var tvTotalSaldo: TextView
     private lateinit var tvAffiliateIncome: TextView
     private lateinit var tvTotalViewed: TextView
@@ -81,6 +85,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     override val ctx: Context?
         get() = context
 
+    private lateinit var holidayList: List<Legend>
+
     override fun getScreenName(): String = "Dashboard"
 
     override fun initInjector() {
@@ -107,6 +113,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     private fun initView(view: View) {
         view.run {
+            llDashboard = findViewById(R.id.ll_dashboard)
             tvTotalSaldo = findViewById(R.id.tv_total_saldo)
             tvAffiliateIncome = findViewById(R.id.tv_affiliate_income)
             tvTotalViewed = findViewById(R.id.tv_total_viewed)
@@ -140,10 +147,6 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         tvSeeAll.setOnClickListener { onSeeAllProductClicked() }
     }
 
-    override fun hideLoading() {
-
-    }
-
     override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel) {
         tvTotalSaldo.text = MethodChecker.fromHtml(header.totalSaldoAktif)
         tvAffiliateIncome.text = MethodChecker.fromHtml(header.saldoString)
@@ -153,7 +156,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     override fun onErrorCheckAffiliate(error: String) {
         NetworkErrorHelper.showEmptyState(activity,
-                view,
+                llDashboard,
                 error
         ) { presenter.checkAffiliate() }
     }
@@ -178,9 +181,12 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     private fun openCalendarPicker() {
-        if (!::calendarView.isInitialized) calendarView = initCalendarView()
-        if (!::calendarBottomSheet.isInitialized) calendarBottomSheet = initCalendarBottomSheet()
-        calendarBottomSheet.show()
+        if (!::holidayList.isInitialized) presenter.loadHolidayList()
+        else {
+            if (!::calendarView.isInitialized) calendarView = initCalendarView()
+            if (!::calendarBottomSheet.isInitialized) calendarBottomSheet = initCalendarBottomSheet()
+            calendarBottomSheet.show()
+        }
     }
 
     private fun initCalendarView(): View {
@@ -215,7 +221,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private fun initCalendar(calendar: UnifyCalendar) {
         val pickerView = calendar.calendarPickerView
         val maxDate = getMaxDate()
-        val calendarPickerView = pickerView.init(getMinDate(), maxDate, emptyList())
+        val calendarPickerView = pickerView.init(getMinDate(), maxDate, holidayList)
                 .inMode(CalendarPickerView.SelectionMode.RANGE)
         pickerView.setOnDateSelectedListener(getOnSelectedDateListener())
 
@@ -271,10 +277,27 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         }
     }
 
+    override fun onGetHolidayList(legendList: List<Legend>) {
+        holidayList = legendList
+        openCalendarPicker()
+    }
+
+    override fun onErrorGetHoliday(error: Throwable) {
+        holidayList = emptyList()
+        openCalendarPicker()
+    }
+
     private fun onDateChanged() {
         presenter.loadDashboardDetail(startDate, endDate)
         directFragmentCurated.loadData(0)
         indirectFragmentCurated.loadData(0)
+    }
+
+    override fun onErrorGetDashboardItem(error: String) {
+        NetworkErrorHelper.showEmptyState(activity,
+                llDashboard,
+                error
+        ) { presenter.loadDashboardDetail() }
     }
 
     private fun closePage() = activity?.finish()
@@ -282,5 +305,13 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun showLoading() {
+        llDashboard.showLoadingTransparent()
+    }
+
+    override fun hideLoading() {
+        llDashboard.hideLoadingTransparent()
     }
 }

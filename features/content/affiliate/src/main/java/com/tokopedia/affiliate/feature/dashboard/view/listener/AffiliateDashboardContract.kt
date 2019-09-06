@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
+import com.tokopedia.calendar.Legend
 import java.util.*
 
 /**
@@ -15,6 +16,8 @@ interface AffiliateDashboardContract {
 
         val ctx: Context?
 
+        fun showLoading()
+
         fun hideLoading()
 
         fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel)
@@ -24,6 +27,12 @@ interface AffiliateDashboardContract {
         fun onSuccessCheckAffiliate(isAffiliate: Boolean)
 
         fun onUserNotLoggedIn()
+
+        fun onGetHolidayList(legendList: List<Legend>)
+
+        fun onErrorGetHoliday(error: Throwable)
+
+        fun onErrorGetDashboardItem(error: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -31,5 +40,7 @@ interface AffiliateDashboardContract {
         fun loadDashboardDetail(startDate: Date? = null, endDate: Date? = null)
 
         fun checkAffiliate()
+
+        fun loadHolidayList()
     }
 }

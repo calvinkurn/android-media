@@ -53,6 +53,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.calendar
     implementation project(rootProject.ext.features.feedComponent)
+    implementation project(rootProject.ext.features.commonTravel)
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler

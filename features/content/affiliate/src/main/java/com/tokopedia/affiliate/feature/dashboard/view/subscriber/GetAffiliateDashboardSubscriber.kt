@@ -1,5 +1,6 @@
 package com.tokopedia.affiliate.feature.dashboard.view.subscriber
 
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardBalance
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardHeaderPojo
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuery
@@ -30,6 +31,7 @@ class GetAffiliateDashboardSubscriber(
 
     override fun onError(e: Throwable?) {
         mainView.hideLoading()
+        mainView.onErrorGetDashboardItem(ErrorHandler.getErrorMessage(mainView.ctx, e))
     }
 
     private fun mappingHeader(pojo: DashboardHeaderPojo, balance: DashboardBalance) = pojo.let {
