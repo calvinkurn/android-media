@@ -46,6 +46,7 @@
             android:layout_marginTop="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_8"
             app:typographyType="small"
+            app:typographyWeight="bold"
             tools:text="BERHASIL" />
 
         <com.tokopedia.unifyprinciples.Typography
