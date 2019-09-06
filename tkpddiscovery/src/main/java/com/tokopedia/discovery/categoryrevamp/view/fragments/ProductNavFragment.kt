@@ -27,6 +27,7 @@ import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.ProductNavListAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.QuickFilterAdapter
 import com.tokopedia.discovery.categoryrevamp.adapters.SubCategoryAdapter
+import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.filter.DAFilterQueryType
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
@@ -44,7 +45,6 @@ import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.newdynamicfilter.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail

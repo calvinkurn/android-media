@@ -1,14 +1,12 @@
-package com.tokopedia.filter.newdynamicfilter.analytics
+package com.tokopedia.discovery.categoryrevamp.analytics
 
-import android.content.Context
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
 
-class CategoryPageAnalytics : FilterTracking() {
-    var catId: String = ""
+class CategoryPageAnalytics {
 
     val KEY_EVENT = "event"
     val KEY_EVENT_CATEGORY = "eventCategory"
@@ -358,26 +356,4 @@ class CategoryPageAnalytics : FilterTracking() {
         tracker.sendEnhanceEcommerceEvent(map)
     }
 
-
-    override fun eventSearchResultFilterJourney(context: Context?, filterName: String?, filterValue: String?, isInsideDetail: Boolean, isActive: Boolean) {
-        eventFilterCategoryChoosen(catId, filterName, filterValue, isInsideDetail, isActive)
-    }
-
-    override fun eventSearchResultApplyFilterDetail(context: Context?, filterName: String?) {
-    }
-
-    override fun eventSearchResultBackFromFilterDetail(context: Context?, filterName: String?) {
-    }
-
-    override fun eventSearchResultNavigateToFilterDetail(context: Context?, filterName: String?) {
-    }
-
-    override fun eventSearchResultOpenFilterPageProduct(context: Context?) {
-    }
-
-    override fun eventSearchResultOpenFilterPageCatalog(context: Context?) {
-    }
-
-    override fun eventSearchResultOpenFilterPageShop(context: Context?) {
-    }
 }

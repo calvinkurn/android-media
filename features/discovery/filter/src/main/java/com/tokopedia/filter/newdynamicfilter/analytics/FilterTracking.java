@@ -1,30 +1,28 @@
 package com.tokopedia.filter.newdynamicfilter.analytics;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 /**
  * Created by henrypriyono on 1/5/18.
  */
 
 public class FilterTracking {
 
-
-    private static FilterTracking mInstance = new FilterTracking();
-
-    public FilterTracking() {
-    }
-
-    public static FilterTracking getmInstance() {
-        return mInstance;
-    }
-
-    public void eventSearchResultFilterJourney(Context context,
-                                               String filterName,
-                                               String filterValue,
-                                               boolean isInsideDetail, boolean isActive) {
+    public static void eventSearchResultFilterJourney(Context context,
+                                                      String filterName,
+                                                      String filterValue,
+                                                      boolean isInsideDetail, boolean isActive) {
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 FilterEventTracking.Event.SEARCH_RESULT,
@@ -36,7 +34,7 @@ public class FilterTracking {
         ));
     }
 
-    public void eventSearchResultApplyFilterDetail(Context context, String filterName) {
+    public static void eventSearchResultApplyFilterDetail(Context context, String filterName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 FilterEventTracking.Event.SEARCH_RESULT,
                 FilterEventTracking.Category.FILTER_JOURNEY,
@@ -45,7 +43,7 @@ public class FilterTracking {
         ));
     }
 
-    public void eventSearchResultBackFromFilterDetail(Context context, String filterName) {
+    public static void eventSearchResultBackFromFilterDetail(Context context, String filterName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 FilterEventTracking.Event.SEARCH_RESULT,
                 FilterEventTracking.Category.FILTER_JOURNEY,
@@ -54,7 +52,7 @@ public class FilterTracking {
         ));
     }
 
-    public void eventSearchResultNavigateToFilterDetail(Context context, String filterName) {
+    public static void eventSearchResultNavigateToFilterDetail(Context context, String filterName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 FilterEventTracking.Event.SEARCH_RESULT,
                 FilterEventTracking.Category.FILTER_JOURNEY,
@@ -63,19 +61,19 @@ public class FilterTracking {
         ));
     }
 
-    public  void eventSearchResultOpenFilterPageProduct(Context context) {
+    public static void eventSearchResultOpenFilterPageProduct(Context context) {
         eventSearchResultOpenFilterPage(context, "product");
     }
 
-    public  void eventSearchResultOpenFilterPageCatalog(Context context) {
-        eventSearchResultOpenFilterPage(context, "catalog");
+    public static void eventSearchResultOpenFilterPageCatalog(Context context) {
+        eventSearchResultOpenFilterPage(context,"catalog");
     }
 
-    public  void eventSearchResultOpenFilterPageShop(Context context) {
-        eventSearchResultOpenFilterPage(context, "shop");
+    public static void eventSearchResultOpenFilterPageShop(Context context) {
+        eventSearchResultOpenFilterPage(context,"shop");
     }
 
-    private  void eventSearchResultOpenFilterPage(Context context, String tabName) {
+    private static void eventSearchResultOpenFilterPage(Context context, String tabName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 FilterEventTracking.Event.SEARCH_RESULT,
                 FilterEventTracking.Category.FILTER.toLowerCase() + " " + tabName,

@@ -15,16 +15,14 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
-import com.tokopedia.filter.newdynamicfilter.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
+import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
-import com.tokopedia.filter.newdynamicfilter.analytics.DiscoveryTrackingFactory
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.filter.newdynamicfilter.analytics.CategoryPageAnalytics
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -51,7 +49,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     override fun closeFilterBottomSheet() {
-        DiscoveryTrackingFactory.setDefaultState()
         bottomSheetFilterView?.closeView()
     }
 
@@ -141,15 +138,11 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
         icon_filter.setOnClickListener {
             visibleFragmentListener?.onFilterClick()
-            DiscoveryTrackingFactory.setTrackingState(DiscoveryTrackingFactory.STATE_TRACKING_CATEGORY)
-            (DiscoveryTrackingFactory.getmInstance() as CategoryPageAnalytics).catId = departmentId
             catAnalyticsInstance.eventFilterClicked(departmentId)
         }
 
         button_filter.setOnClickListener {
             visibleFragmentListener?.onFilterClick()
-            DiscoveryTrackingFactory.setTrackingState(DiscoveryTrackingFactory.STATE_TRACKING_CATEGORY)
-            (DiscoveryTrackingFactory.getmInstance() as CategoryPageAnalytics).catId = departmentId
             catAnalyticsInstance.eventFilterClicked(departmentId)
         }
 
@@ -347,7 +340,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     override fun onBackPressed() {
         bottomSheetFilterView?.let {
-            DiscoveryTrackingFactory.setDefaultState()
             if (!it.onBackPressed()) {
                 finish()
             }
