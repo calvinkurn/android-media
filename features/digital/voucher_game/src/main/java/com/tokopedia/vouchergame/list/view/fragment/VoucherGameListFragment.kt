@@ -118,7 +118,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (::voucherGameExtraParam.isInitialized) outState.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+        if (::voucherGameExtraParam.isInitialized) {
+            // Reset operatorId
+            voucherGameExtraParam.operatorId = ""
+            outState.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+        }
     }
 
     private fun checkAutoSelectOperator(operators: List<VoucherGameOperator>) {
