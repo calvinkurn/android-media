@@ -244,7 +244,7 @@ android {
     }
 
     dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
-                       rootProject.ext.features.settingbank,
+                       rootProject.ext.dynamicFeatures.settingBank,
 //                       rootProject.ext.dynamicFeatures.profileCompletion
     ]
 
