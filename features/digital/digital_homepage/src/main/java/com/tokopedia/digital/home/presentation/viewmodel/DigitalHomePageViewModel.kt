@@ -1,4 +1,4 @@
-package com.tokopedia.digital.home.presentation.viewmodel
+\package com.tokopedia.digital.home.presentation.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -87,33 +87,6 @@ class DigitalHomePageViewModel  @Inject constructor(
             }
         }
     }
-
-//    /**
-//     * get promo list
-//     * api not ready yet
-//     */
-//    fun getPromoList(rawQuery: String){
-//        launchCatchError(block = {
-//            val data = withContext(Dispatchers.Default){
-//                val graphqlRequest = GraphqlRequest(rawQuery, DigitalHomePagePromoModel::class.java)
-//                graphqlRepository.getReseponse(listOf(graphqlRequest))
-//            }.getSuccessData<DigitalHomePagePromoModel>()
-//            digitalHomePageList.value?.let {
-//                val updatedList = it.toMutableList()
-//                updatedList[CATEGORY_ORDER] = data.response
-//                updatedList[CATEGORY_ORDER].isLoaded = true
-//                updatedList[CATEGORY_ORDER].isSuccess = true
-//                digitalHomePageList.value = updatedList
-//            }
-//        }){
-//            digitalHomePageList.value?.let {
-//                val updatedList = it.toMutableList()
-//                updatedList[CATEGORY_ORDER].isLoaded = true
-//                updatedList[CATEGORY_ORDER].isSuccess = false
-//                digitalHomePageList.value = updatedList
-//            }
-//        }
-//    }
 
     companion object {
         val BANNER_ORDER = 0

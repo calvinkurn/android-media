@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
@@ -13,19 +12,14 @@
         android:background="@android:color/white"
         android:fitsSystemWindows="true">
 
-        <!--<com.tokopedia.abstraction.base.view.widget.SwipeToRefresh-->
-        <!--android:id="@+id/swipe_refresh_layout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent">-->
-
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-        <!--</com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>-->
 
         <com.tokopedia.digital.home.presentation.customview.TravelHomepageToolbar
             android:id="@+id/digital_homepage_toolbar"
+            style="@style/Toolbar.White"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
@@ -37,8 +31,7 @@
             app:elevation="@dimen/dp_4"
             app:navigationIcon="@drawable/ic_action_back"
             app:title="@string/digital_subhomepage_name"
-            app:titleTextAppearance="@style/TitleTextAppearance"
-            style="@style/Toolbar.White"/>
+            app:titleTextAppearance="@style/TitleTextAppearance" />
 
     </RelativeLayout>
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
