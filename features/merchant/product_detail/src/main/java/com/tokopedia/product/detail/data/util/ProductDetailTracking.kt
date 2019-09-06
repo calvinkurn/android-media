@@ -879,7 +879,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
 
     fun eventClickCloseOnHelpPopUpAtc() {
         TrackApp.getInstance().gtm.pushGeneralGtmV5(
-                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
                 ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
                 ProductTrackingConstant.Label.EMPTY_LABEL

@@ -591,13 +591,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
     fun hitSubmitTicket(addToCartDataModel: AddToCartDataModel, onErrorSubmitHelpTicket: (Throwable?) -> Unit, onNextSubmitHelpTicket: (SubmitTicketResult) -> Unit) {
         val requestParams = RequestParams.create()
         val submitHelpTicketRequest = SubmitHelpTicketRequest()
-        submitHelpTicketRequest.apiJsonResponse = addToCartDataModel.responseJson
-        submitHelpTicketRequest.errorMessage = addToCartDataModel.errorReporter.texts.submitDescription
-        if (addToCartDataModel.errorMessage.isNotEmpty()) {
-            submitHelpTicketRequest.headerMessage = addToCartDataModel.errorMessage[0]
+        submitHelpTicketRequest.apply {
+            apiJsonResponse = addToCartDataModel.responseJson
+            errorMessage = addToCartDataModel.errorReporter.texts.submitDescription
+            if (addToCartDataModel.errorMessage.isNotEmpty()) {
+                headerMessage = addToCartDataModel.errorMessage[0]
+            }
+            page = SubmitHelpTicketUseCase.PAGE_ATC
+            requestUrl = SubmitHelpTicketUseCase.GQL_REQUEST_URL
         }
-        submitHelpTicketRequest.page = SubmitHelpTicketUseCase.PAGE_ATC
-        submitHelpTicketRequest.requestUrl = SubmitHelpTicketUseCase.GQL_REQUEST_URL
         requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest)
         submitTicketSubscription = submitHelpTicketUseCase.createObservable(requestParams).subscribe(object : Observer<SubmitTicketResult> {
             override fun onError(e: Throwable?) {

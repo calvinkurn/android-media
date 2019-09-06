@@ -149,6 +149,7 @@ public class CartRepository implements ICartRepository {
         return cartApi.checkout(param).map(new Func1<Response<CartResponse>, CheckoutResponse>() {
             @Override
             public CheckoutResponse call(Response<CartResponse> cartResponseResponse) {
+                // NEED CHECK BEFORE REFACTOR
                 return cartResponseResponse.body().convertResponseObj(CheckoutResponse.class);
             }
         });

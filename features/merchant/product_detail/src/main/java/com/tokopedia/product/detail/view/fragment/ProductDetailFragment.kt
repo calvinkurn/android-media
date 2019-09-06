@@ -1086,21 +1086,23 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     activity?.also { activity ->
                         val result = data.getParcelableExtra<AddToCartDataModel>(RESULT_TICKET_DATA)
                         val createTicketDialog = UnifyDialog(activity, UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER)
-                        createTicketDialog.setTitle(result.errorReporter.texts.submitTitle)
-                        createTicketDialog.setDescription(result.errorReporter.texts.submitDescription)
-                        createTicketDialog.setSecondary(result.errorReporter.texts.cancelButton)
-                        createTicketDialog.setSecondaryOnClickListener(View.OnClickListener {
-                            createTicketDialog.dismiss()
-                            productDetailTracking.eventClickCloseOnHelpPopUpAtc()
-                        })
-                        createTicketDialog.setOk(result.errorReporter.texts.submitButton)
-                        createTicketDialog.setOkOnClickListener(View.OnClickListener {
-                            createTicketDialog.dismiss()
-                            productDetailTracking.eventClickReportOnHelpPopUpAtc()
-                            showProgressDialog()
-                            productInfoViewModel.hitSubmitTicket(result, this::onErrorSubmitHelpTicket, this::onSuccessSubmitHelpTicket)
-                        })
-                        createTicketDialog.show()
+                        createTicketDialog.apply {
+                            setTitle(result.errorReporter.texts.submitTitle)
+                            setDescription(result.errorReporter.texts.submitDescription)
+                            setSecondary(result.errorReporter.texts.cancelButton)
+                            setSecondaryOnClickListener(View.OnClickListener {
+                                this.dismiss()
+                                productDetailTracking.eventClickCloseOnHelpPopUpAtc()
+                            })
+                            setOk(result.errorReporter.texts.submitButton)
+                            setOkOnClickListener(View.OnClickListener {
+                                this.dismiss()
+                                productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                                showProgressDialog()
+                                productInfoViewModel.hitSubmitTicket(result, this@ProductDetailFragment::onErrorSubmitHelpTicket, this@ProductDetailFragment::onSuccessSubmitHelpTicket)
+                            })
+                            show()
+                        }
                         productDetailTracking.eventViewHelpPopUpWhenAtc()
                     }
                 } else if (resultCode == Activity.RESULT_OK && data != null) {
@@ -1187,22 +1189,30 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun onErrorSubmitHelpTicket(e: Throwable?) {
         hideProgressDialog()
-        Toaster.showError(view!!, ErrorHandler.getErrorMessage(context, e), Toast.LENGTH_SHORT)
+        view?.also {
+            Toaster.showError(it, ErrorHandler.getErrorMessage(context, e), BaseToaster.LENGTH_SHORT)
+        }
     }
 
     private fun onSuccessSubmitHelpTicket(result: SubmitTicketResult) {
         hideProgressDialog()
         if (result.status) {
-            val successTicketDialog = UnifyDialog(activity!!, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
-            successTicketDialog.setTitle(result.texts.submitTitle)
-            successTicketDialog.setDescription(result.texts.submitDescription)
-            successTicketDialog.setOk(result.texts.successButton)
-            successTicketDialog.setOkOnClickListener(View.OnClickListener {
-                successTicketDialog.dismiss()
-            })
-            successTicketDialog.show()
+            activity?.also {
+                val successTicketDialog = UnifyDialog(it, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
+                successTicketDialog.apply {
+                    setTitle(result.texts.submitTitle)
+                    setDescription(result.texts.submitDescription)
+                    setOk(result.texts.successButton)
+                    setOkOnClickListener(View.OnClickListener {
+                        this.dismiss()
+                    })
+                    show()
+                }
+            }
         } else {
-            Toaster.showError(view!!, result.message, Toast.LENGTH_SHORT)
+            view?.also {
+                Toaster.showError(it, result.message, BaseToaster.LENGTH_SHORT)
+            }
         }
     }
 
