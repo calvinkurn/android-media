@@ -387,4 +387,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             notifyBottomActionView()
         }
     }
+
+    override fun getAnalytic(): NotificationUpdateAnalytics {
+        return analytics
+    }
 }

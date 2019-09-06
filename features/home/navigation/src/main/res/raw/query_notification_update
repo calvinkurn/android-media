@@ -35,6 +35,38 @@ query get_notification_update($page: Int!, $typeId: Int!, $tagId: Int!, $lastNot
         name
         url
         image_url
+        price
+        currency
+        price_idr
+        is_buyable
+        is_topads
+        is_wishlist
+        rating
+        count_review
+        labels {
+            title
+            color
+        }
+        campaign {
+            active
+            original_price
+            discount_percentage
+            discount_price
+        }
+        variant {
+            value
+            identifier
+            hex
+        }
+        shop {
+            id
+            name
+            location
+            badges {
+                title
+                image_url
+            }
+        }
       }
       total_product
     }

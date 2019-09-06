@@ -10,8 +10,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.pojo.ProductData
+import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 
-class ProductRecommendationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class ProductRecommendationViewHolder(itemView: View, val listener: NotificationUpdateItemListener)
+    : RecyclerView.ViewHolder(itemView) {
 
     private val thumbnail = itemView.findViewById<ImageView>(R.id.iv_product)
 
@@ -24,14 +26,19 @@ class ProductRecommendationViewHolder(itemView: View) : RecyclerView.ViewHolder(
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     productData.productId
             )
+            trackOnProductThumbnailToPdp(productData)
         }
+    }
+
+    private fun trackOnProductThumbnailToPdp(productData: ProductData) {
+        listener.getAnalytic().trackOnProductThumbnailToPdp(productData, layoutPosition)
     }
 
     companion object {
 
-        fun create(parent: ViewGroup): ProductRecommendationViewHolder {
+        fun create(parent: ViewGroup, listener: NotificationUpdateItemListener): ProductRecommendationViewHolder {
             val layout = LayoutInflater.from(parent.context).inflate(R.layout.item_notification_product_recommendation, parent, false)
-            return ProductRecommendationViewHolder(layout)
+            return ProductRecommendationViewHolder(layout, listener)
         }
 
     }

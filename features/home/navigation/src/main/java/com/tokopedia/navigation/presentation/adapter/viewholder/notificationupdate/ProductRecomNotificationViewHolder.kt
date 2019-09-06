@@ -16,7 +16,7 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationU
 
     private val rvRecommendation = itemView.findViewById<RecyclerView>(R.id.rv_recommendation)
     private val decoration = ProductRecomNotificationItemDecoration()
-    private val layoutAdapter = NotifcenterProductRecommendationAdapter()
+    private val layoutAdapter = NotifcenterProductRecommendationAdapter(listener)
     private val SPAN_COUNT = 4
 
     init {
@@ -34,6 +34,9 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationU
     override fun bindNotificationPayload(element: NotificationUpdateItemViewModel) {
         layoutAdapter.updateProductRecommendation(element.products)
         layoutAdapter.updateTotalProductCount(element.totalProduct)
+
+        val seenProducts = layoutAdapter.getSeenProductRecommendation()
+        listener.getAnalytic().trackImpressionProductRecommendation(seenProducts)
     }
 
     override fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {

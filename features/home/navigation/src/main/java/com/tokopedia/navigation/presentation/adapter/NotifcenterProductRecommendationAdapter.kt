@@ -5,9 +5,11 @@ import android.view.ViewGroup
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.adapter.viewholder.ProductRecommendationMoreViewHolder
 import com.tokopedia.navigation.presentation.adapter.viewholder.ProductRecommendationViewHolder
+import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import java.lang.IllegalStateException
 
-class NotifcenterProductRecommendationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NotifcenterProductRecommendationAdapter(val listener: NotificationUpdateItemListener)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var products: List<ProductData> = emptyList()
     private var totalProduct = products.size
@@ -16,7 +18,7 @@ class NotifcenterProductRecommendationAdapter : RecyclerView.Adapter<RecyclerVie
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            TYPE_PRODUCT -> ProductRecommendationViewHolder.create(parent)
+            TYPE_PRODUCT -> ProductRecommendationViewHolder.create(parent, listener)
             TYPE_PRODUCT_LOAD_MROE -> ProductRecommendationMoreViewHolder.create(parent)
             else -> throw IllegalStateException("Invalid viewType: $viewType")
         }
@@ -60,6 +62,12 @@ class NotifcenterProductRecommendationAdapter : RecyclerView.Adapter<RecyclerVie
 
     fun updateTotalProductCount(totalProduct: Int) {
         this.totalProduct = totalProduct
+    }
+
+    fun getSeenProductRecommendation() : List<ProductData> {
+        if (products.isEmpty()) return emptyList()
+        val size = getProductRecommendationSize()
+        return products.subList(0, size)
     }
 
     companion object {

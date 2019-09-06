@@ -88,7 +88,93 @@ data class ProductData(
         val url: String = "",
         @Expose
         @SerializedName("image_url")
-        val imageUrl: String = ""
+        val imageUrl: String = "",
+        @Expose
+        @SerializedName("price")
+        val price: String = "0",
+        @Expose
+        @SerializedName("currency")
+        val currency: String = "",
+        @Expose
+        @SerializedName("prrice_idr")
+        val priceIdr: String = "0",
+        @Expose
+        @SerializedName("is_buyable")
+        val isBuyable: Boolean = false,
+        @Expose
+        @SerializedName("is_topads")
+        val isTopAds: Boolean = false,
+        @Expose
+        @SerializedName("is_wishlist")
+        val isWishlist: Boolean = false,
+        @Expose
+        @SerializedName("rating")
+        val rating: String = "0",
+        @Expose
+        @SerializedName("count_review")
+        val countReview: String = "0",
+        @Expose
+        @SerializedName("labels")
+        val labels: List<Label>,
+        @Expose
+        @SerializedName("campaign")
+        val campaign: Campaign,
+        @Expose
+        @SerializedName("variant")
+        val variant: List<Variant>,
+        @Expose
+        @SerializedName("shop")
+        val shop: Shop
+)
+
+data class Label (
+        @Expose
+        @SerializedName("title")
+        val title: String = "",
+        @Expose
+        @SerializedName("color")
+        val color: String = ""
+)
+
+data class Campaign(
+        @SerializedName("active")
+        val active: Boolean,
+        @SerializedName("original_price")
+        val originalPrice: Int,
+        @SerializedName("discount_percentage")
+        val discountPercentage: Int,
+        @SerializedName("discount_price")
+        val discountPrice: Int
+)
+
+data class Variant (
+        @Expose
+        @SerializedName("value")
+        val value: String = "",
+        @Expose
+        @SerializedName("identifier")
+        val identifier: String = "",
+        @Expose
+        @SerializedName("hex")
+        val hex: String = ""
+)
+
+data class Shop(
+        @SerializedName("id")
+        val id: Int,
+        @SerializedName("name")
+        val name: String,
+        @SerializedName("location")
+        val location: String,
+        @SerializedName("badges")
+        val badges: List<ShopBadge>
+)
+
+data class ShopBadge(
+        @SerializedName("title")
+        val title: String,
+        @SerializedName("image_url")
+        val imageUrl: String
 )
 
 data class DataNotification(
