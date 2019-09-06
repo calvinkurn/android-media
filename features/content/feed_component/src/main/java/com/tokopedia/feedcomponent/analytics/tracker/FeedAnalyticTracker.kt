@@ -90,6 +90,10 @@ class FeedAnalyticTracker
         const val CURRENCY_CODE = "currencyCode"
         const val CURRENCY_CODE_IDR = "IDR"
     }
+
+
+    private val REGEX_NUMERIC = "[^\\d]"
+
     /**
      *
      * docs: https://docs.google.com/spreadsheets/d/1hEISViRaJQJrHTo0MiDd7XjDWe1YPpGnwDKmKCtZDJ8/edit#gid=85816589
@@ -160,7 +164,7 @@ class FeedAnalyticTracker
                                     getProductData(
                                             productId,
                                             productName,
-                                            price,
+                                            formatPriceToInt(price),
                                             quantity,
                                             shopId,
                                             shopName)))
@@ -567,7 +571,7 @@ class FeedAnalyticTracker
     private fun getProductData(
             id: String,
             name: String,
-            price: String,
+            price: Int,
             quantity: Int,
             shopId: Int,
             shopName: String
@@ -579,4 +583,13 @@ class FeedAnalyticTracker
             Product.SHOP_ID, shopId,
             Product.SHOP_NAME, shopName
     )
+    private fun formatPriceToInt(price: String): Int {
+        var result = 0
+        try {
+            var rex = Regex(REGEX_NUMERIC)
+            result = rex.replace(price, "").toInt()
+        } catch (e: Exception) {
+        }
+        return result
+    }
 }
