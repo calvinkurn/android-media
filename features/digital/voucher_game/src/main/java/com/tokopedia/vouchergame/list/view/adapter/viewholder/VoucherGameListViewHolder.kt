@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import kotlinx.android.synthetic.main.item_voucher_game.view.*
-import java.beans.Visibility
 
 /**
  * @author by resakemal on 12/08/19
