@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.constant.AffiliateConstant;
 import com.tokopedia.affiliate.feature.dashboard.view.fragment.AffiliateDashboardFragment;
+import com.tokopedia.affiliate.feature.dashboard.view.fragment.DashboardFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 
@@ -21,17 +22,9 @@ import com.tokopedia.applink.RouteManager;
  */
 public class DashboardActivity extends BaseSimpleActivity {
 
-    @DeepLink(ApplinkConst.AFFILIATE_DASHBOARD)
-    public static Intent getInstance(Context context) {
-        Intent intent = new Intent(context, DashboardActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtras(bundle);
-        return intent;
-    }
-
     @Override
     protected Fragment getNewFragment() {
-        return AffiliateDashboardFragment.Companion.newInstance(getIntent().getExtras());
+        return DashboardFragment.getInstance(getIntent().getExtras());
     }
 
     @Override

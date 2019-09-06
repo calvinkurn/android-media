@@ -16,6 +16,9 @@ public class DashboardProduct {
     @SerializedName("products")
     @Expose
     private List<DashboardItemPojo> affiliatedProducts;
+    @SerializedName("subtitles")
+    @Expose
+    private List<DashboardSubtitlePojo> subtitles;
 
     public DashboardPagingPojo getPagination() {
         return pagination;
@@ -27,6 +30,14 @@ public class DashboardProduct {
 
     public List<DashboardItemPojo> getAffiliatedProducts() {
         return affiliatedProducts;
+    }
+
+    public List<DashboardSubtitlePojo> getSubtitles() {
+        return subtitles;
+    }
+
+    public void setSubtitles(List<DashboardSubtitlePojo> subtitles) {
+        this.subtitles = subtitles;
     }
 
     public void setAffiliatedProducts(List<DashboardItemPojo> affiliatedProducts) {

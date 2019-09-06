@@ -14,23 +14,29 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 
 /**
  * @author by yfsx on 18/09/18.
  */
-class DashboardItemViewHolder(itemView: View, private val onItemClick: (DashboardItemViewModel) -> Unit) : AbstractViewHolder<DashboardItemViewModel>(itemView) {
+class DashboardItemViewHolder(
+        itemView: View,
+        private val onItemClick: (DashboardItemViewModel) -> Unit
+) : AbstractViewHolder<DashboardItemViewModel>(itemView) {
 
-    private val ivItem: ImageView = itemView.findViewById<View>(R.id.iv_item) as ImageView
-    private val layoutStatus: FrameLayout = itemView.findViewById<View>(R.id.layout_status) as FrameLayout
-    private val tvStatus: TextView = itemView.findViewById<View>(R.id.tv_status) as TextView
-    private val tvName: TextView = itemView.findViewById<View>(R.id.tv_name) as TextView
-    private val tvCommission: TextView = itemView.findViewById<View>(R.id.tv_commission) as TextView
-    private val tvBuyCount: TextView = itemView.findViewById<View>(R.id.tv_buy_count) as TextView
-    private val tvClickCount: TextView = itemView.findViewById<View>(R.id.tv_click_count) as TextView
-    private val tvProductCommission: TextView = itemView.findViewById<View>(R.id.tv_product_commission) as TextView
-    private val layoutActive: LinearLayout = itemView.findViewById<View>(R.id.layout_active) as LinearLayout
-    private val layoutInactive: LinearLayout = itemView.findViewById<View>(R.id.layout_inactive) as LinearLayout
-    private val cardView: CardView = itemView.findViewById<View>(R.id.card_view) as CardView
+    private val ivItem: ImageView = itemView.findViewById(R.id.iv_item)
+    private val layoutStatus: FrameLayout = itemView.findViewById(R.id.layout_status)
+    private val tvStatus: TextView = itemView.findViewById(R.id.tv_status)
+    private val tvName: TextView = itemView.findViewById(R.id.tv_name)
+    private val tvCommission: TextView = itemView.findViewById(R.id.tv_commission)
+    private val tvBuyCount: TextView = itemView.findViewById(R.id.tv_buy_count)
+    private val tvClickCount: TextView = itemView.findViewById(R.id.tv_click_count)
+    private val tvProductCommission: TextView = itemView.findViewById(R.id.tv_product_commission)
+    private val layoutActive: LinearLayout = itemView.findViewById(R.id.layout_active)
+    private val layoutInactive: LinearLayout = itemView.findViewById(R.id.layout_inactive)
+    private val cardView: CardView = itemView.findViewById(R.id.card_view)
+    private val tvSection: TextView = itemView.findViewById(R.id.tv_section)
 
     override fun bind(element: DashboardItemViewModel) {
         initView(element)
@@ -39,7 +45,7 @@ class DashboardItemViewHolder(itemView: View, private val onItemClick: (Dashboar
     private fun initView(element: DashboardItemViewModel) {
         ImageHandler.loadImageRounded2(ivItem.context, ivItem, element.imageUrl, 6.0f)
         tvName.text = MethodChecker.fromHtml(element.title)
-        if (element.isActive && !element.productCommission.isEmpty()) {
+        if (element.isActive && element.productCommission.isNotEmpty()) {
             layoutInactive.visibility = View.GONE
             layoutActive.visibility = View.VISIBLE
             tvProductCommission.text = element.productCommission
@@ -50,12 +56,12 @@ class DashboardItemViewHolder(itemView: View, private val onItemClick: (Dashboar
         }
         tvClickCount.text = element.itemClicked
         tvBuyCount.text = element.itemSold
-        layoutStatus.background = MethodChecker.getDrawable(
-                layoutStatus.context,
-                if (element.isActive)
-                    R.drawable.bg_af_ongoing
-                else
-                    R.drawable.bg_af_finished)
+//        layoutStatus.background = MethodChecker.getDrawable(
+//                layoutStatus.context,
+//                if (element.isActive)
+//                    R.drawable.bg_af_ongoing
+//                else
+//                    R.drawable.bg_af_finished)
         tvStatus.text = tvStatus.context.getString(
                 if (element.isActive)
                     R.string.text_af_ongoing
@@ -70,6 +76,8 @@ class DashboardItemViewHolder(itemView: View, private val onItemClick: (Dashboar
         )
         )
         cardView.setOnClickListener { onItemClick(element) }
+        tvSection.text = element.sectionName
+        if (element.isShouldShowSection) tvSection.visible() else tvSection.gone()
     }
 
     companion object {

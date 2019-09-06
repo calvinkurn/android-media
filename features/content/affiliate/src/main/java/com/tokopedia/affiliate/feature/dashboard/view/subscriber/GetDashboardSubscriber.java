@@ -1,14 +1,19 @@
 package com.tokopedia.affiliate.feature.dashboard.view.subscriber;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardHeaderPojo;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardItemPojo;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuery;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuotaStatus;
+import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardSubtitlePojo;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardFloatingButtonViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel;
+import com.tokopedia.calendar.SubTitle;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import java.util.ArrayList;
@@ -22,9 +27,11 @@ import rx.Subscriber;
 public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
 
     private DashboardContract.View mainView;
+    private Integer type;
 
-    public GetDashboardSubscriber(DashboardContract.View mainView) {
+    public GetDashboardSubscriber(Integer type, DashboardContract.View mainView) {
         this.mainView = mainView;
+        this.type = type;
     }
 
     @Override
@@ -44,7 +51,7 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
         DashboardQuery query = response.getData(DashboardQuery.class);
         mainView.onSuccessGetDashboardItem(
                 mappingHeader(query.getAffiliateStats()),
-                query.getProduct().getAffiliatedProducts() != null ? mappingListItem(query.getProduct().getAffiliatedProducts()) : new ArrayList<>(),
+                query.getProduct().getAffiliatedProducts() != null ? mappingListItem(mainView.getContext(), type, query.getProduct().getAffiliatedProducts(), query.getProduct().getSubtitles()) : new ArrayList<>(),
                 query.getProduct().getPagination().getNextCursor(),
                 mappingFloatingItem(query.getPostQuota())
         );
@@ -59,9 +66,18 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
                 pojo.getProductSold());
     }
 
-    public static List<DashboardItemViewModel> mappingListItem(List<DashboardItemPojo> pojoList) {
+    public static List<DashboardItemViewModel> mappingListItem(Context context, Integer type, List<DashboardItemPojo> pojoList, List<DashboardSubtitlePojo> subtitleList) {
+        String activeSection = context.getString(R.string.affiliate_product_berlangsung);
+        String inactiveSection = context.getString(R.string.affiliate_product_berakhir);
+
+        for (DashboardSubtitlePojo subtitle: subtitleList) {
+            if (subtitle.getKey().equalsIgnoreCase("active")) activeSection = subtitle.getText();
+            else if (subtitle.getKey().equalsIgnoreCase("inactive")) inactiveSection = subtitle.getText();
+        }
+
         List<DashboardItemViewModel> itemList = new ArrayList<>();
-        for (DashboardItemPojo pojo : pojoList) {
+        for (int index = 0; index < pojoList.size(); index++) {
+            DashboardItemPojo pojo = pojoList.get(index);
             DashboardItemViewModel item = new DashboardItemViewModel(
                     pojo.getId(),
                     pojo.getImage(),
@@ -70,7 +86,9 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
                     pojo.getTotalClick(),
                     pojo.getTotalSold(),
                     pojo.getProductCommission() != null ? pojo.getProductCommission() : "",
-                    pojo.isIsActive());
+                    pojo.isIsActive(),
+                    pojo.isIsActive() ? activeSection : inactiveSection,
+                    (type != null) && (index == 0 || pojoList.get(index).isIsActive() != pojo.isIsActive()));
             itemList.add(item);
         }
         return itemList;

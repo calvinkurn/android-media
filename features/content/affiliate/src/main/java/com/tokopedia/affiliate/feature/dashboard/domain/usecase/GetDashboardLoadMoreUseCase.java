@@ -18,6 +18,13 @@ import javax.inject.Inject;
 public class GetDashboardLoadMoreUseCase extends GraphqlUseCase {
     private final Context context;
     private final static String PARAM_CURSOR = "cursor";
+    /**
+     * Available type:
+     * https://tokopedia.atlassian.net/wiki/spaces/CN/pages/544965123/GQL+Affiliate+Dashboard+-+AffiliatedProductList
+     * 1 - Curated product from create post
+     * 2 - Curated product from traffic
+     * Leave it blank if you wanna show both data
+     */
     private final static String PARAM_TYPE = "type";
 
     @Inject
@@ -25,7 +32,7 @@ public class GetDashboardLoadMoreUseCase extends GraphqlUseCase {
         this.context = context;
     }
 
-    public GraphqlRequest getRequest(int type, String cursor) {
+    public GraphqlRequest getRequest(Integer type, String cursor) {
         return new GraphqlRequest(GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.query_dashboard_loadmore),
@@ -33,10 +40,10 @@ public class GetDashboardLoadMoreUseCase extends GraphqlUseCase {
                 false);
     }
 
-    public static RequestParams getParam(int type, String cursor) {
+    public static RequestParams getParam(Integer type, String cursor) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_CURSOR, cursor);
-        params.putInt(PARAM_TYPE, type);
+        if (type != null) params.putInt(PARAM_TYPE, type);
         return params;
     }
 }

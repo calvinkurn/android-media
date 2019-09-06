@@ -35,7 +35,7 @@ public class DashboardPresenter extends BaseDaggerPresenter<DashboardContract.Vi
         if (!isPullToRefresh) getView().showLoading();
         getDashboardUseCase.clearRequest();
         getDashboardUseCase.addRequest(getDashboardUseCase.getRequest());
-        getDashboardUseCase.execute(new GetDashboardSubscriber(getView()));
+//        getDashboardUseCase.execute(new GetDashboardSubscriber(null, getView()));
     }
 
     @Override

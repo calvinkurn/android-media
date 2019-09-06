@@ -8,7 +8,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemVie
 /**
  * Created by jegul on 2019-09-04.
  */
-interface AffiliateProductBoughtContract {
+interface AffiliateCuratedProductContract {
 
     interface View : CustomerView {
 
@@ -23,6 +23,6 @@ interface AffiliateProductBoughtContract {
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun loadProductBoughtByType(type: Int, cursor: String)
+        fun loadProductBoughtByType(type: Int?, cursor: String)
     }
 }

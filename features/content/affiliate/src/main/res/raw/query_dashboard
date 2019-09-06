@@ -1,19 +1,4 @@
 query GetDashboard() {
-  affiliatedProduct {
-    products {
-      id
-      image
-      name
-      isActive
-      totalSold
-      totalClick
-      commission
-      productCommission
-    }
-    pagination{
-      nextCursor
-    }
-  }
   affiliateStats{
     totalCommission
     productClick

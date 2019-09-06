@@ -2,19 +2,17 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactory
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactoryImpl
-import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateProductBoughtContract
+import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateCuratedProductContract
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateProductBoughtPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
 import javax.inject.Inject
@@ -22,15 +20,15 @@ import javax.inject.Inject
 /**
  * Created by jegul on 2019-09-04.
  */
-class AffiliateProductBoughtFragment : BaseListFragment<DashboardItemViewModel, DashboardItemTypeFactory>(), AffiliateProductBoughtContract.View {
+class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel, DashboardItemTypeFactory>(), AffiliateCuratedProductContract.View {
 
     companion object {
         private const val EXTRA_TYPE = "type"
 
-        fun newInstance(type: Int): AffiliateProductBoughtFragment {
-            val fragment = AffiliateProductBoughtFragment()
+        fun newInstance(type: Int?): AffiliateCuratedProductFragment {
+            val fragment = AffiliateCuratedProductFragment()
             val args = Bundle()
-            args.putInt(EXTRA_TYPE, type)
+            type?.let { args.putInt(EXTRA_TYPE, type) }
             fragment.arguments = args
             return fragment
         }
@@ -41,7 +39,7 @@ class AffiliateProductBoughtFragment : BaseListFragment<DashboardItemViewModel, 
 
     private var cursor: String = ""
 
-    private val type: Int by lazy { arguments?.getInt(EXTRA_TYPE) ?: 0 }
+    private val type: Int? by lazy { if (arguments?.containsKey(EXTRA_TYPE) == true) arguments?.getInt(EXTRA_TYPE) else null }
 
     @Inject
     lateinit var presenter: AffiliateProductBoughtPresenter
@@ -56,7 +54,7 @@ class AffiliateProductBoughtFragment : BaseListFragment<DashboardItemViewModel, 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter.attachView(this)
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.fragment_af_product_bought, container, false)
     }
 
     override fun onItemClicked(t: DashboardItemViewModel?) {

@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.feature.dashboard.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
@@ -17,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
+import com.tokopedia.affiliate.feature.dashboard.view.activity.AffiliateCuratedProductActivity
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.viewpager.AffiliateProductBoughtPagerAdapter
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboardPresenter
@@ -59,20 +61,21 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var tvStartDate: TextView
     private lateinit var tvEndDate: TextView
     private lateinit var llCheckBalance: LinearLayout
+    private lateinit var tvSeeAll: TextView
 
     private lateinit var calendarBottomSheet: CloseableBottomSheetDialog
     private lateinit var calendarView: View
 
-    private lateinit var directBoughtFragment: AffiliateProductBoughtFragment
-    private lateinit var indirectBoughtFragment: AffiliateProductBoughtFragment
+    private lateinit var directFragmentCurated: AffiliateCuratedProductFragment
+    private lateinit var indirectFragmentCurated: AffiliateCuratedProductFragment
 
     private val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
 
     private var startDate by Delegates.observable<Date?>(null) { _, _, newValue ->
-        if (::tvStartDate.isInitialized) tvStartDate.text = newValue?.let(dateFormatter::format) ?: ""
+        if (::tvStartDate.isInitialized) tvStartDate.text = newValue?.let(dateFormatter::format).orEmpty()
     }
     private var endDate by Delegates.observable<Date?>(null) { _, _, newValue ->
-        if (::tvEndDate.isInitialized) tvEndDate.text = newValue?.let(dateFormatter::format) ?: ""
+        if (::tvEndDate.isInitialized) tvEndDate.text = newValue?.let(dateFormatter::format).orEmpty()
     }
 
     override val ctx: Context?
@@ -115,16 +118,17 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             tvStartDate = findViewById(R.id.tv_start_date)
             tvEndDate = findViewById(R.id.tv_end_date)
             llCheckBalance = findViewById(R.id.ll_check_balance)
+            tvSeeAll = findViewById(R.id.tv_see_all)
         }
     }
 
     private fun setupView(view: View) {
         fragmentManager?.let {
-            if (!::directBoughtFragment.isInitialized) directBoughtFragment = AffiliateProductBoughtFragment.newInstance(1)
-            if (!::indirectBoughtFragment.isInitialized) indirectBoughtFragment = AffiliateProductBoughtFragment.newInstance(2)
+            if (!::directFragmentCurated.isInitialized) directFragmentCurated = AffiliateCuratedProductFragment.newInstance(1)
+            if (!::indirectFragmentCurated.isInitialized) indirectFragmentCurated = AffiliateCuratedProductFragment.newInstance(2)
             vpProductBought.adapter = AffiliateProductBoughtPagerAdapter(it, listOf(
-                    directBoughtFragment,
-                    indirectBoughtFragment
+                    directFragmentCurated,
+                    indirectFragmentCurated
             ))
         }
         vpProductBought.layoutParams.height = getScreenHeight() / 2
@@ -133,6 +137,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         llEndDate.setOnClickListener { openCalendarPicker() }
 
         llCheckBalance.setOnClickListener { onCheckBalanceClicked() }
+        tvSeeAll.setOnClickListener { onSeeAllProductClicked() }
     }
 
     override fun hideLoading() {
@@ -166,6 +171,10 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         if(RouteManager.isSupportApplink(context, ApplinkConst.DEPOSIT)) {
             RouteManager.route(context, ApplinkConst.DEPOSIT)
         }
+    }
+
+    private fun onSeeAllProductClicked() {
+        startActivity(Intent(context, AffiliateCuratedProductActivity::class.java))
     }
 
     private fun openCalendarPicker() {
@@ -264,8 +273,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     private fun onDateChanged() {
         presenter.loadDashboardDetail(startDate, endDate)
-        directBoughtFragment.loadData(0)
-        indirectBoughtFragment.loadData(0)
+        directFragmentCurated.loadData(0)
+        indirectFragmentCurated.loadData(0)
     }
 
     private fun closePage() = activity?.finish()

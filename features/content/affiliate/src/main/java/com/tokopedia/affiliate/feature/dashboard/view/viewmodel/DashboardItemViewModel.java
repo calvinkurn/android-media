@@ -19,10 +19,12 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
     private String itemSold;
     private String productCommission;
     private boolean isActive;
+    private String sectionName;
+    private boolean shouldShowSection;
 
     public DashboardItemViewModel(String id, String imageUrl, String title, String value,
                                   String itemClicked, String itemSold,
-                                  String productCommission, boolean isActive) {
+                                  String productCommission, boolean isActive, String sectionName, boolean shouldShowSection) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.title = title;
@@ -31,6 +33,8 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.itemSold = itemSold;
         this.productCommission = productCommission;
         this.isActive = isActive;
+        this.sectionName = sectionName;
+        this.shouldShowSection = shouldShowSection;
     }
 
     public String getId() {
@@ -91,6 +95,22 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
 
     public void setProductCommission(String productCommission) {
         this.productCommission = productCommission;
+    }
+
+    public String getSectionName() {
+        return sectionName;
+    }
+
+    public void setSectionName(String sectionName) {
+        this.sectionName = sectionName;
+    }
+
+    public boolean isShouldShowSection() {
+        return shouldShowSection;
+    }
+
+    public void setShouldShowSection(boolean shouldShowSection) {
+        this.shouldShowSection = shouldShowSection;
     }
 
     @Override

@@ -13,5 +13,9 @@ query GetDashboardLoadMore($type: Int, $cursor: String) {
     pagination {
       nextCursor
     }
+    subtitles {
+      key
+      text
+    }
   }
 }

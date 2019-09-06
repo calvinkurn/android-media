@@ -1,8 +1,10 @@
 package com.tokopedia.affiliate.feature.dashboard.view.subscriber;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuery;
-import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateProductBoughtContract;
+import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateCuratedProductContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import java.util.ArrayList;
@@ -14,10 +16,12 @@ import rx.Subscriber;
  */
 public class GetDashboardLoadMoreSubscriber extends Subscriber<GraphqlResponse> {
 
-    private AffiliateProductBoughtContract.View mainView;
+    private AffiliateCuratedProductContract.View mainView;
+    private Integer type;
 
-    public GetDashboardLoadMoreSubscriber(AffiliateProductBoughtContract.View mainView) {
+    public GetDashboardLoadMoreSubscriber(Integer type, AffiliateCuratedProductContract.View mainView) {
         this.mainView = mainView;
+        this.type = type;
     }
 
     @Override
@@ -35,9 +39,10 @@ public class GetDashboardLoadMoreSubscriber extends Subscriber<GraphqlResponse> 
     public void onNext(GraphqlResponse response) {
         mainView.hideLoading();
         DashboardQuery query = response.getData(DashboardQuery.class);
+        Context context = mainView.getCtx();
         mainView.onSuccessLoadMoreDashboardItem(
-                query.getProduct().getAffiliatedProducts() != null?
-                        GetDashboardSubscriber.mappingListItem(query.getProduct().getAffiliatedProducts())
+                query.getProduct().getAffiliatedProducts() != null && context != null ?
+                        GetDashboardSubscriber.mappingListItem(context, type, query.getProduct().getAffiliatedProducts(), query.getProduct().getSubtitles())
                         : new ArrayList<>(),
                 query.getProduct().getPagination().getNextCursor());
     }
