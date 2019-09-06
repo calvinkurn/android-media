@@ -13,6 +13,7 @@ import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import org.jetbrains.annotations.NotNull;
 
 import dagger.Component;
+import kotlinx.coroutines.CoroutineDispatcher;
 
 /**
  * Created by alvarisi on 11/8/17.
@@ -21,6 +22,8 @@ import dagger.Component;
 @Component(modules = {FlightBookingModule.class, FlightBookingViewModelModule.class, CommonTravelModule.class}, dependencies = FlightComponent.class)
 public interface FlightBookingComponent {
     FlightModuleRouter flightModuleRouter();
+
+    CoroutineDispatcher dispatcher();
 
     void inject(FlightBookingFragment flightBookingFragment);
 
@@ -41,4 +44,5 @@ public interface FlightBookingComponent {
     void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity flightBookingPassengerActivity);
 
     void inject(@NotNull com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingPassengerFragment flightBookingPassengerFragment);
+
 }

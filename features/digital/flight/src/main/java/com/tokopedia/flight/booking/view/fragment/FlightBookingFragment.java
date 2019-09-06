@@ -429,7 +429,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                                               boolean isAirAsiaAirlines, String departureDate,
                                               String requestId) {
         startActivityForResult(
-                FlightBookingPassengerActivity.getCallingIntent(
+                FlightBookingPassengerActivity.Companion.getCallingIntent(
                         getActivity(),
                         getDepartureTripId(),
                         getReturnTripId(),
