@@ -24,11 +24,18 @@ class TwitterManager(
     companion object {
         const val OAUTH_VERIFIER = "oauth_verifier"
         const val OAUTH_TOKEN = "oauth_token"
+
+        /**
+         * Please ask @Radhitia / Socmed team on Slack for the Tokopedia Twitter account login credentials
+         * username: Tokopedia
+         */
+        private val TWITTER_API_KEY = String(byteArrayOf(89, 83, 120, 120, 119, 82, 65, 75, 50, 107, 52, 55, 106, 54, 82, 107, 66, 78, 82, 110, 51, 79, 105, 79, 67))
+        private val TWITTER_API_SECRET_KEY = String(byteArrayOf(55, 99, 85, 71, 78, 77, 121, 102, 106, 84, 75, 98, 54, 55, 109, 77, 70, 71, 102, 50, 104, 86, 86, 52, 106, 65, 65, 73, 77, 99, 103, 106, 115, 49, 99, 115, 84, 112, 77, 77, 75, 55, 54, 69, 69, 53, 57, 101, 72, 122))
     }
 
     private val config: Configuration = ConfigurationBuilder()
-            .setOAuthConsumerKey(BuildConfig.TWITTER_API_KEY)
-            .setOAuthConsumerSecret(BuildConfig.TWITTER_API_SECRET_KEY)
+            .setOAuthConsumerKey(TWITTER_API_KEY)
+            .setOAuthConsumerSecret(TWITTER_API_SECRET_KEY)
             .apply {
                 val accessToken = userSession.twitterAccessToken
                 val tokenSecret = userSession.twitterAccessTokenSecret

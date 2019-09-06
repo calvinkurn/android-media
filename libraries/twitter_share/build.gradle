@@ -1,16 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
-android {
-    defaultConfig {
-        /**
-         * Please ask @Radhitia / Socmed team on Slack for the Tokopedia Twitter account login credentials
-         */
-        buildConfigField "String", "TWITTER_API_KEY", "\"YSxxwRAK2k47j6RkBNRn3OiOC\""
-        buildConfigField "String", "TWITTER_API_SECRET_KEY", "\"7cUGNMyfjTKb67mMFGf2hVV4jAAIMcgjs1csTpMMK76EE59eHz\""
-    }
-}
-
 dependencies {
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.webview)
