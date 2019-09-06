@@ -60,7 +60,6 @@ import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -569,8 +568,16 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onErrorGetToken(CrackResultEntity crackResult) {
-        setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
-        widgetCrackResult.showCrackResult(crackResult);
+        ConnectivityManager cm =
+                (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork == null || !activeNetwork.isConnected()) {
+            loadNetworkConnectionErrorBottomSheet();
+        } else {
+            setToolbarColor(getResources().getColor(R.color.white), getResources().getColor(R.color.transparent));
+            widgetCrackResult.showCrackResult(crackResult);
+        }
     }
 
     @Override
@@ -642,22 +649,21 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         widgetCrackResult.dismissReward();
     }
 
-    private void loadWebViewInBottomsheet() {
+    private void loadNetworkConnectionErrorBottomSheet() {
         CloseableBottomSheetDialog bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
         View view = getLayoutInflater().inflate(R.layout.gf_network_connection_bottomsheet, null, true);
         ImageView closeBtn = view.findViewById(R.id.gf_close_button);
         Typography tryAgainButton = view.findViewById(R.id.gf_no_internet_try_again);
         tryAgainButton.setOnClickListener(v -> {
-            if (getContext() == null)
-                return;
-            widgetTokenOnBoarding.hideHandOnBoarding(true);
-            TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
-            crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
+            widgetCrackResult.clearCrackResult();
 
-            trackingLuckyEggClick();
+            crackTokenPresenter.getGetTokenTokopoints();
             bottomSheet.dismiss();
         });
-        closeBtn.setOnClickListener((v) -> bottomSheet.dismiss());
+        closeBtn.setOnClickListener((v) -> {
+            bottomSheet.dismiss();
+            this.getActivity().finish();
+        });
         bottomSheet.setCustomContentView(view, "", false);
         bottomSheet.show();
     }
@@ -667,10 +673,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         ConnectivityManager cm =
                 (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        if (activeNetwork == null || !activeNetwork.isConnected()) {
-            loadWebViewInBottomsheet();
-        } else if (widgetTokenView.getTimesFullEggClicked() % 3 == 0) {
+        if (widgetTokenView.getTimesFullEggClicked() % 3 == 0) {
             if (getContext() != null) {
                 NetworkErrorHelper.showErrorSnackBar(getString(R.string.gf_crack_token_response_error), getContext(), rootView, true);
                 trackingSnackbarError(getString(R.string.gf_crack_token_response_error));
