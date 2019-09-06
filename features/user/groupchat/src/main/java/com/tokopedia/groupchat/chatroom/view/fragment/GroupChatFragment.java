@@ -30,8 +30,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.text.BackEditText;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
@@ -298,8 +299,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     }
 
     private void goToLogin() {
-        startActivityForResult(((GroupChatModuleRouter) getActivity().getApplicationContext())
-                .getLoginIntent(getActivity()), REQUEST_LOGIN);
+        startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN), REQUEST_LOGIN);
     }
 
     private void setSendButtonEnabled(boolean isEnabled) {
@@ -505,8 +505,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             view.findViewById(R.id.thumbnail).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
-                            (getActivity(), pinnedMessage.getImageUrl());
+                    RouteManager.route(getContext(), ApplinkConst.WEBVIEW, pinnedMessage.getImageUrl());
                 }
             });
         }
@@ -862,7 +861,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         analytics.eventClickThumbnail(String.format("%s - %s", ((GroupChatContract.View) getActivity()).
                 getChannelInfoViewModel().getChannelId(), image.getRedirectUrl()));
         if (!TextUtils.isEmpty(image.getRedirectUrl())) {
-            ((GroupChatModuleRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), image.getRedirectUrl());
+            RouteManager.route(getContext(), ApplinkConst.WEBVIEW, image.getRedirectUrl());
         }
     }
 
@@ -916,10 +915,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && !((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getSprintSaleType().equalsIgnoreCase
                 (SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH)) {
 
+            String url = ((GroupChatContract.View) getActivity()).generateAttributeApplink(
+                    productViewModel.getProductUrl(),
+                    GroupChatAnalytics.ATTRIBUTE_FLASH_SALE);
 
-            ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
-                    , ((GroupChatContract.View) getActivity()).generateAttributeApplink
-                            (productViewModel.getProductUrl(), GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+            RouteManager.route(getContext(), ApplinkConst.WEBVIEW, url);
 
             ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
                     .getChannelInfoViewModel();
@@ -961,10 +961,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 && !((GroupChatContract.View) getActivity()).getSprintSaleViewModel().getSprintSaleType().equalsIgnoreCase
                 (SprintSaleAnnouncementViewModel.SPRINT_SALE_FINISH)) {
 
-            ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
-                    , ((GroupChatContract.View) getActivity()).generateAttributeApplink
-                            (sprintSaleAnnouncementViewModel.getRedirectUrl(),
-                                    GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+            String url = ((GroupChatContract.View) getActivity()).generateAttributeApplink(
+                    sprintSaleAnnouncementViewModel.getRedirectUrl(),
+                    GroupChatAnalytics.ATTRIBUTE_FLASH_SALE);
+
+            RouteManager.route(getContext(), ApplinkConst.WEBVIEW, url);
 
             ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
                     .getChannelInfoViewModel();
@@ -1000,10 +1001,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 .COMPONENT_FLASH_SALE, sprintSaleViewModel.getCampaignName(), GroupChatAnalytics
                 .ATTRIBUTE_FLASH_SALE, list);
 
-        ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity()
-                , ((GroupChatContract.View) getActivity()).generateAttributeApplink
-                        (sprintSaleViewModel.getRedirectUrl(),
-                                GroupChatAnalytics.ATTRIBUTE_FLASH_SALE));
+        String url = ((GroupChatContract.View) getActivity()).generateAttributeApplink(
+                sprintSaleViewModel.getRedirectUrl(),
+                GroupChatAnalytics.ATTRIBUTE_FLASH_SALE);
+
+        RouteManager.route(getContext(), ApplinkConst.WEBVIEW, url);
 
         ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
                 .getChannelInfoViewModel();
@@ -1031,7 +1033,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     @Override
     public void onPointsClicked(String url) {
-        ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl(getActivity(), url);
+        RouteManager.route(getContext(), ApplinkConst.WEBVIEW, url);
 
         if (getActivity() != null
                 && ((GroupChatActivity) getActivity()).getChannelInfoViewModel() != null

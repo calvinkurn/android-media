@@ -168,7 +168,6 @@ import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
 import com.tokopedia.groupchat.room.view.activity.PlayActivity;
@@ -305,8 +304,6 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
-import com.tokopedia.shop.open.ShopOpenInternalRouter;
-import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
@@ -443,7 +440,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DigitalModuleRouter,
         TokoCashRouter,
         AffiliateRouter,
-        GroupChatModuleRouter,
         ApplinkRouter,
         ShopModuleRouter,
         LoyaltyModuleRouter,
@@ -615,11 +611,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getIntentCreateShop(Context context) {
-        return ShopOpenRouter.getIntentCreateEditShop(context);
-    }
-
-    @Override
     public Intent getSplashScreenIntent(Context context) {
         return new Intent(context, ConsumerSplashScreen.class);
     }
@@ -683,7 +674,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
      * @return
      */
     @Deprecated
-    @Override
     public boolean isSupportedDelegateDeepLink(String appLinks) {
         return isSupportApplink(appLinks);
     }
@@ -997,10 +987,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TkpdSellerLogout.onLogOut(appComponent);
     }
 
-    @Override
     public Intent getLoginIntent(Context context) {
-        Intent intent = LoginActivity.DeepLinkIntents.getCallingIntent(context);
-        return intent;
+        return RouteManager.getIntent(context, ApplinkConst.LOGIN);
     }
 
     @Override
@@ -1029,7 +1017,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return DigitalCategoryListActivity.newInstance(this);
     }
 
-    @Override
     public Intent getHomeIntent(Context context) {
         return MainParentActivity.start(context);
     }
@@ -1932,7 +1919,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return ChannelFragment.class.getSimpleName();
     }
 
-    @Override
     public Intent getInboxChannelsIntent(Context context) {
         return InboxChatActivity.getChannelCallingIntent(context);
     }
@@ -1959,10 +1945,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId) {
         return ShopPageInternalRouter.getShoProductListIntent(context, shopId, keyword, etalaseId);
-    }
-
-    public Intent getOpenShopIntent(Context context) {
-        return ShopOpenInternalRouter.getOpenShopIntent(context);
     }
 
     @Override
@@ -1996,34 +1978,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getNotificationPreferenceConstant() {
-        return Constants.Settings.NOTIFICATION_GROUP_CHAT;
-    }
-
-    @Override
     public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
         CartComponentInjector.newInstance(this)
                 .getGetMarketPlaceCartCounterUseCase()
                 .executeWithSubscriber(this, listener);
-    }
-
-    @Override
-    public void shareGroupChat(Activity activity, String channelId, String title, String contentMessage, String imgUrl,
-                               String shareUrl, String userId, String sharing) {
-        LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
-                .setId(channelId)
-                .setName(title)
-                .setTextContent(contentMessage)
-                .setDescription(contentMessage)
-                .setImgUri(imgUrl)
-                .setOgImageUrl(imgUrl)
-                .setOgTitle(title)
-                .setUri(shareUrl)
-                .setSource(userId) // just using existing variable
-                .setPrice(sharing) // here too
-                .setType(LinkerData.GROUPCHAT_TYPE)
-                .build();
-        new DefaultShare(activity, shareData).show();
     }
 
     @Override
@@ -2038,13 +1996,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setType(LinkerData.FEED_TYPE)
                 .build();
         new DefaultShare(activity, shareData).show();
-    }
-
-    @Override
-    public void sendAnalyticsGroupChat(String url, String error) {
-        if (remoteConfig.getBoolean("groupchat_analytics", false)) {
-            AnalyticsLog.logGroupChatWebSocketError(getAppContext(), url, error);
-        }
     }
 
     @Override

@@ -90,6 +90,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    implementation project(rootProject.ext.features.filter)
     annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     implementation project(rootProject.ext.libraries.trackingOptimizer)
