@@ -123,7 +123,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         super.onCreate(savedInstanceState);
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             checkoutString = R.string.moneyin_sell_now;
-            hargeTncString = R.string.harga_tnc_moneyin;
+            hargeTncString = R.string.moneyin_harga_tnc;
             tncStringId = R.string.money_in_tnc;
             tradeInStringId = R.string.money_in;
         }
