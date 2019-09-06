@@ -61,6 +61,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     val EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME"
     val EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST"
     val EXTRA_FILTER_PARAMETER = "EXTRA_FILTER_PARAMETER"
+    var totalCount = ""
 
 
     private var bottomSheetListener: BottomSheetListener? = null
@@ -162,6 +163,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     protected fun setUpVisibleFragmentListener() {
+        setTotalSearchResultCount(totalCount)
         categoryNavigationListener.setUpVisibleFragmentListener(object : CategoryNavigationListener.VisibleClickListener {
             override fun onFilterClick() {
                 openFilterActivity()
@@ -412,6 +414,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     }
 
     fun setTotalSearchResultCount(formattedResultCount: String) {
+        totalCount = formattedResultCount
         if (bottomSheetListener != null) {
             bottomSheetListener?.setFilterResultCount(formattedResultCount)
         }
