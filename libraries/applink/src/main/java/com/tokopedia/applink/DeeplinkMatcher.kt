@@ -11,6 +11,7 @@ import com.tokopedia.applink.DeepLinkChecker.ETALASE
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
 import com.tokopedia.applink.DeepLinkChecker.GROUPCHAT
 import com.tokopedia.applink.DeepLinkChecker.HOT
+import com.tokopedia.applink.DeepLinkChecker.HOTEL
 import com.tokopedia.applink.DeepLinkChecker.HOT_LIST
 import com.tokopedia.applink.DeepLinkChecker.INVOICE
 import com.tokopedia.applink.DeepLinkChecker.ORDER_LIST
@@ -74,6 +75,8 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "reset.pl")) to OTHER)
             add(Pattern(GT,0, mapOf(0 to "order-list")) to ORDER_LIST)
             add(Pattern(GT, 0, mapOf(0 to "activation.pl")) to OTHER)
+            add(Pattern(GT, 1, mapOf(0 to "kredit-motor")) to OTHER)
+            add(Pattern(EQ, 1, mapOf(0 to "hotel")) to HOTEL)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, null) to SHOP)

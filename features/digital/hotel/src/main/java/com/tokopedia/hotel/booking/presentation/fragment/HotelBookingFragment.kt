@@ -207,7 +207,8 @@ class HotelBookingFragment : HotelBaseFragment() {
             if (!property.isDirectPayment) {
                 tv_booking_room_info_pay_at_hotel.visibility = View.VISIBLE
                 tv_booking_room_info_pay_at_hotel.setDrawableLeft(R.drawable.ic_hotel_16)
-                val payAtHotelString = SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
+                var payAtHotelString = if (property.rooms.first().isCCRequired) SpannableString(getString(R.string.hotel_booking_pay_at_hotel_cc_required_label))
+                else SpannableString(getString(R.string.hotel_booking_pay_at_hotel_label))
                 payAtHotelString.setSpan(StyleSpan(Typeface.BOLD), 1, 15, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 tv_booking_room_info_pay_at_hotel.text = payAtHotelString
             }

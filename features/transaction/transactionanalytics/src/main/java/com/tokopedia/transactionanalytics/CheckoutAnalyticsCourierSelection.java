@@ -874,4 +874,28 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.IMPRESSION_ERROR_COURIER_NO_AVAILABLE
         );
     }
+
+    public void eventViewHelpPopUpAfterErrorInCheckout() {
+        sendEventCategoryAction(
+                EventName.VIEW_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT
+        );
+    }
+
+    public void eventClickReportOnHelpPopUpInCheckout() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT
+        );
+    }
+
+    public void eventClickCloseOnHelpPopUpInCheckout() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT
+        );
+    }
 }

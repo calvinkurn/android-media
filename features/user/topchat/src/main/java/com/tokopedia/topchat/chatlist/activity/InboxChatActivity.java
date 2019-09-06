@@ -16,6 +16,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.adapter.IndicatorAdapter;
 import com.tokopedia.topchat.chatlist.fragment.InboxChatFragment;
@@ -61,7 +62,7 @@ public class InboxChatActivity extends BaseSimpleActivity
 
     @DeepLink(ApplinkConst.GROUPCHAT_LIST)
     public static TaskStackBuilder getCallingTaskStack(Context context) {
-        Intent homeIntent = ((TopChatRouter) context.getApplicationContext()).getHomeIntent(context);
+        Intent homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME);
         Intent channelListIntent = InboxChatActivity.getChannelCallingIntent(context);
         channelListIntent.putExtra("title", "Play");
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
