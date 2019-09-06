@@ -4,10 +4,10 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-public class CarouselItemDecoration extends RecyclerView.ItemDecoration {
+public class NonCarouselItemDecoration extends RecyclerView.ItemDecoration {
     private final int size;
 
-    public CarouselItemDecoration(int size) {
+    public NonCarouselItemDecoration(int size) {
         this.size = size;
     }
 
@@ -16,7 +16,7 @@ public class CarouselItemDecoration extends RecyclerView.ItemDecoration {
         super.getItemOffsets(outRect, view, parent, state);
 
         if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left += size * 3;
+            outRect.left += size * 2.5;
             outRect.right += size;
         } else {
             outRect.left += size;
