@@ -1,9 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 
 import java.util.ArrayList;

@@ -22,6 +22,14 @@ fun String?.toDoubleOrZero(): Double {
     return this?.toDoubleOrNull() ?: 0f.toDouble()
 }
 
+fun String?.toEmptyStringIfNull(): String {
+    return this ?: ""
+}
+
 fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
+}
+
+fun String.isEmail(): Boolean {
+    return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
 }
