@@ -177,6 +177,11 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             et_birth_date.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                     FlightDateUtil.DEFAULT_VIEW_FORMAT, passengerModel.passengerBirthdate))
 
+        rv_passenger_title.listener = object : FilterChipAdapter.OnClickListener {
+            override fun onChipClickListener(string: String, isSelected: Boolean) {
+                // add action update model
+            }
+        }
         if (isAdultPassenger()) {
             val entries = resources.getStringArray(R.array.flight_adult_titles)
             rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0)
@@ -185,12 +190,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             val entries = resources.getStringArray(R.array.flight_child_infant_titles)
             rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0)
             rv_passenger_title.selectOnlyOneChip(true)
-        }
-        rv_passenger_title.listener = object : FilterChipAdapter.OnClickListener {
-            override fun onChipClickListener(string: String, isSelected: Boolean) {
-                // add action update model
-            }
-
         }
     }
 
