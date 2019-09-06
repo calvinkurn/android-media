@@ -823,17 +823,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-//        context?.run {
-//            if (applicationContext is Application) {
-//                router = applicationContext as ICheckoutModuleRouter
-//            } else {
-//                activity?.finish()
-//            }
-//        }
-    }
-
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, CheckoutVariantAdapterTypeFactory> {
         adapter = CheckoutVariantAdapter(adapterTypeFactory)
         return adapter
