@@ -24,12 +24,12 @@ constructor(
         private val userSession: UserSessionInterface) : UseCase<List<RecommendationItem>>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<List<RecommendationItem>> {
-        val graphqlRequest = GraphqlRequest(recomRawString, RecomendationEntity::class.java, requestParams.parameters)
+        val graphqlRequest = GraphqlRequest(recomRawString, SingleProductRecommendationEntity::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(RequestParams.EMPTY)
                 .map {
-                    val entity = it.getData<SingleProductRecommendationEntity>(SingleProductRecommendationEntity::class.java)
+                    val entity = it.getData<SingleProductRecommendationEntity.RecommendationData>(SingleProductRecommendationEntity::class.java)
                     mapToRecommendationItem(entity.productRecommendationWidget?.data)
                 }
     }
