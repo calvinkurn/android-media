@@ -546,7 +546,7 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     devImplementation project.ext.debugToolsDependencies.blockCanary
-    devImplementation project.ext.debugToolsDependencies.leakCanary
+    debugImplementation project.ext.debugToolsDependencies.leakCanary
 
     implementation project(rootProject.ext.features.navigationCommon)
     implementation 'com.facebook.soloader:soloader:0.6.0'
