@@ -13,6 +13,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.settingbank.R
@@ -25,6 +28,7 @@ import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import com.tokopedia.settingbank.addeditaccount.di.DaggerAddEditAccountComponent
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 import javax.inject.Inject
 
@@ -44,6 +48,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     @Inject
     lateinit var presenter: AddEditBankPresenter
 
+    @Inject
+    lateinit var userSession : UserSessionInterface
 
     lateinit var bottomInfoDialog: BottomSheetDialog
     lateinit var alertDialog: Dialog
@@ -443,7 +449,15 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     fun onGoToCOTP() {
-        val intent = presenter.getCotpIntent(activity)
+        val OTP_TYPE_ADD_BANK_ACCOUNT = 12
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_BANK_ACCOUNT)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtras(bundle)
         startActivityForResult(intent, REQUEST_OTP)
     }
 

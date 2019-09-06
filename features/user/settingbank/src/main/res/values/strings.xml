@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SettingBank</string>
+    <string name="setting_bank_app_name">SettingBank</string>
     <string name="title_setting_bank">Rekening Bank</string>
     <string name="title_choose_bank">Pilih Bank</string>
     <string name="add_bank_account">Tambah Rekening</string>

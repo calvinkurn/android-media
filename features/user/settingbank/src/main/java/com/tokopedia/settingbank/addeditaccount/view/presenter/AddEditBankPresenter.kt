@@ -169,11 +169,6 @@ class AddEditBankPresenter @Inject constructor (private val userSession: UserSes
         return isValid
     }
 
-    override fun getCotpIntent(context: Context?): Intent {
-        return VerificationActivity.getShowChooseVerificationMethodIntent(context, RequestOtpUseCase
-                .OTP_TYPE_ADD_BANK_ACCOUNT, userSession.phoneNumber, userSession.email)
-    }
-
     override fun detachView() {
         super.detachView()
         validateBankUseCase.unsubscribe()
