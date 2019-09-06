@@ -559,6 +559,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Intent intent = RouteManager.getIntent(context, ApplinkConsInternalHome.HOME_RECOMMENDATION);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_product_id), productId);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_ref), source == null ? "" : source);
+        intent.setData(uriData);
         context.startActivity(intent);
         context.finish();
     }
@@ -569,6 +570,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Intent intent = RouteManager.getIntent(context, ApplinkConsInternalHome.HOME_SIMILAR_PRODUCT);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_product_id), productId);
         intent.putExtra(context.getString(R.string.home_recommendation_extra_ref), source == null ? "" : source);
+        intent.setData(uriData);
         context.startActivity(intent);
         context.finish();
     }
