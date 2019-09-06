@@ -141,7 +141,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         errorView = view.findViewById(R.id.error_layout)
         errorImage = view.findViewById(R.id.error_image)
         retryButton = view.findViewById(R.id.retry_button)
-        closeButton = view.findViewById(R.id.header)
+        closeButton = view.findViewById(com.tokopedia.design.R.id.header)
         initWebview(view)
         return view
     }
@@ -186,7 +186,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
         if(GlobalConfig.isAllowDebuggingTools())
             WebView.setWebContentsDebuggingEnabled(true)
 
-        webview = view.findViewById(R.id.webview)
+        webview = view.findViewById(com.tokopedia.abstraction.R.id.webview)
         progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)

@@ -245,7 +245,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
         } else {
             Intent intent = new Intent();
-            intent.putExtra(ChannelActivity.RESULT_MESSAGE, getString(R.string.default_request_error_unknown));
+            intent.putExtra(ChannelActivity.RESULT_MESSAGE, getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
             if (viewModel != null) {
                 intent.putExtra(TOTAL_VIEW, viewModel.getTotalView());
                 intent.putExtra(EXTRA_POSITION, viewModel.getChannelPosition());
@@ -547,7 +547,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         removePaddingStatusBar();
 
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(com.tokopedia.abstraction.R.id.toolbar);
         channelBanner = findViewById(R.id.channel_banner);
 
         if (isLollipopOrNewer()) {
@@ -692,7 +692,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         //TODO what is this
         restoreStateFragment(fragment, GroupChatFragment.class.getSimpleName());
 
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.replace(com.tokopedia.analytics.R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -700,7 +700,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         Fragment fragment = populateChannelInfoFragment();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.replace(com.tokopedia.analytics.R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -719,7 +719,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         ((ChannelVoteContract.View) fragment).showVoteLayout(
                 viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
+        fragmentTransaction.replace(com.tokopedia.analytics.R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commitAllowingStateLoss();
     }
 
@@ -742,7 +742,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void addPaddingIfKeyboardIsClosed() {
         if (isLollipopOrNewer() && getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
-            FrameLayout container = rootView.findViewById(R.id.container);
+            FrameLayout container = rootView.findViewById(com.tokopedia.analytics.R.id.container);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container
                     .getLayoutParams();
             params.setMargins(0, 0, 0, getSoftButtonsBarSizePort(GroupChatActivity.this));
@@ -752,7 +752,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     private void removePaddingIfKeyboardIsShowing() {
         if (isLollipopOrNewer() && getSoftButtonsBarSizePort(GroupChatActivity.this) > 0) {
-            FrameLayout container = rootView.findViewById(R.id.container);
+            FrameLayout container = rootView.findViewById(com.tokopedia.analytics.R.id.container);
             ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) container.getLayoutParams();
             params.setMargins(0, 0, 0, 0);
             container.setLayoutParams(params);
@@ -806,8 +806,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private boolean hasErrorEmptyState() {
-        return rootView.findViewById(R.id.main_retry) != null
-                && rootView.findViewById(R.id.main_retry).getVisibility() == View.VISIBLE;
+        return rootView.findViewById(com.tokopedia.abstraction.R.id.main_retry) != null
+                && rootView.findViewById(com.tokopedia.abstraction.R.id.main_retry).getVisibility() == View.VISIBLE;
     }
 
     private void showDialogConfirmToExit() {
@@ -1140,7 +1140,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 && tabAdapter != null
                 && hasVoteTab()) {
             View view = ToolTipUtils.setToolTip(this, R.layout.tooltip_vote, this);
-            TextView temp = view.findViewById(R.id.text);
+            TextView temp = view.findViewById(com.tokopedia.design.R.id.text);
             MethodChecker.setBackground(temp, MethodChecker.getDrawable(this, R.drawable.ic_combined_shape));
             View anchorView = tabs.getChildAt(CHANNEL_VOTE_FRAGMENT);
             if (anchorView != null) {
@@ -1170,7 +1170,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         TextView actionButton = view.findViewById(R.id.action_button);
         ImageView image = view.findViewById(R.id.product_image);
         ImageView profile = view.findViewById(R.id.prof_pict);
-        TextView title = view.findViewById(R.id.title);
+        TextView title = view.findViewById(com.tokopedia.design.R.id.title);
         TextView subtitle = view.findViewById(R.id.subtitle);
         TextView name = view.findViewById(R.id.name);
         TextView participant = view.findViewById(R.id.participant);
@@ -1180,11 +1180,11 @@ public class GroupChatActivity extends BaseSimpleActivity
         title.setText(channelInfoViewModel.getTitle());
         subtitle.setText(channelInfoViewModel.getDescription());
 
-        ImageHandler.loadImage2(image, channelInfoViewModel.getImage(), R.drawable.loading_page);
+        ImageHandler.loadImage2(image, channelInfoViewModel.getImage(), com.tokopedia.abstraction.R.drawable.loading_page);
         ImageHandler.loadImageCircle2(profile.getContext(),
                 profile,
                 channelInfoViewModel.getAdminPicture(),
-                R.drawable.loading_page);
+                com.tokopedia.abstraction.R.drawable.loading_page);
 
         return view;
     }
@@ -1212,7 +1212,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             sponsorLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImage2(sponsorImage,
                     viewModel.getChannelInfoViewModel().getAdsImageUrl(),
-                    R.drawable.loading_page);
+                    com.tokopedia.abstraction.R.drawable.loading_page);
 
             sponsorImage.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1445,7 +1445,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else {
             builder.setMessage(R.string.you_have_been_idle_for_too_long);
         }
-        builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(com.tokopedia.abstraction.R.string.title_ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 dialogInterface.dismiss();
@@ -1476,10 +1476,10 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();
-            onErrorEnterChannel(getString(R.string.default_request_error_unknown));
+            onErrorEnterChannel(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
         } catch (NullPointerException e) {
             e.printStackTrace();
-            onErrorEnterChannel(getString(R.string.default_request_error_unknown));
+            onErrorEnterChannel(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
         }
     }
 
@@ -1547,15 +1547,15 @@ public class GroupChatActivity extends BaseSimpleActivity
     private void setToolbarPlain() {
         toolbar.removeAllViews();
         setToolbarWhite();
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setSubtitleTextColor(getResources().getColor(com.tokopedia.design.R.color.white));
         toolbar.setTitle(getResources().getString(R.string.label_group_chat));
-        toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_16));
+        toolbar.setTitleMarginTop((int) getResources().getDimension(com.tokopedia.design.R.dimen.dp_16));
     }
 
     private void setToolbarWhite() {
         toolbar.setContentInsetStartWithNavigation(0);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.black_70));
+        toolbar.setTitleTextColor(getResources().getColor(com.tokopedia.design.R.color.black_70));
+        toolbar.setSubtitleTextColor(getResources().getColor(com.tokopedia.design.R.color.black_70));
         toolbar.getMenu().findItem(R.id.action_share).setVisible(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setSubtitle(null);
@@ -1563,29 +1563,29 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(ELEVATION);
-            toolbar.setBackgroundResource(R.color.white);
+            toolbar.setBackgroundResource(com.tokopedia.design.R.color.white);
         } else {
-            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow);
+            toolbar.setBackgroundResource(com.tokopedia.design.R.drawable.bg_white_toolbar_drop_shadow);
         }
     }
 
     private boolean currentlyLoadingFragment() {
-        return getSupportFragmentManager().findFragmentById(R.id.container) == null;
+        return getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) == null;
     }
 
     private boolean currentFragmentIsChat() {
-        return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
-                getSupportFragmentManager().findFragmentById(R.id.container) instanceof GroupChatFragment;
+        return getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) != null &&
+                getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) instanceof GroupChatFragment;
     }
 
     private boolean currentFragmentIsVote() {
-        return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
-                getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelVoteFragment;
+        return getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) != null &&
+                getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) instanceof ChannelVoteFragment;
     }
 
     private boolean currentFragmentIsInfo() {
-        return getSupportFragmentManager().findFragmentById(R.id.container) != null &&
-                getSupportFragmentManager().findFragmentById(R.id.container) instanceof ChannelInfoFragment;
+        return getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) != null &&
+                getSupportFragmentManager().findFragmentById(com.tokopedia.analytics.R.id.container) instanceof ChannelInfoFragment;
     }
 
 
@@ -1684,7 +1684,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         View view = getLayoutInflater().inflate(R.layout.layout_interupt_page, null);
         InteruptViewModel interuptViewModel = model.getInteruptViewModel();
         if (!TextUtils.isEmpty(interuptViewModel.getImageUrl())) {
-            ImageHandler.loadImage2((ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl(), R.drawable.loading_page);
+            ImageHandler.loadImage2((ImageView) view.findViewById(R.id.ivImage), interuptViewModel.getImageUrl(), com.tokopedia.abstraction.R.drawable.loading_page);
             view.findViewById(R.id.ivImage).setOnClickListener(view12 -> {
                 if (!TextUtils.isEmpty(interuptViewModel.getImageLink())) {
                     startApplink(interuptViewModel.getImageLink());
@@ -1883,7 +1883,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             } else {
                 builder.setMessage(errorMessage);
             }
-            builder.setPositiveButton(R.string.title_ok, new DialogInterface.OnClickListener() {
+            builder.setPositiveButton(com.tokopedia.abstraction.R.string.title_ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     dialogInterface.dismiss();

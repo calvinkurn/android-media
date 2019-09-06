@@ -333,8 +333,8 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         (activity as PlayActivity).let {
             var color: Int
             color = when {
-                isEnabled -> R.color.white
-                else -> R.color.black_70
+                isEnabled -> com.tokopedia.design.R.color.white
+                else -> com.tokopedia.design.R.color.black_70
             }
             it.changeHomeDrawableColor(color)
         }

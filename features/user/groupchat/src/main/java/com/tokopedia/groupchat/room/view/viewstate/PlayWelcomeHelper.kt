@@ -64,7 +64,7 @@ class PlayWelcomeHelper constructor(
 
         val image = welcomeInfoView.findViewById<ImageView>(R.id.product_image)
         val profile = welcomeInfoView.findViewById<ImageView>(R.id.prof_pict)
-        val title = welcomeInfoView.findViewById<TextView>(R.id.title)
+        val title = welcomeInfoView.findViewById<TextView>(com.tokopedia.design.R.id.title)
         val subtitle = welcomeInfoView.findViewById<TextView>(R.id.subtitle)
         val name = welcomeInfoView.findViewById<TextView>(R.id.name)
         val participant = welcomeInfoView.findViewById<TextView>(R.id.participant)
@@ -75,11 +75,11 @@ class PlayWelcomeHelper constructor(
         title.text = channelInfoViewModel.title
         subtitle.text = channelInfoViewModel.description
 
-        ImageHandler.loadImage2(image, channelInfoViewModel.image, R.drawable.loading_page)
+        ImageHandler.loadImage2(image, channelInfoViewModel.image, com.tokopedia.abstraction.R.drawable.loading_page)
         ImageHandler.loadImageCircle2(profile.context,
                 profile,
                 channelInfoViewModel.adminPicture,
-                R.drawable.loading_page)
+                com.tokopedia.abstraction.R.drawable.loading_page)
 
         ctaButton.setOnClickListener {
             welcomeInfoDialog.dismiss()

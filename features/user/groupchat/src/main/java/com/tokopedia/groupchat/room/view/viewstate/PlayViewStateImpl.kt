@@ -103,7 +103,7 @@ open class PlayViewStateImpl(
     private var dynamicButtonAdapter: DynamicButtonsAdapter
     private var adapter: GroupChatAdapter
 
-    private var toolbar: Toolbar = view.findViewById(R.id.toolbar)
+    private var toolbar: Toolbar = view.findViewById(com.tokopedia.abstraction.R.id.toolbar)
     private var channelBanner: ImageView = view.findViewById(R.id.channel_banner)
     private var sponsorLayout = view.findViewById<View>(R.id.sponsor_layout)
     private var sponsorImage = view.findViewById<ImageView>(R.id.sponsor_image)
@@ -114,7 +114,7 @@ open class PlayViewStateImpl(
     private var chatNotificationView = view.findViewById<View>(R.id.layout_new_chat)
     private var youTubePlayer: YouTubePlayer? = null
     private var replyEditText: BackEditText = view.findViewById(R.id.reply_edit_text)
-    private var login: View = view.findViewById(R.id.login)
+    private var login: View = view.findViewById(com.tokopedia.design.R.id.login)
     private var inputTextWidget: View = view.findViewById(R.id.bottom)
     private var sendButton: View = view.findViewById(R.id.button_send)
     private var dynamicButtonRecyclerView: RecyclerView = view.findViewById(R.id.buttons)
@@ -253,7 +253,7 @@ open class PlayViewStateImpl(
 
         backgroundHelper = PlayBackgroundHelper(viewModel, activity)
         interactionAnimationHelper = InteractionAnimationHelper(interactionGuideline)
-        val videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(R.id.playerView)
+        val videoVerticalContainer = (activity as PlayActivity).findViewById<FrameLayout>(com.tokopedia.videoplayer.R.id.playerView)
         val rootView = (activity as PlayActivity).findViewById<View>(R.id.root_view)
         overflowMenuHelper = OverflowMenuHelper(
                 viewModel,
@@ -638,7 +638,7 @@ open class PlayViewStateImpl(
         val interruptViewModel = channelInfoViewModel.overlayViewModel.interuptViewModel
         interruptViewModel?.let {
             if (!TextUtils.isEmpty(interruptViewModel.imageUrl)) {
-                ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, R.drawable.loading_page)
+                ImageHandler.loadImage2(overlayView.findViewById(R.id.ivImage) as ImageView, interruptViewModel.imageUrl, com.tokopedia.abstraction.R.drawable.loading_page)
                 overlayView.findViewById<ImageView>(R.id.ivImage).setOnClickListener {
                     if (!TextUtils.isEmpty(interruptViewModel.imageLink)) {
                         var applink = RouteManager.routeWithAttribution(view.context, interruptViewModel.imageLink,
@@ -952,7 +952,7 @@ open class PlayViewStateImpl(
         }
 
         if (floatingButton.imageUrl.toLowerCase().endsWith("gif")) {
-            ImageHandler.loadGifFromUrl(webviewIcon, floatingButton.imageUrl, R.drawable.ic_loading_toped)
+            ImageHandler.loadGifFromUrl(webviewIcon, floatingButton.imageUrl, com.tokopedia.abstraction.R.drawable.ic_loading_toped)
         } else {
             ImageHandler.LoadImage(webviewIcon, floatingButton.imageUrl)
         }
@@ -1026,7 +1026,7 @@ open class PlayViewStateImpl(
         setEmptyState(R.drawable.ic_play_overload,
                 getStringResource(R.string.error_overload_play),
                 it.replace("channelName", viewModel?.title ?: "", false),
-                getStringResource(R.string.title_try_again),
+                getStringResource(com.tokopedia.abstraction.R.string.title_try_again),
                 listener::onRetryGetInfo)
         loadingView.hide()
         errorView.show()
@@ -1037,7 +1037,7 @@ open class PlayViewStateImpl(
         setEmptyState(R.drawable.ic_play_no_connection,
                 getStringResource(R.string.no_connection_play),
                 getStringResource(R.string.try_connection_play),
-                getStringResource(R.string.title_try_again),
+                getStringResource(com.tokopedia.abstraction.R.string.title_try_again),
                 listener::onRetryGetInfo)
         loadingView.hide()
         errorView.show()
@@ -1177,8 +1177,8 @@ open class PlayViewStateImpl(
     }
 
     private fun setEmptyState(imageResId: Int, titleText: String, bodyText: String, buttonText: String, action: () -> Unit) {
-        val imageView = errorView.findViewById<ImageView>(R.id.image)
-        val title = errorView.findViewById<TextView>(R.id.title)
+        val imageView = errorView.findViewById<ImageView>(com.tokopedia.design.R.id.image)
+        val title = errorView.findViewById<TextView>(com.tokopedia.design.R.id.title)
         val body = errorView.findViewById<TextView>(R.id.body)
         val button = errorView.findViewById<View>(R.id.button)
         val buttonTxt = errorView.findViewById<TextView>(R.id.button_text)
@@ -1203,7 +1203,7 @@ open class PlayViewStateImpl(
             val layoutParams = chatRecyclerView.layoutParams as ConstraintLayout.LayoutParams
 
             val fadingEdgeLength = when (it){
-                VideoVerticalHelper.VERTICAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(R.dimen.dp_0)
+                VideoVerticalHelper.VERTICAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_0)
                 VideoHorizontalHelper.HORIZONTAL_WITH_VIDEO -> view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8)
                 else -> {
                     view.context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_24)

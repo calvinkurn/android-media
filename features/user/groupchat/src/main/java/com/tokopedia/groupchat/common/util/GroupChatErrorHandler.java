@@ -58,7 +58,7 @@ public class GroupChatErrorHandler {
             return formattedString(e.getMessage(),
                     GroupChatErrorCode.WS_ERROR, withCode);
         } else if (e instanceof ConnectException){
-            return formattedString(context.getString(R.string.msg_no_connection_trouble)
+            return formattedString(context.getString(com.tokopedia.abstraction.R.string.msg_no_connection_trouble)
                     , getErrorCode(e), withCode);
         } else {
             return formattedString(ErrorHandler.getErrorMessage(context, e), getErrorCode(e),

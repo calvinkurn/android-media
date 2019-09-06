@@ -102,7 +102,7 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
     @SuppressLint("SetJavaScriptEnabled")
     private fun initWebview(view: View) {
         CookieManager.getInstance().setAcceptCookie(true)
-        webview = view.findViewById(R.id.webview)
+        webview = view.findViewById(com.tokopedia.abstraction.R.id.webview)
         progressBar = view.findViewById(R.id.progress_bar)
         progressBar.isIndeterminate = true
         webview.setOnKeyListener(this)

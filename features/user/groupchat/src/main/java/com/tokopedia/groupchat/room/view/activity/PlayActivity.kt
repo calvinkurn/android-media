@@ -136,7 +136,7 @@ open class PlayActivity : BaseSimpleActivity() {
 
     fun changeHomeDrawableColor(resId: Int) {
         supportActionBar?.let {
-            val drawable = MethodChecker.getDrawable(this, R.drawable.ic_action_back)
+            val drawable = MethodChecker.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_action_back)
             val wrapped = DrawableCompat.wrap(drawable)
             drawable.mutate()
             DrawableCompat.setTint(wrapped, MethodChecker.getColor(this, resId))

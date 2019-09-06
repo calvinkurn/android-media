@@ -25,7 +25,7 @@ public class QuickReplyItemViewHolder extends AbstractViewHolder<GroupChatQuickR
 
     public QuickReplyItemViewHolder(View parent, ChatroomContract.QuickReply listener) {
         super(parent);
-        textHolder = itemView.findViewById(R.id.text);
+        textHolder = itemView.findViewById(com.tokopedia.design.R.id.text);
         this.viewListener = listener;
     }
 

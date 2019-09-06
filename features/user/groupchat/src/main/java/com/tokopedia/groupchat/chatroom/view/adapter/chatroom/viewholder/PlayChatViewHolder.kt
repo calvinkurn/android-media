@@ -25,14 +25,14 @@ class PlayChatViewHolder(itemView: View) : AbstractViewHolder<ChatViewModel>(ite
         const val extension= ".."
     }
 
-    private val message: TextView = itemView.findViewById(R.id.text)
+    private val message: TextView = itemView.findViewById(com.tokopedia.design.R.id.text)
 
     override fun bind(element: ChatViewModel) {
         message.text = ""
         val userName = getUserName(element.senderName, element.isAdministrator)
         message.append(userName)
         message.append(" ")
-        message.append(getColoredString(element.message, ContextCompat.getColor(itemView.context, R.color.white)))
+        message.append(getColoredString(element.message, ContextCompat.getColor(itemView.context, com.tokopedia.design.R.color.white)))
     }
 
     private fun getUserName(senderName: String?, administrator: Boolean): Spannable {

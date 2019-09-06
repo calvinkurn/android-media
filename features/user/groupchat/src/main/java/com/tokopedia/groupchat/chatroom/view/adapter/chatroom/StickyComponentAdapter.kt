@@ -35,7 +35,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
 
     class StickyComponentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val title = itemView.findViewById<TextView>(R.id.tv_title)
+        val title = itemView.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
         val subtitle = itemView.findViewById<TextView>(R.id.tv_subtitle)
         val image = itemView.findViewById<ImageView>(R.id.iv_image)
         val byMeIcon = itemView.findViewById<ImageView>(R.id.iv_byme)
@@ -56,12 +56,12 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
             title.text = getTitle(stickyComponentViewModel.title)
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             title.setTypeface(null, Typeface.NORMAL)
-            title.setTextColor(MethodChecker.getColor(title.context, R.color.black_70))
+            title.setTextColor(MethodChecker.getColor(title.context, com.tokopedia.design.R.color.black_70))
 
             subtitle.text = MethodChecker.fromHtml(stickyComponentViewModel.subtitle)
             subtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             subtitle.setTypeface(null, Typeface.BOLD)
-            subtitle.setTextColor(MethodChecker.getColor(title.context, R.color.orange_red))
+            subtitle.setTextColor(MethodChecker.getColor(title.context, com.tokopedia.design.R.color.orange_red))
 
 
             itemView.animate().setDuration(200)

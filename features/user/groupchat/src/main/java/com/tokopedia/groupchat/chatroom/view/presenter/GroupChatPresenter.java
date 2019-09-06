@@ -102,7 +102,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     private void onErrorGetChannelInfo(Throwable e) {
         if (getView() != null) {
             String errorMessage = GroupChatErrorHandler.getErrorMessage(getView().getContext(), e, false);
-            String defaultMessage = getView().getContext().getString(R.string.default_request_error_unknown);
+            String defaultMessage = getView().getContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown);
             String internalServerErrorMessage = "Internal Server Error";
             if (errorMessage.equals(defaultMessage) || errorMessage.equalsIgnoreCase(internalServerErrorMessage)) {
                 getView().onErrorGetChannelInfo(getView().getContext().getString(R.string.default_error_enter_channel));

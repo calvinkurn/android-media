@@ -193,7 +193,7 @@ public class VoteInfoViewModel implements Parcelable{
 //            case VoteInfoViewModel.VOTE_TYPE_GIFT:
 //                return R.string.info_prize;
             default:
-                return R.string.info_polling;
+                return com.tokopedia.vote.R.string.info_polling;
         }
     }
 
