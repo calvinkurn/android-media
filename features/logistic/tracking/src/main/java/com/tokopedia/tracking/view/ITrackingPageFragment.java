@@ -10,14 +10,16 @@ public interface ITrackingPageFragment {
 
     void populateView(TrackingViewModel viewModel);
 
-    void showMainLoadingPage();
-
-    void closeMainLoadingPage();
-
     void showLoading();
 
     void hideLoading();
 
-    void showError(String message);
+    void showError(Throwable error);
+
+    void showSoftError(Throwable error);
+
+    void setRetryButton(boolean active, long deadline);
+
+    void startSuccessCountdown();
 
 }

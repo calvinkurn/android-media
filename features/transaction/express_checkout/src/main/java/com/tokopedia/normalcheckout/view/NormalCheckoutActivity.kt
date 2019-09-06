@@ -81,8 +81,9 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                     getString(ApplinkConst.Transaction.EXTRA_SHOP_NAME),
                     getBoolean(ApplinkConst.Transaction.EXTRA_OCS),
                     getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH),
-                    tradeInParams,
-                    getBoolean(EXTRA_IS_LEASING)
+                    getBoolean(EXTRA_IS_LEASING),
+                    getString(ApplinkConst.Transaction.EXTRA_REFERENCE),
+                    tradeInParams
             )
             return normalCheckoutFragment!!
         }

@@ -82,7 +82,7 @@ class NumberPicker @JvmOverloads constructor(
 
         selectedTextColor = attributesArray.getColor(
             R.styleable.NumberPicker_np_selectedTextColor
-            , ContextCompat.getColor(context, R.color.black)
+            , ContextCompat.getColor(context, com.tokopedia.design.R.color.black)
         );
         unSelectedTextColor = attributesArray.getColor(
             R.styleable.NumberPicker_np_textColor

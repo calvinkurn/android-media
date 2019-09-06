@@ -46,10 +46,12 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheets
 import com.tokopedia.expresscheckout.common.view.errorview.ErrorBottomsheetsActionListenerWithRetry
@@ -63,6 +65,7 @@ import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.normalcheckout.constant.*
 import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
@@ -122,6 +125,10 @@ import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
 import com.tokopedia.transaction.common.TransactionRouter
+import com.tokopedia.transaction.common.dialog.UnifyDialog
+import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
 import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 import com.tokopedia.unifycomponents.Toaster
@@ -1085,7 +1092,30 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
             REQUEST_CODE_NORMAL_CHECKOUT -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
+                if (resultCode == RESULT_CODE_ERROR_TICKET && data != null) {
+                    activity?.also { activity ->
+                        val result = data.getParcelableExtra<AddToCartDataModel>(RESULT_TICKET_DATA)
+                        val createTicketDialog = UnifyDialog(activity, UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER)
+                        createTicketDialog.apply {
+                            setTitle(result.errorReporter.texts.submitTitle)
+                            setDescription(result.errorReporter.texts.submitDescription)
+                            setSecondary(result.errorReporter.texts.cancelButton)
+                            setSecondaryOnClickListener(View.OnClickListener {
+                                this.dismiss()
+                                productDetailTracking.eventClickCloseOnHelpPopUpAtc()
+                            })
+                            setOk(result.errorReporter.texts.submitButton)
+                            setOkOnClickListener(View.OnClickListener {
+                                this.dismiss()
+                                productDetailTracking.eventClickReportOnHelpPopUpAtc()
+                                showProgressDialog()
+                                productInfoViewModel.hitSubmitTicket(result, this@ProductDetailFragment::onErrorSubmitHelpTicket, this@ProductDetailFragment::onSuccessSubmitHelpTicket)
+                            })
+                            show()
+                        }
+                        productDetailTracking.eventViewHelpPopUpWhenAtc()
+                    }
+                } else if (resultCode == Activity.RESULT_OK && data != null) {
                     if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
                         //refresh product by selected variant/product
                         val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
@@ -1167,6 +1197,35 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun onErrorSubmitHelpTicket(e: Throwable?) {
+        hideProgressDialog()
+        view?.also {
+            Toaster.showError(it, ErrorHandler.getErrorMessage(context, e), BaseToaster.LENGTH_SHORT)
+        }
+    }
+
+    private fun onSuccessSubmitHelpTicket(result: SubmitTicketResult) {
+        hideProgressDialog()
+        if (result.status) {
+            activity?.also {
+                val successTicketDialog = UnifyDialog(it, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
+                successTicketDialog.apply {
+                    setTitle(result.texts.submitTitle)
+                    setDescription(result.texts.submitDescription)
+                    setOk(result.texts.successButton)
+                    setOkOnClickListener(View.OnClickListener {
+                        this.dismiss()
+                    })
+                    show()
+                }
+            }
+        } else {
+            view?.also {
+                Toaster.showError(it, result.message, BaseToaster.LENGTH_SHORT)
+            }
+        }
+    }
+
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
         productInfo?.let {
             val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
@@ -1225,12 +1284,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         userCod = productInfoP3.userCod
         if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
         headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
-        productInfoP3.rateEstSummarizeText?.let {
-            partialVariantAndRateEstView.renderRateEstimation(it) {
-                productDetailTracking.eventShippingRateEstimationClicked()
-                gotoRateEstimation(false)
-            }
-        }
     }
 
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
@@ -1282,14 +1335,20 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun gotoRateEstimation(forDeliveryInfo: Boolean) {
-        if (productInfo == null && shopInfo == null) return
-        activity?.let {
-            startActivity(RatesEstimationDetailActivity.createIntent(it,
-                    shopInfo!!.shopCore.domain, productInfo!!.basic.weight,
-                    productInfo!!.basic.weightUnit,
-                    if (productInfoViewModel.multiOrigin.isFulfillment)
-                        productInfoViewModel.multiOrigin.origin else null, forDeliveryInfo))
+    private fun gotoRateEstimation() {
+        productInfo?.let{ productInfo ->
+            shopInfo?.let{ shopInfo ->
+                context?.let{ context ->
+                    startActivity(RatesEstimationDetailActivity.createIntent(
+                            context,
+                            shopInfo.shopCore.domain,
+                            productInfo.basic.weight,
+                            productInfo.basic.weightUnit,
+                            if (productInfoViewModel.multiOrigin.isFulfillment)
+                                productInfoViewModel.multiOrigin.origin else null
+                    ))
+                }
+            }
         }
     }
 
@@ -1314,7 +1373,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 productStatsView.renderClickShipping(it) {
                     productDetailTracking.eventShippingClicked()
                     if (userSession.isLoggedIn) {
-                        gotoRateEstimation(true)
+                        gotoRateEstimation()
                     } else {
                         goToCourier(
                                 productInfo?.basic?.id?.toString() ?: "",

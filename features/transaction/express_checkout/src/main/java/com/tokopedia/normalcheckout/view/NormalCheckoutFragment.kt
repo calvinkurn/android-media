@@ -61,6 +61,8 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
 import com.tokopedia.tradein.view.viewcontrollers.TradeInHomeActivity
+import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
+import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -134,8 +136,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                            shopName: String? = "",
                            isOneClickShipment: Boolean,
                            isNeedRefresh: Boolean,
-                           tradeInParams: TradeInParams?,
-                           isLeasing: Boolean ): NormalCheckoutFragment {
+                           isLeasing: Boolean,
+                           reference: String?,
+                           tradeInParams: TradeInParams?): NormalCheckoutFragment {
             val fragment = NormalCheckoutFragment().apply {
                 arguments = Bundle().apply {
                     putString(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
@@ -155,6 +158,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     putBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, isNeedRefresh)
                     putParcelable(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                     putBoolean(EXTRA_IS_LEASING, isLeasing)
+                    putString(ApplinkConst.Transaction.EXTRA_REFERENCE, reference)
                 }
             }
             return fragment
@@ -674,6 +678,15 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         }
     }
 
+    private fun onFinishError(errorModel: AddToCartDataModel) {
+        activity?.run {
+            setResult(RESULT_CODE_ERROR_TICKET, Intent().apply {
+                putExtra(RESULT_TICKET_DATA, errorModel)
+            })
+            finish()
+        }
+    }
+
     private fun sendBranchAddToCardEvent() {
         if (selectedProductInfo != null) {
             LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_ADD_TO_CART, createLinkerData(selectedProductInfo,
@@ -760,11 +773,17 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         this, quantity,
                         shopId, shopType, shopName, cartId,
                         trackerAttribution, trackerListName,
-                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false)
+                        viewModel.selectedwarehouse?.warehouseInfo?.isFulfillment ?: false,
+                        getPageReference()
+                )
             }
         }, onRetryWhenError = {
             addToCart()
         })
+    }
+
+    private fun getPageReference(): String {
+        return arguments?.getString(ApplinkConst.Transaction.EXTRA_REFERENCE, "") ?: ""
     }
 
     private fun addToCart(oneClickShipment: Boolean, onFinish: ((message: String?, cartId: String?) -> Unit),
@@ -824,6 +843,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                         selectedProductInfo?.basic?.name ?: "",
                         selectedProductInfo?.category?.name ?: "")
                 onFinish(addToCartDataModel.data.message[0], addToCartDataModel.data.cartId.toString())
+            } else if (addToCartDataModel.errorReporter.eligible) {
+                onFinishError(addToCartDataModel)
             } else {
                 activity?.findViewById<View>(android.R.id.content)?.showErrorToaster(
                         addToCartDataModel.errorMessage[0])

@@ -21,7 +21,9 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
 
     public static final String REFERRAL_SUBHEADER = "referral_subheader";
+    public static final String APP_ENABLE_INDI_CHALLENGES = "app_enable_indi_challenges";
     public static final String APP_REFERRAL_TITLE = "app_referral_title";
+    public static final String APP_REFERRAL_SUBTITLE = "app_referral_subtitle";
     public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
     public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
     public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
@@ -76,6 +78,7 @@ public class RemoteConfigKey {
     public static final String APP_GLOBAL_NAV_NEW_DESIGN = "app_global_nav_new_design";
 
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
+    public static final String IRIS_LOG_ENABLED_TOGGLE = "android_iris_log_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
@@ -105,6 +108,8 @@ public class RemoteConfigKey {
     public static final String OVO_QR_MAX_AMOUNT = "app_ovo_max_balance";
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
+
+    public static final String ENABLE_TOPPAY_TIMEOUT = "android_enable_toppay_timeout";
 
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 
@@ -142,5 +147,11 @@ public class RemoteConfigKey {
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
 
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
+
+    public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
     public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
+
+    public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
+
+    public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
 }

@@ -225,8 +225,7 @@ public class FlightAnalytics {
                         EVENT_ACTION, Action.PRODUCT_VIEW_ACTION,
                         EVENT_LABEL, String.format(Label.PRODUCT_VIEW, searchPassDataViewModel.getDepartureAirport().getAirportCode(),
                                 searchPassDataViewModel.getArrivalAirport().getAirportCode()),
-                        CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
-                        ECOMMERCE, DataLayer.mapOf(IMPRESSIONS, DataLayer.listOf(products))
+                        ECOMMERCE, DataLayer.mapOf(CURRENCY_CODE, DEFAULT_CURRENCY_CODE, IMPRESSIONS, products)
                 )
         );
     }
