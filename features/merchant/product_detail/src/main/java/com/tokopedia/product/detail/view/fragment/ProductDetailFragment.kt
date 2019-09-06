@@ -815,9 +815,19 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             R.id.container_ready -> onValuePropositionClick(R.id.container_ready)
             R.id.container_ori -> onValuePropositionClick(R.id.container_ori)
             R.id.container_guarantee_7_days -> onValuePropositionClick(R.id.container_guarantee_7_days)
-            R.id.btn_apply_leasing -> goToNormalCheckout(APPLY_CREDIT)
+            R.id.btn_apply_leasing -> onApplyLeasingClicked()
             else -> {
             }
+        }
+    }
+
+    private fun onApplyLeasingClicked(){
+        productInfo?.run {
+            productDetailTracking.eventClickApplyLeasing(
+                    parentProductId,
+                    variant.isVariant
+            )
+            goToNormalCheckout(APPLY_CREDIT)
         }
     }
 

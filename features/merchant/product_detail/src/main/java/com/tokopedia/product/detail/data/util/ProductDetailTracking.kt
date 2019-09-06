@@ -859,6 +859,15 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
+    fun eventClickApplyLeasing(productId: String, isVariant: Boolean){
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_APPLY_LEASING,
+                "$productId - $isVariant"
+        )
+    }
+    
     fun eventViewHelpPopUpWhenAtc() {
         TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
