@@ -5,6 +5,7 @@
     android:id="@+id/root_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ImageView
         android:id="@+id/iv_container"
         android:layout_width="match_parent"
@@ -122,6 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="@dimen/dp_64"
                 android:layout_marginRight="@dimen/dp_64"
                 android:visibility="gone">
 
@@ -129,7 +131,6 @@
                     android:id="@+id/daily_prize"
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_32"
-                    android:tooltipText="@string/try_again_btn"
                     tools:src="@drawable/ic_empty_egg" />
             </FrameLayout>
 
@@ -169,29 +170,32 @@
         android:id="@+id/tooltip_crack_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_48"
         android:layout_gravity="end"
-        android:clickable="true"
+        android:layout_marginTop="@dimen/dp_48"
         android:layout_marginEnd="@dimen/dp_32"
         android:layout_marginRight="@dimen/dp_32"
+        android:clickable="true"
         android:visibility="gone">
+
         <ImageView
             android:layout_width="@dimen/dp_16"
             android:layout_height="@dimen/dp_8"
-            android:src="@drawable/gf_ic_up"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/dp_40"
-            android:layout_marginRight="@dimen/dp_40" />
+            android:layout_marginRight="@dimen/dp_40"
+            android:src="@drawable/gf_ic_up" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_8"
+            android:background="@drawable/gf_white_rounded_tooltip"
             android:padding="@dimen/dp_16"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
             android:text="@string/daily_prize_tooltip_text"
-            android:background="@drawable/gf_white_rounded_tooltip"/>
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
     </FrameLayout>
+
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
