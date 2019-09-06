@@ -86,6 +86,11 @@ public class DigitalProductActivity extends BaseSimpleActivity
         } else {
             destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
         }
+        destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.VOUCHER_GAME);
+        extras.putString(DigitalCategoryDetailPassData.PARAM_MENU_ID, "10");
+//        extras.putString(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID, "472");
+//        extras.putString(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID, "841");
+        destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
         taskStackBuilder.addNextIntent(destination);
         return destination;
     }
