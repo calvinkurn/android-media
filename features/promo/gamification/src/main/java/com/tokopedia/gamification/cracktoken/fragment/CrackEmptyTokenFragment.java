@@ -115,7 +115,7 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
             return;
 
         HomeSmallButton homeSmallButton = tokenData.getHome().getHomeSmallButton();
-        if (!TextUtils.isEmpty(homeSmallButton.getImageURL())) {
+        if (homeSmallButton != null && !TextUtils.isEmpty(homeSmallButton.getImageURL())) {
             dailyPrizeLayout.setVisibility(View.VISIBLE);
             ImageHandler.loadImageAndCache(ivDailyPrize, homeSmallButton.getImageURL());
             ivDailyPrize.setOnClickListener(v -> {
