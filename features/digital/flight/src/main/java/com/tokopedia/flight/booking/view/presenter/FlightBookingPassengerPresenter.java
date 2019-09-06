@@ -1,7 +1,6 @@
 package com.tokopedia.flight.booking.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.common.travel.data.entity.TravelContactListModel;
 import com.tokopedia.common.travel.domain.GetContactListUseCase;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;

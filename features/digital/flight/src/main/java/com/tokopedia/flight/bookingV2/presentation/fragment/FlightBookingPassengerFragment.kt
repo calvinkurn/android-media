@@ -1,6 +1,10 @@
 package com.tokopedia.flight.bookingV2.presentation.fragment
 
+import android.app.Activity
 import android.app.DatePickerDialog
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v7.widget.LinearLayoutManager
@@ -10,16 +14,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
-import android.widget.DatePicker
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter
+import com.tokopedia.flight.booking.view.fragment.FlightBookingAmenityFragment
+import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
@@ -32,13 +38,13 @@ import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPasseng
 import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_PASSENGER
 import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_REQUEST_ID
 import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_RETURN
+import com.tokopedia.flight.bookingV2.viewmodel.FlightBookingViewModel
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import kotlin.math.max
 
 /**
  * @author by jessica on 2019-09-05
@@ -55,6 +61,10 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     lateinit var requestId: String
     var isDomestic: Boolean = false
     var returnId: String? = null
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var bookingViewModel: FlightBookingViewModel
 
     lateinit var travelContactArrayAdapter: TravelContactArrayAdapter
 
@@ -77,6 +87,10 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         }
 
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            bookingViewModel = viewModelProvider.get(FlightBookingViewModel::class.java)
+        }
         //masukkin observe validate data on submit
     }
 
@@ -90,6 +104,17 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         initView()
         //getContactList
 
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer {
+            contactList ->
+            contactList?.let {
+                travelContactArrayAdapter.updateItem(it.toMutableList())
+            }
+        })
     }
 
     private fun initView () {
@@ -115,7 +140,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                 _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
 
             button_submit.setOnClickListener {
-                KeyboardHandler.hideSoftKeyboard(activity)
+                clearAllKeyboardFocus()
                 // call viewmodel to validate fields and upsert!!
             }
 
@@ -124,7 +149,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             }
 
             et_passport_expiration_date.setOnClickListener {
-                //
+                onPassportExpiredClicked()
             }
 
             et_nationality.setOnClickListener {
@@ -137,6 +162,46 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                         getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY)
             }
         }
+    }
+
+    fun onPassportExpiredClicked() {
+
+        var minDate: Date
+        var selectedDate: Date
+        var maxDate: Date
+
+        var tmpDepatureDate = FlightDateUtil.stringToDate(depatureDate)
+        minDate = FlightDateUtil.addTimeToSpesificDate(tmpDepatureDate, Calendar.MONTH, PLUS_SIX)
+        maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, PLUS_TWENTY)
+        selectedDate = minDate
+
+        //and also validate 6 month
+        if (getPassportExpiryDate().isNotBlank()) {
+            selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getPassportExpiryDate())
+        }
+
+        showPassportExpiredDatePickerDialog(selectedDate, minDate, maxDate)
+    }
+
+    fun showPassportExpiredDatePickerDialog(selectedDate: Date, minDate: Date, maxDate: Date) {
+        val calendar = Calendar.getInstance()
+        calendar.time = selectedDate
+        val datePicker = DatePickerDialog(activity!!, DatePickerDialog.OnDateSetListener {
+            view, year, month, dayOfMonth ->
+            //on Passport expiry date change
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
+        val datePicker1 = datePicker.datePicker
+        datePicker1.minDate = minDate.time
+        datePicker1.maxDate = maxDate.time
+        datePicker.show()
+    }
+
+    fun getPassportExpiryDate(): String {
+        return et_passport_expiration_date.text.toString()
+    }
+
+    fun clearAllKeyboardFocus() {
+        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     fun renderPassengerMeals(flightBookingMealRouteModels: List<FlightBookingAmenityMetaViewModel>,
@@ -258,17 +323,17 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         if (isChildPassenger()) {
             // child age 2 - 12
-            minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, -12)
-            minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, 1)
-            maxDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, -2)
+            minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWELVE)
+            minDate = FlightDateUtil.addTimeToSpesificDate(minDate, Calendar.DATE, PLUS_ONE)
+            maxDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWO)
             selectedDate = maxDate
         } else if (isAdultPassenger()) {
-            maxDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, -12)
+            maxDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWELVE)
             selectedDate = maxDate
         } else {
             // for Infant
-            minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, -2)
-            minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.DATE, 1)
+            minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.YEAR, MINUS_TWO)
+            minDate = FlightDateUtil.addTimeToSpesificDate(depatureDate, Calendar.DATE, PLUS_ONE)
             maxDate = FlightDateUtil.getCurrentDate()
             selectedDate = maxDate
         }
@@ -319,11 +384,46 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
     fun isMandatoryDoB(): Boolean = isAirAsiaAirlines
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        clearAllKeyboardFocus()
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_PICK_LUGGAGE -> {
+                    if (data != null) {
+                        val flightBookingLuggageMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaViewModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
+//                        presenter.onLuggageDataChange(flightBookingLuggageMetaViewModel)
+                    }
+                }
+
+                REQUEST_CODE_PICK_MEAL -> {
+                    if (data != null) {
+                        val flightBookingLuggageMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaViewModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
+//                        presenter.onMealDataChange(flightBookingLuggageMetaViewModel)
+                    }
+                }
+
+                REQUEST_CODE_PICK_NATIONALITY -> {
+                    if (data != null) {
+                        val flightPassportNationalityViewModel = data.getParcelableExtra<CountryPhoneCode>(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY)
+//                        presenter.onNationalityChanged(flightPassportNationalityViewModel)
+                    }
+                }
+
+                REQUEST_CODE_PICK_ISSUER_COUNTRY -> {
+                    if (data != null) {
+                        val flightPassportIssuerCountry = data.getParcelableExtra<CountryPhoneCode>(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY)
+//                        presenter.onIssuerCountryChanged(flightPassportIssuerCountry)
+                    }
+                }
+            }
+        }
+    }
+
     companion object {
 
         private val REQUEST_CODE_PICK_LUGGAGE = 1
         private val REQUEST_CODE_PICK_MEAL = 2
-        private val REQUEST_CODE_PICK_SAVED_PASSENGER = 3
         private val REQUEST_CODE_PICK_NATIONALITY = 4
         private val REQUEST_CODE_PICK_ISSUER_COUNTRY = 5
 

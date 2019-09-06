@@ -15,9 +15,9 @@ import javax.inject.Inject
  * @author by jessica on 2019-09-05
  */
 
-class FlightBookingPassengerViewModel @Inject constructor(private val getContactListUseCase: GetContactListUseCase,
-                                                          private val upsertContactListUseCase: UpsertContactListUseCase,
-                                                          dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+class FlightBookingViewModel @Inject constructor(private val getContactListUseCase: GetContactListUseCase,
+                                                 private val upsertContactListUseCase: UpsertContactListUseCase,
+                                                 dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
 
     fun getContactList(query: String) {
