@@ -70,10 +70,8 @@ class ChatItemListViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(request))
             }.getSuccessData<ChatDeleteStatus>()
 
-            if (data.chatMoveToTrash != null) {
-                _deleteChat.postValue(Success(data.chatMoveToTrash?.list!!.first()))
-            } else {
-                _deleteChat.postValue(Fail(Throwable("bingung get error nya")))
+            data.chatMoveToTrash?.let {
+                _deleteChat.postValue(Success(it.list.first()))
             }
         }) {
             _deleteChat.postValue(Fail(it))
