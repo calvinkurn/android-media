@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.analytics.SimilarProductRecommendationTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
@@ -26,6 +27,7 @@ import com.tokopedia.home_recom.viewmodel.SimilarProductRecommendationViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.home_recom.R
 import javax.inject.Inject
 
 /**
@@ -59,6 +61,9 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.run{
+            (this as HomeRecommendationActivity).supportActionBar?.title = getString(R.string.recom_similar_recommendation)
+        }
         savedInstanceState?.let{
             productId = it.getString(SAVED_PRODUCT_ID) ?: ""
             ref = it.getString(SAVED_REF) ?: ""

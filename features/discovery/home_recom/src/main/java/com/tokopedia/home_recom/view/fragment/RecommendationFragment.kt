@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.analytics.RecommendationPageTracking
 import com.tokopedia.home_recom.di.HomeRecommendationComponent
@@ -121,6 +122,9 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activity?.run{
+            (this as HomeRecommendationActivity).supportActionBar?.title = getString(R.string.recom_home_recommendation)
+        }
         if(productId.isEmpty()) {
             RecommendationPageTracking.sendScreenRecommendationPage(
                     screenName,
