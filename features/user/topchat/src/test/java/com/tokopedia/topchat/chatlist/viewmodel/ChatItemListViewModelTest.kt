@@ -72,7 +72,7 @@ class ChatItemListViewModelTest {
         val (request, response) = givenData(MockDeleteChatList.chatMoveToTrash)
 
         //when
-        `when`(graphqlRepository.getReseponse(listOf(request))).thenReturn(response.getSuccessData())
+        `when`(graphqlRepository.getReseponse(listOf(request))).thenReturn(response)
 
         viewModel.deleteChat.observeForever(result)
         viewModel.chatMoveToTrash(1, MockDeleteChatList.chatMoveToTrashQuery)
@@ -81,7 +81,7 @@ class ChatItemListViewModelTest {
         verify(result, atLeastOnce()).onChanged(resultCaptor.capture())
         val allValueCaptors = resultCaptor.allValues
 
-        println(allValueCaptors)
+        assert(allValueCaptors.size > 0)
     }
 
     @Test fun `fail delete chat item`() = runBlocking {
@@ -97,7 +97,7 @@ class ChatItemListViewModelTest {
         verify(result, atLeastOnce()).onChanged(resultCaptor.capture())
         val allValueCaptors = resultCaptor.allValues
 
-        println(allValueCaptors)
+        assert(allValueCaptors.size > 0)
     }
 
 }
