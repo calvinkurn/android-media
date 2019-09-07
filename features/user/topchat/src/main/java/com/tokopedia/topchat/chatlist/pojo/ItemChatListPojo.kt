@@ -1,11 +1,8 @@
 package com.tokopedia.topchat.chatlist.pojo
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.chat_common.domain.pojo.ChatItemPojo
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactory
 
 /**
