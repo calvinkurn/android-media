@@ -13,6 +13,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:tabBackground="@color/white"
         app:tabGravity="fill"
+        android:visibility="gone"
         app:tabIndicatorColor="@color/tkpd_main_green"
         app:tabMode="fixed"
         app:tabSelectedTextColor="@color/tkpd_main_green"

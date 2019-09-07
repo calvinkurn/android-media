@@ -11,6 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 
 /**
  * Dynamic Feature Deeplink Mapper
@@ -33,6 +34,7 @@ object DeeplinkDFMapper {
     private val MODULE_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val MODULE_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val MODULE_HOTEL_TRAVEL = "hotel_travel"
+    private val MODULE_USER_PROFILE_COMPLETION = "profilecompletion"
 
     private var manager: SplitInstallManager? = null
 
@@ -60,6 +62,7 @@ object DeeplinkDFMapper {
             }
         } else {
             return when {
+//                uncomment this section to enable dynamic feature in hotel
 //                deeplink.startsWith(ApplinkConst.HOTEL) -> {
 //                    getDFDeeplinkIfNotInstalled(context,
 //                            deeplink, MODULE_HOTEL_TRAVEL,
@@ -70,6 +73,11 @@ object DeeplinkDFMapper {
                         deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
                         context.getString(R.string.shop_settings_title))
                 }
+//                deeplink.startsWith(SETTING_PROFILE) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                        deeplink, MODULE_USER_PROFILE_COMPLETION,
+//                        context.getString(R.string.applink_profile_completion_title))
+//                }
                 else -> null
             }
         }
