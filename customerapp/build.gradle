@@ -247,8 +247,6 @@ android {
             rootProject.ext.dynamicFeatures.shopSettings
 //            rootProject.ext.dynamicFeatures.profileCompletion
     ]
-
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings]
 }
 
 dependencies {
