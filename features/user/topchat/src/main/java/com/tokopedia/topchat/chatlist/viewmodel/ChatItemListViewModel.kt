@@ -3,17 +3,24 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
+import com.tokopedia.topchat.chatlist.pojo.ChatDelete
+import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
+import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -26,6 +33,7 @@ interface ChatItemListContract {
 }
 
 class ChatItemListViewModel @Inject constructor(
+        private val graphqlRepository: GraphqlRepository,
         private val chatListUseCase: GraphqlUseCase<ChatListPojo>,
         private val rawQueries: Map<String, String>,
         private val dispatcher: CoroutineDispatcher
@@ -34,6 +42,10 @@ class ChatItemListViewModel @Inject constructor(
     private val _mutateChatList = MutableLiveData<Result<ChatListPojo>>()
     val mutateChatList: LiveData<Result<ChatListPojo>>
         get() = _mutateChatList
+
+    private val _deleteChat = MutableLiveData<Result<ChatDelete>>()
+    val deleteChat: LiveData<Result<ChatDelete>>
+        get() = _deleteChat
 
     private val arrayFilterParam = arrayListOf(
             PARAM_FILTER_ALL,
@@ -47,7 +59,25 @@ class ChatItemListViewModel @Inject constructor(
     }
 
     override fun chatMoveToTrash(messageId: Int, query: String) {
+        //first, prepare a params
+        val params = mapOf(PARAM_MESSAGE_ID to messageId)
 
+        launchCatchError(block = {
+            //get response data
+            val data = withContext(dispatcher) {
+                //make a request from query
+                val request = GraphqlRequest(query, ChatDeleteStatus::class.java, params)
+                graphqlRepository.getReseponse(listOf(request))
+            }.getSuccessData<ChatDeleteStatus>()
+
+            if (data.chatMoveToTrash != null) {
+                _deleteChat.postValue(Success(data.chatMoveToTrash?.list!!.first()))
+            } else {
+                _deleteChat.postValue(Fail(Throwable("bingung get error nya")))
+            }
+        }) {
+            _deleteChat.postValue(Fail(it))
+        }
     }
 
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
@@ -81,4 +111,7 @@ class ChatItemListViewModel @Inject constructor(
         }
     }
 
+    companion object {
+        const val PARAM_MESSAGE_ID = "messageId"
+    }
 }
