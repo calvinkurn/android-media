@@ -404,7 +404,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
         dest.writeString(this.blackboxInfo);
-        dest.writeValue(this.isNow);
+        dest.writeByte(this.isNow ?(byte) 1 : (byte) 0);
         dest.writeInt(this.priorityPrice);
         dest.writeString(this.priorityInnactiveMessage);
         dest.writeString(this.priorityFormattedPrice);
@@ -447,7 +447,7 @@ public class CourierItemData implements Parcelable, ShipmentOptionData {
         this.checksum = in.readString();
         this.ut = in.readString();
         this.blackboxInfo = in.readString();
-        this.isNow = (Boolean) in.readValue(Boolean.class.getClassLoader());
+        this.isNow = in.readByte() != 0;
         this.priorityPrice = in.readInt();
         this.priorityInnactiveMessage = in.readString();
         this.priorityFormattedPrice = in.readString();
