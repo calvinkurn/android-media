@@ -8,16 +8,18 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.*
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -26,7 +28,6 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.listener.*
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
@@ -43,18 +44,17 @@ import com.tokopedia.usecase.coroutines.Success
 import java.util.ArrayList
 import javax.inject.Inject
 
-
 /**
  * @author : Steven 2019-08-06
  */
-class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
-                        , ChatListContract.View
-                        , ChatListItemListener
-                        , ChatListWebSocketContract.Fragment
-                        , LifecycleOwner {
+class ChatListFragment: BaseListFragment<Visitable<*>,
+        BaseAdapterTypeFactory>(),
+        ChatListContract.View,
+        ChatListItemListener,
+        ChatListWebSocketContract.Fragment,
+        LifecycleOwner {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModelActivityProvider by lazy { activity?.let { ViewModelProviders.of(it, viewModelFactory) } }
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
@@ -63,15 +63,13 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private val webSocketViewModel by lazy { viewModelActivityProvider?.get(WebSocketViewModel::class.java) }
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    lateinit var viewState: ChatListViewState
-
+    private lateinit var viewState: ChatListViewState
 
     private var mUserSeen = false
     private var mViewCreated = false
     private var sightTag = ""
 
-
-    var filterChecked = 0
+    private var filterChecked = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,15 +133,23 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun setObserver() {
-        chatItemListViewModel.mutateChatListResponse.observe(
-                viewLifecycleOwner,
-                Observer {
-                    when (it) {
-                        is Success -> onSuccessGetChatList(it.data.data)
-                        is Fail -> onFailGetChatList(it.throwable)
-                    }
+        chatItemListViewModel.mutateChatList.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> onSuccessGetChatList(it.data.data)
+                is Fail -> onFailGetChatList(it.throwable)
+            }
+        })
+
+        chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
+            when (result) {
+                is Success -> {
+                    onSwipeRefresh()
                 }
-        )
+                is Fail -> {
+                    Toast.makeText(activity, "Gagal Bosq!", Toast.LENGTH_LONG).show()
+                }
+            }
+        })
 
         activity?.let {
             webSocketViewModel?.itemChat?.observe(it,
@@ -230,7 +236,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     }
 
-
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollUpListener(getRecyclerView(view).layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -295,14 +300,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun loadData(page: Int) {
-        chatItemListViewModel.queryGetChatListMessage(
-                page,
-                filterChecked,
-                sightTag)
-    }
-
-    override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
+        chatItemListViewModel.getChatListMessage(page, filterChecked, sightTag)
     }
 
     override fun chatItemClicked(element: ItemChatListPojo) {
@@ -324,6 +322,26 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun chatItemDeleted(element: ItemChatListPojo) {
+        val deleteDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        deleteDialog.let { dialog ->
+            dialog.setTitle(getString(R.string.topchat_chat_delete_title))
+            dialog.setDesc(getString(R.string.topchat_chat_delete_body))
+            dialog.setBtnOk(getString(R.string.topchat_chat_delete_cancel))
+            dialog.setOnOkClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.setBtnCancel(getString(R.string.topchat_chat_delete_confirm))
+            dialog.setOnCancelClickListener {
+                val query = GraphqlHelper.loadRawString(resources, R.raw.query_chat_delete)
+                chatItemListViewModel.chatMoveToTrash(element.msgId.toInt(), query)
+                dialog.dismiss()
+            }
+        }
+        deleteDialog.show()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == OPEN_DETAIL_MESSAGE
@@ -333,8 +351,6 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onDestroy() {
         super.onDestroy()
-
-        chatItemListViewModel.mutateChatListResponse.removeObservers(this)
         chatItemListViewModel.clear()
     }
 
