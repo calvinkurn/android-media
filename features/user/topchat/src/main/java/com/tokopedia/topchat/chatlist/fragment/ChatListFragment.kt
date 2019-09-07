@@ -12,6 +12,7 @@ import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -27,14 +28,17 @@ import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.listener.*
+import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
+import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
@@ -60,7 +64,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
-    private val webSocketViewModel by lazy { viewModelActivityProvider?.get(WebSocketViewModel::class.java) }
+
 
     private lateinit var performanceMonitoring: PerformanceMonitoring
     lateinit var viewState: ChatListViewState
@@ -144,24 +148,16 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     }
                 }
         )
-
-        activity?.let {
-            webSocketViewModel?.itemChat?.observe(it,
-                    Observer { result ->
-                        when (result) {
-                            is Success -> {
-                                when(result.data) {
-                                    is IncomingChatWebSocketModel -> processIncomingMessage(result.data as IncomingChatWebSocketModel)
-                                    is IncomingTypingWebSocketModel -> processIncomingMessage(result.data as IncomingTypingWebSocketModel)
-                                }
-                            }
-                        }
-                    }
-            )
-        }
     }
 
-    private fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {
+    fun processIncomingMessage(newChat: IncomingChatWebSocketModel) {
+        if (adapter.list.size < 1 && adapter.list[0] is LoadingModel) {
+            return
+        } else if (adapter.list.size ==0){
+            return
+        } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)) {
+            return
+        }
 
         val existingThread = adapter.list.find {
             it is ItemChatListPojo && it.msgId == newChat.messageId
@@ -173,10 +169,14 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         when {
             //not found on list
             index == -1 -> {
+                if(adapter.hasEmptyModel()) {
+                    adapter.clearAllElements()
+                }
                 val attributes = ItemChatAttributesPojo(newChat.message, newChat.contact)
                 val item = ItemChatListPojo(newChat.messageId, attributes, "")
                 adapter.list.add(0, item)
                 adapter.notifyItemInserted(0)
+                animateWhenOnTop()
             }
             //found on list, not the first
             index > 0 -> {
@@ -198,7 +198,16 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun processIncomingMessage(newItem: IncomingTypingWebSocketModel) {
+    fun processIncomingMessage(newItem: IncomingTypingWebSocketModel) {
+
+        if (adapter.list.size < 1 && adapter.list[0] is LoadingModel) {
+            return
+        } else if (adapter.list.size ==0){
+            return
+        } else if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_READ)) {
+            return
+        }
+
         val existingThread = adapter.list.find {
             it is ItemChatListPojo && it.msgId == newItem.messageId
         }
@@ -369,6 +378,26 @@ class ChatListFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun hasInitialSwipeRefresh(): Boolean {
         return true
+    }
+
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        var title = ""
+        var subtitle = ""
+        activity?.let {
+            when (sightTag) {
+                ChatListQueriesConstant.PARAM_TAB_USER -> {
+                    title = it.getString(R.string.seller_empty_chat_title)
+                    subtitle = it.getString(R.string.seller_empty_chat_subtitle)
+                }
+
+                ChatListQueriesConstant.PARAM_TAB_SELLER -> {
+                    title = it.getString(R.string.buyer_empty_chat_title)
+                    subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
+                }
+            }
+        }
+
+        return EmptyChatModel(title, subtitle)
     }
 
     companion object {

@@ -25,12 +25,13 @@ class ChatItemListViewModel
                                                 private val rawQueries: Map<String, String>,
                                                 dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    private val arrayFilterParam = arrayListOf(
-            PARAM_FILTER_ALL,
-            PARAM_FILTER_UNREAD,
-            PARAM_FILTER_READ,
-            PARAM_FILTER_UNREPLIED
-    )
+    companion object{
+        val arrayFilterParam = arrayListOf(
+                PARAM_FILTER_ALL,
+                PARAM_FILTER_UNREAD,
+                PARAM_FILTER_READ,
+                PARAM_FILTER_UNREPLIED)
+    }
 
     val mutateChatListResponse = MutableLiveData<Result<ChatListPojo>>()
 

@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatlist.activity
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
@@ -7,6 +8,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.ChatListPagerAdapter
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
@@ -25,34 +28,31 @@ import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
 import com.tokopedia.topchat.chatlist.listener.ChatListWebSocketContract
+import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
+import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import android.support.v4.graphics.drawable.DrawableCompat
-import android.graphics.drawable.Drawable
-import android.support.v7.content.res.AppCompatResources
-
 
 
 class ChatListActivity : BaseTabActivity()
         , HasComponent<ChatListComponent>
         , ChatListWebSocketContract.Activity{
 
-    private var fragmentAdapter: ChatListPagerAdapter? = null
+    private lateinit var fragmentAdapter: ChatListPagerAdapter
     private val tabList = ArrayList<ChatListPagerAdapter.ChatListTab>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModelProvider by lazy { ViewModelProviders.of(this@ChatListActivity, viewModelFactory) }
-    private val webSocketViewModel by lazy { viewModelProvider.get(WebSocketViewModel::class.java) }
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
-    var fragmentViewCreated = false
+    lateinit var viewModelProvider: ViewModelProvider
+    lateinit var webSocketViewModel: WebSocketViewModel
 
-
-    override fun onStart() {
-        super.onStart()
-        initInjector()
-    }
+    private var fragmentViewCreated = false
 
     private fun initInjector() {
         component.inject(this)
@@ -64,7 +64,7 @@ class ChatListActivity : BaseTabActivity()
 
     override fun getViewPagerAdapter(): PagerAdapter? {
         fragmentAdapter = ChatListPagerAdapter(supportFragmentManager)
-        fragmentAdapter?.setItemList(tabList)
+        fragmentAdapter.setItemList(tabList)
 
         return fragmentAdapter
     }
@@ -74,14 +74,15 @@ class ChatListActivity : BaseTabActivity()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
         tabList.add(ChatListPagerAdapter.ChatListTab(
-                "Toko saya",
+                userSession.shopName,
                 "0",
                 ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER),
                 R.drawable.ic_chat_icon_shop
         ))
         tabList.add(ChatListPagerAdapter.ChatListTab(
-                "Saya",
+                userSession.name,
                 "0",
                 ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_USER),
                 R.drawable.ic_chat_icon_account
@@ -89,7 +90,47 @@ class ChatListActivity : BaseTabActivity()
         super.onCreate(savedInstanceState)
 
         initTabLayout()
+        setObserver()
     }
+
+    private fun setObserver() {
+        viewModelProvider = ViewModelProviders.of(this@ChatListActivity, viewModelFactory)
+        webSocketViewModel = viewModelProvider.get(WebSocketViewModel::class.java)
+        webSocketViewModel?.itemChat?.observe(this,
+                Observer { result ->
+                    when (result) {
+                        is Success -> {
+                            when (result.data) {
+                                is IncomingChatWebSocketModel -> forwardToFragment(result.data as IncomingChatWebSocketModel)
+                                is IncomingTypingWebSocketModel -> forwardToFragment(result.data as IncomingTypingWebSocketModel)
+                            }
+                        }
+                    }
+                }
+        )
+    }
+
+
+    private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
+        debug("stevenObserver", incomingChatWebSocketModel.toString())
+        val fragment: ChatListFragment = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
+        fragment.processIncomingMessage(incomingChatWebSocketModel)
+    }
+
+
+    private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
+        debug("stevenObserver", incomingTypingWebSocketModel.toString())
+        val fragment: ChatListFragment = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
+        fragment.processIncomingMessage(incomingTypingWebSocketModel)
+    }
+
+    private fun determineFragmentByTag(tag: String?): ChatListFragment {
+        return when (tag) {
+            "User" -> fragmentAdapter.getItem(0) as ChatListFragment
+            else -> fragmentAdapter.getItem(1) as ChatListFragment
+        }
+    }
+
 
     override fun notifyViewCreated() {
         if(!fragmentViewCreated) {

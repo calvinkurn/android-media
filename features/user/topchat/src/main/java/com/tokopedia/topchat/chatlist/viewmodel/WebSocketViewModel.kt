@@ -73,7 +73,7 @@ class WebSocketViewModel
         val msgId = responseData.msgId.toString()
         val message = responseData.message.censoredReply.trim()
 
-        var contact = ItemChatAttributesContactPojo(
+        val contact = ItemChatAttributesContactPojo(
                 responseData.fromUid.toString(),
                 responseData.fromRole,
                 "",
@@ -89,7 +89,18 @@ class WebSocketViewModel
         val json = response.getData()
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData.msgId.toString()
-        return IncomingTypingWebSocketModel(msgId, isTyping)
+
+        val contact = ItemChatAttributesContactPojo(
+                responseData.fromUid.toString(),
+                responseData.fromRole,
+                "",
+                responseData.from,
+                0,
+                responseData.fromRole,
+                ""
+        )
+
+        return IncomingTypingWebSocketModel(msgId, isTyping, contact)
     }
 
     override fun onCleared() {
