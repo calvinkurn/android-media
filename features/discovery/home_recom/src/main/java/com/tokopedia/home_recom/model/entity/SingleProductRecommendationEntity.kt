@@ -1,19 +1,19 @@
-package com.tokopedia.recommendation_widget_common.data
+package com.tokopedia.home_recom.model.entity
 
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created by devara fikry on 16/04/19.
- * Credit errysuprayogi
+ * Created by Lukas on 29/08/19
  */
-class RecomendationEntity {
 
-    @SerializedName("productRecommendationWidget")
-    var productRecommendationWidget: ProductRecommendationWidget? = ProductRecommendationWidget()
+class SingleProductRecommendationEntity {
 
-    class ProductRecommendationWidget {
+    @SerializedName("productRecommendationWidgetSingle")
+    var productRecommendationWidget: ProductRecommendationWidgetSingle? = ProductRecommendationWidgetSingle()
+
+    class ProductRecommendationWidgetSingle {
         @SerializedName("data")
-        var data: List<RecomendationData>? = listOf()
+        var data: RecommendationData? = RecommendationData()
     }
 
     class Pagination {
@@ -100,7 +100,7 @@ class RecomendationEntity {
         }
     }
 
-    class RecomendationData {
+    class RecommendationData {
 
         @SerializedName("tID")
         var tid: String? = ""
