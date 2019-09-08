@@ -22,6 +22,8 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.debug
+import com.tokopedia.kotlin.extensions.view.showErrorToaster
+import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.topchat.R
@@ -142,12 +144,8 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> {
-                    onSwipeRefresh()
-                }
-                is Fail -> {
-                    Toast.makeText(activity, "Gagal Bosq!", Toast.LENGTH_LONG).show()
-                }
+                is Success -> view?.showNormalToaster("Yes, berhasil bosq")
+                is Fail -> view?.showErrorToaster("Yah, gagal, sedih...")
             }
         })
 
