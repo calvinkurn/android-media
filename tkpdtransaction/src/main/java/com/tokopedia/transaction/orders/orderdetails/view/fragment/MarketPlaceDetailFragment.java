@@ -74,9 +74,13 @@ import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerData;
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -117,7 +121,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private TextView helpLabel;
     private LinearLayout statusDetail;
     private LinearLayout detailContent;
-    private LinearLayout additionalInfoLayout;
+    private Ticker additionalInfoLayout;
     private LinearLayout infoValue;
     private LinearLayout totalPrice;
     private LinearLayout actionBtnLayout;
@@ -350,11 +354,12 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void setAdditionalInfo(AdditionalInfo additionalInfo) {
-        DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
-        doubleTextView.setTopText(additionalInfo.label());
-        doubleTextView.setBottomText(additionalInfo.value());
-        additionalInfoLayout.addView(doubleTextView);
+    public void setAdditionalInfo(List<AdditionalInfo> additionalInfo) {
+        List<TickerData> tickerData = new ArrayList<>();
+        for (AdditionalInfo info : additionalInfo) {
+            tickerData.add(new TickerData(info.getNotes(), Ticker.TYPE_ANNOUNCEMENT));
+        }
+        additionalInfoLayout.addPagerView(new TickerPagerAdapter(getActivity(), tickerData), tickerData);
     }
 
     @Override

@@ -268,7 +268,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setAdditionalInfo(AdditionalInfo additionalInfo) {
+    public void setAdditionalInfo(List<AdditionalInfo> additionalInfo) {
 
     }
 
