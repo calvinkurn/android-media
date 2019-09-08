@@ -118,8 +118,8 @@ class VoucherGameAnalytics {
                 val mappedData = DataLayer.mapOf(
                         EnhanceEccomerce.ID, id,
                         EnhanceEccomerce.NAME, "promo slot name",
-                        EnhanceEccomerce.CREATIVE, imageFilename,
-                        EnhanceEccomerce.CREATIVE_URL, imageUrl,
+                        EnhanceEccomerce.CREATIVE, imageUrl,
+                        EnhanceEccomerce.CREATIVE_URL, linkUrl,
                         EnhanceEccomerce.POSITION, banner.position
 //                        ,EnhanceEccomerce.CATEGORY, it.product.attributes.price
                 )

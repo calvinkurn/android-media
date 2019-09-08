@@ -12,12 +12,12 @@ class TopupBillsBanner(
         @SerializedName("id")
         @Expose
         val id: Int,
-        @SerializedName("filename")
-        @Expose
-        val imageFilename: String,
         @SerializedName("img_url")
         @Expose
         val imageUrl: String,
+        @SerializedName("link_url")
+        @Expose
+        val linkUrl: String,
         @SerializedName("title")
         @Expose
         val title: String,
@@ -39,8 +39,8 @@ class TopupBillsBanner(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
-        parcel.writeString(imageFilename)
         parcel.writeString(imageUrl)
+        parcel.writeString(linkUrl)
         parcel.writeString(title)
         parcel.writeString(promoCode)
         parcel.writeString(applinkUrl)

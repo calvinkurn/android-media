@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.utils.AnalyticUtils.Companion.getVisibleItems
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
@@ -196,11 +195,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             TopupBillsTrackImpressionItem(item, index)
         }
 
-        promo_banner.setPagerAdapter(BannerViewPagerAdapter(data.map { it.imageFilename }) {
+        promo_banner.setPromoList(data.map { it.imageUrl })
+        promo_banner.setOnPromoClickListener {
             val banner = data[it]
             voucherGameAnalytics.eventClickBanner(bannerTrackingList[it])
-            RouteManager.route(context, banner.applinkUrl)
-        })
+            RouteManager.route(context, banner.linkUrl) }
         promo_banner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(listOf(bannerTrackingList[it])) }
         promo_banner.setOnPromoAllClickListener { voucherGameAnalytics.eventClickViewAllBanner() }
     }
