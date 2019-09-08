@@ -144,8 +144,8 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> view?.showNormalToaster("Yes, berhasil bosq")
-                is Fail -> view?.showErrorToaster("Yah, gagal, sedih...")
+                is Success -> loadInitialData()
+                is Fail -> view?.showErrorToaster(getString(R.string.delete_chat_default_error_message))
             }
         })
 
@@ -321,25 +321,21 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
     }
 
     override fun chatItemDeleted(element: ItemChatListPojo) {
-        val deleteDialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        deleteDialog.let { dialog ->
-            with(dialog) {
-                setTitle(getString(R.string.topchat_chat_delete_title))
-                setDesc(getString(R.string.topchat_chat_delete_body))
-                setBtnOk(getString(R.string.topchat_chat_delete_cancel))
-                setOnOkClickListener {
-                    dismiss()
-                }
-
-                setBtnCancel(getString(R.string.topchat_chat_delete_confirm))
-                setOnCancelClickListener {
-                    val query = GraphqlHelper.loadRawString(resources, R.raw.query_chat_delete)
-                    chatItemListViewModel.chatMoveToTrash(element.msgId.toInt(), query)
-                    dialog.dismiss()
-                }
+        Dialog(activity, Dialog.Type.PROMINANCE).apply {
+            setTitle(getString(R.string.topchat_chat_delete_title))
+            setDesc(getString(R.string.topchat_chat_delete_body))
+            setBtnOk(getString(R.string.topchat_chat_delete_cancel))
+            setOnOkClickListener {
+                dismiss()
             }
+
+            setBtnCancel(getString(R.string.topchat_chat_delete_confirm))
+            setOnCancelClickListener {
+                chatItemListViewModel.chatMoveToTrash(element.msgId.toInt())
+                dismiss()
+            }
+            show()
         }
-        deleteDialog.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
