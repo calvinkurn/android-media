@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatlist.viewmodel
 import android.arch.core.executor.testing.InstantTaskExecutorRule
 import android.arch.lifecycle.Observer
 import com.google.gson.Gson
-import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -21,16 +20,17 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.*
+import org.mockito.ArgumentCaptor
+import org.mockito.Captor
 import org.mockito.Matchers.any
 import org.mockito.Matchers.eq
+import org.mockito.Mock
 import org.mockito.Mockito.*
+import org.mockito.MockitoAnnotations
 
 class ChatItemListViewModelTest {
 
     @get:Rule val rule = InstantTaskExecutorRule()
-
-    lateinit var viewModel: ChatItemListViewModel
 
     @Mock lateinit var graphqlRepository: GraphqlRepository
     @Mock lateinit var userSessionInterface: UserSessionInterface
@@ -39,6 +39,8 @@ class ChatItemListViewModelTest {
 
     @Mock lateinit var result: Observer<Result<ChatDelete>>
     @Captor lateinit var resultCaptor: ArgumentCaptor<Result<ChatDelete>>
+
+    private lateinit var viewModel: ChatItemListViewModel
 
     @ExperimentalCoroutinesApi
     @Before fun setUp() {
@@ -67,15 +69,15 @@ class ChatItemListViewModelTest {
         return DataTest(request, response)
     }
 
-    @Test fun `delete chat item by message id`() = runBlocking {
+    @Test fun `should return success for delete chat item by message id`() = runBlocking {
         //given
-        val (request, response) = givenData(MockDeleteChatList.chatMoveToTrash)
+        val (request, response) = givenData(MockDeleteChatList.failChatMoveToTrash)
 
         //when
         `when`(graphqlRepository.getReseponse(listOf(request))).thenReturn(response)
 
         viewModel.deleteChat.observeForever(result)
-        viewModel.chatMoveToTrash(1, MockDeleteChatList.chatMoveToTrashQuery)
+        viewModel.chatMoveToTrash(1)
 
         //then
         verify(result, atLeastOnce()).onChanged(resultCaptor.capture())
@@ -84,14 +86,14 @@ class ChatItemListViewModelTest {
         assert(allValueCaptors.size > 0)
     }
 
-    @Test fun `fail delete chat item`() = runBlocking {
+    @Test fun `should fail delete chat item`() = runBlocking {
         //given
         val (request, response) = givenData(MockDeleteChatList.failChatMoveToTrash)
 
         //when
         `when`(graphqlRepository.getReseponse(listOf(request))).thenReturn(response)
         viewModel.deleteChat.observeForever(result)
-        viewModel.chatMoveToTrash(1, MockDeleteChatList.chatMoveToTrashQuery)
+        viewModel.chatMoveToTrash(1)
 
         //then
         verify(result, atLeastOnce()).onChanged(resultCaptor.capture())
