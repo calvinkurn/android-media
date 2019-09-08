@@ -46,27 +46,7 @@ class ChatItemListViewModelTest {
     @Before fun setUp() {
         MockitoAnnotations.initMocks(this)
         viewModel = ChatItemListViewModel(graphqlRepository, usecase, rawQuery, Dispatchers.Unconfined)
-        `when`(userSessionInterface.userId).thenReturn("12345")
-    }
-
-    private fun givenData(json: String): DataTest {
-        val mockResponse = Gson().fromJson(json, ChatDeleteStatus::class.java)
-
-        val request = GraphqlRequest(
-                any(String::class.java),
-                eq(ChatDeleteStatus::class.java),
-                anyMapOf(String::class.java, Any::class.java))
-
-        val response = GraphqlResponse(
-                /* response success */
-                mapOf(ChatDeleteStatus::class.java to mockResponse),
-                /* response error */
-                mapOf(ChatDeleteStatus::class.java to listOf()),
-                /* cache handler */
-                false
-        )
-
-        return DataTest(request, response)
+        `when`(userSessionInterface.userId).thenReturn("1")
     }
 
     @Test fun `should return success for delete chat item by message id`() = runBlocking {
@@ -84,6 +64,7 @@ class ChatItemListViewModelTest {
         val allValueCaptors = resultCaptor.allValues
 
         assert(allValueCaptors.size > 0)
+        println(allValueCaptors)
     }
 
     @Test fun `should fail delete chat item`() = runBlocking {
@@ -100,6 +81,29 @@ class ChatItemListViewModelTest {
         val allValueCaptors = resultCaptor.allValues
 
         assert(allValueCaptors.size > 0)
+        println(allValueCaptors)
+    }
+
+    private fun givenMockResponse(json: String): ChatDeleteStatus {
+        return Gson().fromJson(json, ChatDeleteStatus::class.java)
+    }
+
+    private fun givenData(json: String): DataTest {
+        val request = GraphqlRequest(
+                any(String::class.java),
+                eq(ChatDeleteStatus::class.java),
+                anyMapOf(String::class.java, Any::class.java))
+
+        val response = GraphqlResponse(
+                /* response success */
+                mapOf(ChatDeleteStatus::class.java to givenMockResponse(json)),
+                /* response error */
+                mapOf(ChatDeleteStatus::class.java to listOf()),
+                /* cache handler */
+                false
+        )
+
+        return DataTest(request, response)
     }
 
 }

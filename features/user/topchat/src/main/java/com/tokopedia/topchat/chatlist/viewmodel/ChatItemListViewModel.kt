@@ -71,27 +71,26 @@ class ChatItemListViewModel @Inject constructor(
                     PARAM_TAB to tab
             )
 
-            chatListUseCase.setTypeClass(ChatListPojo::class.java)
-            chatListUseCase.setRequestParams(params)
-            chatListUseCase.setGraphqlQuery(query)
-            chatListUseCase.execute({ result ->
-                _mutateChatList.value = Success(result)
-            }, { error ->
-                error.printStackTrace()
-                _mutateChatList.value = Fail(error)
-            })
+            chatListUseCase.apply {
+                setTypeClass(ChatListPojo::class.java)
+                setRequestParams(params)
+                setGraphqlQuery(query)
+                execute({ result ->
+                    _mutateChatList.value = Success(result)
+                }, { error ->
+                    error.printStackTrace()
+                    _mutateChatList.value = Fail(error)
+                })
+            }
         }
     }
 
     override fun chatMoveToTrash(messageId: Int) {
         queries[QUERY_DELETE_CHAT_MESSAGE]?.let { query ->
-            //first, prepare a params
             val params = mapOf(PARAM_MESSAGE_ID to messageId)
 
             launchCatchError(block = {
-                //get response data
                 val data = withContext(dispatcher) {
-                    //make a request from query
                     val request = GraphqlRequest(query, ChatDeleteStatus::class.java, params)
                     repository.getReseponse(listOf(request))
                 }.getSuccessData<ChatDeleteStatus>()
