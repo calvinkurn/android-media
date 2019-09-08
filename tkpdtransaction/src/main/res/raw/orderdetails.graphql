@@ -155,7 +155,7 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
     additionalInfo {
       label
       value
-      label
+      imageUrl
       textColor
       backgroundColor
     }
