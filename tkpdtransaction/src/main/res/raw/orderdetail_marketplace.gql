@@ -196,9 +196,12 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
     additionalInfo {
       label
       value
-      label
+      imageUrl
       textColor
       backgroundColor
+      notes
+      urlDetail
+      urlText
     }
   }
 }
