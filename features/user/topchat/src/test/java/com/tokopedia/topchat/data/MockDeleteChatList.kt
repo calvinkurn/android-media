@@ -35,16 +35,4 @@ object MockDeleteChatList {
         }
     """.trimIndent()
 
-    val chatMoveToTrashQuery = """
-        mutation {
-         chatMoveToTrash(ids:[0]) {
-           list{
-             IsSuccess
-             DetailResponse
-             MsgID
-           }
-         }
-        }
-    """.trimIndent()
-
 }

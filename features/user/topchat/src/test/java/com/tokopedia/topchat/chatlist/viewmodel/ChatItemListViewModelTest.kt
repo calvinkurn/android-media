@@ -71,7 +71,7 @@ class ChatItemListViewModelTest {
 
     @Test fun `should return success for delete chat item by message id`() = runBlocking {
         //given
-        val (request, response) = givenData(MockDeleteChatList.failChatMoveToTrash)
+        val (request, response) = givenData(MockDeleteChatList.chatMoveToTrash)
 
         //when
         `when`(graphqlRepository.getReseponse(listOf(request))).thenReturn(response)
