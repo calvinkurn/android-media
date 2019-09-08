@@ -8,18 +8,23 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_ID
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_PAGE
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import kotlinx.coroutines.CoroutineDispatcher
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -29,13 +34,13 @@ import javax.inject.Inject
 
 interface ChatItemListContract {
     fun getChatListMessage(page: Int, filterIndex: Int, tab: String)
-    fun chatMoveToTrash(messageId: Int, query: String)
+    fun chatMoveToTrash(messageId: Int)
 }
 
 class ChatItemListViewModel @Inject constructor(
-        private val graphqlRepository: GraphqlRepository,
+        private val repository: GraphqlRepository,
         private val chatListUseCase: GraphqlUseCase<ChatListPojo>,
-        private val rawQueries: Map<String, String>,
+        private val queries: Map<String, String>,
         private val dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
@@ -58,58 +63,46 @@ class ChatItemListViewModel @Inject constructor(
         queryGetChatListMessage(page, arrayFilterParam[filterIndex], tab)
     }
 
-    override fun chatMoveToTrash(messageId: Int, query: String) {
-        //first, prepare a params
-        val params = mapOf(PARAM_MESSAGE_ID to messageId)
-
-        launchCatchError(block = {
-            //get response data
-            val data = withContext(dispatcher) {
-                //make a request from query
-                val request = GraphqlRequest(query, ChatDeleteStatus::class.java, params)
-                graphqlRepository.getReseponse(listOf(request))
-            }.getSuccessData<ChatDeleteStatus>()
-
-            data.chatMoveToTrash?.let {
-                _deleteChat.postValue(Success(it.list.first()))
-            }
-        }) {
-            _deleteChat.postValue(Fail(it))
-        }
-    }
-
     private fun queryGetChatListMessage(page: Int, filter: String, tab: String) {
-        rawQueries[ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE]?.let { query ->
+        queries[QUERY_CHAT_LIST_MESSAGE]?.let { query ->
             val params = mapOf(
-                    ChatListQueriesConstant.PARAM_PAGE to page,
-                    ChatListQueriesConstant.PARAM_FILTER to filter,
-                    ChatListQueriesConstant.PARAM_TAB to tab
+                    PARAM_PAGE to page,
+                    PARAM_FILTER to filter,
+                    PARAM_TAB to tab
             )
 
             chatListUseCase.setTypeClass(ChatListPojo::class.java)
             chatListUseCase.setRequestParams(params)
             chatListUseCase.setGraphqlQuery(query)
-            chatListUseCase.execute(
-                    onSuccessGetChatListMessage(page),
-                    onErrorGetChatListMessage()
-            )
+            chatListUseCase.execute({ result ->
+                _mutateChatList.value = Success(result)
+            }, { error ->
+                error.printStackTrace()
+                _mutateChatList.value = Fail(error)
+            })
         }
     }
 
-    private fun onErrorGetChatListMessage(): (Throwable) -> Unit {
-        return {
-            it.printStackTrace()
-            _mutateChatList.value = Fail(it)
+    override fun chatMoveToTrash(messageId: Int) {
+        queries[QUERY_DELETE_CHAT_MESSAGE]?.let { query ->
+            //first, prepare a params
+            val params = mapOf(PARAM_MESSAGE_ID to messageId)
+
+            launchCatchError(block = {
+                //get response data
+                val data = withContext(dispatcher) {
+                    //make a request from query
+                    val request = GraphqlRequest(query, ChatDeleteStatus::class.java, params)
+                    repository.getReseponse(listOf(request))
+                }.getSuccessData<ChatDeleteStatus>()
+
+                data.chatMoveToTrash?.let {
+                    _deleteChat.value = Success(it.list.first())
+                }
+            }) {
+                _deleteChat.value = Fail(it)
+            }
         }
     }
 
-    private fun onSuccessGetChatListMessage(page: Int): (ChatListPojo) -> Unit {
-        return {
-            _mutateChatList.value = Success(it)
-        }
-    }
-
-    companion object {
-        const val PARAM_MESSAGE_ID = "messageId"
-    }
 }
