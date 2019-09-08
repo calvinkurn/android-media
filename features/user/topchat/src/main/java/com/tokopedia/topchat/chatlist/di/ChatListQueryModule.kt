@@ -28,6 +28,12 @@ class ChatListQueryModule {
     fun provideRawQueryGetChatListMessage(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_chat_list_message)
 
+    @ChatListScope
+    @Provides
+    @IntoMap
+    @StringKey(ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE)
+    fun provideRawQueryDeleteChatListMessage(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_delete)
 
     @Provides
     fun provideGetChatListMessageInfoUseCase(graphqlRepository: GraphqlRepository)
