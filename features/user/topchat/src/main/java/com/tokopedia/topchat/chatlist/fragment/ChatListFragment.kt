@@ -325,18 +325,20 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
     override fun chatItemDeleted(element: ItemChatListPojo) {
         val deleteDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         deleteDialog.let { dialog ->
-            dialog.setTitle(getString(R.string.topchat_chat_delete_title))
-            dialog.setDesc(getString(R.string.topchat_chat_delete_body))
-            dialog.setBtnOk(getString(R.string.topchat_chat_delete_cancel))
-            dialog.setOnOkClickListener {
-                dialog.dismiss()
-            }
+            with(dialog) {
+                setTitle(getString(R.string.topchat_chat_delete_title))
+                setDesc(getString(R.string.topchat_chat_delete_body))
+                setBtnOk(getString(R.string.topchat_chat_delete_cancel))
+                setOnOkClickListener {
+                    dismiss()
+                }
 
-            dialog.setBtnCancel(getString(R.string.topchat_chat_delete_confirm))
-            dialog.setOnCancelClickListener {
-                val query = GraphqlHelper.loadRawString(resources, R.raw.query_chat_delete)
-                chatItemListViewModel.chatMoveToTrash(element.msgId.toInt(), query)
-                dialog.dismiss()
+                setBtnCancel(getString(R.string.topchat_chat_delete_confirm))
+                setOnCancelClickListener {
+                    val query = GraphqlHelper.loadRawString(resources, R.raw.query_chat_delete)
+                    chatItemListViewModel.chatMoveToTrash(element.msgId.toInt(), query)
+                    dialog.dismiss()
+                }
             }
         }
         deleteDialog.show()
