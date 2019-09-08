@@ -16,6 +16,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
  */
 class RecommendationCarouselDataModel(
         val title: String,
+        val appLinkSeeMore: String,
         val products: List<RecommendationCarouselItemDataModel>,
         val listener: RecommendationListener
 ) : HomeRecommendationDataModel {
