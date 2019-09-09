@@ -158,7 +158,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             }
         }
         recycler_view.layoutManager = layoutManager
-        recycler_view.addItemDecoration(VoucherGameProductDecorator(ITEM_DECORATOR_SIZE, resources))
+        while (recycler_view.itemDecorationCount > 0) recycler_view.removeItemDecorationAt(0)
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -312,18 +312,23 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         if (dataCollection.isEmpty()) adapter.showEmpty()
         else {
             val listData = mutableListOf<Visitable<*>>()
+            val decorator = VoucherGameProductDecorator(ITEM_DECORATOR_SIZE, resources)
             val trackingList = mutableListOf<VoucherGameProduct>()
-            for (productList in dataCollection) {
+
+            for ((index, productList) in dataCollection.withIndex()) {
                 // Create new instance to prevent adding copy of products
                 // to adapter data (set products to empty list)
                 val categoryItem = VoucherGameProductData.DataCollection(productList.name, listOf())
                 listData.add(categoryItem)
+                // Add category item index for item decorator
+                decorator.addCategoryViewIndex(index)
 
                 if (productList.products.isNotEmpty())  {
                     listData.addAll(productList.products)
                     trackingList.addAll(productList.products)
                 }
             }
+            recycler_view.addItemDecoration(decorator)
 
             productTrackingList = trackingList.mapIndexed { index, item ->
                 TopupBillsTrackImpressionItem(item, index)

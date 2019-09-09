@@ -34,7 +34,7 @@ class VoucherGameBottomSheets: BottomSheets() {
             infoDescription = findViewById(R.id.info_desc)
         }
 
-        if (imageUrl.isNotEmpty()) {
+        if (imageUrl.isEmpty()) {
             imageContainer.visibility = View.GONE
         } else {
             imageContainer.visibility = View.VISIBLE
