@@ -329,6 +329,7 @@ public interface ApplinkConst {
     }
 
     interface Play {
+        String NOTIFICATION_GROUP_CHAT = "notification_group_chat";
         String PARAM_HAS_TITLEBAR = "titlebar";
         String PARAM_URL = "url";
     }
@@ -352,6 +353,8 @@ public interface ApplinkConst {
         String EXTRA_NEED_REFRESH = "extra_need_refresh";
         String TRACKER_ATTRIBUTION = "tracker_attribution";
         String TRACKER_LIST_NAME = "tracker_list_name";
+        String EXTRA_REFERENCE = "reference";
+
         String EXTRA_CATEGORY_ID = "category_id";
         String EXTRA_CATEGORY_NAME = "category_name";
         String EXTRA_CART_ID = "cart_id";

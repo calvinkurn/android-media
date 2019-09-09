@@ -88,6 +88,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         const val CLICK_EMPTY_CTA = "cta byme"
         const val IMPRESSION_OTHER_POST = "impression post lainnya"
         const val CLICK_OTHER_POST = "click post lainnya"
+        const val CLICK_READ_MORE = "click read more"
     }
 
     object Label {

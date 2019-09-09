@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.appsflyer.AFInAppEventParameterName
 import com.appsflyer.AFInAppEventType
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.track.TrackApp
@@ -13,6 +14,7 @@ class NormalCheckoutTracking {
         const val VIEW_PDP = "viewPDP"
         const val CLICK_PDP = "clickPDP"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
+        const val CHAT_DETAIL_PAGE = "chat detail"
         const val HARGA_FINAL_TRADEIN = "harga final trade in"
         const val SELECT_COLOR_VARIANT = "select color on variants page"
         const val SELECT_SIZE_VARIANT = "select size on variants page"
@@ -48,12 +50,14 @@ class NormalCheckoutTracking {
                                      cartId: String? = NONE_OTHER,
                                      trackerAttribution: String?,
                                      trackerListName: String?,
-                                     multiOrigin: Boolean) {
+                                     multiOrigin: Boolean,
+                                     reference: String = ""
+    ) {
         eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
             "click - tambah ke keranjang on variants page",
             selectedVariantId, selectedProductInfo,
             qty, shopId, shopType, shopName, cartId,
-            trackerAttribution, trackerListName, multiOrigin)
+            trackerAttribution, trackerListName, multiOrigin, reference)
     }
 
     fun eventClickBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
@@ -103,7 +107,9 @@ class NormalCheckoutTracking {
                                                   cartId: String? = NONE_OTHER,
                                                   trackerAttribution: String?,
                                                   trackerListName: String?,
-                                                  multiOrigin: Boolean) {
+                                                  multiOrigin: Boolean,
+                                                  reference: String = ""
+                                                  ) {
         if (originalProductInfoAndVariant == null) {
             isTrackTradeIn = false
             return
@@ -114,8 +120,11 @@ class NormalCheckoutTracking {
         val category: String = if (isTrackTradeIn) {
             productVariantString = ""
             HARGA_FINAL_TRADEIN
-        } else
+        } else if (reference == ApplinkConst.TOPCHAT) {
+            CHAT_DETAIL_PAGE
+        } else {
             PRODUCT_DETAIL_PAGE
+        }
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             mutableMapOf<String, Any>(
                 "event" to "addToCart",
