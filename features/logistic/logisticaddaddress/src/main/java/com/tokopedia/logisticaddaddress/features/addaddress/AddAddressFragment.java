@@ -122,7 +122,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private TextView subDistrictError;
     private ProgressBar mProgressBar;
 
-    private List<String> zipCodes;
+    private List<String> zipCodes = new ArrayList<>();
     private Token token;
     private Destination address;
 
@@ -252,7 +252,7 @@ public class AddAddressFragment extends BaseDaggerFragment
                         this.address.setCityName(address.getCityName());
                         this.address.setDistrictName(address.getDistrictName());
 
-                        zipCodes = new ArrayList<>(address.getZipCodes());
+                        if(address.getZipCodes() != null) zipCodes = new ArrayList<>(address.getZipCodes());
                         initializeZipCodes();
                     }
                 }
