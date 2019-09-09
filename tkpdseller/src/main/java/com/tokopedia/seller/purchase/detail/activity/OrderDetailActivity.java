@@ -743,13 +743,16 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onRejectShipment(OrderDetailData data) {
-        if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
-            CancelShipmentFragment cancelShipmentFragment = CancelShipmentFragment
-                    .createFragment(data.getOrderId());
-            getFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
-                    .add(R.id.main_view, cancelShipmentFragment, VALIDATION_FRAGMENT_TAG)
-                    .commit();
+        if (data.isRequestCancel()) presenter.cancelShipping(this, data.getOrderId(), "");
+        else {
+            if (getFragmentManager().findFragmentByTag(VALIDATION_FRAGMENT_TAG) == null) {
+                CancelShipmentFragment cancelShipmentFragment = CancelShipmentFragment
+                        .createFragment(data.getOrderId());
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.animator.enter_bottom, R.animator.enter_bottom)
+                        .add(R.id.main_view, cancelShipmentFragment, VALIDATION_FRAGMENT_TAG)
+                        .commit();
+            }
         }
     }
 
