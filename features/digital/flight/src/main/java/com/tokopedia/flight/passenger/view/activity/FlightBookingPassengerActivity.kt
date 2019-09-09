@@ -5,11 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.app.Fragment
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
+import com.tokopedia.flight.common.view.BaseFlightActivity
 import com.tokopedia.flight.passenger.di.DaggerFlightPassengerComponent
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
 import com.tokopedia.flight.passenger.view.fragment.FlightBookingPassengerFragment
@@ -19,7 +18,7 @@ import java.util.ArrayList
  * @author by jessica on 2019-09-04
  */
 
-class FlightBookingPassengerActivity: BaseSimpleActivity(), HasComponent<FlightPassengerComponent>,
+class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightPassengerComponent>,
         FlightBookingPassengerFragment.OnFragmentInteractionListener {
 
     var passengerModel: FlightBookingPassengerViewModel? = null
@@ -57,7 +56,7 @@ class FlightBookingPassengerActivity: BaseSimpleActivity(), HasComponent<FlightP
 
     override fun getComponent(): FlightPassengerComponent {
         return DaggerFlightPassengerComponent.builder()
-                .flightComponent(FlightComponentInstance.getFlightComponent(application))
+                .flightComponent(flightComponent)
                 .build()
     }
 

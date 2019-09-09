@@ -1,7 +1,6 @@
 package com.tokopedia.flight.passenger.di
 
 import com.tokopedia.flight.common.di.component.FlightComponent
-import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.passenger.view.fragment.FlightBookingPassengerFragment
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment
 import com.tokopedia.flight.passenger.view.fragment.FlightPassengerUpdateFragment
@@ -22,8 +21,6 @@ interface FlightPassengerComponent {
     fun inject(flightPassengerUpdateFragment: FlightPassengerUpdateFragment)
 
     fun inject(flightPassengerListFragment: FlightPassengerListFragment)
-
-    fun inject(flightBookingPassengerActivity: FlightBookingPassengerActivity)
 
     fun inject(flightBookingPassengerFragment: FlightBookingPassengerFragment)
 
