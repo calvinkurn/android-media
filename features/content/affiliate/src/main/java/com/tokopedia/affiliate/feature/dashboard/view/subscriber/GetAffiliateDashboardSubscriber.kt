@@ -40,7 +40,8 @@ class GetAffiliateDashboardSubscriber(
                 it.totalCommission,
                 it.profileView,
                 it.productClick,
-                it.productSold
+                it.productSold,
+                it.productCount
         )
     }
 }

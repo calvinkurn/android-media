@@ -16,13 +16,15 @@ public class DashboardHeaderViewModel implements Visitable<DashboardItemTypeFact
     private String seenCount;
     private String clickCount;
     private String buyCount;
+    private String productCount;
 
-    public DashboardHeaderViewModel(String totalSaldoAktif, String saldoString, String seenCount, String clickCount, String buyCount) {
+    public DashboardHeaderViewModel(String totalSaldoAktif, String saldoString, String seenCount, String clickCount, String buyCount, String productCount) {
         this.totalSaldoAktif = totalSaldoAktif;
         this.saldoString = saldoString;
         this.seenCount = seenCount;
         this.clickCount = clickCount;
         this.buyCount = buyCount;
+        this.productCount = productCount;
     }
 
     public String getTotalSaldoAktif() {
@@ -63,6 +65,14 @@ public class DashboardHeaderViewModel implements Visitable<DashboardItemTypeFact
 
     public void setBuyCount(String buyCount) {
         this.buyCount = buyCount;
+    }
+
+    public String getProductCount() {
+        return productCount;
+    }
+
+    public void setProductCount(String productCount) {
+        this.productCount = productCount;
     }
 
     @Override

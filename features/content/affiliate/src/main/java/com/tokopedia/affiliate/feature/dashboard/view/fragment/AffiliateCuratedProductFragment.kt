@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
@@ -23,6 +24,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateCuratedP
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateCuratedProductPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CuratedProductSortViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
+import com.tokopedia.affiliate.util.AffiliateHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.gone
@@ -115,7 +117,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     override fun loadData(page: Int) {
-        if (page == 0) resetState()
+        if (page == 1) resetState()
         presenter.loadProductBoughtByType(type, cursor, currentSort)
     }
 
@@ -155,6 +157,12 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         presenter.reloadSortOptions(sortAdapter.list as List<CuratedProductSortViewModel>, sortId)
     }
 
+    override fun showEmpty() {
+        AffiliateHelper.showEmptyState(context, view, R.drawable.ic_tokopedia_share_post, getString(R.string.af_curated_empty_title), getString(R.string.af_curated_empty_subtitle), getString(R.string.af_share_now)) {
+
+        }
+    }
+
     private fun openApplink(applink: String) {
         if (RouteManager.isSupportApplink(context, applink)) {
             RouteManager.route(context, applink)
@@ -190,7 +198,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     private fun onSaveSortOption() {
         currentSort = (sortAdapter.list as List<CuratedProductSortViewModel>).firstOrNull { it.isChecked }?.id ?: 1
         sortDialog.dismiss()
-        loadData(0)
+        loadInitialData()
     }
 
     private fun resetState() {

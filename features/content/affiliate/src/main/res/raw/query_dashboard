@@ -4,6 +4,7 @@ query GetDashboard() {
     productClick
     profileView
     productSold
+    productCount
   }
   affiliateCheck{
     isAffiliate

@@ -63,7 +63,8 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
                 pojo.getTotalCommission(),
                 pojo.getProfileView(),
                 pojo.getProductClick(),
-                pojo.getProductSold());
+                pojo.getProductSold(),
+                pojo.getProductCount());
     }
 
     public static List<DashboardItemViewModel> mappingListItem(Context context, Integer type, List<DashboardItemPojo> pojoList, List<DashboardSubtitlePojo> subtitleList) {

@@ -58,8 +58,9 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var tvAffiliateIncome: TextView
     private lateinit var tvTotalViewed: TextView
     private lateinit var tvTotalClicked: TextView
-    private lateinit var tlProductBought: TabLayout
-    private lateinit var vpProductBought: ViewPager
+    private lateinit var tvPostedProduct: TextView
+    private lateinit var tlCuratedProducts: TabLayout
+    private lateinit var vpCuratedProduct: ViewPager
     private lateinit var llStartDate: LinearLayout
     private lateinit var llEndDate: LinearLayout
     private lateinit var tvStartDate: TextView
@@ -121,8 +122,9 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             tvAffiliateIncome = findViewById(R.id.tv_affiliate_income)
             tvTotalViewed = findViewById(R.id.tv_total_viewed)
             tvTotalClicked = findViewById(R.id.tv_total_clicked)
-            tlProductBought = findViewById(R.id.tl_product_bought)
-            vpProductBought = findViewById(R.id.vp_product_bought)
+            tvPostedProduct = findViewById(R.id.tv_posted_product)
+            tlCuratedProducts = findViewById(R.id.tl_curated_products)
+            vpCuratedProduct = findViewById(R.id.vp_curated_product)
             llStartDate = findViewById(R.id.ll_start_date)
             llEndDate = findViewById(R.id.ll_end_date)
             tvStartDate = findViewById(R.id.tv_start_date)
@@ -136,13 +138,13 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         fragmentManager?.let {
             if (!::directFragmentCurated.isInitialized) directFragmentCurated = AffiliateCuratedProductFragment.newInstance(1)
             if (!::indirectFragmentCurated.isInitialized) indirectFragmentCurated = AffiliateCuratedProductFragment.newInstance(2)
-            vpProductBought.adapter = AffiliateCuratedProductPagerAdapter(it, listOf(
+            vpCuratedProduct.adapter = AffiliateCuratedProductPagerAdapter(it, listOf(
                     directFragmentCurated,
                     indirectFragmentCurated
             ))
         }
-        vpProductBought.layoutParams.height = getScreenHeight() / 2
-        tlProductBought.setupWithViewPager(vpProductBought)
+        vpCuratedProduct.layoutParams.height = getScreenHeight() / 2
+        tlCuratedProducts.setupWithViewPager(vpCuratedProduct)
         llStartDate.setOnClickListener { openCalendarPicker() }
         llEndDate.setOnClickListener { openCalendarPicker() }
 
@@ -155,6 +157,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         tvAffiliateIncome.text = MethodChecker.fromHtml(header.saldoString)
         tvTotalViewed.text = MethodChecker.fromHtml(header.seenCount)
         tvTotalClicked.text = MethodChecker.fromHtml(header.clickCount)
+        tvPostedProduct.text = MethodChecker.fromHtml(getString(R.string.posted_product, header.productCount))
     }
 
     override fun onErrorCheckAffiliate(error: String) {
@@ -290,8 +293,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     private fun onDateChanged() {
         presenter.loadDashboardDetail(startDate, endDate)
-        directFragmentCurated.loadData(0)
-        indirectFragmentCurated.loadData(0)
+        directFragmentCurated.loadData(1)
+        indirectFragmentCurated.loadData(1)
     }
 
     override fun onErrorGetDashboardItem(error: String) {
