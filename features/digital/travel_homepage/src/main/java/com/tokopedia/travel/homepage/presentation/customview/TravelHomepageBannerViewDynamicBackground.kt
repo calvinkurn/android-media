@@ -46,7 +46,7 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
     override fun init() {
         val view = View.inflate(context, R.layout.travel_homepage_card_banner_dynamic_background, this)
         view.findViewById<View>(R.id.overlay_round).background = MethodChecker.getDrawable(
-                view.context, R.drawable.background_banner_image_mask)
+                view.context, com.tokopedia.travel.homepage.R.drawable.travel_homepage_bg_banner_image_mask)
         bannerRecyclerView = view.findViewById(com.tokopedia.banner.R.id.banner_recyclerview)
         bannerIndicator = view.findViewById(com.tokopedia.banner.R.id.banner_indicator_container)
         bannerSeeAll = view.findViewById(com.tokopedia.banner.R.id.banner_see_all)

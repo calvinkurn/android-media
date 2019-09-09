@@ -43,6 +43,10 @@ class TravelHomepageBannerPagerAdapter(bannerImageUrls: List<String>,
         return BannerViewHolder(itemView)
     }
 
+    override fun getBannerImageId(): Int {
+        return R.id.image
+    }
+
     override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
         if (bannerImageUrls[position] != null && bannerImageUrls[position].isNotEmpty()) {
             holder.bannerImage.setOnClickListener(

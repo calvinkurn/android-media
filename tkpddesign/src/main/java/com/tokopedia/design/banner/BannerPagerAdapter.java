@@ -43,12 +43,16 @@ public class BannerPagerAdapter extends RecyclerView.Adapter<BannerPagerAdapter.
 
         public BannerViewHolder(View itemView) {
             super(itemView);
-            bannerImage = itemView.findViewById(R.id.image);
+            bannerImage = itemView.findViewById(getBannerImageId());
         }
 
         public ImageView getBannerImage() {
             return bannerImage;
         }
+    }
+
+    public int getBannerImageId() {
+        return R.id.image;
     }
 
     @Override
