@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.NpsConstant;
 import com.tokopedia.nps.R;
@@ -48,14 +49,20 @@ public class AppFeedbackThankYouBottomSheet extends BottomSheets {
             try {
                 ctx.startActivity(new Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(NpsConstant.Feedback.APPLINK_PLAYSTORE + NpsConstant.Feedback.PACKAGE_CONSUMER_APP)
+                        Uri.parse(NpsConstant.Feedback.APPLINK_PLAYSTORE + getAppType())
                 ));
             } catch (ActivityNotFoundException exception) {
                 ctx.startActivity(new Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(NpsConstant.Feedback.URL_PLAYSTORE + NpsConstant.Feedback.PACKAGE_CONSUMER_APP)
+                        Uri.parse(NpsConstant.Feedback.URL_PLAYSTORE + getAppType())
                 ));
             }
         }
+    }
+
+    private String getAppType() {
+        return GlobalConfig.isSellerApp()
+                ? GlobalConfig.PACKAGE_SELLER_APP
+                : GlobalConfig.PACKAGE_CONSUMER_APP;
     }
 }
