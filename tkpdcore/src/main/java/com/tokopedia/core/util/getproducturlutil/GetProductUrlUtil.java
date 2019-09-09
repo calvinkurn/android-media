@@ -11,6 +11,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.tkpd.library.ui.view.CustomSearchView;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customadapter.RetryDataBinder;
@@ -24,6 +25,8 @@ import com.tokopedia.core.util.getproducturlutil.interactor.GetProductUrlRetrofi
 import com.tokopedia.core.util.getproducturlutil.model.GetProductPass;
 
 import java.util.Map;
+
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
  * Created by Tkpd_Eka on 4/9/2015.
@@ -169,7 +172,7 @@ public class GetProductUrlUtil {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
-                Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+                Intent intent = RouteManager.getIntent(context, OPEN_SHOP);
                 context.startActivity(intent);
             }
         };

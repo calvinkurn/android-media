@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 
@@ -33,7 +34,7 @@ public class GetRecommendationUseCaseTest {
     @Before
     public void initData() {
         getRecommendationUseCase = new GetRecommendationUseCase(
-                context,
+                "",
                 graphqlUseCase,
                 userSessionInterface
         );
@@ -48,7 +49,9 @@ public class GetRecommendationUseCaseTest {
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE(),
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME()
+                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
+                any(),
+                any()
         );
         int requestParamsId = requestParams.getInt(GetRecommendationUseCase.Companion.getUSER_ID(),
                 dummyPageNumber);
@@ -64,7 +67,9 @@ public class GetRecommendationUseCaseTest {
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE(),
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME()
+                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
+                any(),
+                any()
         );
         int requestParamsPageNumber = requestParams.getInt(GetRecommendationUseCase.Companion.getPAGE_NUMBER(),
                 0);
@@ -82,7 +87,9 @@ public class GetRecommendationUseCaseTest {
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyXSource,
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME()
+                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
+                any(),
+                any()
         );
         String requestXSource = requestParams.getString(GetRecommendationUseCase.Companion.getX_SOURCE(),
                 "");
@@ -100,7 +107,9 @@ public class GetRecommendationUseCaseTest {
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyXSource,
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME()
+                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
+                any(),
+                any()
         );
         String requestXSource = requestParams.getString(GetRecommendationUseCase.Companion.getX_SOURCE(),
                 "");
@@ -119,7 +128,9 @@ public class GetRecommendationUseCaseTest {
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyXSource,
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME()
+                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
+                any(),
+                any()
         );
         String requestXDevice = requestParams.getString(GetRecommendationUseCase.Companion.getX_DEVICE(),
                 "");
@@ -138,7 +149,9 @@ public class GetRecommendationUseCaseTest {
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 GetRecommendationUseCase.Companion.getDEFAULT_VALUE_X_SOURCE(),
-                dummyPageName
+                dummyPageName,
+                any(),
+                any()
         );
         String requestPageName = requestParams.getString(GetRecommendationUseCase.Companion.getPAGE_NAME(),
                 "");
@@ -156,7 +169,9 @@ public class GetRecommendationUseCaseTest {
         RequestParams requestParams = getRecommendationUseCase.getRecomParams(
                 dummyPageNumber,
                 dummyPageName,
-                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME()
+                GetRecommendationUseCase.Companion.getDEFAULT_PAGE_NAME(),
+                any(),
+                any()
         );
         String requestPageName = requestParams.getString(GetRecommendationUseCase.Companion.getPAGE_NAME(),
                 "");

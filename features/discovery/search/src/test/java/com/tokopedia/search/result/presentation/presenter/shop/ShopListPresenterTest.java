@@ -1,11 +1,11 @@
 package com.tokopedia.search.result.presentation.presenter.shop;
 
 import com.tokopedia.discovery.common.Mapper;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.search.result.shop.domain.model.SearchShopModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.search.result.domain.usecase.TestErrorUseCase;
 import com.tokopedia.search.result.domain.usecase.TestUseCase;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel;
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSessionInterface;

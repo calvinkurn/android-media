@@ -38,5 +38,14 @@ mutation add_to_cart($productID: Int,
           is_trade_in
           message
         }
+        error_reporter {
+          eligible
+          texts {
+            submit_title
+            submit_description
+            submit_button
+            cancel_button
+          }
+        }
     }
 }

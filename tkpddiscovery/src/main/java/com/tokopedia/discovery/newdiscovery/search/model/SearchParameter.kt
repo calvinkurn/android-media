@@ -3,7 +3,7 @@ package com.tokopedia.discovery.newdiscovery.search.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.tkpd.library.utils.URLParser
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst
 
 class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
 
