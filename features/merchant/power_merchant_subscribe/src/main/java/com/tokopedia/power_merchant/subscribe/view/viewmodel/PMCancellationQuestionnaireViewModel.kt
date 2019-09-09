@@ -1,6 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.domain.interactor.DeactivatePowerMerchantUseCase
