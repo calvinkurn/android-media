@@ -48,7 +48,8 @@
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginStart="@dimen/dp_24"
         android:layout_marginEnd="@dimen/dp_24"
-        tools:text="@string/empty_filter_desc"/>
+        android:gravity="center"
+        tools:text="@string/empty_peluang_desc"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_cek_peluang"
@@ -58,9 +59,10 @@
         android:text="@string/btn_cek_peluang"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/desc_empty"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="@dimen/dp_24"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </android.support.constraint.ConstraintLayout>
