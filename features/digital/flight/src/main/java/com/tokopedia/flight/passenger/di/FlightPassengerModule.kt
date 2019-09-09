@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
  */
 
 @Module
-abstract class FlightPassengerModule {
+class FlightPassengerModule {
 
     @FlightPassengerScope
     @Provides
