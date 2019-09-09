@@ -3,9 +3,8 @@ package com.tokopedia.power_merchant.subscribe.domain.interactor
 import com.tokopedia.gm.common.constant.GMParamApiContant
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.gm.common.domain.interactor.GetShopStatusUseCase
-import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaireResponse
+import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaire
 import com.tokopedia.power_merchant.subscribe.domain.model.PMCancellationQuestionnaireDataUseCaseModel
-import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireData
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -25,7 +24,7 @@ class GetPMCancellationQuestionnaireDataUseCase @Inject constructor(
         }
     }
 
-    private fun getGoldCancellationQuestionnaire(): Observable<GoldCancellationsQuestionaireResponse> {
+    private fun getGoldCancellationQuestionnaire(): Observable<GoldCancellationsQuestionaire> {
         return getGoldCancellationsQuestionnaireUseCase.createObservable(
                 RequestParams.EMPTY
         ).subscribeOn(Schedulers.io())

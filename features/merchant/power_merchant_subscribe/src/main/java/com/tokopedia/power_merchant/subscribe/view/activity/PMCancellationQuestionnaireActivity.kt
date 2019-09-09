@@ -1,11 +1,11 @@
 package com.tokopedia.power_merchant.subscribe.view.activity
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.MenuItem
@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -30,6 +32,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.activity_pm_cancellation_questionnaire.*
 import javax.inject.Inject
 
 class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<BaseAppComponent?> {
@@ -42,15 +45,18 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
 
     private lateinit var viewModel: PMCancellationQuestionnaireViewModel
 
+    lateinit var pmCancellationQuestionnaireData: PMCancellationQuestionnaireData
+
     private val listFragment by lazy {
         ArrayList<Fragment>()
     }
 
-    val pmCancellationQuestionnaireStepperModel by lazy {
+    private val pmCancellationQuestionnaireStepperModel by lazy {
         stepperModel as PMCancellationQuestionnaireStepperModel
     }
 
     companion object {
+        const val QUESTIONNAIRE_DATA_EXTRA = "questionnaire_data_extra"
         fun newInstance(context: Context): Intent {
             return Intent(context, PMCancellationQuestionnaireActivity::class.java)
         }
@@ -60,31 +66,43 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
         return listFragment
     }
 
-    private fun generateFragment(data: PMCancellationQuestionnaireData) {
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_pm_cancellation_questionnaire
+    }
+
+    private fun generateFragment() {
         val formattedExpiredDate = DateFormatUtils.formatDate(
                 DateFormatUtils.FORMAT_YYYY_MM_DD,
                 DateFormatUtils.FORMAT_D_MMMM_YYYY,
-                data.expiredDate
+                pmCancellationQuestionnaireData.expiredDate
         )
-        data.listQuestion.forEachIndexed { position, questionModel ->
-            pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer.add(
-                    PMCancellationQuestionnaireAnswerModel(
-                            questionModel.question
-                    )
-            )
-            if (position == 0 && questionModel is PMCancellationQuestionnaireRateModel) {
+        pmCancellationQuestionnaireData.listQuestion.forEachIndexed { index, questionModel ->
+            if (index == 0 && questionModel is PMCancellationQuestionnaireRateModel) {
                 listFragment.add(PowerMerchantCancellationQuestionnaireIntroFragment.createInstance(
-                        position,
+                        index,
                         formattedExpiredDate,
                         questionModel
                 ))
+                if (isIndexNotExistsInListQuestionnaireAnswer(index)) {
+                    pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer.add(
+                            PMCancellationQuestionnaireAnswerModel(
+                                    questionModel.question
+                            )
+                    )
+                }
+
             } else if (questionModel is PMCancellationQuestionnaireMultipleOptionModel) {
                 listFragment.add(PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment.createInstance(
-                        position,
+                        index,
                         questionModel
                 ))
-            } else {
-                pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer.removeAt(position)
+                if (isIndexNotExistsInListQuestionnaireAnswer(index)) {
+                    pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer.add(
+                            PMCancellationQuestionnaireAnswerModel(
+                                    questionModel.question
+                            )
+                    )
+                }
             }
         }
         setMaxProgressStepper(listFragment.size.toFloat())
@@ -92,36 +110,84 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
         refreshCurrentProgressStepper()
     }
 
+    private fun isIndexNotExistsInListQuestionnaireAnswer(index: Int): Boolean {
+        return index >= pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer.size
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         initViewModel()
-        initStepperModel(savedInstanceState)
+        initModelFromSavedInstanceState(savedInstanceState)
         super.onCreate(savedInstanceState)
-        getPMCancellationQuestionnaireData()
+        if (pmCancellationQuestionnaireData.listQuestion.isEmpty())
+            getPMCancellationQuestionnaireData()
+        else
+            generateFragment()
         observePMCancellationQuestionnaireData()
+        observeIsSuccessUnsubscribe()
+    }
+
+    private fun observeIsSuccessUnsubscribe() {
+        viewModel.isSuccessUnsubscribe.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    handleIsSuccessUnsubscribeResult(it.data)
+                }
+                is Fail -> {
+                    hideProgressBarLoading()
+                    showToasterRequestError(it.throwable, View.OnClickListener {
+                        sendAnswer()
+                    })
+                }
+            }
+        })
+    }
+
+    private fun handleIsSuccessUnsubscribeResult(isSuccessUnsubscribe: Boolean) {
+        if (isSuccessUnsubscribe) {
+            setResult(Activity.RESULT_OK)
+            finish()
+        } else {
+            hideProgressBarLoading()
+            showToasterSuccessUnsubscribeReturnFalse()
+        }
     }
 
     private fun getPMCancellationQuestionnaireData() {
+        showProgressBarLoading()
         viewModel.getPMCancellationQuestionnaireData(userSessionInterface.shopId)
     }
 
-    private fun initStepperModel(data: Bundle?) {
+    private fun showProgressBarLoading() {
+        layout_stepper_container.hide()
+        progress_bar_loading.show()
+    }
+
+    private fun hideProgressBarLoading() {
+        layout_stepper_container.show()
+        progress_bar_loading.hide()
+    }
+
+    private fun initModelFromSavedInstanceState(data: Bundle?) {
         stepperModel = data?.let {
             data.getParcelable(STEPPER_MODEL_EXTRA) as PMCancellationQuestionnaireStepperModel
         } ?: PMCancellationQuestionnaireStepperModel()
+        pmCancellationQuestionnaireData = data?.let {
+            data.getParcelable(QUESTIONNAIRE_DATA_EXTRA) as PMCancellationQuestionnaireData
+        } ?: PMCancellationQuestionnaireData()
     }
 
     private fun observePMCancellationQuestionnaireData() {
         viewModel.pmCancellationQuestionnaireData.observe(this, Observer {
+            hideProgressBarLoading()
             when (it) {
                 is Success -> {
-                    Handler().postDelayed({
-                        generateFragment(it.data)
-                    }, 2000)
+                    pmCancellationQuestionnaireData = it.data
+                    generateFragment()
                 }
                 is Fail -> {
                     showToasterRequestError(it.throwable, View.OnClickListener {
-                        viewModel.getPMCancellationQuestionnaireData(userSessionInterface.shopId)
+                        getPMCancellationQuestionnaireData()
                     })
                 }
             }
@@ -132,7 +198,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
         Toaster.showErrorWithAction(
                 findViewById(android.R.id.content),
                 ErrorHandler.getErrorMessage(this, throwable),
-                Snackbar.LENGTH_LONG,
+                Snackbar.LENGTH_INDEFINITE,
                 getString(R.string.error_cancellation_tryagain),
                 onClickListener
         )
@@ -142,6 +208,16 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
         Toaster.showErrorWithAction(
                 findViewById(android.R.id.content),
                 getString(R.string.pm_cancellation_questionnaire_some_question_not_answered_label),
+                Snackbar.LENGTH_LONG,
+                getString(R.string.close),
+                View.OnClickListener {}
+        )
+    }
+
+    private fun showToasterSuccessUnsubscribeReturnFalse() {
+        Toaster.showErrorWithAction(
+                findViewById(android.R.id.content),
+                getString(R.string.default_request_error_unknown),
                 Snackbar.LENGTH_LONG,
                 getString(R.string.close),
                 View.OnClickListener {}
@@ -169,6 +245,8 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
+        outState.putParcelable(QUESTIONNAIRE_DATA_EXTRA, pmCancellationQuestionnaireData)
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -234,7 +312,8 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
     private fun isFirstPage() = currentPosition == 1
 
     private fun sendAnswer() {
-        viewModel.sendQuestionDataAndTurnOffAutoExtend(
+        showProgressBarLoading()
+        viewModel.sendQuestionAnswerDataAndTurnOffAutoExtend(
                 pmCancellationQuestionnaireStepperModel.listQuestionnaireAnswer
         )
     }

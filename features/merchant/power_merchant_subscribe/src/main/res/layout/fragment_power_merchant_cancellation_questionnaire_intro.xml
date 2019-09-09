@@ -4,15 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:fillViewport="true"
+    android:gravity="center"
     android:orientation="vertical"
     tools:context=".view.fragment.PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment">
+
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
-        android:layout_height="wrap_content">
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -20,23 +22,22 @@
             android:gravity="center_horizontal"
             android:orientation="vertical">
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/pm_label_cancellation_questionnaire_intro_title"
                 android:textColor="@color/clr_f531353b"
-                app:fontSize="title"
-                app:weight="medium" />
+                app:typographyType="heading_3" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_8"
                 android:gravity="center"
                 android:textColor="@color/clr_f531353b"
-                app:fontSize="micro"
+                app:typographyType="body_3"
                 tools:text="@string/pm_label_cancellation_questionnaire_intro_desc" />
 
             <View
@@ -45,15 +46,15 @@
                 android:layout_marginTop="@dimen/dp_32"
                 android:background="#e5e7e9" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_question"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_24"
                 android:gravity="center"
                 android:text="@string/pm_label_cancellation_questionnaire_intro_rating_title"
                 android:textColor="@color/clr_f531353b"
-                app:fontSize="title"
-                app:weight="medium" />
+                app:typographyType="heading_4" />
 
             <RatingBar
                 android:id="@+id/questionnaire_rating"
@@ -66,16 +67,14 @@
                 android:rating="0"
                 tools:rating="1" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_24"
                 android:gravity="center"
                 android:textColor="@color/clr_f531353b"
-                app:fontSize="small"
-                app:weight="medium"
-                android:layout_marginBottom="@dimen/dp_25"
+                app:typographyType="heading_5"
                 tools:text="@string/pm_cancellation_questionnaire_intro_rating_1_star" />
 
         </LinearLayout>

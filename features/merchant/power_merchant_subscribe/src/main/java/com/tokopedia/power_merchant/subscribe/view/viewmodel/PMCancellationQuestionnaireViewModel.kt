@@ -4,7 +4,7 @@ import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
 import com.tokopedia.gm.common.domain.interactor.DeactivatePowerMerchantUseCase
-import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaireResponse
+import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaire
 import com.tokopedia.power_merchant.subscribe.data.model.Question
 import com.tokopedia.power_merchant.subscribe.domain.interactor.GetPMCancellationQuestionnaireDataUseCase
 import com.tokopedia.power_merchant.subscribe.domain.model.PMCancellationQuestionnaireDataUseCaseModel
@@ -30,6 +30,10 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
 
     val pmCancellationQuestionnaireData by lazy {
         MutableLiveData<Result<PMCancellationQuestionnaireData>>()
+    }
+
+    val isSuccessUnsubscribe by lazy {
+        MutableLiveData<Result<Boolean>>()
     }
 
     fun getPMCancellationQuestionnaireData(shopId: String) {
@@ -58,10 +62,10 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
     }
 
     private fun generateQuestionsData(
-            goldCancellationQuestionnaire: GoldCancellationsQuestionaireResponse
+            goldCancellationQuestionnaire: GoldCancellationsQuestionaire
     ): MutableList<PMCancellationQuestionnaireQuestionModel> {
         val questionsData = mutableListOf<PMCancellationQuestionnaireQuestionModel>()
-        for (questionData in goldCancellationQuestionnaire.data.questionList) {
+        for (questionData in goldCancellationQuestionnaire.result.data.questionList) {
             when (questionData.questionType) {
                 TYPE_RATE -> {
                     questionsData.add(createRateQuestion(questionData))
@@ -97,20 +101,21 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
         )
     }
 
-    fun sendQuestionDataAndTurnOffAutoExtend(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>) {
+    fun sendQuestionAnswerDataAndTurnOffAutoExtend(
+            questionData: MutableList<PMCancellationQuestionnaireAnswerModel>
+    ) {
         deactivationPowerMerchant.execute(
                 DeactivatePowerMerchantUseCase.createRequestParam(questionData),
                 object : Subscriber<Boolean>() {
-                    override fun onNext(t: Boolean?) {
-                        val a = 20
-
+                    override fun onNext(successUnsubscribe: Boolean) {
+                        isSuccessUnsubscribe.value = Success(successUnsubscribe)
                     }
 
                     override fun onCompleted() {
                     }
 
-                    override fun onError(e: Throwable?) {
-                        val a = 20
+                    override fun onError(e: Throwable) {
+                        isSuccessUnsubscribe.value = Fail(e)
                     }
                 }
         )

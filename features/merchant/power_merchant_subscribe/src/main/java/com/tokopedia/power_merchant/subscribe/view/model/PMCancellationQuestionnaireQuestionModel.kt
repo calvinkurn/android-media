@@ -4,13 +4,13 @@ import android.os.Parcel
 import android.os.Parcelable
 
 abstract class PMCancellationQuestionnaireQuestionModel(
-        var type : String,
-        var question: String
+        var type : String = "",
+        var question: String = ""
 ): Parcelable{
 
     companion object{
         const val TYPE_RATE = "rate"
-        const val TYPE_MULTIPLE_OPTION = "multi_option"
+        const val TYPE_MULTIPLE_OPTION = "multi_answer_question"
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

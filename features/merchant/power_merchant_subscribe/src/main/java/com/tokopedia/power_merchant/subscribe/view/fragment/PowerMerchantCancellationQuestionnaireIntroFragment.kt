@@ -1,7 +1,12 @@
 package com.tokopedia.power_merchant.subscribe.view.fragment
 
 
+
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,15 +28,19 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
     private var stepperModel: PMCancellationQuestionnaireStepperModel? = null
     private var deactivateDate = ""
     private var position: Int = -1
+    private var pmCancellationQuestionnaireRateModel: PMCancellationQuestionnaireRateModel? = null
 
     companion object {
         private const val EXTRA_POSITION = "position"
         private const val EXTRA_DEACTIVATE_DATE = "deactivate_date"
-        fun createInstance(position: Int,deactivateDate: String, pmCancellationQuestionnaireRateModel: PMCancellationQuestionnaireRateModel): PowerMerchantCancellationQuestionnaireIntroFragment {
+        private const val EXTRA_RATE_MODEL = "rate_model"
+
+        fun createInstance(position: Int, deactivateDate: String, pmCancellationQuestionnaireRateModel: PMCancellationQuestionnaireRateModel): PowerMerchantCancellationQuestionnaireIntroFragment {
             val fragment = PowerMerchantCancellationQuestionnaireIntroFragment()
             val bundle = Bundle()
             bundle.putInt(EXTRA_POSITION, position)
-            bundle.putString(EXTRA_DEACTIVATE_DATE,deactivateDate)
+            bundle.putString(EXTRA_DEACTIVATE_DATE, deactivateDate)
+            bundle.putParcelable(EXTRA_RATE_MODEL,pmCancellationQuestionnaireRateModel)
             fragment.arguments = bundle
             return fragment
         }
@@ -61,9 +70,9 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
 
     private fun populateViewBasedOnModelData() {
         stepperModel?.let {
-            if(it.listQuestionnaireAnswer[position].answers.isEmpty()){
+            if (it.listQuestionnaireAnswer[position].answers.isEmpty()) {
                 questionnaire_rating.rating = 0f
-            }else{
+            } else {
                 questionnaire_rating.rating = it.listQuestionnaireAnswer[position].answers[0].toFloatOrZero()
             }
         }
@@ -73,7 +82,8 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
         arguments?.let {
             position = it.getInt(EXTRA_POSITION)
             stepperModel = it.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
-            deactivateDate = it.getString(EXTRA_DEACTIVATE_DATE,"")
+            deactivateDate = it.getString(EXTRA_DEACTIVATE_DATE, "")
+            pmCancellationQuestionnaireRateModel = it.getParcelable(EXTRA_RATE_MODEL)
         }
     }
 
@@ -85,27 +95,45 @@ class PowerMerchantCancellationQuestionnaireIntroFragment : BaseDaggerFragment()
                 getString(R.string.label_next)
             }
             button_next.setOnClickListener {
-                stepperModel?.let{
+                stepperModel?.let {
                     parentActivity.goToNextPage(it)
                 }
             }
             button_back.setOnClickListener {
-                    parentActivity.goToPreviousPage()
+                parentActivity.goToPreviousPage()
             }
-            tv_description.text = getString(
+            val description = getString(
                     R.string.pm_label_cancellation_questionnaire_intro_desc,
                     deactivateDate
             )
+            val spannedDescription = spanBoldText(description, deactivateDate)
+            tv_description.text = spannedDescription
+            tv_question.text = pmCancellationQuestionnaireRateModel?.question
             questionnaire_rating.setOnRatingBarChangeListener { _, rating, _ ->
-                stepperModel?.let{
-                    if(it.listQuestionnaireAnswer[position].answers.isEmpty()){
-                        it.listQuestionnaireAnswer[position].answers.add(rating.toString())
-                    }else{
-                        it.listQuestionnaireAnswer[position].answers[0] = rating.toString()
+                stepperModel?.let {
+                    if (it.listQuestionnaireAnswer[position].answers.isEmpty()) {
+                        it.listQuestionnaireAnswer[position].answers.add(rating.toInt().toString())
+                    } else {
+                        it.listQuestionnaireAnswer[position].answers[0] = rating.toInt().toString()
                     }
                     mapRatingToTextView(rating.toInt())
                 }
             }
+        }
+    }
+
+    private fun spanBoldText(stringSource: String, stringToBeSpanned: String): CharSequence {
+        return SpannableString(stringSource).apply {
+            val startIndex = stringSource.indexOf(stringToBeSpanned)
+            val endIndex = startIndex + stringToBeSpanned.length
+            if (startIndex == -1)
+                return stringSource
+            setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
         }
     }
 

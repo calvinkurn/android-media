@@ -3,7 +3,13 @@ package com.tokopedia.power_merchant.subscribe.data.model
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.data.model.response.Header
 
-data class GoldCancellationsQuestionaireResponse(
+
+data class GoldCancellationsQuestionaire(
+        @SerializedName("goldCancellationsQuestionaire")
+        val result: QuestionnaireData
+)
+
+data class QuestionnaireData(
         @SerializedName("header")
         val header: Header,
         @SerializedName("data")

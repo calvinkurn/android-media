@@ -18,14 +18,14 @@ class DeactivatePowerMerchantUseCase @Inject constructor(private val graphqlUseC
                                                          @Named(RAW_DEACTIVATION) private val rawQuery: String)
     : UseCase<Boolean>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<Boolean> {
+    override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
 
-        val graphqlRequest = GraphqlRequest(rawQuery, GoldDeactivationSubscription::class.java)
+        val graphqlRequest = GraphqlRequest(rawQuery, GoldDeactivationSubscription::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase.createObservable(requestParams).map {
-            val data: GoldDeactivationSubscription? = it.getData(String::class.java)
+            val data: GoldDeactivationSubscription? = it.getData(GoldDeactivationSubscription::class.java)
             val error: List<GraphqlError> = it.getError(GraphqlError::class.java) ?: listOf()
 
             if (data == null) {
@@ -38,10 +38,11 @@ class DeactivatePowerMerchantUseCase @Inject constructor(private val graphqlUseC
         }
     }
 
-    companion object{
-        fun createRequestParam(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>): RequestParams{
+    companion object {
+        private const val QUEST_KEY = "quest"
+        fun createRequestParam(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>): RequestParams {
             return RequestParams.create().apply {
-                putObject("quest", questionData)
+                putObject(QUEST_KEY, questionData)
             }
         }
     }
