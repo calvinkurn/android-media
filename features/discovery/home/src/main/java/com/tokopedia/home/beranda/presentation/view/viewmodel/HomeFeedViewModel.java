@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.home.beranda.domain.gql.feed.Badge;
 import com.tokopedia.home.beranda.domain.gql.feed.Label;
+import com.tokopedia.home.beranda.domain.gql.feed.LabelGroup;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory;
 import com.tokopedia.kotlin.model.ImpressHolder;
 
@@ -38,6 +39,7 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
     private int priceNumber;
     private boolean isTopAds;
     private List<Label> labels;
+    private List<LabelGroup> labelGroups;
     private List<Badge> badges;
     private String location;
     private String wishlistUrl;
@@ -59,6 +61,7 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
                              boolean isTopAds,
                              int position,
                              List<Label> labels,
+                             List<LabelGroup> labelGroups,
                              List<Badge> badges,
                              String location,
                              String wishlistUrl,
@@ -83,6 +86,7 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
         this.location = location;
         this.wishlistUrl = wishlistUrl;
         this.isWishList = isWishList;
+        this.labelGroups = labelGroups;
     }
 
     public String getProductId() {
@@ -163,6 +167,10 @@ public class HomeFeedViewModel extends ImpressHolder implements Visitable<HomeFe
 
     public List<Badge> getBadges() {
         return badges;
+    }
+
+    public List<LabelGroup> getLabelGroups() {
+        return labelGroups;
     }
 
     public String getLocation() {
