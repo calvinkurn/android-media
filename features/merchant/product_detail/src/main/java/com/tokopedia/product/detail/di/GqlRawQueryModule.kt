@@ -199,6 +199,13 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_CATALOG)
+    fun provideProductCategory(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_catalog)
+  
+    @ProductDetailScope
+    @Provides
     @Named(SubmitHelpTicketUseCase.QUERY_NAME)
     fun provideSubmitHelpTicket(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, com.tokopedia.transaction.common.R.raw.submit_help_ticket)
