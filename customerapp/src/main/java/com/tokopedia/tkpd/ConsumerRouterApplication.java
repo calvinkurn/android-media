@@ -1924,16 +1924,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return WithdrawActivity.getCallingIntent(context, isSeller);
     }
 
-    @Override
-    public Fragment getChannelFragment(Bundle bundle) {
-        return ChannelFragment.createInstance();
-    }
-
-    @Override
-    public String getChannelFragmentTag() {
-        return ChannelFragment.class.getSimpleName();
-    }
-
     public Intent getInboxChannelsIntent(Context context) {
         return InboxChatActivity.getChannelCallingIntent(context);
     }
