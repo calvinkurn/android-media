@@ -64,6 +64,14 @@ class NotificationUpdateItemViewModel(
         return 0
     }
 
+    fun getAtcProduct(): ProductData? {
+        var product: ProductData? = null
+        if (products.isNotEmpty()) {
+            product = products[0]
+        }
+        return product
+    }
+
     companion object {
 
         var BUYER_TYPE = 1
