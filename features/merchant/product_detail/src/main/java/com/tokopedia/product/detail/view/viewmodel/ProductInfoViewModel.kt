@@ -380,7 +380,6 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
             val affiliateRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_PRODUCT_AFFILIATE],
                     TopAdsPdpAffiliateResponse::class.java, affilateParams)
-
             val cacheStrategy = GraphqlCacheStrategy.Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
             try {
                 val response = graphqlRepository.getReseponse(listOf(isWishlistedRequest, getCheckoutTypeRequest,
@@ -450,6 +449,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)?.data?.data
                 ratesEstModel?.texts?.shopCity = ratesEstModel?.shop?.cityName ?: ""
                 productInfoP3.rateEstSummarizeText = ratesEstModel?.texts
+                productInfoP3.ratesModel = ratesEstModel?.rates
             }
 
 

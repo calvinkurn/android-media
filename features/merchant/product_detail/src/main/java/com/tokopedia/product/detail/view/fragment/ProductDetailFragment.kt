@@ -1215,12 +1215,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         userCod = productInfoP3.userCod
         if (shouldShowCod && shopCod && productInfoP3.userCod) label_cod.visible() else label_cod.gone()
         headerView.renderCod(shouldShowCod && shopCod && productInfoP3.userCod)
-        productInfoP3.rateEstSummarizeText?.let {
-            partialVariantAndRateEstView.renderRateEstimation(it) {
-                productDetailTracking.eventShippingRateEstimationClicked()
-                gotoRateEstimation(false)
-            }
-        }
     }
 
     private fun renderAffiliate(pdpAffiliate: TopAdsPdpAffiliateResponse.TopAdsPdpAffiliate.Data.PdpAffiliate) {
@@ -1262,24 +1256,46 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun goToCourier(
-            productId: String,
-            shipment: List<ShopShipment>,
-            bbInfos: List<BBInfo>
-    ) {
-        activity?.let {
-            startActivity(CourierActivity.createIntent(it, productId, shipment, bbInfos))
+    private fun onShipmentClicked() {
+        productDetailTracking.eventShippingClicked()
+        if (productInfoViewModel.isUserSessionActive()) {
+            val productP3value = productInfoViewModel.productInfoP3resp.value
+            if (!productP3value?.ratesModel?.services.isNullOrEmpty()) {
+                gotoRateEstimation()
+            } else {
+                goToCourier()
+            }
+        } else {
+            goToCourier()
         }
     }
 
-    private fun gotoRateEstimation(forDeliveryInfo: Boolean) {
-        if (productInfo == null && shopInfo == null) return
+    private fun goToCourier() {
         activity?.let {
-            startActivity(RatesEstimationDetailActivity.createIntent(it,
-                    shopInfo!!.shopCore.domain, productInfo!!.basic.weight,
-                    productInfo!!.basic.weightUnit,
-                    if (productInfoViewModel.multiOrigin.isFulfillment)
-                        productInfoViewModel.multiOrigin.origin else null, forDeliveryInfo))
+            if (productInfo != null && shopInfo != null) {
+                startActivity(CourierActivity.createIntent(it,
+                        productInfo?.basic?.id?.toString() ?: "",
+                        shopInfo?.shipments ?: listOf(),
+                        shopInfo?.bbInfo ?: listOf()
+                ))
+            }
+        }
+    }
+
+    private fun gotoRateEstimation() {
+        productInfo?.let{ productInfo ->
+            shopInfo?.let{ shopInfo ->
+                context?.let{ context ->
+                    startActivity(RatesEstimationDetailActivity.createIntent(
+                            context,
+                            shopInfo.shopCore.domain,
+                            productInfo.basic.weight,
+                            productInfo.basic.weightUnit,
+                            if (productInfoViewModel.multiOrigin.isFulfillment)
+                                productInfoViewModel.multiOrigin.origin else null
+                    ))
+                }
+            }
         }
     }
 
@@ -1300,19 +1316,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
-                val userSession = UserSession(it)
-                productStatsView.renderClickShipping(it) {
-                    productDetailTracking.eventShippingClicked()
-                    if (userSession.isLoggedIn) {
-                        gotoRateEstimation(true)
-                    } else {
-                        goToCourier(
-                                productInfo?.basic?.id?.toString() ?: "",
-                                shopInfo.shipments,
-                                shopInfo.bbInfo
-                        )
-                    }
-                }
+                productStatsView.renderClickShipping(it, ::onShipmentClicked)
             }
             productDetailTracking.sendScreen(
                     shopInfo.shopCore.shopID,
