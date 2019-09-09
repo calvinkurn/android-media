@@ -65,7 +65,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
         CatalogFragmentContract.View, CatalogListener, TopAdsItemClickListener,
         TopAdsListener, BrowseSectionGeneralAdapter.OnItemChangeView {
 
-    public static final String SCREEN_SEARCH_PAGE_CATALOG_TAB = "Search result - Catalog tab";
+    public static final String CATEGORY_CATALOG_TAB = "Category - Catalog tab";
     public static final String SOURCE = BrowseApi.DEFAULT_VALUE_SOURCE_CATALOG;
 
     private static final String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
@@ -139,7 +139,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public String getScreenNameId() {
-        return SCREEN_SEARCH_PAGE_CATALOG_TAB;
+        return CATEGORY_CATALOG_TAB;
     }
 
     @Override
@@ -494,7 +494,6 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
                         openSortActivity();
                         return true;
                     case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageCatalog(getActivity());
                         openFilterActivity();
                         return true;
                     case 2:

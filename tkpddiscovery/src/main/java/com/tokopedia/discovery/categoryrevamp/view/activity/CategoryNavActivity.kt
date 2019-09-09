@@ -22,6 +22,7 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -174,7 +175,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         initSwitchButton()
         initBottomSheetListener()
 
-        bottomSheetFilterView?.initFilterBottomSheet()
+        bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE)
 
     }
 
@@ -190,12 +191,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
             override fun onHide() {
                 showBottomNavigation()
+                sendBottomSheetHideEvent()
             }
 
             override fun getActivity(): AppCompatActivity {
                 return this@CategoryNavActivity
             }
         })
+    }
+
+    private fun sendBottomSheetHideEvent() {
+        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+        selectedFragment.onBottomSheetHide()
     }
 
     private fun applyFilter(filterParameter: Map<String, String>) {

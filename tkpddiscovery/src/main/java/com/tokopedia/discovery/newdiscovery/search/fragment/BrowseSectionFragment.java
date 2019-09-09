@@ -31,6 +31,8 @@ import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.common.data.Sort;
 import com.tokopedia.filter.common.manager.FilterSortManager;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
@@ -304,7 +306,8 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         if (getActivity() instanceof HotlistActivity) {
             HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
         } else {
-            SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
+            FilterTracking.eventSearchResultFilter(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE,
+                    getScreenName(), getSelectedFilter());
         }
         showBottomBarNavigation(false);
         reloadData();
@@ -388,7 +391,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         if(getSelectedFilter() == null) {
             setSelectedFilter(new HashMap<>());
         }
-        FilterSortManager.openFilterPage(this, getScreenName(), getSelectedFilter());
+        FilterSortManager.openFilterPage(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE,this, getScreenName(), getSelectedFilter());
     }
 
     protected boolean isFilterDataAvailable() {
@@ -497,10 +500,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         setSortData(savedInstanceState.<Sort>getParcelableArrayList(EXTRA_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
-    }
-
-    public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }
 
     protected void removeSelectedFilter(String uniqueId) {

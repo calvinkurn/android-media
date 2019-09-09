@@ -39,6 +39,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -189,7 +190,7 @@ public class SearchActivity extends BaseActivity
         initViewPager();
         initBottomSheetListener();
         initSearchNavigationListener();
-        bottomSheetFilterView.initFilterBottomSheet();
+        bottomSheetFilterView.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE);
     }
 
     private void initToolbar() {
