@@ -50,7 +50,7 @@ data class TravelContactListModel (
 
             @SerializedName("fullName")
             @Expose
-            val fullName: String = "",
+            var fullName: String = "",
 
             @SerializedName("gender")
             @Expose

@@ -5,9 +5,6 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-/**
- * Created by zulfikarrahman on 12/14/17.
- */
 @Retention(RetentionPolicy.SOURCE)
 @StringDef({FlightPassengerTitle.TUAN, FlightPassengerTitle.NYONYA, FlightPassengerTitle.NONA})
 public @interface FlightPassengerTitle {

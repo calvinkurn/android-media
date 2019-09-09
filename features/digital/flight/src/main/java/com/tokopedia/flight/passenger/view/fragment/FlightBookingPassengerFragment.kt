@@ -44,9 +44,21 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator
 import com.tokopedia.flight.common.util.FlightPassengerTitle
+import com.tokopedia.flight.common.util.FlightPassengerTitleType
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
 import com.tokopedia.flight.passenger.viewmodel.FlightPassengerViewModel
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.button_submit
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.container_passport_data
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.et_birth_date
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.et_first_name
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.et_last_name
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.et_nationality
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.et_passport_expiration_date
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.et_passport_issuer_country
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.et_passport_no
+import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.til_birth_date
+import kotlinx.android.synthetic.main.fragment_flight_passenger_update.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -122,12 +134,15 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         passengerViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer {
             contactList ->
-            contactList?.let {
-                travelContactArrayAdapter.updateItem(it.toMutableList())
+            contactList?.let { contacts ->
+                travelContactArrayAdapter.updateItem(contacts.map {
+                    if (it.fullName.isBlank()) {
+                        it.fullName = "${it.firstName} ${it.lastName}"
+                    }
+                    return@map it
+                }.toMutableList())
             }
         })
-
-        //upsert listener observe
     }
 
     private fun initView () {
@@ -458,7 +473,16 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         calendar.time = selectedDate
         val datePicker = DatePickerDialog(activity!!, DatePickerDialog.OnDateSetListener {
             view, year, month, dayOfMonth ->
-//            presenter.onBirthdateChange(year, month, dayOfMonth, minDate, maxDate)
+            val calendar = FlightDateUtil.getCurrentCalendar()
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DATE, dayOfMonth)
+            val birthdate = calendar.time
+
+            val birthdateStr = FlightDateUtil.dateToString(birthdate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+            passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                    FlightDateUtil.DEFAULT_FORMAT, birthdateStr)
+            et_birth_date.setText(birthdateStr)
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
         if (minDate != null) datePicker1.minDate = minDate.time
@@ -468,7 +492,41 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
     fun autofillPassengerContact(contact:TravelContactListModel.Contact?) {
         if (contact != null) {
+            if (contact.firstName.isNotBlank()) {
+                passengerModel.passengerFirstName = contact.firstName
+                et_first_name.setText(contact.firstName)
+            }
+            if (contact.lastName.isNotBlank()) {
+                passengerModel.passengerLastName = contact.lastName
+                et_last_name.setText(contact.lastName)
+            }
+            if (contact.title.isNotBlank()) {
+                passengerModel.type = when (contact.title.toLowerCase()) {
+                    FlightPassengerTitle.TUAN -> FlightPassengerTitleType.TUAN
+                    FlightPassengerTitle.NYONYA -> FlightPassengerTitleType.NYONYA
+                    FlightPassengerTitle.NONA -> FlightPassengerTitleType.NONA
+                    else -> FlightPassengerTitleType.TUAN
+                }
+                renderPassengerTitle(contact.title.toLowerCase())
+            }
+            if (contact.birthDate.isNotBlank()) {
+                passengerModel.passengerBirthdate = contact.birthDate
+                et_birth_date.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
+                        FlightDateUtil.DEFAULT_VIEW_FORMAT, contact.birthDate))
+            }
 
+            if (contact.idList.isNotEmpty()) {
+                for (id in contact.idList) {
+                    if (id.type.equals("passport", true)) {
+                        et_passport_no.setText(id.number)
+                        et_passport_expiration_date.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
+                                FlightDateUtil.DEFAULT_VIEW_FORMAT, id.expiry))
+                        et_nationality.setText(contact.nationality)
+                        et_passport_issuer_country.setText(id.country)
+                        break
+                    }
+                }
+            }
         }
     }
 

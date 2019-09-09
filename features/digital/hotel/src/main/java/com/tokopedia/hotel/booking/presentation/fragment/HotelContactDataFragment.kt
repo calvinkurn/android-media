@@ -71,8 +71,13 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         super.onActivityCreated(savedInstanceState)
 
         bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
-            contactList?.let{
-                travelContactArrayAdapter.updateItem(it.toMutableList())
+            contactList?.let{ contacts ->
+                travelContactArrayAdapter.updateItem(contacts.map {
+                    if (it.fullName.isBlank()) {
+                        it.fullName = "${it.firstName} ${it.lastName}"
+                    }
+                    return@map it
+                }.toMutableList())
             }
         })
 
