@@ -85,6 +85,9 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     override val ctx: Context?
         get() = context
 
+    private val unifyCalendar
+        get() = calendarView.findViewById<UnifyCalendar>(R.id.uc_filter)
+
     private lateinit var holidayList: List<Legend>
 
     override fun getScreenName(): String = "Dashboard"
@@ -185,6 +188,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         else {
             if (!::calendarView.isInitialized) calendarView = initCalendarView()
             if (!::calendarBottomSheet.isInitialized) calendarBottomSheet = initCalendarBottomSheet()
+            unifyCalendar.calendarPickerView.scrollToDate(startDate ?: getCurrentDate())
             calendarBottomSheet.show()
         }
     }
@@ -199,7 +203,6 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     private fun initCalendarBottomSheet(): CloseableBottomSheetDialog {
-        val unifyCalendar = calendarView.findViewById<UnifyCalendar>(R.id.uc_filter)
         initCalendar(unifyCalendar)
         val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(context)
         bottomSheet.apply {
@@ -225,9 +228,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
                 .inMode(CalendarPickerView.SelectionMode.RANGE)
         pickerView.setOnDateSelectedListener(getOnSelectedDateListener())
 
-        if (startDate != null && endDate != null) {
-            calendarPickerView.withSelectedDates(listOf(startDate, endDate))
-        } else calendarPickerView.withSelectedDate(getCurrentDate())
+        if (startDate != null && endDate != null) calendarPickerView.withSelectedDates(listOf(startDate, endDate))
     }
 
     private fun getMinDate(): Date {
