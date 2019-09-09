@@ -12,7 +12,7 @@ import com.tokopedia.application.MyApplication
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.network.utils.AuthUtil
-import com.tokopedia.sellerorder.list.view.SomListActivity
+import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
 import com.tokopedia.tkpd.network.DataSource
 import com.tokopedia.tkpd.network.LogoutPojo
 import com.tokopedia.user.session.UserSession
@@ -193,6 +193,8 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
+
+        // TODO : revert!
         startActivity(Intent(this, SomListActivity::class.java))
     }
 
