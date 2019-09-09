@@ -150,7 +150,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         rvDeals.setLayoutManager(layoutManager);
         dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);
         rvDeals.setAdapter(dealsCategoryAdapter);
-//        searchInputView.getSearchTextView().requestFocus();
         appBarBrands.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -255,14 +254,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         if (!TextUtils.isEmpty(location.getCoordinates())) {
             requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
         }
-//        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
-//            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
-//        }
-//        if (location.getCityId() != 0) {
-//            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getCityId());
-//        } else {
-//            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
-//        }
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND_AND_PRODUCT);
         if (!TextUtils.isEmpty(categoryId)) {
             requestParams.putString(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoryId);

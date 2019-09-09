@@ -18,7 +18,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class GetLocationListRequestUseCase extends RestRequestUseCase {
-    private RequestParams params = RequestParams.create();
+    private RequestParams params;
 
     @Inject
     public GetLocationListRequestUseCase(){ }
