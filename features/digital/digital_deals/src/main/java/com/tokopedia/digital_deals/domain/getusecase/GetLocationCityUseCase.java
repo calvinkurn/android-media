@@ -1,7 +1,5 @@
 package com.tokopedia.digital_deals.domain.getusecase;
 
-import android.text.TextUtils;
-
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.common.network.data.model.RestRequest;
@@ -12,16 +10,15 @@ import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class GetLocationListRequestUseCase extends RestRequestUseCase {
+public class GetLocationCityUseCase extends RestRequestUseCase {
     private RequestParams params;
 
     @Inject
-    public GetLocationListRequestUseCase(){ }
+    public GetLocationCityUseCase(){ }
 
     public void setRequestParams(RequestParams params) {
         this.params = params;
@@ -30,20 +27,14 @@ public class GetLocationListRequestUseCase extends RestRequestUseCase {
     @Override
     protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
-        String url = params.getString("url","");
-        HashMap<String, Object> params1 = params.getParameters();
-        params1.remove("url");
 
-        if (TextUtils.isEmpty(url)) {
-            url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LOCATIONS;
-            params1.put("page_no", "1");
-        }
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_CITIES;
         //Request 1
         Type token = new TypeToken<DataResponse<LocationResponse>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)
-                .setQueryParams(params1)
+                .setQueryParams(params.getParameters())
                 .build();
         tempRequest.add(restRequest1);
         return tempRequest;
