@@ -299,7 +299,7 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
     protected void handleFilterResult(Map<String, String> queryParams, Map<String, String> selectedFilters,
                                       List<Option> selectedOptions) {
-        setSelectedFilter(selectedFilter);
+        setSelectedFilter(new HashMap<>(selectedFilters));
         clearDataFilterSort();
         if (getActivity() instanceof HotlistActivity) {
             HotlistPageTracking.eventHotlistFilter(getActivity(),getSelectedFilter());
