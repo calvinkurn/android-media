@@ -110,7 +110,11 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         initView()
 
-        passengerViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+        passengerViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list),
+                if (passengerModel.type == FlightBookingPassenger.ADULT) "adult"
+                else if (passengerModel.type == FlightBookingPassenger.CHILDREN) "child"
+                else "infant"
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -233,13 +237,24 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         calendar.time = selectedDate
         val datePicker = DatePickerDialog(activity!!, DatePickerDialog.OnDateSetListener {
             view, year, month, dayOfMonth ->
-            //on Passport expiry date change
+            val calendar = FlightDateUtil.getCurrentCalendar()
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DATE, dayOfMonth)
+            val expiredDate = calendar.time
+
+            val expiredDateStr = FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+            passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                    FlightDateUtil.DEFAULT_FORMAT, expiredDateStr)
+            et_passport_expiration_date.setText(expiredDateStr)
+
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
         datePicker1.minDate = minDate.time
         datePicker1.maxDate = maxDate.time
         datePicker.show()
     }
+
 
     fun getPassportExpiryDate(): String {
         return et_passport_expiration_date.text.toString()
@@ -315,6 +330,12 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         startActivityForResult(intent, REQUEST_CODE_PICK_MEAL)
     }
 
+    fun navigateToLuggagePicker(luggages: MutableList<FlightBookingAmenityViewModel>, selected: FlightBookingAmenityMetaViewModel) {
+        val title = String.format("%s %s", getString(R.string.flight_booking_luggage_toolbar_title), selected.description)
+        val intent = FlightBookingAmenityActivity.createIntent(activity, title, luggages, selected)
+        startActivityForResult(intent, REQUEST_CODE_PICK_LUGGAGE)
+    }
+
     fun renderPassengerLuggages(flightBookingLuggageRouteViewModels: List<FlightBookingAmenityMetaViewModel>,
                                 selecteds: List<FlightBookingAmenityMetaViewModel>) {
         luggage_container.visibility = View.VISIBLE
@@ -343,7 +364,22 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         luggageAdapter.setArrowVisible(true)
         luggageAdapter.setFontSize(resources.getDimension(R.dimen.sp_12))
         luggageAdapter.setInteractionListener { adapterPosition, viewModel ->
-            onPassengerLuggageClicked()
+            val luggage = flightBookingLuggageRouteViewModels.get(adapterPosition)
+
+            var existingSelected: FlightBookingAmenityMetaViewModel? = null
+            for (selected in passengerModel.flightBookingLuggageMetaViewModels) {
+                if (selected.key.equals(luggage.key)) existingSelected = selected
+            }
+            if (existingSelected == null) {
+                existingSelected = FlightBookingAmenityMetaViewModel()
+                existingSelected.key = luggage.key
+                existingSelected.journeyId = luggage.journeyId
+                existingSelected.arrivalId = luggage.arrivalId
+                existingSelected.departureId = luggage.departureId
+                existingSelected.description = luggage.description
+                existingSelected.amenities = luggage.amenities
+            }
+            navigateToLuggagePicker(luggage.amenities, existingSelected)
         }
 
         rv_luggages.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -354,9 +390,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         luggageAdapter.setViewModels(models)
         luggageAdapter.notifyDataSetChanged()
 
-    }
-
-    fun onPassengerLuggageClicked() {
     }
 
     fun renderPassport() {
@@ -453,6 +486,25 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
     fun isMandatoryDoB(): Boolean = isAirAsiaAirlines
 
+    fun onLuggageDataChange(flightBookingLuggageMetaViewModel: FlightBookingAmenityMetaViewModel) {
+        val viewModels = passengerModel.flightBookingLuggageMetaViewModels
+        val index = viewModels.indexOf(flightBookingLuggageMetaViewModel)
+
+        if (flightBookingLuggageMetaViewModel.amenities.size != 0) {
+            if (index != -1) {
+                viewModels.set(index, flightBookingLuggageMetaViewModel)
+            } else {
+                viewModels.add(flightBookingLuggageMetaViewModel)
+            }
+        } else {
+            if (index != -1) {
+                viewModels.removeAt(index)
+            }
+        }
+
+        renderPassengerLuggages(luggageModels, viewModels)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         clearAllKeyboardFocus()
@@ -461,7 +513,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                 REQUEST_CODE_PICK_LUGGAGE -> {
                     if (data != null) {
                         val flightBookingLuggageMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaViewModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
-//                        presenter.onLuggageDataChange(flightBookingLuggageMetaViewModel)
+                        onLuggageDataChange(flightBookingLuggageMetaViewModel)
                     }
                 }
 

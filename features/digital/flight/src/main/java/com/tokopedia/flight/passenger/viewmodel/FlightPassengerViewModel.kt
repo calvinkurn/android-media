@@ -19,9 +19,10 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
                                                  dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
     val contactListResult = MutableLiveData<List<TravelContactListModel.Contact>>()
 
-    fun getContactList(query: String) {
+    fun getContactList(query: String, filterType: String = "") {
         launch {
             contactListResult.value = getContactListUseCase.execute(query = query,
+                    filterType = filterType,
                     product = GetContactListUseCase.PARAM_PRODUCT_HOTEL)
         }
     }
