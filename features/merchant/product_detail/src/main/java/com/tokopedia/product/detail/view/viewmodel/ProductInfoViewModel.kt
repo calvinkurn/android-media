@@ -474,6 +474,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 val ratesEstModel = response.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java)?.data?.data
                 ratesEstModel?.texts?.shopCity = ratesEstModel?.shop?.cityName ?: ""
                 productInfoP3.rateEstSummarizeText = ratesEstModel?.texts
+                productInfoP3.ratesModel = ratesEstModel?.rates
             }
 
 
