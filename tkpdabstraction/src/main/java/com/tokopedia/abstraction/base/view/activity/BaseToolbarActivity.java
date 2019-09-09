@@ -55,9 +55,13 @@ abstract class BaseToolbarActivity extends BaseActivity {
         return false;
     }
 
+    protected int getToolbarResourceID(){
+        return R.id.toolbar;
+    }
+
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(getToolbarResourceID());
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
