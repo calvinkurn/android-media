@@ -12,9 +12,11 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
@@ -81,6 +83,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddr
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
@@ -1265,6 +1268,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
+        // todo: refactor to converter class
         List<ShipmentStateProductData> shipmentStateProductDataList = new ArrayList<>();
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
             ShipmentStateProductData.Builder builder = new ShipmentStateProductData.Builder()
@@ -1283,9 +1287,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .telpNo(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())
                 .build();
 
+        CourierItemData courierData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
+        RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
+
         ShipmentStateShippingInfoData shippingInfoDataBuilder = new ShipmentStateShippingInfoData.Builder()
-                .shippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId())
-                .spId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId())
+                .shippingId(courierData.getShipperId())
+                .spId(courierData.getShipperProductId())
+                .ratesFeature(ratesFeature)
                 .build();
 
         ShipmentStateShopProductData.Builder builder = new ShipmentStateShopProductData.Builder()

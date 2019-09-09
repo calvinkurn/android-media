@@ -54,5 +54,6 @@ dependencies {
     implementation rootProject.ext.firebase.performance
     implementation project(rootProject.ext.features.promoCheckoutCommon)
     implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.features.purchase_platform_common)
 }

@@ -70,6 +70,7 @@ ext {
             sharedata         : ":libraries:sharedata",
             travelCalendar    : ":libraries:travel_calendar",
             trackingOptimizer : ":libraries:tracking_optimizer",
+            twitterShare      : ":libraries:twitter_share",
             videoRecorder     : ":libraries:video_recorder",
             videoUploader     : ":libraries:videouploader",
             webview           : ":libraries:webview",

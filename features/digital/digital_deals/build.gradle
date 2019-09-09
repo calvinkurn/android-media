@@ -54,6 +54,7 @@ dependencies {
     }
 
     implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.components
 
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch

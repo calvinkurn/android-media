@@ -33,7 +33,6 @@ import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
-import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.account.analytics.domain.GetUserAttributesUseCase;
 import com.tokopedia.home.account.data.mapper.AccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;

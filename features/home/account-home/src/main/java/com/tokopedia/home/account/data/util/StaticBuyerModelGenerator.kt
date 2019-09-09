@@ -150,7 +150,7 @@ class StaticBuyerModelGenerator private constructor() {
             }
 
             viewItems.add(MenuTitleViewModel().apply {
-                title = context.getString(R.string.title_menu_help)
+                title = context.getString(R.string.tokopedia_care)
             })
 
             viewItems.add(MenuListViewModel().apply {

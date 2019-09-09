@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.promocheckout.common.data.*
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.detail.view.fragment.BasePromoCheckoutDetailFragment
 import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailMarketplaceFragment
 
 class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity() {
