@@ -1137,15 +1137,15 @@ public class HomePageTracking {
         return list;
     }
 
-    public static HashMap<String, Object> getEnhanceImpressionProductChannelMix(DynamicHomeChannel.Grid[] grids,
-                                                                     String headerName,
+    public static HashMap<String, Object> getEnhanceImpressionProductChannelMix(DynamicHomeChannel.Channels channel,
                                                                      String type){
-        List<Object> list = convertProductEnhanceProductMixDataLayer(grids, headerName, type);
+        List<Object> list = convertProductEnhanceProductMixDataLayer(channel.getGrids(), channel.getHeader().getName(), type);
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW_IRIS,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, EVENT_ACTION_IMPRESSION_ON_PRODUCT_DYNAMIC_CHANNEL_MIX,
                 EVENT_LABEL, LABEL_EMPTY,
+                CHANNEL_ID, channel.getId(),
                 ECOMMERCE, DataLayer.mapOf(
                         CURRENCY_CODE, IDR,
                         IMPRESSIONS, DataLayer.listOf(
@@ -1171,7 +1171,6 @@ public class HomePageTracking {
                                 FIELD_BRAND, NONE_OTHER,
                                 FIELD_CATEGORY, NONE_OTHER,
                                 FIELD_VARIANT, NONE_OTHER,
-                                LIST, "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
                                 FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );

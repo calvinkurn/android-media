@@ -177,7 +177,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                     }
                     listener.putEEToIris(
                             HomePageTracking.getEnhanceImpressionProductChannelMix(
-                                    channel.grids, channel.header.name, bannerType
+                                    channel, bannerType
                             )
                     )
                     listener.putEEToIris(
