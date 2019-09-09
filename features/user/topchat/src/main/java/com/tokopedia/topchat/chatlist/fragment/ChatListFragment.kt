@@ -71,6 +71,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
     private var mViewCreated = false
     private var sightTag = ""
 
+    private var itemPositionLongClicked = 0
     private var filterChecked = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -144,7 +145,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> loadInitialData()
+                is Success -> adapter.deleteItem(itemPositionLongClicked)
                 is Fail -> view?.showErrorToaster(getString(R.string.delete_chat_default_error_message))
             }
         })
@@ -320,18 +321,19 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun chatItemDeleted(element: ItemChatListPojo) {
+    override fun chatItemDeleted(element: ItemChatListPojo, itemPosition: Int) {
         Dialog(activity, Dialog.Type.PROMINANCE).apply {
             setTitle(getString(R.string.topchat_chat_delete_title))
             setDesc(getString(R.string.topchat_chat_delete_body))
-            setBtnOk(getString(R.string.topchat_chat_delete_cancel))
-            setOnOkClickListener {
+            setBtnCancel(getString(R.string.topchat_chat_delete_cancel))
+            setOnCancelClickListener {
                 dismiss()
             }
 
-            setBtnCancel(getString(R.string.topchat_chat_delete_confirm))
-            setOnCancelClickListener {
+            setBtnOk(getString(R.string.topchat_chat_delete_confirm))
+            setOnOkClickListener {
                 chatItemListViewModel.chatMoveToTrash(element.msgId.toInt())
+                itemPositionLongClicked = itemPosition
                 dismiss()
             }
             show()
