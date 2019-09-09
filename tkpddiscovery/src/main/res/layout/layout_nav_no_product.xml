@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_20">
+
+    <ImageView
+        android:id="@+id/img_no_data"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:src="@drawable/ic_no_product_found"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_no_data_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toRightOf="@+id/img_no_data"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="Oops, Produk Nggak Ditemukan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_no_data_description"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dp_5"
+        app:layout_constraintLeft_toRightOf="@+id/img_no_data"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_no_data_header"
+        app:typographyType="heading_3"
+        tools:text="Coba kurangi salah satu filter yang kamu gunakan :" />
+
+</android.support.constraint.ConstraintLayout>
