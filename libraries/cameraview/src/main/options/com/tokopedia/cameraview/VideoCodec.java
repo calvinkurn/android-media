@@ -1,7 +1,7 @@
 package com.tokopedia.cameraview;
 
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Constants for selecting the encoder of video recordings.

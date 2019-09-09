@@ -1,7 +1,7 @@
 package com.tokopedia.core.widgets;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
  * @author erry on 24/02/17.
  */
 
-public class SearchView extends android.support.v7.widget.SearchView  {
+public class SearchView extends androidx.appcompat.widget.SearchView  {
 
     public SearchView(Context context) {
         super(context);
@@ -28,9 +28,9 @@ public class SearchView extends android.support.v7.widget.SearchView  {
     }
 
     private void init(Context context){
-        LinearLayout searchPlate = (LinearLayout) findViewById(android.support.design.R.id.search_plate);
+        LinearLayout searchPlate = (LinearLayout) findViewById(com.google.android.material.R.id.search_plate);
         if(searchPlate != null){
-            EditText mSearchEditText = (EditText)searchPlate.findViewById(android.support.design.R.id.search_src_text);
+            EditText mSearchEditText = (EditText)searchPlate.findViewById(com.google.android.material.R.id.search_src_text);
             if(mSearchEditText != null){
                 mSearchEditText.setBackgroundResource(android.R.color.transparent);     // This fixes the keyboard from popping up each time
             }

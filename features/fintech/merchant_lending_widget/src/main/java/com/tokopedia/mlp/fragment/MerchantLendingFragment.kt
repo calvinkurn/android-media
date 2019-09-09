@@ -1,12 +1,12 @@
 package com.tokopedia.mlp.fragment
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +20,7 @@ import com.tokopedia.mlp.di.MerchantLendingUseCaseModule
 import com.tokopedia.mlp.merchantViewModel.MerchantLendingViewModel
 import kotlinx.android.synthetic.main.mlp_widget_container.*
 import javax.inject.Inject
-import android.support.v7.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.SimpleItemAnimator
 import android.transition.TransitionManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show

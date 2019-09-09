@@ -1,6 +1,6 @@
 package com.tokopedia.topads.auto.di.module
 
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.topads.auto.di.AutoAdsScope
 import com.tokopedia.topads.auto.view.viewmodel.AutoAdsWidgetViewModel

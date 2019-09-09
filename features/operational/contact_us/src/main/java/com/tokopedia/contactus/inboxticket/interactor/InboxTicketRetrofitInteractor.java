@@ -1,7 +1,7 @@
 package com.tokopedia.contactus.inboxticket.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.contactus.inboxticket.model.InboxTicketParam;
 import com.tokopedia.contactus.inboxticket.model.inboxticket.InboxTicket;

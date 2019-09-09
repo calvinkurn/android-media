@@ -2,8 +2,8 @@ package com.tokopedia.product.manage.list.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.product.manage.list.R;

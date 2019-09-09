@@ -158,7 +158,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     }
 
     @Override
-    protected android.support.v4.app.Fragment getNewFragment() {
+    protected androidx.fragment.app.Fragment getNewFragment() {
         fragment = MultipleAddressFragment.newInstance(addressData, cartIds);
         return fragment;
     }

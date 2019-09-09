@@ -1,7 +1,7 @@
 package com.tokopedia.common.travel.presentation.dialog;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.common.travel.R;

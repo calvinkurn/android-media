@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:paddingStart="@dimen/dp_16"
                     android:paddingTop="@dimen/dp_8">
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Micro"
                         android:textSize="@dimen/dp_11"
                         android:layout_width="0dp"
@@ -92,7 +92,7 @@
                         android:layout_gravity="center_vertical"
                         android:background="@drawable/bg_train_available" />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Micro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                         android:layout_gravity="center_vertical"
                         android:background="@drawable/bg_train_filled" />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Micro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                         android:layout_gravity="center_vertical"
                         android:background="@drawable/bg_train_your_choice" />
 
-                    <android.support.v7.widget.AppCompatTextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/TextView.Micro"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -155,7 +155,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                 android:id="@+id/vp_wagon"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_100" />
@@ -183,4 +183,4 @@
             tools:visibility="gone" />
 
     </RelativeLayout>
-</android.support.v4.widget.NestedScrollView>
+</androidx.core.widget.NestedScrollView>

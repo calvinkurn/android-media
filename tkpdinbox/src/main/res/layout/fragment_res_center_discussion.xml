@@ -37,14 +37,14 @@
             app:srcCompat="@drawable/ic_send_24dp_green" />
     </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/discussion_list"
         android:layout_width="match_parent"
         android:layout_margin="@dimen/dp_10"
         android:layout_height="match_parent"
         android:layout_above="@id/reply_view" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_image_upload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

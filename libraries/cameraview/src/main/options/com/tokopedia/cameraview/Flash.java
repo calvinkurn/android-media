@@ -1,7 +1,7 @@
 package com.tokopedia.cameraview;
 
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /**
  * Flash value indicates the flash mode to be used.

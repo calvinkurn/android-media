@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;

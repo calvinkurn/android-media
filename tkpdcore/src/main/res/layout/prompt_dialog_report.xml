@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:padding="10dp" >
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/wrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -16,5 +16,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/title_reason_report"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

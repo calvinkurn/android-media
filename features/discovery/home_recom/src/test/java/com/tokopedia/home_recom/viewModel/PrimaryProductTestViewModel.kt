@@ -1,6 +1,6 @@
 package com.tokopedia.home_recom.viewModel
 
-import android.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import android.content.Context
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock

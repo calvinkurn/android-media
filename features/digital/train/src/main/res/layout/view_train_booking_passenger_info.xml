@@ -9,7 +9,7 @@
     android:paddingLeft="@dimen/dp_16"
     android:paddingTop="@dimen/dp_16">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         style="@style/TextView.TitleBig.Bold"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:text="@string/train_passenger_title" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_passengers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

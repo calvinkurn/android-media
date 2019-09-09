@@ -17,9 +17,9 @@
 package com.db.williamchart.model;
 
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorInt;
-import android.support.annotation.FloatRange;
-import android.support.annotation.NonNull;
+import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
+import androidx.annotation.NonNull;
 
 import com.db.williamchart.Tools;
 

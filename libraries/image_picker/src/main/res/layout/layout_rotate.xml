@@ -75,7 +75,7 @@
             android:layout_alignParentBottom="true"
             android:text="@string/default_rotate_value" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_rotate_90"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"

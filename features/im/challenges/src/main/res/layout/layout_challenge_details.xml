@@ -20,7 +20,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:background="@color/grey_200" />
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_titleAndTnc"
             android:layout_marginTop="@dimen/dp_16"
             android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 app:srcCompat="@drawable/ic_info_black"
                 app:layout_constraintEnd_toEndOf="parent" />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
         <TextView
@@ -163,7 +163,7 @@
             android:layout_marginTop="@dimen/dp_16"
             android:text="@string/ch_awards" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_awards"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -172,7 +172,7 @@
             android:nestedScrollingEnabled="false"
             android:paddingLeft="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/tv_awards"
             tools:listitem="@layout/challenges_award_item" />
     </LinearLayout>
@@ -203,7 +203,7 @@
             android:text="@string/ch_challenege_winners" />
 
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_winners"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

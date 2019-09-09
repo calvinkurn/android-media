@@ -3,8 +3,8 @@ package com.tokopedia.seller.transaction.neworder.common;
 import com.tokopedia.core2.R;
 
 import android.content.Context;
-import android.support.annotation.ColorInt;
-import android.support.annotation.IntegerRes;
+import androidx.annotation.ColorInt;
+import androidx.annotation.IntegerRes;
 
 /**
  * Created by zulfikarrahman on 7/12/17.

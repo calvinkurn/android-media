@@ -33,18 +33,18 @@
         android:layout_height="match_parent"
         android:layout_below="@id/top_bar">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/category_root_recyclerview"
             android:layout_width="90dp"
             android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/category_child_recyclerview"
             android:layout_toRightOf="@id/category_root_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-        </android.support.v7.widget.RecyclerView>
+        </androidx.recyclerview.widget.RecyclerView>
 
         <View
             android:layout_width="match_parent"

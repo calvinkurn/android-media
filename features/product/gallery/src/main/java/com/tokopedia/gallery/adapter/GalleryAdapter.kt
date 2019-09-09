@@ -1,6 +1,6 @@
 package com.tokopedia.gallery.adapter
 
-import android.support.v4.app.FragmentManager
+import androidx.fragment.app.FragmentManager
 import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory

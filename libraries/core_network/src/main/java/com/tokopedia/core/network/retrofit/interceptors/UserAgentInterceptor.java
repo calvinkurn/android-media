@@ -2,7 +2,7 @@ package com.tokopedia.core.network.retrofit.interceptors;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 

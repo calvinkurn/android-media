@@ -1,6 +1,6 @@
 package com.tokopedia.imagepicker.picker.main.builder;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 @IntDef({StateRecorderType.START, StateRecorderType.STOP})
 public @interface StateRecorderType {

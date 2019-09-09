@@ -23,10 +23,10 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.IntRange;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.v4.content.res.ResourcesCompat;
+import androidx.annotation.IntRange;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.db.williamchart.R;
 import com.db.williamchart.base.BaseWilliamChartConfig;

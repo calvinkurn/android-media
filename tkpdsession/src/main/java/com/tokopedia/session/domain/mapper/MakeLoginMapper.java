@@ -1,6 +1,6 @@
 package com.tokopedia.session.domain.mapper;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.core.app.MainApplication;

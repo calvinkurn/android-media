@@ -1,8 +1,8 @@
 package com.tokopedia.home.beranda.presentation.view.customview
 
 import android.content.Context
-import android.support.v4.view.NestedScrollingParent2
-import android.support.v7.widget.RecyclerView
+import androidx.core.view.NestedScrollingParent2
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View

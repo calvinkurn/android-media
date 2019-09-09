@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.listener;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 

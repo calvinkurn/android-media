@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.view.feature.cartlist.viewholder
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.feature.cartlist.ActionListener

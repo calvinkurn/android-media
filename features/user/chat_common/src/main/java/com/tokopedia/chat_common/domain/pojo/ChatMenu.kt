@@ -1,6 +1,6 @@
 package com.tokopedia.chat_common.domain.pojo
 
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 
 data class ChatMenu(
         @DrawableRes

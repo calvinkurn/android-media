@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.util;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;

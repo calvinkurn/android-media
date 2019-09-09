@@ -4,18 +4,21 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.content.res.AppCompatResources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -61,12 +64,12 @@ public class ImageLoader {
     public void loadImage(Product product, final ImageView imageView, int pos,
                           TopAdsItemImpressionListener impressionListener) {
         Glide.with(context)
-                .load(product.getImage().getS_ecs())
                 .asBitmap()
+                .load(product.getImage().getS_ecs())
                 .placeholder(R.drawable.loading_page)
-                .into(new SimpleTarget<Bitmap>() {
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         imageView.setImageBitmap(resource);
                         if (!product.isLoaded()) {
                             product.setLoaded(true);
@@ -76,38 +79,53 @@ public class ImageLoader {
                             }
                         }
                     }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
                 });
     }
 
     public void loadImage(Shop shop, final ImageView imageView) {
         Glide.with(context)
-                .load(shop.getImageShop().getXsEcs())
                 .asBitmap()
+                .load(shop.getImageShop().getXsEcs())
                 .placeholder(R.drawable.loading_page)
-                .into(new SimpleTarget<Bitmap>() {
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         imageView.setImageBitmap(resource);
                         if (!shop.isLoaded()) {
                             shop.setLoaded(true);
                             new ImpresionTask().execute(shop.getImageShop().getsUrl());
                         }
                     }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
                 });
     }
 
     public void loadImage(String ecs, final String url, final ImageView imageView) {
         Glide.with(context)
-                .load(ecs)
                 .asBitmap()
+                .load(ecs)
                 .placeholder(R.drawable.loading_page)
-                .into(new SimpleTarget<Bitmap>() {
+                .into(new CustomTarget<Bitmap>() {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                         imageView.setImageBitmap(resource);
                         if (url!=null && url.contains(PATH_VIEW)) {
                             new ImpresionTask().execute(url);
                         }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
                     }
                 });
     }
@@ -118,8 +136,8 @@ public class ImageLoader {
 
     public void loadCircle(Shop shop, final ImageView imageView) {
         Glide.with(context)
-                .load(shop.getImageShop().getXsEcs())
                 .asBitmap()
+                .load(shop.getImageShop().getXsEcs())
                 .placeholder(R.drawable.loading_page)
                 .into(new BitmapImageViewTarget(imageView) {
                     @Override
@@ -158,7 +176,7 @@ public class ImageLoader {
 
     public static void clearImage(final ImageView imageView) {
         if (imageView != null) {
-            Glide.clear(imageView);
+            Glide.with(imageView.getContext()).clear(imageView);
             imageView.setImageDrawable(
                     getDrawable(imageView.getContext(), R.drawable.ic_loading_image)
             );

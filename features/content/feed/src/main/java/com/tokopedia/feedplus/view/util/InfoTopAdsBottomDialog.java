@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.view.util;
 
 import android.app.Activity;
-import android.support.design.widget.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 /**
  * Created by stevenfredian on 5/22/17.

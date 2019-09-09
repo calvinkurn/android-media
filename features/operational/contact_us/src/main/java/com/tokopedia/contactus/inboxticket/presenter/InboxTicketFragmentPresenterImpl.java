@@ -1,6 +1,6 @@
 package com.tokopedia.contactus.inboxticket.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 
 import com.tokopedia.core2.R;

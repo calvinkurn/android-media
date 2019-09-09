@@ -37,7 +37,7 @@
                 android:textSize="24sp" />
 
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_rewards"
                 android:layout_width="match_parent"
                 android:layout_height="256dp"
@@ -47,7 +47,7 @@
                 android:background="@drawable/recycler_view_summary_page_background"
                 android:layoutAnimation="@anim/layout_animation_from_bottom"
                 android:overScrollMode="never"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 tools:listitem="@layout/recycler_item_rewards_summary" />
 
             <Button

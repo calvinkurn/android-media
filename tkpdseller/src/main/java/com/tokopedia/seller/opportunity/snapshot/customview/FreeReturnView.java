@@ -3,7 +3,7 @@ package com.tokopedia.seller.opportunity.snapshot.customview;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ClickableSpan;

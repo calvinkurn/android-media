@@ -1,6 +1,6 @@
 package com.tokopedia.age_restriction.viewcontroller
 
-import android.arch.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel

@@ -1,8 +1,8 @@
 package com.tokopedia.flight.search.data.db;
 
-import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.PrimaryKey;
-import android.support.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.annotation.NonNull;
 
 /**
  * Created by Rizky on 01/10/18.

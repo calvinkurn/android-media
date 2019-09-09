@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.di.module;
 
 import android.content.Context;
-import android.support.v4.app.FragmentManager;
+import androidx.fragment.app.FragmentManager;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;

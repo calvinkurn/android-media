@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.autocomplete.adapter
 
 import android.os.Build
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.text.*
 import android.text.style.TextAppearanceSpan
 import android.view.View

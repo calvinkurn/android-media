@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/dp_5"
             android:orientation="vertical">
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_passenger_name"
                 style="@style/TextView.Small.Bold"
                 android:layout_width="match_parent"
@@ -36,7 +36,7 @@
                 android:layout_weight="1"
                 tools:text="Nona Aisyah Sarasvati" />
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_list_details"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

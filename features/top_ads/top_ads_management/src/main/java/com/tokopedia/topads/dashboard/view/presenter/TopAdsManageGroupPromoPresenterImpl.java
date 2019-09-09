@@ -1,6 +1,6 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;

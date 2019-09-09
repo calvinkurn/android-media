@@ -11,7 +11,7 @@
         android:orientation="vertical"
         app:elevation="@dimen/dp_0">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="-8dp"
@@ -21,7 +21,7 @@
             app:cardElevation="@dimen/dp_6"
             app:cardUseCompatPadding="true">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -75,7 +75,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/img_banner" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_min_exchange"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                     app:layout_constraintStart_toEndOf="@+id/text_min_exchange"
                     app:layout_constraintTop_toTopOf="@+id/img_min_exchange" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_points_stack_coupon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -174,7 +174,7 @@
                     app:layout_constraintTop_toTopOf="@+id/text_point_value_coupon" />
 
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/img_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -304,11 +304,11 @@
                     app:layout_constraintRight_toRightOf="@+id/lin_container_button"
                     app:layout_constraintTop_toTopOf="@+id/lin_container_button" />
 
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v7.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.cardview.widget.CardView>
 
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_6"
@@ -326,18 +326,18 @@
                 app:tabTextAppearance="@style/TokoPointsTabs"
                 app:tabTextColor="@color/black_38">
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tp_label_tnc" />
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tp_label_how_to_use" />
 
             </com.tokopedia.design.component.Tabs>
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
         <com.tokopedia.tokopoints.view.util.WrapContentHeightViewPager
             android:id="@+id/view_pager_info"

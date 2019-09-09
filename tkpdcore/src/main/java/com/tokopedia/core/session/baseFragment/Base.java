@@ -4,8 +4,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by m.normansyah on 1/27/16.

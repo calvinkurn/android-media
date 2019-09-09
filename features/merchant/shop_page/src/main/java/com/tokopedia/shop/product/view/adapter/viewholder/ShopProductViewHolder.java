@@ -1,8 +1,8 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
 import android.graphics.Paint;
-import android.support.annotation.LayoutRes;
-import android.support.v7.widget.AppCompatRatingBar;
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatRatingBar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;

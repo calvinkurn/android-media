@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatCheckBox
+        <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/cb_dont_show_again"
             style="@style/DigitalPostPaidCheckbox"
             android:textColor="@color/font_black_secondary_54"

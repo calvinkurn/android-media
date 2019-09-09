@@ -24,7 +24,7 @@
         android:gravity="center_vertical"
         android:text="@string/travel_homepage_promo_see_all_label" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_train_promo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

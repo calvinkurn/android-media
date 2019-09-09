@@ -14,7 +14,7 @@
         android:layout_weight="1"
         android:padding="@dimen/dp_16">
 
-        <android.support.v7.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -34,7 +34,7 @@
 
             <include layout="@layout/partial_top_ads_keyword_info" />
 
-        </android.support.v7.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
     </ScrollView>
 

@@ -3,7 +3,7 @@ package com.tokopedia.notifications.factory
 import android.app.Notification
 import android.content.Context
 import android.graphics.Bitmap
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import android.text.TextUtils
 
 import com.tokopedia.notifications.common.CMNotificationUtils

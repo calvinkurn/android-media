@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_layout_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,6 +20,6 @@
             style="@style/EditText"
             android:layout_width="match_parent" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 </LinearLayout>

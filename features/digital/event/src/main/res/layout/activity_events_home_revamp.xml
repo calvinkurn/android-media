@@ -6,12 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize" />
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/htab_maincontent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -19,14 +19,14 @@
         android:visibility="gone"
         tools:context="com.tokopedia.events.view.activity.EventsHomeActivity">
 
-        <android.support.design.widget.AppBarLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/event_app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_8"
             android:background="@color/white">
 
-            <android.support.constraint.ConstraintLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/carousel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/pager_indicator" />
 
-                <android.support.v4.view.ViewPager
+                <androidx.viewpager.widget.ViewPager
                     android:id="@+id/viewpager_top_events"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/top_view_pager_height"
@@ -148,7 +148,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/viewpager_top_events"
                     app:layout_constraintWidth_default="spread" />
 
-            </android.support.constraint.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -157,7 +157,7 @@
                 app:layout_scrollFlags="scroll" />
 
 
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_78"
@@ -172,16 +172,16 @@
                 app:tabSelectedTextColor="@color/green_nob" />
 
 
-        </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
+        <androidx.viewpager.widget.ViewPager
             android:id="@+id/category_view_pager"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        </android.support.v4.view.ViewPager>
-    </android.support.design.widget.CoordinatorLayout>
+        </androidx.viewpager.widget.ViewPager>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <FrameLayout
         android:id="@+id/progress_bar_layout"

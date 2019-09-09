@@ -16,8 +16,8 @@
 
 package com.db.williamchart.model;
 
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 
 
 /**

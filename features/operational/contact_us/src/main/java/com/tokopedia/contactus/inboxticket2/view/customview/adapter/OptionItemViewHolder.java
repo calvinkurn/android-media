@@ -1,7 +1,7 @@
 package com.tokopedia.contactus.inboxticket2.view.customview.adapter;
 
 import android.graphics.drawable.GradientDrawable;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 

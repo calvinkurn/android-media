@@ -3,9 +3,9 @@ package com.tokopedia.core.session.base;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by m.normansyah on 1/27/16.
@@ -34,37 +34,37 @@ public interface Base {
     void initData(@NonNull Context context);
 
     /**
-     * this one is called from {@link android.support.v4.app.Fragment#onCreate(Bundle)}
-     * or {@link android.support.v7.app.AppCompatActivity#onCreate(Bundle)}
+     * this one is called from {@link androidx.fragment.app.Fragment#onCreate(Bundle)}
+     * or {@link androidx.appcompat.app.AppCompatActivity#onCreate(Bundle)}
      * @param argument
      */
     void fetchArguments(Bundle argument);
 
     /**
-     * * this one is called from {@link android.support.v4.app.Fragment#onCreate(Bundle)}
-     * or {@link android.support.v7.app.AppCompatActivity#onCreate(Bundle)}
+     * * this one is called from {@link androidx.fragment.app.Fragment#onCreate(Bundle)}
+     * or {@link androidx.appcompat.app.AppCompatActivity#onCreate(Bundle)}
      * @param context
      */
     void fetchFromPreference(Context context);
 
     /**
-     * * this one is called from {@link android.support.v4.app.Fragment#onCreate(Bundle)}
-     * or {@link android.support.v7.app.AppCompatActivity#onCreate(Bundle)}
+     * * this one is called from {@link androidx.fragment.app.Fragment#onCreate(Bundle)}
+     * or {@link androidx.appcompat.app.AppCompatActivity#onCreate(Bundle)}
      * @param argument
      */
     void fetchRotationData(Bundle argument);
 
     /**
-     * * this one is called from {@link android.support.v4.app.Fragment#onCreate(Bundle)}
-     * or {@link android.support.v7.app.AppCompatActivity#onCreate(Bundle)}
+     * * this one is called from {@link androidx.fragment.app.Fragment#onCreate(Bundle)}
+     * or {@link androidx.appcompat.app.AppCompatActivity#onCreate(Bundle)}
      * @param argument
      */
     void getRotationData(Bundle argument);
 
     /**
-     * * this one is called from {@link android.support.v4.app.Fragment#onSaveInstanceState(Bundle)}
-     * or {@link android.support.v7.app.AppCompatActivity#onSaveInstanceState(Bundle, PersistableBundle)}
-     * or {@link android.support.v7.app.AppCompatActivity#onSaveInstanceState(Bundle)}
+     * * this one is called from {@link androidx.fragment.app.Fragment#onSaveInstanceState(Bundle)}
+     * or {@link androidx.appcompat.app.AppCompatActivity#onSaveInstanceState(Bundle, PersistableBundle)}
+     * or {@link androidx.appcompat.app.AppCompatActivity#onSaveInstanceState(Bundle)}
      * @param argument
      */
     void saveDataBeforeRotation(Bundle argument);

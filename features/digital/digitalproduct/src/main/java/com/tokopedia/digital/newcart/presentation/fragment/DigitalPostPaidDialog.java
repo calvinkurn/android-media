@@ -1,7 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.fragment;
 
 import android.app.Activity;
-import android.support.v7.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import android.view.View;
 
 import com.tokopedia.design.component.Dialog;

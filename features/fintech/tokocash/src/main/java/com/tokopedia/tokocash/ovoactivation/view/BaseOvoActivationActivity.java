@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.ovoactivation.view;
 
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.tokocash.R;

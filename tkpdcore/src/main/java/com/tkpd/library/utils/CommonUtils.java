@@ -352,7 +352,7 @@ public class CommonUtils {
         IntentIntegrator.forFragment(fragment).setCaptureActivity(customClass).initiateScan();
     }
 
-    public static void requestBarcodeScanner(android.support.v4.app.Fragment fragment, Class customClass) {
+    public static void requestBarcodeScanner(androidx.fragment.app.Fragment fragment, Class customClass) {
         IntentIntegrator.forSupportFragment(fragment).setCaptureActivity(customClass).initiateScan();
     }
 

@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/attach_invoice_item_cardview"
         style="@style/CardView.Light"
         android:layout_width="match_parent"
@@ -152,6 +152,6 @@
                 android:background="@color/grey_hint" />
         </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
