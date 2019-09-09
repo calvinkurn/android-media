@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.features.cart.data.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.SimilarProduct;
 
 import java.util.ArrayList;
 import java.util.List;

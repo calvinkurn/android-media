@@ -7,7 +7,7 @@ import com.tokopedia.purchase_platform.common.domain.model.ErrorReporter;
 import com.tokopedia.purchase_platform.common.domain.model.ErrorReporterText;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.CheckoutDataResponse;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.CheckoutResponse;
-import com.tokopedia.transactiondata.entity.response.checkout.ErrorReporterResponse;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.ErrorReporterResponse;
 
 import javax.inject.Inject;
 

@@ -271,7 +271,7 @@ public class CartMapper implements ICartMapper {
                 if (data.getErrors() != null && data.getErrors().size() > 0) {
                     cartItemData.setError(true);
                     cartItemData.setErrorMessageTitle(data.getErrors().get(0));
-                    com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.SimilarProduct dataSimilarProduct = data.getSimilarProduct();
+                    com.tokopedia.purchase_platform.features.cart.data.model.response.SimilarProduct dataSimilarProduct = data.getSimilarProduct();
                     if (dataSimilarProduct != null && !TextUtils.isEmpty(dataSimilarProduct.getText()) && !TextUtils.isEmpty(dataSimilarProduct.getUrl())) {
                         cartItemData.setSimilarProduct(new SimilarProduct(dataSimilarProduct.getText(), dataSimilarProduct.getUrl()));
                     }
