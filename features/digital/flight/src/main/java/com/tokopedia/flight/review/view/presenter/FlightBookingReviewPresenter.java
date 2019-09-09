@@ -365,19 +365,4 @@ public class FlightBookingReviewPresenter extends FlightBaseBookingPresenter<Fli
                 }
         );
     }
-
-//    private void renderCouponAndVoucher() {
-//        FlightBookingVoucherViewModel voucherViewModel = getView().getCurrentBookingReviewModel().getVoucherViewModel();
-//        if (voucherViewModel.getIsCoupon() == DEFAULT_IS_COUPON_ONE) {
-//            getView().renderCouponInfoData();
-//        } else {
-//            getView().renderVoucherInfoData();
-//        }
-//
-//        AttributesVoucher attributesVoucher = new AttributesVoucher();
-//        attributesVoucher.setVoucherCode(voucherViewModel.getCode());
-//        attributesVoucher.setMessage(voucherViewModel.getMessageSuccess());
-//        attributesVoucher.setDiscountAmountPlain(voucherViewModel.getDiscountAmount());
-//        getView().updateFinalTotal(attributesVoucher, getView().getCurrentBookingReviewModel());
-//    }
 }
