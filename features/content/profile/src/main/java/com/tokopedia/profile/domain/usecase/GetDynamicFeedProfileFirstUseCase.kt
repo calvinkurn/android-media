@@ -7,12 +7,12 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.profile.R
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliatePostQuota
 import com.tokopedia.profile.data.pojo.affiliatequota.AffiliateQuotaData
-import com.tokopedia.profile.data.pojo.profileheader.Profile
-import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
-import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderError
+import com.tokopedia.feedcomponent.data.pojo.profileheader.Profile
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderError
+import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.profile.domain.usecase.GetDynamicFeedProfileUseCase.Companion.SOURCE_ID
 import com.tokopedia.profile.view.viewmodel.DynamicFeedProfileViewModel
 import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel

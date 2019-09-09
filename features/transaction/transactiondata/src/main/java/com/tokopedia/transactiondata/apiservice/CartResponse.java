@@ -1,14 +1,12 @@
 package com.tokopedia.transactiondata.apiservice;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -111,6 +109,21 @@ public class CartResponse {
         if (objData == null) {
             try {
                 this.objData = gson.fromJson(strData, clazz);
+                return (T) objData;
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return (T) objData;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T convertResponseObj(Class<T> clazz) {
+        if (objData == null) {
+            try {
+                this.objData = gson.fromJson(strResponse, clazz);
                 return (T) objData;
             } catch (ClassCastException e) {
                 e.printStackTrace();

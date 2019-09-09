@@ -2,13 +2,18 @@ package com.tokopedia.transaction.orders.orderdetails.view;
 
 import javax.inject.Inject;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
+import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +71,11 @@ public class OrderListAnalytics {
     private static final String SCREEN_NAME = "/digital/deals/thanks";
     private static final String ACTION_CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
     private static final String NONE = "none/other";
+    private static final String RECOMMENDATION_PRODUCT_EVENT_CATEGORY = "my purchase list - mp - bom_empty";
+    private static final String ADD_WISHLIST = "click add - wishlist on product recommendation";
+    private static final String REMOVE_WISHLIST = "click remove - wishlist on product recommendation";
+    private List<Object> dataLayerList = new ArrayList<>();
+    private String recomTitle;
 
 
     @Inject
@@ -184,5 +194,98 @@ public class OrderListAnalytics {
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
 
+    }
+
+    public void eventEmptyBOMRecommendationProductClick(RecommendationItem item, int position, String recomTitle) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                "event", "productClick",
+                "eventCategory", "my purchase list - mp - bom_empty",
+                "eventAction", "click - product recommendation",
+                "eventLabel", recomTitle,
+                "ecommerce", DataLayer.mapOf(
+                        "click", DataLayer.mapOf("actionField",
+                                DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                        "products", DataLayer.listOf(DataLayer.mapOf(
+                                                "name", item.getName(),
+                                                "id", item.getProductId(),
+                                                "price", item.getPrice().replaceAll("[^0-9]", ""),
+                                                "brand", "none/other",
+                                                "category", item.getCategoryBreadcrumbs(),
+                                                "variant", "none/other",
+                                                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                                                "position", String.valueOf(position)))))
+                )));
+    }
+
+    public void clearDataLayerList() {
+        dataLayerList.clear();
+    }
+
+    public void sendEmptyWishlistProductImpression(TrackingQueue trackingQueue) {
+        if (!dataLayerList.isEmpty()) {
+            Map<String, Object> map = DataLayer.mapOf(
+                    "event", "productView",
+                    "eventCategory", "my purchase list - mp - bom_empty",
+                    "eventAction", "impression - product recommendation",
+                    "eventLabel", recomTitle,
+                    "ecommerce", DataLayer.mapOf(
+                            "currencyCode", "IDR",
+                            "impressions", DataLayer.listOf(
+                                    dataLayerList.toArray(new Object[dataLayerList.size()])
+                            )
+                    ));
+            trackingQueue.putEETracking((HashMap<String, Object>) map);
+            clearDataLayerList();
+        }
+    }
+
+    public void eventRecommendationProductImpression(RecommendationItem item, int position, String recomTitle) {
+        this.recomTitle = recomTitle;
+        this.dataLayerList.add(DataLayer.mapOf(
+                "name", item.getName(),
+                "id", item.getProductId(),
+                "price", item.getPrice().replaceAll("[^0-9]", ""),
+                "brand", "none/other",
+                "category", item.getCategoryBreadcrumbs(),
+                "variant", "none/other",
+                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + item.getRecommendationType() + (item.isTopAds() ? " - product topads" : ""),
+                "position", String.valueOf(position)));
+    }
+
+    public void eventRecommendationAddToCart(OrderListRecomViewModel orderListRecomViewModel, AddToCartDataModel addToCartDataModel){
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent((HashMap<String, Object>) DataLayer.mapOf(
+                "event", "addToCart",
+                "eventCategory", "my purchase list - mp - bom_empty",
+                "eventAction", "click add to cart on my purchase list page",
+                "eventLabel", orderListRecomViewModel.getRecomTitle(),
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "add", DataLayer.mapOf("actionField",
+                                DataLayer.mapOf("list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
+                                        "products", DataLayer.listOf(DataLayer.mapOf(
+                                                "name", orderListRecomViewModel.getRecommendationItem().getName(),
+                                                "id", orderListRecomViewModel.getRecommendationItem().getProductId(),
+                                                "price", orderListRecomViewModel.getRecommendationItem().getPrice().replaceAll("[^0-9]", ""),
+                                                "brand", "none/other",
+                                                "category", orderListRecomViewModel.getRecommendationItem().getCategoryBreadcrumbs(),
+                                                "variant", "none/other",
+                                                "list", "/my_purchase_list_bom_empty - rekomendasi untuk anda - " + orderListRecomViewModel.getRecommendationItem().getRecommendationType() + (orderListRecomViewModel.getRecommendationItem().isTopAds() ? " - product topads" : ""),
+                                                "dimension45", addToCartDataModel.getData().getCartId(),
+                                                "quantity",orderListRecomViewModel.getRecommendationItem().getMinOrder(),
+                                                "shop_id",String.valueOf(orderListRecomViewModel.getRecommendationItem().getShopId()),
+                                                "shop_type",orderListRecomViewModel.getRecommendationItem().getShopType(),
+                                                "shop_name",orderListRecomViewModel.getRecommendationItem().getShopName(),
+                                                "category_id",NONE
+                                                ))))
+                )));
+    }
+
+    public void sendWishListClickEvent(Boolean isAdd) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                TrackAppUtils.gtmData(
+                        PRODUCT_EVENT_NAME,
+                        RECOMMENDATION_PRODUCT_EVENT_CATEGORY,
+                        isAdd ? ADD_WISHLIST : REMOVE_WISHLIST,
+                        recomTitle));
     }
 }
