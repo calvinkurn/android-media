@@ -34,6 +34,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.logisticdata)
+    implementation project(rootProject.ext.features.home)
 
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.fingerprint)

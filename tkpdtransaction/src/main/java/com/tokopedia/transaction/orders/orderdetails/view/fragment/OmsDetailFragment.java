@@ -37,6 +37,7 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.beranda.data.model.HomeWidget;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
@@ -527,6 +528,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 presenter.permissionGrantedContinueDownload();
             }
         }, "");
+    }
+
+    @Override
+    public void setRecommendation(HomeWidget recommendationResponse) {
+
     }
 
     @Override

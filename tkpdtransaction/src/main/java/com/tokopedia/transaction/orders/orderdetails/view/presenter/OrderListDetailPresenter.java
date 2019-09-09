@@ -19,6 +19,7 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.home.beranda.data.model.HomeWidget;
 import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
@@ -69,6 +70,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String UPSTREAM = "upstream";
     private static final String PARAM = "param";
     private static final String INVOICE = "invoice";
+    private static final String TAB_ID = "tabId";
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     @Inject
@@ -127,6 +129,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
 
         orderDetailsUseCase.addRequest(graphqlRequest);
+        orderDetailsUseCase.addRequest(makegraphqlRequestForRecommendation());
         orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -147,6 +150,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DetailsData data = response.getData(DetailsData.class);
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
+                    HomeWidget.Data recommendationResponse = response.getData(HomeWidget.Data.class);
+                    getView().setRecommendation(recommendationResponse.getHomeWidget());
                 }
             }
         });
@@ -579,4 +584,42 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
                 && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
+
+    @Override
+    public void loadRecomendWidget() {
+        orderDetailsUseCase.addRequest(makegraphqlRequestForRecommendation());
+        orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (getView() != null && getView().getAppContext() != null) {
+                    CommonUtils.dumper("error occured" + e);
+                    getView().hideProgressBar();
+                }
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                if (response != null) {
+                    HomeWidget.Data recommendationResponse = response.getData(HomeWidget.Data.class);
+                    getView().setRecommendation(recommendationResponse.getHomeWidget());
+                }
+            }
+        });
+    }
+
+    private GraphqlRequest makegraphqlRequestForRecommendation() {
+        GraphqlRequest graphqlRequestForRecommendation;
+        Map<String, Object> variablesRecmondettion = new HashMap<>();
+        variablesRecmondettion.put(TAB_ID,1);
+        graphqlRequestForRecommendation = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.query_content_tab_business_widget), HomeWidget.Data.class, variablesRecmondettion);
+        return graphqlRequestForRecommendation;
+    }
+
 }

@@ -8,6 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -26,6 +28,8 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.beranda.data.model.HomeWidget;
+import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
@@ -44,10 +48,13 @@ import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.RecommendationAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -58,12 +65,13 @@ import javax.inject.Inject;
 /**
  * Created by baghira on 09/05/18.
  */
-public class OrderListDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
+public class OrderListDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View, BusinessUnitItemView {
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+    private static final String WIDGET_TITLE = "Top-up & Tagihanmu";
     @Inject
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
@@ -87,6 +95,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     TextView secondaryActionBtn;
     FrameLayout progressBarLayout;
     private boolean isSingleButton;
+    private RecyclerView recommendationList;
+    private TextView recommendListTitle;
+    private LinearLayout ViewRecomendItems;
 
 
     @Override
@@ -130,6 +141,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         primaryActionBtn = view.findViewById(R.id.langannan);
         secondaryActionBtn = view.findViewById(R.id.beli_lagi);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        recommendationList = view.findViewById(R.id.recommendation_list);
+        recommendListTitle = view.findViewById(R.id.recommend_title);
+        ViewRecomendItems = view.findViewById(R.id.recommend_items);
         setMainViewVisible(View.GONE);
         presenter.attachView(this);
         return view;
@@ -317,6 +331,17 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void setRecommendation(HomeWidget recommendationResponse) {
+        if(recommendationResponse.getContentItemTabList().isEmpty()){
+            ViewRecomendItems.setVisibility(View.GONE);
+        }else{
+            recommendListTitle.setText(WIDGET_TITLE);
+            recommendationList.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+            recommendationList.setAdapter(new RecommendationAdapter(recommendationResponse.getContentItemTabList(),this));
+        }
+    }
+
+    @Override
     public void setPaymentData(PaymentData paymentData) {
         DoubleTextView doubleTextView = new DoubleTextView(getActivity(), LinearLayout.HORIZONTAL);
         doubleTextView.setTopText(paymentData.label());
@@ -457,4 +482,24 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         mainView.setVisibility(visibility);
     }
 
+
+    @Override
+    public void onReloadButtonClick() {
+        presenter.loadRecomendWidget();
+    }
+
+    @Override
+    public void onSuccessGetData(@NotNull HomeWidget data) {
+
+    }
+
+    @Override
+    public void onErrorGetData(@NotNull Throwable throwable) {
+
+    }
+
+    @Override
+    public void onImpressed(@NotNull HomeWidget.ContentItemTab element, int position) {
+
+    }
 }
