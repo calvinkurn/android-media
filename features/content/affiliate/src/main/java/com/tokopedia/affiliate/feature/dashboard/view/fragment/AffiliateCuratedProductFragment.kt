@@ -115,7 +115,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     override fun loadData(page: Int) {
-        if (page == 0) cursor = ""
+        if (page == 0) resetState()
         presenter.loadProductBoughtByType(type, cursor, currentSort)
     }
 
@@ -125,12 +125,16 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     override fun onSuccessLoadMoreDashboardItem(itemList: List<DashboardItemViewModel>, cursor: String) {
         if (this.cursor.isEmpty()) clearAllData()
-        renderList(itemList)
+        renderList(itemList, cursor.isNotEmpty())
         this.cursor = if (itemList.isEmpty()) "" else cursor
     }
 
     override fun hideLoading() {
         super.hideLoading()
+    }
+
+    override fun showLoading() {
+        super.showLoading()
     }
 
     override fun onDestroy() {
@@ -187,5 +191,10 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         currentSort = (sortAdapter.list as List<CuratedProductSortViewModel>).firstOrNull { it.isChecked }?.id ?: 1
         sortDialog.dismiss()
         loadData(0)
+    }
+
+    private fun resetState() {
+        cursor = ""
+        adapter.clearAllElements()
     }
 }

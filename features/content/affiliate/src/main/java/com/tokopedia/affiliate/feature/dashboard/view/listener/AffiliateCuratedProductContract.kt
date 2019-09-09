@@ -15,6 +15,8 @@ interface AffiliateCuratedProductContract {
 
         val ctx: Context?
 
+        fun showLoading()
+
         fun hideLoading()
 
         fun onErrorGetDashboardItem(error: String)

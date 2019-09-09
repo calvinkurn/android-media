@@ -21,6 +21,7 @@ class AffiliateCuratedProductPresenter
 ) : BaseDaggerPresenter<AffiliateCuratedProductContract.View>(), AffiliateCuratedProductContract.Presenter {
 
     override fun loadProductBoughtByType(type: Int?, cursor: String, sort: Int) {
+        if (cursor.isEmpty()) view.showLoading()
         getDashboardLoadMoreUseCase.run {
             clearRequest()
             addRequest(getRequest(type, cursor, sort))
