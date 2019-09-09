@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
@@ -46,14 +45,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     override fun setFilterResultCount(formattedResultCount: String?) {
         bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
-    }
-
-    override fun closeFilterBottomSheet() {
-        bottomSheetFilterView?.closeView()
-    }
-
-    override fun isBottomSheetShown(): Boolean {
-        return bottomSheetFilterView?.isBottomSheetShown ?: false
     }
 
     override fun launchFilterBottomSheet() {
@@ -201,14 +192,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
                 showBottomNavigation()
             }
 
-            override fun isSearchShown(): Boolean {
-                return false
-            }
-
-            override fun hideKeyboard() {
-                KeyboardHandler.hideSoftKeyboard(this@CategoryNavActivity)
-            }
-
             override fun getActivity(): AppCompatActivity {
                 return this@CategoryNavActivity
             }
@@ -279,7 +262,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         pager.offscreenPageLimit = 3
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                bottomSheetFilterView?.closeView()
+
             }
 
             override fun onPageSelected(position: Int) {
