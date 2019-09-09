@@ -121,9 +121,14 @@ yang ditemukan</string>
     <string name="menu_chat_setting">Pengaturan</string>
     <string name="search_chat_by_username">Cari nama pengguna</string>
 
-
     <string name="filter_chat_all">Semua</string>
     <string name="filter_chat_unread">Belum Dibaca</string>
     <string name="filter_chat_read">Sudah Dibaca</string>
     <string name="filter_chat_unreplied">Belum Dibalas</string>
+
+    <!--Delete Chat Popup-->
+    <string name="topchat_chat_delete_title">Hapus Chat?</string>
+    <string name="topchat_chat_delete_body">Percakapan kamu dengan pengguna ini akan dihapus selamanya</string>
+    <string name="topchat_chat_delete_cancel">Batalkan</string>
+    <string name="topchat_chat_delete_confirm">Ya, Hapus</string>
 </resources>

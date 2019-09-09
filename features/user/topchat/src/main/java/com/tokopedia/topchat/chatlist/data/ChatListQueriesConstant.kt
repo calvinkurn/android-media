@@ -6,6 +6,7 @@ package com.tokopedia.topchat.chatlist.data
 object ChatListQueriesConstant {
 
     const val QUERY_CHAT_LIST_MESSAGE = "chat_list_message"
+    const val QUERY_DELETE_CHAT_MESSAGE = "delete_chat_message"
 
     const val PARAM_TAB = "tab"
     const val PARAM_TAB_INBOX = "inbox"
@@ -19,6 +20,7 @@ object ChatListQueriesConstant {
     const val PARAM_FILTER_UNREPLIED = "unreplied"
 
     const val PARAM_PAGE = "page"
-
     const val PARAM_PER_PAGE = "per_page"
+
+    const val PARAM_MESSAGE_ID = "messageId"
 }

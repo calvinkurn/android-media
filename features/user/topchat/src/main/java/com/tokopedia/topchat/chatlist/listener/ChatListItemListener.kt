@@ -7,4 +7,5 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
  */
 interface ChatListItemListener {
     fun chatItemClicked(element: ItemChatListPojo)
+    fun chatItemDeleted(element: ItemChatListPojo)
 }
