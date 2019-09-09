@@ -23,15 +23,12 @@ class VoucherGameProduct(
         override fun type(typeFactory: VoucherGameDetailAdapterFactory) = typeFactory.type(this)
 
         class Attributes(
+                @SerializedName("desc")
+                @Expose
+                val desc: String = "",
                 @SerializedName("price")
                 @Expose
                 val price: String = "",
-                @SerializedName("detail")
-                @Expose
-                val detail: String = "",
-                @SerializedName("info")
-                @Expose
-                val info: String = "",
                 @SerializedName("promo")
                 @Expose
                 val promo: Promo? = Promo(),

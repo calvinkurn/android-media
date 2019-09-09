@@ -219,7 +219,7 @@ class VoucherGameAnalytics {
         for (product in data) {
             product.item.run {
                 productList.add(DataLayer.mapOf(
-                        EnhanceEccomerce.NAME, attributes.detail,
+                        EnhanceEccomerce.NAME, attributes.desc,
                         EnhanceEccomerce.ID, id,
                         EnhanceEccomerce.PRICE, attributes.price,
 //                        ,EnhanceEccomerce.CATEGORY, it.product.attributes.price
@@ -249,7 +249,7 @@ class VoucherGameAnalytics {
         val productList = ArrayList<Any>()
         product.item.run {
             productList.add(DataLayer.mapOf(
-                    EnhanceEccomerce.NAME, attributes.detail,
+                    EnhanceEccomerce.NAME, attributes.desc,
                     EnhanceEccomerce.ID, id,
                     EnhanceEccomerce.PRICE, attributes.price,
 //                        ,EnhanceEccomerce.CATEGORY, it.product.attributes.price
@@ -282,7 +282,7 @@ class VoucherGameAnalytics {
         val productList = ArrayList<Any>()
         product.item.run {
             productList.add(DataLayer.mapOf(
-                    EnhanceEccomerce.NAME, attributes.detail,
+                    EnhanceEccomerce.NAME, attributes.desc,
                     EnhanceEccomerce.ID, id,
                     EnhanceEccomerce.PRICE, attributes.price,
 //                        EnhanceEccomerce.CATEGORY, categoryName,

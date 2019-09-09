@@ -402,7 +402,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         if (::voucherGameOperatorData.isInitialized) {
             val productIndex = productTrackingList.indexOfFirst { it.item == product }
             voucherGameAnalytics.eventClickProductCard(voucherGameOperatorData.name,
-                    product.attributes.info, productIndex, productTrackingList[productIndex])
+                    product.attributes.desc, productIndex, productTrackingList[productIndex])
         }
         selectProduct(product, position)
     }

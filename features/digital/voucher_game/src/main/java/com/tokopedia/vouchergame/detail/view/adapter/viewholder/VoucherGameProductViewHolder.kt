@@ -16,7 +16,7 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
 
     override fun bind(product: VoucherGameProduct) {
         with(itemView) {
-            title_product.text = product.attributes.info
+            title_product.text = product.attributes.desc
             product_promo_price.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
             if (product.attributes.promo == null) {
                 product_promo_price.visibility = View.INVISIBLE

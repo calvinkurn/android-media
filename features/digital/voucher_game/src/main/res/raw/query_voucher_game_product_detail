@@ -19,9 +19,8 @@ query voucherGameProductDetail($menuID: Int!, $operator: String!){
         products {
           id
           attributes {
+            desc
             price
-            detail
-            info
             promo {
               id
               new_price
