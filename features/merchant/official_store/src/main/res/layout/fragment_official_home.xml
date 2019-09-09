@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <FrameLayout
+        android:id="@+id/parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:background="@android:color/white">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.tokopedia.searchbar.HomeMainToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:minHeight="?actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:screenName="/" />
+
+        <View
+            android:id="@+id/status_bar_bg"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_25"
+            android:layout_gravity="top"
+            android:background="@color/green_600"
+            android:visibility="invisible" />
+
+    </FrameLayout>
+
 
 </android.support.v4.widget.SwipeRefreshLayout>

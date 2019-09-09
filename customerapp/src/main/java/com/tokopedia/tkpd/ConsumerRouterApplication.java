@@ -246,6 +246,7 @@ import com.tokopedia.notifications.CMRouter;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
+import com.tokopedia.officialstore.presentation.OfficialHomeFragment;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
@@ -2380,7 +2381,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getOfficialStoreFragment(Bundle bundle) {
-        return ReactNativeOfficialStoreFragment.createInstance();
+//        return ReactNativeOfficialStoreFragment.createInstance();
+        return OfficialHomeFragment.newInstance(bundle);
     }
 
     @Override

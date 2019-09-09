@@ -1,0 +1,64 @@
+package com.tokopedia.officialstore.presentation.adapter.viewholder
+
+import android.support.annotation.LayoutRes
+import android.util.Log
+import android.view.View
+import android.widget.ImageView
+import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.banner.Banner
+import com.tokopedia.banner.BannerView
+import com.tokopedia.officialstore.R
+import com.tokopedia.officialstore.presentation.adapter.viewmodel.OfficialBannerViewModel
+
+class OfficialBannerViewHolder(view: View?): AbstractViewHolder<OfficialBannerViewModel>(view),
+        BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
+        BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
+        BannerView.OnPromoLoadedListener {
+
+    private val officialStoreImgBackground = "https://ecs7.tokopedia.net/img/android/others/official_store/background.png"
+
+    private var imageBg: ImageView? = null
+    private var banner: Banner? = null
+
+    init {
+        imageBg = view?.findViewById(R.id.banner_bg_official)
+        banner = view?.findViewById(R.id.banner_official)
+    }
+
+    override fun bind(element: OfficialBannerViewModel?) {
+        Glide.with(itemView.context)
+                .load(officialStoreImgBackground)
+                .into(imageBg)
+
+        banner?.setPromoList(element?.dummyData())
+        banner?.onPromoAllClickListener = this
+        banner?.onPromoScrolledListener = this
+        banner?.setOnPromoLoadedListener(this)
+        banner?.setOnPromoDragListener(this)
+        banner?.onPromoClickListener = this
+        banner?.buildView()
+    }
+
+    override fun onPromoClick(p0: Int) {
+        // TODO add on banner click
+    }
+
+    override fun onPromoAllClick() {
+        // TODO add on banner see all click
+    }
+
+    override fun onPromoDragEnd() {}
+
+    override fun onPromoDragStart() {}
+
+    override fun onPromoScrolled(position: Int) {}
+
+    override fun onPromoLoaded() {}
+
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.viewmodel_official_banner
+    }
+
+}

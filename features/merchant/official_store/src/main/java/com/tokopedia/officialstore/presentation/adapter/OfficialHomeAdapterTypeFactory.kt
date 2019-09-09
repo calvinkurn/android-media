@@ -7,11 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.officialstore.presentation.adapter.viewholder.BrandPopulerViewHolder
 import com.tokopedia.officialstore.presentation.adapter.viewholder.CategoryViewHolder
 import com.tokopedia.officialstore.presentation.adapter.viewholder.ExclusiveBrandViewHolder
+import com.tokopedia.officialstore.presentation.adapter.viewholder.OfficialBannerViewHolder
 import com.tokopedia.officialstore.presentation.adapter.viewmodel.BrandPopulerViewModel
 import com.tokopedia.officialstore.presentation.adapter.viewmodel.CategoryViewModel
 import com.tokopedia.officialstore.presentation.adapter.viewmodel.ExclusiveBrandViewModel
+import com.tokopedia.officialstore.presentation.adapter.viewmodel.OfficialBannerViewModel
 
 class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTypeFactory {
+
 
     override fun type(brandPopulerViewModel: BrandPopulerViewModel): Int {
         return BrandPopulerViewHolder.LAYOUT
@@ -25,6 +28,10 @@ class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTyp
         return ExclusiveBrandViewHolder.LAYOUT
     }
 
+    override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
+        return  OfficialBannerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         if (type == BrandPopulerViewHolder.LAYOUT) {
             return BrandPopulerViewHolder(parent)
@@ -32,6 +39,8 @@ class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTyp
             return CategoryViewHolder(parent)
         } else if (type == ExclusiveBrandViewHolder.LAYOUT) {
             return ExclusiveBrandViewHolder(parent)
+        } else if (type == OfficialBannerViewHolder.LAYOUT) {
+            return OfficialBannerViewHolder(parent)
         }
         return super.createViewHolder(parent, type)
     }
