@@ -42,6 +42,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
+        String VIEW_SOM = "viewSOM";
     }
 
     interface EventCategory {
@@ -59,6 +60,7 @@ public interface ConstantTransactionAnalytics {
         String WISHLIST_PAGE = "wishlist page";
         String RECENT_VIEW = "recent view";
         String RECOMMENDATION_PAGE = "recommendation page";
+        String TRACK_SOM = "track seller order management";
     }
 
     interface EventAction {
@@ -292,6 +294,16 @@ public interface ConstantTransactionAnalytics {
         //WIDGET_RECOMMENDATION
         String IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation";
         String CLICK_ADD_TO_CART = "click add to cart";
+
+        //Retry Pickup
+        String VIEW_TUNGGU_CARI_DRIVER = "view tunggu cari driver";
+        String VIEW_BUTTON_CARI_DRIVER = "view button cari driver";
+        String CLICK_BUTTON_CARI_DRIVER = "click button cari driver";
+
+        //Error Popup
+        String VIEW_HELP_POP_UP_AFTER_ERROR_IN_CHECKOUT = "view help pop up after error in checkout";
+        String CLICK_REPORT_ON_HELP_POP_UP_IN_CHECKOUT = "click report on help pop up in checkout";
+        String CLICK_CLOSE_ON_HELP_POP_UP_IN_CHECKOUT = "click close on help pop up in checkout";
     }
 
     interface EventLabel {

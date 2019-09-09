@@ -135,6 +135,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ShippingCourierConverter shippingCourierConverter;
     private final CodCheckoutUseCase codCheckoutUseCase;
     private final ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase;
+    private final SubmitHelpTicketUseCase submitHelpTicketUseCase;
     private final UserSessionInterface userSessionInterface;
 
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
@@ -182,6 +183,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              GetCourierRecommendationUseCase getCourierRecommendationUseCase,
                              CodCheckoutUseCase codCheckoutUseCase,
                              ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase,
+                             SubmitHelpTicketUseCase submitHelpTicketUseCase,
                              ShippingCourierConverter shippingCourierConverter,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener,
                              UserSessionInterface userSessionInterface,
@@ -203,6 +205,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.shippingCourierConverter = shippingCourierConverter;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
         this.codCheckoutUseCase = codCheckoutUseCase;
+        this.submitHelpTicketUseCase = submitHelpTicketUseCase;
         this.mTrackerPurchaseProtection = analyticsPurchaseProtection;
         this.userSessionInterface = userSessionInterface;
         this.mTrackerCod = codAnalytics;
@@ -887,6 +890,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         ConstantTransactionAnalytics.EventLabel.SUCCESS_UNTICKED_PPP);
                     }
                     getView().renderCheckoutCartSuccess(checkoutData);
+                } else if (checkoutData.getErrorReporter() != null && checkoutData.getErrorReporter().getEligible()) {
+                    getView().renderCheckoutCartErrorReporter(checkoutData);
                 } else {
                     analyticsActionListener.sendAnalyticsChoosePaymentMethodFailed(checkoutData.getErrorMessage());
                     if (!checkoutData.getErrorMessage().isEmpty()) {
@@ -948,7 +953,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     enhancedECommerceProductCartMapData.setPromoDetails(productDataCheckoutRequest.getPromoDetails());
                                     enhancedECommerceProductCartMapData.setCartId(String.valueOf(productDataCheckoutRequest.getCartId()));
                                     enhancedECommerceProductCartMapData.setBuyerAddressId(productDataCheckoutRequest.getBuyerAddressId());
-                                    enhancedECommerceProductCartMapData.setShippingDuration(productDataCheckoutRequest.getShippingDuration());
                                     enhancedECommerceProductCartMapData.setCourier(productDataCheckoutRequest.getCourier());
                                     enhancedECommerceProductCartMapData.setShippingPrice(productDataCheckoutRequest.getShippingPrice());
                                     enhancedECommerceProductCartMapData.setCodFlag(productDataCheckoutRequest.getCodFlag());
@@ -1744,5 +1748,42 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public Token getKeroToken() {
         return token;
+    }
+
+    @Override
+    public void processSubmitHelpTicket(CheckoutData checkoutData) {
+        getView().showLoading();
+        RequestParams requestParams = RequestParams.create();
+        SubmitHelpTicketRequest submitHelpTicketRequest = new SubmitHelpTicketRequest();
+        submitHelpTicketRequest.setApiJsonResponse(checkoutData.getJsonResponse());
+        submitHelpTicketRequest.setErrorMessage(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
+        submitHelpTicketRequest.setHeaderMessage(checkoutData.getErrorMessage());
+        submitHelpTicketRequest.setPage(SubmitHelpTicketUseCase.PAGE_CHECKOUT);
+        submitHelpTicketRequest.setRequestUrl(TransactionDataApiUrl.Cart.PATH_CHECKOUT);
+        requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest);
+        compositeSubscription.add(
+                submitHelpTicketUseCase.createObservable(requestParams).subscribe(new Subscriber<SubmitTicketResult>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        getView().hideLoading();
+                        getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                    }
+
+                    @Override
+                    public void onNext(SubmitTicketResult submitTicketResult) {
+                        getView().hideLoading();
+                        if (submitTicketResult.getStatus()) {
+                            getView().renderSubmitHelpTicketSuccess(submitTicketResult);
+                        } else {
+                            getView().showToastError(submitTicketResult.getMessage());
+                        }
+                    }
+                }));
     }
 }

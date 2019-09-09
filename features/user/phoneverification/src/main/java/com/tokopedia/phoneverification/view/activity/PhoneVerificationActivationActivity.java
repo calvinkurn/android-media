@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.phoneverification.PhoneVerificationAnalytics;
 import com.tokopedia.phoneverification.PhoneVerificationConst;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
@@ -27,6 +28,7 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity.getCallingIntent;
 
 /**
@@ -193,8 +195,7 @@ public class PhoneVerificationActivationActivity extends BaseSimpleActivity {
     }
 
     private void goToSellerShopCreateEdit() {
-        Intent intent = ((PhoneVerificationRouter) getApplicationContext()).getIntentCreateShop
-                (getApplicationContext());
+        Intent intent = RouteManager.getIntent(this, OPEN_SHOP);
         startActivity(intent);
         finish();
     }

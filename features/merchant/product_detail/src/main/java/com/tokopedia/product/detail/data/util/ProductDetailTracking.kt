@@ -859,6 +859,42 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         )
     }
 
+    fun eventClickApplyLeasing(productId: String, isVariant: Boolean){
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_APPLY_LEASING,
+                "$productId - $isVariant"
+        )
+    }
+    
+    fun eventViewHelpPopUpWhenAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.VIEW_HELP_POP_UP_WHEN_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickReportOnHelpPopUpAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_REPORT_ON_HELP_POP_UP_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
+    fun eventClickCloseOnHelpPopUpAtc() {
+        TrackApp.getInstance().gtm.pushGeneralGtmV5(
+                ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                ProductTrackingConstant.Category.PDP,
+                ProductTrackingConstant.Action.CLICK_CLOSE_ON_HELP_POP_UP_ATC,
+                ProductTrackingConstant.Label.EMPTY_LABEL
+        )
+    }
+
     companion object {
         private const val KEY_EVENT = "event"
         private const val KEY_CATEGORY = "eventCategory"

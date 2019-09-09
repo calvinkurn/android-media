@@ -34,6 +34,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -58,6 +59,7 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
+import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
@@ -116,7 +118,20 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.Shipment
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.transaction.common.dialog.UnifyDialog;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
+import com.tokopedia.transactionanalytics.CornerAnalytics;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
+import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
+import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
+import com.tokopedia.transactiondata.entity.response.cod.Data;
+import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -729,6 +744,36 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPayment.PAYMENT_CHECKOUT);
         intent.putExtra(PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
         startActivityForResult(intent, PaymentConstant.REQUEST_CODE);
+    }
+
+    @Override
+    public void renderCheckoutCartErrorReporter(CheckoutData checkoutData) {
+        UnifyDialog createTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.HORIZONTAL_ACTION, UnifyDialog.NO_HEADER);
+        createTicketDialog.setTitle(checkoutData.getErrorReporter().getTexts().getSubmitTitle());
+        createTicketDialog.setDescription(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
+        createTicketDialog.setSecondary(checkoutData.getErrorReporter().getTexts().getCancelButton());
+        createTicketDialog.setSecondaryOnClickListener(v -> {
+            checkoutAnalyticsCourierSelection.eventClickCloseOnHelpPopUpInCheckout();
+            createTicketDialog.dismiss();
+        });
+        createTicketDialog.setOk(checkoutData.getErrorReporter().getTexts().getSubmitButton());
+        createTicketDialog.setOkOnClickListener(v -> {
+            checkoutAnalyticsCourierSelection.eventClickReportOnHelpPopUpInCheckout();
+            createTicketDialog.dismiss();
+            shipmentPresenter.processSubmitHelpTicket(checkoutData);
+        });
+        createTicketDialog.show();
+        checkoutAnalyticsCourierSelection.eventViewHelpPopUpAfterErrorInCheckout();
+    }
+
+    @Override
+    public void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult) {
+        UnifyDialog successTicketDialog = new UnifyDialog(getActivity(), UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER);
+        successTicketDialog.setTitle(submitTicketResult.getTexts().getSubmitTitle());
+        successTicketDialog.setDescription(submitTicketResult.getTexts().getSubmitDescription());
+        successTicketDialog.setOk(submitTicketResult.getTexts().getSuccessButton());
+        successTicketDialog.setOkOnClickListener(v -> getActivity().finish());
+        successTicketDialog.show();
     }
 
     @Override

@@ -36,4 +36,5 @@ public class CheckoutDataResponse {
     public Data getData() {
         return data;
     }
+
 }

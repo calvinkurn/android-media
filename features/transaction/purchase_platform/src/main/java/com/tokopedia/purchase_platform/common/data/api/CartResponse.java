@@ -120,6 +120,21 @@ public class CartResponse {
     }
 
     @SuppressWarnings("unchecked")
+    public <T> T convertResponseObj(Class<T> clazz) {
+        if (objData == null) {
+            try {
+                this.objData = gson.fromJson(strResponse, clazz);
+                return (T) objData;
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return (T) objData;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     public <T> List<T> convertDataList(Class<T[]> clazz) {
         if (objData == null) {
             try {

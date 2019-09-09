@@ -78,6 +78,7 @@ public class RemoteConfigKey {
     public static final String APP_GLOBAL_NAV_NEW_DESIGN = "app_global_nav_new_design";
 
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
+    public static final String IRIS_LOG_ENABLED_TOGGLE = "android_iris_log_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
@@ -146,5 +147,13 @@ public class RemoteConfigKey {
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
 
     public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
+
+    public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
     public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
+
+    public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
+
+    public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
+
+    public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
 }

@@ -3,8 +3,8 @@ package com.tokopedia.iris.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.iris.DEFAULT_MAX_ROW
-import com.tokopedia.iris.DEFAULT_SERVICE_TIME
+import com.tokopedia.iris.util.DEFAULT_MAX_ROW
+import com.tokopedia.iris.util.DEFAULT_SERVICE_TIME
 import java.util.concurrent.TimeUnit
 
 /**

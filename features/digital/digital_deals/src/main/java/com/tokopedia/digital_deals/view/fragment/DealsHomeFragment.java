@@ -113,6 +113,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private NestedScrollView nestedScrollView;
     private LinearLayout curatedDealsLayout;
     private LinearLayout toolbarNameLayout;
+    private TextView topDealsHeading;
     private final boolean IS_SHORT_LAYOUT = false;
     OpenTrendingDeals openTrendingDeals;
 
@@ -235,6 +236,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         tvSeeAllTrendingDeals = view.findViewById(R.id.tv_see_all_deals);
         curatedDealsLayout = view.findViewById(R.id.curated_deals);
         promoheading = view.findViewById(R.id.tv_promos);
+        topDealsHeading = view.findViewById(R.id.tv_popular);
         tvSeeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
         tvLocationName.setOnClickListener(this);
@@ -436,6 +438,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderTopDeals(CategoryItem categoryItem) {
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
             this.categoryItem = categoryItem;
+            topDealsHeading.setText(categoryItem.getTitle());
             trendingDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
             categoryAdapter.clearList();
@@ -451,7 +454,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
                             mPresenter.sendSeeAllTrendingDealsEvent();
-                            mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals));
+                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals), categoryItem.getItems(), 0);
                         }
                     }
                 });
@@ -518,11 +521,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         } else {
             curatedDealsLayout.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void renderAllTrendingDeals(List<ProductItem> items, String title) {
-        openTrendingDeals.replaceFragment(items, 0, title);
     }
 
     @Override
@@ -769,6 +767,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     public interface OpenTrendingDeals {
-        void replaceFragment(List<ProductItem> trendingDeals, int flag, String title);
+        void replaceFragment(String url, String title, List<ProductItem> items, int position);
     }
 }
