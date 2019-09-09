@@ -1,13 +1,13 @@
-package com.tokopedia.profile.domain.usecase
+package com.tokopedia.feedcomponent.domain.usecase
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.profile.R
-import com.tokopedia.profile.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.tokopedia.profile.data.pojo.profileheader
+package com.tokopedia.feedcomponent.data.pojo.profileheader
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
