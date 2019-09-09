@@ -352,7 +352,10 @@ public class SearchActivity extends BaseActivity
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
         Uri uri = intent.getData();
 
-        return (uri == null) ? new SearchParameter() : new SearchParameter(uri.toString());
+        SearchParameter searchParameter = (uri == null) ? new SearchParameter() : new SearchParameter(uri.toString());
+        searchParameter.cleanUpNullValuesInMap();
+
+        return searchParameter;
     }
 
     private void performProductSearch() {

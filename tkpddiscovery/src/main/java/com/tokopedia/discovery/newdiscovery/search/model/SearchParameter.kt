@@ -15,6 +15,12 @@ class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
 
     constructor(searchParameter: SearchParameter) : this(searchParameter.deepLinkUri) {
         setSearchParameterHashMap(HashMap(searchParameter.searchParameterHashMap))
+
+        cleanUpNullValuesInMap()
+    }
+
+    fun cleanUpNullValuesInMap() {
+        searchParameterHashMap.values.remove(null)
     }
 
     private fun setSearchParameterHashMap(searchParameterHashMap : HashMap<String, String>) {

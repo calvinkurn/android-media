@@ -299,6 +299,7 @@ public class ProductListFragment
         adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
 
         if(getSearchParameter() != null) {
+            getSearchParameter().cleanUpNullValuesInMap();
             adsParams.getParam().putAll(getSearchParameter().getSearchParameterHashMap());
         }
 
