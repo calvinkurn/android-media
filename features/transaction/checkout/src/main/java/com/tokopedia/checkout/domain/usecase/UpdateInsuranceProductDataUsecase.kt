@@ -18,13 +18,16 @@ import javax.inject.Inject
 class UpdateInsuranceProductDataUsecase @Inject constructor(@ApplicationContext val context: Context) {
     var graphqlUseCase: GraphqlUseCase = GraphqlUseCase()
     var requestParams = RequestParams.create()
+    val DATA_REQUEST_PARAM = "data"
+    val ITEMS_REQUEST_PARAM = "items"
+    val CLIENT_TYPE_REQUEST_PARAM = "android"
 
     fun setRequestParams(updateInsuranceDataList: ArrayList<UpdateInsuranceData>, pageType: String,
                          clientVersion: String, cartIdsList: ArrayList<UpdateInsuranceDataCart>) {
 
-        val updateInsuranceProductRequest = UpdateInsuranceProductDetailRequest(pageType, clientVersion, "android", updateInsuranceDataList)
-        requestParams.putObject("data", updateInsuranceProductRequest)
-        requestParams.putObject("items", cartIdsList)
+        val updateInsuranceProductRequest = UpdateInsuranceProductDetailRequest(pageType, clientVersion, CLIENT_TYPE_REQUEST_PARAM, updateInsuranceDataList)
+        requestParams.putObject(DATA_REQUEST_PARAM, updateInsuranceProductRequest)
+        requestParams.putObject(ITEMS_REQUEST_PARAM, cartIdsList)
     }
 
     fun execute(subscriber: Subscriber<GraphqlResponse>) {

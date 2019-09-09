@@ -12,13 +12,14 @@ class GetSubscriberUpdateInsuranceProductData(val view: ICartListView,
                                               val productId: Long) : Subscriber<GraphqlResponse>() {
 
     val SUCCESS_RESPONSE_MESSAGE = "Rincian Aplikasi Asuransi Diperbarui"
+    val SUCCESS_RESPONSE_STATUS_VALUE = "ok"
 
     override fun onNext(graphqlResponse: GraphqlResponse?) {
 
         val updateInsuranceDataGqlResponse: UpdateInsuranceDataGqlResponse?
         if (graphqlResponse?.getData<UpdateInsuranceDataGqlResponse>(UpdateInsuranceDataGqlResponse::class.java) != null) {
             updateInsuranceDataGqlResponse = graphqlResponse.getData(UpdateInsuranceDataGqlResponse::class.java)
-            if (updateInsuranceDataGqlResponse!!.data.updateCart.status.equals("ok", ignoreCase = true)) {
+            if (updateInsuranceDataGqlResponse!!.data.updateCart.status.equals(SUCCESS_RESPONSE_STATUS_VALUE, ignoreCase = true)) {
                 view.showToastMessageGreen(SUCCESS_RESPONSE_MESSAGE)
                 val productIdList = ArrayList<Long>()
                 productIdList.add(productId)
