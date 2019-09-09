@@ -324,4 +324,12 @@
         <key>android_customer_enable_telco_pdp</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_customer_enable_cashshield</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_enable_category_revamp</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

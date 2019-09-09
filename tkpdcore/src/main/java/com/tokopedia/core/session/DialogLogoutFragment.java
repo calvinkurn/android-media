@@ -16,14 +16,12 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.analytics.cashshield.CashShield;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core2.R;
 import com.tokopedia.core.Router;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.database.manager.DbManagerImpl;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.network.apiservices.user.SessionService;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
@@ -40,9 +38,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 /**
  * Created by m.normansyah on 11/12/2015.
@@ -55,6 +50,7 @@ public class DialogLogoutFragment extends DialogFragment {
     CompositeSubscription compositeSubscription = new CompositeSubscription();
     Button okButton;
     TkpdProgressDialog progressDialog;
+    private CashShield cashShield;
 
 
     @Override
@@ -62,6 +58,7 @@ public class DialogLogoutFragment extends DialogFragment {
         final Activity activity = getActivity();
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         progressDialog = new TkpdProgressDialog(activity, TkpdProgressDialog.NORMAL_PROGRESS);
+        cashShield = new CashShield(getActivity());
         return new AlertDialog.Builder(getActivity())
                 .setIcon(getDrawable())
                 .setTitle(getString(R.string.action_logout) + " dari Tokopedia")
@@ -115,7 +112,6 @@ public class DialogLogoutFragment extends DialogFragment {
                                         PersistentCacheManager.instance.delete();
                                         // clear etalase
                                         Router.clearEtalase(getActivity());
-                                        DbManagerImpl.getInstance().removeAllEtalase();
                                         TrackApp.getInstance().getMoEngage().logoutEvent();
                                         SessionHandler.clearUserData(activity);
                                         NotificationModHandler notif = new NotificationModHandler(activity);
@@ -130,6 +126,10 @@ public class DialogLogoutFragment extends DialogFragment {
                                         if (getActivity() instanceof BaseActivity) {
                                             AppComponent component = ((BaseActivity) getActivity()).getApplicationComponent();
                                             Router.onLogout(getActivity(), component);
+                                        }
+
+                                        if(cashShield != null) {
+                                            cashShield.refreshSession();
                                         }
 
                                         dismiss();
@@ -176,5 +176,13 @@ public class DialogLogoutFragment extends DialogFragment {
         dismiss();
         RxUtils.unsubscribeIfNotNull(compositeSubscription);
         super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(cashShield != null) {
+            cashShield.cancel();
+        }
     }
 }

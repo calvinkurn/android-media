@@ -1,5 +1,6 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.image.ImageLoader;
 
 
 /**
@@ -23,6 +25,7 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
     protected TextView emptyContentItemTextView;
     protected Button emptyButtonItemButton;
     private Callback callback;
+    private Context context;
 
     public BaseEmptyViewHolder(View itemView) {
         super(itemView);
@@ -36,6 +39,7 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
     }
 
     protected void findView(View itemView) {
+        context = itemView.getContext();
         emptyTitleTextView = (TextView) itemView.findViewById(R.id.text_view_empty_title_text);
         emptyContentTextView = (TextView) itemView.findViewById(R.id.text_view_empty_content_text);
         emptyContentItemTextView = (TextView) itemView.findViewById(R.id.text_view_empty_content_item_text);
@@ -46,7 +50,10 @@ public class BaseEmptyViewHolder<T extends EmptyModel> extends AbstractViewHolde
     @Override
     public void bind(T element) {
         if (element.getIconRes() != 0) {
-            emptyIconImageView.setImageDrawable(MethodChecker.getDrawable(emptyIconImageView.getContext(),element.getIconRes()));
+            emptyIconImageView.setImageDrawable(MethodChecker.getDrawable(context, element.getIconRes()));
+        }
+        if (!TextUtils.isEmpty(element.getUrlRes())) {
+            ImageLoader.LoadImage(emptyIconImageView, element.getUrlRes());
         }
         if (element.getCallback() != null) {
             callback = element.getCallback();

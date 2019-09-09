@@ -37,6 +37,7 @@ import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
@@ -46,6 +47,9 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
@@ -112,6 +116,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     var seenAttachedProduct = HashSet<Int>()
 
+    protected var remoteConfig: RemoteConfig? = null
+
     companion object {
 
         private const val POST_ID = "{post_id}"
@@ -140,6 +146,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -201,7 +208,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             renderList(it.listChat, it.canLoadMore)
             getViewState().onSuccessLoadFirstTime(it, onToolbarClicked(), this, alertDialog, onUnblockChatClicked())
             getViewState().onSetCustomMessage(customMessage)
-            presenter.getTemplate()
+            presenter.getTemplate(getUserSession().shopId == shopId.toString())
 
             activity?.run {
                 val data = Intent()
@@ -486,7 +493,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun goToSettingTemplate() {
-        val intent = TemplateChatActivity.createInstance(context)
+        var isSeller = getUserSession().shopId == shopId.toString()
+        val intent = TemplateChatActivity.createInstance(context, isSeller)
         activity?.let {
             startActivityForResult(intent, REQUEST_GO_TO_SETTING_TEMPLATE)
             it.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
@@ -515,7 +523,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_GO_TO_SETTING_TEMPLATE -> {
-                presenter.getTemplate()
+                presenter.getTemplate(getUserSession().shopId == shopId.toString())
             }
 
             TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE -> {
@@ -523,7 +531,14 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     return
                 }
                 processImagePathToUpload(data)?.let {
-                    presenter.startUploadImages(it)
+                    model ->
+                    remoteConfig?.getBoolean(RemoteConfigKey.TOPCHAT_COMPRESS).let {
+                        if(it == null || it == false) {
+                            presenter.startUploadImages(model)
+                        } else {
+                            presenter.startCompressImages(model)
+                        }
+                    }
                 }
             }
 
@@ -540,7 +555,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private fun onReturnFromNormalCheckout(resultCode: Int, data: Intent?) {
         if (resultCode != RESULT_OK) return
         if (data == null) return
-        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
+        val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE) ?: return
         view?.let {
             Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
         }

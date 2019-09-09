@@ -10,6 +10,7 @@ public class Author {
 
     public static String TYPE_AFFILIATE = "affiliate";
     public static String TYPE_SHOP = "content-shop";
+    public static String KEY_POST_TOKO = "Post Toko";
 
     @SerializedName("id")
     @Expose

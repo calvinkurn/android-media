@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.tokopedia.home_recom">
     <application>
+
         <activity
             android:name=".HomeRecommendationActivity"
             android:label="@string/recom_home_recommendation"
@@ -11,13 +12,23 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data
+                        android:scheme="@string/tokopedia_scheme"
+                        android:host="@string/recom_global_applink"
+                        android:pathPattern=".*"/>
+                <data
                         android:scheme="@string/internal_scheme"
-                        android:host="@string/host_marketplace"
+                        android:host="@string/host_home"
                         android:pathPattern="@string/path_global_home_recommendation_domain"/>
+
                 <data
                         android:scheme="@string/tokopedia_scheme"
-                        android:host="@string/host_marketplace"
-                        android:pathPattern="@string/path_global_home_recommendation_domain"/>
+                        android:host="@string/recom_global_applink"
+                        android:pathPattern="/.*/d/.*"/>
+
+                <data
+                        android:scheme="@string/internal_scheme"
+                        android:host="@string/host_home"
+                        android:pathPattern="@string/path_global_similar_product_domain"/>
             </intent-filter>
         </activity>
     </application>

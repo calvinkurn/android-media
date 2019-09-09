@@ -1,13 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener;
 
-import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
-
-/**
- * Created by henrypriyono on 10/18/17.
- */
+import com.tokopedia.filter.common.data.Option;
 
 public interface ProductListener extends EmptyStateListener {
     void onItemClicked(ProductItem item, int adapterPosition);

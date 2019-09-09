@@ -15,10 +15,10 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
-import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
@@ -69,10 +69,10 @@ public class ShopListFragment
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
-    public static ShopListFragment newInstance(SearchParameter searchParameter) {
+    public static ShopListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
         Bundle args = new Bundle();
-
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
+        args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
 
         ShopListFragment shopListFragment = new ShopListFragment();
         shopListFragment.setArguments(args);
@@ -92,6 +92,7 @@ public class ShopListFragment
     private void loadDataFromBundle(Bundle bundle) {
         if (bundle != null) {
             copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
+            setFragmentPosition(bundle.getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
@@ -348,12 +349,6 @@ public class ShopListFragment
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        onFirstTimeLaunch();
-    }
-
-    @Override
     public void onItemClicked(@NonNull ShopViewModel.ShopItem shopItem) {
         if (redirectionListener == null) return;
 
@@ -476,11 +471,6 @@ public class ShopListFragment
     @Override
     protected int getSortRequestCode() {
         return REQUEST_ACTIVITY_SORT_SHOP;
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @Override
