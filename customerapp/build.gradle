@@ -93,9 +93,9 @@ buildscript {
         maven {
             url 'https://jitpack.io'
         }
-    }
-    flatDir {
-        dirs project(rootProject.ext.libraries.inappupdate).file('libs')
+        flatDir {
+            dirs project(rootProject.ext.libraries.inappupdate).file('libs')
+        }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
