@@ -33,7 +33,7 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
         private const val TYPE_THREE_GRID_LEGO = 1
 
         @LayoutRes
-        val LAYOUT = R.layout.home_dc_simple_recyclerview
+        val LAYOUT = R.layout.home_dc_lego_banner
     }
 
     val context = legoBannerView.context

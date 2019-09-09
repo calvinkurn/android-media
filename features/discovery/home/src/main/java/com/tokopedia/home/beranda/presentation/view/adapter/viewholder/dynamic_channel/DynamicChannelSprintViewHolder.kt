@@ -41,7 +41,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.home_dc_simple_recyclerview
+        val LAYOUT = R.layout.home_dc_lego_product
     }
 
     val context: Context = sprintView.context

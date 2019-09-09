@@ -73,7 +73,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         getLayoutType(channel)))
             }
             /**
-             * add decoration when recyclerview has no item decorator
+             * setup recyclerview content
              */
             setupContent(channel)
 
