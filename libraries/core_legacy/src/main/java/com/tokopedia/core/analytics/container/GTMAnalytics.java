@@ -368,7 +368,7 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
         // prevent for sending gtm v5
-        if(GlobalConfig.isAllowDebuggingTools() &&  !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
+        if(GlobalConfig.isAllowDebuggingTools() || !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
             return;
 
         // replace list
