@@ -22,6 +22,9 @@
     <string name="money_in_alert_payment_successful">Pembayaran Berhasil</string>
     <string name="header_section_price">Kisaran harga jual HP Anda</string>
     <string name="not_elligible_price_high">Mohon maaf, harga device Anda lebih tinggi dari device Anda pilih. Baca Selengkapnya</string>
+    <string name="money_in_need_permission">Untuk dapat melanjutkan proses Langsung Laku,
+        kami membutuhkan ijin ada untuk mengakses beberapa fungsi di telepon anda</string>
+    <string name="money_in_request_permission">Mulai berikan ijin</string>
     <string name="not_elligible">Mohon maaf, model HP Anda belum dapat digunakan untuk tukar tambah.</string>
     <string name="model_not_found">Tidak dapat menemukan model HP</string>
     <string name="go_to_product_details">Kembali Ke Detail Produk</string>

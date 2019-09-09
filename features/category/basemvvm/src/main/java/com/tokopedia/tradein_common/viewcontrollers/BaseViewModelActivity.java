@@ -239,8 +239,7 @@ public abstract class BaseViewModelActivity<T extends BaseViewModel> extends Bas
     protected void showDialogFragment(int resId, String titleText, String bodyText, String positiveButton, String negativeButton) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
-        if (resId != 0)
-            accessDialog.setLayoutResId(resId);
+        accessDialog.setLayoutResId(resId);
         accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
         accessDialog.setBodyText(bodyText);
         accessDialog.setTitle(titleText);

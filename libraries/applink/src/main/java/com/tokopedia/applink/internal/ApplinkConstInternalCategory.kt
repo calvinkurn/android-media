@@ -14,4 +14,6 @@ object ApplinkConstInternalCategory {
 
     val AGE_RESTRICTION = "$INTERNAL_CATEGORY/age_restriction"
     val TRADEIN = "$INTERNAL_CATEGORY/tradein"
+    val MONEYIN = "money_in/"
+    val DEVICE_VALIDATION = "device_validation"
 }

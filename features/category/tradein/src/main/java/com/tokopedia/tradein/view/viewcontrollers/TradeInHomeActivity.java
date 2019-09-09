@@ -52,6 +52,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private TradeInHomeViewModel tradeInHomeViewModel;
     private int closeButtonText;
     private int tncStringId;
+    private boolean isShowingPermissionPopup;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -145,32 +146,14 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 HomeResult.PriceState state = homeResult.getPriceStatus();
                 switch (state) {
                     case DIAGNOSED_INVALID:
-                        SpannableString spannableString = new SpannableString(getString(R.string.not_elligible_price_high));
-                        ClickableSpan clickableSpan = new ClickableSpan() {
-                            @Override
-                            public void onClick(@NotNull View widget) {
-                                showTnC(tncStringId);
-                            }
-                        };
                         tvIndicateive.setVisibility(View.GONE);
                         mTvGoToProductDetails.setText(closeButtonText);
                         mTvGoToProductDetails.setOnClickListener(v -> {
                             sendGoToProductDetailGTM();
                             finish();
                         });
-                        int greenColor = getResources().getColor(R.color.green_nob);
-                        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
-                        spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                        mTvPriceElligible.setText(spannableString);
-                        mTvPriceElligible.setVisibility(View.VISIBLE);
-                        mButtonRemove.setVisibility(View.VISIBLE);
-                        mButtonRemove.setOnClickListener(view -> {
-                            mTvPriceElligible.setVisibility(View.GONE);
-                            mButtonRemove.setVisibility(View.GONE);
-                        });
-                        mTvPriceElligible.setClickable(true);
-                        mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
+
+                        showDeviceNotElligiblePopup(R.string.not_elligible_price_high);
                         mTvNotUpto.setVisibility(View.GONE);
                         mTvModelName.setText(homeResult.getDeviceDisplayName());
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
@@ -203,7 +186,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 }
             }
         }));
-        getPriceFromSDK(this);
+        showPermissionDialog();
     }
 
     private void sendGoToProductDetailGTM() {
@@ -330,6 +313,35 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
 
     }
 
+    private void showPermissionDialog() {
+        isShowingPermissionPopup = true;
+        showDialogFragment(0, getString(R.string.tradein_text_request_access),
+                getString(R.string.tradein_text_permission_description), "", "");
+    }
+
+    private void showDeviceNotElligiblePopup(int messageStringId) {
+        int greenColor = getResources().getColor(R.color.green_nob);
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(greenColor);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NotNull View widget) {
+                showTnC(tncStringId);
+            }
+        };
+        SpannableString spannableString = new SpannableString(getString(messageStringId));
+        spannableString.setSpan(foregroundColorSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        spannableString.setSpan(clickableSpan, 67, 84, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        mTvPriceElligible.setText(spannableString);
+        mTvPriceElligible.setVisibility(View.VISIBLE);
+        mButtonRemove.setVisibility(View.VISIBLE);
+        mButtonRemove.setOnClickListener(view -> {
+            mTvPriceElligible.setVisibility(View.GONE);
+            mButtonRemove.setVisibility(View.GONE);
+        });
+        mTvPriceElligible.setClickable(true);
+        mTvPriceElligible.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -345,11 +357,25 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
 
     @Override
     public void clickAccept() {
-        finish();
+        if (isShowingPermissionPopup) {
+            isShowingPermissionPopup = false;
+            getPriceFromSDK(this);
+        } else {
+            finish();
+        }
     }
 
     @Override
     public void clickDeny() {
-
+        if (isShowingPermissionPopup) {
+            isShowingPermissionPopup = false;
+            showDeviceNotElligiblePopup(R.string.money_in_need_permission);
+            mTvInitialPrice.setText("");
+            mTvGoToProductDetails.setText(R.string.money_in_request_permission);
+            mTvGoToProductDetails.setOnClickListener(v -> {
+                showPermissionDialog();
+            });
+        } else {
+        }
     }
 }
