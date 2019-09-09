@@ -177,7 +177,7 @@ public class QuickSingleFilterView extends BaseCustomView {
         }
     }
 
-    public interface  ActionListener {
+    public interface ActionListener {
 
         void selectFilter(String typeFilter);
     }
