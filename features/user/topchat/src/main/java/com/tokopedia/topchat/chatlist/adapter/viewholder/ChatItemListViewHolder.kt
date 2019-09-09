@@ -21,33 +21,30 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * @author : Steven 2019-08-07
  */
-class ChatItemListViewHolder(itemView: View, var listener: ChatListItemListener) : AbstractViewHolder<ItemChatListPojo>(itemView) {
+class ChatItemListViewHolder(
+        itemView: View,
+        var listener: ChatListItemListener
+) : AbstractViewHolder<ItemChatListPojo>(itemView) {
 
-    companion object {
-        @LayoutRes
-        val LAYOUT = R.layout.item_chat_list
-        const val STATE_CHAT_UNREAD = 1
-        const val STATE_CHAT_READ = 2
-
-
-        const val PAYLOAD_READ_STATE = 8796
-        const val PAYLOAD_TYPING_STATE = 3207
-        const val PAYLOAD_STOP_TYPING_STATE = 5431
-    }
-
-    val userName: Typography = itemView.findViewById(R.id.user_name)
-    val thumbnail: ImageView = itemView.findViewById(R.id.thumbnail)
-    val message: TextView = itemView.findViewById(R.id.message)
-    val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
+    private val userName: Typography = itemView.findViewById(R.id.user_name)
+    private val thumbnail: ImageView = itemView.findViewById(R.id.thumbnail)
+    private val message: TextView = itemView.findViewById(R.id.message)
+    private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
 
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
         val data = attributes?.contact
+
         data?.let { contact ->
             itemView.setOnClickListener {
                 attributes.readStatus = STATE_CHAT_READ
                 bindReadState(attributes.readStatus, attributes.unreads)
                 listener.chatItemClicked(element)
+            }
+
+            itemView.setOnLongClickListener {
+                listener.chatItemDeleted(element)
+                true
             }
 
             userName.text = contact.contactName
@@ -61,12 +58,9 @@ class ChatItemListViewHolder(itemView: View, var listener: ChatListItemListener)
 
     override fun bind(element: ItemChatListPojo, payloads: MutableList<Any>) {
         super.bind(element, payloads)
+        if (payloads.isEmpty() || payloads.first() !is Int) return
 
-        if (payloads.isEmpty() || payloads[0] !is Int) {
-            return
-        }
-
-        when (payloads[0] as Int) {
+        when (payloads.first() as Int) {
             PAYLOAD_READ_STATE -> bindReadState(element.attributes?.readStatus, element.attributes?.unreads)
             PAYLOAD_TYPING_STATE -> bindTypingState()
             PAYLOAD_STOP_TYPING_STATE -> bindMessageState(element.attributes?.lastReplyMessage.toBlankOrString())
@@ -100,4 +94,18 @@ class ChatItemListViewHolder(itemView: View, var listener: ChatListItemListener)
             }
         }
     }
+
+    companion object {
+        @LayoutRes val LAYOUT = R.layout.item_chat_list
+
+        //state of chat
+        const val STATE_CHAT_UNREAD = 1
+        const val STATE_CHAT_READ = 2
+
+        //message payload
+        const val PAYLOAD_READ_STATE = 8796
+        const val PAYLOAD_TYPING_STATE = 3207
+        const val PAYLOAD_STOP_TYPING_STATE = 5431
+    }
+
 }

@@ -12,15 +12,10 @@ import javax.inject.Inject
 class ChatListPresenter @Inject constructor(
         private var userSession: UserSessionInterface,
         private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        private val fingerprintInterceptor: FingerprintInterceptor)
-    : BaseDaggerPresenter<ChatListContract.View>()
-        , ChatListContract.Presenter<ChatListContract.View>{
+        private val fingerprintInterceptor: FingerprintInterceptor
+) : BaseDaggerPresenter<ChatListContract.View>(), ChatListContract.Presenter<ChatListContract.View> {
 
-    private var mSubscription: CompositeSubscription
-    private var listInterceptor: ArrayList<Interceptor>
+    private var mSubscription: CompositeSubscription = CompositeSubscription()
+    private var listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
 
-    init {
-        mSubscription = CompositeSubscription()
-        listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
-    }
 }
