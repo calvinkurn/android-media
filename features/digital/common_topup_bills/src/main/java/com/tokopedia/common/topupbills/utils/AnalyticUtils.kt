@@ -39,15 +39,14 @@ class AnalyticUtils {
             val itemPos = getVisibleItemIndexes(list)
             var indexOffset = 0
             list.adapter?.run {
-                for (i in itemPos.first..itemPos.second) {
-                    if (getItemViewType(i) == viewType) {
+                for (i in 0..itemPos.second) {
+                    if (getItemViewType(i) != viewType) indexOffset++
+                    else if (i >= itemPos.first) {
                         val index = i - indexOffset
                         if (!data[index].isTracked) {
                             trackList.add(data[index])
                             data[index].isTracked = true
                         }
-                    } else {
-                        indexOffset++
                     }
                 }
             }
