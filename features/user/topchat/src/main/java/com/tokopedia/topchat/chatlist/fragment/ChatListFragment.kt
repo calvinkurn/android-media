@@ -8,23 +8,19 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.*
-import android.widget.Toast
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.showErrorToaster
-import com.tokopedia.kotlin.extensions.view.showNormalToaster
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.topchat.R
@@ -76,6 +72,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
     private var mViewCreated = false
     private var sightTag = ""
 
+    private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -149,7 +146,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> loadInitialData()
+                is Success -> adapter.deleteItem(itemPositionLongClicked)
                 is Fail -> view?.showErrorToaster(getString(R.string.delete_chat_default_error_message))
             }
         })
@@ -290,7 +287,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
             }
             menus.setTitle(getString(R.string.label_filter))
             menus.itemMenuList = itemMenus
-            menus.setOnItemMenuClickListener { itemMenusClicked, pos ->
+            menus.setOnItemMenuClickListener { _, pos ->
                 filterChecked = pos-1
                 loadInitialData()
                 menus.dismiss()
@@ -330,18 +327,19 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun chatItemDeleted(element: ItemChatListPojo) {
+    override fun chatItemDeleted(element: ItemChatListPojo, itemPosition: Int) {
         Dialog(activity, Dialog.Type.PROMINANCE).apply {
             setTitle(getString(R.string.topchat_chat_delete_title))
             setDesc(getString(R.string.topchat_chat_delete_body))
-            setBtnOk(getString(R.string.topchat_chat_delete_cancel))
-            setOnOkClickListener {
+            setBtnCancel(getString(R.string.topchat_chat_delete_cancel))
+            setOnCancelClickListener {
                 dismiss()
             }
 
-            setBtnCancel(getString(R.string.topchat_chat_delete_confirm))
-            setOnCancelClickListener {
+            setBtnOk(getString(R.string.topchat_chat_delete_confirm))
+            setOnOkClickListener {
                 chatItemListViewModel.chatMoveToTrash(element.msgId.toInt())
+                itemPositionLongClicked = itemPosition
                 dismiss()
             }
             show()
