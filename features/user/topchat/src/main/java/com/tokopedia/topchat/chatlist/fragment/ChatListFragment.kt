@@ -67,7 +67,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
     private var mViewCreated = false
     private var sightTag = ""
 
-    private var itemPositionLongClicked = 0
+    private var itemPositionLongClicked: Int? = null
     private var filterChecked = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,7 +141,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
         chatItemListViewModel.deleteChat.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
-                is Success -> adapter.deleteItem(itemPositionLongClicked)
+                is Success -> itemPositionLongClicked?.let { adapter.deleteItem(it) }
                 is Fail -> view?.showErrorToaster(getString(R.string.delete_chat_default_error_message))
             }
         })
