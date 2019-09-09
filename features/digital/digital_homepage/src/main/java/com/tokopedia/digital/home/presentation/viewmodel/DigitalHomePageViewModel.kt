@@ -1,4 +1,4 @@
-\package com.tokopedia.digital.home.presentation.viewmodel
+package com.tokopedia.digital.home.presentation.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
