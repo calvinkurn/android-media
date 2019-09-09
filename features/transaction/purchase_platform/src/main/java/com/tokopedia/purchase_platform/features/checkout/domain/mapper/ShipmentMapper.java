@@ -115,23 +115,6 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setEgoldAttributes(egoldAttributeModel);
         }
 
-        if (shipmentAddressFormDataResponse.getAutoApply() != null) {
-            AutoApplyData autoApplyData = new AutoApplyData();
-            autoApplyData.setCode(shipmentAddressFormDataResponse.getAutoapplyV2().getCode());
-            autoApplyData.setDiscountAmount(shipmentAddressFormDataResponse.getAutoApply().getDiscountAmount());
-            autoApplyData.setIsCoupon(shipmentAddressFormDataResponse.getAutoapplyV2().getIsCoupon());
-            autoApplyData.setMessageSuccess(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getText());
-            int promoId = 0;
-            if (!TextUtils.isEmpty(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId())) {
-                Integer.valueOf(shipmentAddressFormDataResponse.getAutoapplyV2().getPromoCodeId());
-            }
-            autoApplyData.setPromoId(promoId);
-            autoApplyData.setSuccess(shipmentAddressFormDataResponse.getAutoApply().isSuccess());
-            autoApplyData.setTitleDescription(shipmentAddressFormDataResponse.getAutoapplyV2().getTitleDescription());
-            autoApplyData.setState(shipmentAddressFormDataResponse.getAutoapplyV2().getMessage().getState());
-            dataResult.setAutoApplyData(autoApplyData);
-        }
-
         if (shipmentAddressFormDataResponse.getAutoapplyStack() != null) {
             AutoApplyStackData autoApplyStackData = new AutoApplyStackData();
             if (shipmentAddressFormDataResponse.getAutoapplyStack().getCodes() != null) {

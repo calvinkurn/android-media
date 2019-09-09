@@ -81,6 +81,7 @@ public class ShipmentAddressFormDataResponse {
     @Expose
     private boolean isIneligbilePromoDialogEnabled;
 
+    @Deprecated
     public AutoapplyV2 getAutoapplyV2() {
         return autoapplyV2;
     }
@@ -141,6 +142,7 @@ public class ShipmentAddressFormDataResponse {
         return promoSuggestion;
     }
 
+    @Deprecated
     public AutoApply getAutoApply() { return autoApply; }
 
     public EgoldAttributes getEgoldAttributes() {
