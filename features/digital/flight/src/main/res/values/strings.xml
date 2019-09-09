@@ -409,20 +409,10 @@
     <string name="flight_cancellation_list_id" formatted="false">Cancellation ID: %s</string>
     <string name="flight_cancellation_list_created_time" formatted="false">Tanggal Pembatalan: %s</string>
     <string name="flight_cancellation_cancelled_passegner_detail">Detail Penumpang yang Dibatalkan</string>
-    <string name="flight_cancellation_detail_refund_information_label">Informasi Refund</string>
+    <string name="flight_cancellation_detail_refund_information_label">Detail Refund</string>
     <string name="flight_cancellation_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_estimate_refund_label">Estimasi Refund</string>
-    <string name="flight_cancellation_passenger_status" formatted="false">Pembatalan tiket %s</string>
-    <string name="flight_cancellation_ticket_status_in_progress" formatted="false">Terdapat %d proses pembatalan tiket.</string>
-    <string name="flight_cancellation_ticket_status">Terdapat pembatalan pada tiket ini.</string>
     <string name="flight_label_cancellation_date">Tanggal Pembatalan</string>
-    <string name="flight_cancellation_status_success">Pembatalan Berhasil</string>
-    <string name="flight_cancellation_status_failed">Pembatalan Gagal</string>
-    <string name="flight_cancellation_status_on_progress">Pembatalan Sedang Diproses</string>
-    <string name="flight_cancellation_list_status_requested">DALAM PENGAJUAN</string>
-    <string name="flight_cancellation_list_status_pending">MENUNGGU PERSETUJUAN</string>
-    <string name="flight_cancellation_list_status_refunded">BERHASIL</string>
-    <string name="flight_cancellation_list_status_aborted">GAGAL</string>
     <string name="flight_cancellation_journey_title" formatted="false">Penerbangan %d - %s</string>
     <string name="flight_cancellation_review_dialog_description">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
