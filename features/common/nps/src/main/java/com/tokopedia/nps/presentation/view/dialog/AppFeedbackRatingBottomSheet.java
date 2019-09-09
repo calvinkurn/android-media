@@ -1,5 +1,6 @@
 package com.tokopedia.nps.presentation.view.dialog;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.AppCompatRatingBar;
@@ -39,13 +40,6 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
 
     @Inject
     NpsAnalytics npsAnalytics;
-
-    @Override
-    public void show(FragmentManager manager, String tag) {
-        if (isFeedbackRatingNeeded()) {
-            super.show(manager, tag);
-        }
-    }
 
     @Override
     public int getBaseLayoutResourceId() {
@@ -89,6 +83,14 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
         }
 
         super.onDismiss(dialog);
+    }
+
+    public void showDialog(FragmentManager manager, Context context) {
+        if (context != null && manager != null) {
+            if (isFeedbackRatingNeeded(context)) {
+                super.show(manager, "AppFeedbackRatingBottomSheet");
+            }
+        }
     }
 
     public void setDialogDismissListener(BottomSheetDismissListener dismissListener) {
@@ -156,15 +158,15 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
                 : RemoteConfigKey.MAINAPP_SHOW_ADVANCED_APP_RATING;
     }
 
-    private boolean isFeedbackRatingNeeded() {
+    private boolean isFeedbackRatingNeeded(Context context) {
         boolean isCacheValid = false, isVersionValid = false, isRatingValid = false;
 
-        if (getContext() != null) {
-            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        if (context != null) {
+            RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
             isCacheValid = remoteConfig.getBoolean(getConfigKey(), false) &&
                     PersistentCacheManager.instance.isExpired(HIDE_FEEDBACK_RATING);
 
-            cacheHandler = new LocalCacheHandler(getContext(), NpsConstant.Key.APP_RATING);
+            cacheHandler = new LocalCacheHandler(context, NpsConstant.Key.APP_RATING);
             int feedbackRatingVersion = cacheHandler.getInt(NpsConstant.Key.KEY_ADVANCED_APP_RATING_VERSION);
             int rating = cacheHandler.getInt(NpsConstant.Key.KEY_RATING);
             isVersionValid = feedbackRatingVersion == -1 || feedbackRatingVersion < GlobalConfig.VERSION_CODE;

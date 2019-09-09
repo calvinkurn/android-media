@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.nps.presentation.view.activity.FeedbackActivity;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackMessageBottomSheet;
+import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
 
 import dagger.Component;
@@ -19,6 +20,8 @@ public interface FeedbackComponent {
     void inject(FeedbackActivity activity);
 
     void inject(AppRatingDialog dialog);
+
+    void inject(AppFeedbackRatingBottomSheet dialog);
 
     void inject(AppFeedbackMessageBottomSheet dialog);
 
