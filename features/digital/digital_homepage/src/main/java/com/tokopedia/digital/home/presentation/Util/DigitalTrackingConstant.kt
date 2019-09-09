@@ -1,7 +1,7 @@
 package com.tokopedia.digital.home.presentation.Util
 
 object DigitalHomepageTrackingCategoryConstant {
-    const val DIGITAL_HOMEPAGE_CATEGORY = "digital - subhomepage - topup & tagihan"
+    const val DIGITAL_HOMEPAGE_CATEGORY = "digital - subhomepage - topup tagihan"
 }
 
 object DigitalHomepageTrackingActionConstant {
