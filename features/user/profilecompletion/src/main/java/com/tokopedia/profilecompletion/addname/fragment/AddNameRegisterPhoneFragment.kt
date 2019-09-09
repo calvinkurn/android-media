@@ -208,14 +208,14 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
     }
 
     private fun enableButton(button: TextView) {
-        button.setTextColor(MethodChecker.getColor(activity, R.color.white))
-        button.background = MethodChecker.getDrawable(activity, R.drawable.bg_button_green_enabled)
+        button.setTextColor(MethodChecker.getColor(activity, com.tokopedia.design.R.color.white))
+        button.background = MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.bg_button_green_enabled)
         button.isEnabled = true
     }
 
     private fun disableButton(button: TextView) {
-        button.setTextColor(MethodChecker.getColor(activity, R.color.black_12))
-        button.background = MethodChecker.getDrawable(activity, R.drawable.bg_button_disabled)
+        button.setTextColor(MethodChecker.getColor(activity, com.tokopedia.abstraction.R.color.black_12))
+        button.background = MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.bg_button_disabled)
         button.isEnabled = false
     }
 
@@ -229,7 +229,7 @@ class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.View 
             s.removeSpan(span)
             span = URLSpanNoUnderline(span.url)
             s.setSpan(span, start, end, 0)
-            s.setSpan(ForegroundColorSpan(textView.context.resources.getColor(R.color.tkpd_main_green)), start, end, 0)
+            s.setSpan(ForegroundColorSpan(textView.context.resources.getColor(com.tokopedia.design.R.color.tkpd_main_green)), start, end, 0)
         }
         textView.text = s
     }

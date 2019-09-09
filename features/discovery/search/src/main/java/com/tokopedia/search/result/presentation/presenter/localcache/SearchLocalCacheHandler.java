@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.newdynamicfilter.helper.DynamicFilterDbManager;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.newdynamicfilter.helper.DynamicFilterDbManager;
 
 import java.lang.reflect.Type;
 import java.util.List;

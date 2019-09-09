@@ -1,6 +1,5 @@
 package com.tokopedia.inbox.rescenter.detailv2.view.listener;
 
-import com.tokopedia.inbox.rescenter.detail.dialog.ConfirmationDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.DetailViewModel;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
 
@@ -31,8 +30,6 @@ public interface DetailResCenterFragmentView {
 
     void doOnInitFailed();
 
-    void showConfirmationDialog(String messageDialog, ConfirmationDialog.Listener listener);
-
     void setOnActionCancelResolutionClick();
 
     void setOnActionFinishResolutionClick();
@@ -42,8 +39,6 @@ public interface DetailResCenterFragmentView {
     void setOnActionRecomplaintClick();
 
     void setOnActionInputAddressClick();
-
-    void setOnActionAcceptAdminSolutionClick();
 
     void setOnActionEditSolutionClick(boolean isFromButton);
 
