@@ -17,6 +17,15 @@ class VoucherGameEnquiryFields(
         @SerializedName("name")
         @Expose
         val name: String = "",
+        @SerializedName("text")
+        @Expose
+        val text: String = "",
+        @SerializedName("placeholder")
+        @Expose
+        val placeholder: String = "",
+        @SerializedName("help")
+        @Expose
+        val help: String = "",
         @SerializedName("validations")
         @Expose
         val validations: List<Validation> = listOf()

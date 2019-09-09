@@ -6,6 +6,9 @@ query voucherGameProductDetail($menuID: Int!, $operator: String!){
       id
       param_name
       name
+      text
+      placeholder
+      help
       validations {
         rule
         title

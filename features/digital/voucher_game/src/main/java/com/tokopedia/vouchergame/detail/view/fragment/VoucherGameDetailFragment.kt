@@ -208,10 +208,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
             // Show first input field (guaranteed to have an input field)
             val firstField = enquiryData[0]
-//            input_field_1.setLabel(firstField.paramName)
-//            input_field_1.setHint(firstField.paramName)
-            input_field_1.setLabel(firstField.name)
-            input_field_1.setHint(firstField.name)
+            input_field_1.setLabel(firstField.text)
+            input_field_1.setHint(firstField.placeholder)
 
             input_field_1.ac_input.setOnTouchListener { _, event ->
                 if (event.action == MotionEvent.ACTION_UP) {
@@ -225,8 +223,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 1 -> input_field_2.visibility = View.GONE
                 2 -> {
                     val secondField = enquiryData[1]
-                    input_field_2.setLabel(secondField.name)
-                    input_field_2.setHint(secondField.name)
+                    input_field_2.setLabel(secondField.text)
+                    input_field_2.setHint(secondField.placeholder)
                 }
             }
 
