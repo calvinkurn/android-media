@@ -1,4 +1,4 @@
-package com.tokopedia.flight.bookingV2.presentation.fragment
+package com.tokopedia.flight.passenger.view.fragment
 
 import android.app.Activity
 import android.app.DatePickerDialog
@@ -23,26 +23,29 @@ import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
-import com.tokopedia.flight.booking.di.FlightBookingComponent
+import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity
 import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter
 import com.tokopedia.flight.booking.view.fragment.FlightBookingAmenityFragment
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_DEPARTURE_DATE
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_DEPATURE
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_IS_AIRASIA
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_IS_DOMESTIC
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_LUGGAGES
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_MEALS
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_PASSENGER
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_REQUEST_ID
-import com.tokopedia.flight.bookingV2.presentation.activity.FlightBookingPassengerActivity.Companion.EXTRA_RETURN
-import com.tokopedia.flight.bookingV2.viewmodel.FlightBookingViewModel
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_DEPARTURE_DATE
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_DEPATURE
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_IS_AIRASIA
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_IS_DOMESTIC
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_LUGGAGES
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_MEALS
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_PASSENGER
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_REQUEST_ID
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity.Companion.EXTRA_RETURN
 import com.tokopedia.flight.common.util.FlightDateUtil
+import com.tokopedia.flight.common.util.FlightPassengerInfoValidator
 import com.tokopedia.flight.common.util.FlightPassengerTitle
+import com.tokopedia.flight.passenger.di.FlightPassengerComponent
+import com.tokopedia.flight.passenger.viewmodel.FlightPassengerViewModel
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import java.util.*
 import javax.inject.Inject
@@ -66,12 +69,15 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var bookingViewModel: FlightBookingViewModel
+    lateinit var passengerViewModel: FlightPassengerViewModel
+
+    @Inject
+    lateinit var flightPassengerInfoValidator: FlightPassengerInfoValidator
 
     lateinit var travelContactArrayAdapter: TravelContactArrayAdapter
 
     override fun initInjector() {
-        getComponent(FlightBookingComponent::class.java).inject(this)
+        getComponent(FlightPassengerComponent::class.java).inject(this)
     }
 
     override fun getScreenName(): String? = null
@@ -91,7 +97,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-            bookingViewModel = viewModelProvider.get(FlightBookingViewModel::class.java)
+            passengerViewModel = viewModelProvider.get(FlightPassengerViewModel::class.java)
         }
     }
 
@@ -104,13 +110,13 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         initView()
 
-        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+        passengerViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer {
+        passengerViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer {
             contactList ->
             contactList?.let {
                 travelContactArrayAdapter.updateItem(it.toMutableList())
@@ -172,14 +178,15 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         if (passengerModel.passengerTitle != null) {
             renderPassengerTitle(passengerModel.passengerTitle)
-        } // check current passenger
+        }
+
         if (passengerModel.passengerBirthdate != null)
             et_birth_date.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                     FlightDateUtil.DEFAULT_VIEW_FORMAT, passengerModel.passengerBirthdate))
 
         rv_passenger_title.listener = object : FilterChipAdapter.OnClickListener {
             override fun onChipClickListener(string: String, isSelected: Boolean) {
-                // add action update model
+                if (isSelected) passengerModel.passengerTitle = string
             }
         }
         if (isAdultPassenger()) {
@@ -270,7 +277,27 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         mealAdapter.setArrowVisible(true)
         mealAdapter.setFontSize(resources.getDimension(R.dimen.sp_12))
         mealAdapter.setInteractionListener { adapterPosition, viewModel ->
-            //on meal click
+            val meal = flightBookingMealRouteModels.get(adapterPosition)
+            var existingSelected: FlightBookingAmenityMetaViewModel? = null
+
+            for (passengerMeal in passengerModel.flightBookingMealMetaViewModels) {
+                if (passengerMeal.key.equals(meal.key, true)) {
+                    existingSelected = passengerMeal
+                    break
+                }
+            }
+
+            if (existingSelected == null) {
+                existingSelected = FlightBookingAmenityMetaViewModel()
+                existingSelected.key = meal.key
+                existingSelected.journeyId = meal.journeyId
+                existingSelected.arrivalId = meal.arrivalId
+                existingSelected.departureId = meal.departureId
+                existingSelected.amenities = arrayListOf()
+                existingSelected.description = meal.description
+            }
+
+            navigateToMealPicker(meal.amenities, existingSelected)
         }
 
         rv_meals.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -280,6 +307,12 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         mealAdapter.setDescriptionTextColor(resources.getColor(R.color.colorPrimary))
         mealAdapter.setViewModels(models)
         mealAdapter.notifyDataSetChanged()
+    }
+
+    fun navigateToMealPicker(meals: MutableList<FlightBookingAmenityViewModel>, selected: FlightBookingAmenityMetaViewModel) {
+        val title = String.format("%s %s", getString(R.string.flight_booking_meal_toolbar_title), selected.description)
+        val intent = FlightBookingAmenityActivity.createIntent(activity, title, meals, selected)
+        startActivityForResult(intent, REQUEST_CODE_PICK_MEAL)
     }
 
     fun renderPassengerLuggages(flightBookingLuggageRouteViewModels: List<FlightBookingAmenityMetaViewModel>,
@@ -310,7 +343,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         luggageAdapter.setArrowVisible(true)
         luggageAdapter.setFontSize(resources.getDimension(R.dimen.sp_12))
         luggageAdapter.setInteractionListener { adapterPosition, viewModel ->
-            //on luggage click
+            onPassengerLuggageClicked()
         }
 
         rv_luggages.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -321,6 +354,9 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         luggageAdapter.setViewModels(models)
         luggageAdapter.notifyDataSetChanged()
 
+    }
+
+    fun onPassengerLuggageClicked() {
     }
 
     fun renderPassport() {
@@ -372,7 +408,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             selectedDate = maxDate
         }
 
-        // if birthdate not empty -> selecteddate = birthdate edittext
+        if (et_birth_date.text.toString().isNotEmpty()) selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, et_birth_date.text.toString())
 
         val currentTime = FlightDateUtil.getCurrentCalendar()
         currentTime.time = maxDate

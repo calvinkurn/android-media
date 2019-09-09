@@ -9,8 +9,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 
 import dagger.Module;
 import dagger.Provides;
-import kotlinx.coroutines.CoroutineDispatcher;
-import kotlinx.coroutines.Dispatchers;
 
 /**
  * Created by alvarisi on 11/8/17.
@@ -33,12 +31,6 @@ public class FlightBookingModule {
     @Provides
     MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(GraphqlRepository graphqlRepository) {
         return new MultiRequestGraphqlUseCase(graphqlRepository);
-    }
-
-    @FlightBookingScope
-    @Provides
-    CoroutineDispatcher provideMainDispatcher() {
-        return Dispatchers.getMain();
     }
 
 }

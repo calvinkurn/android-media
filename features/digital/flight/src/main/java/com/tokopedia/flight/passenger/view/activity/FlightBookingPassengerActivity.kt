@@ -1,7 +1,6 @@
-package com.tokopedia.flight.bookingV2.presentation.activity
+package com.tokopedia.flight.passenger.view.activity
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -13,12 +12,8 @@ import com.tokopedia.flight.booking.di.DaggerFlightBookingComponent
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel
-import com.tokopedia.flight.bookingV2.presentation.fragment.FlightBookingPassengerFragment
-import com.tokopedia.flight.passenger.domain.FlightPassengerUpdateSelectedUseCase
-import com.tokopedia.flight.passenger.view.fragment.FlightPassengerListFragment
-import rx.Subscriber
+import com.tokopedia.flight.passenger.view.fragment.FlightBookingPassengerFragment
 import java.util.ArrayList
-import javax.inject.Inject
 
 /**
  * @author by jessica on 2019-09-04

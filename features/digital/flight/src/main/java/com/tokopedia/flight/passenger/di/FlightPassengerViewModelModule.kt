@@ -1,10 +1,11 @@
-package com.tokopedia.flight.booking.di
+package com.tokopedia.flight.passenger.di
 
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.flight.bookingV2.viewmodel.FlightBookingViewModel
+import com.tokopedia.flight.booking.di.FlightBookingScope
+import com.tokopedia.flight.passenger.viewmodel.FlightPassengerViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -15,13 +16,13 @@ import dagger.multibindings.IntoMap
 
 @Module
 @FlightBookingScope
-abstract class FlightBookingViewModelModule {
-    @FlightBookingScope
+abstract class FlightPassengerViewModelModule {
+    @FlightPassengerScope
     @Binds
     abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
-    @ViewModelKey(FlightBookingViewModel::class)
-    abstract fun flightBookingPassengerViewModel(viewModel: FlightBookingViewModel): ViewModel
+    @ViewModelKey(FlightPassengerViewModel::class)
+    abstract fun flightBookingPassengerViewModel(viewModel: FlightPassengerViewModel): ViewModel
 }
