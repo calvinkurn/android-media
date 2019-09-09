@@ -55,13 +55,19 @@ public class CreatePostImagePickerActivity extends ImagePickerActivity {
 
     @Override
     protected Intent getEditorIntent(ArrayList<String> selectedImagePaths){
+        String formUrl = "";
+        if (getIntent().getExtras() != null) {
+            formUrl = getIntent().getExtras().getString(CreatePostActivity.FORM_URL);
+        } else if (getIntent().getData() != null) {
+            formUrl = getIntent().getData().getLastPathSegment();
+        }
         return CreatePostImageEditorActivity.getInstance(this, selectedImagePaths, imageDescriptionList,
                 imagePickerBuilder.getMinResolution(), imagePickerBuilder.getImageEditActionType(),
                 imagePickerBuilder.getImageRatioTypeDef(),
                 imagePickerBuilder.isCirclePreview(),
                 imagePickerBuilder.getMaxFileSizeInKB(),
                 imagePickerBuilder.getRatioOptionList(),
-                getIntent().getExtras().getString(CreatePostActivity.FORM_URL));
+                formUrl);
     }
 
     @Override
