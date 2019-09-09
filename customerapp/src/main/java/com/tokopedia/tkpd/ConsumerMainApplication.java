@@ -157,9 +157,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
                     Crashlytics.logException(anrError);
                 }
             }).start();
-        } else {
-            tetraDebugger = TetraDebugger.Companion.instance(context);
-            tetraDebugger.init();
         }
 
         if (callback == null) {
