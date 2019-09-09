@@ -2,21 +2,29 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.CardView
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
+import com.tokopedia.affiliate.feature.dashboard.view.adapter.CuratedProductSortAdapter
+import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.CuratedProductSortTypeFactoryImpl
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactory
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactoryImpl
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateCuratedProductContract
-import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateProductBoughtPresenter
+import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateCuratedProductPresenter
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CuratedProductSortViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import javax.inject.Inject
@@ -24,7 +32,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 2019-09-04.
  */
-class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel, DashboardItemTypeFactory>(), AffiliateCuratedProductContract.View {
+class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel, DashboardItemTypeFactory>(), AffiliateCuratedProductContract.View, CuratedProductSortTypeFactoryImpl.OnClickListener {
 
     companion object {
         private const val EXTRA_TYPE = "type"
@@ -45,10 +53,17 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     private val type: Int? by lazy { if (arguments?.containsKey(EXTRA_TYPE) == true) arguments?.getInt(EXTRA_TYPE) else null }
 
+    private var currentSort: Int = 1
+
     private lateinit var cvSort: CardView
 
+    private lateinit var sortDialog: CloseableBottomSheetDialog
+    private lateinit var sortDialogView: View
+
+    private val sortAdapter: CuratedProductSortAdapter by lazy { CuratedProductSortAdapter(CuratedProductSortTypeFactoryImpl(this), emptyList()) }
+
     @Inject
-    lateinit var presenter: AffiliateProductBoughtPresenter
+    lateinit var presenter: AffiliateCuratedProductPresenter
 
     override fun getAdapterTypeFactory(): DashboardItemTypeFactory {
         return DashboardItemTypeFactoryImpl(object : DashboardItemTypeFactoryImpl.OnClickListener {
@@ -101,7 +116,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     override fun loadData(page: Int) {
         if (page == 0) cursor = ""
-        presenter.loadProductBoughtByType(type, cursor)
+        presenter.loadProductBoughtByType(type, cursor, currentSort)
     }
 
     override fun onErrorGetDashboardItem(error: String) {
@@ -123,6 +138,19 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         presenter.detachView()
     }
 
+    override fun onGetSortOptions(sortList: List<CuratedProductSortViewModel>) {
+        sortAdapter.setElements(sortList)
+        sortDialog.show()
+    }
+
+    override fun onSuccessReloadSortOptions(sortList: List<CuratedProductSortViewModel>) {
+        sortAdapter.setElements(sortList)
+    }
+
+    override fun onSortClicked(sortId: Int) {
+        presenter.reloadSortOptions(sortAdapter.list as List<CuratedProductSortViewModel>, sortId)
+    }
+
     private fun openApplink(applink: String) {
         if (RouteManager.isSupportApplink(context, applink)) {
             RouteManager.route(context, applink)
@@ -130,6 +158,34 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     private fun showSortBottomSheet() {
+        if (!::sortDialogView.isInitialized) sortDialogView = initSortDialogView()
+        if (!::sortDialog.isInitialized) sortDialog = CloseableBottomSheetDialog.createInstanceRounded(context).apply {
+            setCustomContentView(sortDialogView, "", false)
+            setCancelable(false)
+        }
+        if (sortAdapter.itemCount == 0) presenter.loadSortOptions()
+        else sortDialog.show()
+    }
 
+    private fun initSortDialogView(): View {
+        val view = LayoutInflater.from(context).inflate(R.layout.bottomsheet_af_sort_curated, null, false)
+        val tvSave = view.findViewById<TextView>(R.id.tv_save)
+        tvSave.setOnClickListener { onSaveSortOption() }
+
+        val ivClose = view.findViewById<AppCompatImageView>(R.id.iv_close)
+        ivClose.setOnClickListener { sortDialog.dismiss() }
+
+        val rvSort = view.findViewById<RecyclerView>(R.id.rv_sort_option)
+        rvSort.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = sortAdapter
+        }
+        return view
+    }
+
+    private fun onSaveSortOption() {
+        currentSort = (sortAdapter.list as List<CuratedProductSortViewModel>).firstOrNull { it.isChecked }?.id ?: 1
+        sortDialog.dismiss()
+        loadData(0)
     }
 }

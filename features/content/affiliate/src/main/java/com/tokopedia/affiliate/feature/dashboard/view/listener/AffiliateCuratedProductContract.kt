@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.listener
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CuratedProductSortViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
 
 /**
@@ -19,10 +20,18 @@ interface AffiliateCuratedProductContract {
         fun onErrorGetDashboardItem(error: String)
 
         fun onSuccessLoadMoreDashboardItem(itemList: List<DashboardItemViewModel>, cursor: String)
+
+        fun onGetSortOptions(sortList: List<CuratedProductSortViewModel>)
+
+        fun onSuccessReloadSortOptions(sortList: List<CuratedProductSortViewModel>)
     }
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun loadProductBoughtByType(type: Int?, cursor: String)
+        fun loadProductBoughtByType(type: Int?, cursor: String, sort: Int)
+
+        fun loadSortOptions()
+
+        fun reloadSortOptions(sortList: List<CuratedProductSortViewModel>, selectedId: Int)
     }
 }

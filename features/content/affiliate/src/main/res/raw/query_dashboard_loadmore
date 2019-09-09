@@ -1,5 +1,5 @@
-query GetDashboardLoadMore($type: Int, $cursor: String) {
-  affiliatedProduct(type: $type, cursor:$cursor) {
+query GetDashboardLoadMore($type: Int, $cursor: String, $sort: Int) {
+  affiliatedProduct(type: $type, cursor:$cursor, sortBy: $sort) {
     products {
       id
       image

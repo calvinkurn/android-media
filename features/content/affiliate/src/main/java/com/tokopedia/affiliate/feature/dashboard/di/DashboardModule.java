@@ -6,9 +6,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.domain.usecase.CheckAffiliateUseCase;
+import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetCuratedProductSortUseCase;
 import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardLoadMoreUseCase;
 import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardUseCase;
-import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateProductBoughtPresenter;
+import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateCuratedProductPresenter;
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.DashboardPresenter;
 import com.tokopedia.cachemanager.CacheManager;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -43,9 +44,10 @@ public class DashboardModule {
 
     @DashboardScope
     @Provides
-    AffiliateProductBoughtPresenter provideAffiliateProductBoughtPresenter(@ApplicationContext Context context) {
-        return new AffiliateProductBoughtPresenter(
-                new GetDashboardLoadMoreUseCase(context));
+    AffiliateCuratedProductPresenter provideAffiliateProductBoughtPresenter(@ApplicationContext Context context) {
+        return new AffiliateCuratedProductPresenter(
+                new GetDashboardLoadMoreUseCase(context),
+                new GetCuratedProductSortUseCase(context));
     }
 
     @DashboardScope

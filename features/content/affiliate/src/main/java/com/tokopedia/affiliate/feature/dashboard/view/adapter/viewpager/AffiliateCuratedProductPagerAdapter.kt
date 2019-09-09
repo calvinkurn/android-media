@@ -8,7 +8,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.fragment.AffiliateCuratedP
 /**
  * Created by jegul on 2019-09-04.
  */
-class AffiliateProductBoughtPagerAdapter(
+class AffiliateCuratedProductPagerAdapter(
         fragmentManager: FragmentManager,
         private val fragmentListCurated: List<AffiliateCuratedProductFragment>
 ) : FragmentStatePagerAdapter(fragmentManager) {

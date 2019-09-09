@@ -41,7 +41,7 @@ public class DashboardPresenter extends BaseDaggerPresenter<DashboardContract.Vi
     @Override
     public void loadMoreDashboardItem(String cursor) {
         getDashboardLoadMoreUseCase.clearRequest();
-        getDashboardLoadMoreUseCase.addRequest(getDashboardLoadMoreUseCase.getRequest(0, cursor));
+        getDashboardLoadMoreUseCase.addRequest(getDashboardLoadMoreUseCase.getRequest(0, cursor, 1));
 //        getDashboardLoadMoreUseCase.execute(new GetDashboardLoadMoreSubscriber(getView()));
     }
 

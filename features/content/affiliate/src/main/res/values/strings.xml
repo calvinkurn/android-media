@@ -131,5 +131,6 @@
     <string name="affiliate_product_berlangsung">Produk Afiliasi Berlangsung</string>
     <string name="affiliate_product_berakhir">Produk Afiliasi Berakhir</string>
     <string name="create_post">Buat Post</string>
+    <string name="af_sort">Urutkan</string>
 
 </resources>

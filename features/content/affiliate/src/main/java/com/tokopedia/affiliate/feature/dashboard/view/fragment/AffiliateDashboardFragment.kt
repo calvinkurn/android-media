@@ -19,7 +19,7 @@ import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
 import com.tokopedia.affiliate.feature.dashboard.view.activity.AffiliateCuratedProductActivity
-import com.tokopedia.affiliate.feature.dashboard.view.adapter.viewpager.AffiliateProductBoughtPagerAdapter
+import com.tokopedia.affiliate.feature.dashboard.view.adapter.viewpager.AffiliateCuratedProductPagerAdapter
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboardPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
@@ -133,7 +133,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         fragmentManager?.let {
             if (!::directFragmentCurated.isInitialized) directFragmentCurated = AffiliateCuratedProductFragment.newInstance(1)
             if (!::indirectFragmentCurated.isInitialized) indirectFragmentCurated = AffiliateCuratedProductFragment.newInstance(2)
-            vpProductBought.adapter = AffiliateProductBoughtPagerAdapter(it, listOf(
+            vpProductBought.adapter = AffiliateCuratedProductPagerAdapter(it, listOf(
                     directFragmentCurated,
                     indirectFragmentCurated
             ))

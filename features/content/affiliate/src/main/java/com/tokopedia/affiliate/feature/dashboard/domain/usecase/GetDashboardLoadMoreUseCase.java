@@ -26,24 +26,26 @@ public class GetDashboardLoadMoreUseCase extends GraphqlUseCase {
      * Leave it blank if you wanna show both data
      */
     private final static String PARAM_TYPE = "type";
+    private final static String PARAM_SORT = "sort";
 
     @Inject
     public GetDashboardLoadMoreUseCase(@ApplicationContext Context context) {
         this.context = context;
     }
 
-    public GraphqlRequest getRequest(Integer type, String cursor) {
+    public GraphqlRequest getRequest(Integer type, String cursor, int sort) {
         return new GraphqlRequest(GraphqlHelper.loadRawString(
                 context.getResources(),
                 R.raw.query_dashboard_loadmore),
-                DashboardQuery.class, getParam(type, cursor).getParameters(),
+                DashboardQuery.class, getParam(type, cursor, sort).getParameters(),
                 false);
     }
 
-    public static RequestParams getParam(Integer type, String cursor) {
+    public static RequestParams getParam(Integer type, String cursor, int sort) {
         RequestParams params = RequestParams.create();
         params.putString(PARAM_CURSOR, cursor);
         if (type != null) params.putInt(PARAM_TYPE, type);
+        params.putInt(PARAM_SORT, sort);
         return params;
     }
 }
