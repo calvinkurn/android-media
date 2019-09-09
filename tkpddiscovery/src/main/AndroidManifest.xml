@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".catalogrevamp.ui.CatalogDetailPageActivity"
+            android:name=".catalogrevamp.ui.activity.CatalogDetailPageActivity"
             android:label="@string/title_activity_catalog"
             android:screenOrientation="portrait">
 
@@ -49,7 +49,7 @@
         </activity>
 
         <activity
-            android:name=".catalogrevamp.ui.CatalogGalleryActivity"
+            android:name=".catalogrevamp.ui.activity.CatalogGalleryActivity"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".intermediary.view.IntermediaryActivity"

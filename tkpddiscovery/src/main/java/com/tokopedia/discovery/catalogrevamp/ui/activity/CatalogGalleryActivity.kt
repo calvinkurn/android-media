@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.catalogrevamp.ui
+package com.tokopedia.discovery.catalogrevamp.ui.activity
 
 import android.content.Context
 import android.content.Intent
@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.discovery.catalogrevamp.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.CatalogImage
+import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogGalleryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 
 class CatalogGalleryActivity : BaseSimpleActivity() {

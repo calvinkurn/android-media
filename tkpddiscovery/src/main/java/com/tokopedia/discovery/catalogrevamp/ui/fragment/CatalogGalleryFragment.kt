@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.catalogrevamp.ui
+package com.tokopedia.discovery.catalogrevamp.ui.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment

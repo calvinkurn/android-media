@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.catalogrevamp.ui
+package com.tokopedia.discovery.catalogrevamp.ui.fragment
 
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
@@ -40,8 +40,8 @@ class CatalogSpecsAndDetailBottomSheet : BottomSheetDialogFragment() {
         val tabLayout = view?.findViewById<Tabs>(R.id.tab_layout_specs)
         val viewPager = view?.findViewById<ViewPager>(R.id.view_pager_specs)
         val closeButton = view?.findViewById<ImageView>(R.id.close_button)
-        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description,specifications))
-        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE,description,specifications))
+        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.SPECIFICATION_TYPE, description, specifications))
+        list.add(CatalogSpecsAndDetailFragment.newInstance(CatalogSpecsAndDetailFragment.DESCRIPTION_TYPE, description, specifications))
         val adapter = CatalogDetailsAndSpecsPagerAdapter(childFragmentManager, context, list)
         viewPager?.adapter = adapter
         tabLayout?.setupWithViewPager(viewPager)

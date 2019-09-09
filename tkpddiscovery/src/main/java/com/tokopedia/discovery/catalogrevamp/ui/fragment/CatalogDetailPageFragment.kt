@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.catalogrevamp.ui
+package com.tokopedia.discovery.catalogrevamp.ui.fragment
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
@@ -19,6 +19,7 @@ import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytic
 import com.tokopedia.discovery.catalogrevamp.di.CatalogComponent
 import com.tokopedia.discovery.catalogrevamp.di.DaggerCatalogComponent
 import com.tokopedia.discovery.catalogrevamp.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog
+import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogGalleryActivity
 import com.tokopedia.discovery.catalogrevamp.viewmodel.CatalogDetailPageViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -30,14 +31,15 @@ import javax.inject.Inject
 
 class CatalogDetailPageFragment : Fragment(),
         HasComponent<CatalogComponent>,
-        CatalogImageAdapter.Listener
-{
+        CatalogImageAdapter.Listener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
     private var catalogId: String = ""
+    private var departmentId: String = ""
+    private var departmentName: String = ""
     private lateinit var catalogImage: ArrayList<Catalog.CatalogImage>
     private lateinit var fragment: CatalogGalleryFragment
     private lateinit var catalog: Catalog
@@ -46,13 +48,17 @@ class CatalogDetailPageFragment : Fragment(),
     companion object {
         private const val TAG_FRAGMENT = "TAG_FRAGMENT"
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
+        private const val ARG_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
+        private const val ARG_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
         private const val LEFT = "left"
         private const val RIGHT = "right"
 
-        fun newInstance(catalogId: String): CatalogDetailPageFragment {
+        fun newInstance(catalogId: String, departmentId: String?, departmentName: String?): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
+            bundle.putString(ARG_CATEGORY_DEPARTMENT_ID, departmentId)
+            bundle.putString(ARG_CATEGORY_DEPARTMENT_NAME, departmentName)
             fragment.arguments = bundle
             return fragment
         }
@@ -72,12 +78,17 @@ class CatalogDetailPageFragment : Fragment(),
         component.inject(this)
         if (arguments != null) {
             catalogId = arguments!!.getString(ARG_EXTRA_CATALOG_ID, "")
+            departmentId = arguments!!.getString(ARG_CATEGORY_DEPARTMENT_ID, "")
+            departmentName = arguments!!.getString(ARG_CATEGORY_DEPARTMENT_NAME, "")
         }
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
             catalogDetailPageViewModel.getProductCatalog(catalogId)
         }
+        childFragmentManager.beginTransaction()
+                .add(R.id.frame_layout, ProductDetailNavFragment.newInstance(catalogId, departmentId, departmentName), TAG_FRAGMENT)
+                .commit()
         setObservers()
     }
 
@@ -96,7 +107,7 @@ class CatalogDetailPageFragment : Fragment(),
         })
     }
 
-    fun setListener(listener: Listener){
+    fun setListener(listener: Listener) {
         this.listener = listener
     }
 
@@ -117,7 +128,7 @@ class CatalogDetailPageFragment : Fragment(),
         val catalogImageAdapter = CatalogImageAdapter(catalogImage, this)
         var previousPosition: Int = -1
         view_pager_intermediary.adapter = catalogImageAdapter
-        view_pager_intermediary.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+        view_pager_intermediary.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {}
 
             override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
@@ -183,7 +194,7 @@ class CatalogDetailPageFragment : Fragment(),
                 .build()
     }
 
-    interface Listener{
+    interface Listener {
         fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String)
     }
 }

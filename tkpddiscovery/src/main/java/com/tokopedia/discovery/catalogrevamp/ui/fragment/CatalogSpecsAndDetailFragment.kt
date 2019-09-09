@@ -1,6 +1,5 @@
-package com.tokopedia.discovery.catalogrevamp.ui
+package com.tokopedia.discovery.catalogrevamp.ui.fragment
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -14,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.model.ProductCatalogResponse.ProductCatalogQuery.Data.Catalog.Specification
 import com.tokopedia.transaction.orders.common.view.DoubleTextView
-import kotlinx.android.synthetic.main.fragment_bottomsheet_catalog_specifications.*
 import kotlinx.android.synthetic.main.fragment_catalog_specs_and_detail_fragment.*
 
 class CatalogSpecsAndDetailFragment : Fragment() {
