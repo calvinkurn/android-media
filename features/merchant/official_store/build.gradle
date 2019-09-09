@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 buildscript {
@@ -17,6 +17,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.remoteConfig)
+
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.libraries.design)
