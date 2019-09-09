@@ -43,7 +43,7 @@ class ChatItemListViewHolder(
             }
 
             itemView.setOnLongClickListener {
-                listener.chatItemDeleted(element)
+                listener.chatItemDeleted(element, adapterPosition)
                 true
             }
 
