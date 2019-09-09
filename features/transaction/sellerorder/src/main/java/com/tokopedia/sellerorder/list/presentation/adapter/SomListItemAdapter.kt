@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
@@ -43,6 +44,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         holder.itemView.label_date_order.text = somItemList[position].orderDate
         holder.itemView.label_buyer_name.text = somItemList[position].buyerName
         holder.itemView.label_due_response_day_count.text = somItemList[position].deadlineText
+        holder.itemView.ic_time.loadImageDrawable(R.drawable.ic_label_due_time)
         holder.itemView.ic_time.setColorFilter(Color.WHITE)
         holder.itemView.ic_label_due_card.setCardBackgroundColor(Color.parseColor(somItemList[position].deadlineColor))
 
@@ -69,6 +71,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
             val layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT)
             cardView.layoutParams = layoutParams
             cardView.radius = 3F
+            cardView.cardElevation = 0F
             cardView.setCardBackgroundColor(Color.parseColor(it.flagBackground))
 
             val displayMetrics = holder.itemView.context.resources.displayMetrics
