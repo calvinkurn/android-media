@@ -50,6 +50,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.data.api.CommonPurchaseApiUrl;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.EgoldData;
@@ -93,7 +94,10 @@ import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldTie
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
+import com.tokopedia.transaction.common.data.ticket.SubmitHelpTicketRequest;
 import com.tokopedia.transaction.common.sharedata.EditAddressParam;
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
+import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -1759,7 +1763,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         submitHelpTicketRequest.setErrorMessage(checkoutData.getErrorReporter().getTexts().getSubmitDescription());
         submitHelpTicketRequest.setHeaderMessage(checkoutData.getErrorMessage());
         submitHelpTicketRequest.setPage(SubmitHelpTicketUseCase.PAGE_CHECKOUT);
-        submitHelpTicketRequest.setRequestUrl(TransactionDataApiUrl.Cart.PATH_CHECKOUT);
+        submitHelpTicketRequest.setRequestUrl(CommonPurchaseApiUrl.PATH_CHECKOUT);
         requestParams.putObject(SubmitHelpTicketUseCase.PARAM, submitHelpTicketRequest);
         compositeSubscription.add(
                 submitHelpTicketUseCase.createObservable(requestParams).subscribe(new Subscriber<SubmitTicketResult>() {

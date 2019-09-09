@@ -59,7 +59,6 @@ import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
-import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
 import com.tokopedia.promocheckout.common.data.ConstantKt;
@@ -121,17 +120,6 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.transaction.common.dialog.UnifyDialog;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsPurchaseProtection;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
-import com.tokopedia.transactionanalytics.CornerAnalytics;
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
-import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
-import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
-import com.tokopedia.transactiondata.entity.response.cod.Data;
-import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 
 import org.jetbrains.annotations.NotNull;
 

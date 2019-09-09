@@ -360,5 +360,6 @@
     <string name="prescription_warning">Wajib upload resep melalui formulir yang dikirim di Chat setelah pembayaran berhasil</string>
     <string name="sizechart_guideline">Panduan Ukuran</string>
     <string name="title_choose_other_template">Pilih Template Lain</string>
+    <string name="label_button_apply_credit">Ajukan Kredit</string>
 
 </resources>

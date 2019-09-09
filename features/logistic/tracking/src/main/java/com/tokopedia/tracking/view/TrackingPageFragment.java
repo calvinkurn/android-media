@@ -33,7 +33,6 @@ import com.tokopedia.tracking.di.TrackingPageModule;
 import com.tokopedia.tracking.presenter.ITrackingPagePresenter;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
-import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 import com.tokopedia.unifycomponents.UnifyButton;
 import com.tokopedia.unifyprinciples.Typography;
 

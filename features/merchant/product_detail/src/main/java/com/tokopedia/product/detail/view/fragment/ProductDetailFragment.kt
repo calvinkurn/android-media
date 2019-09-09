@@ -65,9 +65,6 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.normalcheckout.constant.*
-import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
-import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_LEASING
@@ -107,11 +104,8 @@ import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Compani
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
-import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
-import com.tokopedia.purchase_platform.common.constant.ATC_ONLY
+import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.Constant.*
-import com.tokopedia.purchase_platform.common.constant.ProductAction
-import com.tokopedia.purchase_platform.common.constant.TRADEIN_BUY
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
@@ -134,13 +128,10 @@ import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.customview.TradeInTextView
 import com.tokopedia.tradein.viewmodel.TradeInBroadcastReceiver
-import com.tokopedia.transaction.common.TransactionRouter
 import com.tokopedia.transaction.common.dialog.UnifyDialog
 import com.tokopedia.transaction.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.transaction.common.sharedata.RESULT_TICKET_DATA
 import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam
-import com.tokopedia.transactiondata.entity.shared.expresscheckout.Constant.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

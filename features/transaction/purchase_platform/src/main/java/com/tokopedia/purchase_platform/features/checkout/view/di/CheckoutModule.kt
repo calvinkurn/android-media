@@ -2,6 +2,7 @@ package com.tokopedia.purchase_platform.features.checkout.view.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics
@@ -26,11 +27,13 @@ import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterAct
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentPresenter
+import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import rx.subscriptions.CompositeSubscription
+import javax.inject.Named
 
 /**
  * Created by Irfan Khoirul on 2019-08-26.
@@ -77,6 +80,14 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
 
     @Provides
     @CheckoutScope
+    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
+    fun provideSubmitHelpTicketUseCaseQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.transaction.common.R.raw.submit_help_ticket)
+    }
+
+
+    @Provides
+    @CheckoutScope
     fun provideShipmentPresenter(checkPromoStackingCodeFinalUseCase: CheckPromoStackingCodeFinalUseCase,
                                  checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase,
                                  checkPromoStackingCodeMapper: CheckPromoStackingCodeMapper,
@@ -90,6 +101,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  codCheckoutUseCase: CodCheckoutUseCase,
                                  getCourierRecommendationUseCase: GetCourierRecommendationUseCase,
                                  clearCacheAutoApplyStackUseCase: ClearCacheAutoApplyStackUseCase,
+                                 submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                  shippingCourierConverter: ShippingCourierConverter,
                                  userSessionInterface: UserSessionInterface,
                                  analyticsPurchaseProtection: CheckoutAnalyticsPurchaseProtection,
@@ -101,7 +113,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                 getShipmentAddressFormOneClickShipementUseCase,
                 editAddressUseCase, changeShippingAddressUseCase,
                 saveShipmentStateUseCase, getCourierRecommendationUseCase,
-                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, shippingCourierConverter,
+                codCheckoutUseCase, clearCacheAutoApplyStackUseCase, submitHelpTicketUseCase, shippingCourierConverter,
                 shipmentFragment, userSessionInterface,
                 analyticsPurchaseProtection, codAnalytics, checkoutAnalytics)
     }
