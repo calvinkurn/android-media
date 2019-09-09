@@ -41,4 +41,11 @@ class ChatListAdapter(adapterTypeFactory: ChatListTypeFactoryImpl) :
 
         diff.dispatchUpdatesTo(this)
     }
+
+    fun deleteItem(position: Int) {
+        data.removeAt(position)
+        notifyItemRemoved(position)
+        notifyItemRangeChanged(position, data.size)
+    }
+
 }
