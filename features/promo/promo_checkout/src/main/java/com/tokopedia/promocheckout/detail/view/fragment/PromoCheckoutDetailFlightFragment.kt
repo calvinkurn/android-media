@@ -11,24 +11,24 @@ import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
-import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
+import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailFlightPresenter
 import javax.inject.Inject
 
-class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
-    @Inject
-    lateinit var promoCheckoutDetailDigitalPresenter: PromoCheckoutDetailDigitalPresenter
+class PromoCheckoutDetailFlightFragment : BasePromoCheckoutDetailFragment() {
 
-    lateinit var promoDigitalModel: PromoDigitalModel
+    @Inject
+    lateinit var promoCheckoutDetailFlightPresenter: PromoCheckoutDetailFlightPresenter
+
+    var cartID: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         codeCoupon = arguments?.getString(EXTRA_KUPON_CODE, "") ?: ""
+        cartID = arguments?.getString(EXTRA_CART_ID, "") ?: ""
         isUse = arguments?.getBoolean(EXTRA_IS_USE, false) ?: false
-        promoDigitalModel = arguments?.getParcelable(EXTRA_PROMO_DIGITAL_MODEL) ?: PromoDigitalModel()
         pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
     }
 
@@ -40,20 +40,16 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailDigitalPresenter.getDetailPromo(codeCoupon)
+        promoCheckoutDetailFlightPresenter.getDetailPromo(codeCoupon)
     }
 
     override fun onClickUse() {
-        promoCheckoutDetailDigitalPresenter.checkVoucher(codeCoupon, promoDigitalModel)
+        promoCheckoutDetailFlightPresenter.checkVoucher(codeCoupon, cartID)
     }
 
     override fun onClickCancel() {
         super.onClickCancel()
-        val intent = Intent()
-        val promoData = PromoData(PromoData.TYPE_COUPON, state = TickerCheckoutView.State.EMPTY)
-        intent.putExtra(EXTRA_PROMO_DATA, promoData)
-        activity?.setResult(Activity.RESULT_OK, intent)
-        activity?.finish()
+        promoCheckoutDetailFlightPresenter.cancelPromo()
     }
 
     override fun onSuccessCheckPromo(data: DataUiModel) {
@@ -65,29 +61,37 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         activity?.finish()
     }
 
+    override fun onSuccessCancelPromo() {
+        val intent = Intent()
+        val promoData = PromoData(PromoData.TYPE_COUPON, state = TickerCheckoutView.State.EMPTY)
+        intent.putExtra(EXTRA_PROMO_DATA, promoData)
+        activity?.setResult(Activity.RESULT_OK, intent)
+        activity?.finish()
+    }
+
     override fun initInjector() {
         DaggerPromoCheckoutDetailComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .promoCheckoutDetailModule(PromoCheckoutDetailModule())
                 .build()
                 .inject(this)
-        promoCheckoutDetailDigitalPresenter.attachView(this)
+        promoCheckoutDetailFlightPresenter.attachView(this)
     }
 
     override fun onDestroy() {
-        promoCheckoutDetailDigitalPresenter.detachView()
+        promoCheckoutDetailFlightPresenter.detachView()
         super.onDestroy()
     }
 
     companion object {
-        val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
+        val EXTRA_CART_ID = "EXTRA_CART_ID"
 
-        fun createInstance(codeCoupon: String, isUse: Boolean, promoDigitalModel: PromoDigitalModel, pageTracking: Int): PromoCheckoutDetailDigitalFragment {
-            val promoCheckoutDetailFragment = PromoCheckoutDetailDigitalFragment()
+        fun createInstance(codeCoupon: String, cartID: String, isUse: Boolean, pageTracking: Int): PromoCheckoutDetailFlightFragment {
+            val promoCheckoutDetailFragment = PromoCheckoutDetailFlightFragment()
             val bundle = Bundle()
             bundle.putString(EXTRA_KUPON_CODE, codeCoupon)
+            bundle.putString(EXTRA_CART_ID, cartID)
             bundle.putBoolean(EXTRA_IS_USE, isUse)
-            bundle.putParcelable(EXTRA_PROMO_DIGITAL_MODEL, promoDigitalModel)
             bundle.putInt(PAGE_TRACKING, pageTracking)
             promoCheckoutDetailFragment.arguments = bundle
             return promoCheckoutDetailFragment

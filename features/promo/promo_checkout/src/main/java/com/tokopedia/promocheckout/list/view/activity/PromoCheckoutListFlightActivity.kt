@@ -12,14 +12,15 @@ import com.tokopedia.promocheckout.list.PromoCheckoutListComponentInstance
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.view.fragment.BasePromoCheckoutListFragment
 import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListDigitalFragment
+import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListFlightFragment
 
-class PromoCheckoutListDigitalActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {
+class PromoCheckoutListFlightActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {
 
     override fun getNewFragment(): Fragment {
-        return PromoCheckoutListDigitalFragment.createInstance(
+        return PromoCheckoutListFlightFragment.createInstance(
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(BasePromoCheckoutListFragment.EXTRA_PROMO_CODE, ""),
-                intent?.extras?.getParcelable(PromoCheckoutListDigitalFragment.EXTRA_PROMO_DIGITAL_MODEL) ?: PromoDigitalModel(),
+                intent?.extras?.getString(PromoCheckoutListFlightFragment.EXTRA_CART_ID, ""),
                 intent?.extras?.getInt(BasePromoCheckoutListFragment.PAGE_TRACKING, 1) ?: 1
         )
     }
@@ -29,12 +30,12 @@ class PromoCheckoutListDigitalActivity : BaseSimpleActivity(), HasComponent<Prom
     }
 
     companion object {
-        fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, promoDigitalModel: PromoDigitalModel, pageTracking: Int): Intent {
-            val intent = Intent(activity, PromoCheckoutListDigitalActivity::class.java)
+        fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, cartID: String, pageTracking: Int): Intent {
+            val intent = Intent(activity, PromoCheckoutListFlightActivity::class.java)
             val bundle = Bundle()
             bundle.putBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, isCouponActive)
             bundle.putString(BasePromoCheckoutListFragment.EXTRA_PROMO_CODE, promoCode)
-            bundle.putParcelable(PromoCheckoutListDigitalFragment.EXTRA_PROMO_DIGITAL_MODEL, promoDigitalModel)
+            bundle.putString(PromoCheckoutListFlightFragment.EXTRA_CART_ID, cartID)
             bundle.putInt(BasePromoCheckoutListFragment.PAGE_TRACKING, pageTracking)
             intent.putExtras(bundle)
             return intent

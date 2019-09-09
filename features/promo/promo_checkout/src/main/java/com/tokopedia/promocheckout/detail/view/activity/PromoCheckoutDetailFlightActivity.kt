@@ -5,27 +5,26 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.view.fragment.BasePromoCheckoutDetailFragment
-import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailDigitalFragment
+import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailFlightFragment
 
-class PromoCheckoutDetailDigitalActivity : BaseSimpleActivity() {
+class PromoCheckoutDetailFlightActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment {
-        return PromoCheckoutDetailDigitalFragment.createInstance(
+        return PromoCheckoutDetailFlightFragment.createInstance(
                 intent?.extras?.getString(BasePromoCheckoutDetailFragment.EXTRA_KUPON_CODE) ?: "",
+                intent?.extras?.getString(PromoCheckoutDetailFlightFragment.EXTRA_CART_ID) ?: "",
                 intent?.extras?.getBoolean(BasePromoCheckoutDetailFragment.EXTRA_IS_USE, false) ?: false,
-                intent?.extras?.getParcelable(PromoCheckoutDetailDigitalFragment.EXTRA_PROMO_DIGITAL_MODEL) as PromoDigitalModel,
                 intent?.extras?.getInt(BasePromoCheckoutDetailFragment.PAGE_TRACKING, 1) ?: 1
         )
     }
 
     companion object {
-        fun newInstance(context: Context?, codeCoupon: String, isUse: Boolean, promoDigitalModel: PromoDigitalModel, pageTracking: Int): Intent {
-            val intent = Intent(context, PromoCheckoutDetailDigitalActivity::class.java)
+        fun newInstance(context: Context?, codeCoupon: String, cartID: String, isUse: Boolean, pageTracking: Int): Intent {
+            val intent = Intent(context, PromoCheckoutDetailFlightActivity::class.java)
             val bundle = Bundle()
             bundle.putString(BasePromoCheckoutDetailFragment.EXTRA_KUPON_CODE, codeCoupon)
+            bundle.putString(PromoCheckoutDetailFlightFragment.EXTRA_CART_ID, cartID)
             bundle.putBoolean(BasePromoCheckoutDetailFragment.EXTRA_IS_USE, isUse)
-            bundle.putParcelable(PromoCheckoutDetailDigitalFragment.EXTRA_PROMO_DIGITAL_MODEL, promoDigitalModel)
             bundle.putInt(BasePromoCheckoutDetailFragment.PAGE_TRACKING, pageTracking)
             intent.putExtras(bundle)
             return intent
