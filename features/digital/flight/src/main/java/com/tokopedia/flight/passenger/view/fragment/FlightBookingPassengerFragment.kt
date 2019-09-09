@@ -368,7 +368,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
             var existingSelected: FlightBookingAmenityMetaViewModel? = null
             for (selected in passengerModel.flightBookingLuggageMetaViewModels) {
-                if (selected.key.equals(luggage.key)) existingSelected = selected
+                if (selected.key.equals(luggage.key, true)) existingSelected = selected
             }
             if (existingSelected == null) {
                 existingSelected = FlightBookingAmenityMetaViewModel()
@@ -377,7 +377,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                 existingSelected.arrivalId = luggage.arrivalId
                 existingSelected.departureId = luggage.departureId
                 existingSelected.description = luggage.description
-                existingSelected.amenities = luggage.amenities
+                existingSelected.amenities = arrayListOf()
             }
             navigateToLuggagePicker(luggage.amenities, existingSelected)
         }
@@ -505,6 +505,35 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         renderPassengerLuggages(luggageModels, viewModels)
     }
 
+    fun onMealDataChange(flightBookingAmenityMetaViewModel: FlightBookingAmenityMetaViewModel) {
+        val viewModels = passengerModel.flightBookingMealMetaViewModels
+        val index = viewModels.indexOf(flightBookingAmenityMetaViewModel)
+
+        if (flightBookingAmenityMetaViewModel.amenities.size != 0) {
+            if (index != -1) {
+                viewModels.set(index, flightBookingAmenityMetaViewModel)
+            } else {
+                viewModels.add(flightBookingAmenityMetaViewModel)
+            }
+        } else {
+            if (index != -1) {
+                viewModels.removeAt(index)
+            }
+        }
+
+        renderPassengerMeals(mealModels, viewModels)
+    }
+
+    fun onNationalityChanged(flightPassportNationalityViewModel: CountryPhoneCode) {
+        passengerModel.passportNationality = flightPassportNationalityViewModel
+        et_nationality.setText(flightPassportNationalityViewModel.countryName)
+    }
+
+    fun onIssuerCountryChanged(flightPassportIssuerCountry: CountryPhoneCode) {
+        passengerModel.passportIssuerCountry = flightPassportIssuerCountry
+        et_passport_issuer_country.setText(flightPassportIssuerCountry.countryName)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         clearAllKeyboardFocus()
@@ -520,21 +549,21 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                 REQUEST_CODE_PICK_MEAL -> {
                     if (data != null) {
                         val flightBookingLuggageMetaViewModel = data.getParcelableExtra<FlightBookingAmenityMetaViewModel>(FlightBookingAmenityFragment.EXTRA_SELECTED_AMENITIES)
-//                        presenter.onMealDataChange(flightBookingLuggageMetaViewModel)
+                        onMealDataChange(flightBookingLuggageMetaViewModel)
                     }
                 }
 
                 REQUEST_CODE_PICK_NATIONALITY -> {
                     if (data != null) {
                         val flightPassportNationalityViewModel = data.getParcelableExtra<CountryPhoneCode>(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY)
-//                        presenter.onNationalityChanged(flightPassportNationalityViewModel)
+                        onNationalityChanged(flightPassportNationalityViewModel)
                     }
                 }
 
                 REQUEST_CODE_PICK_ISSUER_COUNTRY -> {
                     if (data != null) {
                         val flightPassportIssuerCountry = data.getParcelableExtra<CountryPhoneCode>(FlightBookingNationalityFragment.EXTRA_SELECTED_COUNTRY)
-//                        presenter.onIssuerCountryChanged(flightPassportIssuerCountry)
+                        onIssuerCountryChanged(flightPassportIssuerCountry)
                     }
                 }
             }
