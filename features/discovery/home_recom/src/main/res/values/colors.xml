@@ -7,4 +7,5 @@
     <color name="button_add_to_cart">#fa591d</color>
     <color name="background_gradient_product_info">#ffeaef</color>
     <color name="text_location">#ae31353b</color>
+    <color name="shadow_6">#60727272</color>
 </resources>
