@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -18,7 +19,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -107,6 +111,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
     private ActionListener listener;
     private Handler crackTokenErrorhandler;
     private Handler crackTokenSuccessHandler;
+    private Handler tooltipHandler;
     private WidgetRewardCrackResult widgetRewards;
     private Toolbar toolbar;
     private TextView toolbarTitle;
@@ -228,9 +233,20 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     private void showToolTip() {
         if (!widgetTokenOnBoarding.hasSeenOnBoardingFromPref()) {
+            tooltipHandler = new Handler();
+            tooltipHandler.postDelayed(() -> {
+                if(crackLayoutTooltip != null)
+                    crackLayoutTooltip.setVisibility(View.GONE);
+            }, 4000);
             crackLayoutTooltip.setVisibility(View.VISIBLE);
             crackLayoutTooltip.setOnClickListener(v -> crackLayoutTooltip.setVisibility(View.GONE));
+            Typography tooltipText = crackLayoutTooltip.findViewById(R.id.gf_tooltip_text);
+            SpannableString spannableString = new SpannableString(tooltipText.getText());
+            spannableString.setSpan(new StyleSpan(Typeface.BOLD), 4, 15,
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+            tooltipText.setText(spannableString);
         } else {
+            tooltipHandler.removeCallbacksAndMessages(null);
             crackLayoutTooltip.setVisibility(View.GONE);
         }
     }
@@ -314,6 +330,9 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         }
         if (crackTokenSuccessHandler != null) {
             crackTokenSuccessHandler.removeCallbacksAndMessages(null);
+        }
+        if(tooltipHandler != null){
+            tooltipHandler.removeCallbacksAndMessages(null);
         }
         if (crackTokenErrorhandler != null) {
             crackTokenErrorhandler.removeCallbacksAndMessages(null);

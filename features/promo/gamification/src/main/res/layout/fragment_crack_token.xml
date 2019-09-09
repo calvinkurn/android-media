@@ -183,17 +183,18 @@
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/dp_40"
             android:layout_marginRight="@dimen/dp_40"
-            android:src="@drawable/gf_ic_up" />
+            app:srcCompat="@drawable/gf_ic_up" />
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/gf_tooltip_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_8"
             android:background="@drawable/gf_white_rounded_tooltip"
             android:padding="@dimen/dp_16"
+            android:textColor="@color/clr_f531353b"
             android:text="@string/daily_prize_tooltip_text"
-            app:typographyType="body_2"
-            app:typographyWeight="bold" />
+            app:typographyType="body_2" />
     </FrameLayout>
 
     <ProgressBar
