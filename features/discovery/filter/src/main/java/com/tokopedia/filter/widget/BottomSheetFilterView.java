@@ -122,7 +122,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
 
             FilterTracking.eventSearchResultNavigateToFilterDetail(trackingPrefix, filter.getTitle());
-            FilterDetailActivityRouter.launchDetailActivity(callback.getActivity(), filter, true);
+            FilterDetailActivityRouter.launchDetailActivity(callback.getActivity(), filter, true, trackingPrefix);
         }
     }
 
@@ -133,7 +133,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
         FilterTracking.eventSearchResultNavigateToFilterDetail(trackingPrefix, getResources().getString(R.string.title_category));
         FilterDetailActivityRouter.launchCategoryActivity(callback.getActivity(),
-                filter, selectedCategoryRootId, categoryId, true);
+                filter, selectedCategoryRootId, categoryId, true, trackingPrefix);
     }
 
     private void enrichWithInputState(Filter filter) {
