@@ -12,7 +12,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
@@ -215,8 +218,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
             val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory()
             val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
 
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(context,
-                    DefaultRenderersFactory(context), trackSelector)
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
 
             video_player_pdp.player = mExoPlayer
             mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF
