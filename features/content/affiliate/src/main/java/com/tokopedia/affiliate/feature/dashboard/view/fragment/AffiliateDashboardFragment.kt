@@ -10,6 +10,7 @@ import android.support.v7.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -30,6 +31,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.UnifyCalendar
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.EmptyState
@@ -74,6 +77,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var llCuratedProductHistory: LinearLayout
     private lateinit var esShareNow: EmptyState
     private lateinit var srlRefresh: SwipeRefreshLayout
+    private lateinit var ivAfIncomeInfo: ImageView
 
     private lateinit var calendarBottomSheet: CloseableBottomSheetDialog
     private lateinit var calendarView: View
@@ -144,6 +148,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             llCuratedProductHistory = findViewById(R.id.ll_curated_product_history)
             esShareNow = findViewById(R.id.es_share_now)
             srlRefresh = findViewById(R.id.srl_refresh)
+            ivAfIncomeInfo = findViewById(R.id.iv_af_income_info)
         }
     }
 
@@ -165,6 +170,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         tvSeeAll.setOnClickListener { onSeeAllProductClicked() }
 
         srlRefresh.setOnRefreshListener { onRefresh() }
+        ivAfIncomeInfo.setOnClickListener { showTooltip() }
     }
 
     override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel) {
@@ -356,5 +362,14 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         vPostedViewedSeparator.visible()
         llCuratedProductHistory.visible()
         esShareNow.gone()
+    }
+
+    private fun showTooltip() {
+        val coachMarkItem = CoachMarkItem(ivAfIncomeInfo, " ", getString(R.string.af_income_tooltip))
+        val coachMark = with(CoachMarkBuilder()) {
+            allowNextButton(false)
+            allowPreviousButton(false)
+        }.build()
+        coachMark.show(activity, "AffiliateIncome", arrayListOf(coachMarkItem))
     }
 }

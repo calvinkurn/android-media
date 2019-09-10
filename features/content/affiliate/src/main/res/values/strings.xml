@@ -137,5 +137,6 @@
     <string name="af_curated_empty_subtitle">Semakin sering share, Semakin besar kesempatanmu mendapatkan komisi</string>
     <string name="af_share_now">Share Sekarang</string>
     <string name="af_review_count_format">(%s)</string>
+    <string name="af_income_tooltip">Komisi masuk yang ditampilkan hanya dari 30 hari terakhir</string>
 
 </resources>
