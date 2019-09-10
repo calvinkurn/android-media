@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
@@ -45,6 +46,8 @@ public interface OrderListDetailContract {
         void setDetail(Detail detail);
 
         void setAdditionalInfo(AdditionalInfo additionalInfo);
+
+        void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos);
 
         void setPricing(Pricing pricing);
 

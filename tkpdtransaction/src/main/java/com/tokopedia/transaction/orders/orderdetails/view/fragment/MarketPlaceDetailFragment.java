@@ -43,7 +43,6 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -52,6 +51,7 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
@@ -74,9 +74,13 @@ import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
+import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerData;
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -139,6 +143,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     OrderListAnalytics orderListAnalytics;
     private ShopInfo shopInfo;
     private Status status;
+    private Ticker mTickerInfos;
 
 
     @Override
@@ -177,6 +182,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         detailContent = view.findViewById(R.id.detail_content);
         additionalText = view.findViewById(R.id.additional);
         additionalInfoLayout = view.findViewById(R.id.additional_info);
+        mTickerInfos = view.findViewById(R.id.additional_ticker_info);
         infoLabel = view.findViewById(R.id.info_label);
         infoValue = view.findViewById(R.id.info_value);
         totalPrice = view.findViewById(R.id.total_price);
@@ -355,6 +361,16 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         doubleTextView.setTopText(additionalInfo.label());
         doubleTextView.setBottomText(additionalInfo.value());
         additionalInfoLayout.addView(doubleTextView);
+    }
+
+    @Override
+    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos) {
+        List<TickerData> tickerData = new ArrayList<>();
+        for (AdditionalTickerInfo info : tickerInfos) {
+            tickerData.add(new TickerData(info.getNotes(), Ticker.TYPE_ANNOUNCEMENT));
+        }
+        mTickerInfos.setVisibility(View.VISIBLE);
+        mTickerInfos.addPagerView(new TickerPagerAdapter(getActivity(), tickerData), tickerData);
     }
 
     @Override
