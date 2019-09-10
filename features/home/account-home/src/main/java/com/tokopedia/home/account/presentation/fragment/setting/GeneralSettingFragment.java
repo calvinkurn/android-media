@@ -63,6 +63,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW;
+import static com.tokopedia.home.account.AccountConstants.Analytics.CLEAR_CACHE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.DEVELOPER_OPTIONS;
 import static com.tokopedia.home.account.AccountConstants.Analytics.HELP_CENTER;
 import static com.tokopedia.home.account.AccountConstants.Analytics.LOGOUT;
@@ -177,6 +178,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 getString(R.string.title_privacy_setting)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_APP_REVIEW_ID,
                 getString(R.string.title_app_review_setting)));
+        settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_APP_CLEAR_CACHE,
+                getString(R.string.title_app_clear_cache)));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_HELP_CENTER_ID,
                 getString(R.string.title_help_center_setting)));
 
@@ -242,15 +245,21 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 accountAnalytics.eventClickSetting(LOGOUT);
                 showDialogLogout();
                 break;
+            case SettingConstant.SETTING_APP_CLEAR_CACHE:
+                accountAnalytics.eventClickSetting(CLEAR_CACHE);
+                clearCache();
+                break;
             case SettingConstant.SETTING_DEV_OPTIONS:
                 if (GlobalConfig.isAllowDebuggingTools()) {
-                    accountAnalytics.eventClickSetting(DEVELOPER_OPTIONS);
                     RouteManager.route(getActivity(), ApplinkConst.DEVELOPER_OPTIONS);
                 }
                 break;
             default:
                 break;
         }
+    }
+
+    private void clearCache() {
     }
 
     private void goToPlaystore() {

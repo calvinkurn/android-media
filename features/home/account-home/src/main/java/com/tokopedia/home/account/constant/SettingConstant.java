@@ -35,6 +35,7 @@ public class SettingConstant {
 
     public static final int SETTING_DEV_OPTIONS = 0;
     public static final int SETTING_APP_REVIEW_ID = 10;
+    public static final int SETTING_APP_CLEAR_CACHE = 11;
 
 
     public static class Url {

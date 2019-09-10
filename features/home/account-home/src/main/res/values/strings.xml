@@ -222,5 +222,6 @@
 
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="title_app_clear_cache">Bersihkan Cache</string>
 
 </resources>
