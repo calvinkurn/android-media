@@ -51,7 +51,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailDigitalPresenter.getDetailPromo(codeCoupon)
+        promoCheckoutDetailDigitalPresenter.getDetailPromo(slug)
     }
 
     override fun onClickUse() {

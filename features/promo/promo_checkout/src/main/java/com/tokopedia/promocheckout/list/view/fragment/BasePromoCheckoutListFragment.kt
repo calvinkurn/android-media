@@ -67,6 +67,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView(view)
+        initViewExchangeCoupon(view)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -84,6 +85,7 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         view.recyclerViewLastSeenPromo.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         view.recyclerViewLastSeenPromo.adapter = promoLastSeenAdapter
 
+//        frameLayout = view.findViewById(R.id.catalog_detail_unique)
         val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
         linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
         getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
@@ -92,9 +94,30 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         buttonUse.setOnClickListener {
             onPromoCodeUse(textInputCoupon.text.toString())
         }
-        if(isCouponActive){
+        if (isCouponActive) {
             getRecyclerView(view).visibility = View.VISIBLE
-        }else{
+        } else {
+            getRecyclerView(view).visibility = View.GONE
+        }
+    }
+
+    fun initViewExchangeCoupon(view: View) {
+        fragmentCont= getView()?.fragmentCont!!
+        val dividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL)
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_horizontal_custom_quick_filter)!!)
+        view.rv_carousel.addItemDecoration(dividerItemDecoration)
+        view.rv_carousel.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        view.rv_carousel.adapter = promoCheckoutExchangeCouponAdapter
+
+        val linearDividerItemDecoration = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+        linearDividerItemDecoration.setDrawable(ContextCompat.getDrawable(context!!, R.drawable.divider_vertical_list_promo)!!)
+        getRecyclerView(view).addItemDecoration(linearDividerItemDecoration)
+
+        populateExchnageCouponList()
+
+        if (isCouponActive) {
+            getRecyclerView(view).visibility = View.VISIBLE
+        } else {
             getRecyclerView(view).visibility = View.GONE
         }
     }
@@ -139,6 +162,16 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
         }
     }
 
+    private fun populateExchnageCouponList() {
+
+        if (promoCheckoutExchangeCouponAdapter.items?.isEmpty()!!) {
+            container_exchnage_coupon.visibility = View.GONE
+        } else {
+            container_exchnage_coupon.visibility = View.VISIBLE
+        }
+    }
+
+
     override fun getScreenName(): String {
         return ""
     }
@@ -161,8 +194,9 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     }
 
     override fun loadData(page: Int) {
-        if(isCouponActive) {
+        if (isCouponActive) {
             promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+            promoCheckoutListPresenter.getListExchangeCoupon(resources)
         }
     }
 

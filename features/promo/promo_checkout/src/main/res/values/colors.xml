@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="pc_timer_disable_color">#DBDEE2</color>
+    <color name="default_text_reward_color">#FFFFFF</color>
+    <color name="default_reward_color">#FFD65C</color>
+    <color name="toolbar_color">#33ffffff</color>
+    <color name="egg_source_color">#ffd63b</color>
+    <color name="red_toast_bg_color">#e6d6001c</color>
+    <color name="gf_tint_close_color">#6C727C</color>
+    <color name="charcoal_gray_88">#e131353b</color>
 </resources>

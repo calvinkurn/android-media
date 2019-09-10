@@ -82,9 +82,10 @@
                 android:paddingBottom="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:visibility="gone"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <TextView
+                    android:visibility="gone"
                     style="@style/TextView.Micro.BlackSecondary"
                     android:layout_marginBottom="@dimen/dp_8"
                     android:text="@string/promo_title_category" />
@@ -98,6 +99,12 @@
                     app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_promo_last_seen" />
             </LinearLayout>
+
+            <include
+                android:id="@+id/container_exchnage_coupon"
+                layout="@layout/fragment_list_exchange_coupon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <TextView
                 style="@style/TextView.Micro.BlackSecondary"

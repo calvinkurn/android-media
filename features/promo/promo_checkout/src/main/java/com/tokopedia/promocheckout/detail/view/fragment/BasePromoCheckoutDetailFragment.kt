@@ -21,6 +21,8 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
+import com.tokopedia.promocheckout.detail.model.detailmodel.CouponDetailsResponse
+import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
 import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailException
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
@@ -33,6 +35,8 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     var isLoadingFinished = false
     var codeCoupon = ""
+    var slug="TESTCOUPON"
+    var catalog_id=158
     open var isUse = false
 
     override fun getScreenName(): String {
@@ -48,19 +52,15 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadData()
-        validateViewLoading()
         validateButton()
         buttonUse.setOnClickListener { onClickUse() }
-        buttonCancel.setOnClickListener { onClickCancel() }
         timerUsage = TimerPromoCheckout()
     }
 
     protected fun validateButton() {
         if (isUse) {
-            buttonCancel.visibility = View.VISIBLE
             buttonUse.visibility = View.GONE
         } else {
-            buttonCancel.visibility = View.GONE
             buttonUse.visibility = View.VISIBLE
         }
     }
@@ -72,21 +72,11 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         isLoadingFinished = false
     }
 
-    protected fun validateViewLoading() {
-        if (isLoadingFinished) {
-            mainView.visibility = View.VISIBLE
-            progressBarLoading.visibility = View.GONE
-        } else {
-            mainView.visibility = View.GONE
-            progressBarLoading.visibility = View.VISIBLE
-        }
-    }
-
     @SuppressLint("SetJavaScriptEnabled")
     override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel) {
         promoCheckoutDetailModel.let {
             ImageHandler.LoadImage(imageBannerPromo, it.imageUrlMobile)
-            view?.titlePeriod?.text = promoCheckoutDetailModel.usage?.text
+           // view?.titlePeriod?.text = promoCheckoutDetailModel.usage?.text
             view?.titleMinTrans?.text = promoCheckoutDetailModel.minimumUsageLabel
             if (TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsage)) {
                 view?.textMinTrans?.visibility = View.GONE
@@ -104,7 +94,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
                 view?.textMinTrans?.text = promoCheckoutDetailModel.minimumUsage
             }
             textTitlePromo?.text = it.title
-            hideTimerView()
+          /*  hideTimerView()
             if ((it.usage?.activeCountDown ?: 0 > 0 &&
                             it.usage?.activeCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
                 setActiveTimerUsage(it.usage?.activeCountDown?.toLong() ?: 0)
@@ -112,7 +102,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
                             it.usage?.expiredCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
                 setExpiryTimerUsage(it.usage?.expiredCountDown?.toLong() ?: 0)
             }
-            view?.textPeriod?.text = it.usage?.usageStr
+            view?.textPeriod?.text = it.usage?.usageStr*/
             webviewTnc?.settings?.javaScriptEnabled = true
             webviewTnc?.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
            // enableOrDisableViews(it)
@@ -134,12 +124,12 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     }
 
-    private fun enableOrDisableViews(item: PromoCheckoutDetailModel) {
-        if (item.usage?.activeCountDown!! > 0 || item.usage?.expiredCountDown!! <= 0) {
+    private fun enableOrDisableViews(item: HachikoCatalogDetail) {
+    /*    if (item.usage?.activeCountDown!! > 0 || item.usage?.expiredCountDown!! <= 0) {
             disableViews()
         } else {
             enableViews()
-        }
+        }*/
     }
 
 
@@ -246,7 +236,6 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     override fun showLoading() {
         isLoadingFinished = false
-        validateViewLoading()
     }
 
     override fun hideLoading() {
@@ -278,7 +267,6 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     fun succesLoad() {
         isLoadingFinished = true
-        validateViewLoading()
     }
 
     override fun onDestroyView() {

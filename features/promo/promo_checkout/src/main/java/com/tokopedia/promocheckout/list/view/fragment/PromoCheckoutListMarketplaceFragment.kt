@@ -77,6 +77,35 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     var pageTracking: Int = 1
     private var promo: Promo? = null
 
+/*    override fun onClickRedeemCoupon(position: Int) {
+        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activity)
+        val viewBottomSheet = layoutInflater.inflate(R.layout.promo_coupon_detail_bottomsheet, null, true)
+        val closeBtn = viewBottomSheet.gf_close_button
+
+        val framelayoutbottomsheet = viewBottomSheet.findViewById<FrameLayout>(R.id.catalog_detail_unique)
+
+        fragmentContainer=viewBottomSheet.catalog_detail_unique
+        val fragment = PromoCheckoutDetailMarketplaceFragment.createInstance("codeCoupon", false,oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = this.promo!!)
+
+        childFragmentManager.beginTransaction().add(fragment, "PromoCheckoutDetailDigitalFragment").commit()
+//        val fragment = viewBottomSheet.findViewById<View>(R.id.catalog_detail_unique) as Fragment
+        closeBtn.setOnClickListener { v ->
+            val fragmentTransaction: FragmentTransaction = fragmentManager?.beginTransaction()!!
+//            fragmentTransaction.remove(fragment)
+//            fragmentTransaction.commit()
+            bottomSheet.dismiss()
+
+        }
+        bottomSheet.setOnCancelListener(DialogInterface.OnCancelListener {
+            val fragmentTransaction: FragmentTransaction = fragmentManager?.beginTransaction()!!
+//            fragmentTransaction.remove(fragment)
+//            fragmentTransaction.commit()
+            bottomSheet.dismiss()
+        })
+       // bottomSheet.setCustomContentView(viewBottomSheet, "", false)
+      //  bottomSheet.show()
+    }*/
+
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,8 +131,14 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
         }
-        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
-                activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
+
+        val fragment = PromoCheckoutDetailMarketplaceFragment.createInstance(promoCheckoutListModel?.code
+                ?: "", false, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = this.promo!!)
+
+        childFragmentManager.beginTransaction().add(fragment, "PromoCheckoutDetailDigitalFragment").commit()
+
+//        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
+//                activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
@@ -203,7 +238,12 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onDestroyView() {
-        promoCheckoutListMarketplacePresenter.detachView()
+//        var mFragmentMgr:FragmentManager= this.fragmentManager!!
+//        var mTransaction :FragmentTransaction = mFragmentMgr.beginTransaction()
+//        var childFragment:Fragment = mFragmentMgr.findFragmentByTag("TAG")!!
+//        mTransaction.remove(childFragment)
+//        mTransaction.commit()
+//        promoCheckoutListMarketplacePresenter.detachView()
         super.onDestroyView()
     }
 
