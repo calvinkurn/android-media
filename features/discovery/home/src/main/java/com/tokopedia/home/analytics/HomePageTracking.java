@@ -1171,6 +1171,7 @@ public class HomePageTracking {
                                 FIELD_BRAND, NONE_OTHER,
                                 FIELD_CATEGORY, NONE_OTHER,
                                 FIELD_VARIANT, NONE_OTHER,
+                                LIST, "/ - p1 - dynamic channel mix - product - "+headerName+" - "+type,
                                 FIELD_POSITION, String.valueOf(i + 1)
                         )
                 );
