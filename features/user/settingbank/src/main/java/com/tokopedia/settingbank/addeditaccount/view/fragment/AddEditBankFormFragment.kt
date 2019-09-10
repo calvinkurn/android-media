@@ -352,6 +352,11 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         val bundle = Bundle()
         bankFormModel.accountId = accountId
         bundle.putParcelable(AddEditBankActivity.PARAM_DATA, bankFormModel)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_ID,bankFormModel.accountId)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NAME,bankFormModel.accountName)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NO,bankFormModel.accountNumber)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_ID,bankFormModel.bankId)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_NAME,bankFormModel.bankName)
         intent.putExtras(bundle)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()

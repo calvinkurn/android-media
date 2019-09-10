@@ -121,10 +121,25 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-profile-phone-verification"
 
-    // PhoneVerificationProfileActivity
+    // SettingBankActivity
     // tokopedia-android-internal://global/setting-bank
     @JvmField
     val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
+
+    // PhoneVerificationProfileActivity
+    // tokopedia-android-internal://global/setting-bank
+    @JvmField
+    val ADD_BANK = "$INTERNAL_GLOBAL/add-bank"
+    @JvmField
+    val PARAM_ACCOUNT_ID = "account_id"
+    @JvmField
+    val PARAM_ACCOUNT_NAME = "account_name"
+    @JvmField
+    val PARAM_ACCOUNT_NO = "account_number"
+    @JvmField
+    val PARAM_BANK_ID = "bank_id"
+    @JvmField
+    val PARAM_BANK_NAME = "bank_name"
 
     @JvmField
     val DYNAMIC_FEATURE_INSTALL_BASE= "$INTERNAL_GLOBAL/dynamic-features-install/"

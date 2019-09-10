@@ -25,5 +25,6 @@
     <string name="path_dynamic_features_install" translatable="false">/dynamic-features-install/.*\\/</string>
     <string name="path_add_bod">/add-bod</string>
     <string name="path_setting_bank" translatable="false">/setting-bank</string>
+    <string name="path_add_bank" translatable="false">/add-bank</string>
 
 </resources>
