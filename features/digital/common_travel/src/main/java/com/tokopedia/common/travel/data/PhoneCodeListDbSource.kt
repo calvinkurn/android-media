@@ -82,10 +82,11 @@ constructor(private val countryPhoneCodeDao: CountryPhoneCodeDao,
     }
 
     fun getCountryById(id: String): LiveData<List<CountryPhoneCodeTable>> {
+        val param = "%$id%"
         if (countryPhoneCodeDao.findAllPhoneCodes().isEmpty()) {
             countryPhoneCodeDao.insertAll(phoneCodeListMapper.mapEntitiesToTables(data))
         }
-        return countryPhoneCodeDao.getCountryById(id)
+        return countryPhoneCodeDao.getCountryById(param)
     }
 
     companion object {

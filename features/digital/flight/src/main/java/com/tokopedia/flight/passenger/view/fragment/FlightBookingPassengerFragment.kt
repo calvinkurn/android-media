@@ -669,6 +669,8 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             if (contact.idList.isNotEmpty()) {
                 for (id in contact.idList) {
                     if (id.type.equals("passport", true)) {
+                        passengerModel.passportNumber = id.number
+                        passengerModel.passportExpiredDate = id.expiry
                         et_passport_no.setText(id.number)
                         et_passport_expiration_date.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                                 FlightDateUtil.DEFAULT_VIEW_FORMAT, id.expiry))
