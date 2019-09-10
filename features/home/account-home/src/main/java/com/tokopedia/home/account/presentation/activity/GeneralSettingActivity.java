@@ -15,6 +15,6 @@ public class GeneralSettingActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return GeneralSettingFragment.Companion.createInstance();
+        return GeneralSettingFragment.createInstance();
     }
 }

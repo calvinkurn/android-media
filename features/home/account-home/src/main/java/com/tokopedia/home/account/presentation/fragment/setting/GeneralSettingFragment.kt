@@ -402,6 +402,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
     companion object {
 
+        @JvmStatic
         fun createInstance(): Fragment {
             return GeneralSettingFragment()
         }
