@@ -218,10 +218,9 @@ class VideoPictureFragment : BaseDaggerFragment() {
         try {
             val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory()
             val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
-            val loadControl = DefaultLoadControl()
 
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(context,
-                    DefaultRenderersFactory(context), trackSelector, loadControl)
+                    DefaultRenderersFactory(context), trackSelector)
 
             video_player_pdp.player = mExoPlayer
             mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF
