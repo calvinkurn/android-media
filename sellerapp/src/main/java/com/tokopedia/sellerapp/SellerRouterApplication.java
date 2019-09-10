@@ -984,11 +984,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void updateMarketplaceCartCounter(CartNotificationListener listener) {
-
-    }
-
-    @Override
     public Interceptor getAuthInterceptor() {
         return new TkpdAuthInterceptor();
     }
@@ -1365,28 +1360,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getCheckoutIntent(Context context, ShipmentFormRequest shipmentFormRequest) {
-        return null;
-    }
-
-    @Override
-    public Intent getCheckoutIntent(Context context, String deviceid) {
-        return null;
-    }
-
-    @Override
     public boolean isMerchantCreditLineEnabled() {
         return false;
     }
 
     public String getDeviceId(Context context) {
         return "";
-    }
-    
-    @Override
-    public Intent getExpressCheckoutIntent(Activity activity,
-                                           com.tokopedia.transactiondata.entity.shared.expresscheckout.AtcRequestParam atcRequestParam) {
-        return null;
     }
 
     @Override
