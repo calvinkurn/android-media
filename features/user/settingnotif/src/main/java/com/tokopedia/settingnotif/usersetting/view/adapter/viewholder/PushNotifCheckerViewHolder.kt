@@ -11,7 +11,6 @@ import kotlinx.android.synthetic.main.item_push_notif_checker.view.*
 
 class PushNotifCheckerViewHolder(itemView: View): AbstractViewHolder<PushNotifierTroubleshooterSetting>(itemView) {
 
-    private val btnPushNotifPage: Button = itemView.findViewById(R.id.btn_goto_push_notif)
     private lateinit var settingFieldContract: SettingFieldContract.View
 
     override fun bind(element: PushNotifierTroubleshooterSetting?) {
