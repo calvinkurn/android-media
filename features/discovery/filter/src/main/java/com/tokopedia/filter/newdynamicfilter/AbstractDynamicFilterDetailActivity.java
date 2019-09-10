@@ -151,7 +151,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
             @Override
             public void onClick(View v) {
                 if (isUsingTracking) {
-                    FilterTracking.eventSearchResultApplyFilterDetail(AbstractDynamicFilterDetailActivity.this, pageTitle);
+                    FilterTracking.eventSearchResultApplyFilterDetail(trackingPrefix, pageTitle);
                 }
                 applyFilter();
             }
@@ -161,7 +161,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     @Override
     public void onBackPressed() {
         if (isUsingTracking) {
-            FilterTracking.eventSearchResultBackFromFilterDetail(this, pageTitle);
+            FilterTracking.eventSearchResultBackFromFilterDetail(trackingPrefix, pageTitle);
         }
         super.onBackPressed();
     }
