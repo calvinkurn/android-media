@@ -133,10 +133,6 @@ class VideoPictureFragment : BaseDaggerFragment() {
             currentVol = savedInstanceState.getFloat(CURRENT_VOLUME_KEY, 1f)
         }
 
-        context?.let {
-            volume_pdp.setImageDrawable(ContextCompat.getDrawable(it, if (isMute) R.drawable.ic_volume_off_black else R.drawable.ic_volume_up_black))
-        }
-
         volume_pdp.setOnClickListener {
             if (isMute) {
                 //turn on volume
