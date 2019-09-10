@@ -67,6 +67,12 @@ dependencies {
         exclude group: "com.android.support"
     }
 
+    //video player
+    implementation project(rootProject.ext.libraries.videoplayer)
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.playServicesDependencies.analytics
 

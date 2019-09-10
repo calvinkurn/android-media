@@ -71,7 +71,6 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_LEASING
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -114,9 +113,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -674,7 +671,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType,
                         isLeasing)
-                if(::tradeInParams.isInitialized) {
+                if (::tradeInParams.isInitialized) {
                     intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,
@@ -821,7 +818,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onApplyLeasingClicked(){
+    private fun onApplyLeasingClicked() {
         productInfo?.run {
             productDetailTracking.eventClickApplyLeasing(
                     parentProductId,
@@ -895,11 +892,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun initView() {
         val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
-        if (appShowSearchPDP) {
-            initShowSearchPDP()
-        } else {
-            initCollapsingToolBar()
-        }
+//        if (appShowSearchPDP) {
+//        } else {
+//            initCollapsingToolBar()
+//        }
+        initShowSearchPDP()
+
         varToolbar.show()
         varPictureImage.show()
         collapsing_toolbar.title = ""
@@ -932,6 +930,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun initShowSearchPDP() {
         search_pdp_toolbar.show()
+        collapsing_toolbar.hide()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
         initToolBarMethod = ::initToolbarLight
@@ -952,14 +951,13 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    private fun initCollapsingToolBar() {
-        collapsing_toolbar.show()
-        varToolbar = toolbar
-        varPictureImage = view_picture
-        initToolBarMethod = ::initToolbarTransparent
-        fab_detail.setAnchor(R.id.view_picture)
-
-    }
+//    private fun initCollapsingToolBar() {
+//        collapsing_toolbar.show()
+//        varToolbar = toolbar
+//        varPictureImage = view_picture
+//        initToolBarMethod = ::initToolbarTransparent
+//        fab_detail.setAnchor(R.id.view_picture)
+//    }
 
     private fun collapsedAppBar() {
         initStatusBarLight()
@@ -1533,7 +1531,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
-        varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
+        varPictureImage.renderData(data.pictures, this::onPictureProductClicked, childFragmentManager)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
