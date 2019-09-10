@@ -2,14 +2,18 @@ package com.tokopedia.promocheckout.list.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.constant.IRouterConstant
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
@@ -19,22 +23,54 @@ import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
-import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
+import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
+import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailMarketplaceFragment
+import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import javax.inject.Inject
 
 class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), PromoCheckoutListMarketplaceContract.View {
+
+    lateinit var bottomSheetView: View
+    override fun onClickRedeemCoupon(position: Int,slug:String?) {
+
+        /*    val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activity)
+            val viewBottomSheet = view?.findViewById<View>(R.id.container_fragment)
+            viewBottomSheet?.visibility=View.VISIBLE
+            val closeBtn = view?.findViewById<View>(R.id.gf_close_button)
+            closeBtn?.setOnClickListener { v -> bottomSheet.dismiss() }
+            bottomSheet.setCustomContentView(viewBottomSheet, "", false)
+            bottomSheet.show()*/
+
+     /*   val checkoutcatlog=CheckoutCatalogDetailFragment()
+        checkoutcatlog.show(childFragmentManager,"")*/
+        val bundle=Bundle()
+        bundle.putString("slug",slug)
+        bundle.putInt("catalog_id",158)
+
+       val fragment = CheckoutCatalogDetailFragment()
+        fragment.arguments=bundle
+        fragment.show(childFragmentManager, "")
+//
+//        var closeableBottomSheetDialog: CloseableBottomSheetDialogFragment = CloseableBottomSheetDialog.createInstance(activity)
+//        bottomSheetView = layoutInflater.inflate(R.layout.promo_coupon_detail_bottomsheet, null, false)
+//        closeableBottomSheetDialog.setCustomContentView(bottomSheetView, "Redeem Coupon", true)
+//        closeableBottomSheetDialog.show()
+//        childFragmentManager.beginTransaction()
+//                .add(R.id.container, CheckoutCatalogDetailFragment.newInstance())
+//                .commit()
+    }
 
     @Inject
     lateinit var promoCheckoutListMarketplacePresenter: PromoCheckoutListMarketplacePresenter
 
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
+
 
     private var isOneClickShipment: Boolean = false
     lateinit var progressDialog: ProgressDialog

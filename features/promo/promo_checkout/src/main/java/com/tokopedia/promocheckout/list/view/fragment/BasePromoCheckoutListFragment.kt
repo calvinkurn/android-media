@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -17,6 +18,8 @@ import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
+import com.tokopedia.promocheckout.list.model.listexchangecoupon.CatalogListItem
+import com.tokopedia.promocheckout.list.model.listexchangecoupon.TokopointsCatalogHighlight
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListAdapterFactory
 import com.tokopedia.promocheckout.list.view.adapter.PromoCheckoutListViewHolder
@@ -24,21 +27,29 @@ import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenAdapter
 import com.tokopedia.promocheckout.list.view.adapter.PromoLastSeenViewHolder
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListPresenter
+import com.tokopedia.tokopoints.view.adapter.PromoCheckOutExchangeCouponAdapter
+import kotlinx.android.synthetic.main.fragment_list_exchange_coupon.view.*
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.view.*
 import javax.inject.Inject
 
+
 abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutListModel, PromoCheckoutListAdapterFactory>(),
-        PromoCheckoutListContract.View, PromoLastSeenViewHolder.ListenerLastSeen, PromoCheckoutListViewHolder.ListenerTrackingCoupon {
+        PromoCheckoutListContract.View, PromoLastSeenViewHolder.ListenerLastSeen, PromoCheckoutListViewHolder.ListenerTrackingCoupon,PromoCheckOutExchangeCouponAdapter.ListenerCouponExchange {
 
     @Inject
     lateinit var promoCheckoutListPresenter: PromoCheckoutListPresenter
     val promoLastSeenAdapter: PromoLastSeenAdapter by lazy { PromoLastSeenAdapter(ArrayList(), this) }
+    val promoCheckoutExchangeCouponAdapter: PromoCheckOutExchangeCouponAdapter by lazy { PromoCheckOutExchangeCouponAdapter(ArrayList(),this)}
 
-    abstract var serviceId : String
-    open var categoryId : Int = 0
-    open var isCouponActive : Boolean = true
-    open var promoCode : String = ""
+
+    abstract var serviceId: String
+    open var categoryId: Int = 0
+    open var isCouponActive: Boolean = true
+    open var promoCode: String = ""
+    lateinit var frameLayout: FrameLayout
+    lateinit var fragmentContainer: FrameLayout
+    lateinit var fragmentCont:FrameLayout
 
     override fun getAdapterTypeFactory(): PromoCheckoutListAdapterFactory {
         return PromoCheckoutListAdapterFactory(this)
@@ -100,6 +111,14 @@ abstract class BasePromoCheckoutListFragment : BaseListFragment<PromoCheckoutLis
     /* hold cos api not ready yet
        promoCheckoutListPresenter.getListLastSeen(resources)
     */
+
+    override fun renderListExchangeCoupon(data: TokopointsCatalogHighlight) {
+        promoCheckoutExchangeCouponAdapter.items?.clear()
+        promoCheckoutExchangeCouponAdapter.items?.addAll(data.catalogList as ArrayList<CatalogListItem>)//data.catalogList)
+        promoCheckoutExchangeCouponAdapter.notifyDataSetChanged()
+        populateExchnageCouponList()
+    }
+
     override fun showGetListLastSeenError(e: Throwable) {
         populateLastSeen()
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))

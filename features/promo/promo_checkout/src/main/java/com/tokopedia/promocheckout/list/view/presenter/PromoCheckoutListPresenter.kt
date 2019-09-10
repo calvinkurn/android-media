@@ -9,6 +9,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
+import com.tokopedia.promocheckout.list.model.listexchangecoupon.ResponseExchangeCoupon
+import com.tokopedia.promocheckout.list.model.listexchangecoupon.TokopointsCatalogHighlight
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
@@ -75,6 +77,29 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
             override fun onNext(objects: GraphqlResponse) {
                 val dataDetailCheckoutPromo = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
                 view.renderListLastSeen(dataDetailCheckoutPromo.promoModels)
+            }
+        })
+    }
+
+    override fun getListExchangeCoupon(resources: Resources) {
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                R.raw.promo_checkout_exchange_coupon), ResponseExchangeCoupon::class.java, null, false)
+        getListCouponUseCase.clearRequest()
+        getListCouponUseCase.addRequest(graphqlRequest)
+        getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.showGetListLastSeenError(e)
+                }
+            }
+
+            override fun onNext(objects: GraphqlResponse) {
+                val dataExchangeCoupon = objects.getData<ResponseExchangeCoupon>(ResponseExchangeCoupon::class.java)
+                view.renderListExchangeCoupon((dataExchangeCoupon.tokopointsCatalogHighlight!!))
             }
         })
     }

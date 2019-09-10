@@ -115,7 +115,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
             view?.textPeriod?.text = it.usage?.usageStr
             webviewTnc?.settings?.javaScriptEnabled = true
             webviewTnc?.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
-            enableOrDisableViews(it)
+           // enableOrDisableViews(it)
         }
     }
 

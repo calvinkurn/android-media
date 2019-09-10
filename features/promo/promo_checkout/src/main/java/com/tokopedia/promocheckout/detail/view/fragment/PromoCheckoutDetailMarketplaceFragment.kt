@@ -106,6 +106,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     }
 
     override fun initInjector() {
+
         DaggerPromoCheckoutDetailComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
                 .promoCheckoutDetailModule(PromoCheckoutDetailModule())

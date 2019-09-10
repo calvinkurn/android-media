@@ -36,4 +36,12 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity() {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
 }
