@@ -244,35 +244,33 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun enquireFields() {
-        if (::enquiryData.isInitialized) {
+        if (inputFieldCount in 1..2 && ::enquiryData.isInitialized) {
             val input1 = input_field_1.getInputText()
             val input2 = input_field_2.getInputText()
 
-            if (inputFieldCount in 1..2) {
-                // Add case when user is still filling the fields (only 1/2 fields are filled)
-                if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) return
+            // Add case when user is still filling the fields (only 1/2 fields are filled)
+            if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) return
 
-                // Verify fields
-                var isValid: Boolean
-                isValid = verifyField(enquiryData[0].validations, input1)
-                if (isValid && inputFieldCount == 2) {
-                    isValid = verifyField(enquiryData[1].validations, input2)
-                }
+            // Verify fields
+            var isValid: Boolean
+            isValid = verifyField(enquiryData[0].validations, input1)
+            if (isValid && inputFieldCount == 2) {
+                isValid = verifyField(enquiryData[1].validations, input2)
+            }
 
-                if (isValid) {
-                    // Reset error label
-                    setInputFieldsError(false)
+            if (isValid) {
+                // Reset error label
+                setInputFieldsError(false)
 
-                // Enquiry query is not ready, temporarily validate enquiry
-                    isEnquired = true
+            // Enquiry query is not ready, temporarily validate enquiry
+                isEnquired = true
 //                toggleEnquiryLoadingBar(true)
 //                val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
 //                getEnquiry(clientNumber, voucherGameExtraParam.operatorId)
-                } else {
-                    // Set error message
-                    isEnquired = false
-                    setInputFieldsError(true)
-                }
+            } else {
+                // Set error message
+                isEnquired = false
+                setInputFieldsError(true)
             }
         }
     }
@@ -450,6 +448,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     private fun showCheckoutView() {
         checkout_view.setVisibilityLayout(true)
         checkout_view.setTotalPrice(selectedProduct.attributes.promo?.newPrice ?: selectedProduct.attributes.price)
+        // Try to enquire if currently not enquired
+        enquireFields()
     }
 
     private fun toggleCheckoutButton() {
@@ -481,14 +481,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                     .utmSource(DigitalCheckoutPassData.UTM_SOURCE_ANDROID)
                     .utmMedium(DigitalCheckoutPassData.UTM_MEDIUM_WIDGET)
                     .voucherCodeCopied("")
-//            if (inputFieldCount in 1..2) {
-//                checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
-//            }
-//            if (inputFieldCount == 2) {
-//                checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
-//            }
-            checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber("404988375")
-            checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId("12444")
+            if (inputFieldCount in 1..2) {
+                checkoutPassDataBuilder = checkoutPassDataBuilder.clientNumber(input_field_1.getInputText())
+            }
+            if (inputFieldCount == 2) {
+                checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
+            }
             checkoutPassData = checkoutPassDataBuilder.build()
 
             processToCart()
