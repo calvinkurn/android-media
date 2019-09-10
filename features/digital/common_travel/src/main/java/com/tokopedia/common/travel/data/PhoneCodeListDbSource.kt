@@ -82,8 +82,7 @@ constructor(private val countryPhoneCodeDao: CountryPhoneCodeDao,
     }
 
     fun getCountryById(id: String): LiveData<List<CountryPhoneCodeTable>> {
-        val query = "%$id%"
-        return countryPhoneCodeDao.getCountryById(query)
+        return countryPhoneCodeDao.getCountryById(id)
     }
 
     companion object {
