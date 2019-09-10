@@ -1,7 +1,6 @@
 package com.tokopedia.officialstore.fragment;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +10,6 @@ import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.officialstore.R;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.ReactUtils;
@@ -45,7 +43,6 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
             view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             view.invalidate();
         }
-        testView();
         return view;
     }
 
@@ -64,15 +61,6 @@ public class ReactNativeOfficialStoreFragment extends ReactNativeFragment
                     .getCurrentReactContext()
                     .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
                     .emit(REFRESH_NOTIFICATION, param);
-        }
-    }
-
-    private void testView() {
-        if (getActivity() != null) {
-            FragmentManager manager = getActivity().getSupportFragmentManager();
-
-            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-            rating.showDialog(manager, getContext());
         }
     }
 }
