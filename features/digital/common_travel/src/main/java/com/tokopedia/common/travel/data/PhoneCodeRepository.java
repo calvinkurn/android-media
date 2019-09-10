@@ -29,7 +29,7 @@ public class PhoneCodeRepository implements IPhoneCodeRepository {
     }
 
     @Override
-    public LiveData<CountryPhoneCodeTable> getCountryById(String id) {
-        return phoneCodeListDbSource.getAirportCountryIdLiveData(id);
+    public LiveData<List<CountryPhoneCodeTable>> getCountryById(String id) {
+        return phoneCodeListDbSource.getCountryById(id);
     }
 }

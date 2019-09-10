@@ -24,8 +24,8 @@ interface CountryPhoneCodeDao {
     @Query("SELECT * FROM CountryPhoneCodeTable WHERE country_id LIKE :query")
     fun getCountryIdByKeyword(query: String): CountryPhoneCodeTable
 
-    @Query("SELECT * FROM CountryPhoneCodeTable WHERE country_id LIKE :query")
-    fun getCountryIdLiveDataByKeyword(query: String): LiveData<CountryPhoneCodeTable>
+    @Query("SELECT * FROM CountryPhoneCodeTable WHERE country_id = :query LIMIT 1")
+    fun getCountryById(query: String): LiveData<List<CountryPhoneCodeTable>>
 
     @Query("DELETE FROM CountryPhoneCodeTable")
     fun deleteAll(): Int

@@ -81,9 +81,9 @@ constructor(private val countryPhoneCodeDao: CountryPhoneCodeDao,
                 .map { countryPhoneCodeDao.getCountryIdByKeyword(query) }
     }
 
-    fun getAirportCountryIdLiveData(id: String): LiveData<CountryPhoneCodeTable> {
+    fun getCountryById(id: String): LiveData<List<CountryPhoneCodeTable>> {
         val query = "%$id%"
-        return countryPhoneCodeDao.getCountryIdLiveDataByKeyword(query)
+        return countryPhoneCodeDao.getCountryById(query)
     }
 
     companion object {

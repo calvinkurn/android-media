@@ -14,9 +14,11 @@ class GetPhoneCodeByIdUseCase @Inject constructor(val phoneCodeRepository: Phone
     fun execute(paramId: String): MutableLiveData<CountryPhoneCode> {
         return Transformations.map(phoneCodeRepository.getCountryById(paramId)) {
             var countryPhoneCode = CountryPhoneCode()
-            countryPhoneCode.countryName = it.countryName
-            countryPhoneCode.countryId = it.countryId
-            countryPhoneCode.countryPhoneCode = it.phoneCode.toString()
+            if (it.isNotEmpty()) {
+                countryPhoneCode.countryName = it.first().countryName
+                countryPhoneCode.countryId = it.first().countryId
+                countryPhoneCode.countryPhoneCode = it.first().phoneCode.toString()
+            }
             countryPhoneCode
         } as MutableLiveData<CountryPhoneCode>
     }
