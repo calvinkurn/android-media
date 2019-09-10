@@ -398,6 +398,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushGeneralGtmV5(Map<String, Object> params){
         sendGeneralEvent(params);
+        
+        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
+            return;
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
