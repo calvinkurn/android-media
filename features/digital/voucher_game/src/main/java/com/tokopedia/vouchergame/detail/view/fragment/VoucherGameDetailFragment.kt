@@ -229,13 +229,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
             // Enquire if all required fields are filled
             input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
-                override fun onEditorActionDone() {
+                override fun onFinishInput() {
                     enquireFields()
                 }
             })
             if (inputFieldCount == 2) {
                 input_field_2.setListener(object : VoucherGameInputFieldWidget.ActionListener {
-                    override fun onEditorActionDone() {
+                    override fun onFinishInput() {
                         enquireFields()
                     }
                 })
@@ -249,7 +249,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             val input2 = input_field_2.getInputText()
 
             // Add case when user is still filling the fields (only 1/2 fields are filled)
-            if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) return
+            if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) {
+                isEnquired = false
+                return
+            }
 
             // Verify fields
             var isValid: Boolean
@@ -457,13 +460,17 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        if (::voucherGameOperatorData.isInitialized) {
-            productTrackingList.find { it.item == selectedProduct }?.run {
-                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                        voucherGameOperatorData.name, product = this)
+        // Enquire again as temporary solution for soft keyboard back press not detected issue
+        enquireFields()
+        if (isEnquired) {
+            if (::voucherGameOperatorData.isInitialized) {
+                productTrackingList.find { it.item == selectedProduct }?.run {
+                    voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
+                            voucherGameOperatorData.name, product = this)
+                }
             }
+            processCheckout()
         }
-        processCheckout()
     }
 
     private fun processCheckout() {
