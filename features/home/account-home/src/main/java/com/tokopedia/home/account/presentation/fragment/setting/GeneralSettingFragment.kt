@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.AlertDialog
 import android.content.ActivityNotFoundException
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -396,6 +397,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+
+        val stickyPref = activity!!.getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE)
+        stickyPref.edit().clear().apply()
     }
 
     override fun onDestroyView() {

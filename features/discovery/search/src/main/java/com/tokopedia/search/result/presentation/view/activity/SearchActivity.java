@@ -39,6 +39,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -189,7 +190,7 @@ public class SearchActivity extends BaseActivity
         initViewPager();
         initBottomSheetListener();
         initSearchNavigationListener();
-        bottomSheetFilterView.initFilterBottomSheet();
+        bottomSheetFilterView.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE);
     }
 
     private void initToolbar() {
@@ -269,7 +270,7 @@ public class SearchActivity extends BaseActivity
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                bottomSheetFilterView.closeView();
+
             }
 
             @Override
@@ -308,8 +309,8 @@ public class SearchActivity extends BaseActivity
     private void initBottomSheetListener() {
         bottomSheetFilterView.setCallback(new BottomSheetFilterView.Callback() {
             @Override
-            public void onApplyFilter(Map<String, String> filterParameter) {
-                applyFilter(filterParameter);
+            public void onApplyFilter(Map<String, String> queryParams) {
+                applyFilter(queryParams);
             }
 
             @Override
@@ -324,31 +325,21 @@ public class SearchActivity extends BaseActivity
             }
 
             @Override
-            public boolean isSearchShown() {
-                return false;
-            }
-
-            @Override
-            public void hideKeyboard() {
-                KeyboardHandler.hideSoftKeyboard(SearchActivity.this);
-            }
-
-            @Override
             public AppCompatActivity getActivity() {
                 return SearchActivity.this;
             }
         });
     }
 
-    private void applyFilter(Map<String, String> filterParameter) {
+    private void applyFilter(Map<String, String> queryParams) {
         if (isViewPagerCurrentItemPositionIsInvalid()) return;
 
         Fragment fragmentItem = searchSectionPagerAdapter.getRegisteredFragmentAtPosition(viewPager.getCurrentItem());
         if (fragmentItem instanceof SearchSectionFragment) {
             SearchSectionFragment selectedFragment = (SearchSectionFragment) fragmentItem;
 
-            selectedFragment.applyFilterToSearchParameter(filterParameter);
-            selectedFragment.setSelectedFilter(new HashMap<>(filterParameter));
+            selectedFragment.refreshSearchParameter(queryParams);
+            selectedFragment.refreshFilterController(new HashMap<>(queryParams));
             selectedFragment.clearDataFilterSort();
             selectedFragment.reloadData();
         }
@@ -710,16 +701,6 @@ public class SearchActivity extends BaseActivity
     @Override
     public void setFilterResultCount(String formattedResultCount) {
         bottomSheetFilterView.setFilterResultCount(formattedResultCount);
-    }
-
-    @Override
-    public void closeFilterBottomSheet() {
-        bottomSheetFilterView.closeView();
-    }
-
-    @Override
-    public boolean isBottomSheetShown() {
-        return bottomSheetFilterView.isBottomSheetShown();
     }
 
     @Override
