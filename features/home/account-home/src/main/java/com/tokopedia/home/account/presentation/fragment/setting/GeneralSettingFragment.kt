@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.TextView
+import android.widget.Toast
 import com.facebook.FacebookSdk
 import com.facebook.login.LoginManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -48,6 +49,10 @@ import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.url.TokopediaUrl
+import rx.Observable
+import rx.android.schedulers.AndroidSchedulers
+import rx.functions.Func1
+import rx.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
@@ -77,7 +82,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
 
     private fun hasLocationPermission(): Boolean {
         activity?.let {
-            permissionCheckerHelper?.let { permission ->
+            permissionCheckerHelper.let { permission ->
                 return permission.hasPermission(it,
                         arrayOf(PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION))
             }
@@ -93,7 +98,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                             .baseAppComponent).build()
             component.inject(this)
         }
-        presenter?.attachView(this)
+        presenter.attachView(this)
 
         return inflater.inflate(R.layout.fragment_general_setting, container, false)
     }
@@ -118,7 +123,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                     getString(R.string.account_home_title_shop_setting), getString(R.string.account_home_subtitle_shop_setting)))
         }
 
-        val walletModel = walletPref?.retrieveWallet()
+        val walletModel = walletPref.retrieveWallet()
         val walletName = if (walletModel != null) {
             walletModel.text + ", "
         } else {
@@ -175,15 +180,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     override fun onItemClicked(settingId: Int) {
         when (settingId) {
             SettingConstant.SETTING_ACCOUNT_ID -> {
-                accountAnalytics?.eventClickSetting(ACCOUNT)
+                accountAnalytics.eventClickSetting(ACCOUNT)
                 startActivity(AccountSettingActivity.createIntent(activity))
             }
             SettingConstant.SETTING_SHOP_ID -> {
-                accountAnalytics?.eventClickSetting(String.format("%s %s", SHOP, SETTING))
+                accountAnalytics.eventClickSetting(String.format("%s %s", SHOP, SETTING))
                 startActivity(StoreSettingActivity.createIntent(activity))
             }
             SettingConstant.SETTING_TKPD_PAY_ID -> {
-                accountAnalytics?.eventClickSetting(PAYMENT_METHOD)
+                accountAnalytics.eventClickSetting(PAYMENT_METHOD)
                 startActivity(TkpdPaySettingActivity.createIntent(activity))
             }
             SettingConstant.SETTING_TEMPLATE_ID -> if (activity != null) {
@@ -192,30 +197,30 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             }
             SettingConstant.SETTING_NOTIFICATION_ID -> {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
-                accountAnalytics?.eventClickSetting(NOTIFICATION)
+                accountAnalytics.eventClickSetting(NOTIFICATION)
             }
             SettingConstant.SETTING_TNC_ID -> {
-                accountAnalytics?.eventClickSetting(TERM_CONDITION)
+                accountAnalytics.eventClickSetting(TERM_CONDITION)
                 gotoWebviewActivity(SettingConstant.Url.PATH_TERM_CONDITION, getString(R.string.title_tnc_setting))
             }
             SettingConstant.SETTING_PRIVACY_ID -> {
-                accountAnalytics?.eventClickSetting(PRIVACY_POLICY)
+                accountAnalytics.eventClickSetting(PRIVACY_POLICY)
                 gotoWebviewActivity(SettingConstant.Url.PATH_PRIVACY_POLICY, getString(R.string.title_privacy_setting))
             }
             SettingConstant.SETTING_APP_REVIEW_ID -> {
-                accountAnalytics?.eventClickSetting(APPLICATION_REVIEW)
+                accountAnalytics.eventClickSetting(APPLICATION_REVIEW)
                 goToPlaystore()
             }
             SettingConstant.SETTING_HELP_CENTER_ID -> {
-                accountAnalytics?.eventClickSetting(HELP_CENTER)
+                accountAnalytics.eventClickSetting(HELP_CENTER)
                 RouteManager.route(activity, ApplinkConst.CONTACT_US_NATIVE)
             }
             SettingConstant.SETTING_OUT_ID -> {
-                accountAnalytics?.eventClickSetting(LOGOUT)
+                accountAnalytics.eventClickSetting(LOGOUT)
                 showDialogLogout()
             }
             SettingConstant.SETTING_APP_CLEAR_CACHE -> {
-                accountAnalytics?.eventClickSetting(CLEAR_CACHE)
+                accountAnalytics.eventClickSetting(CLEAR_CACHE)
                 clearCache()
             }
             SettingConstant.SETTING_DEV_OPTIONS -> if (GlobalConfig.isAllowDebuggingTools()) {
@@ -227,7 +232,20 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     }
 
     private fun clearCache() {
-        context?.cacheDir?.deleteRecursively()
+        Observable
+                .just(true)
+                .map { context?.cacheDir?.deleteRecursively() ?: false }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ value: Boolean ->
+                    context?.let {
+                        if (value) {
+                            Toast.makeText(it, "Cache cleared", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(it, "Clear cache failed", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }, {})
     }
 
     private fun goToPlaystore() {
@@ -263,31 +281,31 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             FacebookSdk.sdkInitialize(it.applicationContext)
         }
         showLoading(true)
-        presenter?.doLogout()
+        presenter.doLogout()
     }
 
     private fun showLoading(isLoading: Boolean) {
         val shortAnimTime = resources.getInteger(
                 android.R.integer.config_shortAnimTime)
 
-        loadingView?.let {
+        loadingView.let {
             it.animate().setDuration(shortAnimTime.toLong())
                     .alpha((if (isLoading) 1 else 0).toFloat())
                     .setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
-                            loadingView?.let { view ->
+                            loadingView.let { view ->
                                 view.visibility = if (isLoading) View.VISIBLE else View.GONE
                             }
                         }
                     })
         }
 
-        baseSettingView?.let {
+        baseSettingView.let {
             it.animate().setDuration(shortAnimTime.toLong())
                     .alpha((if (isLoading) 0 else 1).toFloat())
                     .setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
-                            baseSettingView?.let { view ->
+                            baseSettingView.let { view ->
                                 view.visibility = if (isLoading) View.GONE else View.VISIBLE
                             }
                         }
@@ -313,7 +331,7 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     override fun onChangeChecked(settingId: Int, value: Boolean) {
         when (settingId) {
             SettingConstant.SETTING_SHAKE_ID -> {
-                accountAnalytics?.eventClickSetting(SHAKE_SHAKE)
+                accountAnalytics.eventClickSetting(SHAKE_SHAKE)
                 saveSettingValue(getString(R.string.pref_receive_shake), value)
             }
             else -> {
@@ -381,15 +399,15 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
     }
 
     override fun onDestroyView() {
-        presenter?.detachView()
+        presenter.detachView()
         super.onDestroyView()
     }
 
     private fun createAndShowLocationAlertDialog(currentValue: Boolean) {
         if (!currentValue) {
-            accountAnalytics?.eventClickToggleOnGeolocation(activity)
+            accountAnalytics.eventClickToggleOnGeolocation(activity)
         } else {
-            accountAnalytics?.eventClickToggleOffGeolocation(activity)
+            accountAnalytics.eventClickToggleOffGeolocation(activity)
         }
 
         val builder = AlertDialog.Builder(activity)
