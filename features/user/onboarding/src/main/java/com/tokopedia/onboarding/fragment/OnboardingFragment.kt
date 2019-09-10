@@ -1,6 +1,7 @@
 package com.tokopedia.onboarding.fragment
 
 import android.app.Activity
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
@@ -22,9 +23,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-import android.media.MediaPlayer
-import android.widget.MediaController
-import java.lang.Exception
 
 /**
  * @author by stevenfredian on 14/05/19.
@@ -71,6 +69,8 @@ class OnboardingFragment : BaseDaggerFragment(),
     private var descKey: String = ""
     private var ttlKey: String = ""
     private var remoteConfig: RemoteConfig? = null
+
+    private var isVideoPrepared: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -138,9 +138,9 @@ class OnboardingFragment : BaseDaggerFragment(),
                 mediaPlayer.release()
                 mediaPlayer = MediaPlayer()
             }
-            mediaPlayer.setVolume(0f, 0f)
             mediaPlayer.isLooping = true
             mediaPlayer.start()
+            isVideoPrepared = true
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -166,8 +166,9 @@ class OnboardingFragment : BaseDaggerFragment(),
     override fun onPageSelected(position: Int) {
         try {
             videoView?.let {
-                if (!it.isPlaying) {
+                if (!it.isPlaying && isVideoPrepared) {
                     videoView?.start()
+                    isVideoPrepared = false
                 }
             }
         } catch (e: Exception) {}
@@ -176,8 +177,9 @@ class OnboardingFragment : BaseDaggerFragment(),
     override fun onPageUnSelected() {
         try {
             videoView?.let {
-                if (it.isPlaying) {
+                if (it.isPlaying && isVideoPrepared) {
                     it.pause()
+                    isVideoPrepared = false
                 }
             }
         } catch (e: Exception) {}
