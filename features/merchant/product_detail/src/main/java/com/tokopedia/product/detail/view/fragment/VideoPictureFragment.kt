@@ -20,8 +20,6 @@ import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
@@ -220,11 +218,11 @@ class VideoPictureFragment : BaseDaggerFragment() {
         if (url == null) return
 
         try {
-            val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory()
-            val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
+//            val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory()
+//            val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
 
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
-            video_player_pdp.hideController()
+            mExoPlayer = ExoPlayerFactory.newSimpleInstance(context)
+            video_player_pdp.useController = true
             video_player_pdp.player = mExoPlayer
             mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF
             mExoPlayer?.playWhenReady = isReadyPlayed
@@ -292,9 +290,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
     }
 
     fun imVisible() {
-        if (Util.SDK_INT > 23 && mediaType == TYPE_VIDEO && userVisibleHint) {
-            playVideo(mediaSource)
-        }
+        playVideo(mediaSource)
     }
 
     fun imInvisible() {
