@@ -79,18 +79,18 @@ public class DigitalProductActivity extends BaseSimpleActivity
 
         Intent destination = DigitalProductActivity.newInstance(context, passData);
 
-        if (!TextUtils.isEmpty(extras.getString(DigitalCategoryDetailPassData.PARAM_MENU_ID)) &&
-                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_TELCO_PDP, true)) {
-            destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.TELCO_DIGITAL);
-            destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
-        } else {
+//        if (!TextUtils.isEmpty(extras.getString(DigitalCategoryDetailPassData.PARAM_MENU_ID)) &&
+//                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_TELCO_PDP, true)) {
+//            destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.TELCO_DIGITAL);
+//            destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
+//        } else {
             destination.putExtra(DigitalRouter.Companion.getEXTRA_APPLINK_FROM_PUSH(), true);
-        }
-        destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.VOUCHER_GAME);
-        extras.putString(DigitalCategoryDetailPassData.PARAM_MENU_ID, "4");
-//        extras.putString(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID, "472");
-//        extras.putString(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID, "841");
-        destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
+//        }
+//        destination = RouteManager.getIntent(context, ApplinkConsInternalDigital.VOUCHER_GAME);
+//        extras.putString(DigitalCategoryDetailPassData.PARAM_MENU_ID, "4");
+////        extras.putString(DigitalCategoryDetailPassData.PARAM_OPERATOR_ID, "472");
+////        extras.putString(DigitalCategoryDetailPassData.PARAM_PRODUCT_ID, "841");
+//        destination.putExtra(DigitalExtraParam.EXTRA_PARAM_TELCO, extras);
         taskStackBuilder.addNextIntent(destination);
         return destination;
     }
