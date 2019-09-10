@@ -2309,7 +2309,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         CartSectionHeaderHolderData cartSectionHeaderHolderData = null;
-        if (endlessRecyclerViewScrollListener.getCurrentPage() == 0) {
+        if ((recommendationItems == null && endlessRecyclerViewScrollListener.getCurrentPage() == 0) || (recommendationItems != null && endlessRecyclerViewScrollListener.getCurrentPage() == 1)) {
             cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
             cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
         }
