@@ -106,7 +106,7 @@
                 <LinearLayout
                     android:id="@+id/ll_from_post"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_25"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_4"
                     android:orientation="horizontal">
 
@@ -147,12 +147,14 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     android:gravity="center_vertical"
+                    android:layout_marginTop="@dimen/dp_10"
                     tools:visibility="visible">
 
                     <com.tokopedia.feedcomponent.view.widget.RatingBarReview
                         android:id="@+id/rb_curated_traffic"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        app:numstars="5"/>
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_rating"
@@ -169,6 +171,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_btn_green_empty"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:paddingStart="@dimen/dp_16"
                     android:paddingEnd="@dimen/dp_16"
                     android:paddingTop="@dimen/dp_4"

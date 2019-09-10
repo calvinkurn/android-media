@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
+import com.tokopedia.feedcomponent.view.widget.RatingBarReview
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 
@@ -35,6 +36,8 @@ class DashboardItemViewHolder(
     private val llFromTraffic: LinearLayout = itemView.findViewById(R.id.ll_from_traffic)
     private val cardView: CardView = itemView.findViewById(R.id.card_view)
     private val tvSection: TextView = itemView.findViewById(R.id.tv_section)
+    private val rbCuratedTraffic: RatingBarReview = itemView.findViewById(R.id.rb_curated_traffic)
+    private val tvRating: TextView = itemView.findViewById(R.id.tv_rating)
 
     private val llBtnCreatePost: LinearLayout = itemView.findViewById(R.id.ll_btn_create_post)
 
@@ -50,6 +53,11 @@ class DashboardItemViewHolder(
         cardView.setOnClickListener { onItemClick(element) }
         tvSection.text = element.sectionName
         tvProductCommission.text = element.productCommission
+        if (element.productRating >= 0) {
+            val rating = (element.productRating / 100.0f * 5).toInt()
+            rbCuratedTraffic.updateRating(rating)
+        }
+        if (element.reviewCount >= 0) tvRating.text = getString(R.string.af_review_count_format, element.reviewCount.toString())
         if (element.isShouldShowSection) tvSection.visible() else tvSection.gone()
 
         when (element.type) {

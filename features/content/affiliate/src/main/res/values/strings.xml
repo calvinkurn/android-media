@@ -136,5 +136,6 @@
     <string name="af_curated_empty_title">Share Postmu Sekarang</string>
     <string name="af_curated_empty_subtitle">Semakin sering share, Semakin besar kesempatanmu mendapatkan komisi</string>
     <string name="af_share_now">Share Sekarang</string>
+    <string name="af_review_count_format">(%s)</string>
 
 </resources>

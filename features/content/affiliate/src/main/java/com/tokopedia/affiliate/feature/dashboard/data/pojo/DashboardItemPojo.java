@@ -44,6 +44,12 @@ public class DashboardItemPojo {
     @SerializedName("createPostAppLink")
     @Expose
     private String createPostAppLink;
+    @SerializedName("reviewCount")
+    @Expose
+    private int reviewCount;
+    @SerializedName("productRating")
+    @Expose
+    private int productRating;
 
     public String getId() {
         return id;
@@ -115,5 +121,21 @@ public class DashboardItemPojo {
 
     public void setCreatePostAppLink(String createPostAppLink) {
         this.createPostAppLink = createPostAppLink;
+    }
+
+    public int getReviewCount() {
+        return reviewCount;
+    }
+
+    public void setReviewCount(int reviewCount) {
+        this.reviewCount = reviewCount;
+    }
+
+    public int getProductRating() {
+        return productRating;
+    }
+
+    public void setProductRating(int productRating) {
+        this.productRating = productRating;
     }
 }
