@@ -210,8 +210,8 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             passengerModel.passengerLastName = getLastName()
             passengerModel.passengerBirthdate =  FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
             passengerModel.passportNumber = getPassportNumber()
+            finishActivityWithData()
         }
-        finishActivityWithData()
     }
 
     fun validateFields(): Boolean {

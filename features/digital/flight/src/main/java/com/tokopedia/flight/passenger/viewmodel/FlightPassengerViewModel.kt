@@ -1,9 +1,7 @@
 package com.tokopedia.flight.passenger.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.travel.data.PhoneCodeRepository
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
 import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 import com.tokopedia.common.travel.domain.GetContactListUseCase
@@ -46,10 +44,14 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
     }
 
     fun getNationalityById(paramId: String) {
-        nationalityData = getPhoneCodeByIdUseCase.execute(paramId)
+        launch {
+            nationalityData = getPhoneCodeByIdUseCase.execute(paramId)
+        }
     }
 
     fun getPassportIssuerCountryById(paramId: String) {
-        passportIssuerCountryData = getPhoneCodeByIdUseCase.execute(paramId)
+        launch {
+            passportIssuerCountryData = getPhoneCodeByIdUseCase.execute(paramId)
+        }
     }
 }
