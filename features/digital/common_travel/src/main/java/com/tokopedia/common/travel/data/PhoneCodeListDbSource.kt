@@ -1,5 +1,6 @@
 package com.tokopedia.common.travel.data
 
+import android.arch.lifecycle.LiveData
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -78,6 +79,11 @@ constructor(private val countryPhoneCodeDao: CountryPhoneCodeDao,
         val query = "%$id%"
         return dataFromJson()
                 .map { countryPhoneCodeDao.getCountryIdByKeyword(query) }
+    }
+
+    fun getAirportCountryIdLiveData(id: String): LiveData<CountryPhoneCodeTable> {
+        val query = "%$id%"
+        return countryPhoneCodeDao.getCountryIdLiveDataByKeyword(query)
     }
 
     companion object {

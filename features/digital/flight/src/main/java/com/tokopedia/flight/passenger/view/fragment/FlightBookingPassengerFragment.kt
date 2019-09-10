@@ -143,6 +143,18 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                 }.toMutableList())
             }
         })
+
+        passengerViewModel.nationalityData.observe(this, android.arch.lifecycle.Observer {
+            value -> value?.let {
+                onNationalityChanged(it)
+            }
+        })
+
+        passengerViewModel.passportIssuerCountryData.observe(this, android.arch.lifecycle.Observer {
+            value -> value?.let {
+            onIssuerCountryChanged(it)
+        }
+        })
     }
 
     private fun initView () {
@@ -490,7 +502,19 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         datePicker.show()
     }
 
+    fun clearAllFields() {
+        et_first_name.setText("")
+        et_last_name.setText("")
+        renderPassengerTitle("")
+        et_birth_date.setText("")
+        et_passport_no.setText("")
+        et_passport_issuer_country.setText("")
+        et_passport_expiration_date.setText("")
+        et_nationality.setText("")
+    }
+
     fun autofillPassengerContact(contact:TravelContactListModel.Contact?) {
+        clearAllFields()
         if (contact != null) {
             if (contact.firstName.isNotBlank()) {
                 passengerModel.passengerFirstName = contact.firstName
@@ -521,8 +545,8 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                         et_passport_no.setText(id.number)
                         et_passport_expiration_date.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                                 FlightDateUtil.DEFAULT_VIEW_FORMAT, id.expiry))
-                        et_nationality.setText(contact.nationality)
-                        et_passport_issuer_country.setText(id.country)
+                        passengerViewModel.getNationalityById(contact.nationality)
+                        passengerViewModel.getPassportIssuerCountryById(id.country)
                         break
                     }
                 }
@@ -530,17 +554,11 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         }
     }
 
-    fun isAdultPassenger(): Boolean {
-        return passengerModel.type == FlightBookingPassenger.ADULT
-    }
+    fun isAdultPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.ADULT
 
-    fun isChildPassenger(): Boolean {
-        return passengerModel.type == FlightBookingPassenger.CHILDREN
-    }
+    fun isChildPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.CHILDREN
 
-    fun isInfantPassenger(): Boolean {
-        return passengerModel.type == FlightBookingPassenger.INFANT
-    }
+    fun isInfantPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.INFANT
 
     fun isMandatoryDoB(): Boolean = isAirAsiaAirlines
 

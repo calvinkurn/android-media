@@ -1,5 +1,8 @@
 package com.tokopedia.flight.passenger.di
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.common.travel.database.CommonTravelRoomDb
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -27,5 +30,14 @@ class FlightPassengerModule {
     @FlightPassengerScope
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @FlightPassengerScope
+    @Provides
+    fun provideTravelPassengerRoomDb(@ApplicationContext context: Context)
+        : CommonTravelRoomDb = CommonTravelRoomDb.getDatabase(context)
+
+    @FlightPassengerScope
+    @Provides
+    fun provideCountryPhoneCodeDao(commonTravelRoomDb: CommonTravelRoomDb) = commonTravelRoomDb.countryPhoneCodeDao()
 
 }

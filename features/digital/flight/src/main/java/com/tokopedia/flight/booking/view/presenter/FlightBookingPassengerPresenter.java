@@ -461,8 +461,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
     @Override
     public void getTravelContactList(String query) {
-        getContactListUseCase.executeRx(query, GetContactListUseCase.Companion.getPARAM_PRODUCT_FLIGHT(), "");
-        //TO DO
+
     }
 
     private boolean validateFields(String departureDateString) {
