@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.View
@@ -72,6 +73,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var vPostedViewedSeparator: View
     private lateinit var llCuratedProductHistory: LinearLayout
     private lateinit var esShareNow: EmptyState
+    private lateinit var srlRefresh: SwipeRefreshLayout
 
     private lateinit var calendarBottomSheet: CloseableBottomSheetDialog
     private lateinit var calendarView: View
@@ -141,6 +143,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             vPostedViewedSeparator = findViewById(R.id.v_posted_viewed_separator)
             llCuratedProductHistory = findViewById(R.id.ll_curated_product_history)
             esShareNow = findViewById(R.id.es_share_now)
+            srlRefresh = findViewById(R.id.srl_refresh)
         }
     }
 
@@ -160,6 +163,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
         llCheckBalance.setOnClickListener { onCheckBalanceClicked() }
         tvSeeAll.setOnClickListener { onSeeAllProductClicked() }
+
+        srlRefresh.setOnRefreshListener { onRefresh() }
     }
 
     override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel) {
@@ -171,6 +176,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
         if (header.productCount.toIntOrZero() <= 0) showEmptyState()
         else showNonEmptyState()
+
+        srlRefresh.isRefreshing = false
     }
 
     override fun onErrorCheckAffiliate(error: String) {
@@ -197,6 +204,11 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     private fun onSeeAllProductClicked() {
         startActivity(Intent(context, AffiliateCuratedProductActivity::class.java))
+    }
+
+    private fun onRefresh() {
+        presenter.checkAffiliate()
+        onDateChanged()
     }
 
     private fun openCalendarPicker() {
