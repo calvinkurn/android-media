@@ -186,4 +186,34 @@ class NotificationUpdateAnalytics @Inject constructor() {
             )
         )
     }
+
+    // #NC7
+    fun trackAtcToPdpClick(product: ProductData) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT_NAME, NAME_EVENT_PRODUCT_CLICK,
+                EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION, ACTION_CLICK_PRODUCT_THUMBNAIL,
+                EVENT_LABEL, LABEL_UPDATE_NOTIF_CENTER,
+                ECOMMERCE, DataLayer.mapOf(
+                    "click", DataLayer.mapOf(
+                        "actionField", DataLayer.mapOf("list", "/notifcenter"),
+                        "products", DataLayer.listOf(
+                            DataLayer.mapOf(
+                                    "name", product.name,
+                                    "id", product.productId,
+                                    "price", product.price,
+                                    "brand", "",
+                                    "category", "",
+                                    "variant", "",
+                                    "list", "",
+                                    "position", "",
+                                    "attribution", ""
+                            )
+                        )
+                    )
+                )
+            )
+        )
+    }
 }

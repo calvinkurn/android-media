@@ -53,6 +53,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
 
     private fun assignProductClickListener(product: ProductData) {
         productContainer.setOnClickListener {
+            listener.getAnalytic().trackAtcToPdpClick(product)
             RouteManager.route(
                     itemView.context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
