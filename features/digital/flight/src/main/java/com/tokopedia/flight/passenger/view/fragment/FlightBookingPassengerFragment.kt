@@ -342,10 +342,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             et_last_name.setText(passengerModel.passengerLastName)
         }
 
-        if (passengerModel.passengerTitle != null) {
-            renderPassengerTitle(passengerModel.passengerTitle)
-        }
-
         if (passengerModel.passengerBirthdate != null)
             et_birth_date.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                     FlightDateUtil.DEFAULT_VIEW_FORMAT, passengerModel.passengerBirthdate))
@@ -363,6 +359,10 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             val entries = resources.getStringArray(R.array.flight_child_infant_titles)
             rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0)
             rv_passenger_title.selectOnlyOneChip(true)
+        }
+
+        if (passengerModel.passengerTitle != null) {
+            renderPassengerTitle(passengerModel.passengerTitle)
         }
     }
 
