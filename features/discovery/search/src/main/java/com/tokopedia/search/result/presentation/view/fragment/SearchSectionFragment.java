@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
@@ -20,19 +19,20 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.filter.common.manager.FilterSortManager;
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
-import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
-import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.common.data.Sort;
+import com.tokopedia.filter.common.manager.FilterSortManager;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper;
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.search.R;
@@ -44,7 +44,6 @@ import com.tokopedia.search.result.presentation.view.listener.SearchNavigationLi
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +71,6 @@ public abstract class SearchSectionFragment
     private static final String EXTRA_SPAN_COUNT = "EXTRA_SPAN_COUNT";
     private static final String EXTRA_SHOW_BOTTOM_BAR = "EXTRA_SHOW_BOTTOM_BAR";
     protected static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
-    protected static final String EXTRA_FRAGMENT_POSITION = "EXTRA_FRAGMENT_POSITION";
 
     private SearchNavigationListener searchNavigationListener;
     private BottomSheetListener bottomSheetListener;
@@ -105,8 +103,12 @@ public abstract class SearchSectionFragment
         initLayoutManager();
         initSwipeToRefresh(view);
         restoreInstanceState(savedInstanceState);
-        startToLoadDataForFirstFragmentPosition();
+        onViewCreatedBeforeLoadData(view, savedInstanceState);
+
+        startToLoadDataForFirstActiveTab();
     }
+
+    protected abstract void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState);
 
     private void initSwipeToRefresh(View view) {
         refreshLayout = view.findViewById(R.id.swipe_refresh_layout);
@@ -119,10 +121,11 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void startToLoadDataForFirstFragmentPosition() {
-        if (getFragmentPosition() == 0) {
+    private void startToLoadDataForFirstActiveTab() {
+        //TODO:: Fix this
+        if (getActiveTab().equals(SearchConstant.ActiveTab.PRODUCT)) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
 
@@ -219,7 +222,7 @@ public abstract class SearchSectionFragment
     private void startToLoadData() {
         if (canStartToLoadData()) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
 
@@ -483,7 +486,6 @@ public abstract class SearchSectionFragment
         outState.putInt(EXTRA_SPAN_COUNT, getSpanCount());
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
         outState.putBoolean(EXTRA_SHOW_BOTTOM_BAR, showBottomBar);
-        outState.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
     }
 
     public abstract void reloadData();
@@ -512,7 +514,6 @@ public abstract class SearchSectionFragment
         setSpanCount(savedInstanceState.getInt(EXTRA_SPAN_COUNT));
         copySearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
-        fragmentPosition = savedInstanceState.getInt(EXTRA_FRAGMENT_POSITION);
     }
 
     @Override
@@ -620,11 +621,7 @@ public abstract class SearchSectionFragment
         TopAdsGtmTracker.eventSearchResultPromoView(getActivity(), data, position);
     }
 
-    protected void setFragmentPosition(int fragmentPosition) {
-        this.fragmentPosition = fragmentPosition;
-    }
-
-    protected int getFragmentPosition() {
-        return this.fragmentPosition;
+    protected String getActiveTab() {
+        return searchParameter.get(SearchApiConst.ACTIVE_TAB);
     }
 }

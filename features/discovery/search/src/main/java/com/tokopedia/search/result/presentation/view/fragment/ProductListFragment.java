@@ -139,8 +139,7 @@ public class ProductListFragment
     public static ProductListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
-        
+
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
 
@@ -161,7 +160,6 @@ public class ProductListFragment
     private void loadDataFromArguments() {
         if(getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
-            setFragmentPosition(getArguments().getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
@@ -193,7 +191,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         bindView(view);
         initTopAdsConfig();
@@ -434,8 +432,6 @@ public class ProductListFragment
 
     @Override
     protected void onFirstTimeLaunch() {
-        super.onFirstTimeLaunch();
-
         isFirstTimeLoad = true;
         reloadData();
     }

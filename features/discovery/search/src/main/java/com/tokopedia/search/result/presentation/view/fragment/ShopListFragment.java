@@ -72,7 +72,6 @@ public class ShopListFragment
     public static ShopListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
 
         ShopListFragment shopListFragment = new ShopListFragment();
         shopListFragment.setArguments(args);
@@ -92,7 +91,6 @@ public class ShopListFragment
     private void loadDataFromBundle(Bundle bundle) {
         if (bundle != null) {
             copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
-            setFragmentPosition(bundle.getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
@@ -115,7 +113,7 @@ public class ShopListFragment
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initListener();
         bindView(view);

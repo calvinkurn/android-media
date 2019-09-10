@@ -90,10 +90,9 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Inject
     UserSessionInterface userSession;
 
-    public static CatalogListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
+    public static CatalogListFragment newInstance(SearchParameter searchParameter) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        bundle.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
 
         return createFragmentWithArguments(bundle);
     }
@@ -180,7 +179,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
         if (bundle != null) {
             copySearchParameter(bundle.getParcelable(EXTRA_SEARCH_PARAMETER));
             setShareUrl(bundle.getString(EXTRA_SHARE_URL));
-            setFragmentPosition(bundle.getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
@@ -195,7 +193,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
         prepareView();
@@ -355,7 +353,6 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     @Override
     protected void onFirstTimeLaunch() {
-        super.onFirstTimeLaunch();
         requestCatalogList();
     }
 
