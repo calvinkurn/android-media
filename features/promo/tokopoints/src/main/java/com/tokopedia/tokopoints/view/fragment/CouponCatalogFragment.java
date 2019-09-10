@@ -33,6 +33,7 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
+import com.tokopedia.tokopoints.view.adapter.CouponCatalogInfoPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
@@ -654,7 +655,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 giftSectionMainLayout.setVisibility(View.VISIBLE);
                 bottomSeparator.setVisibility(View.VISIBLE);
                 giftButton.setText(R.string.tp_label_send);
-                giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr()));
+                giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(),data.getImageUrlMobile()));
             }
         } else {
             giftSectionMainLayout.setVisibility(View.GONE);
@@ -723,12 +724,17 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     @Override
-    public void gotoSendGiftPage(int id, String title, String pointStr) {
+    public void gotoSendGiftPage(int id, String title, String pointStr, String banner) {
         Bundle bundle = new Bundle();
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
-        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
+        bundle.putString(CommonConstant.EXTRA_COUPON_BANNER, banner);
+
+        SendGiftFragment sendGiftFragment = new SendGiftFragment();
+        sendGiftFragment.setArguments(bundle);
+        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
+
     }
 
     @Override

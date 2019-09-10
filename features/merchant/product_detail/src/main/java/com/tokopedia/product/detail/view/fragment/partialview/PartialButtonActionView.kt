@@ -85,7 +85,7 @@ class PartialButtonActionView private constructor(private val view: View,
                     }
                 })
             btn_buy_now.visibility = View.VISIBLE
-
+            btn_add_to_cart.visible()
             btn_buy_now.setOnClickListener {
                 if (hasComponentLoading) return@setOnClickListener
                 buyNowClick?.invoke()

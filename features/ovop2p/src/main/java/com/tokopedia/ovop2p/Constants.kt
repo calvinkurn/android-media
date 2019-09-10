@@ -46,4 +46,9 @@ class Constants {
         val MIN_TRANSFER_LIMIT = 10000
         val PHONE_NO_LENGTH = 16
     }
+
+    object DeepLinkConstants{
+        val PAGE_ID = "{page_id}"
+        val DISCOVERY_PAGE = "produk-terlaris"
+    }
 }

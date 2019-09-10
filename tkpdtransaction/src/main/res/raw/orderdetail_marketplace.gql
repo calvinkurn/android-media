@@ -9,6 +9,12 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       backgroundColor
       fontSize
     }
+    requestCancelInfo{
+      requestCancelNote
+      requestCancelMinTime
+      isRequestedCancel
+      isRequestCancelAvail
+    }
     flag {
       isOrderCOD
       isOrderNow
