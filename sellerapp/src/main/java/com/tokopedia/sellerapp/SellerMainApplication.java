@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDelegate;
 import android.webkit.URLUtil;
 
+import com.frogermcs.androiddevmetrics.AndroidDevMetrics;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -175,6 +176,10 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         NetworkClient.init(this);
         InstabugInitalize.init(this);
         TokopediaUrl.Companion.init(this);
+
+        if (BuildConfig.DEBUG) {
+            AndroidDevMetrics.initWith(this);
+        }
     }
 
     @Override
