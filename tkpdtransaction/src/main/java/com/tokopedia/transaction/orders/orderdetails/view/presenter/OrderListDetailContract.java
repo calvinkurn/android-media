@@ -44,7 +44,7 @@ public interface OrderListDetailContract {
 
         void setDetail(Detail detail);
 
-        void setAdditionalInfo(List<AdditionalInfo> additionalInfo);
+        void setAdditionalInfo(AdditionalInfo additionalInfo);
 
         void setPricing(Pricing pricing);
 
