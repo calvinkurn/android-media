@@ -184,7 +184,10 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
             setCancelable(false)
         }
         if (sortAdapter.itemCount == 0) presenter.loadSortOptions()
-        else sortDialog.show()
+        else {
+            onSortClicked(currentSort)
+            sortDialog.show()
+        }
     }
 
     private fun initSortDialogView(): View {
