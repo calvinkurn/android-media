@@ -32,22 +32,28 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostVideoP
 import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.affiliate.feature.createpost.view.adapter.ProductAttachmentAdapter
+import com.tokopedia.affiliate.feature.createpost.view.adapter.ShareBottomSheetAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
 import com.tokopedia.affiliate.feature.createpost.view.service.SubmitPostService
+import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.util.SpaceItemDecoration
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.*
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videorecorder.main.VideoPickerActivity.Companion.VIDEOS_RESULT
+import kotlinx.android.synthetic.main.bottom_sheet_share_post.view.*
 import kotlinx.android.synthetic.main.fragment_af_create_post.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -65,6 +71,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Inject
+    lateinit var affiliatePref: AffiliatePreference
+
     protected var viewModel: CreatePostViewModel = CreatePostViewModel()
 
     protected val adapter: ProductAttachmentAdapter by lazy {
@@ -77,6 +86,18 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private val captionsAdapter: DefaultCaptionsAdapter by lazy {
         DefaultCaptionsAdapter(this::onDefaultCaptionClicked)
+    }
+
+    private val shareAdapter by lazy {
+        ShareBottomSheetAdapter(::onShareButtonClicked)
+    }
+
+    private lateinit var shareDialogView: View
+
+    private val shareDialog: CloseableBottomSheetDialog by lazy {
+        CloseableBottomSheetDialog.createInstanceRounded(context).apply {
+            setContentView(shareDialogView)
+        }
     }
 
     protected val productAttachmentLayoutManager by lazy {
@@ -648,11 +669,19 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    fun saveDraftAndSubmit() {
+    fun saveDraftAndSubmit(skipFirstTimeChecking: Boolean = false) {
         if (isFormInvalid()) {
             return
         }
 
+        if (affiliatePref.isFirstTimePost(userSession.userId) && !skipFirstTimeChecking) openShareBottomSheetDialog()
+        else {
+            submitPost()
+            affiliatePref.setFirstTimePost(userSession.userId)
+        }
+    }
+
+    private fun submitPost() {
         activity?.let {
             affiliateAnalytics.onSelesaiCreateButtonClicked(viewModel.productIdList)
             showLoading()
@@ -669,6 +698,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             } else {
                 goToFeed()
             }
+
             it.finish()
         }
     }
@@ -719,4 +749,50 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
+
+    override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
+        shareAdapter.setItems(typeList)
+    }
+
+    override fun changeShareHeaderText(text: String) {
+        if (activity is CreatePostActivityListener) {
+            (activity as CreatePostActivityListener).updateShareHeader(text)
+        }
+    }
+
+    fun openShareBottomSheetDialog() {
+        presenter.invalidateShareOptions()
+        if (!::shareDialogView.isInitialized) shareDialogView = createBottomSheetView()
+        shareDialogView.apply {
+            shareList.adapter = shareAdapter
+            shareBtn.isEnabled = isPostEnabled
+        }
+        shareDialog.show()
+    }
+
+    override fun onAuthenticateTwitter(authenticator: TwitterAuthenticator) {
+        context?.let(authenticator::startAuthenticate)
+    }
+
+    private fun onShareButtonClicked(type: ShareType, isChecked: Boolean) {
+        presenter.onShareButtonClicked(type, isChecked)
+    }
+
+    private fun getShareTitleAndSubtitle(): Pair<String, String> {
+        return if (isTypeAffiliate()) context?.getString(R.string.af_share_title).orEmpty() to context?.getString(R.string.af_share_subtitle).orEmpty()
+        else context?.getString(R.string.af_merchant_share_title).orEmpty() to context?.getString(R.string.af_merchant_share_subtitle).orEmpty()
+    }
+
+    private fun createBottomSheetView(): View {
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_share_post, null)
+        val (title, subtitle) = getShareTitleAndSubtitle()
+        return view.apply {
+            shareSheetTitle.text = title
+            shareSheetSubtitle.text = subtitle
+            shareBtn.setOnClickListener {
+                saveDraftAndSubmit(true)
+                shareDialog.dismiss()
+            }
+        }
+    }
 }

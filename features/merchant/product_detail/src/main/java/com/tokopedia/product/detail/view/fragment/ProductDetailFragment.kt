@@ -223,7 +223,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private var shouldShowCartAnimation = false
 
-    private lateinit var initToolBarMethod:()-> Unit
+    private lateinit var initToolBarMethod: () -> Unit
 
     var productInfo: ProductInfo? = null
     var shopInfo: ShopInfo? = null
@@ -473,7 +473,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             layoutParams.behavior = FlingBehavior(nested_scroll)
         }
 
-        appbar.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0)})
+        appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0) })
         refreshLayout?.setOnRefreshListener {
             loadProductData(true)
             updateStickyState()
@@ -1325,20 +1325,36 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun goToCourier(
-            productId: String,
-            shipment: List<ShopShipment>,
-            bbInfos: List<BBInfo>
-    ) {
+    private fun onShipmentClicked() {
+        productDetailTracking.eventShippingClicked()
+        if (productInfoViewModel.isUserSessionActive()) {
+            val productP3value = productInfoViewModel.productInfoP3resp.value
+            if (!productP3value?.ratesModel?.services.isNullOrEmpty()) {
+                gotoRateEstimation()
+            } else {
+                goToCourier()
+            }
+        } else {
+            goToCourier()
+        }
+    }
+
+    private fun goToCourier() {
         activity?.let {
-            startActivity(CourierActivity.createIntent(it, productId, shipment, bbInfos))
+            if (productInfo != null && shopInfo != null) {
+                startActivity(CourierActivity.createIntent(it,
+                        productInfo?.basic?.id?.toString() ?: "",
+                        shopInfo?.shipments ?: listOf(),
+                        shopInfo?.bbInfo ?: listOf()
+                ))
+            }
         }
     }
 
     private fun gotoRateEstimation() {
-        productInfo?.let{ productInfo ->
-            shopInfo?.let{ shopInfo ->
-                context?.let{ context ->
+        productInfo?.let { productInfo ->
+            shopInfo?.let { shopInfo ->
+                context?.let { context ->
                     startActivity(RatesEstimationDetailActivity.createIntent(
                             context,
                             shopInfo.shopCore.domain,
@@ -1369,19 +1385,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             varPictureImage.renderShopStatus(shopInfo, productInfo?.basic?.status
                     ?: ProductStatusTypeDef.ACTIVE)
             activity?.let {
-                val userSession = UserSession(it)
-                productStatsView.renderClickShipping(it) {
-                    productDetailTracking.eventShippingClicked()
-                    if (userSession.isLoggedIn) {
-                        gotoRateEstimation()
-                    } else {
-                        goToCourier(
-                                productInfo?.basic?.id?.toString() ?: "",
-                                shopInfo.shipments,
-                                shopInfo.bbInfo
-                        )
-                    }
-                }
+                productStatsView.renderClickShipping(it, ::onShipmentClicked)
             }
             productDetailTracking.sendScreen(
                     shopInfo.shopCore.shopID,
@@ -1409,6 +1413,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun renderProductInfo2(productInfoP2: ProductInfoP2General) {
+        productDescrView.productSpecificationResponse = productInfoP2.productSpecificationResponse
+
         if (productInfoP2.vouchers.isNotEmpty()) {
             merchantVoucherListWidget.setData(ArrayList(productInfoP2.vouchers))
             merchantVoucherListWidget.visible()
@@ -1445,9 +1451,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             }
             base_view_wholesale.visible()
         }
-
         productShopView.renderShopFeature(productInfoP2.shopFeature)
-
         productInfoP2.shopBadge?.let { productShopView.renderShopBadge(it) }
         productStatsView.renderRating(productInfoP2.rating)
         attributeInfoView.renderWishlistCount(productInfoP2.wishlistCount.count)
@@ -1624,7 +1628,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
         actionButtonView.isLeasing = isLeasing
         if (affiliateString.hasValue()) {
-            productInfoViewModel.hitAffiliateTracker(affiliateString ?: "", productInfoViewModel.deviceId)
+            productInfoViewModel.hitAffiliateTracker(affiliateString
+                    ?: "", productInfoViewModel.deviceId)
         }
         actionButtonView.renderData(!data.basic.isActive(),
                 (productInfoViewModel.isShopOwner(data.basic.shopID)
@@ -2250,9 +2255,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         if (stickyLoginTextView.isShowing()) {
             actionButtonView.setBackground(R.color.white)
-            nested_scroll.setPadding(0,0,0, paddingBottom + stickyLoginTextView.height)
+            nested_scroll.setPadding(0, 0, 0, paddingBottom + stickyLoginTextView.height)
         } else {
-            nested_scroll.setPadding(0,0,0, paddingBottom)
+            nested_scroll.setPadding(0, 0, 0, paddingBottom)
             ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
         }
     }
