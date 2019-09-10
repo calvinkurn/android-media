@@ -24,6 +24,7 @@ class SearchShopFirstPageGqlUseCase(
     override fun createObservable(requestParams: RequestParams): Observable<SearchShopModel> {
         graphqlRequest.variables = createParametersForQuery(requestParams.parameters)
 
+        graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase
