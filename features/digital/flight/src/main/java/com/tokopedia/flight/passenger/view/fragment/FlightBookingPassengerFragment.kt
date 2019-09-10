@@ -217,7 +217,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     fun validateFields(): Boolean {
         var isValid = true
 
-        val isNeedPassport = isDomestic
+        val isNeedPassport = !isDomestic
         val twelveYearsAgo = FlightDateUtil.addTimeToSpesificDate(
                 FlightDateUtil.stringToDate(depatureDate), Calendar.YEAR, MINUS_TWELVE)
         val twoYearsAgo = FlightDateUtil.addTimeToSpesificDate(

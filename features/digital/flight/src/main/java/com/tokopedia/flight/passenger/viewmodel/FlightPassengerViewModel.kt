@@ -9,6 +9,7 @@ import com.tokopedia.common.travel.domain.GetPhoneCodeByIdUseCase
 import com.tokopedia.common.travel.domain.UpsertContactListUseCase
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -44,13 +45,13 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
     }
 
     fun getNationalityById(paramId: String) {
-        launch {
+        launch(Dispatchers.IO) {
             nationalityData = getPhoneCodeByIdUseCase.execute(paramId)
         }
     }
 
     fun getPassportIssuerCountryById(paramId: String) {
-        launch {
+        launch(Dispatchers.IO) {
             passportIssuerCountryData = getPhoneCodeByIdUseCase.execute(paramId)
         }
     }
