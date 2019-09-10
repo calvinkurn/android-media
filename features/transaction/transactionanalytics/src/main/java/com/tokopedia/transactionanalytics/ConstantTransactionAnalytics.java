@@ -43,6 +43,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
         String VIEW_SOM = "viewSOM";
+        String CLICK_RECOMMENDATION = "clickRecommendation";
     }
 
     interface EventCategory {
@@ -294,6 +295,8 @@ public interface ConstantTransactionAnalytics {
         //WIDGET_RECOMMENDATION
         String IMPRESSION_ON_PRODUCT_RECOMMENDATION = "impression on product recommendation";
         String CLICK_ADD_TO_CART = "click add to cart";
+        String CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT = "click add wishlist on primary product";
+        String CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT = "click remove wishlist on primary product";
 
         //Retry Pickup
         String VIEW_TUNGGU_CARI_DRIVER = "view tunggu cari driver";
@@ -348,6 +351,8 @@ public interface ConstantTransactionAnalytics {
         String PROMO = "promo";
         String NON_PROMO = "non promo";
         String COD = "cod";
+
+        String SOURCE = "source: ";
     }
 
     interface ScreenName {

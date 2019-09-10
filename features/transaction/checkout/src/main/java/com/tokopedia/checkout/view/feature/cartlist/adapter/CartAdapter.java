@@ -830,6 +830,19 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public void notifyRecommendation(String productId, boolean isWishlist) {
+        for (int i = cartDataList.size() - 1; i >= 0; i--) {
+            Object object = cartDataList.get(i);
+            if (object instanceof CartRecommendationItemHolderData) {
+                if (String.valueOf(((CartRecommendationItemHolderData) object).getRecommendationItem().getProductId()).equals(productId)) {
+                    ((CartRecommendationItemHolderData) object).getRecommendationItem().setWishlist(isWishlist);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
+    }
+
     public void addCartLoadingData() {
         if (cartLoadingHolderData == null) {
             cartLoadingHolderData = new CartLoadingHolderData();
