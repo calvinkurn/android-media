@@ -1,7 +1,5 @@
 package com.tokopedia.common.travel.domain;
 
-import android.arch.lifecycle.LiveData;
-
 import com.tokopedia.flight.country.database.CountryPhoneCodeTable;
 
 import java.util.List;
@@ -15,5 +13,5 @@ public interface IPhoneCodeRepository {
 
     Observable<List<CountryPhoneCodeTable>> getPhoneCodeList(String string);
 
-    LiveData<List<CountryPhoneCodeTable>> getCountryById(String id);
+    List<CountryPhoneCodeTable> getCountryById(String id);
 }

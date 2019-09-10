@@ -1,7 +1,5 @@
 package com.tokopedia.common.travel.data;
 
-import android.arch.lifecycle.LiveData;
-
 import com.tokopedia.common.travel.domain.IPhoneCodeRepository;
 import com.tokopedia.flight.country.database.CountryPhoneCodeTable;
 
@@ -29,7 +27,7 @@ public class PhoneCodeRepository implements IPhoneCodeRepository {
     }
 
     @Override
-    public LiveData<List<CountryPhoneCodeTable>> getCountryById(String id) {
+    public List<CountryPhoneCodeTable> getCountryById(String id) {
         return phoneCodeListDbSource.getCountryById(id);
     }
 }

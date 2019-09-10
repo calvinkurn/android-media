@@ -46,13 +46,13 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
 
     fun getNationalityById(paramId: String) {
         launch(Dispatchers.IO) {
-            nationalityData = getPhoneCodeByIdUseCase.execute(paramId)
+            nationalityData.value = getPhoneCodeByIdUseCase.execute(paramId)
         }
     }
 
     fun getPassportIssuerCountryById(paramId: String) {
         launch(Dispatchers.IO) {
-            passportIssuerCountryData = getPhoneCodeByIdUseCase.execute(paramId)
+            passportIssuerCountryData.value = getPhoneCodeByIdUseCase.execute(paramId)
         }
     }
 }

@@ -12,15 +12,14 @@ import javax.inject.Inject
  */
 
 class GetPhoneCodeByIdUseCase @Inject constructor(val phoneCodeRepository: PhoneCodeRepository) {
-    fun execute(paramId: String): MutableLiveData<CountryPhoneCode> {
-        return Transformations.map(phoneCodeRepository.getCountryById(paramId)) {
-            var countryPhoneCode = CountryPhoneCode()
-            if (it.isNotEmpty()) {
-                countryPhoneCode.countryName = it.first().countryName
-                countryPhoneCode.countryId = it.first().countryId
-                countryPhoneCode.countryPhoneCode = it.first().phoneCode.toString()
-            }
-            countryPhoneCode
-        } as MutableLiveData<CountryPhoneCode>
+    fun execute(paramId: String): CountryPhoneCode {
+        val countries = phoneCodeRepository.getCountryById(paramId)
+        var countryPhoneCode = CountryPhoneCode()
+        if (countries.isNotEmpty()) {
+            countryPhoneCode.countryName = countries.first().countryName
+            countryPhoneCode.countryId = countries.first().countryId
+            countryPhoneCode.countryPhoneCode = countries.first().phoneCode.toString()
+        }
+        return countryPhoneCode
     }
 }
