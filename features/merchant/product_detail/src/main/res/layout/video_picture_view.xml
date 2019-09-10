@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        app:controller_layout_id="@layout/video_control_view" />
+        app:controller_layout_id="@layout/pdp_video_controller" />
 
     <ProgressBar
         android:id="@+id/loading_pdp"

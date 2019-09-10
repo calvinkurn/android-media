@@ -290,7 +290,9 @@ class VideoPictureFragment : BaseDaggerFragment() {
     }
 
     fun imVisible() {
-        playVideo(mediaSource)
+        if (mediaType == TYPE_VIDEO) {
+            playVideo(mediaSource)
+        }
     }
 
     fun imInvisible() {
