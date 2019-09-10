@@ -41,6 +41,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
 
     private var mediaType = TYPE_IMAGE
     private var mediaSource = ""
+    private var mediaPosition = 0
     var onPictureClickListener: ((Int) -> Unit)? = null
 
     private var isReadyPlayed = true
@@ -66,11 +67,13 @@ class VideoPictureFragment : BaseDaggerFragment() {
 
         private const val ARG_MEDIA_SRC = "media_src"
         private const val ARG_MEDIA_TYPE = "media_type"
+        private const val ARG_MEDIA_POSITION = "media_position"
 
-        fun createInstance(mediaSource: String, type: String) = VideoPictureFragment().also {
+        fun createInstance(mediaSource: String, type: String, position: Int) = VideoPictureFragment().also {
             it.arguments = Bundle().apply {
                 putString(ARG_MEDIA_SRC, mediaSource)
                 putString(ARG_MEDIA_TYPE, type)
+                putInt(ARG_MEDIA_POSITION, position)
             }
         }
     }
@@ -86,6 +89,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
         arguments?.let {
             mediaType = it.getString(ARG_MEDIA_TYPE, TYPE_IMAGE)
             mediaSource = it.getString(ARG_MEDIA_SRC, "")
+            mediaPosition = it.getInt(ARG_MEDIA_POSITION)
         }
     }
 
@@ -95,6 +99,11 @@ class VideoPictureFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        view.setOnClickListener {
+            onPictureClickListener?.invoke(mediaPosition)
+        }
+
         if (mediaSource.isBlank()) return
 
         if (mediaType == TYPE_IMAGE) {
@@ -218,9 +227,6 @@ class VideoPictureFragment : BaseDaggerFragment() {
         if (url == null) return
 
         try {
-//            val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory()
-//            val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
-
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(context)
             video_player_pdp.useController = true
             video_player_pdp.player = mExoPlayer

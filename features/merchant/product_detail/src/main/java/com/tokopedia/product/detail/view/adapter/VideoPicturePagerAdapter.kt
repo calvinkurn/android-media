@@ -25,7 +25,7 @@ class VideoPicturePagerAdapter(val context: Context,
         } else {
             mediaItem.videoUrl
         }
-        val f = VideoPictureFragment.createInstance(urlMedia, mediaItem.type)
+        val f = VideoPictureFragment.createInstance(urlMedia, mediaItem.type, position)
         f.onPictureClickListener = onPictureClickListener
         return f
     }

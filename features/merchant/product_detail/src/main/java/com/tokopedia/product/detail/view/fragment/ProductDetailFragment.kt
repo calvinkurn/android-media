@@ -1872,7 +1872,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun getImageURIPaths(): ArrayList<String> {
-        return ArrayList(productInfo?.run { pictures?.map { it.urlOriginal } } ?: listOf())
+        return ArrayList(productInfo?.run {
+            media.map {
+                if(it.type == "image") {
+                    it.urlOriginal
+                } else {
+                    it.urlThumbnail
+                }
+            }
+        } ?: listOf())
     }
 
     private fun onVariantClicked() {
