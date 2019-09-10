@@ -366,17 +366,6 @@ public class SearchTracking {
         ));
     }
 
-    public static void eventSearchResultCloseBottomSheetFilter(Context context,
-                                                               String screenName,
-                                                               Map<String, String> selectedFilter) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_PRODUCT,
-                SearchEventTracking.Action.APPLY_FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ));
-    }
-
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
         if (selectedFilter == null) {
             return "";

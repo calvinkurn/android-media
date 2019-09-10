@@ -517,10 +517,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
     }
 
-    public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
-    }
-
     protected void removeSelectedFilter(String uniqueId) {
 
         String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);

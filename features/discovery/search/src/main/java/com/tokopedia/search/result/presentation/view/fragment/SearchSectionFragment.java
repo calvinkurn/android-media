@@ -25,6 +25,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
@@ -418,6 +420,8 @@ public abstract class SearchSectionFragment
     protected void openBottomSheetFilter() {
         if(searchParameter == null || getFilters() == null) return;
 
+        FilterTracking.eventSearchResultOpenFilterPage(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, getScreenName());
+
         bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
     }
@@ -579,7 +583,7 @@ public abstract class SearchSectionFragment
     }
 
     public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
+        FilterTracking.eventSearchResultCloseBottomSheetFilter(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, getScreenName(), getSelectedFilter());
     }
 
     protected void removeSelectedFilter(String uniqueId) {
