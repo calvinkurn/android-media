@@ -892,10 +892,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun initView() {
         initShowSearchPDP()
-
         varToolbar.show()
         varPictureImage.show()
-        collapsing_toolbar.title = ""
         varToolbar.title = ""
         activity?.let {
             varToolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
@@ -925,7 +923,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun initShowSearchPDP() {
         search_pdp_toolbar.show()
-        collapsing_toolbar.hide()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
         initToolBarMethod = ::initToolbarLight
@@ -963,8 +960,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun initToolbarLight() {
         activity?.run {
             if (isAdded) {
-                collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
-                collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
                 varToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
                 varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
