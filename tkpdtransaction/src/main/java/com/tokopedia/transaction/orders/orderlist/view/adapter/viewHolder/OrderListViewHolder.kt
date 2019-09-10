@@ -213,7 +213,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             val popup = PopupMenu(it.context, it)
             popup.menu.add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan")
             popup.menu.add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail")
-            popup.setOnMenuItemClickListener(OnMenuPopupClicked(it.context, order.appLink))
+            popup.setOnMenuItemClickListener(OnMenuPopupClicked(it.context, order))
             popup.show()
         }
         itemView.setOnClickListener {
@@ -224,17 +224,22 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         }
     }
 
-    private inner class OnMenuPopupClicked (private val context:Context, private val appLink: String?) : PopupMenu.OnMenuItemClickListener {
+    private inner class OnMenuPopupClicked (private val context:Context, private val order: Order) : PopupMenu.OnMenuItemClickListener {
+
+        private val list = order.dotMenu()
+        private val URL_POSITION =0
 
         override fun onMenuItemClick(item: MenuItem): Boolean {
             return when {
                 item.itemId == R.id.action_bantuan -> {
-                    menuListener?.startUri(context.resources.getString(R.string.contact_us_applink))
-                    true
+                    if (!list.isEmpty()&& !list.get(URL_POSITION).uri().isEmpty()){
+                        menuListener?.startUri(list.get(URL_POSITION).uri())
+                    }
+                   true
                 }
                 item.itemId == R.id.action_order_detail -> {
-                    if (!TextUtils.isEmpty(appLink)) {
-                        RouteManager.route(context, appLink)
+                    if (!TextUtils.isEmpty(order.appLink)) {
+                        RouteManager.route(context, order.appLink)
                     }
                     true
                 }
