@@ -7,24 +7,12 @@ import android.net.Uri;
 import android.support.v4.app.FragmentManager;
 import android.view.View;
 
-import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.NpsConstant;
 import com.tokopedia.nps.R;
 
-public class AppFeedbackThankYouBottomSheet extends BottomSheets {
+public class AppFeedbackThankYouBottomSheet extends AppFeedbackDialog {
 
     private float appRating;
-
-    public void showDialog(FragmentManager manager, float appRating, String tag) {
-        super.show(manager, tag);
-        this.appRating = appRating;
-    }
-
-    @Override
-    public int getBaseLayoutResourceId() {
-        return R.layout.dialog_feedback_base;
-    }
 
     @Override
     public int getLayoutResourceId() {
@@ -32,17 +20,8 @@ public class AppFeedbackThankYouBottomSheet extends BottomSheets {
     }
 
     @Override
-    protected BottomSheetsState state() {
-        return BottomSheetsState.FLEXIBLE;
-    }
-
-    @Override
-    protected String title() {
-        return "";
-    }
-
-    @Override
     public void initView(View view) {
+        super.initView(view);
         Context ctx = getContext();
 
         if (ctx != null && (int) appRating > NpsConstant.Feedback.GOOD_RATING_THRESHOLD) {
@@ -60,9 +39,8 @@ public class AppFeedbackThankYouBottomSheet extends BottomSheets {
         }
     }
 
-    private String getAppType() {
-        return GlobalConfig.isSellerApp()
-                ? GlobalConfig.PACKAGE_SELLER_APP
-                : GlobalConfig.PACKAGE_CONSUMER_APP;
+    public void showDialog(FragmentManager manager, float appRating, String tag) {
+        super.show(manager, tag);
+        this.appRating = appRating;
     }
 }

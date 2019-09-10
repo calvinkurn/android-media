@@ -11,26 +11,13 @@ import android.widget.RatingBar;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.nps.NpsAnalytics;
 import com.tokopedia.nps.NpsConstant;
 import com.tokopedia.nps.R;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.unifyprinciples.Typography;
 
-import java.util.concurrent.TimeUnit;
-
-import javax.inject.Inject;
-
-public class AppFeedbackRatingBottomSheet extends BottomSheets {
-
-    private static final String HIDE_FEEDBACK_RATING = "hide_feedback_rating";
-    private static final String LABEL_CLICK_ADVANCED_APP_RATING = "ClickAdvancedAppRating: ";
-    private static final String LABEL_CANCEL_ADVANCED_APP_RATING = "CancelAdvancedAppRating";
-    private static final String DEFAULT_CACHE_VALUE = "1";
-    private static final long EXPIRED_DURATION = TimeUnit.DAYS.toMillis(7); // expired in 7 days
+public class AppFeedbackRatingBottomSheet extends AppFeedbackDialog {
 
     private FrameLayout buttonView;
     private float ratingValue;
@@ -38,31 +25,14 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
     private LocalCacheHandler cacheHandler;
     private boolean isCancelled = true;
 
-    @Inject
-    NpsAnalytics npsAnalytics;
-
-    @Override
-    public int getBaseLayoutResourceId() {
-        return R.layout.dialog_feedback_base;
-    }
-
     @Override
     public int getLayoutResourceId() {
         return R.layout.dialog_feedback_rating;
     }
 
     @Override
-    protected BottomSheetsState state() {
-        return BottomSheetsState.FLEXIBLE;
-    }
-
-    @Override
-    protected String title() {
-        return "";
-    }
-
-    @Override
     public void initView(View view) {
+        super.initView(view);
         ratingDetails = getResources().getStringArray(R.array.app_ratings);
 
         AppCompatRatingBar ratingBarView = view.findViewById(R.id.rating_bar);
@@ -150,12 +120,6 @@ public class AppFeedbackRatingBottomSheet extends BottomSheets {
         cacheHandler.applyEditor();
 
         isCancelled = false;
-    }
-
-    private String getConfigKey() {
-        return GlobalConfig.isSellerApp()
-                ? RemoteConfigKey.SELLERAPP_SHOW_ADVANCED_APP_RATING
-                : RemoteConfigKey.MAINAPP_SHOW_ADVANCED_APP_RATING;
     }
 
     private boolean isFeedbackRatingNeeded(Context context) {
