@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.view.converter;
 
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.OntimeDeliveryGuarantee;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.RatesFeature;
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;

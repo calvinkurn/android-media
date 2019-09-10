@@ -57,6 +57,7 @@ import com.tokopedia.purchase_platform.common.data.model.request.checkout.Checko
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.EgoldData;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.ProductDataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.RatesFeature;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.ShopProductCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.TokopediaCornerData;
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
