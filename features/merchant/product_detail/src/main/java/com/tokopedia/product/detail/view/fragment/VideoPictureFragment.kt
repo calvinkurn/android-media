@@ -100,10 +100,14 @@ class VideoPictureFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.setOnClickListener {
+        video_picture_container.setOnClickListener {
             onPictureClickListener?.invoke(mediaPosition)
         }
 
+//        video_player_pdp.setOnTouchListener { v, event ->
+//            onPictureClickListener?.invoke(mediaPosition)
+//            false
+//        }
         if (mediaSource.isBlank()) return
 
         if (mediaType == TYPE_IMAGE) {
