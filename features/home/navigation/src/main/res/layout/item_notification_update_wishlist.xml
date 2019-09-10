@@ -58,7 +58,7 @@
         app:layout_constraintTop_toBottomOf="@+id/body">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/cl_chat_bubble"
+            android:id="@+id/cl_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="@dimen/dp_12"

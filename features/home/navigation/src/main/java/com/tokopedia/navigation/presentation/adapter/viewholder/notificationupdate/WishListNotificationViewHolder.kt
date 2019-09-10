@@ -2,6 +2,7 @@ package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupd
 
 import android.content.Intent
 import android.support.annotation.LayoutRes
+import android.support.constraint.ConstraintLayout
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -22,6 +23,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
     private val thumbnail: ImageView = itemView.findViewById(R.id.iv_thumbnail)
     private val productName: TextView = itemView.findViewById(R.id.tv_product_name)
     private val productPrice: TextView = itemView.findViewById(R.id.tv_product_price)
+    private val productContainer: ConstraintLayout = itemView.findViewById(R.id.cl_product)
     private val productCampaign: CampaignLayout = itemView.findViewById(R.id.cl_campaign)
     private val productVariant: ProductVariantLayout = itemView.findViewById(R.id.pvl_variant)
     private val btnCart: ImageView = itemView.findViewById(R.id.iv_cart)
@@ -38,6 +40,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
         }
 
         assignClickListenerAtc(product)
+        assignProductClickListener(product)
     }
 
     private fun assignClickListenerAtc(product: ProductData) {
@@ -45,6 +48,16 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
         btnCart.setOnClickListener {
             listener.getAnalytic().trackAtcOnClick(product)
             itemView.context.startActivity(intent)
+        }
+    }
+
+    private fun assignProductClickListener(product: ProductData) {
+        productContainer.setOnClickListener {
+            RouteManager.route(
+                    itemView.context,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    product.productId
+            )
         }
     }
 
