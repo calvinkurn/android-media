@@ -40,7 +40,7 @@
                     android:id="@+id/promo_banner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"/>
+                    android:layout_marginTop="@dimen/dp_4"/>
 
                 <include layout="@layout/item_voucher_game_banner_shimmering"
                     android:id="@+id/promo_banner_shimmering"

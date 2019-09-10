@@ -31,6 +31,7 @@
             android:orientation="horizontal">
 
             <com.tokopedia.unifycomponents.Label
+                android:id="@+id/product_promo_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/dp_4"
