@@ -222,6 +222,9 @@
 
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
+
     <string name="title_app_clear_cache">Bersihkan Cache</string>
+    <string name="account_home_label_clear_cache_success">Berhasil membersihkan cache</string>
+    <string name="account_home_label_clear_cache_failed">Gagal membersihkan cache</string>
 
 </resources>

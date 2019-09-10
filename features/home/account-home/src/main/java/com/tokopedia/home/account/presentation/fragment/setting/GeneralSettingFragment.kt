@@ -240,9 +240,9 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
                 .subscribe({ value: Boolean ->
                     context?.let {
                         if (value) {
-                            Toast.makeText(it, "Cache cleared", Toast.LENGTH_LONG).show()
+                            Toast.makeText(it, R.string.account_home_label_clear_cache_success, Toast.LENGTH_LONG).show()
                         } else {
-                            Toast.makeText(it, "Clear cache failed", Toast.LENGTH_LONG).show()
+                            Toast.makeText(it, R.string.account_home_label_clear_cache_failed, Toast.LENGTH_LONG).show()
                         }
                     }
                 }, {})
