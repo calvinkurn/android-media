@@ -128,7 +128,8 @@ public abstract class SearchSectionFragment
     private void startToLoadDataForFirstFragmentPosition() {
         if (getFragmentPosition() == 0) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+//            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
 
@@ -225,7 +226,8 @@ public abstract class SearchSectionFragment
     private void startToLoadData() {
         if (canStartToLoadData()) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+//            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
 
