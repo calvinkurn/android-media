@@ -5,6 +5,7 @@ import android.net.Uri
 import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
@@ -75,7 +76,7 @@ object DeeplinkDFMapper {
 //                        deeplink, MODULE_USER_PROFILE_COMPLETION,
 //                        context.getString(R.string.applink_profile_completion_title))
 //                }
-                deeplink.startsWith(ApplinkConst.SETTING_BANK) -> {
+                deeplink.startsWith(ApplinkConstInternalGlobal.SETTING_BANK) -> {
                     getDFDeeplinkIfNotInstalled(context,
                         deeplink, MODULE_USER_SETTING_BANK,
                         context.getString(R.string.applink_setting_bank_title))
