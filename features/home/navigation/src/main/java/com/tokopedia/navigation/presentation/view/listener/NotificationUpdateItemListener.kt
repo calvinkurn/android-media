@@ -1,9 +1,11 @@
 package com.tokopedia.navigation.presentation.view.listener
 
+import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
+
 /**
  * @author : Steven 12/04/19
  */
 interface NotificationUpdateItemListener {
 
-    fun itemClicked(notifId: String, adapterPosition: Int, needToResetCounter: Boolean, templateKey: String)
+    fun itemClicked(viewModel: NotificationUpdateItemViewModel, adapterPosition: Int)
 }

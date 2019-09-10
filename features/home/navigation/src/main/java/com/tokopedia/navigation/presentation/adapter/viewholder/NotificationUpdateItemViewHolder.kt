@@ -9,7 +9,6 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
@@ -53,7 +52,7 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
     }
 
     override fun bind(element: NotificationUpdateItemViewModel) {
-        var color: Int =
+        val color: Int =
                 if (element.isRead) MethodChecker.getColor(container.context, R.color.white)
                 else MethodChecker.getColor(container.context, R.color.Green_G100)
 
@@ -70,9 +69,9 @@ class NotificationUpdateItemViewHolder(itemView: View, var listener: Notificatio
         convertTypeUser(element)
 
         container.setOnClickListener {
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
-            RouteManager.route(itemView.context, element.appLink)
+//            RouteManager.route(itemView.context, element.appLink)
         }
     }
 
