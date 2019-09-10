@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -51,11 +52,18 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
 
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                listener.onEditorActionDone()
-                true
+                listener.onFinishInput()
+                return@setOnEditorActionListener true
             }
             false
         }
+//        ac_input.setOnKeyListener { _, keyCode, event ->
+//            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
+//                listener.onFinishInput()
+//                return@setOnKeyListener true
+//            }
+//            false
+//        }
     }
 
     fun clearFocusAutoComplete() {
@@ -93,6 +101,6 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
     }
 
     interface ActionListener {
-        fun onEditorActionDone()
+        fun onFinishInput()
     }
 }
