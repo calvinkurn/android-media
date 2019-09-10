@@ -13,7 +13,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
-import com.tokopedia.product.detail.common.data.model.product.Picture
+import com.tokopedia.product.detail.common.data.model.product.Media
 import com.tokopedia.product.detail.view.adapter.VideoPicturePagerAdapter
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
@@ -34,17 +34,17 @@ class PictureScrollingView @JvmOverloads constructor(
         View.inflate(context, R.layout.widget_picture_scrolling, this)
     }
 
-    fun renderData(pictures: List<Picture>?, onPictureClickListener: ((Int) -> Unit)?, fragmentManager: FragmentManager) {
-        val photoList = if (pictures== null || pictures.isEmpty()) {
+    fun renderData(media: List<Media>?, onPictureClickListener: ((Int) -> Unit)?, fragmentManager: FragmentManager) {
+        val mediaList = if (media == null || media.isEmpty()) {
             val resId = R.drawable.product_no_photo_default
             val res = context.resources
             val uriNoPhoto = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
                     + "://" + res.getResourcePackageName(resId)
                     + '/'.toString() + res.getResourceTypeName(resId)
                     + '/'.toString() + res.getResourceEntryName(resId))
-            mutableListOf(Picture(urlOriginal = uriNoPhoto.toString()))
+            mutableListOf(Media(urlOriginal = uriNoPhoto.toString()))
         } else
-            pictures.toMutableList()
+            media.toMutableList()
 
 
         val urlMedia: MutableList<Pair<String, String>> = mutableListOf(
@@ -55,7 +55,7 @@ class PictureScrollingView @JvmOverloads constructor(
                 Pair("https://ecs7.tokopedia.net/img/cache/700/product-1/2018/8/16/19829070/19829070_19948cbd-bd22-4edb-a553-d226f08e659a_960_1280.jpeg", "picture")
         )
 
-        val pagerAdapter = VideoPicturePagerAdapter(context, urlMedia, urlTemp, onPictureClickListener, fragmentManager)
+        val pagerAdapter = VideoPicturePagerAdapter(context, mediaList, urlTemp, onPictureClickListener, fragmentManager)
         view_pager.adapter = pagerAdapter
 
         view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {

@@ -43,6 +43,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
 
     private var mediaType = TYPE_IMAGE
     private var mediaSource = ""
+    var onPictureClickListener: ((Int) -> Unit)? = null
 
     private var isReadyPlayed = true
     private var currentWindowIndex: Int = C.INDEX_UNSET
@@ -59,7 +60,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
         private const val CURRENT_MUTE_KEY = "current_mute"
         private const val CURRENT_VOLUME_KEY = "current_volume"
 
-        private const val TYPE_IMAGE = "picture"
+        private const val TYPE_IMAGE = "image"
         private const val TYPE_VIDEO = "video"
 
         private const val VIDEO_ROTATION_90 = 90f
