@@ -5,9 +5,13 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.widget.ImageView
+import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.chat_common.BaseChatToolbarActivity
+import com.tokopedia.chat_common.R
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
 
@@ -68,6 +72,11 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     }
 
+
+   fun upadateToolbar(profileName: String?, profileImage: String?) {
+        ImageHandler.loadImageCircle2(this, findViewById<ImageView>(R.id.user_avatar), profileImage)
+        (findViewById<TextView>(R.id.title)).text = profileName
+    }
 
     override fun onBackPressed() {
         val fragments = supportFragmentManager.fragments

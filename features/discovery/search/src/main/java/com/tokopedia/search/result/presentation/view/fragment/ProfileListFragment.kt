@@ -16,8 +16,8 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE
-import com.tokopedia.discovery.common.data.Option
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.ProfileListSectionContract
 import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewModel

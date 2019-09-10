@@ -5,8 +5,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.library.baseadapter.BaseItem;
 
-public class Location implements Parcelable {
+public class Location extends BaseItem implements Parcelable {
 
 
     @SerializedName("id")
@@ -45,6 +46,21 @@ public class Location implements Parcelable {
     @SerializedName("image_app")
     @Expose
     private String imageApp;
+    @SerializedName("address")
+    @Expose
+    private String address;
+    @SerializedName("location_type")
+    @Expose
+    private LocationType locType;
+    @SerializedName("coordinates")
+    @Expose
+    private String coordinates;
+    @SerializedName("city_id")
+    @Expose
+    private int cityId;
+    @SerializedName("city_name")
+    @Expose
+    private String cityName;
 
 
     public final static Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
@@ -76,6 +92,11 @@ public class Location implements Parcelable {
         this.icon = in.readString();
         this.url = in.readString();
         this.imageApp = in.readString();
+        this.address = in.readString();
+        this.locType = in.readParcelable(LocationType.class.getClassLoader());
+        this.coordinates = in.readString();
+        this.cityId = in.readInt();
+        this.cityName = in.readString();
     }
 
     public Location() {
@@ -177,6 +198,47 @@ public class Location implements Parcelable {
         this.imageApp = imageApp;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public LocationType getLocType() {
+        return locType;
+    }
+
+    public void setLocType(LocationType locType) {
+        this.locType = locType;
+    }
+
+    public String getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(String coordinates) {
+        this.coordinates = coordinates;
+    }
+
+
+    public int getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(int cityId) {
+        this.cityId = cityId;
+    }
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
 
         dest.writeInt(id);
@@ -191,6 +253,11 @@ public class Location implements Parcelable {
         dest.writeString(icon);
         dest.writeString(url);
         dest.writeString(imageApp);
+        dest.writeString(address);
+        dest.writeParcelable(locType, flags);
+        dest.writeString(coordinates);
+        dest.writeInt(cityId);
+        dest.writeString(cityName);
     }
 
     public int describeContents() {
