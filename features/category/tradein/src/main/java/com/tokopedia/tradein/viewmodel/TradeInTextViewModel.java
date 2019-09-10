@@ -68,6 +68,9 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                 @Override
                 public void onError(Throwable e) {
                     e.printStackTrace();
+                    Intent intent = new Intent(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE);
+                    intent.putExtra(TradeInTextView.EXTRA_ISELLIGIBLE,false);
+                    LocalBroadcastManager.getInstance(activityWeakReference.get()).sendBroadcast(intent);
                 }
 
                 @Override
@@ -87,6 +90,10 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
                             tradeInParams.setRemainingPrice(tradeInResponse.getRemainingPrice());
                             tradeInParams.setUseKyc(tradeInResponse.isUseKyc() ? 1 : 0);
                         }
+
+                        Intent intent = new Intent(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE);
+                        intent.putExtra(TradeInTextView.EXTRA_ISELLIGIBLE,tradeInResponse.isEligible());
+                        LocalBroadcastManager.getInstance(activityWeakReference.get()).sendBroadcast(intent);
                     }
                 }
             });
