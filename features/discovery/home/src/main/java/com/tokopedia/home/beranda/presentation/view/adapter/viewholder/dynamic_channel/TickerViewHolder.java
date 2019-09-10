@@ -43,7 +43,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
     private boolean hasStarted = false;
 
     private View view;
-    private String tickerTitle = "";
+    private String tickerId = "";
 
     public TickerViewHolder(View itemView, HomeCategoryListener listener) {
         super(itemView);
@@ -61,7 +61,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
         Ticker.Tickers ticker = element.getTickers().get(0);
         textMessage.setText(ticker.getMessage());
         textMessage.setMovementMethod(new TickerLinkMovementMethod(
-                ticker.getTitle()
+                ticker.getId()
         ));
         StripedUnderlineUtil.stripUnderlines(textMessage);
         ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
@@ -88,7 +88,7 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
                     else
                         i = 0;
                     Ticker.Tickers ticker = tickers.get(i);
-                    tickerTitle = ticker.getTitle();
+                    tickerId = ticker.getId();
                     textMessage.setText(ticker.getMessage());
                     StripedUnderlineUtil.stripUnderlines(textMessage);
                     ViewCompat.setBackgroundTintList(btnClose, ColorStateList.valueOf(Color.parseColor(ticker.getColor())));
@@ -103,24 +103,24 @@ public class TickerViewHolder extends AbstractViewHolder<TickerViewModel> implem
         if (i == R.id.btn_close && getAdapterPosition() != RecyclerView.NO_POSITION) {
             HomePageTracking.eventClickOnCloseTickerHomePage(
                     context,
-                    tickerTitle
+                    tickerId
             );
             listener.onCloseTicker(getAdapterPosition());
         }
     }
 
     private class TickerLinkMovementMethod extends LinkMovementMethod {
-        String tickerTitle;
+        String tickerId;
 
-        public TickerLinkMovementMethod(String tickerTitle) {
-            this.tickerTitle = tickerTitle;
+        public TickerLinkMovementMethod(String tickerId) {
+            this.tickerId = tickerId;
         }
 
         @Override
         public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
             HomePageTracking.eventClickTickerHomePage(
                     context,
-                    tickerTitle
+                    tickerId
             );
             return super.onTouchEvent(widget, buffer, event);
         }
