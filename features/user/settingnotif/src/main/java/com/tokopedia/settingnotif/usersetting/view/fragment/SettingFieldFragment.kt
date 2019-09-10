@@ -132,7 +132,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun onGoToPushNotifCheckerPage() {
-        Log.d("onGoToPushNotifCheckerPage: ", "onGoToPushNotifCheckerPage")
+        Log.d("SettingFieldFragment: ", "onGoToPushNotifCheckerPage")
         // val intent = Intent(activity, )
     }
 
