@@ -26,11 +26,13 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
     private View layout;
     private LabelView labelView;
     private AccountItemListener listener;
+    private View separator;
 
     public MenuListViewHolder(View itemView, AccountItemListener listener) {
         super(itemView);
         layout = itemView.findViewById(R.id.container);
         labelView = itemView.findViewById(R.id.labelview);
+        separator = itemView.findViewById(R.id.separator);
 
         this.listener = listener;
     }
@@ -52,5 +54,11 @@ public class MenuListViewHolder extends AbstractViewHolder<MenuListViewModel> {
         labelView.setBadgeCounter(element.getCount());
         labelView.setSubTitle(element.getMenuDescription());
         labelView.showRightArrow(false);
+
+        if (element.isUseSeparator()) {
+            separator.setVisibility(View.VISIBLE);
+        } else {
+            separator.setVisibility(View.GONE);
+        }
     }
 }

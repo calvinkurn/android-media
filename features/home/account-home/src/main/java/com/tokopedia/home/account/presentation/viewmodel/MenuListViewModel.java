@@ -16,6 +16,7 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
     private int count;
     private String titleTrack;
     private String sectionTrack;
+    private boolean isUseSeparator = true;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
@@ -76,6 +77,14 @@ public class MenuListViewModel implements ParcelableViewModel<AccountTypeFactory
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public boolean isUseSeparator() {
+        return isUseSeparator;
+    }
+
+    public void setUseSeparator(boolean useSeparator) {
+        this.isUseSeparator = useSeparator;
     }
 
     @Override
