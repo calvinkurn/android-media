@@ -28,6 +28,7 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
 
         btn_clear_input.setOnClickListener {
             ac_input.setText("")
+            listener.onFinishInput()
             error_label.visibility = View.GONE
         }
 
@@ -53,14 +54,12 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 listener.onFinishInput()
-                return@setOnEditorActionListener true
             }
             false
         }
 //        ac_input.setOnKeyListener { _, keyCode, event ->
 //            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
 //                listener.onFinishInput()
-//                return@setOnKeyListener true
 //            }
 //            false
 //        }

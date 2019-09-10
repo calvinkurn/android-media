@@ -81,6 +81,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     var isEnquired = false
         set(value) {
             field = value
+            setInputFieldsError(!value)
             toggleCheckoutButton()
         }
 
@@ -251,6 +252,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             // Add case when user is still filling the fields (only 1/2 fields are filled)
             if (inputFieldCount == 2 && (input1.isEmpty() xor input2.isEmpty())) {
                 isEnquired = false
+                setInputFieldsError(false)
                 return
             }
 
@@ -262,18 +264,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             }
 
             if (isValid) {
-                // Reset error label
-                setInputFieldsError(false)
-
             // Enquiry query is not ready, temporarily validate enquiry
                 isEnquired = true
 //                toggleEnquiryLoadingBar(true)
 //                val clientNumber = if (input2.isNotEmpty()) "${input1}_${input2}" else input1
 //                getEnquiry(clientNumber, voucherGameExtraParam.operatorId)
             } else {
-                // Set error message
                 isEnquired = false
-                setInputFieldsError(true)
             }
         }
     }
