@@ -1,11 +1,13 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.RawRes
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -127,6 +129,11 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     override fun onErrorGetUserSetting() {
         showMessage(MESSAGE_ERROR_SERVER)
         renderList(emptyList())
+    }
+
+    override fun onGoToPushNotifCheckerPage() {
+        Log.d("onGoToPushNotifCheckerPage: ", "onGoToPushNotifCheckerPage")
+        // val intent = Intent(activity, )
     }
 
     protected fun showMessage(@StringRes messageRes: Int) {

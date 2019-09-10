@@ -4,13 +4,9 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingnotif.usersetting.domain.pojo.*
-import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.ChildSettingViewHolder
-import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.ParentSettingViewHolder
-import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingSectionViewHolder
-import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
+import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.*
 
 class SettingFieldTypeFactoryImpl : BaseAdapterTypeFactory(), SettingFieldTypeFactory {
-
     override fun type(settingSections: SettingSections): Int {
         return SettingSectionViewHolder.LAYOUT
     }
@@ -23,9 +19,14 @@ class SettingFieldTypeFactoryImpl : BaseAdapterTypeFactory(), SettingFieldTypeFa
         return ChildSettingViewHolder.LAYOUT
     }
 
+    override fun type(pushNotifierTroubleshooterSetting: PushNotifierTroubleshooterSetting): Int {
+        return PushNotifCheckerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             SettingSectionViewHolder.LAYOUT -> SettingSectionViewHolder(parent)
+            PushNotifCheckerViewHolder.LAYOUT -> PushNotifCheckerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
