@@ -28,6 +28,7 @@ import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import com.tokopedia.sellerorder.list.di.SomListComponent
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
+import com.tokopedia.sellerorder.list.presentation.bottomsheet.TickerDetailBottomSheetFragment
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -149,7 +150,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     filterList = it.data
-                    // loadOrderList()
                     refreshHandler?.startRefresh()
                     renderFilter()
                 }
@@ -170,7 +170,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val listTickerData = arrayListOf<TickerData>()
                 tickerList.forEach {
                     if (it.isActive) {
-                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true))
+                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, false))
                     }
                 }
 
@@ -178,7 +178,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     val adapter = TickerPagerAdapter(it, listTickerData)
                     adapter.setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(link: CharSequence?) {
+                            // changed to open bottomsheet
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                            // showTickerBottomSheet(listTickerData[])
                         }
 
                         override fun onDismiss() {}
@@ -187,21 +189,29 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             } else {
                 tickerList.first().let {
-                    ticker_info?.setHtmlDescription(it.body)
+                    ticker_info?.setTextDescription(it.body)
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
+                    ticker_info?.setDescriptionClickEvent(object : TickerCallback {
+                        override fun onDescriptionViewClick(link: CharSequence?) {
+                            // changed to open bottomsheet
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                            showTickerBottomSheet(it.body)
+                        }
+
+                        override fun onDismiss() {}
+
+                    })
                 }
-                ticker_info?.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
-                    }
-
-                    override fun onDismiss() {}
-
-                })
             }
         } else {
             ticker_info?.visibility = View.GONE
         }
+    }
+
+    private fun showTickerBottomSheet(desc: String) {
+        val tickerDetailBottomSheetFragment =
+                TickerDetailBottomSheetFragment.newInstance(desc)
+        tickerDetailBottomSheetFragment.show(fragmentManager, "")
     }
 
     private fun renderFilter() {
@@ -307,7 +317,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onSearchSubmitted(text: String?) {
         text?.let {
             paramOrder.search = text
-            // loadOrderList()
             refreshHandler?.startRefresh()
         }
     }
@@ -315,7 +324,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onSearchTextChanged(text: String?) {
         text?.let {
             paramOrder.search = text
-            // loadOrderList()
             refreshHandler?.startRefresh()
         }
     }
