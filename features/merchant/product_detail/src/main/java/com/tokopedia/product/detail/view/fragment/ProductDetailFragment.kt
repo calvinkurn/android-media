@@ -891,11 +891,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun initView() {
-        val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
-//        if (appShowSearchPDP) {
-//        } else {
-//            initCollapsingToolBar()
-//        }
         initShowSearchPDP()
 
         varToolbar.show()
@@ -951,14 +946,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-//    private fun initCollapsingToolBar() {
-//        collapsing_toolbar.show()
-//        varToolbar = toolbar
-//        varPictureImage = view_picture
-//        initToolBarMethod = ::initToolbarTransparent
-//        fab_detail.setAnchor(R.id.view_picture)
-//    }
-
     private fun collapsedAppBar() {
         initStatusBarLight()
         initToolbarLight()
@@ -1001,26 +988,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 window.statusBarColor = ContextCompat.getColor(this, R.color.green_600)
-            }
-        }
-    }
-
-    private fun initToolbarTransparent() {
-        activity?.run {
-            if (isAdded) {
-                collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.white))
-                collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                varToolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)
-                (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_light)
-                menu?.let {
-                    if (it.size() > 2) {
-                        it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_light)
-                        val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_light
-                        setBadgeMenuCart(menuCart)
-                    }
-                }
-                varToolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.ic_product_more_light)
             }
         }
     }

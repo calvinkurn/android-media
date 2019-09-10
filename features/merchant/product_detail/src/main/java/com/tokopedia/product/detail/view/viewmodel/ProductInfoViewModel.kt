@@ -112,9 +112,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             lazyNeedForceUpdate = true
         }
         launchCatchError(block = {
-            // YEHEZ
             val cacheStrategy = GraphqlCacheStrategy
-                    .Builder(CacheType.ALWAYS_CLOUD).build()
+                    .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build()
             val data = withContext(Dispatchers.IO) {
                 val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
                         PARAM_SHOP_DOMAIN to productParams.shopDomain,
