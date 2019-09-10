@@ -232,7 +232,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         override fun onMenuItemClick(item: MenuItem): Boolean {
             return when {
                 item.itemId == R.id.action_bantuan -> {
-                    if (!list.isEmpty()&& !list.get(URL_POSITION).uri().isEmpty()){
+                    if (list.isNotEmpty()&& list.get(URL_POSITION).uri().isNotEmpty()){
                         menuListener?.startUri(list.get(URL_POSITION).uri())
                     }
                    true
