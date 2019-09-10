@@ -16,7 +16,7 @@ class VideoPicturePagerAdapter(val context: Context,
                                val onPictureClickListener: ((Int) -> Unit)?,
                                val fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
 
-    val registeredFragment = SparseArrayCompat<Fragment>()
+    private val registeredFragment = SparseArrayCompat<Fragment>()
 
     override fun getItem(position: Int): Fragment {
         val mediaItem = media[position]

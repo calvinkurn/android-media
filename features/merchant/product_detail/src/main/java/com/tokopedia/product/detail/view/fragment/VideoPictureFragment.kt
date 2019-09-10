@@ -137,6 +137,11 @@ class VideoPictureFragment : BaseDaggerFragment() {
             currentVol = savedInstanceState.getFloat(CURRENT_VOLUME_KEY, 1f)
         }
 
+        context?.let {
+            volume_pdp.setImageDrawable(
+                    ContextCompat.getDrawable(it, if (isMute) R.drawable.ic_volume_off_black else R.drawable.ic_volume_up_black))
+        }
+
         volume_pdp.setOnClickListener {
             if (isMute) {
                 //turn on volume
@@ -147,7 +152,6 @@ class VideoPictureFragment : BaseDaggerFragment() {
                 isMute = true
                 mExoPlayer?.volume = 0f
             }
-
             context?.let {
                 volume_pdp.setImageDrawable(
                         ContextCompat.getDrawable(it, if (isMute) R.drawable.ic_volume_off_black else R.drawable.ic_volume_up_black))
@@ -220,7 +224,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
             val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
 
             mExoPlayer = ExoPlayerFactory.newSimpleInstance(context, trackSelector)
-
+            video_player_pdp.hideController()
             video_player_pdp.player = mExoPlayer
             mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF
             mExoPlayer?.playWhenReady = isReadyPlayed
@@ -288,7 +292,9 @@ class VideoPictureFragment : BaseDaggerFragment() {
     }
 
     fun imVisible() {
-        playVideo(mediaSource)
+        if (Util.SDK_INT > 23 && mediaType == TYPE_VIDEO && userVisibleHint) {
+            playVideo(mediaSource)
+        }
     }
 
     fun imInvisible() {
