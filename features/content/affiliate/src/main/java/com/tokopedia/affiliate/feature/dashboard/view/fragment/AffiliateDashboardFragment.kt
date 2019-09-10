@@ -143,7 +143,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
                     indirectFragmentCurated
             ))
         }
-        vpCuratedProduct.layoutParams.height = getScreenHeight() / 2
+        vpCuratedProduct.layoutParams.height = (getScreenHeight()*0.75).toInt()
         tlCuratedProducts.setupWithViewPager(vpCuratedProduct)
         llStartDate.setOnClickListener { openCalendarPicker() }
         llEndDate.setOnClickListener { openCalendarPicker() }

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -29,6 +30,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.EmptyState
 import javax.inject.Inject
 
 /**
@@ -158,8 +160,14 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     override fun showEmpty() {
-        AffiliateHelper.showEmptyState(context, view, R.drawable.ic_tokopedia_share_post, getString(R.string.af_curated_empty_title), getString(R.string.af_curated_empty_subtitle), getString(R.string.af_share_now)) {
-
+        view?.let {
+            val emptyStateView = it.findViewById<EmptyState>(R.id.es_share_now)
+            emptyStateView.visible()
+            getRecyclerView(view).gone()
+            emptyStateView.setPrimaryCTAClickListener {
+                emptyStateView.gone()
+                getRecyclerView(view).visible()
+            }
         }
     }
 
