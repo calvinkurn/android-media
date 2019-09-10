@@ -36,7 +36,7 @@ class GetAffiliateDashboardSubscriber(
 
     private fun mappingHeader(pojo: DashboardHeaderPojo, balance: DashboardBalance) = pojo.let {
         DashboardHeaderViewModel(
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(balance.buyerUsable + balance.sellerUsable, false),
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(balance.sellerUsable, false),
                 it.totalCommission,
                 it.profileView,
                 it.productClick,

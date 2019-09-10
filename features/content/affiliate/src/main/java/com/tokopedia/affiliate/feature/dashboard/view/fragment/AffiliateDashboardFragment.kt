@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -29,9 +30,8 @@ import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
-import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.EmptyState
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -67,6 +67,11 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var tvEndDate: TextView
     private lateinit var llCheckBalance: LinearLayout
     private lateinit var tvSeeAll: TextView
+    private lateinit var rlViewedClicked: RelativeLayout
+    private lateinit var rlPostedProduct: RelativeLayout
+    private lateinit var vPostedViewedSeparator: View
+    private lateinit var llCuratedProductHistory: LinearLayout
+    private lateinit var esShareNow: EmptyState
 
     private lateinit var calendarBottomSheet: CloseableBottomSheetDialog
     private lateinit var calendarView: View
@@ -131,6 +136,11 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             tvEndDate = findViewById(R.id.tv_end_date)
             llCheckBalance = findViewById(R.id.ll_check_balance)
             tvSeeAll = findViewById(R.id.tv_see_all)
+            rlViewedClicked = findViewById(R.id.rl_viewed_clicked)
+            rlPostedProduct = findViewById(R.id.rl_posted_product)
+            vPostedViewedSeparator = findViewById(R.id.v_posted_viewed_separator)
+            llCuratedProductHistory = findViewById(R.id.ll_curated_product_history)
+            esShareNow = findViewById(R.id.es_share_now)
         }
     }
 
@@ -157,7 +167,10 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         tvAffiliateIncome.text = MethodChecker.fromHtml(header.saldoString)
         tvTotalViewed.text = MethodChecker.fromHtml(header.seenCount)
         tvTotalClicked.text = MethodChecker.fromHtml(header.clickCount)
-        tvPostedProduct.text = MethodChecker.fromHtml(getString(R.string.posted_product, header.productCount))
+        tvPostedProduct.text = MethodChecker.fromHtml(getString(R.string.posted_product_with_number, header.productCount))
+
+        if (header.productCount.toIntOrZero() <= 0) showEmptyState()
+        else showNonEmptyState()
     }
 
     override fun onErrorCheckAffiliate(error: String) {
@@ -317,5 +330,19 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     override fun hideLoading() {
         llDashboard.hideLoadingTransparent()
+    }
+
+    private fun showEmptyState() {
+        rlViewedClicked.gone()
+        vPostedViewedSeparator.gone()
+        llCuratedProductHistory.gone()
+        esShareNow.visible()
+    }
+
+    private fun showNonEmptyState() {
+        rlViewedClicked.visible()
+        vPostedViewedSeparator.visible()
+        llCuratedProductHistory.visible()
+        esShareNow.gone()
     }
 }

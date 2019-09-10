@@ -126,7 +126,8 @@
     <string name="choose_date">Pilih Tanggal</string>
     <string name="bought_from_post">Dibeli dari Post</string>
     <string name="bought_from_traffic">Dibeli dari Traffic</string>
-    <string name="posted_product">Produk Dipost (%s)</string>
+    <string name="posted_product">Produk Dipost</string>
+    <string name="posted_product_with_number">Produk Dipost (%s)</string>
     <string name="filter_date">Filter Tanggal</string>
     <string name="affiliate_product_berlangsung">Produk Afiliasi Berlangsung</string>
     <string name="affiliate_product_berakhir">Produk Afiliasi Berakhir</string>
