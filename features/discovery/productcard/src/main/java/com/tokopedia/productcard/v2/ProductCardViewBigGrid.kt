@@ -11,8 +11,6 @@ import com.tokopedia.unifyprinciples.Typography
  */
 class ProductCardViewBigGrid: ProductCardView {
 
-    private var textViewAddToCart: Typography? = null
-
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -25,18 +23,5 @@ class ProductCardViewBigGrid: ProductCardView {
 
     override fun getLayout(): Int {
         return R.layout.product_card_layout_v2_big_grid
-    }
-
-    override fun findViews(inflatedView: View) {
-        super.findViews(inflatedView)
-        textViewAddToCart = inflatedView.findViewById(R.id.textViewAddToCart)
-    }
-
-    fun setAddToCartVisible(isVisible: Boolean) {
-        textViewAddToCart?.visibility = if (isVisible) View.VISIBLE else View.GONE
-    }
-
-    fun setAddToCartOnClickListener(onClickListener: (view: View) -> Unit) {
-        textViewAddToCart?.setOnClickListener(onClickListener)
     }
 }

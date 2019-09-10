@@ -3,9 +3,13 @@ package com.tokopedia.productcard.v2
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.R
+import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.product_card_layout_v2_big_grid.view.*
 
 /**
  * ProductCardView with Small Grid layout.
@@ -13,6 +17,7 @@ import com.tokopedia.productcard.R
 class ProductCardViewSmallGrid: ProductCardView {
 
     private var imageShop: ImageView? = null
+    private var textViewAddToCart: Typography? = null
 
     constructor(context: Context): super(context)
 
@@ -32,6 +37,7 @@ class ProductCardViewSmallGrid: ProductCardView {
         super.findViews(inflatedView)
 
         imageShop = inflatedView.findViewById(R.id.imageShop)
+        textViewAddToCart = inflatedView.findViewById(R.id.textViewAddToCart)
     }
 
     fun setImageShopVisible(isVisible: Boolean) {
@@ -42,5 +48,13 @@ class ProductCardViewSmallGrid: ProductCardView {
         imageShop?.let { imageShop ->
             ImageHandler.loadImageCircle2(context, imageShop, imageUrl)
         }
+    }
+
+    fun setAddToCartVisible(isVisible: Boolean) {
+        textViewAddToCart?.visibility = if (isVisible) View.VISIBLE else View.GONE
+    }
+
+    fun setAddToCartOnClickListener(onClickListener: (view: View) -> Unit) {
+        textViewAddToCart?.setOnClickListener(onClickListener)
     }
 }
