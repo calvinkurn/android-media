@@ -19,13 +19,6 @@ import java.util.Map;
 
 public class FilterTracking {
 
-    public static void eventSearchResultFilterJourney(Context context,
-                                                      String filterName,
-                                                      String filterValue,
-                                                      boolean isInsideDetail, boolean isActive) {
-        eventSearchResultFilterJourney("", filterName, filterValue, isInsideDetail, isActive);
-    }
-
     public static void eventSearchResultFilterJourney(String trackingPrefix,
                                                       String filterName,
                                                       String filterValue,
@@ -41,19 +34,19 @@ public class FilterTracking {
         ));
     }
 
-    public static void eventSearchResultApplyFilterDetail(Context context, String filterName) {
+    public static void eventSearchResultApplyFilterDetail(String trackingPrefix, String filterName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 FilterEventTracking.Event.SEARCH_RESULT,
-                FilterEventTracking.Category.FILTER_JOURNEY,
+                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
                 FilterEventTracking.Action.SIMPAN_ON_LIHAT_SEMUA + filterName,
                 ""
         ));
     }
 
-    public static void eventSearchResultBackFromFilterDetail(Context context, String filterName) {
+    public static void eventSearchResultBackFromFilterDetail(String trackingPrefix, String filterName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 FilterEventTracking.Event.SEARCH_RESULT,
-                FilterEventTracking.Category.FILTER_JOURNEY,
+                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
                 FilterEventTracking.Action.BACK_ON_LIHAT_SEMUA + filterName,
                 ""
         ));
