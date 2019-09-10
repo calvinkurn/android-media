@@ -158,6 +158,8 @@ query OMSDETAILS($orderCategoryStr: String, $upstream:String, $orderId: String, 
       imageUrl
       textColor
       backgroundColor
+    }
+    additionalTickerInfo {
       notes
       urlDetail
       urlText

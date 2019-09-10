@@ -199,6 +199,8 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       imageUrl
       textColor
       backgroundColor
+    }
+    additionalTickerInfo {
       notes
       urlDetail
       urlText
