@@ -290,6 +290,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
     }
 
     fun imVisible() {
+        // used for OkBuck purpose
         if (mediaType == TYPE_VIDEO) {
             playVideo(mediaSource)
         }
