@@ -9,14 +9,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
+import com.tokopedia.affiliate.feature.dashboard.view.activity.AffiliateCuratedProductActivity
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.CuratedProductSortAdapter
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.CuratedProductSortTypeFactoryImpl
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactory
@@ -25,7 +24,6 @@ import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateCuratedP
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateCuratedProductPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CuratedProductSortViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
-import com.tokopedia.affiliate.util.AffiliateHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.gone
@@ -79,6 +77,10 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
                 openApplink(appLink)
             }
         })
+    }
+
+    override fun hasInitialSwipeRefresh(): Boolean {
+        return activity is AffiliateCuratedProductActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

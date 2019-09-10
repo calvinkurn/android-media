@@ -365,7 +365,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     private fun showTooltip() {
-        val coachMarkItem = CoachMarkItem(ivAfIncomeInfo, " ", getString(R.string.af_income_tooltip))
+        val coachMarkItem = CoachMarkItem(ivAfIncomeInfo, getString(R.string.af_info), getString(R.string.af_income_tooltip))
         val coachMark = with(CoachMarkBuilder()) {
             allowNextButton(false)
             allowPreviousButton(false)
