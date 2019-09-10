@@ -32,7 +32,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
-import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.detail.data.VoucherGameDetailData
 import com.tokopedia.vouchergame.detail.data.VoucherGameEnquiryFields
@@ -316,10 +315,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             for ((index, productList) in dataCollection.withIndex()) {
                 // Create new instance to prevent adding copy of products
                 // to adapter data (set products to empty list)
-                val categoryItem = VoucherGameProductData.DataCollection(productList.name, listOf())
-                listData.add(categoryItem)
-                // Add category item index for item decorator
-                decorator.addCategoryViewIndex(index)
+                if (productList.name.isNotEmpty()) {
+                    val categoryItem = VoucherGameProductData.DataCollection(productList.name, listOf())
+                    listData.add(categoryItem)
+                    // Add category item index for item decorator
+                    decorator.addCategoryViewIndex(index)
+                }
 
                 if (productList.products.isNotEmpty())  {
                     listData.addAll(productList.products)

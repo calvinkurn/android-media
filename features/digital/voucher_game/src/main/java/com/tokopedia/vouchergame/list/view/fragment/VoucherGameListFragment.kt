@@ -14,7 +14,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.banner.Indicator
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.utils.AnalyticUtils.Companion.getVisibleItems
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
@@ -199,9 +201,15 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         promo_banner.setOnPromoClickListener {
             val banner = data[it]
             voucherGameAnalytics.eventClickBanner(bannerTrackingList[it])
-            RouteManager.route(context, banner.linkUrl) }
+            RouteManager.route(context, banner.applinkUrl) }
         promo_banner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(listOf(bannerTrackingList[it])) }
-        promo_banner.setOnPromoAllClickListener { voucherGameAnalytics.eventClickViewAllBanner() }
+        promo_banner.setOnPromoAllClickListener {
+            voucherGameAnalytics.eventClickViewAllBanner()
+            RouteManager.route(context, ApplinkConst.PROMO_LIST)
+        }
+        promo_banner.setBannerSeeAllTextColor(R.color.green_250)
+        promo_banner.setBannerIndicator(Indicator.GREEN)
+        promo_banner.buildView()
     }
 
     override fun getAdapterTypeFactory(): VoucherGameListAdapterFactory {
