@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
@@ -296,6 +297,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         title_empty?.text = getString(R.string.empty_peluang_title)
         desc_empty?.text = getString(R.string.empty_peluang_desc)
         btn_cek_peluang?.visibility = View.VISIBLE
+        btn_cek_peluang?.setOnClickListener {
+            startActivity(RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY))
+        }
     }
 
     override fun onSearchReset() { }
