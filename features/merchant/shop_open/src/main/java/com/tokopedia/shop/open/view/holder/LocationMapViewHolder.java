@@ -52,8 +52,8 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     public LocationMapViewHolder(View root, final ViewHolderListener viewHolderListener) {
         this.root = root;
 
-        tilShopAddress = root.findViewById(R.id.shop_desc_input_layout);
-        shopAddressEditText = root.findViewById(R.id.open_shop_address_edittext);
+        tilShopAddress = root.findViewById(com.tokopedia.seller.R.id.shop_desc_input_layout);
+        shopAddressEditText = root.findViewById(com.tokopedia.seller.R.id.open_shop_address_edittext);
         shopAddressEditText.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {
@@ -61,24 +61,24 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
             }
         });
         // Currently hide it since new Logistic API does not support user to choose express courier
-        /*root.findViewById(R.id.map_info_title).setOnClickListener(new View.OnClickListener() {
+        /*root.findViewById(com.tokopedia.seller.R.id.map_info_title).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 BottomSheetView bottomSheetView = new BottomSheetView(LocationMapViewHolder.this.root.getContext());
                 bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
                         .BottomSheetFieldBuilder()
-                        .setTitle(LocationMapViewHolder.this.root.getContext().getString(R.string.shipping_location_pinpoint_label))
-                        .setBody(LocationMapViewHolder.this.root.getContext().getString(R.string.shipping_location_pinpoint_detail))
+                        .setTitle(LocationMapViewHolder.this.root.getContext().getString(com.tokopedia.seller.R.string.shipping_location_pinpoint_label))
+                        .setBody(LocationMapViewHolder.this.root.getContext().getString(com.tokopedia.seller.R.string.shipping_location_pinpoint_detail))
                         .build());
 
                 bottomSheetView.show();
             }
         });*/
 
-        generatedLocationOpenShop = root.findViewById(R.id.generated_location_open_shop);
-        mapViewContainer = root.findViewById(R.id.mapview_container);
-        emptyMapView = root.findViewById(R.id.empty_map_view);
-        deletePinPoint = root.findViewById(R.id.delete_pinpoint);
+        generatedLocationOpenShop = root.findViewById(com.tokopedia.seller.R.id.generated_location_open_shop);
+        mapViewContainer = root.findViewById(com.tokopedia.seller.R.id.mapview_container);
+        emptyMapView = root.findViewById(com.tokopedia.seller.R.id.empty_map_view);
+        deletePinPoint = root.findViewById(com.tokopedia.seller.R.id.delete_pinpoint);
         deletePinPoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,7 +102,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
             }
         });
 
-        generateLocationOpenShopCopy = root.findViewById(R.id.generated_location_open_shop_copy);
+        generateLocationOpenShopCopy = root.findViewById(com.tokopedia.seller.R.id.generated_location_open_shop_copy);
 
 
         this.viewHolderListener = viewHolderListener;
@@ -115,7 +115,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
             }
         });
 
-        root.findViewById(R.id.pin_pickup_location_container).setOnClickListener(new View.OnClickListener() {
+        root.findViewById(com.tokopedia.seller.R.id.pin_pickup_location_container).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (viewHolderListener != null) {
@@ -124,7 +124,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
             }
         });
 
-        mapView = root.findViewById(R.id.mapview);
+        mapView = root.findViewById(com.tokopedia.core2.R.id.mapview);
         if (mapView != null) {
             mapView.onCreate(null);
             mapView.onResume();
@@ -187,7 +187,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     public boolean isDataInputValid() {
         if (!TextUtils.isEmpty(generatedLocationOpenShop.getText().toString())) {
             if (TextUtils.isEmpty(shopAddressEditText.getText().toString())) {
-                tilShopAddress.setError(root.getContext().getString(R.string.shop_open_shop_location_must_be_filled));
+                tilShopAddress.setError(root.getContext().getString(com.tokopedia.seller.R.string.shop_open_shop_location_must_be_filled));
                 shopAddressEditText.requestFocus();
                 CommonUtils.hideSoftKeyboard(root);
                 return false;
@@ -206,7 +206,7 @@ public class LocationMapViewHolder implements OnMapReadyCallback {
     }
 
     private String getReverseGeocode(GoogleLocationViewModel locationPass) {
-        if (locationPass.getGeneratedAddress().equals(root.getContext().getString(R.string.choose_this_location))) {
+        if (locationPass.getGeneratedAddress().equals(root.getContext().getString(com.tokopedia.core2.R.string.choose_this_location))) {
             return locationPass.getLatitude() + ", " + locationPass.getLongitude();
         } else {
             return locationPass.getGeneratedAddress();
