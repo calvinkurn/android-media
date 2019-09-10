@@ -23,6 +23,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import android.media.MediaPlayer
+import android.widget.MediaController
 import java.lang.Exception
 
 /**
@@ -70,8 +71,6 @@ class OnboardingFragment : BaseDaggerFragment(),
     private var descKey: String = ""
     private var ttlKey: String = ""
     private var remoteConfig: RemoteConfig? = null
-
-    private var isVideoPrepared: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -123,21 +122,39 @@ class OnboardingFragment : BaseDaggerFragment(),
         videoView?.setZOrderOnTop(true)
         videoView?.setVideoURI(Uri.parse(videoPath))
         videoView?.setOnErrorListener { _, _, _ -> true }
-        videoView?.setOnPreparedListener { mp ->
-            isVideoPrepared = true
-            mp?.isLooping = true
-            mp?.start()
-        }
 
-        videoView?.setOnCompletionListener { mp ->
-            if (mp != null) {
-                mp.setDisplay(null)
-                mp.reset()
-                mp.setDisplay(videoView?.holder)
-            }
-        }
+        videoView?.setOnPreparedListener(onPreparedListener)
+
+        videoView?.requestFocus();
 
         return defaultView
+    }
+
+    var onPreparedListener: MediaPlayer.OnPreparedListener = MediaPlayer.OnPreparedListener { m ->
+        var mediaPlayer = m
+        try {
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.stop()
+                mediaPlayer.release()
+                mediaPlayer = MediaPlayer()
+            }
+            mediaPlayer.setVolume(0f, 0f)
+            mediaPlayer.isLooping = true
+            mediaPlayer.start()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        videoView?.pause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        videoView?.stopPlayback()
+        videoView = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -150,15 +167,7 @@ class OnboardingFragment : BaseDaggerFragment(),
         try {
             videoView?.let {
                 if (!it.isPlaying) {
-                    if (isVideoPrepared) {
-                        it.start()
-                    } else {
-                        it.setOnPreparedListener { mp ->
-                            isVideoPrepared = true
-                            mp?.isLooping = true
-                            mp?.start()
-                        }
-                    }
+                    videoView?.start()
                 }
             }
         } catch (e: Exception) {}
@@ -167,7 +176,7 @@ class OnboardingFragment : BaseDaggerFragment(),
     override fun onPageUnSelected() {
         try {
             videoView?.let {
-                if (it.isPlaying && isVideoPrepared) {
+                if (it.isPlaying) {
                     it.pause()
                 }
             }
