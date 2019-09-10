@@ -26,7 +26,6 @@ class SettingFieldTypeFactoryImpl : BaseAdapterTypeFactory(), SettingFieldTypeFa
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             SettingSectionViewHolder.LAYOUT -> SettingSectionViewHolder(parent)
-            PushNotifCheckerViewHolder.LAYOUT -> PushNotifCheckerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -39,6 +38,7 @@ class SettingFieldTypeFactoryImpl : BaseAdapterTypeFactory(), SettingFieldTypeFa
         return when (type) {
             ParentSettingViewHolder.LAYOUT -> ParentSettingViewHolder(parent, settingListener)
             ChildSettingViewHolder.LAYOUT -> ChildSettingViewHolder(parent, settingListener)
+            PushNotifCheckerViewHolder.LAYOUT -> PushNotifCheckerViewHolder(parent)
             else -> createViewHolder(parent, type)
         }
     }
