@@ -229,7 +229,6 @@ public abstract class SearchSectionFragment
     private void startToLoadData() {
         if (canStartToLoadData()) {
             hasLoadData = true;
-//            refreshLayout.post(this::onFirstTimeLaunch);
             onFirstTimeLaunch();
         }
     }
