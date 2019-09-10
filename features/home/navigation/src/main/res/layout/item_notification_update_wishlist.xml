@@ -141,7 +141,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
                 app:layout_constraintTop_toBottomOf="@+id/cl_campaign"
-                tools:text="Rp500.000" />
+                tools:text="Rp 500.000" />
 
             <ImageView
                 android:id="@+id/iv_cart"

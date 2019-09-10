@@ -31,6 +31,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         // Name
         val NAME_EVENT_PRODUCT_VIEW = "productView"
         val NAME_EVENT_PRODUCT_CLICK = "productClick"
+        val NAME_EVENT_ATC = "addToCart"
 
         // Category
         val CATEGORY_NOTIF_CENTER = "notif center"
@@ -38,6 +39,7 @@ class NotificationUpdateAnalytics @Inject constructor() {
         // Action
         val ACTION_VIEW_PRODUCT_THUMBNAIL = "view on product thumbnail"
         val ACTION_CLICK_PRODUCT_THUMBNAIL = "click on product thumbnail"
+        val ACTION_CLICK_ATC_BUTTON = "click on atc button"
 
         // Label
         val LABEL_UPDATE_NOTIF_CENTER = "tab update / recomm page from notif center"
@@ -145,6 +147,40 @@ class NotificationUpdateAnalytics @Inject constructor() {
                                 "attribution", ""
                             )
                         )
+                    )
+                )
+            )
+        )
+    }
+
+    // #NC6
+    fun trackAtcOnClick(product: ProductData) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                EVENT_NAME, NAME_EVENT_ATC,
+                EVENT_CATEGORY, CATEGORY_NOTIF_CENTER,
+                EVENT_ACTION, ACTION_CLICK_ATC_BUTTON,
+                EVENT_LABEL, LABEL_UPDATE_NOTIF_CENTER,
+                ECOMMERCE, DataLayer.mapOf(
+                    "currencyCode", "IDR",
+                    "add", DataLayer.mapOf(
+                        "actionField", DataLayer.mapOf("list", "/notifcenter"),
+                            "products", DataLayer.listOf(
+                                DataLayer.mapOf(
+                                    "name", product.name,
+                                    "id", product.productId,
+                                    "price", product.price,
+                                    "brand", "",
+                                    "category", "",
+                                    "variant", "",
+                                    "quantity", "1",
+                                    "shop_id", product.shop.id,
+                                    "shop_type", "",
+                                    "shop_name", product.shop.name,
+                                    "category_id", "",
+                                    "dimension45", ""
+                                )
+                            )
                     )
                 )
             )
