@@ -22,7 +22,8 @@ class DynamicFilterOfferingActivity : DynamicFilterDetailGeneralActivity() {
                             optionList: List<Option>,
                             isSearchable: Boolean,
                             searchHint: String,
-                            isUsingTracking: Boolean) {
+                            isUsingTracking: Boolean,
+                            trackingPrefix: String) {
 
             if (activity != null) {
                 val intent = Intent(activity, DynamicFilterOfferingActivity::class.java)
@@ -31,6 +32,7 @@ class DynamicFilterOfferingActivity : DynamicFilterDetailGeneralActivity() {
                 intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_IS_SEARCHABLE, isSearchable)
                 intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_SEARCH_HINT, searchHint)
                 intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_IS_USING_TRACKING, isUsingTracking)
+                intent.putExtra(AbstractDynamicFilterDetailActivity.EXTRA_EVENT_CATEGORY_PREFIX, trackingPrefix)
                 activity.startActivityForResult(intent, AbstractDynamicFilterDetailActivity.REQUEST_CODE)
             }
         }

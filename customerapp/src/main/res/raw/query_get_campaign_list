@@ -1,5 +1,5 @@
-query ($latitude: String, $longitude: String) {
-  triggerVerifyShake(latitude: $latitude, longitude: $longitude) {
+query ($latitude: String, $longitude: String, $source : String) {
+  triggerVerifyShake(latitude: $latitude, longitude: $longitude, source: $source) {
     tkp_url
     vibrate
     enabled

@@ -14,6 +14,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -1080,6 +1081,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             override fun afterTextChanged(text: Editable) {
             }
         }
+    }
+
+    override fun showError(t: Throwable) {
+        Toast.makeText(context, getString(R.string.something_wrong_happened), Toast.LENGTH_SHORT).show()
     }
 
     override fun onDetach() {

@@ -35,10 +35,10 @@ public class LocationShippingViewHolder {
     public LocationShippingViewHolder(View root, final ViewHolderListener2 viewHolderListener2) {
         this.root = root;
         this.viewHolderListener2 = viewHolderListener2;
-        cityTextInputLayout = root.findViewById(R.id.seller_city_text_input_layout);
-        textEditShippingCity = root.findViewById(R.id.seller_text_edit_shipping_city);
-        postalCodeTextInputLayout = root.findViewById(R.id.seller_text_input_layout_postal_code);
-        textEditPostalCode = root.findViewById(R.id.seller_postal_code);
+        cityTextInputLayout = root.findViewById(com.tokopedia.seller.R.id.seller_city_text_input_layout);
+        textEditShippingCity = root.findViewById(com.tokopedia.seller.R.id.seller_text_edit_shipping_city);
+        postalCodeTextInputLayout = root.findViewById(com.tokopedia.seller.R.id.seller_text_input_layout_postal_code);
+        textEditPostalCode = root.findViewById(com.tokopedia.seller.R.id.seller_postal_code);
 
         textEditShippingCity.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +61,7 @@ public class LocationShippingViewHolder {
             }
         });
 
-        hintTypePostalCode = root.getResources().getString(R.string.hint_type_postal_code);
+        hintTypePostalCode = root.getResources().getString(com.tokopedia.core2.R.string.hint_type_postal_code);
 
         textEditPostalCode.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -84,19 +84,19 @@ public class LocationShippingViewHolder {
     }
 
     private void setErrorEmptyCity() {
-        cityTextInputLayout.setError(root.getContext().getString(R.string.shop_open_error_city_not_filled));
+        cityTextInputLayout.setError(root.getContext().getString(com.tokopedia.seller.R.string.shop_open_error_city_not_filled));
         cityTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }
 
     private void setErrorEmptyPostalCode() {
-        postalCodeTextInputLayout.setError(root.getContext().getString(R.string.shop_open_postal_code_must_be_filled));
+        postalCodeTextInputLayout.setError(root.getContext().getString(com.tokopedia.seller.R.string.shop_open_postal_code_must_be_filled));
         postalCodeTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }
 
     private void setErrorLengthPostalCode() {
-        postalCodeTextInputLayout.setError(root.getContext().getString(R.string.shop_open_postal_code_minimum_5_char));
+        postalCodeTextInputLayout.setError(root.getContext().getString(com.tokopedia.seller.R.string.shop_open_postal_code_minimum_5_char));
         postalCodeTextInputLayout.requestFocus();
         CommonUtils.hideSoftKeyboard(root);
     }
@@ -154,8 +154,8 @@ public class LocationShippingViewHolder {
     public void initializeZipCodes(ArrayList<String> zipCodes) {
         textEditPostalCode.setText("");
         zipCodes.add(0, hintTypePostalCode);
-        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(root.getContext(), R.layout.item_autocomplete_text_double_row,
-                R.id.item, zipCodes);
+        ArrayAdapter<String> zipCodeAdapter = new ArrayAdapter<>(root.getContext(), com.tokopedia.design.R.layout.item_autocomplete_text_double_row,
+                com.tokopedia.design.R.id.item, zipCodes);
         textEditPostalCode.setAdapter(zipCodeAdapter);
     }
 

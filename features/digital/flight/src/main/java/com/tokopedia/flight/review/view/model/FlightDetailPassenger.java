@@ -21,12 +21,14 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
     @FlightBookingPassenger
     int passengerType;
     int passengerStatus;
+    String passengerCancellationStr;
 
     protected FlightDetailPassenger(Parcel in) {
         infoPassengerList = in.createTypedArrayList(SimpleViewModel.CREATOR);
         passengerName = in.readString();
         passengerType = in.readInt();
         passengerStatus = in.readInt();
+        passengerCancellationStr = in.readString();
     }
 
     public static final Creator<FlightDetailPassenger> CREATOR = new Creator<FlightDetailPassenger>() {
@@ -77,6 +79,14 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
         this.passengerType = passengerType;
     }
 
+    public String getPassengerCancellationStr() {
+        return passengerCancellationStr;
+    }
+
+    public void setPassengerCancellationStr(String passengerCancellationStr) {
+        this.passengerCancellationStr = passengerCancellationStr;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -84,11 +94,11 @@ public class FlightDetailPassenger implements Parcelable, Visitable<FlightBookin
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
         dest.writeTypedList(infoPassengerList);
         dest.writeString(passengerName);
         dest.writeInt(passengerType);
         dest.writeInt(passengerStatus);
+        dest.writeString(passengerCancellationStr);
     }
 
     @Override
