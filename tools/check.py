@@ -41,7 +41,7 @@ def main(argv):
         print 'check.py --token <git auth token> --config <configuration file\'s path> --head <head branch>'
         sys.exit(1)
     else:
-        detectAffectedModule(token, config, head, user, gradle, adb, deviceId, path)
+        detectAffectedModule(token, config, head, user, gradle, adb, deviceId, path_noop)
 
 def detectAffectedModule(token, config, head, user, gradle, adb, deviceId, path_noop):
     configuration = getConfig(config)
