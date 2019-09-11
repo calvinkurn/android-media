@@ -1,7 +1,6 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.PushNotifierTroubleshooterSetting
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
@@ -19,7 +18,7 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
         val settingFieldTypeFactory = arrayListOf<Visitable<SettingFieldTypeFactory>>()
         settingFieldTypeFactory.addAll(data.data)
-        settingFieldTypeFactory.add(PushNotifierTroubleshooterSetting("Push Notification Troubleshooting", ApplinkConst.PUSHNOTIFCHECKER))
+        settingFieldTypeFactory.add(PushNotifierTroubleshooterSetting("Push Notification Troubleshooting"))
         data.data = settingFieldTypeFactory
         super.onSuccessGetUserSetting(data)
     }

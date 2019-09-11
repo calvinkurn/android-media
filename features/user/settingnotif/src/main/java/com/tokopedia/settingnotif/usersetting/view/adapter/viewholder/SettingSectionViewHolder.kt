@@ -1,9 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.adapter.viewholder
 
 import android.support.annotation.LayoutRes
-import android.util.Log
 import android.view.View
-import android.widget.Button
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingnotif.R

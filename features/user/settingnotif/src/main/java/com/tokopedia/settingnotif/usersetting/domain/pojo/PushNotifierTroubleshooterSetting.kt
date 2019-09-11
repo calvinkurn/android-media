@@ -5,8 +5,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 
 data class PushNotifierTroubleshooterSetting(
-        val title: String = "Push Notification Troubleshooting",
-        val applink: String = ApplinkConst.PUSHNOTIFCHECKER
+        val title: String = "Push Notification Troubleshooting"
 ) : Visitable<SettingFieldTypeFactory> {
 
     override fun type(typeFactory: SettingFieldTypeFactory): Int {
