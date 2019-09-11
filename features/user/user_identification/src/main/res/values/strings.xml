@@ -16,7 +16,7 @@
     <string name="kyc_verified_button">Info Selengkapnya</string>
     
     <string name="kyc_blacklist_button">Kembali</string>
-    <string name="kyc_blacklist_text">Sistem tidak dapat membaca informasi yang terdapat di dokumen Anda.</string>
+    <string name="kyc_blacklist_text">KTP anda tidak memenuhi syarat dan ketentuan untuk melakukan verifikasi.</string>
 
     <string name="ktp_title">Foto Bagian Depan KTP</string>
     <string
