@@ -2,10 +2,12 @@ package com.tokopedia.tokopoints.view.customview;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -32,10 +34,10 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
     Context mContext;
 
 
-    Drawable backArrowWhite, backArrowGrey, leaderboardWhiteDrawable,
+    Drawable backArrowWhite, leaderboardWhiteDrawable,
             couponWhiteDrawable, leaderboardGreyDrawable, couponGreyDrawable;
 
-    private TransitionDrawable arrowCrossfader, leaderboardCrossfader, couponCrossfader;
+    private TransitionDrawable leaderboardCrossfader, couponCrossfader;
     private OnTokoPointToolbarClickListener clickListener;
 
 
@@ -72,8 +74,7 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
     private void initDrawableResources() {
 
-        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_action_back);
-        backArrowGrey = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_action_back_grey);
+        backArrowWhite = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_new_action_back);
 
         leaderboardWhiteDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_leaderboard);
         leaderboardGreyDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_tp_leaderboard_grey);
@@ -81,17 +82,14 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
         couponWhiteDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_my_coupon_white);
         couponGreyDrawable = getBitmapDrawableFromVectorDrawable(mContext, R.drawable.ic_my_coupon_grey);
 
-        arrowCrossfader = new TransitionDrawable(new Drawable[]{backArrowGrey, backArrowWhite});
-
         leaderboardCrossfader = new TransitionDrawable(new Drawable[]{leaderboardGreyDrawable, leaderboardWhiteDrawable});
 
         couponCrossfader = new TransitionDrawable(new Drawable[]{couponGreyDrawable, couponWhiteDrawable});
 
-        this.setNavigationIcon(arrowCrossfader);
+        setNavigationIcon(backArrowWhite);
         ivMyCoupon.setImageDrawable(couponCrossfader);
         ivLeaderBoard.setImageDrawable(leaderboardCrossfader);
 
-        arrowCrossfader.startTransition(0);
         leaderboardCrossfader.startTransition(0);
         couponCrossfader.startTransition(0);
     }
@@ -131,9 +129,9 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
         currentToolbarState = ToolbarState.TOOLBAR_DARK;
 
-        arrowCrossfader.reverseTransition(200);
         couponCrossfader.reverseTransition(200);
         leaderboardCrossfader.reverseTransition(200);
+        toggleNavigationIconColor(Color.parseColor("#FFFFFF"), Color.parseColor("#666666"));
 
         ObjectAnimator colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor",
                 Color.parseColor("#FFFFFF"), Color.parseColor("#666666"));
@@ -143,15 +141,25 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
     }
 
+    private void toggleNavigationIconColor(int startColor, int endColor) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && getNavigationIcon() != null) {
+            ValueAnimator valueAnimator = ValueAnimator.ofArgb(startColor, endColor);
+            valueAnimator.setDuration(200L);
+            valueAnimator.addUpdateListener(animation -> {
+                getNavigationIcon().setColorFilter((Integer) animation.getAnimatedValue(), PorterDuff.Mode.SRC_ATOP);
+            });
+            valueAnimator.start();
+        }
+    }
+
     public void switchToTransparentMode() {
         if (currentToolbarState == ToolbarState.TOOLBAR_TRANSPARENT)
             return;
         currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT;
 
-        arrowCrossfader.reverseTransition(200);
         couponCrossfader.reverseTransition(200);
         leaderboardCrossfader.reverseTransition(200);
-
+        toggleNavigationIconColor(Color.parseColor("#666666"), Color.parseColor("#FFFFFF"));
 
         ObjectAnimator colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor",
                 Color.parseColor("#666666"), Color.parseColor("#FFFFFF"));

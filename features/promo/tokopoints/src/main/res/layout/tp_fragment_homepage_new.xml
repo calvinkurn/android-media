@@ -120,8 +120,7 @@
                                 android:layout_marginTop="@dimen/dp_9"
                                 android:layout_marginEnd="@dimen/dp_16"
                                 android:layout_marginRight="@dimen/dp_16"
-                                app:cardCornerRadius="@dimen/dp_8"
-                                app:cardUseCompatPadding="true">
+                                app:cardCornerRadius="@dimen/dp_8">
 
                                 <include layout="@layout/tp_home_point" />
 
