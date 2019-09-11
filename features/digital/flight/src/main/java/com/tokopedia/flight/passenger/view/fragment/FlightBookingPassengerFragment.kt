@@ -238,6 +238,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     fun getPassportExpiryDate(): String = et_passport_expiration_date.text.toString().trim()
 
     fun getPassportNumber(): String = et_passport_no.text.toString().trim()
+
     fun renderPassengerData() {
         if (!passengerModel.passengerFirstName.isNullOrBlank()) {
             et_first_name.setText(passengerModel.passengerFirstName)
@@ -250,7 +251,10 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         rv_passenger_title.listener = object : FilterChipAdapter.OnClickListener {
             override fun onChipClickListener(string: String, isSelected: Boolean) {
-                if (isSelected) passengerModel.passengerTitle = string
+                if (isSelected) {
+                    passengerModel.passengerTitle = string
+                    passengerModel.passengerTitleId = getPassengerTitleId(string)
+                }
             }
         }
         if (isAdultPassenger()) {
@@ -264,16 +268,16 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         }
 
         if (passengerModel.passengerTitle != null) {
-            renderPassengerTitle(passengerModel.passengerTitle)
+            renderPassengerTitle(passengerModel.passengerTitle.toLowerCase())
         }
     }
 
     fun renderPassengerTitle(passengerTitle: String) {
         rv_passenger_title.onResetChip()
         when (passengerTitle) {
-            FlightPassengerTitle.TUAN -> rv_passenger_title.initiallySelectedChip(0);
-            FlightPassengerTitle.NYONYA -> rv_passenger_title.initiallySelectedChip(1);
-            FlightPassengerTitle.NONA -> rv_passenger_title.initiallySelectedChip(2);
+            FlightPassengerTitle.TUAN -> rv_passenger_title.initiallySelectedChip(0)
+            FlightPassengerTitle.NYONYA -> rv_passenger_title.initiallySelectedChip(1)
+            FlightPassengerTitle.NONA -> rv_passenger_title.initiallySelectedChip(2)
         }
     }
 
@@ -292,7 +296,19 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getPassportExpiryDate())
         }
 
-        showCalendarPickerDialog(selectedDate, minDate, maxDate)
+        showCalendarPickerDialog(selectedDate, minDate, maxDate, DatePickerDialog.OnDateSetListener {
+            _, year, month, dayOfMonth ->
+            val calendar = FlightDateUtil.getCurrentCalendar()
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, month)
+            calendar.set(Calendar.DATE, dayOfMonth)
+            val passportExpiryDate = calendar.time
+
+            val passportExpiryDateStr = FlightDateUtil.dateToString(passportExpiryDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+            passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                    FlightDateUtil.DEFAULT_FORMAT, passportExpiryDateStr)
+            et_passport_expiration_date.setText(passportExpiryDateStr)
+        })
     }
 
     fun clearAllKeyboardFocus() {
@@ -484,26 +500,29 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         currentTime.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY)
         currentTime.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY)
 
-        if (minDate != null) showCalendarPickerDialog(selectedDate = selectedDate, minDate = minDate, maxDate = currentTime.time)
-        else showCalendarPickerDialog(selectedDate = selectedDate, maxDate = currentTime.time)
-    }
-
-    fun showCalendarPickerDialog(selectedDate: Date, minDate: Date? = null, maxDate: Date) {
-        val calendar = Calendar.getInstance()
-        calendar.time = selectedDate
-        val datePicker = DatePickerDialog(activity!!, DatePickerDialog.OnDateSetListener {
-            view, year, month, dayOfMonth ->
+        var onDateSetListener = DatePickerDialog.OnDateSetListener {
+            _, year, month, dayOfMonth ->
             val calendar = FlightDateUtil.getCurrentCalendar()
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
             calendar.set(Calendar.DATE, dayOfMonth)
-            val birthdate = calendar.time
+            val birthDate = calendar.time
 
-            val birthdateStr = FlightDateUtil.dateToString(birthdate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
-            passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
-                    FlightDateUtil.DEFAULT_FORMAT, birthdateStr)
-            et_birth_date.setText(birthdateStr)
-        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
+            val birthDateStr = FlightDateUtil.dateToString(birthDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+            passengerModel.passengerBirthdate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT,
+                    FlightDateUtil.DEFAULT_FORMAT, birthDateStr)
+            et_birth_date.setText(birthDateStr)
+        }
+
+        if (minDate != null) showCalendarPickerDialog(selectedDate = selectedDate, minDate = minDate, maxDate = currentTime.time, onDateSetListener = onDateSetListener)
+        else showCalendarPickerDialog(selectedDate = selectedDate, maxDate = currentTime.time, onDateSetListener = onDateSetListener)
+    }
+
+    fun showCalendarPickerDialog(selectedDate: Date, minDate: Date? = null, maxDate: Date, onDateSetListener: DatePickerDialog.OnDateSetListener) {
+        val calendar = Calendar.getInstance()
+        calendar.time = selectedDate
+        val datePicker = DatePickerDialog(activity!!, onDateSetListener, calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
         if (minDate != null) datePicker1.minDate = minDate.time
         datePicker1.maxDate = maxDate.time
