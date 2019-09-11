@@ -97,17 +97,20 @@ class VideoPictureFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.video_picture_view, container, false)
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        video_picture_container.setOnClickListener {
+        view.setOnClickListener {
             onPictureClickListener?.invoke(mediaPosition)
         }
 
-//        video_player_pdp.setOnTouchListener { v, event ->
-//            onPictureClickListener?.invoke(mediaPosition)
-//            false
-//        }
+
+        video_player_pdp.setOnTouchListener { v, event ->
+            onPictureClickListener?.invoke(mediaPosition)
+            false
+        }
+
         if (mediaSource.isBlank()) return
 
         if (mediaType == TYPE_IMAGE) {
