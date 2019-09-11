@@ -275,6 +275,10 @@ abstract class ProductCardView: BaseCustomView {
         return cardViewProductCard?.maxCardElevation ?: 0f
     }
 
+    open fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig = BlankSpaceConfig()) {
+        setImageProductVisible(productCardModel.productImageUrl.isNotEmpty())
+    }
+
     open fun setImageProductVisible(isVisible: Boolean) {
         imageProduct?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
@@ -503,9 +507,5 @@ abstract class ProductCardView: BaseCustomView {
         constraintLayoutProductCard.applyConstraintSet { constraintSet ->
             constraintSet.clear(layoutId, side)
         }
-    }
-
-    open fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig = BlankSpaceConfig()) {
-
     }
 }
