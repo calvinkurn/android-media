@@ -263,21 +263,7 @@ public class HeaderHomeView extends BaseCustomView {
     private void setTokopointsHeaderData(SectionContentItem sectionContentItem, TextView tokopointsTextView) {
         if (sectionContentItem != null) {
             if (sectionContentItem.getTagAttributes() != null && !TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
-                if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getBackgroundColour()) && HexValidator.validate(sectionContentItem.getTagAttributes().getBackgroundColour())) {
-                    Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.bg_tokopoints_rounded);
-                    if (drawable instanceof GradientDrawable) {
-                        GradientDrawable shapeDrawable = (GradientDrawable) drawable;
-                        shapeDrawable.setColorFilter(Color.parseColor(sectionContentItem.getTagAttributes().getBackgroundColour()), PorterDuff.Mode.SRC_ATOP);
-                        tokopointsTextView.setBackground(shapeDrawable);
-                        int horizontalPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_2);
-                        tokopointsTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, getContext().getResources().getDimension(R.dimen.sp_8));
-                        tokopointsTextView.setTypeface(null, Typeface.NORMAL);
-                        tokopointsTextView.setPadding(horizontalPadding, 0, horizontalPadding, 0);
-                    }
-                    tokopointsTextView.setTextColor(getResources().getColor(R.color.white));
-                } else {
-                    tokopointsTextView.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
-                }
+                tokopointsTextView.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
                 if (!TextUtils.isEmpty(sectionContentItem.getTagAttributes().getText())) {
                     tokopointsTextView.setText(sectionContentItem.getTagAttributes().getText());
                 }
@@ -474,7 +460,8 @@ public class HeaderHomeView extends BaseCustomView {
             canvas.drawRect(new RectF(0, 0, right - mRadius, bottom), paint);
         }
 
-        @Override public String getId() {
+        @Override
+        public String getId() {
             return "RoundedRightCornerTransformation(radius=" + mRadius + ", diameter="
                     + mDiameter + ")";
         }
