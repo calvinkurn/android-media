@@ -71,6 +71,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String PARAM = "param";
     private static final String INVOICE = "invoice";
     private static final String TAB_ID = "tabId";
+    private static final int DEFAULT_TAB_ID = 1;
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     @Inject
@@ -587,11 +588,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     private GraphqlRequest makegraphqlRequestForRecommendation() {
         GraphqlRequest graphqlRequestForRecommendation;
-        Map<String, Object> variablesRecmondettion = new HashMap<>();
-        variablesRecmondettion.put(TAB_ID,1);
+        Map<String, Object> variablesWidget = new HashMap<>();
+        variablesWidget.put(TAB_ID,DEFAULT_TAB_ID);
         graphqlRequestForRecommendation = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.query_rechrage_widget), RechargeWidgetResponse.class, variablesRecmondettion);
+                R.raw.query_rechrage_widget), RechargeWidgetResponse.class, variablesWidget);
         return graphqlRequestForRecommendation;
     }
 

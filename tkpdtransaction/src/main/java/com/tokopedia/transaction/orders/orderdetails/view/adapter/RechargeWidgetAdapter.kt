@@ -1,6 +1,7 @@
 package com.tokopedia.transaction.orders.orderdetails.view.adapter
 
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.RecyclerView
@@ -12,11 +13,13 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.transaction.R
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
 
-class RecommendationAdapter(val recommendationItems: List<WidgetGridItem>) : RecyclerView.Adapter<RecommendationAdapter.RechargeWidgetViewHolder>() {
+class RechargeWidgetAdapter(val recommendationItems: List<WidgetGridItem>) : RecyclerView.Adapter<RechargeWidgetAdapter.RechargeWidgetViewHolder>() {
 
     private val viewMap = SparseBooleanArray()
 
@@ -71,9 +74,9 @@ class RecommendationAdapter(val recommendationItems: List<WidgetGridItem>) : Rec
 
         fun renderTitle(element: WidgetGridItem) {
             if (element.titleFirst.isNullOrEmpty()) {
-                title.visibility = View.GONE
+                title.hide()
             } else {
-                title.visibility = View.VISIBLE
+                title.show()
                 title.text = MethodChecker.fromHtml(element.titleFirst)
             }
 
@@ -105,18 +108,18 @@ class RecommendationAdapter(val recommendationItems: List<WidgetGridItem>) : Rec
 
         fun renderProduct(element: WidgetGridItem) {
             if (element.name.isNullOrEmpty()) {
-                productName.visibility = View.GONE
+                productName.hide()
             } else {
-                productName.visibility = View.VISIBLE
+                productName.show()
                 productName.text = MethodChecker.fromHtml(element.name)
             }
         }
 
         fun renderSubtitle(element: WidgetGridItem) {
             if (element.descFirst.isNullOrEmpty()) {
-                subtitle.visibility = View.GONE
+                subtitle.hide()
             } else {
-                subtitle.visibility = View.VISIBLE
+                subtitle.show()
                 subtitle.text = MethodChecker.fromHtml(element.descFirst)
             }
 
@@ -134,79 +137,83 @@ class RecommendationAdapter(val recommendationItems: List<WidgetGridItem>) : Rec
 
         fun renderFooter(element: WidgetGridItem) {
             if (hasPrice(element) || hasTagLabel(element)) {
-                footer.visibility = View.VISIBLE
+                footer.show()
                 renderLabel(element)
                 renderPrice(element)
             } else {
-                footer.visibility = View.GONE
+                footer.hide()
             }
         }
 
 
         fun renderLabel(element: WidgetGridItem) {
             if (hasTagLabel(element)) {
-                tagLine.visibility = View.VISIBLE
+                tagLine.show()
                 tagLine.text = MethodChecker.fromHtml(element.tagName)
                 when (element.tagType) {
                     1 -> {
-                        tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_pink_label)
+                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_pink_label))
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_pink))
                     }
                     2 -> {
-                        tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_green_label)
+                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_green_label))
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_green))
                     }
                     3 -> {
-                        tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_blue_label)
+                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_blue_label))
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_blue))
                     }
                     4 -> {
-                        tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_yellow_label)
+                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_yellow_label))
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_yellow))
                     }
                     5 -> {
-                        tagLine.background = ContextCompat.getDrawable(itemView.context, R.drawable.bg_rounded_grey_label)
+                        MethodChecker.setBackground(tagLine,findMyDrawable(R.drawable.bg_rounded_grey_label))
                         tagLine.setTextColor(ContextCompat.getColor(itemView.context, R.color.tkpd_transaction_label_grey))
                     }
                     else -> {
-                        tagLine.visibility = View.GONE
+                        tagLine.hide()
                     }
                 }
             } else {
-                tagLine.visibility = View.GONE
+                tagLine.hide()
             }
 
+        }
+
+        private fun findMyDrawable(drawable: Int): Drawable {
+            return itemView.context.resources.getDrawable(drawable)
         }
 
         fun renderPrice(element: WidgetGridItem) {
             if (hasPrice(element)) {
 
                 if (element.pricePrefix.isNullOrEmpty()) {
-                    pricePrefix.visibility = View.GONE
+                    pricePrefix.hide()
                 } else {
-                    pricePrefix.visibility = View.VISIBLE
+                    pricePrefix.show()
                     pricePrefix.text = MethodChecker.fromHtml(element.pricePrefix)
                 }
 
                 if (element.originalPrice.isNullOrEmpty()) {
-                    strikeThroughPrice.visibility = View.GONE
+                    strikeThroughPrice.hide()
                 } else {
-                    strikeThroughPrice.visibility = View.VISIBLE
+                    strikeThroughPrice.show()
                     strikeThroughPrice.text = MethodChecker.fromHtml(element.originalPrice)
                     strikeThroughPrice.paintFlags = strikeThroughPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 }
 
                 if (element.price.isNullOrEmpty()) {
-                    price.visibility = View.GONE
+                    price.hide()
                 } else {
-                    price.visibility = View.VISIBLE
+                    price.show()
                     price.text = MethodChecker.fromHtml(element.price)
                 }
 
             } else {
-                price.visibility = View.GONE
-                pricePrefix.visibility = View.GONE
-                strikeThroughPrice.visibility = View.GONE
+                price.hide()
+                pricePrefix.hide()
+                strikeThroughPrice.hide()
             }
         }
 

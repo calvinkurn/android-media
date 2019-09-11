@@ -47,13 +47,11 @@ import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
-import com.tokopedia.transaction.orders.orderdetails.view.adapter.RecommendationAdapter;
+import com.tokopedia.transaction.orders.orderdetails.view.adapter.RechargeWidgetAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailPresenter;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -70,7 +68,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
     public static final String KEY_FROM_PAYMENT = "from_payment";
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
-    private static final String WIDGET_TITLE = "Top-up & Tagihanmu";
+
     @Inject
     OrderListDetailPresenter presenter;
     OrderDetailsComponent orderListComponent;
@@ -334,9 +332,9 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid().isEmpty()) {
             ViewRecomendItems.setVisibility(View.GONE);
         }else{
-            recommendListTitle.setText(WIDGET_TITLE);
+            recommendListTitle.setText(getContext().getText(R.string.tkpdtransaction_widget_title));
             recommendationList.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-            recommendationList.setAdapter(new RecommendationAdapter(rechargeWidgetResponse.getHomeWidget().getWidgetGrid()));
+            recommendationList.setAdapter(new RechargeWidgetAdapter(rechargeWidgetResponse.getHomeWidget().getWidgetGrid()));
         }
     }
 
