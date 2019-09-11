@@ -62,11 +62,11 @@ object DeeplinkDFMapper {
 //                            deeplink, MODULE_HOTEL_TRAVEL,
 //                            context.getString(R.string.title_hotel))
 //                }
-                deeplink.startsWith(ApplinkConsInternalDigital.TELCO_DIGITAL) -> {
-                    getDFDeeplinkIfNotInstalled(context,
-                            deeplink, MODULE_DIGITAL_TOPUP,
-                            context.getString(R.string.digital_topup_title))
-                }
+//                deeplink.startsWith(ApplinkConsInternalDigital.TELCO_DIGITAL) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                            deeplink, MODULE_DIGITAL_TOPUP,
+//                            context.getString(R.string.digital_topup_title))
+//                }
                 deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
                     getDFDeeplinkIfNotInstalled(context,
                         deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
