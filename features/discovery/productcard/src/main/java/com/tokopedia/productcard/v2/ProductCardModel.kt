@@ -2,6 +2,7 @@ package com.tokopedia.productcard.v2
 
 class ProductCardModel (
     val productImageUrl: String = "",
+    val productImageUrl700: String = "",
     val isWishlisted: Boolean = false,
     val labelPromo: String = "",
     val labelPromoType: String = "",
