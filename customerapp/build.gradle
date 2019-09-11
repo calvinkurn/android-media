@@ -243,9 +243,9 @@ android {
         }
     }
 
-    dynamicFeatures = [
-            rootProject.ext.dynamicFeatures.shopSettings
-//            rootProject.ext.dynamicFeatures.profileCompletion
+    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
+//                       rootProject.ext.dynamicFeatures.profileCompletion,
+//                       rootProject.ext.dynamicFeatures.shopOpen
     ]
 }
 
