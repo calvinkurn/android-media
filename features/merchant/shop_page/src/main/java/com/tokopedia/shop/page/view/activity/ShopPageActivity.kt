@@ -429,10 +429,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     if (TextUtils.isEmpty(text)) {
                         return
                     }
-                    val etalaseId: String? = ""
-
                     startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity,
-                            shopCore.shopID, text, etalaseId, shopAttribution))
+                            shopCore.shopID, text, "", shopAttribution))
                     //reset the search, since the result will go to another activity.
                     searchInputView.searchTextView.text = null
 
