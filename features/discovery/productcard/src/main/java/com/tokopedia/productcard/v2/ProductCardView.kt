@@ -75,6 +75,7 @@ abstract class ProductCardView: BaseCustomView {
     protected var labelCredibility: Label? = null
     protected var labelOffers: Label? = null
     protected var imageTopAds: ImageView? = null
+    protected var blankSpaceConfig = BlankSpaceConfig()
 
     constructor(context: Context): super(context) {
         init()
@@ -275,54 +276,72 @@ abstract class ProductCardView: BaseCustomView {
         return cardViewProductCard?.maxCardElevation ?: 0f
     }
 
-    open fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig = BlankSpaceConfig()) {
+    open fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig = this.blankSpaceConfig) {
+        this.blankSpaceConfig = blankSpaceConfig
+
         removeAllShopBadges()
-        textViewProductName?.setValueWithConfig(productCardModel.productName, blankSpaceConfig.productName)
-        textViewPrice?.setValueWithConfig(productCardModel.formattedPrice, blankSpaceConfig.price)
-        textViewSlashedPrice?.let {
-            it.setValueWithConfig(productCardModel.slashedPrice, blankSpaceConfig.slashedPrice)
-            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-        }
-        labelDiscount?.setValueWithConfig(productCardModel.discountPercentage, blankSpaceConfig.discountPercentage)
 
-        if (productCardModel.productImageUrl.isNotEmpty()) {
-            imageProduct?.let {
-                it.visibility = View.VISIBLE
-                ImageHandler.loadImageThumbs(context, it, productCardModel.productImageUrl)
-            }
-        }
-
-        if (productCardModel.ratingCount > 0) {
-            setRating(productCardModel.ratingCount)
-        } else {
-            linearLayoutImageRating?.visibility = if (blankSpaceConfig.ratingCount) {
-                View.INVISIBLE
-            } else {
-                View.GONE
-            }
-        }
-
-        if (productCardModel.reviewCount > 0) {
-            setReviewCount(productCardModel.reviewCount)
-        } else {
-            textViewReviewCount?.visibility = if (blankSpaceConfig.ratingCount) {
-                View.INVISIBLE
-            } else {
-                View.GONE
-            }
-        }
-
-        if (productCardModel.isWishlistVisible) {
-            if (productCardModel.isWishlisted) {
-                buttonWishlist?.setImageResource(R.drawable.product_card_ic_wishlist_red)
-            } else {
-                buttonWishlist?.setImageResource(R.drawable.product_card_ic_wishlist)
-            }
-        } else {
-            buttonWishlist?.visibility = View.GONE
-        }
+        initProductImage(productCardModel.productImageUrl)
+        initProductName(productCardModel.productName)
+        initProductPrice(productCardModel.formattedPrice)
+        initLabelDiscount(productCardModel.discountPercentage)
+        initSlashedPrice(productCardModel.slashedPrice)
+        initRating(productCardModel.ratingCount)
+        initReview(productCardModel.reviewCount)
+        initWishlist(productCardModel.isWishlistVisible, productCardModel.isWishlisted)
 
         realignLayout()
+    }
+
+    private fun initProductImage(productImageUrl: String) {
+        imageProduct.configureVisibilityWithBlankSpaceConfig(
+                productImageUrl.isNotEmpty(), blankSpaceConfig.imageProduct) {
+            ImageHandler.loadImageThumbs(context, it, productImageUrl)
+        }
+    }
+
+    private fun initProductName(productName: String) {
+        textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
+    }
+
+    private fun initProductPrice(formattedPrice: String) {
+        textViewPrice.setTextWithBlankSpaceConfig(formattedPrice, blankSpaceConfig.price)
+    }
+
+    private fun initLabelDiscount(discountPercentage: String) {
+        labelDiscount.setTextWithBlankSpaceConfig(discountPercentage, blankSpaceConfig.discountPercentage)
+    }
+
+    private fun initSlashedPrice(slashedPrice: String) {
+        textViewSlashedPrice.configureVisibilityWithBlankSpaceConfig(
+                slashedPrice.isNotEmpty(), blankSpaceConfig.slashedPrice) {
+            it.text = slashedPrice
+            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+    }
+
+    private fun initRating(ratingCount: Int) {
+        linearLayoutImageRating.configureVisibilityWithBlankSpaceConfig(
+                ratingCount > 0, blankSpaceConfig.ratingCount) {
+            setRating(ratingCount)
+        }
+    }
+
+    private fun initReview(reviewCount: Int) {
+        textViewReviewCount.configureVisibilityWithBlankSpaceConfig(
+                reviewCount > 0, blankSpaceConfig.reviewCount) {
+            it.text = getReviewCountFormattedAsText(reviewCount)
+        }
+    }
+
+    private fun initWishlist(isWishlistVisible: Boolean, isWishlisted: Boolean) {
+        buttonWishlist.configureVisibilityWithBlankSpaceConfig(isWishlistVisible, blankSpaceConfig.buttonWishlist) {
+            if (isWishlisted) {
+                it.setImageResource(R.drawable.product_card_ic_wishlist_red)
+            } else {
+                it.setImageResource(R.drawable.product_card_ic_wishlist)
+            }
+        }
     }
 
     open fun setImageProductVisible(isVisible: Boolean) {
