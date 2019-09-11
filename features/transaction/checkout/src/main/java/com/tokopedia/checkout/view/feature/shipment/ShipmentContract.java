@@ -163,6 +163,8 @@ public interface ShipmentContract {
         void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
 
         void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
+
+        boolean isInsuranceEnabled();
     }
 
     interface AnalyticsActionListener {

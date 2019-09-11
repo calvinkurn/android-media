@@ -61,6 +61,8 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
 import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.model.TradeInParams
 import com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity
@@ -81,6 +83,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private var selectedInsuranceProduct = InsuranceRecommendationViewModel()
 
+    private var insuranceEnabled: Boolean = false
     private var productPrice: Float? = 0f
     private var insuranceRecommendationRequest = InsuranceRecommendationRequest()
     @Inject
@@ -536,6 +539,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             notes = savedInstanceState.getString(ApplinkConst.Transaction.EXTRA_NOTES)
             quantity = savedInstanceState.getInt(ApplinkConst.Transaction.EXTRA_QUANTITY)
         }
+
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        insuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false)
 
         super.onCreate(savedInstanceState)
         viewModel.parseDataFrom(arguments)
@@ -1113,7 +1119,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             generateInsuranceRequest()
         }
 
-        viewModel.getProductInfo(ProductParams(productId, null, null), resources, insuranceRecommendationRequest)
+        viewModel.getProductInfo(ProductParams(productId, null, null), resources, insuranceEnabled, insuranceRecommendationRequest)
     }
 
     override fun onChangeVariant(selectedOptionViewModel: OptionVariantViewModel) {

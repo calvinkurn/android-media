@@ -95,6 +95,8 @@ import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -123,6 +125,8 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+
+import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -201,6 +205,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private boolean hasTriedToLoadWishList;
     private boolean hasTriedToLoadRecentViewList;
     private boolean hasTriedToLoadRecommendation;
+    private boolean isInsuranceEnabled = false;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -239,6 +244,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
             cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
         }
+
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        isInsuranceEnabled = remoteConfig.getBoolean(APP_ENABLE_INSURANCE_RECOMMENDATION, false);
 
         dPresenter.attachView(this);
     }
@@ -1260,7 +1268,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
                 }
 
-                if (cartListData.getShopGroupDataList() != null && !cartListData.getShopGroupDataList().isEmpty()) {
+                if (cartListData.getShopGroupDataList() != null &&
+                        !cartListData.getShopGroupDataList().isEmpty() &&
+                        isInsuranceEnabled) {
                     dPresenter.getInsuranceTechCart();
                 }
 
