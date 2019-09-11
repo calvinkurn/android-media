@@ -13,6 +13,8 @@ import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.widget.Toast
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
 
 
 /*
@@ -47,18 +49,8 @@ class LogisticVoucherView : CustomVoucherView {
 
     private fun init() {
         clipToPadding = false
-        val dp2 = dpToPx(2f);
-        cornerRadius = 2 * dp2
-        mScallopRadius = 4 * dp2
-        mScallopRelativePosition = 0.59f
-        mShadowRadius = dp2
-        mDashWidth = dp2
-        mDashGap = 2 * dp2
-        mDashColor = ContextCompat.getColor(this.context, R.color.colorGray)
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)
-        ivVoucherLogo.visibility = View.GONE
-        tvVoucherStatus.visibility = View.GONE
         tvCode.visibility = View.GONE
         tvVoucherSubtitle.visibility = View.VISIBLE
         tvVoucherTitle.setSingleLine(false)
@@ -68,6 +60,12 @@ class LogisticVoucherView : CustomVoucherView {
         tvVoucherTitle.text = title
         tvVoucherSubtitle.text = subtitle
         tvVoucherDesc.text = desc
+        ImageHandler.loadImage(
+                context,
+                iv_voucher_type,
+                DELIVERY_VOUCHER_IMAGE_URL,
+                R.drawable.ic_loading_image
+        )
     }
 
     fun setUseButtonClickListener(listener: View.OnClickListener) {

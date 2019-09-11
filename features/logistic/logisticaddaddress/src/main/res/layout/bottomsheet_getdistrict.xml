@@ -238,7 +238,7 @@
             android:id="@+id/invalid_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/choose_this_location"
+            android:text="@string/choose_this_incomplete_location"
             android:visibility="gone"
             app:buttonCompatSize="medium"
             app:buttonCompatType="primary" />
