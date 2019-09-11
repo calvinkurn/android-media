@@ -105,7 +105,7 @@
                                 android:maxLines="1"
                                 android:paddingEnd="@dimen/tp_padding_regular"
                                 android:paddingRight="@dimen/tp_padding_regular"
-                                android:textColor="@color/colorGray"
+                                android:textColor="@color/tp_toolbar_subtitle_color"
                                 android:textSize="@dimen/tp_text_size_xsmall"
                                 android:textStyle="bold"
                                 tools:text="Classic Member" />
