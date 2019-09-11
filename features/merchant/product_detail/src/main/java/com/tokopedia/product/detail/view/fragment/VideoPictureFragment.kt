@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -105,9 +106,10 @@ class VideoPictureFragment : BaseDaggerFragment() {
             onPictureClickListener?.invoke(mediaPosition)
         }
 
-
         video_player_pdp.setOnTouchListener { v, event ->
-            onPictureClickListener?.invoke(mediaPosition)
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                onPictureClickListener?.invoke(mediaPosition)
+            }
             false
         }
 
