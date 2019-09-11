@@ -65,6 +65,19 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         SubCategoryListener,
         WishListActionListener {
 
+    override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
+
+        val item = element as ProductsItem
+
+        catAnalyticsInstance.eventProductListImpression(getDepartMentId(),
+                item.name,
+                item.id.toString(),
+                CurrencyFormatHelper.convertRupiahToInt(item.price),
+                position,
+                getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()),
+                item.categoryBreadcrumb ?: "")
+    }
+
     override fun getDepartMentId(): String {
         return mDepartmentId
     }
@@ -278,7 +291,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         isPagingAllowed = true
                     } else {
-                        if(list.isEmpty()){
+                        if (list.isEmpty()) {
                             showNoDataScreen(true)
                         }
                     }
@@ -289,7 +302,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 is Fail -> {
                     productNavListAdapter?.removeLoading()
                     hideRefreshLayout()
-                    if(list.isEmpty()) {
+                    if (list.isEmpty()) {
                         showNoDataScreen(true)
                     }
                     isPagingAllowed = true
@@ -615,6 +628,11 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onDetach() {
         super.onDetach()
         productNavViewModel.onDetach()
+    }
+
+    override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
+        catAnalyticsInstance.eventSortApplied(getDepartMentId(),
+                selectedSortName, sortValue)
     }
 
 }

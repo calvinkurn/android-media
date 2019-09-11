@@ -38,27 +38,20 @@ class CatalogDetailPageFragment : Fragment(),
     @Inject
     lateinit var catalogDetailPageViewModel: CatalogDetailPageViewModel
     private var catalogId: String = ""
-    private var departmentId: String = ""
-    private var departmentName: String = ""
     private lateinit var catalogImage: ArrayList<Catalog.CatalogImage>
     private lateinit var fragment: CatalogGalleryFragment
     private lateinit var catalog: Catalog
     private var listener: Listener? = null
 
     companion object {
-        private const val TAG_FRAGMENT = "TAG_FRAGMENT"
         private const val ARG_EXTRA_CATALOG_ID = "ARG_EXTRA_CATALOG_ID"
-        private const val ARG_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
-        private const val ARG_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
         private const val LEFT = "left"
         private const val RIGHT = "right"
 
-        fun newInstance(catalogId: String, departmentId: String?, departmentName: String?): CatalogDetailPageFragment {
+        fun newInstance(catalogId: String): CatalogDetailPageFragment {
             val fragment = CatalogDetailPageFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
-            bundle.putString(ARG_CATEGORY_DEPARTMENT_ID, departmentId)
-            bundle.putString(ARG_CATEGORY_DEPARTMENT_NAME, departmentName)
             fragment.arguments = bundle
             return fragment
         }
@@ -78,17 +71,12 @@ class CatalogDetailPageFragment : Fragment(),
         component.inject(this)
         if (arguments != null) {
             catalogId = arguments!!.getString(ARG_EXTRA_CATALOG_ID, "")
-            departmentId = arguments!!.getString(ARG_CATEGORY_DEPARTMENT_ID, "")
-            departmentName = arguments!!.getString(ARG_CATEGORY_DEPARTMENT_NAME, "")
         }
         activity?.let { observer ->
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             catalogDetailPageViewModel = viewModelProvider.get(CatalogDetailPageViewModel::class.java)
             catalogDetailPageViewModel.getProductCatalog(catalogId)
         }
-        childFragmentManager.beginTransaction()
-                .add(R.id.frame_layout, ProductDetailNavFragment.newInstance(catalogId, departmentId, departmentName), TAG_FRAGMENT)
-                .commit()
         setObservers()
     }
 

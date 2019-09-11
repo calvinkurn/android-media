@@ -1,5 +1,7 @@
 package com.tokopedia.discovery.catalogrevamp.analytics
 
+import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -8,13 +10,126 @@ class CatalogDetailPageAnalytics {
     companion object {
         private const val EVENT_CATALOG = "clickCatalog"
         private const val CATALOG_PAGE = "catalog page"
+        private const val CLICK_FILTER = "click filter"
+        private const val CLICK_SORT = "click sort"
+        private const val ADD_WISHLIST = "add wishlist"
+        private const val REMOVE_WISHLIST = "remove wishlist"
+        private const val CLICK_QUICK_FILTER = "click quick filter"
+        private const val APPLY_FILTER = "apply filter"
         private const val CLICK_SPECIFICATIONS = "click spesifikasi"
         private const val CLICK_SOCIAL_SHARE = "click social share"
         private const val CLICK_INDEX_PICTURE = "click index picture"
         private const val SWIPE_INDEX_PICTURE = "swipe index picture"
         private const val CLICK_CATALOG_PICTURE = "click catalog picture"
         private const val SWIPE_CATALOG_PICTURE = "swipe catalog picture"
+        private const val KEY_EVENT = "event"
+        private const val KEY_EVENT_CATEGORY = "eventCategory"
+        private const val KEY_EVENT_ACTION = "eventAction"
+        private const val KEY_EVENT_LABEL = "eventLabel"
+        private const val PRODUCT_VIEW = "productView"
+        private const val KEY_ECOMMERCE = "ecommerce"
 
+        //1
+        @JvmStatic
+        fun trackEventClickFilter() {
+            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                    EVENT_CATALOG,
+                    CATALOG_PAGE,
+                    CLICK_FILTER,
+                    ""
+            ))
+        }
+
+        //2
+        @JvmStatic
+        fun trackEventClickSort() {
+            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                    EVENT_CATALOG,
+                    CATALOG_PAGE,
+                    CLICK_SORT,
+                    ""
+            ))
+        }
+
+        //3
+        @JvmStatic
+        fun eventProductListImpression(product_name: String,
+                                       product_id: String,
+                                       price: Int,
+                                       position: Int,
+                                       pathList: String,
+                                       categoryPath: String,
+                                       isTopAds: Boolean) {
+            val tracker = TrackApp.getInstance().gtm
+            val map = DataLayer.mapOf(
+                    KEY_EVENT, PRODUCT_VIEW,
+                    KEY_EVENT_CATEGORY, CATALOG_PAGE,
+                    KEY_EVENT_ACTION, if (isTopAds) "impression product - topads" else "product list impression",
+                    KEY_EVENT_LABEL, "catalog product list",
+                    KEY_ECOMMERCE, DataLayer.mapOf(
+                    "currencyCode", "IDR",
+                    "impressions", DataLayer.listOf(DataLayer.mapOf(
+                    "name", product_name,
+                    "id", product_id,
+                    "price", price,
+                    "brand", "",
+                    "category", categoryPath,
+                    "variant", "",
+                    "list", pathList,
+                    "position", position))
+            ))
+            tracker.sendEnhanceEcommerceEvent(map)
+        }
+
+        //3
+        @JvmStatic
+        fun eventProductListClick(product_name: String,
+                                  product_id: String,
+                                  price: Int,
+                                  position: Int,
+                                  pathList: String,
+                                  categoryPath: String,
+                                  isTopAds: Boolean) {
+            val tracker = TrackApp.getInstance().gtm
+            val map = DataLayer.mapOf(
+                    KEY_EVENT, PRODUCT_VIEW,
+                    KEY_EVENT_CATEGORY, CATALOG_PAGE,
+                    KEY_EVENT_ACTION, if (isTopAds) "click product - topads" else "click product list",
+                    KEY_EVENT_LABEL, "catalog product list",
+                    KEY_ECOMMERCE, DataLayer.mapOf(
+                    "currencyCode", "IDR",
+                    "click", DataLayer.mapOf(
+                    "actionField","list : $categoryPath",
+                    "products", DataLayer.listOf(DataLayer.mapOf(
+                    "name", product_name,
+                    "id", product_id,
+                    "price", price,
+                    "brand", "",
+                    "category", categoryPath,
+                    "variant", "",
+                    "list", pathList,
+                    "position", position,
+                    "attribution", ""))
+            )
+            ))
+            tracker.sendEnhanceEcommerceEvent(map)
+        }
+
+        //4 & 5
+        @JvmStatic
+        fun trackEventWishlist(isAdded: Boolean, productId: String) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                    EVENT_CATALOG,
+                    CATALOG_PAGE,
+                    when {
+                        isAdded -> ADD_WISHLIST
+                        else -> REMOVE_WISHLIST
+                    },
+                    productId
+            ))
+        }
+
+        //6
         @JvmStatic
         fun trackEventClickSpecification() {
             TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -25,6 +140,7 @@ class CatalogDetailPageAnalytics {
             ))
         }
 
+        //7
         @JvmStatic
         fun trackEventClickSocialShare() {
             TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -35,6 +151,7 @@ class CatalogDetailPageAnalytics {
             ))
         }
 
+        //8
         @JvmStatic
         fun trackEventClickIndexPicture(position: Int) {
             TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -45,6 +162,7 @@ class CatalogDetailPageAnalytics {
             ))
         }
 
+        //9
         @JvmStatic
         fun trackEventSwipeIndexPicture(direction: String) {
             TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -55,6 +173,18 @@ class CatalogDetailPageAnalytics {
             ))
         }
 
+        //11
+        @JvmStatic
+        fun trackEvenClickQuickFilter(option: Option, filterValue: Boolean) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                    EVENT_CATALOG,
+                    CATALOG_PAGE,
+                    CLICK_QUICK_FILTER,
+                    "${option.name}-${option.value}" + "-" + filterValue.toString()
+            ))
+        }
+
+        //12
         @JvmStatic
         fun trackEventClickCatalogPicture() {
             TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -65,6 +195,7 @@ class CatalogDetailPageAnalytics {
             ))
         }
 
+        //13
         @JvmStatic
         fun trackEventSwipeCatalogPicture(direction: String) {
             TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
@@ -72,6 +203,28 @@ class CatalogDetailPageAnalytics {
                     CATALOG_PAGE,
                     SWIPE_CATALOG_PICTURE,
                     direction
+            ))
+        }
+
+        //14
+        @JvmStatic
+        fun trackEvenFilterApplied(filterName: String, filterValue: String) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                    EVENT_CATALOG,
+                    CATALOG_PAGE,
+                    APPLY_FILTER,
+                    "$filterName-$filterValue"
+            ))
+        }
+
+        //15
+        @JvmStatic
+        fun trackEvenSortApplied(sortName: String, sortValue: Int) {
+            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                    EVENT_CATALOG,
+                    CATALOG_PAGE,
+                    "apply sort - $sortName",
+                    sortValue.toString()
             ))
         }
     }

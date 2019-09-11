@@ -20,7 +20,7 @@ import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
 
 class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
                             val visitables: ArrayList<Visitable<ProductTypeFactory>>,
-                            onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
+                            val onItemChangeView: OnItemChangeView) : BaseCategoryAdapter(onItemChangeView) {
 
     private val loadingMoreModel: LoadingMoreModel  by lazy { LoadingMoreModel() }
 
@@ -153,14 +153,7 @@ class ProductNavListAdapter(val productTypeFactory: ProductTypeFactory,
             val position = holder.adapterPosition
             if (!viewMap.containsKey(position)) {
                 viewMap[position] = true
-                val item = visitables[position] as ProductsItem
-                catAnalyticsInstance.eventProductListImpression(((holder.itemView.context) as CategoryNavActivity).getCategoryId(),
-                        item.name,
-                        item.id.toString(),
-                        CurrencyFormatHelper.convertRupiahToInt(item.price),
-                        position,
-                        getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()),
-                        item.categoryBreadcrumb ?: "")
+                onItemChangeView.onListItemImpressionEvent(visitables[position] as Visitable<Any>,position)
             }
 
         }

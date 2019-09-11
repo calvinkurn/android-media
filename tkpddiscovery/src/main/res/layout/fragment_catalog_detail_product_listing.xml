@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_product_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="9.9jt+ produk" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/quickfilter_recyclerview"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toRightOf="@+id/txt_product_count"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/txt_product_count"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:itemCount="5"
+        tools:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        tools:orientation="horizontal"
+        tools:scrollbars="horizontal" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/product_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@+id/txt_product_count"/>
+
+    <include
+        android:id="@+id/layout_no_data"
+        layout="@layout/layout_nav_no_product"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/txt_product_count"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+</android.support.constraint.ConstraintLayout>

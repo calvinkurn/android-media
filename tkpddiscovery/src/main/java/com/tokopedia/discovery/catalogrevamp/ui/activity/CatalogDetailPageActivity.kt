@@ -5,21 +5,44 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.view.Menu
-import android.view.MenuItem
+import android.support.v7.app.AppCompatActivity
+import android.view.View
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tkpd.library.utils.legacy.MethodChecker
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.core.share.DefaultShare
-import com.tokopedia.core2.R
+import com.tokopedia.discovery.R
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailPageFragment
+import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailProductListingFragment
+import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
+import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
+import com.tokopedia.filter.widget.BottomSheetFilterView
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
+import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
+import java.util.*
+import kotlin.collections.HashMap
+import kotlin.collections.Map
+import kotlin.collections.MutableMap
 
-class CatalogDetailPageActivity : BaseSimpleActivity(), CatalogDetailPageFragment.Listener {
+class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.Listener, CategoryNavigationListener, BottomSheetListener {
+    private var catalogId: String = ""
     private var shareData: LinkerData? = null
+    private var searchNavContainer: View? = null
+    private var navigationListenerList: ArrayList<CategoryNavigationListener.ClickListener> = ArrayList()
+    private var visibleFragmentListener: CategoryNavigationListener.VisibleClickListener? = null
+    private lateinit var catalogDetailFragment : Fragment
+    private lateinit var catalogDetailListingFragment : Fragment
+    private var bottomSheetFilterView: BottomSheetFilterView? = null
+    private var catalogName: String =""
 
     object DeeplinkIntents {
         @JvmStatic
@@ -34,6 +57,9 @@ class CatalogDetailPageActivity : BaseSimpleActivity(), CatalogDetailPageFragmen
     }
 
     companion object {
+        private val STATE_GRID = 1
+        private val STATE_LIST = 2
+        private val STATE_BIG = 3
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
@@ -51,68 +77,234 @@ class CatalogDetailPageActivity : BaseSimpleActivity(), CatalogDetailPageFragmen
         return AppScreen.SCREEN_CATALOG
     }
 
-    override fun getNewFragment(): Fragment? {
+    private fun getNewCatalogDetailFragment(): Fragment {
         val catalogId: String = intent.getStringExtra(EXTRA_CATALOG_ID)
-        val departmentId: String = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_ID)
-        val departmentName: String = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_NAME)
-        val fragment = CatalogDetailPageFragment.newInstance(catalogId, departmentId, departmentName)
+        val fragment = CatalogDetailPageFragment.newInstance(catalogId)
         fragment.setListener(this)
         return fragment
+    }
+    private fun getNewCatalogDetailListingFragment(catalogName: String): Fragment {
+        catalogId = intent.getStringExtra(EXTRA_CATALOG_ID)
+        val departmentId: String = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_ID)
+        val departmentName: String = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_NAME)
+        return CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.elevation = 10f
-            toolbar.setBackgroundResource(R.color.white)
-        } else {
-            toolbar.setBackgroundResource(R.drawable.bg_white_toolbar_drop_shadow)
-        }
+        setContentView(R.layout.activity_catalog_detail_page)
+        bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
+        searchNavContainer = findViewById(R.id.search_nav_container)
+        prepareView()
+    }
+
+    private fun prepareView() {
+        setupToolbar()
+        setFragment()
+        initSwitchButton()
+        initBottomSheetListener()
+
+        bottomSheetFilterView?.initFilterBottomSheet()
+
+    }
+
+    private fun initBottomSheetListener() {
+        bottomSheetFilterView?.setCallback(object : BottomSheetFilterView.Callback {
+            override fun onApplyFilter(filterParameter: Map<String, String>) {
+                applyFilter(filterParameter)
+            }
+
+            override fun onShow() {
+                hideBottomNavigation()
+            }
+
+            override fun onHide() {
+                showBottomNavigation()
+            }
+
+            override fun isSearchShown(): Boolean {
+                return false
+            }
+
+            override fun hideKeyboard() {
+                KeyboardHandler.hideSoftKeyboard(this@CatalogDetailPageActivity)
+            }
+
+            override fun getActivity(): AppCompatActivity {
+                return this@CatalogDetailPageActivity
+            }
+        })
+        bottomSheetFilterView?.closeView()
         if (supportActionBar != null)
             supportActionBar!!.setHomeAsUpIndicator(
-                    R.drawable.ic_webview_back_button
+                    com.tokopedia.core2.R.drawable.ic_webview_back_button
             )
     }
 
-    override fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String) {
-        this.shareData = shareData
-        updateTitle(catalogHeading)
+    private fun applyFilter(filterParameter: Map<String, String>) {
+        val fragment = catalogDetailListingFragment as BaseCategorySectionFragment
+
+        val presentFilterList = fragment.getSelectedFilter()
+        if (presentFilterList.size < filterParameter.size) {
+            for (i in filterParameter.entries) {
+                if (!presentFilterList.containsKey(i.key)) {
+                    CatalogDetailPageAnalytics.trackEvenFilterApplied(i.key, i.value)
+                }
+            }
+        }
+        fragment.applyFilterToSearchParameter(filterParameter)
+        fragment.setSelectedFilter(HashMap(filterParameter))
+        fragment.clearDataFilterSort()
+        fragment.reloadData()
     }
 
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        val inflater = menuInflater
-        inflater.inflate(com.tokopedia.discovery.R.menu.menu_catalog_detail, menu)
-        return super.onCreateOptionsMenu(menu)
+    private fun setFragment() {
+        catalogDetailFragment = getNewCatalogDetailFragment()
+        supportFragmentManager.beginTransaction()
+                .add(R.id.parent_view, catalogDetailFragment)
+                .commit()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == com.tokopedia.discovery.R.id.action_share_prod) {
+    private fun setupToolbar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.elevation = 10f
+            toolbar.setBackgroundResource(com.tokopedia.core2.R.color.white)
+        } else {
+            toolbar.setBackgroundResource(com.tokopedia.core2.R.drawable.bg_white_toolbar_drop_shadow)
+        }
+        img_share_button.setOnClickListener {
             if (shareData != null) {
                 CatalogDetailPageAnalytics.trackEventClickSocialShare()
                 DefaultShare(this, shareData).show()
             } else
                 NetworkErrorHelper.showSnackbar(this, "Data katalog belum tersedia")
-            return true
         }
-        return super.onOptionsItemSelected(item)
+        action_up_btn.setOnClickListener {
+            onBackPressed()
+        }
+    }
+
+    override fun deliverCatalogShareData(shareData: LinkerData, catalogName: String) {
+        this.shareData = shareData
+        this.catalogName = catalogName
+        title_toolbar.text = catalogName
+
+        catalogDetailListingFragment = getNewCatalogDetailListingFragment(catalogName)
+        supportFragmentManager.beginTransaction()
+                .add(R.id.frame_layout, catalogDetailListingFragment)
+                .commit()
+    }
+
+    private fun initSwitchButton() {
+        icon_sort.setOnClickListener {
+            CatalogDetailPageAnalytics.trackEventClickSort()
+            visibleFragmentListener?.onSortClick()
+
+        }
+        button_sort.setOnClickListener {
+            CatalogDetailPageAnalytics.trackEventClickSort()
+            visibleFragmentListener?.onSortClick()
+        }
+
+        icon_filter.setOnClickListener {
+            CatalogDetailPageAnalytics.trackEventClickFilter()
+            visibleFragmentListener?.onFilterClick()
+        }
+
+        button_filter.setOnClickListener {
+            CatalogDetailPageAnalytics.trackEventClickFilter()
+            visibleFragmentListener?.onFilterClick()
+        }
+
+
+        img_display_button.tag = STATE_GRID
+        img_display_button.setOnClickListener {
+
+            for (navListener in navigationListenerList) {
+                navListener.onChangeGridClick()
+            }
+            when (img_display_button.tag) {
+
+                STATE_GRID -> {
+                    img_display_button.tag = STATE_LIST
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_list_display))
+                }
+
+                STATE_LIST -> {
+                    img_display_button.tag = STATE_BIG
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_big_display))
+                }
+                STATE_BIG -> {
+                    img_display_button.tag = STATE_GRID
+                    img_display_button.setImageDrawable(MethodChecker.getDrawable(this, R.drawable.ic_grid_display))
+                }
+            }
+        }
     }
 
     override fun onBackPressed() {
-        checkFragmentisCatalogDetailPageFragment()?.let {
-            it.onBackPress()
-            return
+        bottomSheetFilterView?.let {
+            if (!it.onBackPressed()) {
+                checkFragmentisCatalogDetailPageFragment()?.let {fragment->
+                    fragment.onBackPress()
+                    return
+                }
+                super.onBackPressed()
+            }
         }
-        super.onBackPressed()
     }
 
 
     private fun checkFragmentisCatalogDetailPageFragment(): CatalogDetailPageFragment? {
-        val currentFragment = fragment
-        return if (currentFragment is CatalogDetailPageFragment) {
-            currentFragment
+        return if (catalogDetailFragment is CatalogDetailPageFragment) {
+            catalogDetailFragment as CatalogDetailPageFragment
         } else {
             null
         }
+    }
+
+    fun showBottomNavigation() {
+        searchNavContainer?.show()
+    }
+
+    override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {
+        navigationListenerList.add(clickListener)
+    }
+
+    override fun setUpVisibleFragmentListener(visibleClickListener: CategoryNavigationListener.VisibleClickListener) {
+        visibleFragmentListener = visibleClickListener
+    }
+
+    override fun hideBottomNavigation() {
+        searchNavContainer?.hide()
+    }
+
+    override fun loadFilterItems(filters: ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
+        bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
+    }
+
+    override fun setFilterResultCount(formattedResultCount: String?) {
+        bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
+    }
+
+    override fun closeFilterBottomSheet() {
+        bottomSheetFilterView?.closeView()
+    }
+
+    override fun isBottomSheetShown(): Boolean {
+        return bottomSheetFilterView?.isBottomSheetShown ?: false
+    }
+
+    override fun launchFilterBottomSheet() {
+        bottomSheetFilterView?.launchFilterBottomSheet()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        handleDefaultActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun handleDefaultActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        bottomSheetFilterView?.onActivityResult(requestCode, resultCode, data)
     }
 }
