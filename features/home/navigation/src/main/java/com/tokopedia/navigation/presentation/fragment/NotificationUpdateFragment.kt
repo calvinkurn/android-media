@@ -411,7 +411,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
 
         if (!::longerTextDialog.isInitialized) {
-            longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
+            longerTextDialog = NotificationUpdateLongerTextFragment2.createInstance(bundle)
         } else {
             longerTextDialog.arguments = bundle
         }

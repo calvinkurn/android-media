@@ -46,8 +46,8 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
 
     companion object {
 
-        fun createInstance(bundle: Bundle): NotificationUpdateLongerTextFragment {
-            val fragment = NotificationUpdateLongerTextFragment()
+        fun createInstance(bundle: Bundle): NotificationUpdateLongerTextFragment2 {
+            val fragment = NotificationUpdateLongerTextFragment2()
             fragment.arguments = bundle
             return fragment
         }
