@@ -13,7 +13,10 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingEnd="@dimen/dp_8"
         tools:background="@color/black">
 
 
