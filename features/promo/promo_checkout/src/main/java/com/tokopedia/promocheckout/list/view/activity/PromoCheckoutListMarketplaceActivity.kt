@@ -5,16 +5,19 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.common.data.CHECK_PROMO_FIRST_STEP_PARAM
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.promocheckout.common.data.PROMO_CODE
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.list.PromoCheckoutListComponentInstance
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.view.fragment.BasePromoCheckoutListFragment
 import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketplaceFragment
 
-class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity() {
+class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutListComponent> {
 
     override fun getNewFragment(): Fragment {
         return PromoCheckoutListMarketplaceFragment.createInstance(
@@ -39,6 +42,10 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity() {
             intent.putExtras(bundle)
             return intent
         }
+    }
+
+    override fun getComponent(): PromoCheckoutListComponent {
+        return PromoCheckoutListComponentInstance.getPromoCheckoutListComponent(application)
     }
 
 }
