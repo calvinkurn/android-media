@@ -17,9 +17,9 @@
     <ImageView
         android:layout_width="@dimen/dp_32"
         android:layout_height="@dimen/dp_32"
-        android:background="@drawable/ic_icon_alert"
         app:layout_constraintBottom_toTopOf="@+id/guideline1"
-        app:layout_constraintRight_toLeftOf="@+id/guideline" />
+        app:layout_constraintRight_toLeftOf="@+id/guideline"
+        app:srcCompat="@drawable/ic_icon_alert" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -41,10 +41,10 @@
         android:layout_height="@dimen/dp_32"
         android:layout_marginRight="@dimen/dp_8"
         android:padding="@dimen/dp_8"
-        app:srcCompat="@drawable/ic_action_x"
         android:tint="@color/black_36"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_action_x" />
 
     <TextView
         android:id="@+id/tv_title_info"

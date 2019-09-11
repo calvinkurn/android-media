@@ -142,4 +142,22 @@
     <string name="af_success_get_dashboard_info">Hasil telah berhasil ditampilkan</string>
     <string name="af_ok">Oke</string>
 
+    <string name="af_share_title">Share dan dapatkan komisi</string>
+    <string name="af_share_subtitle">Makin banyak yang beli, makin untung!</string>
+
+    <string name="af_merchant_share_title">Share, yuk biar cepat untung!</string>
+    <string name="af_merchant_share_subtitle">Makin banyak yang lihat, makin hits</string>
+
+    <string name="af_share_tokopedia">Follower</string>
+    <string name="af_share_facebook">Facebook</string>
+    <string name="af_share_twitter">Twitter</string>
+
+    <string name="af_share_tokopedia_option">Share ke Follower</string>
+    <string name="af_share_facebook_option">Post ke Facebook</string>
+    <string name="af_share_twitter_option">Share di Twitter</string>
+
+    <string name="af_share_tokopedia_hint">%s orang akan melihat post ini</string>
+
+    <string name="af_share_post">Share Post</string>
+
 </resources>

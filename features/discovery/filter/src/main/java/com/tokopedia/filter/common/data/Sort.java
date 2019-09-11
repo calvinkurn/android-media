@@ -17,7 +17,7 @@ public final class Sort implements Parcelable {
     @SerializedName("value")
     @Expose
     String value;
-    @SerializedName("input_type")
+    @SerializedName(value="input_type", alternate={"inputType"})
     @Expose
     String inputType;
 

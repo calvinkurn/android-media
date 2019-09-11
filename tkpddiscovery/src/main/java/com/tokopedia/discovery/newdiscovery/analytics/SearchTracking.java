@@ -357,26 +357,6 @@ public class SearchTracking {
         ));
     }
 
-    public static void eventSearchResultFilter(Context context, String screenName, Map<String, String> selectedFilter) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_PRODUCT,
-                SearchEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ));
-    }
-
-    public static void eventSearchResultCloseBottomSheetFilter(Context context,
-                                                               String screenName,
-                                                               Map<String, String> selectedFilter) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_PRODUCT,
-                SearchEventTracking.Action.APPLY_FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ));
-    }
-
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
         if (selectedFilter == null) {
             return "";
@@ -410,69 +390,6 @@ public class SearchTracking {
         } else {
             return filterEventLabel + "&" + sortEventLabel;
         }
-    }
-
-    public static void eventSearchResultFilterJourney(Context context,
-                                                      String filterName,
-                                                      String filterValue,
-                                                      boolean isInsideDetail, boolean isActive) {
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_JOURNEY,
-                SearchEventTracking.Action.CLICK.toLowerCase() + " - "
-                        + filterName + ": " + filterValue + " - "
-                        + (isInsideDetail ? "inside lihat semua" : "outside lihat semua"),
-                Boolean.toString(isActive)
-        ));
-    }
-
-    public static void eventSearchResultApplyFilterDetail(Context context, String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_JOURNEY,
-                SearchEventTracking.Action.SIMPAN_ON_LIHAT_SEMUA + filterName,
-                ""
-        ));
-    }
-
-    public static void eventSearchResultBackFromFilterDetail(Context context, String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_JOURNEY,
-                SearchEventTracking.Action.BACK_ON_LIHAT_SEMUA + filterName,
-                ""
-        ));
-    }
-
-    public static void eventSearchResultNavigateToFilterDetail(Context context, String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_JOURNEY,
-                SearchEventTracking.Action.CLICK_LIHAT_SEMUA + filterName,
-                ""
-        ));
-    }
-
-    public static void eventSearchResultOpenFilterPageProduct(Context context) {
-        eventSearchResultOpenFilterPage(context, "product");
-    }
-
-    public static void eventSearchResultOpenFilterPageCatalog(Context context) {
-        eventSearchResultOpenFilterPage(context,"catalog");
-    }
-
-    public static void eventSearchResultOpenFilterPageShop(Context context) {
-        eventSearchResultOpenFilterPage(context,"shop");
-    }
-
-    private static void eventSearchResultOpenFilterPage(Context context, String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER.toLowerCase() + " " + tabName,
-                SearchEventTracking.Action.CLICK_FILTER,
-                ""
-        ));
     }
 
     public static void eventSearchNoResult(Context context,
@@ -656,5 +573,14 @@ public class SearchTracking {
 
     private String generateWishlistClickEventLabel(String keyword, String productId) {
         return keyword + " - " + productId;
+    }
+
+    public void eventActionClickCartButton(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.EventSearchResult,
+                SearchEventTracking.Action.CLICK_CART_BUTTON,
+                keyword
+        );
     }
 }

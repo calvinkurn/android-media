@@ -88,7 +88,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
-                Timber.w("P3Download Module {$moduleName}")
+                Timber.w("P1Download Module {$moduleName}")
                 loadAndLaunchModule(moduleName)
             } else {
                 hideProgress()
@@ -174,7 +174,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun onSuccessfulLoad(moduleName: String, launch: Boolean) {
-        Timber.w("P3Installed Module {$moduleName}")
+        Timber.w("P1Installed Module {$moduleName}")
         progressGroup.visibility = View.INVISIBLE
         if (launch && manager.installedModules.contains(moduleName)) {
             RouteManager.getIntentNoFallback(this, applink)?.let {
@@ -222,14 +222,14 @@ class DFInstallerActivity : BaseSimpleActivity() {
             }
             SplitInstallSessionStatus.FAILED -> {
                 val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                showFailedMessage(message)
+                showFailedMessage(message, state.errorCode().toString())
                 hideProgress()
             }
         }
     }
 
-    private fun showFailedMessage(message: String) {
-        Timber.w("P3Failed Module {$moduleName}")
+    private fun showFailedMessage(message: String, errorCode: String = "") {
+        Timber.w("P1Failed Module {$moduleName} - {$errorCode}")
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
             message,
             Snackbar.LENGTH_INDEFINITE,
