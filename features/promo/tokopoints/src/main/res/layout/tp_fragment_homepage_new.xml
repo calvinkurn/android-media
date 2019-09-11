@@ -54,7 +54,7 @@
                             android:layout_height="wrap_content"
                             android:background="@color/white">
 
-                            <ImageView
+                            <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/img_bg_header"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/tp_home_top_bg_height"
@@ -62,14 +62,14 @@
                                 android:layout_alignParentTop="true"
                                 android:scaleType="fitXY" />
 
-                            <ImageView
+                            <android.support.v7.widget.AppCompatImageView
                                 android:id="@+id/img_egg"
                                 android:layout_width="@dimen/dp_64"
                                 android:layout_height="@dimen/dp_64"
                                 android:layout_marginStart="@dimen/tp_margin_medium"
                                 android:layout_marginLeft="@dimen/tp_margin_medium"
                                 tools:src="@drawable/ic_launcher_background"
-                                android:layout_marginTop="85dp"
+                                android:layout_marginTop="@dimen/tp_top_margin_big_image"
                                 android:contentDescription="@string/tp_label_see_loyalty" />
 
                             <TextView
@@ -77,8 +77,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignTop="@id/img_egg"
-                                android:layout_marginStart="4dp"
-                                android:layout_marginLeft="4dp"
+                                android:layout_marginStart="@dimen/dp_4"
+                                android:layout_marginLeft="@dimen/dp_4"
                                 android:layout_toEndOf="@id/img_egg"
                                 android:layout_toRightOf="@id/img_egg"
                                 android:fontFamily="sans-serif-medium"
@@ -93,8 +93,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/text_membership_label"
-                                android:layout_marginStart="4dp"
-                                android:layout_marginLeft="4dp"
+                                android:layout_marginStart="@dimen/dp_4"
+                                android:layout_marginLeft="@dimen/dp_4"
                                 android:layout_marginTop="@dimen/dp_3"
                                 android:layout_marginBottom="@dimen/dp_4"
                                 android:layout_toEndOf="@id/img_egg"
@@ -149,8 +149,6 @@
                             android:layout_height="?actionBarSize"
                             app:contentInsetLeft="0dp"
                             app:contentInsetStart="0dp"
-                            android:contentInsetLeft="0dp"
-                            android:contentInsetStart="0dp"
                             app:contentInsetStartWithNavigation="0dp"
                             app:layout_collapseMode="pin" />
 
@@ -205,7 +203,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dp_16"
-                        app:cardCornerRadius="8dp"
+                        app:cardCornerRadius="@dimen/dp_8"
                         app:cardUseCompatPadding="true">
 
                         <include layout="@layout/tp_bottomview_membership_new" />

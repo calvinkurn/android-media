@@ -16,6 +16,7 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
@@ -70,6 +71,21 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
         initDrawableResources();
 
         setCouponCount(0, "");
+        setNavIcon(context);
+    }
+
+    private void setNavIcon(Context context) {
+        post(() -> {
+            int NAV_ICON_POSITION = 1;
+            View v = getChildAt(NAV_ICON_POSITION);
+            if (v != null && v.getLayoutParams() instanceof Toolbar.LayoutParams && v instanceof AppCompatImageButton) {
+                Toolbar.LayoutParams lp = (Toolbar.LayoutParams) v.getLayoutParams();
+                lp.width = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_48);
+                v.setLayoutParams(lp);
+                v.invalidate();
+                v.requestLayout();
+            }
+        });
     }
 
     private void initDrawableResources() {

@@ -40,6 +40,9 @@
 
     <dimen name="tp_home_top_bg_height">200dp</dimen>
     <dimen name="tp_toolbar_icon_wh">38dp</dimen>
+    <dimen name="tp_toolbar_icon_top_padding">5dp</dimen>
+    <dimen name="tp_toolbar_icon_side_padding">5dp</dimen>
+    <dimen name="tp_top_margin_big_image">85dp</dimen>
 
     <dimen name="tp_coupon_card_xxlarge">280dp</dimen>
     <dimen name="tp_coupon_card_xlarge">260dp</dimen>
