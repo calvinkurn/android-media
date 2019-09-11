@@ -147,11 +147,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private lateinit var feedModuleRouter: FeedModuleRouter
     private lateinit var newFeedReceiver: BroadcastReceiver
 
-    private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
     private lateinit var createPostBottomSheet: CloseableBottomSheetDialog
+
+    private var layoutManager: LinearLayoutManager? = null
     private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
@@ -219,9 +220,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
                 presenter.fetchNextPage()
         }
-        layoutManager = NpaLinearLayoutManager(activity,
-                LinearLayoutManager.VERTICAL,
-                false)
 
         if (activity!!.application is FeedModuleRouter) {
             feedModuleRouter = activity!!.application as FeedModuleRouter
@@ -279,6 +277,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun prepareView() {
         adapter.itemTreshold = 2
+        layoutManager = NpaLinearLayoutManager(activity,
+                LinearLayoutManager.VERTICAL,
+                false)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         swipeToRefresh.setOnRefreshListener(this)
@@ -338,8 +339,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         super.onDestroyView()
         presenter.detachView()
 
-//        if (layoutManager != null)
-//            layoutManager = null
+        if (layoutManager != null) {
+            layoutManager = null
+        }
     }
 
     override fun setLastCursorOnFirstPage(lastCursor: String) {
