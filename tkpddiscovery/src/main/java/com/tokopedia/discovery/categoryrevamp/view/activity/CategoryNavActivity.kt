@@ -184,7 +184,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         initSwitchButton()
         initBottomSheetListener()
 
-        bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE)
+        bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE)
 
     }
 
