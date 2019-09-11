@@ -1,15 +1,16 @@
-package com.tokopedia.power_merchant.subscribe.domain.interactor
+package com.tokopedia.gm.common.domain.interactor
 
 import com.google.gson.JsonObject
+import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.power_merchant.subscribe.data.model.GoldCancellationsQuestionaire
 import com.tokopedia.usecase.RequestParams
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -19,7 +20,7 @@ import java.io.File
 import java.lang.reflect.Type
 import kotlin.collections.HashMap
 
-class GetGoldCancellationsQuestionaireUseCaseTest {
+class GetShopStatusUseCaseTest {
 
     @RelaxedMockK
     lateinit var graphqlUseCase: GraphqlUseCase
@@ -28,14 +29,14 @@ class GetGoldCancellationsQuestionaireUseCaseTest {
     lateinit var requestParams: RequestParams
 
     private val getGoldCancellationsQuestionaireUseCase by lazy {
-        GetGoldCancellationsQuestionaireUseCase(
+        GetShopStatusUseCase(
                 graphqlUseCase,
                 anyString()
         )
     }
 
     companion object {
-        const val GOLD_CANCELLATION_QUESTIONNAIRE_JSON_FILE_PATH = "json/gql_gold_cancellation_questionnaire_response.json"
+        const val GOLD_GET_PM_OS_STATUS_JSON_FILE_PATH = "json/gql_gold_get_pm_os_status.json"
     }
 
     @Before
@@ -57,18 +58,18 @@ class GetGoldCancellationsQuestionaireUseCaseTest {
         testSubscriber.assertCompleted()
         testSubscriber.assertNoErrors()
         assertTrue(testSubscriber.onNextEvents.size != 0)
-        assertTrue(testSubscriber.onNextEvents[0].result.data.questionList.size == 3)
+        assertEquals(480969, testSubscriber.onNextEvents[0].result.data.shopId)
     }
 
     private fun createMockGraphqlSuccessResponse(): GraphqlResponse {
         val result = HashMap<Type, Any>()
         val errors = HashMap<Type, List<GraphqlError>>()
         val jsonObject: JsonObject = CommonUtils.fromJson(
-                getJsonFromFile(GOLD_CANCELLATION_QUESTIONNAIRE_JSON_FILE_PATH),
+                getJsonFromFile(GOLD_GET_PM_OS_STATUS_JSON_FILE_PATH),
                 JsonObject::class.java
         )
         val data = jsonObject.get(GraphqlConstant.GqlApiKeys.DATA)
-        val objectType = GoldCancellationsQuestionaire::class.java
+        val objectType = GoldGetPmOsStatus::class.java
         val obj: Any = CommonUtils.fromJson(data, objectType)
         result[objectType] = obj
         return GraphqlResponse(result, errors, false)

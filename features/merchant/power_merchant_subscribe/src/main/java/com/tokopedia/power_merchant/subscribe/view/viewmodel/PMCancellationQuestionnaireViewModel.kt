@@ -24,7 +24,7 @@ import javax.inject.Named
 
 class PMCancellationQuestionnaireViewModel @Inject constructor(
         private val getPMCancellationQuestionnaireDataUseCase: GetPMCancellationQuestionnaireDataUseCase,
-        private val deactivationPowerMerchant: DeactivatePowerMerchantUseCase,
+        private val deactivatePowerMerchantUseCase: DeactivatePowerMerchantUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -104,7 +104,7 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
     fun sendQuestionAnswerDataAndTurnOffAutoExtend(
             questionData: MutableList<PMCancellationQuestionnaireAnswerModel>
     ) {
-        deactivationPowerMerchant.execute(
+        deactivatePowerMerchantUseCase.execute(
                 DeactivatePowerMerchantUseCase.createRequestParam(questionData),
                 object : Subscriber<Boolean>() {
                     override fun onNext(successUnsubscribe: Boolean) {

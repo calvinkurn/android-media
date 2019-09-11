@@ -1,0 +1,28 @@
+{
+  "data": {
+    "goldGetPMOSStatus": {
+      "header": {
+        "process_time": 0.46589605,
+        "messages": [],
+        "reason": "",
+        "error_code": ""
+      },
+      "data": {
+        "shopID": 480969,
+        "power_merchant": {
+          "status": "active",
+          "auto_extend": {
+            "status": "on",
+            "tkpd_product_id": 114
+          },
+          "expired_time": "2019-09-19 17:42:07",
+          "shop_popup": false
+        },
+        "official_store": {
+          "status": "inactive",
+          "error": ""
+        }
+      }
+    }
+  }
+}

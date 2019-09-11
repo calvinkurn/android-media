@@ -41,6 +41,8 @@ dependencies {
     implementation project(rootProject.ext.features.goldMerchantCommon)
 
     testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
