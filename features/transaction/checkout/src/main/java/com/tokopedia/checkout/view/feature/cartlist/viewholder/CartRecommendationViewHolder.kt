@@ -34,9 +34,9 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
             setButtonWishlistVisible(true)
             setButtonWishlistOnClickListener {
                 if (element.recommendationItem.isWishlist) {
-                    actionListener.onRemoveFromWishlist(element.recommendationItem.productId.toString())
+                    actionListener.onRemoveRecommendationFromWishlist(element.recommendationItem.productId.toString())
                 } else {
-                    actionListener.onAddToWishlist(element.recommendationItem.productId.toString())
+                    actionListener.onAddRecommendationToWishlist(element.recommendationItem.productId.toString())
                 }
             }
             setRating(element.recommendationItem.rating)

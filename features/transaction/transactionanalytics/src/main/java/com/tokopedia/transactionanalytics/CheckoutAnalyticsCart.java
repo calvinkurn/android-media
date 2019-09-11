@@ -801,4 +801,13 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 EventLabel.SOURCE + "cart"
         );
     }
+
+    public void eventClickRemoveWishlistOnPrimaryProduct() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_RECOMMENDATION,
+                EventCategory.RECOMMENDATION_PAGE,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT,
+                EventLabel.SOURCE + "cart"
+        );
+    }
 }

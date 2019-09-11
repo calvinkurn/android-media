@@ -703,6 +703,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     @Override
     public void onRemoveRecommendationFromWishlist(@NotNull String productId) {
+        cartPageAnalytics.eventClickRemoveWishlistOnPrimaryProduct();
         dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), this);
     }
 
@@ -2339,7 +2340,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             } else if (!TextUtils.isEmpty(recommendationSectionTitle)) {
                 cartSectionHeaderHolderData.setTitle(recommendationSectionTitle);
             } else {
-                cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
+                recommendationSectionTitle = getString(R.string.checkout_module_title_recommendation);
+                cartSectionHeaderHolderData.setTitle(recommendationSectionTitle);
             }
         }
 
