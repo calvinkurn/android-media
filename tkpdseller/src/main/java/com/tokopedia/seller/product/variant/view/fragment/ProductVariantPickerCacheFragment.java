@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.tokopedia.base.list.seller.view.adapter.BaseListAdapter;
+import com.tokopedia.base.list.seller.view.old.NoResultDataBinder;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.base.view.fragment.BaseCacheListFragment;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantPickerCacheListNewAdapter;
+import com.tokopedia.seller.product.variant.view.adapter.viewholder.ProductVariantPickerEmptyDataBinder;
 import com.tokopedia.seller.product.variant.view.listener.ProductVariantPickerItemCacheList;
 
 import java.util.ArrayList;
@@ -76,5 +78,10 @@ public class ProductVariantPickerCacheFragment extends BaseCacheListFragment<Pro
     protected void onAttachActivity(Context context) {
         super.onAttachActivity(context);
         onProductVariantPickerCacheNewFragmentListener = (OnProductVariantPickerCacheNewFragmentListener) context;
+    }
+
+    @Override
+    protected NoResultDataBinder getEmptyViewDefaultBinder() {
+        return new ProductVariantPickerEmptyDataBinder(adapter);
     }
 }
