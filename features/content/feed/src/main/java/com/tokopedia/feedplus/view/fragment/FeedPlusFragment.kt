@@ -323,7 +323,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun itemIsFullScreen(): Boolean {
-        return layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() == 0
+        return layoutManager?.findLastVisibleItemPosition()  == layoutManager?.findFirstVisibleItemPosition()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
