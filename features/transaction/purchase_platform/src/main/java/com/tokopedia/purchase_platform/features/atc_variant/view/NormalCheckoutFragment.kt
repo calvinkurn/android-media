@@ -46,6 +46,9 @@ import com.tokopedia.product.detail.common.data.model.variant.Child
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
 import com.tokopedia.purchase_platform.features.atc_variant.di.DaggerNormalCheckoutComponent
 import com.tokopedia.purchase_platform.features.atc_variant.model.ProductInfoAndVariant
 import com.tokopedia.purchase_platform.features.atc_variant.view.adapter.NormalCheckoutAdapterTypeFactory
@@ -113,10 +116,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     companion object {
         const val EXTRA_IS_LEASING = "is_leasing"
         const val EXTRA_CART_ID = "cart_id"
-
-        const val RESULT_PRODUCT_DATA_CACHE_ID = "product_data_cache"
-        const val RESULT_SELECTED_WAREHOUSE = "selected_warehouse"
-        const val RESULT_PRODUCT_DATA = "product_data"
 
         const val REQUEST_CODE_LOGIN = 561
         const val REQUEST_CODE_LOGIN_THEN_ATC = 562

@@ -354,6 +354,7 @@ public interface ApplinkConst {
         String TRACKER_ATTRIBUTION = "tracker_attribution";
         String TRACKER_LIST_NAME = "tracker_list_name";
         String EXTRA_REFERENCE = "reference";
+        String EXTRA_IS_LEASING = "is_leasing";
 
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
     }

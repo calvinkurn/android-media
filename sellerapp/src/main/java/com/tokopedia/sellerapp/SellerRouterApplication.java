@@ -1127,11 +1127,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public int getCartCount(Context context) {
-        return 0;
-    }
-
-    @Override
     public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
 
     }

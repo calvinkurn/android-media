@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import static com.tokopedia.purchase_platform.features.checkout.view.CartConstant.SCREEN_NAME_CART_NEW_USER;
+import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**

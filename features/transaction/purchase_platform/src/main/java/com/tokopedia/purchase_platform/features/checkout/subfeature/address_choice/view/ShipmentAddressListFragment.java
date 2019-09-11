@@ -36,7 +36,6 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
-import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.di.AddressChoiceComponent;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.di.DaggerAddressChoiceComponent;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -50,7 +49,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
-import static com.tokopedia.purchase_platform.features.checkout.view.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
+import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**

@@ -18,7 +18,6 @@ import com.tokopedia.tradein.model.TradeInParams
 
 open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener {
     companion object {
-        const val EXTRA_IS_LEASING = "is_leasing"
         private var tradeInParams: TradeInParams? = null
         private var normalCheckoutFragment: NormalCheckoutFragment? = null
 
@@ -52,7 +51,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                 putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopType)
                 putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
                 putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOneClickShipment)
-                putExtra(EXTRA_IS_LEASING, isLeasing)
+                putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, isLeasing)
             }
         }
     }
@@ -81,7 +80,7 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                     getString(ApplinkConst.Transaction.EXTRA_SHOP_NAME),
                     getBoolean(ApplinkConst.Transaction.EXTRA_OCS),
                     getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH),
-                    getBoolean(EXTRA_IS_LEASING),
+                    getBoolean(ApplinkConst.Transaction.EXTRA_IS_LEASING),
                     getString(ApplinkConst.Transaction.EXTRA_REFERENCE),
                     tradeInParams
             )

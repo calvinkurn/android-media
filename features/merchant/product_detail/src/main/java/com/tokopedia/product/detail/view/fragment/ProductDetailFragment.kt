@@ -67,7 +67,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_LEASING
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -106,21 +105,19 @@ import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
 import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.constant.Constant.*
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_PRODUCT_DATA_CACHE_ID
+import com.tokopedia.purchase_platform.common.constant.NormalCheckoutConstant.Companion.RESULT_SELECTED_WAREHOUSE
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
-import com.tokopedia.purchase_platform.features.atc_variant.view.NormalCheckoutActivity
-import com.tokopedia.purchase_platform.features.atc_variant.view.NormalCheckoutFragment
-import com.tokopedia.purchase_platform.features.checkout.view.CartConstant
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.referral.Constants.Action.Companion.ACTION_GET_REFERRAL_CODE
 import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -661,20 +658,20 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             productInfo?.run {
                 val isOcsCheckoutType = (productInfoViewModel.p2Login.value)?.isOcsCheckoutType
                         ?: false
-                val intent = NormalCheckoutActivity.getIntent(it,
-                        basic.shopID.toString(),
-                        parentProductId,
-                        userInputNotes,
-                        userInputQuantity,
-                        userInputVariant,
-                        action,
-                        null,
-                        trackerAttribution,
-                        trackerListName,
-                        shopInfo?.goldOS?.shopTypeString,
-                        shopInfo?.shopCore?.name,
-                        isOcsCheckoutType,
-                        isLeasing)
+                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
+                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, basic.shopID.toString())
+                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, parentProductId)
+                    putExtra(ApplinkConst.Transaction.EXTRA_NOTES, userInputNotes)
+                    putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, userInputQuantity)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, userInputVariant)
+                    putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
+                    putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution)
+                    putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopInfo?.goldOS?.shopTypeString)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopInfo?.shopCore?.name)
+                    putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
+                    putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, isLeasing)
+                }
                 if(::tradeInParams.isInitialized) {
                     intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
@@ -1117,12 +1114,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         productDetailTracking.eventViewHelpPopUpWhenAtc()
                     }
                 } else if (resultCode == Activity.RESULT_OK && data != null) {
-                    if (data.hasExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)) {
+                    if (data.hasExtra(RESULT_PRODUCT_DATA_CACHE_ID)) {
                         //refresh product by selected variant/product
-                        val objectId: String = data.getStringExtra(NormalCheckoutFragment.RESULT_PRODUCT_DATA_CACHE_ID)
+                        val objectId: String = data.getStringExtra(RESULT_PRODUCT_DATA_CACHE_ID)
                         val cacheManager = SaveInstanceCacheManager(this@ProductDetailFragment.context!!, objectId)
-                        val selectedProductInfo: ProductInfo? = cacheManager.get(NormalCheckoutFragment.RESULT_PRODUCT_DATA, ProductInfo::class.java)
-                        val selectedWarehouse: MultiOriginWarehouse? = cacheManager.get(NormalCheckoutFragment.RESULT_SELECTED_WAREHOUSE,
+                        val selectedProductInfo: ProductInfo? = cacheManager.get(RESULT_PRODUCT_DATA, ProductInfo::class.java)
+                        val selectedWarehouse: MultiOriginWarehouse? = cacheManager.get(RESULT_SELECTED_WAREHOUSE,
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
                             userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
@@ -1991,7 +1988,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     private fun showBadgeMenuCart(cartImageView: ImageView, lottieCartView: LottieAnimationView, animate: Boolean) {
         activity?.run {
-            val cartCount = (application as ProductDetailRouter).getCartCount(this)
+            val localCacheHandler = LocalCacheHandler(context, CartConstant.CART)
+            val cartCount = localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0)
+
             val icon = ContextCompat.getDrawable(this, cartImageView.tag as Int)
             if (icon is LayerDrawable) {
                 val badge = CountDrawable(this)

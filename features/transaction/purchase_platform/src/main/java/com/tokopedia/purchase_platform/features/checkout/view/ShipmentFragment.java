@@ -34,7 +34,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
-import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -105,6 +104,7 @@ import com.tokopedia.purchase_platform.features.checkout.subfeature.cod_bottomsh
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.view.MultipleAddressFormActivity;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.promo_benefit.TotalBenefitBottomSheetFragment;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.webview.CheckoutWebViewActivity;
+import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;

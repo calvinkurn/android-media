@@ -30,8 +30,6 @@ public interface PdpRouter {
 
     void goToCreateTopadsPromo(Context context, String productId, String shopId, String sourceCreateTopadsManageProduct);
 
-    int getCartCount(Context context);
-
     Intent getProductTalk(Context context, String productId);
 
     void eventClickFilterReview(Context context,

@@ -11,6 +11,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutActivity;
 import com.tokopedia.purchase_platform.common.feature.promo_suggestion.CartPromoSuggestionHolderData;
+import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest;
 
 /**

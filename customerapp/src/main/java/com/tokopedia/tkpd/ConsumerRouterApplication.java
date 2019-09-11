@@ -58,7 +58,6 @@ import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
@@ -82,7 +81,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -118,7 +116,6 @@ import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.util.ShareSocmedHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
-import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
@@ -199,7 +196,6 @@ import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitial
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
-import com.tokopedia.logisticcart.cod.view.CodActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
@@ -232,7 +228,6 @@ import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.notifications.CMPushNotificationManager;
 import com.tokopedia.notifications.CMRouter;
-import com.tokopedia.nps.presentation.view.dialog.AppFeedbackRatingBottomSheet;
 import com.tokopedia.nps.presentation.view.dialog.SimpleAppRatingDialog;
 import com.tokopedia.officialstore.fragment.ReactNativeOfficialStoreFragment;
 import com.tokopedia.oms.OmsModuleRouter;
@@ -259,13 +254,9 @@ import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
-import com.tokopedia.promocheckout.common.data.entity.request.Promo;
-import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity;
-import com.tokopedia.promocheckout.list.view.activity.PromoCheckoutListMarketplaceActivity;
-import com.tokopedia.recentview.RecentViewInternalRouter;
 import com.tokopedia.purchase_platform.features.cart.view.CartActivity;
 import com.tokopedia.purchase_platform.features.cart.view.CartFragment;
-import com.tokopedia.purchase_platform.features.checkout.view.CartConstant;
+import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.recentview.RecentViewRouter;
 import com.tokopedia.referral.ReferralAction;
 import com.tokopedia.referral.ReferralRouter;
@@ -366,7 +357,6 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.others.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -1993,12 +1983,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void sendAnalyticsFirstTime() {
         TrackingUtils.activityBasedAFEvent(this, HomeRouter.IDENTIFIER_HOME_ACTIVITY);
-    }
-
-    @Override
-    public int getCartCount(Context context) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
-        return localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0);
     }
 
     @Override

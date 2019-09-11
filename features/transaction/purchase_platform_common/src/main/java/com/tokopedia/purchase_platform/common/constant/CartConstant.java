@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.checkout.view;
+package com.tokopedia.purchase_platform.common.constant;
 
 /**
  * @author okasurya on 8/10/18.
