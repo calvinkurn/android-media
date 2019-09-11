@@ -44,10 +44,9 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
     }
 
     private fun assignClickListenerAtc(product: ProductData) {
-        val intent = getProductAtcIntent(product)
         btnCart.setOnClickListener {
             listener.getAnalytic().trackAtcOnClick(product)
-            itemView.context.startActivity(intent)
+            listener.addProductToCart(product)
         }
     }
 
@@ -68,23 +67,6 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     product.productId
             )
-        }
-    }
-
-
-    private fun getProductAtcIntent(product: ProductData): Intent {
-        val atcAndBuyAction = "1"
-        val quantity = 1
-        val needRefresh = true
-        return RouteManager.getIntent(itemView.context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shop.id)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId)
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
-            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, product.productId)
-            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, product.shop.name)
-            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
         }
     }
 
