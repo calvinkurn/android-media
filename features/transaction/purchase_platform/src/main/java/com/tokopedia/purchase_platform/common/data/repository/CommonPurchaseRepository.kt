@@ -14,7 +14,7 @@ class CommonPurchaseRepository @Inject constructor(val commonPurchaseApi: Common
 
     override fun checkout(param: Map<String, String>): Observable<CheckoutResponse> {
         return commonPurchaseApi.checkout(param).map { cartResponseResponse ->
-            cartResponseResponse.body()?.convertDataObj(CheckoutResponse::class.java)
+            cartResponseResponse.body()?.convertResponseObj(CheckoutResponse::class.java)
         }
     }
 
