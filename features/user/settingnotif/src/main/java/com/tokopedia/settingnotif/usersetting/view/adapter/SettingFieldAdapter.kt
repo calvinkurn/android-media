@@ -25,7 +25,6 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
     }
 
     override fun goToPushNotificationChecker() {
-        Log.d("Test 1: ", "Test  ")
         settingFieldAdapterListener.goToPushNotificationCheckerPage()
     }
 

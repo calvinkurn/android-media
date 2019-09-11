@@ -99,7 +99,6 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun goToPushNotificationCheckerPage() {
-        Log.d("Test 2: ", "Test move page ")
         val intent = Intent(context, PushNotificationCheckerActivity::class.java)
         startActivity(intent)
     }
