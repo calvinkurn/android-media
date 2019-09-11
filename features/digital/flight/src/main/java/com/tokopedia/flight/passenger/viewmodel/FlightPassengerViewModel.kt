@@ -27,20 +27,25 @@ class FlightPassengerViewModel @Inject constructor(private val getContactListUse
 
     fun getContactList(query: String, filterType: String = "") {
         launch {
-            contactListResult.value = getContactListUseCase.execute(query = query,
+            var contacts = getContactListUseCase.execute(query = query,
                     filterType = filterType,
                     product = GetContactListUseCase.PARAM_PRODUCT_FLIGHT)
+
+            contactListResult.value = contacts.map {
+                if (it.fullName.isBlank()) {
+                    it.fullName = "${it.firstName} ${it.lastName}"
+                }
+                return@map it
+            }.toMutableList()
         }
     }
 
-    fun updateContactList(query: String, contact: TravelContactListModel.Contact,
+    fun updateContactList(query: String,
                           updatedContact: TravelUpsertContactModel.Contact) {
         launch {
-            if (!updatedContact.equals(contact)) {
                 upsertContactListUseCase.execute(query,
                         TravelUpsertContactModel(updateLastUsedProduct = UpsertContactListUseCase.PARAM_TRAVEL_FLIGHT,
                                 contacts = listOf(updatedContact)))
-            }
         }
     }
 

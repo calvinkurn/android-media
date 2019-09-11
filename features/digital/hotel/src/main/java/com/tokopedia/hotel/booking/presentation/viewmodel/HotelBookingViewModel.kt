@@ -40,19 +40,23 @@ class HotelBookingViewModel @Inject constructor(private val graphqlRepository: G
 
     fun getContactList(query: String) {
         launch {
-            contactListResult.value = getContactListUseCase.execute(query = query,
+            var contacts = getContactListUseCase.execute(query = query,
                     product = GetContactListUseCase.PARAM_PRODUCT_HOTEL)
+            contactListResult.value = contacts.map {
+                if (it.fullName.isBlank()) {
+                    it.fullName = "${it.firstName} ${it.lastName}"
+                }
+                return@map it
+            }.toMutableList()
         }
     }
 
-    fun updateContactList(query: String, contact: TravelContactListModel.Contact,
+    fun updateContactList(query: String,
                           updatedContact: TravelUpsertContactModel.Contact) {
         launch {
-            if (!updatedContact.equals(contact)) {
                 upsertContactListUseCase.execute(query,
                         TravelUpsertContactModel(updateLastUsedProduct = UpsertContactListUseCase.PARAM_TRAVEL_HOTEL,
                                 contacts = listOf(updatedContact)))
-            }
         }
     }
 

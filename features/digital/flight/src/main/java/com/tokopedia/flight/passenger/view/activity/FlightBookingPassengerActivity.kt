@@ -18,13 +18,10 @@ import java.util.ArrayList
  * @author by jessica on 2019-09-04
  */
 
-class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightPassengerComponent>,
-        FlightBookingPassengerFragment.OnFragmentInteractionListener {
+class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightPassengerComponent> {
 
     var passengerModel: FlightBookingPassengerViewModel? = null
     var selectedPassengerId: String? = null
-
-//    @Inject lateinit var flightPassengerUpdateSelectedUseCase: FlightPassengerUpdateSelectedUseCase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val extras = savedInstanceState ?: intent.extras
@@ -32,7 +29,6 @@ class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightP
         selectedPassengerId = extras.getString(EXTRA_SELECTED_PASSENGER_ID)
 
         super.onCreate(savedInstanceState)
-//        component.inject(this)
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -59,48 +55,6 @@ class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightP
                 .flightComponent(flightComponent)
                 .build()
     }
-
-    override fun actionSuccessUpdatePassengerData(flightBookingPassengerViewModel: FlightBookingPassengerViewModel) {
-        val intent = intent
-        intent.putExtra(EXTRA_PASSENGER, flightBookingPassengerViewModel)
-        setResult(Activity.RESULT_OK, intent)
-        finish()
-    }
-
-//    override fun onBackPressed() {
-//        if (selectedPassengerId == null && passengerModel?.passengerId != null) {
-//            unselectPassenger()
-//        } else if (passengerModel?.passengerId != null && selectedPassengerId != null &&
-//                !passengerModel?.getPassengerId().equals(selectedPassengerId)) {
-//            unselectPassenger()
-//        } else super.onBackPressed()
-//    }
-
-    override fun updatePassengerViewModel(flightBookingPassengerViewModel: FlightBookingPassengerViewModel) {
-        passengerModel = flightBookingPassengerViewModel
-    }
-
-//    private fun unselectPassenger() {
-//        flightPassengerUpdateSelectedUseCase.execute(
-//                flightPassengerUpdateSelectedUseCase.createRequestParams(
-//                        passengerModel?.getPassengerId(),
-//                        FlightPassengerListFragment.IS_NOT_SELECTING
-//                ),
-//                object : Subscriber<Boolean>() {
-//                    override fun onCompleted() {
-//
-//                    }
-//
-//                    override fun onError(throwable: Throwable) {
-//                        throwable.printStackTrace()
-//                    }
-//
-//                    override fun onNext(aBoolean: Boolean?) {
-//                        super@FlightBookingPassengerActivity.onBackPressed()
-//                    }
-//                }
-//        )
-//    }
 
     companion object {
         const val EXTRA_PASSENGER = "EXTRA_PASSENGER"

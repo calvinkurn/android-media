@@ -19,57 +19,44 @@ class TravelUpsertContactModel(
     data class Contact(
             @SerializedName("title")
             @Expose
-            val title: String = "",
+            var title: String = "",
 
             @SerializedName("fullName")
             @Expose
-            val fullName: String = "",
+            var fullName: String = "",
 
             @SerializedName("firstName")
             @Expose
-            val firstName: String = "",
+            var firstName: String = "",
 
             @SerializedName("lastName")
             @Expose
-            val lastName: String = "",
+            var lastName: String = "",
 
             @SerializedName("birthDate")
             @Expose
-            val birthDate: String = "",
+            var birthDate: String = "",
 
             @SerializedName("nationality")
             @Expose
-            val nationality: String = "",
+            var nationality: String = "",
 
             @SerializedName("phoneCountryCode")
             @Expose
-            val phoneCountryCode: Int = 0,
+            var phoneCountryCode: Int = 0,
 
             @SerializedName("phoneNumber")
             @Expose
-            val phoneNumber: String = "",
+            var phoneNumber: String = "",
 
             @SerializedName("email")
             @Expose
-            val email: String = "",
+            var email: String = "",
 
             @SerializedName("idList")
             @Expose
-            val idList: List<TravelContactIdCard> = listOf()
-    ) {
-
-        override fun equals(other: Any?): Boolean {
-            return if (other is Contact) {
-                title.equals(other.title) && fullName.equals(other.fullName) && firstName.equals(other.firstName) &&
-                        lastName.equals(other.lastName) && birthDate.equals(other.birthDate) && nationality.equals(other.nationality) &&
-                        phoneNumber.equals(other.phoneNumber) && email.equals(other.email) && idList.equals(other.idList)
-            } else if (other is TravelContactListModel.Contact) {
-                title.equals(other.title) && fullName.equals(other.fullName) && firstName.equals(other.firstName) &&
-                        lastName.equals(other.lastName) && birthDate.equals(other.birthDate) && nationality.equals(other.nationality) &&
-                        phoneNumber.equals(other.phoneNumber) && email.equals(other.email) && idList.equals(other.idList)
-            } else false
-        }
-    }
+            var idList: List<TravelContactIdCard> = listOf()
+    )
 
     data class Response(
             @SerializedName("travelUpsertContact")

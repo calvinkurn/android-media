@@ -71,14 +71,7 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
         super.onActivityCreated(savedInstanceState)
 
         bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
-            contactList?.let{ contacts ->
-                travelContactArrayAdapter.updateItem(contacts.map {
-                    if (it.fullName.isBlank()) {
-                        it.fullName = "${it.firstName} ${it.lastName}"
-                    }
-                    return@map it
-                }.toMutableList())
-            }
+            contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
     }
@@ -161,7 +154,7 @@ class HotelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter.
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
             bookingViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_upsert_travel_contact_list),
-                    selectedContact, TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
+                    TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
                     phoneCountryCode = contactData.phoneCode))
 
             activity?.run {
