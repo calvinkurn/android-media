@@ -585,4 +585,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
                 && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
+
+    public boolean isValidUrl(String invoiceUrl) {
+        Pattern pattern = Pattern.compile("^(https|HTTPS):\\/\\/");
+        Matcher matcher = pattern.matcher(invoiceUrl);
+        return matcher.find();
+    }
+
 }

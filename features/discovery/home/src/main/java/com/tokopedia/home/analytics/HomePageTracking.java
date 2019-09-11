@@ -683,26 +683,26 @@ public class HomePageTracking {
         }
     }
 
-    public static void eventClickTickerHomePage(Context context, String tickerTitle) {
+    public static void eventClickTickerHomePage(Context context, String tickerId) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(
                     EVENT_CLICK_TICKER,
                     EVENT_CATEGORY_TICKER_HOMEPAGE,
                     EVENT_ACTION_CLICK_TICKER,
-                    tickerTitle
+                    tickerId
             );
         }
     }
 
-    public static void eventClickOnCloseTickerHomePage(Context context, String tickerTitle) {
+    public static void eventClickOnCloseTickerHomePage(Context context, String tickerId) {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendGeneralEvent(
                     EVENT_CLICK_TICKER,
                     EVENT_CATEGORY_TICKER_HOMEPAGE,
                     EVENT_ACTION_CLICK_ON_CLOSE_TICKER,
-                    tickerTitle
+                    tickerId
             );
         }
     }
