@@ -298,11 +298,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         var position = 0
                         val item: Visitable<*>
                         if (itemIsFullScreen()) {
-                            position = layoutManager.findLastVisibleItemPosition()
-                        } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager.findFirstCompletelyVisibleItemPosition()
-                        } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager.findLastCompletelyVisibleItemPosition()
+                            position = layoutManager?.findLastVisibleItemPosition() ?: 0
+                        } else if (layoutManager?.findFirstCompletelyVisibleItemPosition() != -1) {
+                            position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
+                        } else if (layoutManager?.findLastCompletelyVisibleItemPosition() != -1) {
+                            position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
                         }
 
                         item = adapter.getlist()[position]
