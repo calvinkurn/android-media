@@ -1,7 +1,7 @@
 package com.tokopedia.core.manage.people.address.interactor;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.manage.people.address.model.FormAddressDomainModel;

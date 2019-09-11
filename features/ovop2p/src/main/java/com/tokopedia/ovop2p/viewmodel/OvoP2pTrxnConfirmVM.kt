@@ -1,8 +1,8 @@
 package com.tokopedia.ovop2p.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.graphql.data.model.GraphqlResponse

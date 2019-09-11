@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.view.viewholder;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;

@@ -1,9 +1,9 @@
 package com.tokopedia.core.util.toolargetool;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * {@link android.support.v4.app.FragmentManager.FragmentLifecycleCallbacks} implementation that
+ * {@link androidx.fragment.app.FragmentManager.FragmentLifecycleCallbacks} implementation that
  * logs information about the saved state of Fragments.
  */
 public class FragmentSavedStateLogger extends FragmentManager.FragmentLifecycleCallbacks {

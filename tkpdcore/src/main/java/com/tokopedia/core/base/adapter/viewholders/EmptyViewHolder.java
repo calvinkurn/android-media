@@ -1,6 +1,6 @@
 package com.tokopedia.core.base.adapter.viewholders;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 
 import com.tokopedia.core2.R;

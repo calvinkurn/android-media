@@ -19,11 +19,11 @@ package com.tkpd.library.ui.floatbutton;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorCompat;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -49,7 +49,7 @@ import java.util.List;
  * <p>
  * <p>
  * A slightly modified version of the original
- * {@link android.support.design.widget.FloatingActionButton.Behavior}.
+ * {@link com.google.android.material.floatingactionbutton.FloatingActionButton.Behavior}.
  * <p>
  * Created by yavorivanov on 03/01/2016.
  */

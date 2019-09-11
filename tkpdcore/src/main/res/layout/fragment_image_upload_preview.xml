@@ -31,7 +31,7 @@
 
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/image_upload_list"
         android:layout_width="match_parent"
         android:layout_height="@dimen/img_thumb_holder"

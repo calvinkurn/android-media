@@ -2,7 +2,7 @@ package com.tokopedia.checkout.view.common.viewholder;
 
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.View;

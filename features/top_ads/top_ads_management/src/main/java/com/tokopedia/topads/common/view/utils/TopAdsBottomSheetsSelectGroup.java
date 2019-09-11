@@ -2,7 +2,7 @@ package com.tokopedia.topads.common.view.utils;
 
 import android.app.Dialog;
 import android.os.Build;
-import android.support.design.widget.TextInputLayout;
+import com.google.android.material.textfield.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;

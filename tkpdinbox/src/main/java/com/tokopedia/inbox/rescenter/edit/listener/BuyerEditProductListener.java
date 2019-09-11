@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.edit.listener;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.inbox.rescenter.edit.model.responsedata.ActionParameterPassData;
 

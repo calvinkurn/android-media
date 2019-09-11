@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdynamicfilter.helper;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.tokopedia.discovery.common.data.Filter;

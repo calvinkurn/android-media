@@ -22,8 +22,8 @@ package com.tokopedia.coachmark
 import android.content.Context
 import android.graphics.*
 import android.os.Build
-import android.support.annotation.RequiresApi
-import android.support.v4.content.ContextCompat
+import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import android.text.Html
 import android.text.Spanned
 import android.text.TextUtils

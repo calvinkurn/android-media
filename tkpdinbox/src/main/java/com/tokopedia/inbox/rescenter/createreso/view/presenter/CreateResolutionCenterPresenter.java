@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.TaskStackBuilder;
+import androidx.core.app.TaskStackBuilder;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.router.TkpdInboxRouter;

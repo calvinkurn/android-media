@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.view.presenter;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.auto.data.AutoAdsUseCase;

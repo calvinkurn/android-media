@@ -1,6 +1,6 @@
 package com.tokopedia.events.view.utils;
 
-import android.support.v7.widget.CardView;
+import androidx.cardview.widget.CardView;
 
 /**
  * Created by pranaymohapatra on 02/04/18.

@@ -3,7 +3,7 @@ package com.tokopedia.topads.dashboard.view.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.base.list.seller.view.old.RetryDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;

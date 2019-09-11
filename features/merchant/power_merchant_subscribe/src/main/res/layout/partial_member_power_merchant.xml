@@ -49,7 +49,7 @@
                 android:layout_height="1dp"
                 android:background="@color/pm_line_color" />
 
-            <android.support.v7.widget.AppCompatTextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txt_cancel_member"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

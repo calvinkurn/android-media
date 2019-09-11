@@ -14,7 +14,7 @@
         app:layout_scrollFlags="scroll|snap|enterAlways"
         app:siv_search_hint="Ketik Kota atau Stasiun" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

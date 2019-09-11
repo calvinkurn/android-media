@@ -43,7 +43,7 @@
             app:helper="@string/shop_open_label_slogan_info"
             app:helperEnabled="true">
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/shop_slogan_input_text"
                 style="@style/EditText.ShopSetting"
                 android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             app:helper="@string/shop_open_label_description_info"
             app:helperEnabled="true">
 
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/shop_desc_input_text"
                 style="@style/EditText.ShopSetting"
                 android:layout_width="match_parent"

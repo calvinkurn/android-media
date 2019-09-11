@@ -1,6 +1,6 @@
 package com.tokopedia.train.search.data.typedef;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef.DEPARTURE_SCHEDULE;
 import static com.tokopedia.train.search.data.typedef.TrainScheduleTypeDef.RETURN_SCHEDULE;

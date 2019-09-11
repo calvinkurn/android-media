@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.home.presenter;
 
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * Created by m.normansyah on 01/12/2015.

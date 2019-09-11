@@ -1,6 +1,6 @@
 package com.tokopedia.home.beranda.presentation.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;

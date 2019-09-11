@@ -1,8 +1,8 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder
 
 import android.graphics.drawable.GradientDrawable
-import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintLayout
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView

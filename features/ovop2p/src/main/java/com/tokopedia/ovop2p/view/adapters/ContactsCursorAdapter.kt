@@ -3,7 +3,7 @@ package com.tokopedia.ovop2p.view.adapters
 import android.content.Context
 import android.database.Cursor
 import android.provider.ContactsContract
-import android.support.v4.widget.CursorAdapter
+import androidx.cursoradapter.widget.CursorAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

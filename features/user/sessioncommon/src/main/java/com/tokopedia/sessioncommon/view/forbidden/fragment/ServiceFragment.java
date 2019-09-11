@@ -1,7 +1,7 @@
 package com.tokopedia.sessioncommon.view.forbidden.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment;
 

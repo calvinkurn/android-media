@@ -1,6 +1,6 @@
 package com.tokopedia.datepicker.range.data.source.cache;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.datepicker.range.data.source.cache.model.DatePickerCacheModel;

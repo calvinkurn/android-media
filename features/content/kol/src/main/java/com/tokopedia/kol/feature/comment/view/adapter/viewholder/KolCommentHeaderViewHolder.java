@@ -1,7 +1,7 @@
 package com.tokopedia.kol.feature.comment.view.adapter.viewholder;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;

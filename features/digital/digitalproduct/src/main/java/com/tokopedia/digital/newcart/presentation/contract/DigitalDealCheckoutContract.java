@@ -1,7 +1,7 @@
 package com.tokopedia.digital.newcart.presentation.contract;
 
-import android.support.annotation.DimenRes;
-import android.support.annotation.StringRes;
+import androidx.annotation.DimenRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter;
 import com.tokopedia.digital.newcart.domain.model.DealProductViewModel;

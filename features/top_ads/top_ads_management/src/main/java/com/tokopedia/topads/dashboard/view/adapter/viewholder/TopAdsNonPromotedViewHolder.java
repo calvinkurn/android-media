@@ -1,7 +1,7 @@
 package com.tokopedia.topads.dashboard.view.adapter.viewholder;
 
 import android.content.res.Resources;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;

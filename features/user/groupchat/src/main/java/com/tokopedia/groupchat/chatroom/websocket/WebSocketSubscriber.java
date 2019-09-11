@@ -1,6 +1,6 @@
 package com.tokopedia.groupchat.chatroom.websocket;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.WebSocketResponse;

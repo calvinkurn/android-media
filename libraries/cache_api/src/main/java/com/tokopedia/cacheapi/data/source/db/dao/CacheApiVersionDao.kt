@@ -1,6 +1,6 @@
 package com.tokopedia.cacheapi.data.source.db.dao
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import com.tokopedia.cacheapi.data.source.db.model.CacheApiVersion
 
 @Dao

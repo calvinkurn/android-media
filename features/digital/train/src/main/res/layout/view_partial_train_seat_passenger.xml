@@ -5,7 +5,7 @@
               android:layout_height="wrap_content"
               android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_passenger_number"
         style="@style/TextView.Micro.Bold"
         android:layout_width="@dimen/dp_40"
@@ -19,14 +19,14 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_name"
             style="@style/TextView.Micro.Bold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Tn. Karaeng Adjie"/>
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_seat"
             style="@style/TextView.Micro"
             android:layout_width="match_parent"

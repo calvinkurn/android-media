@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/domain_input_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -71,12 +71,12 @@
                         android:textSize="13sp"
                         android:singleLine="true"/>
                     ​
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
 ​
             <!-- Nama Toko Layout -->
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/name_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,10 +92,10 @@
                     android:textSize="13sp"
                     android:singleLine="true"/>
                 ​
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
             ​
             <!-- Tagline Toko Layout -->
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tag_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,10 +111,10 @@
                     android:textSize="13sp"
                     android:singleLine="true"/>
                 ​
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
             ​
             <!-- Deskripsi Toko Layout -->
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/desc_input_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
                     android:textSize="13sp"
                     android:inputType="textMultiLine"/>
                 ​
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
             ​
         </LinearLayout>
         ​

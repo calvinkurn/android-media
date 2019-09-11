@@ -1,7 +1,7 @@
 package com.tokopedia.home.beranda.listener;
 
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by errysuprayogi on 12/4/17.

@@ -3,7 +3,7 @@ package com.tokopedia.affiliate.feature.createpost.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.affiliate.feature.createpost.view.fragment.MediaPreviewFragment
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel

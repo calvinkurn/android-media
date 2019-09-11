@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.view.View
 import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse

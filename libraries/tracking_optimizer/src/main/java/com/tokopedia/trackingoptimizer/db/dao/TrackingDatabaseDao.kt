@@ -1,8 +1,8 @@
 package com.tokopedia.trackingoptimizer.db.dao
 
-import android.arch.persistence.room.Insert
-import android.arch.persistence.room.OnConflictStrategy
-import android.arch.persistence.room.Update
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Update
 import com.tokopedia.trackingoptimizer.db.model.TrackingDbModel
 
 interface TrackingDatabaseDao<T : TrackingDbModel> {

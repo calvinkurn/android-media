@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.inbox.facade;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.inbox.rescenter.inbox.model.ResCenterInboxDataPass;
 

@@ -3,7 +3,7 @@ package com.tokopedia.withdraw.view.bottomsheet;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.withdraw.R;

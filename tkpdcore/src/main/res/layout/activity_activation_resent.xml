@@ -25,7 +25,7 @@
         android:layout_marginBottom="@dimen/margin_vs"
         android:textSize="@dimen/text_size_medium" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/wrapper"
         android:layout_below="@id/body"
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
             android:imeOptions="actionUnspecified"
             android:singleLine="true"
             />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:layout_below="@id/wrapper"

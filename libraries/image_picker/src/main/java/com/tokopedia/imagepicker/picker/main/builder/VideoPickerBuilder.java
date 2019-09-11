@@ -1,6 +1,6 @@
 package com.tokopedia.imagepicker.picker.main.builder;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 

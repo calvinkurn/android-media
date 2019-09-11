@@ -1,13 +1,14 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll
 
 import android.graphics.Bitmap
-import android.support.v7.widget.RecyclerView
+import android.graphics.drawable.Drawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
@@ -72,26 +73,31 @@ class PollAdapter(private val contentPosition: Int,
 
             itemView.option.text = element.option
             itemView.percent.text = element.percentage.toString()
+            val target = object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {
+
+                }
+
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    itemView.imageView.setImageBitmap(resource)
+                    itemView.imageView.post {
+                        itemView.shadowLayer.layoutParams = RelativeLayout.LayoutParams(
+                                itemView.imageView.height,
+                                itemView.imageView.width)
+
+                        if (element.selected == PollContentOptionViewModel.DEFAULT) {
+                            itemView.shadowLayer.visibility = View.GONE
+                        } else {
+                            itemView.shadowLayer.visibility = View.VISIBLE
+                        }
+                    }
+                }
+
+            }
             ImageHandler.loadImageWithTarget(
                     itemView.imageView.context,
                     element.imageUrl,
-                    object : SimpleTarget<Bitmap>() {
-                        override fun onResourceReady(arg0: Bitmap, arg1: GlideAnimation<in Bitmap>) {
-                            itemView.imageView.setImageBitmap(arg0)
-                            itemView.imageView.post {
-                                itemView.shadowLayer.layoutParams = RelativeLayout.LayoutParams(
-                                        itemView.imageView.height,
-                                        itemView.imageView.width)
-
-                                if (element.selected == PollContentOptionViewModel.DEFAULT) {
-                                    itemView.shadowLayer.visibility = View.GONE
-                                } else {
-                                    itemView.shadowLayer.visibility = View.VISIBLE
-                                }
-                            }
-
-                        }
-                    }
+                    target
             )
 
             itemView.setOnClickListener {

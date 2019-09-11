@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.StringRes;
+import androidx.annotation.StringRes;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;

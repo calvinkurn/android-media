@@ -1,6 +1,6 @@
 package com.tokopedia.train.search.data;
 
-import android.arch.persistence.db.SimpleSQLiteQuery;
+import androidx.sqlite.db.SimpleSQLiteQuery;
 
 import com.tokopedia.train.common.specification.AndRoomSpecification;
 import com.tokopedia.train.common.specification.RoomSpecification;

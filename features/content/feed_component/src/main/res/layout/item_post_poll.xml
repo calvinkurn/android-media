@@ -20,7 +20,7 @@
         android:textStyle="bold"
         tools:text="139.021 telah memilih" />
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/optionRv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,7 +31,7 @@
         android:orientation="vertical"
         android:overScrollMode="never"
         android:scrollbars="none"
-        app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
         app:spanCount="2"
         tools:itemCount="2"
         tools:listitem="@layout/item_poll_option" />

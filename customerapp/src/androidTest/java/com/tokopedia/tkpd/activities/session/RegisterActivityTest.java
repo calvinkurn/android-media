@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.activities.session;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.google.android.libraries.cloudtesting.screenshots.ScreenShotter;
 import com.tokopedia.tkpd.rule.GuessTokopediaTestRule;

@@ -2,7 +2,7 @@ package com.tokopedia.seller.selling.presenter;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.v7.view.ActionMode;
+import androidx.appcompat.view.ActionMode;
 import android.widget.EditText;
 
 import com.tokopedia.core.session.baseFragment.BaseImpl;

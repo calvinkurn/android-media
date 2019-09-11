@@ -1,7 +1,7 @@
 package com.tokopedia.logisticaddaddress.data;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.logisticdata.data.entity.address.FormAddressDomainModel;
 import com.tokopedia.logisticdata.data.entity.address.db.Province;

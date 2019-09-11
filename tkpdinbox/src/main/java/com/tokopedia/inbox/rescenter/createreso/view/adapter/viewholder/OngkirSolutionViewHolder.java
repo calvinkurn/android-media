@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.createreso.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;

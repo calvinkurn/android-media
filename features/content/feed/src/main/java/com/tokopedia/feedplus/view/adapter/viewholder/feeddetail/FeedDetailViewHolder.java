@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.feeddetail;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;

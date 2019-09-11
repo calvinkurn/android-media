@@ -1,6 +1,6 @@
 package com.tokopedia.transaction.common.data.order;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import static com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef.ACCEPT_FULL;
 import static com.tokopedia.transaction.common.data.order.OrderShipmentTypeDef.ACCEPT_PARTIAL;

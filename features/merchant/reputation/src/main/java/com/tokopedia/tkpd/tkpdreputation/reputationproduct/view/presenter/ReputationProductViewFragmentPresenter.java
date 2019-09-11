@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.tkpd.tkpdreputation.reputationproduct.data.product_review.ReviewProductModel;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 
 /**
