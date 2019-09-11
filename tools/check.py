@@ -8,10 +8,10 @@ def main(argv):
     gradle = "./gradlew" 
     adb = "adb"
     deviceId = "galaxy.tkpd:7545"
-    path = "."
+    path_noop = "."
 
     try:
-        opts, args = getopt.getopt(argv,"h",["token=","config=", "head=", "user=", "gradle=", "adb=", "deviceId=", "path="])
+        opts, args = getopt.getopt(argv,"h",["token=","config=", "head=", "user=", "gradle=", "adb=", "deviceId=", "path_noop="])
     except getopt.GetoptError:
         print("System Error")
         sys.exit(2)
@@ -33,8 +33,8 @@ def main(argv):
             adb = arg
         elif opt in ("--deviceId"):
             deviceId = arg
-        elif opt in ("--path"):
-            path = arg
+        elif opt in ("--path_noop"):
+            path_noop = arg
 
     if token is None or config is None or head is None :
         print 'Input value has been detected as null'
@@ -43,7 +43,7 @@ def main(argv):
     else:
         detectAffectedModule(token, config, head, user, gradle, adb, deviceId, path)
 
-def detectAffectedModule(token, config, head, user, gradle, adb, deviceId, path):
+def detectAffectedModule(token, config, head, user, gradle, adb, deviceId, path_noop):
     configuration = getConfig(config)
     if configuration is None :
         exit(1)
@@ -60,7 +60,7 @@ def detectAffectedModule(token, config, head, user, gradle, adb, deviceId, path)
     pathAffected = []
     doCommand("rm -rf coverageResults")
     doCommand("mkdir coverageResults")
-    doCommand("python label_remover.py "+ path+" "+path)
+    doCommand("python label_remover.py "+ path_noop+" "+path_noop)
     
     with open("./file_changes.log", "r") as f:
         for path in configuration["modules"]:
