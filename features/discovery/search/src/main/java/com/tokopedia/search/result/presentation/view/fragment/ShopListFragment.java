@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -69,7 +70,7 @@ public class ShopListFragment
     private EndlessRecyclerViewScrollListener gridLayoutLoadMoreTriggerListener;
     private PerformanceMonitoring performanceMonitoring;
 
-    public static ShopListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
+    public static ShopListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
 
@@ -114,7 +115,6 @@ public class ShopListFragment
 
     @Override
     public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         initListener();
         bindView(view);
         if (getUserVisibleHint()) {
@@ -168,6 +168,11 @@ public class ShopListFragment
                 && !isLoadingData
                 && !isRefreshing()
                 && isNextPageAvailable;
+    }
+
+    @Override
+    protected boolean isFirstActiveTab() {
+        return getActiveTab().equals(SearchConstant.ActiveTab.SHOP);
     }
 
     private void loadShopFirstTime() {
@@ -502,5 +507,10 @@ public class ShopListFragment
     @Override
     protected String getScreenName() {
         return getScreenNameId();
+    }
+
+    @Override
+    public void removeLoading() {
+        removeSearchPageLoading();
     }
 }

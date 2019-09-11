@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.DiscoveryRouter;
+import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
@@ -194,9 +195,13 @@ public class CatalogListFragment extends SearchSectionFragment implements
 
     @Override
     public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         initView(view);
         prepareView();
+    }
+
+    @Override
+    protected boolean isFirstActiveTab() {
+        return getActiveTab().equals(SearchConstant.ActiveTab.CATALOG);
     }
 
     @Override
@@ -580,5 +585,10 @@ public class CatalogListFragment extends SearchSectionFragment implements
     @Override
     public Map<String, Object> getSearchParameterMap() {
         return searchParameter.getSearchParameterMap();
+    }
+
+    @Override
+    public void removeLoading() {
+        removeSearchPageLoading();
     }
 }

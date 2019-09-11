@@ -87,7 +87,6 @@ public abstract class SearchSectionFragment
     private HashMap<String, String> selectedSort;
     protected boolean isUsingBottomSheetFilter;
     protected boolean isListEmpty = false;
-    private int fragmentPosition;
     private boolean hasLoadData;
 
     protected SearchParameter searchParameter;
@@ -122,12 +121,13 @@ public abstract class SearchSectionFragment
     }
 
     private void startToLoadDataForFirstActiveTab() {
-        //TODO:: Fix this
-        if (getActiveTab().equals(SearchConstant.ActiveTab.PRODUCT)) {
+        if (isFirstActiveTab()) {
             hasLoadData = true;
             onFirstTimeLaunch();
         }
     }
+
+    protected abstract boolean isFirstActiveTab();
 
     @Override
     public void showRefreshLayout() {
@@ -623,5 +623,11 @@ public abstract class SearchSectionFragment
 
     protected String getActiveTab() {
         return searchParameter.get(SearchApiConst.ACTIVE_TAB);
+    }
+
+    protected void removeSearchPageLoading() {
+        if (isFirstActiveTab() && searchNavigationListener != null) {
+            searchNavigationListener.onProductLoadingFinished();
+        }
     }
 }

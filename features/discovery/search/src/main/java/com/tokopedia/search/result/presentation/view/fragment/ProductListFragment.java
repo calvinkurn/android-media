@@ -136,7 +136,7 @@ public class ProductListFragment
 
     private FilterController quickFilterController = new FilterController();
 
-    public static ProductListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
+    public static ProductListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
 
@@ -192,7 +192,6 @@ public class ProductListFragment
 
     @Override
     public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         bindView(view);
         initTopAdsConfig();
         initTopAdsParams();
@@ -201,6 +200,11 @@ public class ProductListFragment
         if (getUserVisibleHint()) {
             setupSearchNavigation();
         }
+    }
+
+    @Override
+    protected boolean isFirstActiveTab() {
+        return getActiveTab().equals(SearchConstant.ActiveTab.PRODUCT);
     }
 
     @Override
@@ -835,7 +839,7 @@ public class ProductListFragment
 
     @Override
     public void removeLoading() {
-        redirectionListener.onProductLoadingFinished();
+        removeSearchPageLoading();
         adapter.removeLoading();
     }
 
