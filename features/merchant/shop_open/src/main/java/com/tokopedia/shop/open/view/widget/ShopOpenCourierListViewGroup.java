@@ -70,7 +70,7 @@ public class ShopOpenCourierListViewGroup extends LinearLayout implements ShopOp
         for (int i = 0, sizei = courierList.size(); i < sizei; i++) {
             Courier courier = courierList.get(i);
             ShopOpenCourierExpandableOption shopCourierExpandableOption =
-                    (ShopOpenCourierExpandableOption) LayoutInflater.from(getContext()).inflate(R.layout.item_shop_courier, this, false);
+                    (ShopOpenCourierExpandableOption) LayoutInflater.from(getContext()).inflate(com.tokopedia.seller.R.layout.item_shop_courier, this, false);
             shopCourierExpandableOption.setCourier(courier, hasPinPointLocation);
             shopCourierExpandableOption.setOnShopCourierExpandableOptionListener(this);
             if (selectedCourierServiceList != null && selectedCourierServiceList.contains(courier.getId())) {

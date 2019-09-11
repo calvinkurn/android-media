@@ -74,7 +74,7 @@ public interface TokoPointsHomeContract {
 
         void renderPurchaseBottomsheet(LobDetails data);
 
-        void renderExploreSectionTab(List<SectionContent> sections, SectionContent couponSection);
+        void renderExploreSectionTab(List<SectionContent> sections);
 
         void onSuccessResponse(TokoPointEntity data, List<SectionContent> sections);
     }

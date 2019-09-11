@@ -1,11 +1,9 @@
 package com.tokopedia.inbox.rescenter.inboxv2.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -15,18 +13,12 @@ import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.common.ResolutionRouter;
 import com.tokopedia.inbox.common.ResolutionUrl;
 import com.tokopedia.inbox.common.applink.ApplinkConstant;
-import com.tokopedia.inbox.rescenter.inboxv2.view.fragment.ResoInboxFragment;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
-
-import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_WEBVIEW_RESO_ENABLED_TOGGLE;
 
 /**
  * Created by yfsx on 24/01/18.
  */
 
 public class ResoInboxActivity extends BasePresenterActivity implements HasComponent {
-    public static final String TAG = ResoInboxFragment.class.getSimpleName();
     public static final String PARAM_IS_SELLER = "is_seller";
     public static final String PARAM_HEADER_TEXT = "header_text";
 
@@ -41,46 +33,17 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     }
 
     public static Intent newSellerInstance(Context context) {
-        Intent intent = null;
-        if (isToggleResoEnabled(context)) {
-            intent = getApplinkIntent(context, ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_INBOX_SELLER);
-        }
-
-        if (intent == null) {
-            intent = new Intent(context, ResoInboxActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(PARAM_IS_SELLER, true);
-            bundle.putString(PARAM_HEADER_TEXT, "Komplain Sebagai Penjual");
-            intent.putExtras(bundle);
-        }
-        return intent;
+        return getApplinkIntent(context, ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_INBOX_SELLER);
     }
 
     public static Intent newBuyerInstance(Context context) {
-        Intent intent = null;
-        if (isToggleResoEnabled(context)) {
-            intent = getApplinkIntent(context, ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_INBOX_BUYER);
-        }
-
-        if (intent == null) {
-            intent = new Intent(context, ResoInboxActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(PARAM_IS_SELLER, false);
-            bundle.putString(PARAM_HEADER_TEXT, "Komplain Sebagai Pembeli");
-            intent.putExtras(bundle);
-        }
-        return intent;
-    }
-
-    private static boolean isToggleResoEnabled(Context context) {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        return remoteConfig.getBoolean(APP_WEBVIEW_RESO_ENABLED_TOGGLE);
+        return getApplinkIntent(context, ResolutionUrl.HOSTNAME + ResolutionUrl.RESO_INBOX_BUYER);
     }
 
     private static Intent getApplinkIntent(Context context, String url) {
         if (context.getApplicationContext() instanceof ResolutionRouter) {
             if (GlobalConfig.isSellerApp()) {
-                return ((ResolutionRouter)context.getApplicationContext()).getSellerWebViewIntent(context,
+                return ((ResolutionRouter) context.getApplicationContext()).getSellerWebViewIntent(context,
                         url);
             } else {
                 return ((ResolutionRouter) context.getApplicationContext()).getApplinkIntent(context,
@@ -118,17 +81,6 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
 
     @Override
     protected void initView() {
-        Fragment fragment = ResoInboxFragment.getFragmentInstance(getIntent().getExtras());
-        if (getSupportFragmentManager().findFragmentByTag(TAG) != null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(com.tokopedia.core2.R.id.container,
-                            getSupportFragmentManager().findFragmentByTag(TAG))
-                    .commit();
-        } else {
-            getSupportFragmentManager().beginTransaction()
-                    .add(com.tokopedia.core2.R.id.container, fragment, TAG)
-                    .commit();
-        }
     }
 
     @Override
@@ -144,10 +96,6 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     @Override
     protected void setActionVar() {
 
-    }
-
-    protected Fragment getNewFragment() {
-        return ResoInboxFragment.getFragmentInstance(getIntent().getExtras());
     }
 
     @Override

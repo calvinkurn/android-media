@@ -99,22 +99,6 @@ public class InboxRouter {
         return intent;
     }
 
-    public static Intent getCreateResCenterActivityIntent(Context context, String orderID, int troubleID, int solutionID) {
-        Intent intent;
-        if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
-            intent = ((TkpdCoreRouter)MainApplication.getAppContext()).getCreateResCenterActivityIntent(context, orderID, troubleID, solutionID);
-        } else {
-            intent = RouterUtils.getActivityIntent(context, CREATE_RESCENTER_ACTIVITY);
-            Bundle bundle = new Bundle();
-            bundle.putString(InboxRouter.EXTRA_ORDER_ID, orderID);
-            bundle.putInt(InboxRouter.EXTRA_STATE_FLAG_RECEIVED, 0);
-            bundle.putInt(InboxRouter.EXTRA_TROUBLE_ID, troubleID);
-            bundle.putInt(InboxRouter.EXTRA_SOLUTION_ID, solutionID);
-            intent.putExtras(bundle);
-        }
-        return intent;
-    }
-
     public static Class<?> getInboxResCenterActivityClass() {
         Class<?> parentIndexHomeClass = null;
         try {

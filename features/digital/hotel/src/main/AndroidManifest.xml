@@ -41,7 +41,7 @@
 
         <activity
             android:name=".search.presentation.activity.HotelSearchFilterActivity"
-            android:label="@string/label_filter"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
