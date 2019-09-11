@@ -3,13 +3,10 @@ package com.tokopedia.productcard.v2
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.productcard.R
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.product_card_layout_v2_big_grid.view.*
 
 /**
  * ProductCardView with Small Grid layout.

@@ -2,9 +2,7 @@ package com.tokopedia.productcard.v2
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
 import com.tokopedia.productcard.R
-import com.tokopedia.unifyprinciples.Typography
 
 /**
  * ProductCardView with Big Grid layout.
