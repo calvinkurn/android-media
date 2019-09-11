@@ -191,8 +191,11 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
             passengerModel.passengerLastName = getLastName()
-            if (isMandatoryDoB()) passengerModel.passengerBirthdate =  FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
-            if (!isDomestic) passengerModel.passportNumber = getPassportNumber()
+            if (isMandatoryDoB() || !isDomestic) passengerModel.passengerBirthdate =  FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
+            if (!isDomestic) {
+                passengerModel.passportNumber = getPassportNumber()
+                passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassportExpiryDate())
+            }
 
             upsertContactList()
             finishActivityWithData()
@@ -203,11 +206,12 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         val contact = TravelUpsertContactModel.Contact()
         contact.firstName = getFirstName()
         contact.lastName = getLastName()
-        if (isMandatoryDoB()) contact.birthDate = getPassengerBirthDate()
+        if (isMandatoryDoB() || !isDomestic) contact.birthDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
         if (!isDomestic) {
             contact.nationality = passengerModel.passportNationality.countryId
             contact.idList = listOf(TravelContactIdCard(type = "passport", title = "Paspor",
-                    number = getPassportNumber(), country = passengerModel.passportIssuerCountry.countryId, expiry = getPassportExpiryDate()))
+                    number = getPassportNumber(), country = passengerModel.passportIssuerCountry.countryId,
+                    expiry = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassportExpiryDate())))
         }
 
         passengerViewModel.updateContactList(GraphqlHelper.loadRawString(resources,
