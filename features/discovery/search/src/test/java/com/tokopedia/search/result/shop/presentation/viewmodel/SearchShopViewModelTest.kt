@@ -3,9 +3,9 @@ package com.tokopedia.search.result.shop.presentation.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.data.DynamicFilterModel
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.InstantTaskExecutorRuleSpek
 import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.State
@@ -92,7 +92,7 @@ class SearchShopViewModelSpekMockkTest: Spek({
     }
 
     val localCacheHandler = mockk<LocalCacheHandler>().also {
-        every { it.getString(eq(SearchConstant.GCM_ID), "") }.returns("MOCK_GCM_ID")
+        every { it.getString(eq(SearchConstant.GCM.GCM_ID), "") }.returns("MOCK_GCM_ID")
     }
 
     fun FeatureBody.createTestInstance() {

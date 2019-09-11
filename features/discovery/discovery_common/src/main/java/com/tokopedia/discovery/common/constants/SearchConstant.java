@@ -14,9 +14,6 @@ public interface SearchConstant {
 
     String SEARCH_RESULT_TRACE = "search_result_trace";
 
-    String GCM_ID = "gcm_id";
-    String GCM_STORAGE = "GCM_STORAGE";
-
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
@@ -116,5 +113,12 @@ public interface SearchConstant {
     interface Cart {
         String CART_LOCAL_CACHE_NAME = "CART";
         String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
+        String CART_LOCAL_CACHE = "CART_LOCAL_CACHE";
+    }
+
+    interface GCM {
+        String GCM_ID = "gcm_id";
+        String GCM_STORAGE = "GCM_STORAGE";
+        String GCM_LOCAL_CACHE = "GCM_LOCAL_CACHE";
     }
 }
