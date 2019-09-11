@@ -504,4 +504,12 @@ abstract class ProductCardView: BaseCustomView {
             constraintSet.clear(layoutId, side)
         }
     }
+
+    open fun setProductModel(productModel: ProductModel) {
+
+    }
+
+    private fun renderData(productModel: ProductModel, blankSpaceConfig: BlankSpaceConfig) {
+
+    }
 }
