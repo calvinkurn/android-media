@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
@@ -126,7 +127,11 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     override fun onErrorGetDashboardItem(error: String) {
-
+        adapter.clearAllElements()
+        NetworkErrorHelper.showEmptyState(activity,
+                view,
+                error
+        ) { loadInitialData() }
     }
 
     override fun onSuccessLoadMoreDashboardItem(itemList: List<DashboardItemViewModel>, cursor: String) {
@@ -167,8 +172,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
             emptyStateView.visible()
             getRecyclerView(view).gone()
             emptyStateView.setPrimaryCTAClickListener {
-                emptyStateView.gone()
-                getRecyclerView(view).visible()
+                shouldShareProfile()
             }
         }
     }
@@ -217,5 +221,9 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     private fun resetState() {
         cursor = ""
         adapter.clearAllElements()
+    }
+
+    private fun shouldShareProfile() {
+
     }
 }

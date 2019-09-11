@@ -15,7 +15,7 @@ import javax.inject.Inject;
 /**
  * @author by yfsx on 19/09/18.
  */
-public class GetDashboardLoadMoreUseCase extends GraphqlUseCase {
+public class GetCuratedProductListUseCase extends GraphqlUseCase {
     private final Context context;
     private final static String PARAM_CURSOR = "cursor";
     /**
@@ -29,14 +29,14 @@ public class GetDashboardLoadMoreUseCase extends GraphqlUseCase {
     private final static String PARAM_SORT = "sort";
 
     @Inject
-    public GetDashboardLoadMoreUseCase(@ApplicationContext Context context) {
+    public GetCuratedProductListUseCase(@ApplicationContext Context context) {
         this.context = context;
     }
 
     public GraphqlRequest getRequest(Integer type, String cursor, int sort) {
         return new GraphqlRequest(GraphqlHelper.loadRawString(
                 context.getResources(),
-                R.raw.query_dashboard_loadmore),
+                R.raw.query_curated_product_list),
                 DashboardQuery.class, getParam(type, cursor, sort).getParameters(),
                 false);
     }

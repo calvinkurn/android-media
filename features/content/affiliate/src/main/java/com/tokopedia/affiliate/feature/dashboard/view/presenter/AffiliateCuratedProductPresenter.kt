@@ -3,9 +3,9 @@ package com.tokopedia.affiliate.feature.dashboard.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.AffiliateProductSortQuery
 import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetCuratedProductSortUseCase
-import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardLoadMoreUseCase
+import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetCuratedProductListUseCase
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateCuratedProductContract
-import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetDashboardLoadMoreSubscriber
+import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetCuratedProductListSubscriber
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CuratedProductSortViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
@@ -16,16 +16,16 @@ import javax.inject.Inject
  */
 class AffiliateCuratedProductPresenter
 @Inject constructor(
-        private val getDashboardLoadMoreUseCase: GetDashboardLoadMoreUseCase,
+        private val getCuratedProductListUseCase: GetCuratedProductListUseCase,
         private val getCuratedProductSortUseCase: GetCuratedProductSortUseCase
 ) : BaseDaggerPresenter<AffiliateCuratedProductContract.View>(), AffiliateCuratedProductContract.Presenter {
 
     override fun loadProductBoughtByType(type: Int?, cursor: String, sort: Int) {
         if (cursor.isEmpty()) view.showLoading()
-        getDashboardLoadMoreUseCase.run {
+        getCuratedProductListUseCase.run {
             clearRequest()
             addRequest(getRequest(type, cursor, sort))
-            execute(GetDashboardLoadMoreSubscriber(type, view))
+            execute(GetCuratedProductListSubscriber(type, view))
         }
     }
 
@@ -56,7 +56,8 @@ class AffiliateCuratedProductPresenter
 
     override fun detachView() {
         super.detachView()
-        getDashboardLoadMoreUseCase.unsubscribe()
+        getCuratedProductListUseCase.unsubscribe()
+        getCuratedProductSortUseCase.unsubscribe()
     }
 
     private fun getSortList(query: AffiliateProductSortQuery): List<CuratedProductSortViewModel> {

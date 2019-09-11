@@ -1,4 +1,4 @@
-query GetDashboardLoadMore($type: Int, $cursor: String, $sort: Int) {
+query GetCuratedProductList($type: Int, $cursor: String, $sort: Int) {
   affiliatedProduct(type: $type, cursor:$cursor, sortBy: $sort) {
     products {
       id
@@ -11,6 +11,7 @@ query GetDashboardLoadMore($type: Int, $cursor: String, $sort: Int) {
       productCommission
       createPostAppLink
       productRating
+      reviewCount
     }
     pagination {
       nextCursor

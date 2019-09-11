@@ -19,13 +19,13 @@ import javax.inject.Inject;
 /**
  * @author by yfsx on 19/09/18.
  */
-public class GetDashboardUseCase extends GraphqlUseCase {
+public class GetAffiliateDashboardUseCase extends GraphqlUseCase {
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     private final Context context;
 
     @Inject
-    public GetDashboardUseCase(@ApplicationContext Context context) {
+    public GetAffiliateDashboardUseCase(@ApplicationContext Context context) {
         this.context = context;
     }
 
@@ -35,7 +35,7 @@ public class GetDashboardUseCase extends GraphqlUseCase {
 
     public GraphqlRequest getRequest(Date startDate, Date endDate) {
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.query_dashboard), DashboardQuery.class, false);
+                R.raw.query_affiliate_dashboard), DashboardQuery.class, false);
         request.setVariables(getRequestParams(startDate, endDate).getParameters());
         return request;
     }

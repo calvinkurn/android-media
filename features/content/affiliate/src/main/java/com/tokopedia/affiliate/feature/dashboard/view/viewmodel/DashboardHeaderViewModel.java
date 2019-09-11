@@ -9,7 +9,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardI
 /**
  * @author by yfsx on 19/09/18.
  */
-public class DashboardHeaderViewModel implements Visitable<DashboardItemTypeFactory>,Parcelable {
+public class DashboardHeaderViewModel implements Parcelable {
 
     private String totalSaldoAktif;
     private String saldoString;
@@ -73,11 +73,6 @@ public class DashboardHeaderViewModel implements Visitable<DashboardItemTypeFact
 
     public void setProductCount(String productCount) {
         this.productCount = productCount;
-    }
-
-    @Override
-    public int type(DashboardItemTypeFactory typeFactory) {
-        return typeFactory.type(this);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.SwipeRefreshLayout
@@ -10,10 +11,7 @@ import android.support.v7.widget.AppCompatImageView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -36,6 +34,8 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.EmptyState
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.videorecorder.utils.showToast
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -93,6 +93,9 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private var endDate by Delegates.observable<Date?>(null) { _, _, newValue ->
         if (::tvEndDate.isInitialized) tvEndDate.text = newValue?.let(dateFormatter::format).orEmpty()
     }
+
+    private var tempStartDate = startDate
+    private var tempEndDate = endDate
 
     override val ctx: Context?
         get() = context
@@ -161,7 +164,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
                     indirectFragmentCurated
             ))
         }
-        vpCuratedProduct.layoutParams.height = (getScreenHeight()*0.75).toInt()
+        vpCuratedProduct.layoutParams.height = (getScreenHeight() * 0.75).toInt()
         tlCuratedProducts.setupWithViewPager(vpCuratedProduct)
         llStartDate.setOnClickListener { openCalendarPicker() }
         llEndDate.setOnClickListener { openCalendarPicker() }
@@ -171,6 +174,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
         srlRefresh.setOnRefreshListener { onRefresh() }
         ivAfIncomeInfo.setOnClickListener { showTooltip() }
+
+        esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
     }
 
     override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel) {
@@ -182,6 +187,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
         if (header.productCount.toIntOrZero() <= 0) showEmptyState()
         else showNonEmptyState()
+
+        if (startDate != null && endDate != null) showChangesAppliedToaster()
 
         srlRefresh.isRefreshing = false
     }
@@ -203,7 +210,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     private fun onCheckBalanceClicked() {
-        if(RouteManager.isSupportApplink(context, ApplinkConst.DEPOSIT)) {
+        if (RouteManager.isSupportApplink(context, ApplinkConst.DEPOSIT)) {
             RouteManager.route(context, ApplinkConst.DEPOSIT)
         }
     }
@@ -220,9 +227,11 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private fun openCalendarPicker() {
         if (!::holidayList.isInitialized) presenter.loadHolidayList()
         else {
-            if (!::calendarView.isInitialized) calendarView = initCalendarView()
-            if (!::calendarBottomSheet.isInitialized) calendarBottomSheet = initCalendarBottomSheet()
+            calendarView = initCalendarView()
+            calendarBottomSheet = initCalendarBottomSheet()
             unifyCalendar.calendarPickerView.scrollToDate(startDate ?: getCurrentDate())
+            tempStartDate = null
+            tempEndDate = null
             calendarBottomSheet.show()
         }
     }
@@ -245,11 +254,14 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
                     getString(R.string.filter_date),
                     false
             )
-            unifyCalendar.layoutParams.height = getScreenHeight()/2
+            unifyCalendar.layoutParams.height = getScreenHeight() / 2
             setCancelable(false)
             setOnDismissListener {
-                if (startDate != null && endDate == null) startDate = null
-                onDateChanged()
+                if (tempStartDate != null && tempEndDate != null) {
+                    startDate = tempStartDate
+                    endDate = tempEndDate
+                    onDateChanged()
+                }
             }
         }
         return bottomSheet
@@ -294,14 +306,13 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private fun getOnSelectedDateListener(): CalendarPickerView.OnDateSelectedListener {
         return object : CalendarPickerView.OnDateSelectedListener {
             override fun onDateSelected(date: Date) {
-                if ((startDate != null && endDate != null) ||
-                        (startDate == null && endDate == null) ||
-                        (endDate == null && date.before(startDate))) {
-                            startDate = date
-                            endDate = null
-                        }
-                else if (startDate != null && endDate == null && date.after(startDate)) {
-                    endDate = date
+                if ((tempStartDate != null && tempEndDate != null) ||
+                        (tempStartDate == null && tempEndDate == null) ||
+                        (tempEndDate == null && date.before(tempStartDate))) {
+                    tempStartDate = date
+                    tempEndDate = null
+                } else if (tempStartDate != null && tempEndDate == null && date.after(tempStartDate)) {
+                    tempEndDate = date
                     calendarBottomSheet.dismiss()
                 }
             }
@@ -332,7 +343,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         NetworkErrorHelper.showEmptyState(activity,
                 llDashboard,
                 error
-        ) { presenter.loadDashboardDetail() }
+        ) { presenter.loadDashboardDetail(startDate, endDate) }
     }
 
     private fun closePage() = activity?.finish()
@@ -371,5 +382,15 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             allowPreviousButton(false)
         }.build()
         coachMark.show(activity, "AffiliateIncome", arrayListOf(coachMarkItem))
+    }
+
+    private fun showChangesAppliedToaster() {
+        view?.let {
+            Toaster.showNormalWithAction(it, getString(R.string.af_success_get_dashboard_info), 2000, getString(R.string.af_ok), View.OnClickListener { })
+        }
+    }
+
+    private fun shouldShareProfile() {
+
     }
 }

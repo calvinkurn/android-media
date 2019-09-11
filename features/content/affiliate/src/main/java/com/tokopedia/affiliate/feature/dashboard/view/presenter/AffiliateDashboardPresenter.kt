@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.affiliate.common.domain.usecase.CheckAffiliateUseCase
-import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardUseCase
+import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetAffiliateDashboardUseCase
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.CheckAffiliateSubscriber
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetAffiliateDashboardSubscriber
@@ -22,7 +22,7 @@ import kotlin.coroutines.CoroutineContext
  */
 class AffiliateDashboardPresenter
 @Inject constructor(
-        private val getDashboardUseCase: GetDashboardUseCase,
+        private val getAffiliateDashboardUseCase: GetAffiliateDashboardUseCase,
         private val checkAffiliateUseCase: CheckAffiliateUseCase,
         private val travelCalendarHolidayUseCase: TravelCalendarHolidayUseCase
 ) : BaseDaggerPresenter<AffiliateDashboardContract.View>(), AffiliateDashboardContract.Presenter, CoroutineScope {
@@ -37,7 +37,7 @@ class AffiliateDashboardPresenter
     }
 
     override fun loadDashboardDetail(startDate: Date?, endDate: Date?) {
-        getDashboardUseCase.run {
+        getAffiliateDashboardUseCase.run {
             clearRequest()
             addRequest(getRequest(startDate, endDate))
             execute(GetAffiliateDashboardSubscriber(view))
@@ -60,7 +60,7 @@ class AffiliateDashboardPresenter
 
     override fun detachView() {
         super.detachView()
-        getDashboardUseCase.unsubscribe()
+        getAffiliateDashboardUseCase.unsubscribe()
         checkAffiliateUseCase.unsubscribe()
         job.cancel()
     }

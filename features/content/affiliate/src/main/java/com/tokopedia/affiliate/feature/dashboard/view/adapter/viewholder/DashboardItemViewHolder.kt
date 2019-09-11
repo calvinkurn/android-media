@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder
 import android.support.annotation.LayoutRes
 import android.support.v7.widget.CardView
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -12,7 +11,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
-import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
 import com.tokopedia.feedcomponent.view.widget.RatingBarReview
 import com.tokopedia.kotlin.extensions.view.gone

@@ -4,16 +4,11 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardHeaderPojo;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardItemPojo;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuery;
-import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuotaStatus;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardSubtitlePojo;
-import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
-import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardFloatingButtonViewModel;
-import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel;
+import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateCuratedProductContract;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel;
-import com.tokopedia.calendar.SubTitle;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
 import java.util.ArrayList;
@@ -24,12 +19,12 @@ import rx.Subscriber;
 /**
  * @author by yfsx on 19/09/18.
  */
-public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
+public class GetCuratedProductListSubscriber extends Subscriber<GraphqlResponse> {
 
-    private DashboardContract.View mainView;
+    private AffiliateCuratedProductContract.View mainView;
     private Integer type;
 
-    public GetDashboardSubscriber(Integer type, DashboardContract.View mainView) {
+    public GetCuratedProductListSubscriber(Integer type, AffiliateCuratedProductContract.View mainView) {
         this.mainView = mainView;
         this.type = type;
     }
@@ -42,32 +37,22 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
     @Override
     public void onError(Throwable e) {
         mainView.hideLoading();
-        mainView.onErrorGetDashboardItem(ErrorHandler.getErrorMessage(mainView.getContext(), e));
+        mainView.onErrorGetDashboardItem(ErrorHandler.getErrorMessage(mainView.getCtx(), e));
     }
 
     @Override
     public void onNext(GraphqlResponse response) {
         mainView.hideLoading();
         DashboardQuery query = response.getData(DashboardQuery.class);
-        mainView.onSuccessGetDashboardItem(
-                mappingHeader(query.getAffiliateStats()),
-                query.getProduct().getAffiliatedProducts() != null ? mappingListItem(mainView.getContext(), type, query.getProduct().getAffiliatedProducts(), query.getProduct().getSubtitles()) : new ArrayList<>(),
-                query.getProduct().getPagination().getNextCursor(),
-                mappingFloatingItem(query.getPostQuota())
-        );
+        Context context = mainView.getCtx();
+        mainView.onSuccessLoadMoreDashboardItem(
+                query.getProduct().getAffiliatedProducts() != null && context != null ?
+                        mappingListItem(context, type, query.getProduct().getAffiliatedProducts(), query.getProduct().getSubtitles())
+                        : new ArrayList<>(),
+                query.getProduct().getPagination().getNextCursor());
     }
 
-    private DashboardHeaderViewModel mappingHeader(DashboardHeaderPojo pojo) {
-        return new DashboardHeaderViewModel(
-                "",
-                pojo.getTotalCommission(),
-                pojo.getProfileView(),
-                pojo.getProductClick(),
-                pojo.getProductSold(),
-                pojo.getProductCount());
-    }
-
-    public static List<DashboardItemViewModel> mappingListItem(Context context, Integer type, List<DashboardItemPojo> pojoList, List<DashboardSubtitlePojo> subtitleList) {
+    private List<DashboardItemViewModel> mappingListItem(Context context, Integer type, List<DashboardItemPojo> pojoList, List<DashboardSubtitlePojo> subtitleList) {
         String activeSection = context.getString(R.string.affiliate_product_berlangsung);
         String inactiveSection = context.getString(R.string.affiliate_product_berakhir);
 
@@ -97,9 +82,5 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
             itemList.add(item);
         }
         return itemList;
-    }
-
-    public static DashboardFloatingButtonViewModel mappingFloatingItem(DashboardQuotaStatus pojo) {
-        return new DashboardFloatingButtonViewModel(pojo.getFormatted(), pojo.getNumber());
     }
 }
