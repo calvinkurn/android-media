@@ -24,6 +24,8 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BannerOrganicDecoration
+import com.tokopedia.productcard.v2.BlankSpaceConfig
+import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -201,29 +203,24 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
             val productCardView = viewholder.productCard
             productCardView.setLinesProductTitle(2)
             val gridItem = grids[position]
-            productCardView.run {
-                removeAllShopBadges()
-                setProductNameVisible(true)
-                setPriceVisible(true)
-                setImageProductVisible(true)
-                setButtonWishlistVisible(true)
-                setSlashedPriceVisible(gridItem.slashedPrice != "")
-                setLabelDiscountVisible(gridItem.discount != "")
-                setImageRatingVisible(false)
-                setReviewCountVisible(false)
-                setButtonWishlistVisible(false)
-                setProductNameText(gridItem.name)
-                setPriceText(gridItem.price)
-                setImageProductUrl(gridItem.imageUrl)
-                setSlashedPriceText(gridItem.slashedPrice)
-                setLabelDiscountText(gridItem.discount)
-                realignLayout()
-
-                setOnClickListener {
-                    HomePageTracking.eventClickProductChannelMix(context, channel, position)
-
-                    homeCategoryListener.onSectionItemClicked(gridItem.applink)
-                }
+            productCardView.setProductModel(
+                    ProductCardModel(
+                            productImageUrl = gridItem.imageUrl,
+                            isWishlistVisible = false,
+                            productName = gridItem.name,
+                            slashedPrice = gridItem.slashedPrice,
+                            discountPercentage = gridItem.discount,
+                            formattedPrice = gridItem.price
+                    ),
+                    BlankSpaceConfig(
+                            price = true,
+                            productName = true,
+                            discountPercentage = true
+                    )
+            )
+            productCardView.setOnClickListener {
+                HomePageTracking.eventClickProductChannelMix(productCardView.context, channel, position)
+                homeCategoryListener.onSectionItemClicked(gridItem.applink)
             }
         }
     }
