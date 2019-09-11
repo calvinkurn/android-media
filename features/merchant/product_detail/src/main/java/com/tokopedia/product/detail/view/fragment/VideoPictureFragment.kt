@@ -263,7 +263,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
                 video_player_pdp.rotation = VIDEO_ROTATION_90
             }
 
-            video_player_pdp.controllerShowTimeoutMs = 0
+            video_player_pdp.controllerShowTimeoutMs = 1000
             if (isMute) {
                 mExoPlayer?.volume = 0f
             }
