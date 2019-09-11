@@ -9,12 +9,22 @@ public class TradeInGTMConstants {
     public static final String CEK_FISIK_RESULT_TRADE_IN = "cek fisik result trade in";
 
     public static final String ACTION_VIEW_TRADEIN = "viewTradeIn";
+    public static final String ACTION_VIEW_MONEYIN = "viewMoneyIn";
     public static final String ACTION_CLICK_TRADEIN = "clickTradeIn";
+    public static final String ACTION_CLICK_MONEYIN = "clickMoneyIn";
+
+
     public static final String ACTION_LAKU6_GTM = "laku6-gtm";
     public static final String ACTION_KEMBALI_KE_DETAIL_PRODUK = "click kembali ke detail produk";
     public static final String ACTION_CLICK_MULAI_FUNGSI = "click mulai cek fungsi";
     public static final String ACTION_VIEW_HARGA_FINAL = "view harga final";
+    public static final String ACTION_CLICK_BATAL_BUTTON = "click batal button";
+    public static final String ACTION_CLICK_SETUJU_BUTTON = "click setuju button";
+    public static final String ACTION_CLICK_ICON_TNC = "click icon syarat dan ketentuan";
 
+    public static final String VIEW_PRICE_RANGE_PAGE = "view price range page";
+
+    public static final String BERI_IZIN_PENG_HP = "beri izin pengecekan hp";
 
     public static final String ACTION = "action";
     public static final String PAGE = "page";
@@ -22,5 +32,7 @@ public class TradeInGTMConstants {
 
     public static final String CATEGORY_TRADEIN_START_PAGE = "trade in start page";
     public static final String CATEGORY_TRADEIN_HARGA_FINAL ="harga final trade in";
+
+    public static final String CATEGORY_MONEYIN_PRICERANGE_PAGE ="money in price range page";
 
 }

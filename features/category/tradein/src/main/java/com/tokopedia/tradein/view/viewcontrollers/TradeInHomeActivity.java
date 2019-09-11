@@ -53,6 +53,9 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private int closeButtonText;
     private int tncStringId;
     private boolean isShowingPermissionPopup;
+    private String clickEvent = TradeInGTMConstants.ACTION_CLICK_TRADEIN;
+    private String viewEvent = TradeInGTMConstants.ACTION_VIEW_TRADEIN;
+    private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -79,13 +82,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 if (TradeInGTMConstants.CEK_FISIK.equals(page)) {
                     if (TradeInGTMConstants.CLICK_SALIN.equals(action)
                             || TradeInGTMConstants.CLICK_SOCIAL_SHARE.equals(action))
-                        sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                        sendGeneralEvent(clickEvent,
                                 TradeInGTMConstants.CEK_FISIK_TRADE_IN, action, value);
                 } else if (TradeInGTMConstants.CEK_FUNGSI_TRADE_IN.equals(page)) {
-                    sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
+                    sendGeneralEvent(clickEvent,
                             TradeInGTMConstants.CEK_FUNGSI_TRADE_IN, action, value);
                 } else if (TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN.equals(page)) {
-                    sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
+                    sendGeneralEvent(viewEvent,
                             TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN, action, value);
                 }
             }
@@ -127,6 +130,9 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
             tncStringId = R.string.money_in_tnc;
+            clickEvent = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
+            viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
+            category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
         } else {
             closeButtonText = R.string.go_to_product_details;
             tncStringId = R.string.tradein_tnc;
@@ -157,6 +163,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvNotUpto.setVisibility(View.GONE);
                         mTvModelName.setText(homeResult.getDeviceDisplayName());
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
+                        viewMoneyInPriceGTM(homeResult.getDisplayMessage());
                         break;
                     case DIAGNOSED_VALID:
                         tvIndicateive.setVisibility(View.GONE);
@@ -171,16 +178,21 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                         mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
                         mTvGoToProductDetails.setOnClickListener(v -> {
                             laku6TradeIn.startGUITest();
-                            sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
-                                    TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE,
+                            sendGeneralEvent(clickEvent,
+                                    category,
                                     TradeInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
                                     "");
 
                         });
+                        viewMoneyInPriceGTM(homeResult.getDisplayMessage());
                         break;
                     case MONEYIN_ERROR:
                         showDialogFragment(0, getString(R.string.money_in), homeResult.getDisplayMessage(),
                                 getString(R.string.tradein_return), null);
+                        sendGeneralEvent(clickEvent,
+                                category,
+                                TradeInGTMConstants.ACTION_CLICK_BATAL_BUTTON,
+                                homeResult.getDisplayMessage());
                     default:
                         break;
                 }
@@ -190,10 +202,17 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     }
 
     private void sendGoToProductDetailGTM() {
-        sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_TRADEIN,
-                TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE,
+        sendGeneralEvent(clickEvent,
+                category,
                 TradeInGTMConstants.ACTION_KEMBALI_KE_DETAIL_PRODUK,
                 "");
+    }
+
+    private void viewMoneyInPriceGTM(String label) {
+        sendGeneralEvent(viewEvent,
+                category,
+                TradeInGTMConstants.VIEW_PRICE_RANGE_PAGE,
+                label);
     }
 
     private void goToHargaFinal() {
@@ -360,6 +379,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         if (isShowingPermissionPopup) {
             isShowingPermissionPopup = false;
             getPriceFromSDK(this);
+            sendGeneralEvent(clickEvent,
+                    category,
+                    TradeInGTMConstants.ACTION_CLICK_SETUJU_BUTTON,
+                    TradeInGTMConstants.BERI_IZIN_PENG_HP);
         } else {
             finish();
         }

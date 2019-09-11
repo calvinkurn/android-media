@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.tradein.viewmodel.TradeInVMFactory;
 import com.tokopedia.tradein_common.viewcontrollers.BaseViewModelActivity;
 
@@ -30,10 +31,18 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.item_show_tnc) {
-            sendGeneralEvent("clickTradeIn",
-                    "trade in start page",
-                    "click icon syarat dan ketentuan",
+
+            String event = TradeInGTMConstants.ACTION_CLICK_TRADEIN;
+            String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
+            if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
+                event = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
+                category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
+            }
+            sendGeneralEvent(event,
+                    category,
+                    TradeInGTMConstants.ACTION_CLICK_ICON_TNC,
                     "");
+
             showTnC(R.string.tradein_tnc);
             return true;
         }
