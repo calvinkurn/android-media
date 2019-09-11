@@ -23,7 +23,6 @@ import com.tokopedia.common.travel.data.entity.TravelContactIdCard
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
 import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
-import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.flight.R
@@ -206,13 +205,14 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         contact.lastName = getLastName()
         if (isMandatoryDoB()) contact.birthDate = getPassengerBirthDate()
         if (!isDomestic) {
-            contact.nationality
-            contact.idList = listOf(TravelContactIdCard())
-            //
+            contact.nationality = passengerModel.passportNationality.countryId
+            contact.idList = listOf(TravelContactIdCard(type = "passport", title = "Paspor",
+                    number = getPassportNumber(), country = passengerModel.passportIssuerCountry.countryId, expiry = getPassportExpiryDate()))
         }
 
-        passengerViewModel.updateContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_upsert_travel_contact_list),
-                TravelUpsertContactModel.Contact())
+        passengerViewModel.updateContactList(GraphqlHelper.loadRawString(resources,
+                com.tokopedia.common.travel.R.raw.query_upsert_travel_contact_list),
+                contact)
     }
 
     fun finishActivityWithData() {
@@ -234,7 +234,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     fun getPassportExpiryDate(): String = et_passport_expiration_date.text.toString().trim()
 
     fun getPassportNumber(): String = et_passport_no.text.toString().trim()
-
     fun renderPassengerData() {
         if (!passengerModel.passengerFirstName.isNullOrBlank()) {
             et_first_name.setText(passengerModel.passengerFirstName)
