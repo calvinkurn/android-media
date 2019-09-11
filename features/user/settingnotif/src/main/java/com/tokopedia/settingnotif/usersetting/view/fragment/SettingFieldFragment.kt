@@ -23,6 +23,7 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
+import com.tokopedia.settingnotif.usersetting.view.activity.PushNotificationCheckerActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactoryImpl
@@ -97,6 +98,12 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
         presenter.requestUpdateMoengageUserSetting(updatedSettingIds)
     }
 
+    override fun goToPushNotificationCheckerPage() {
+        Log.d("Test 2: ", "Test move page ")
+        val intent = Intent(context, PushNotificationCheckerActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return SettingFieldTypeFactoryImpl()
     }
@@ -129,11 +136,6 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     override fun onErrorGetUserSetting() {
         showMessage(MESSAGE_ERROR_SERVER)
         renderList(emptyList())
-    }
-
-    override fun onGoToPushNotifCheckerPage() {
-        Log.d("SettingFieldFragment: ", "onGoToPushNotifCheckerPage")
-        // val intent = Intent(activity, )
     }
 
     protected fun showMessage(@StringRes messageRes: Int) {

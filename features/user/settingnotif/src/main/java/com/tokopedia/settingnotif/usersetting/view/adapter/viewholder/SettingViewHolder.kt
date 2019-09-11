@@ -20,6 +20,7 @@ abstract class SettingViewHolder<T : BaseSetting>(
         fun getParentSetting(childAdapterPosition: Int): Pair<ParentSetting, Int>?
         fun getNotificationType(): String
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
+        fun goToPushNotificationChecker()
     }
 
     override fun bind(element: T?) {

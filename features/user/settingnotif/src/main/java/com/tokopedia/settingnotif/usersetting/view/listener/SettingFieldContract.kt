@@ -12,7 +12,6 @@ interface SettingFieldContract {
         fun onSuccessSetUserSetting(data: SetUserSettingResponse)
         fun onErrorSetUserSetting()
         fun onErrorGetUserSetting()
-        fun onGoToPushNotifCheckerPage()
     }
 
     interface Presenter : CustomerPresenter<View> {

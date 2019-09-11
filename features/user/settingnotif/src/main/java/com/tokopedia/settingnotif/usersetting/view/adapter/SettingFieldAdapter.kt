@@ -1,10 +1,13 @@
 package com.tokopedia.settingnotif.usersetting.view.adapter
 
+import android.content.Intent
+import android.util.Log
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.settingnotif.usersetting.domain.pojo.ParentSetting
+import com.tokopedia.settingnotif.usersetting.view.activity.PushNotificationCheckerActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.viewholder.SettingViewHolder
 import com.tokopedia.track.TrackApp
 
@@ -18,6 +21,12 @@ class SettingFieldAdapter<T : Visitable<SettingFieldTypeFactory>>(
 
     interface SettingFieldAdapterListener {
         fun requestUpdateUserSetting(notificationType: String, updatedSettingIds: List<Map<String, Any>>)
+        fun goToPushNotificationCheckerPage()
+    }
+
+    override fun goToPushNotificationChecker() {
+        Log.d("Test 1: ", "Test  ")
+        settingFieldAdapterListener.goToPushNotificationCheckerPage()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {

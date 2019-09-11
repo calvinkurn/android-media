@@ -24,6 +24,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".usersetting.view.activity.PushNotificationCheckerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 
 </manifest>
