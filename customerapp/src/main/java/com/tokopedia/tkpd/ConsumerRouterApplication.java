@@ -1986,6 +1986,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public int getCartCount(Context context) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CartConstant.CART);
+        return localCacheHandler.getInt(CartConstant.CACHE_TOTAL_CART, 0);
+    }
+
+    @Override
     public void goToApplinkActivity(Context context, String applink) {
         if (context != null) {
             if (context instanceof Activity) {
