@@ -174,9 +174,9 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         }
     }
 
-    private fun clearItemRecyclerViewDecoration(recyclerView: RecyclerView) {
+    private fun clearItemRecyclerViewDecoration() {
         while (recyclerView.itemDecorationCount > 0) {
-            recyclerView.removeItemDecorationAt(0);
+            recyclerView.removeItemDecorationAt(0)
         }
     }
 
