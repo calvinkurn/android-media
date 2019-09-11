@@ -276,7 +276,53 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     open fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig = BlankSpaceConfig()) {
-        setImageProductVisible(productCardModel.productImageUrl.isNotEmpty())
+        removeAllShopBadges()
+        textViewProductName?.setValueWithConfig(productCardModel.productName, blankSpaceConfig.productName)
+        textViewPrice?.setValueWithConfig(productCardModel.formattedPrice, blankSpaceConfig.price)
+        textViewSlashedPrice?.let {
+            it.setValueWithConfig(productCardModel.slashedPrice, blankSpaceConfig.slashedPrice)
+            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+        labelDiscount?.setValueWithConfig(productCardModel.discountPercentage, blankSpaceConfig.discountPercentage)
+
+        if (productCardModel.productImageUrl.isNotEmpty()) {
+            imageProduct?.let {
+                it.visibility = View.VISIBLE
+                ImageHandler.loadImageThumbs(context, it, productCardModel.productImageUrl)
+            }
+        }
+
+        if (productCardModel.ratingCount > 0) {
+            setRating(productCardModel.ratingCount)
+        } else {
+            linearLayoutImageRating?.visibility = if (blankSpaceConfig.ratingCount) {
+                View.INVISIBLE
+            } else {
+                View.GONE
+            }
+        }
+
+        if (productCardModel.reviewCount > 0) {
+            setReviewCount(productCardModel.reviewCount)
+        } else {
+            textViewReviewCount?.visibility = if (blankSpaceConfig.ratingCount) {
+                View.INVISIBLE
+            } else {
+                View.GONE
+            }
+        }
+
+        if (productCardModel.isWishlistVisible) {
+            if (productCardModel.isWishlisted) {
+                buttonWishlist?.setImageResource(R.drawable.product_card_ic_wishlist_red)
+            } else {
+                buttonWishlist?.setImageResource(R.drawable.product_card_ic_wishlist)
+            }
+        } else {
+            buttonWishlist?.visibility = View.GONE
+        }
+
+        realignLayout()
     }
 
     open fun setImageProductVisible(isVisible: Boolean) {
@@ -508,4 +554,6 @@ abstract class ProductCardView: BaseCustomView {
             constraintSet.clear(layoutId, side)
         }
     }
+
+
 }
