@@ -505,11 +505,11 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    open fun setProductModel(productModel: ProductModel) {
+    open fun setProductModel(productCardModel: ProductCardModel) {
 
     }
 
-    private fun renderData(productModel: ProductModel, blankSpaceConfig: BlankSpaceConfig) {
+    private fun renderData(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig) {
 
     }
 }
