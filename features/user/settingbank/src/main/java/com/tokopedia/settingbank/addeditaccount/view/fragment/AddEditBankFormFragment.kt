@@ -119,10 +119,10 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
 
-        alertDialog.setTitle(getString(R.string.add_bank_account_prompt_title))
+        alertDialog.setTitle(getString(com.tokopedia.settingbank.R.string.add_bank_account_prompt_title))
         alertDialog.setDesc(composeMakeMainDescription())
         alertDialog.setBtnCancel(getString(com.tokopedia.design.R.string.edit))
-        alertDialog.setBtnOk(getString(R.string.yes_correct))
+        alertDialog.setBtnOk(getString(com.tokopedia.settingbank.R.string.yes_correct))
         alertDialog.setOnCancelClickListener({
             alertDialog.dismiss()
         })
@@ -144,17 +144,17 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         return if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD) {
             String.format("%s %s %s %s" +
                     " %s.",
-                    getString(R.string.you_will_add_account),
+                    getString(com.tokopedia.settingbank.R.string.you_will_add_account),
                     bank_name_et.text.toString(),
                     account_number_et.text.toString(),
-                    getString(R.string.under_name),
+                    getString(com.tokopedia.settingbank.R.string.under_name),
                     account_name_et.text.toString())
         } else String.format("%s %s %s %s" +
                 " %s.",
-                getString(R.string.you_will_change_account_into),
+                getString(com.tokopedia.settingbank.R.string.you_will_change_account_into),
                 bank_name_et.text.toString(),
                 account_number_et.text.toString(),
-                getString(R.string.under_name),
+                getString(com.tokopedia.settingbank.R.string.under_name),
                 account_name_et.text.toString())
 
     }
@@ -219,7 +219,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
                 if (activity!!.intent.getStringExtra(AddEditBankActivity
                                 .Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_EDIT)
-                    (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_edit_bank))
+                    (activity!! as AddEditBankActivity).setTitle(getString(com.tokopedia.settingbank.R.string.title_edit_bank))
 
             }
             activity!!.intent.getStringExtra(AddEditBankActivity
@@ -227,7 +227,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                     BankFormModel.Companion.STATUS_ADD -> goToAddBankFirstTime()
             activity!!.intent.getStringExtra(AddEditBankActivity
                     .Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_EDIT -> {
-                (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_edit_bank))
+                (activity!! as AddEditBankActivity).setTitle(getString(com.tokopedia.settingbank.R.string.title_edit_bank))
                 bankFormModel = activity!!.intent.getParcelableExtra(AddEditBankActivity.Companion
                         .PARAM_DATA)
                 account_name_et.setText(bankFormModel.accountName)
@@ -327,7 +327,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     private fun disableSubmitButton() {
         MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
                 .bg_button_disabled))
-        submit_button.setTextColor(MethodChecker.getColor(context, R.color.black_38))
+        submit_button.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_38))
         submit_button.isEnabled = false
     }
 
@@ -396,7 +396,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         try {
             if (successRetrieveBank(resultCode, data)) {
 
-                (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_add_bank))
+                (activity!! as AddEditBankActivity).setTitle(getString(com.tokopedia.settingbank.R.string.title_add_bank))
                 bankFormModel.status = BankFormModel.Companion.STATUS_ADD
                 disableSubmitButton()
                 onResultChooseBank(resultCode, data)
