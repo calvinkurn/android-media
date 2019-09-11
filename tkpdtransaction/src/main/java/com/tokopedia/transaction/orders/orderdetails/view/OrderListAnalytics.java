@@ -6,7 +6,6 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.home.beranda.data.model.HomeWidget;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -14,6 +13,7 @@ import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
 
 import org.jetbrains.annotations.NotNull;
@@ -307,7 +307,7 @@ public class OrderListAnalytics {
                         recomTitle));
     }
 
-    public static void eventWidgetListView(@NotNull HomeWidget.ContentItemTab contentItemTab, int position) {
+    public static void eventWidgetListView(@NotNull WidgetGridItem contentItemTab, int position) {
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
@@ -330,7 +330,7 @@ public class OrderListAnalytics {
 
     }
 
-    public static void eventWidgetClick(@NotNull HomeWidget.ContentItemTab item, int position) {
+    public static void eventWidgetClick(@NotNull WidgetGridItem item, int position) {
 
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 EVENT, PRODUCT_CLICK,

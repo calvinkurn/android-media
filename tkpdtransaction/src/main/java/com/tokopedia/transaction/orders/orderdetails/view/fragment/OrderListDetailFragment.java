@@ -28,8 +28,6 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.home.beranda.data.model.HomeWidget;
-import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
@@ -47,6 +45,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.RecommendationAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
@@ -65,7 +64,7 @@ import javax.inject.Inject;
 /**
  * Created by baghira on 09/05/18.
  */
-public class OrderListDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View, BusinessUnitItemView {
+public class OrderListDetailFragment extends BaseDaggerFragment implements OrderListDetailContract.View {
 
     public static final String KEY_ORDER_ID = "OrderId";
     public static final String KEY_ORDER_CATEGORY = "OrderCategory";
@@ -331,13 +330,13 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setRecommendation(HomeWidget recommendationResponse) {
-        if(recommendationResponse.getContentItemTabList().isEmpty()){
+    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+        if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid().isEmpty()) {
             ViewRecomendItems.setVisibility(View.GONE);
         }else{
             recommendListTitle.setText(WIDGET_TITLE);
             recommendationList.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-            recommendationList.setAdapter(new RecommendationAdapter(recommendationResponse.getContentItemTabList(),this));
+            recommendationList.setAdapter(new RecommendationAdapter(rechargeWidgetResponse.getHomeWidget().getWidgetGrid()));
         }
     }
 
@@ -480,26 +479,5 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setMainViewVisible(int visibility) {
         mainView.setVisibility(visibility);
-    }
-
-
-    @Override
-    public void onReloadButtonClick() {
-        presenter.loadRecomendWidget();
-    }
-
-    @Override
-    public void onSuccessGetData(@NotNull HomeWidget data) {
-
-    }
-
-    @Override
-    public void onErrorGetData(@NotNull Throwable throwable) {
-
-    }
-
-    @Override
-    public void onImpressed(@NotNull HomeWidget.ContentItemTab element, int position) {
-
     }
 }

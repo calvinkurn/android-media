@@ -6,7 +6,6 @@ import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.home.beranda.data.model.HomeWidget;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
@@ -21,6 +20,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
@@ -99,7 +99,7 @@ public interface OrderListDetailContract {
 
         void askPermission();
 
-        void setRecommendation(HomeWidget recommendationResponse);
+        void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -115,7 +115,6 @@ public interface OrderListDetailContract {
 
         void assignInvoiceDataTo(Intent intent);
 
-        void loadRecomendWidget();
     }
 
     interface ActionInterface {

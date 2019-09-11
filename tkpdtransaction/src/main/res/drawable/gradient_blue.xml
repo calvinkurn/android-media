@@ -3,6 +3,6 @@
     <gradient
         android:angle="90"
         android:endColor="@color/white"
-        android:startColor="@color/bg_label_blue" />
+        android:startColor="@color/tkpd_transaction_bg_label_blue" />
     <corners android:radius="@dimen/dp_5" />
 </shape>
