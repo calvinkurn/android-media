@@ -107,7 +107,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             }
         })
         bank_name_et.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                MethodChecker.getDrawable(activity, R.drawable.ic_arrow_down_grey), null);
+                MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_arrow_down_grey), null);
         bank_name_et.setOnClickListener({
             goToAddBank()
         })
@@ -121,7 +121,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
         alertDialog.setTitle(getString(R.string.add_bank_account_prompt_title))
         alertDialog.setDesc(composeMakeMainDescription())
-        alertDialog.setBtnCancel(getString(R.string.edit))
+        alertDialog.setBtnCancel(getString(com.tokopedia.design.R.string.edit))
         alertDialog.setBtnOk(getString(R.string.yes_correct))
         alertDialog.setOnCancelClickListener({
             alertDialog.dismiss()
@@ -183,7 +183,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             val bankAccountImage: ImageView = bottomLayout.findViewById(R.id.bank_account_image)
             ImageHandler.LoadImage(bankAccountImage, SettingBankUrl.Companion.IMAGE_BOTTOM_DIALOG_ADD_ACCOUNT)
 
-            val closeButton: ImageView = bottomLayout.findViewById(R.id.close_button)
+            val closeButton: ImageView = bottomLayout.findViewById(com.tokopedia.design.R.id.close_button)
             closeButton.setOnClickListener({ bottomInfoDialog.dismiss() })
 
         }
@@ -318,14 +318,14 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     private fun enableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
+        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
                 .bg_button_green_enabled))
-        submit_button.setTextColor(MethodChecker.getColor(context, R.color.white))
+        submit_button.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.white))
         submit_button.isEnabled = true
     }
 
     private fun disableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
+        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
                 .bg_button_disabled))
         submit_button.setTextColor(MethodChecker.getColor(context, R.color.black_38))
         submit_button.isEnabled = false
