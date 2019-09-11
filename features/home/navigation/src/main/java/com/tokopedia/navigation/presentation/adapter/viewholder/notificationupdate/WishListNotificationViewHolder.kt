@@ -51,8 +51,17 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
         }
     }
 
+    override fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
+        val product = element.getAtcProduct() ?: return
+        container.setOnClickListener(getItemClickListener(product))
+    }
+
     private fun assignProductClickListener(product: ProductData) {
-        productContainer.setOnClickListener {
+        productContainer.setOnClickListener(getItemClickListener(product))
+    }
+
+    private fun getItemClickListener(product: ProductData): View.OnClickListener {
+        return View.OnClickListener {
             listener.getAnalytic().trackAtcToPdpClick(product)
             RouteManager.route(
                     itemView.context,
@@ -61,6 +70,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
             )
         }
     }
+
 
     private fun getProductAtcIntent(product: ProductData): Intent {
         val atcAndBuyAction = "1"
