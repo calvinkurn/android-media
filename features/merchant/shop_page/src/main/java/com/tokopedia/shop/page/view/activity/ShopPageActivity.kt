@@ -429,14 +429,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     if (TextUtils.isEmpty(text)) {
                         return
                     }
-                    val fragment = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
-                            ?: return
-
-                    val etalaseId: String? = if (remoteConfig.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE)) {
-                        null
-                    } else {
-                        (fragment as ShopProductListLimitedFragment).selectedEtalaseId
-                    }
+                    val etalaseId: String? = ""
 
                     startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity,
                             shopCore.shopID, text, etalaseId, shopAttribution))
@@ -449,7 +442,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
             })
 
-            val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
+            val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
             if (productListFragment != null && productListFragment is ShopProductListLimitedFragment) {
                 productListFragment.displayProduct(this)
             }
