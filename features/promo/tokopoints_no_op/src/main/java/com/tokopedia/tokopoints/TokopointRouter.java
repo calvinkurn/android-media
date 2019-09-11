@@ -16,5 +16,5 @@ public interface TokopointRouter {
 
     long getLongRemoteConfig(String key, long defaultValue);
 
-    UserSessionInterface getSession();
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 }

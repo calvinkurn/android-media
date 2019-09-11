@@ -19,7 +19,6 @@ import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -62,7 +61,12 @@ import com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW
 import com.tokopedia.shop.common.constant.ShopParamConstant
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.graphql.data.membershipclaimbenefit.MembershipClaimBenefitResponse
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
+import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
+import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
+import com.tokopedia.shop.common.widget.RecyclerViewPadding
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
 import com.tokopedia.shop.page.view.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
@@ -95,7 +99,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
         ShopCarouselSeeAllClickedListener, MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener,
-        MerchantVoucherListView {
+        MerchantVoucherListView, MembershipStampAdapter.MembershipStampAdapterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -114,6 +118,10 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
     private val sortName = Integer.toString(Integer.MIN_VALUE)
     private var recyclerView: RecyclerView? = null
+
+    private var lastQuestId: Int = 0
+    private var isPaddingSet = false
+
 
     var selectedEtalaseId: String = ""
         private set
@@ -147,7 +155,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             if (TextUtils.isEmpty(selectedEtalaseId)) {
                 return true
             }
-            val etalaseViewModelList = shopProductAdapter.shopProductEtalaseListViewModel?.etalaseModelList ?: return false
+            val etalaseViewModelList = shopProductAdapter.shopProductEtalaseListViewModel?.etalaseModelList
+                    ?: return false
             return etalaseViewModelList.size > 0 && etalaseViewModelList[0].etalaseId.equals(selectedEtalaseId, ignoreCase = true)
         }
 
@@ -159,21 +168,35 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.featuredProductResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetProductFeature(it.data)
                 is Fail -> onErrorGetProductFeature(it.throwable)
             }
         })
 
+        viewModel.claimMembershipResp.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessClaimBenefit(it.data)
+                is Fail -> onErrorGetMembershipInfo(it.throwable)
+            }
+        })
+
+        viewModel.membershipStampResponse.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetMembershipInfo(it.data)
+                is Fail -> onErrorGetMembershipInfo(it.throwable)
+            }
+        })
+
         viewModel.etalaseResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetEtalaseListByShop(ArrayList(it.data))
                 is Fail -> onErrorGetEtalaseListByShop(it.throwable)
             }
         })
 
         viewModel.productResponse.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> renderProductList(it.data.second, it.data.first)
                 is Fail -> showGetListError(it.throwable)
             }
@@ -223,6 +246,12 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
         bottom_action_view.gone()
         bottom_action_view.hide(false)
+        if (!viewModel.isLogin) {
+            bottom_action_view.setPadding(bottom_action_view.paddingLeft,
+                    bottom_action_view.paddingTop,
+                    bottom_action_view.paddingRight,
+                    resources.getDimensionPixelOffset(R.dimen.dp_36))
+        }
 
         progressDialog = ProgressDialog(activity)
         progressDialog?.setMessage(getString(R.string.title_loading))
@@ -304,7 +333,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
 
             showLoading()
             shopId = it.shopCore.shopID
-            if (viewModel.isEtalaseEmpty){
+            if (viewModel.isEtalaseEmpty) {
                 viewModel.getShopEtalase(shopId!!)
             } else {
                 loadData(defaultInitialPage)
@@ -319,10 +348,12 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         shopInfo?.let {
             shopProductAdapter.clearMerchantVoucherData()
             shopProductAdapter.clearFeaturedData()
+            shopProductAdapter.clearMembershipData()
+
+            loadMembership()
             loadVoucherList()
 
             viewModel.getFeaturedProduct(it.shopCore.shopID, false)
-
         }
     }
 
@@ -365,7 +396,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         val displaymetrics = DisplayMetrics()
         activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
         val deviceWidth = displaymetrics.widthPixels
-        return ShopProductAdapterTypeFactory(this, this, this,
+        return ShopProductAdapterTypeFactory(this, this, this, this,
                 this, this,
                 true, deviceWidth, ShopTrackProductTypeDef.PRODUCT
         )
@@ -564,6 +595,64 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         shopProductAdapter.shopProductFeaturedViewModel = null
     }
 
+    private fun onSuccessGetMembershipInfo(data: MembershipStampProgress) {
+        val isShown = data.membershipStampProgress.isShown
+
+        if (isShown && !isPaddingSet) {
+            isPaddingSet = true
+            // Remove padding item membership stamp when isShown
+            val scale = resources.displayMetrics.density
+            val dpAsPixels = (-resources.getDimension(R.dimen.dp_8) * scale + 0.5f).toInt()
+            recyclerView?.run {
+                addItemDecoration(RecyclerViewPadding(dpAsPixels))
+            }
+        }
+
+        if (!isShown) {
+            shopProductAdapter.clearMembershipData()
+            return
+        } else if (data.membershipStampProgress.membershipProgram.membershipQuests.isEmpty() && data.membershipStampProgress.isUserRegistered) {
+            shopProductAdapter.clearMembershipData()
+        } else {
+            val itemMembershipQuests = viewModel.itemMembershipMapper(data)
+            shopProductAdapter.setMembershipStampViewModel(MembershipStampProgressViewModel(listOfData = itemMembershipQuests))
+        }
+
+        shopProductAdapter.notifyDataSetChanged()
+        shopProductAdapter.refreshSticky()
+    }
+
+    private fun onErrorGetMembershipInfo(t: Throwable) {
+        shopProductAdapter.clearMembershipData()
+        activity?.let {
+            ToasterError.showClose(it, ErrorHandler.getErrorMessage(context, t))
+        }
+    }
+
+    private fun showToasterError(message: String) {
+        activity?.let {
+            ToasterError.showClose(it, message)
+        }
+    }
+
+    private fun onSuccessClaimBenefit(data: MembershipClaimBenefitResponse) {
+
+        if (data.membershipClaimBenefitResponse.title == "") {
+            if (data.membershipClaimBenefitResponse.resultStatus.message.isNotEmpty()) {
+                showToasterError(data.membershipClaimBenefitResponse.resultStatus.message.firstOrNull()
+                        ?: "")
+            } else {
+                showToasterError(getString(R.string.default_request_error_unknown))
+            }
+        } else {
+            val bottomSheetMembership = MembershipBottomSheetSuccess.newInstance(data.membershipClaimBenefitResponse.title,
+                    data.membershipClaimBenefitResponse.subTitle,
+                    data.membershipClaimBenefitResponse.resultStatus.code, lastQuestId)
+            bottomSheetMembership.setListener(this)
+            bottomSheetMembership.show(fragmentManager, "membership_shop_page")
+        }
+    }
+
     private fun onSuccessGetProductFeature(list: List<ShopProductViewModel>) {
         shopProductAdapter.shopProductFeaturedViewModel = ShopProductFeaturedViewModel(list)
         if (list.isNotEmpty() && shopInfo != null) {
@@ -731,7 +820,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                                 shopProductViewModel.id))
             }
         }
-        if (!viewModel.isLogin){
+        if (!viewModel.isLogin) {
             onErrorAddToWishList(UserNotLoginException())
             return
         }
@@ -785,7 +874,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
             }
         }
         goToPDP(shopProductViewModel.id, attribution,
-                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName) ?: "")
+                shopPageTracking?.getListNameOfProduct(ShopPageTrackingConstant.PRODUCT, selectedEtalaseName)
+                        ?: "")
 
 
     }
@@ -854,7 +944,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                     return
 
                 shopPageTracking?.clickSortBy(viewModel.isMyShop(shopId!!),
-                            sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
+                        sortName, CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant))
 
                 startActivity(ShopProductListActivity.createIntent(activity, shopId,
                         "", selectedEtalaseId, "", sortName))
@@ -863,6 +953,9 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 if (resultCode == Activity.RESULT_OK) {
                     needLoadVoucher = true
                 }
+            }
+            REQUEST_CODE_MEMBERSHIP_STAMP -> {
+                loadMembership()
             }
             else -> {
             }
@@ -991,6 +1084,12 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         }
     }
 
+    private fun loadMembership() {
+        if (shopInfo != null) {
+            viewModel.getMembershipStamp(shopInfo!!.shopCore.shopID.toInt(), false)
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId)
@@ -1019,6 +1118,21 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         // NO-Op
     }
 
+    override fun onButtonClaimClicked(questId: Int) {
+        lastQuestId = questId
+        viewModel.claimMembershipBenefit(questId)
+    }
+
+    override fun goToVoucherOrRegister(url: String?) {
+        val intent: Intent = if (url == null) {
+            RouteManager.getIntent(context, ApplinkConst.COUPON_LISTING)
+        } else {
+            RouteManager.getIntent(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
+        }
+
+        startActivityForResult(intent, REQUEST_CODE_MEMBERSHIP_STAMP)
+    }
+
     companion object {
 
         private const val REQUEST_CODE_USER_LOGIN = 100
@@ -1027,6 +1141,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         private const val REQUEST_CODE_LOGIN_USE_VOUCHER = 206
         private const val REQUEST_CODE_MERCHANT_VOUCHER = 207
         private const val REQUEST_CODE_MERCHANT_VOUCHER_DETAIL = 208
+        private const val REQUEST_CODE_MEMBERSHIP_STAMP = 2091
+
 
         private const val REQUEST_CODE_SORT = 300
         private const val LIST_SPAN_COUNT = 1
@@ -1040,6 +1156,8 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         const val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         const val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
         const val NUM_VOUCHER_DISPLAY = 3
+
+        const val RECYCLERVIEW_PADDING_8 = 8
 
         @JvmStatic
         fun createInstance(shopAttribution: String?): ShopProductListLimitedFragment {

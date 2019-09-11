@@ -79,6 +79,8 @@ public class GroupChatAnalytics {
     private static final String EVENT_ACTION_PIP_TO_CHANNEL = "convert channel to pip";
     private static final String EVENT_ACTION_CHANNEL_TO_PIP = "convert pip to channel";
     private static final String EVENT_ACTION_CLICK_CLOSE_PIP = "click close button";
+    private static final String EVENT_ACTION_CLICK_ATC = "click add to cart";
+
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
     private static final String EVENT_NAME_VIEW_GROUPCHAT = "viewGroupChat";
@@ -125,11 +127,17 @@ public class GroupChatAnalytics {
     }
 
     //#4
-    public void eventClickJoin(String channelId) {
+    public void eventClickJoin(String channelId, boolean loggedIn) {
+        String loginStatusLabel;
+        if (loggedIn) {
+            loginStatusLabel = "- login";
+        } else {
+            loginStatusLabel = "- non-login";
+        }
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on join",
-                channelId
+                String.format("%s%s", channelId, loginStatusLabel)
         ));
     }
 
@@ -930,6 +938,35 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_PIP,
                 EVENT_ACTION_CLICK_CLOSE_PIP,
                 channelId
+        ));
+    }
+
+    //#ATCSC1
+    public void eventClickATC(String productName, String productId, String productPrice, int quantity, String shopId, String shopName) {
+        productPrice = productPrice.replace(".","").replace("Rp","").trim();
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT_NAME, "addToCart",
+                EVENT_CATEGORY, EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION, EVENT_ACTION_CLICK_ATC,
+                EVENT_LABEL, "sticky product",
+                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                                "actionField", DataLayer.mapOf("list", "/groupchat/sticky"),
+                                "products", DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "name", productName,
+                                                "id", productId,
+                                                "price", productPrice,
+                                                "quantity", quantity,
+                                                "shop_id", shopId,
+                                                "shop_type", "",
+                                                "shop_name", shopName,
+                                                "category_id", "",
+                                                "dimension45", ""
+                                        )
+                                )
+                        )
+                )
         ));
     }
 }

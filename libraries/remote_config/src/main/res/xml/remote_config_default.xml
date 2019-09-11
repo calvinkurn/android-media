@@ -255,6 +255,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>android_customer_hotel_show_promo</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>nonb_1_ttl</key>
         <value>Bebas Beli Apa Saja</value>
     </entry>
@@ -322,6 +326,14 @@
     </entry>
     <entry>
         <key>android_customer_enable_telco_pdp</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_customer_enable_cashshield</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>app_enable_category_revamp</key>
         <value>true</value>
     </entry>
 </defaultsMap>

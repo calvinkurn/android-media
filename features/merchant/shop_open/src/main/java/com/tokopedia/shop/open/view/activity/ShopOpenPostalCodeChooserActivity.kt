@@ -18,8 +18,8 @@ import com.tokopedia.shop.open.view.fragment.ShopOpenPostalCodeChooserFragment
 class ShopOpenPostalCodeChooserActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent> {
 
     companion object {
-        val ARGUMENT_DATA_POSTAL_CODE = "postal_code"
-        fun createNewInstance(activity: Activity, postalCode: ArrayList<String>): Intent {
+        const val ARGUMENT_DATA_POSTAL_CODE = "postal_code"
+        fun createNewInstance(activity: Activity, postalCode: ArrayList<String>?): Intent {
             val intent = Intent(activity, ShopOpenPostalCodeChooserActivity::class.java)
             intent.putStringArrayListExtra(ARGUMENT_DATA_POSTAL_CODE, postalCode)
             return intent
@@ -27,7 +27,7 @@ class ShopOpenPostalCodeChooserActivity : BaseSimpleActivity(), HasComponent<Bas
     }
 
     override fun getNewFragment(): Fragment {
-        val postalCode = intent.getStringArrayListExtra(ARGUMENT_DATA_POSTAL_CODE)
+        val postalCode = intent?.getStringArrayListExtra(ARGUMENT_DATA_POSTAL_CODE)
         return ShopOpenPostalCodeChooserFragment.newInstance(postalCode)
     }
 
@@ -35,7 +35,7 @@ class ShopOpenPostalCodeChooserActivity : BaseSimpleActivity(), HasComponent<Bas
         super.onCreate(savedInstanceState)
         supportActionBar?.let {
             it.elevation = 0f
-            toolbar.setNavigationIcon(R.drawable.ic_close)
+            toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_close)
         }
 
     }

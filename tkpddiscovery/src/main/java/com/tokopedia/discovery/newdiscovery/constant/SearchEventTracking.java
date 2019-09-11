@@ -5,6 +5,7 @@ public interface SearchEventTracking {
     interface Event {
         String IMAGE_SEARCH_CLICK = "imageSearchClick";
         String EVENT_CLICK_TOP_NAV = "eventTopNav";
+        String EVENT_VIEW_SEARCH_RESULT = "viewSearchResult";
         String SEARCH = "clickSearch";
         String SEARCH_RESULT = "clickSearchResult";
         String PRODUCT_VIEW = "productView";
@@ -52,6 +53,7 @@ public interface SearchEventTracking {
         String BACK_ON_LIHAT_SEMUA = "click back on lihat semua ";
         String CLICK_LIHAT_SEMUA = "click lihat semua ";
         String NO_SEARCH_RESULT = "no search result";
+        String NO_SEARCH_RESULT_WITH_TAB = "no search result - tab: %s";
         String CLICK_FILTER = "click filter";
         String SORT_BY = "sort by";
         String EventLongPressProduct = "click - long press product";
@@ -59,6 +61,7 @@ public interface SearchEventTracking {
         String SEARCH_IMAGE_PICKER_CLICK_GALLERY = "click image search by gallery";
         String ADD_WISHLIST = "add wishlist";
         String REMOVE_WISHLIST = "remove wishlist";
+        String CLICK_CART_BUTTON = "click cart button - search result";
     }
 
     interface Label {

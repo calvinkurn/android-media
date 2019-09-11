@@ -34,9 +34,10 @@ import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
-import com.tokopedia.checkout.view.feature.shipment.util.Utils;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
@@ -50,6 +51,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.ArrayList;
@@ -182,6 +184,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvErrorShipmentItemDescription;
     private RelativeLayout rlProductInfo;
     private FrameLayout flDisableContainer;
+    private Ticker tickerOtd;
 
     // robinhood III
     private LinearLayout llCourierBlackboxStateLoading;
@@ -336,6 +339,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
         rlProductInfo = itemView.findViewById(R.id.rl_product_info);
         flDisableContainer = itemView.findViewById(R.id.fl_disable_container);
+        tickerOtd = itemView.findViewById(R.id.ticker_otd);
 
         //priority
         llPrioritas = itemView.findViewById(R.id.ll_prioritas);
@@ -584,7 +588,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         boolean isEmptyNotes = TextUtils.isEmpty(cartItemModel.getNoteToSeller());
         llOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
-        tvOptionalNoteToSeller.setText(cartItemModel.getNoteToSeller());
+        tvOptionalNoteToSeller.setText(Utils.getHtmlFormat(cartItemModel.getNoteToSeller()));
         tvNoteToSellerLabel.setVisibility(View.GONE);
 
         rlPurchaseProtection.setVisibility(cartItemModel.isProtectionAvailable() ? View.VISIBLE : View.GONE);
@@ -737,6 +741,29 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
             tvLogPromoMsg.setText(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
+
+            if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
+            shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()) {
+                OntimeDelivery otd = shipmentDetailData.getSelectedCourier().getOntimeDelivery();
+                String html = otd.getText_detail();
+                String url = otd.getUrl_detail();
+                tickerOtd.setVisibility(View.VISIBLE);
+                tickerOtd.setHtmlDescription(html);
+                tickerOtd.setTickerTitle(otd.getText_label());
+                tickerOtd.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(CharSequence charSequence) {
+                        mActionListener.onOntimeDeliveryClicked(url);
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
+            } else {
+                tickerOtd.setVisibility(View.GONE);
+            }
 
             if (shipmentCartItemModel.isHidingCourier()) {
                 // Robinhood Phase 21b

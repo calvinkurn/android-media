@@ -1,6 +1,7 @@
 package com.tokopedia.gamification.cracktoken.presenter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Pair;
 
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -17,6 +18,7 @@ import com.tokopedia.gamification.cracktoken.model.ExpiredCrackResult;
 import com.tokopedia.gamification.cracktoken.model.GeneralErrorCrackResult;
 import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.GamificationSumCouponOuter;
+import com.tokopedia.gamification.data.entity.HomeSmallButton;
 import com.tokopedia.gamification.data.entity.ResponseCrackResultEntity;
 import com.tokopedia.gamification.data.entity.ResponseTokenTokopointEntity;
 import com.tokopedia.gamification.data.entity.ResultStatusEntity;
@@ -80,9 +82,9 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
     }
 
     @Override
-    public void crackToken(int tokenUserId, int campaignId) {
+    public void crackToken(String tokenUserId, int campaignId) {
         Map<String, Object> queryParams = new HashMap<>();
-        queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID, tokenUserId);
+        queryParams.put(GamificationConstants.GraphQlVariableKeys.TOKEN_ID_STR, tokenUserId);
         queryParams.put(GamificationConstants.GraphQlVariableKeys.CAMPAIGN_ID, campaignId);
         getCrackResultEggUseCase.clearRequest();
         GraphqlRequest sumTokenRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.crack_egg_result_mutation),
@@ -212,6 +214,7 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         getView().showLoading();
 
         TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
+        HomeSmallButton homeSmallButton = tokenData.getHome().getHomeSmallButton();
         TokenBackgroundAssetEntity tokenBackgroundAsset = tokenUser.getBackgroundAsset();
 
         TokenAssetEntity tokenAsset = tokenUser.getTokenAsset();
@@ -232,6 +235,8 @@ public class CrackTokenPresenter extends BaseDaggerPresenter<CrackTokenContract.
         assetUrls.add(new Pair<>(imageLeftUrl, tokenAssetVersion));
         assetUrls.add(new Pair<>(imageRightUrl, tokenAssetVersion));
         assetUrls.add(new Pair<>(tokenAsset.getSmallImgv2Url(), tokenAssetVersion));
+        if(!TextUtils.isEmpty(homeSmallButton.getImageURL()))
+            assetUrls.add(new Pair<>(homeSmallButton.getImageURL(), tokenAssetVersion));
 
         RequestListener<String, GlideDrawable> tokenAssetRequestListener = new ImageRequestListener(assetUrls.size());
         for (Pair<String, String> assetUrlPair : assetUrls) {

@@ -1,10 +1,12 @@
 package com.tokopedia.developer_options.presentation.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,6 +25,7 @@ import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -30,7 +33,6 @@ import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
 
 @DeepLink(ApplinkConst.DEVELOPER_OPTIONS)
 public class DeveloperOptionActivity extends BaseActivity {
@@ -43,6 +45,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     public static final String IS_RELEASE_MODE = "IS_RELEASE_MODE";
     public static final String IS_ENABLE_SHAKE_REACT = "IS_ENABLE_SHAKE_REACT";
     public static final String RN_DEV_LOGGER = "rn_dev_logger";
+    public static final String REMOTE_CONFIG_PREFIX = "remote_config_prefix";
     private static final String IP_GROUPCHAT = "ip_groupchat";
     private static final String LOG_GROUPCHAT = "log_groupchat";
 
@@ -52,10 +55,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView testOnBoarding;
     private TextView vForceCrash;
     private TextView vDevOptionRN;
-    private AppCompatEditText remoteConfigKeyEditText;
-    private AppCompatEditText remoteConfigValueEditText;
-    private AppCompatButton remoteConfigCheckBtn;
-    private AppCompatButton remoteConfigSaveBtn;
+    private AppCompatEditText remoteConfigPrefix;
+    private AppCompatTextView remoteConfigStartButton;
     private ToggleButton toggleReactDeveloperMode;
     private ToggleButton toggleReactEnableDeveloperOptions;
     private Spinner spinnerEnvironmentChooser;
@@ -65,6 +66,8 @@ public class DeveloperOptionActivity extends BaseActivity {
 
     private TextView vGoToAnalytics;
     private CheckBox toggleAnalytics;
+
+    private CheckBox toggleUiBlockDebugger;
 
     private AppCompatEditText ipGroupChat;
     private View saveIpGroupChat;
@@ -84,7 +87,7 @@ public class DeveloperOptionActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(GlobalConfig.isAllowDebuggingTools()) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             setContentView(R.layout.activity_developer_options);
             userSession = new UserSession(this);
             setupView();
@@ -107,10 +110,13 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoToAnalytics = findViewById(R.id.goto_analytics);
         toggleAnalytics = findViewById(R.id.toggle_analytics);
 
-        remoteConfigKeyEditText = findViewById(R.id.et_remote_config_key);
-        remoteConfigValueEditText = findViewById(R.id.et_remote_config_value);
-        remoteConfigCheckBtn = findViewById(R.id.btn_remote_config_check);
-        remoteConfigSaveBtn = findViewById(R.id.btn_remote_config_save);
+        toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
+
+        remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
+        remoteConfigStartButton = findViewById(R.id.remote_config_start);
+
+        TextView deviceId = findViewById(R.id.device_id);
+        deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
 
         toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
         toggleReactEnableDeveloperOptions = findViewById(R.id.toggle_reactnative_dev_options);
@@ -128,6 +134,11 @@ public class DeveloperOptionActivity extends BaseActivity {
     }
 
     private void initListener() {
+        remoteConfigStartButton.setOnClickListener(v -> {
+            Editable prefix = remoteConfigPrefix.getText();
+
+            startRemoteConfigEditor(prefix != null ? prefix.toString() : "");
+        });
 
         vForceCrash.setOnClickListener(v -> {
             throw new RuntimeException("Throw Runtime Exception");
@@ -183,6 +194,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             }
         });
 
+
         SharedPreferences cache = getSharedPreferences(CHUCK_ENABLED);
 
         toggleChuck.setChecked(cache.getBoolean(IS_CHUCK_ENABLED, false));
@@ -204,8 +216,11 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
 
-        remoteConfigCheckBtn.setOnClickListener(view -> actionCheckValueRemoteConfig());
-        remoteConfigSaveBtn.setOnClickListener(view -> actionSaveValueRemoteConfig());
+        SharedPreferences uiBlockDebuggerPref = getSharedPreferences("UI_BLOCK_DEBUGGER");
+        toggleUiBlockDebugger.setChecked(uiBlockDebuggerPref.getBoolean("isEnabled", false));
+        toggleUiBlockDebugger.setOnCheckedChangeListener((compoundButton, state) -> {
+            uiBlockDebuggerPref.edit().putBoolean("isEnabled", state).apply();
+        });
 
         saveIpGroupChat.setOnClickListener(v -> actionSaveIpGroupChat());
         groupChatLogToggle.setOnCheckedChangeListener((buttonView, isChecked) -> actionLogGroupChat(isChecked));
@@ -242,26 +257,11 @@ public class DeveloperOptionActivity extends BaseActivity {
         });
     }
 
-    private void actionCheckValueRemoteConfig() {
-        String key = remoteConfigKeyEditText.getText().toString().trim();
-        if (key.isEmpty()) {
-            Toast.makeText(this, "Please type the key", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        remoteConfigValueEditText.setText(String.valueOf(coreRouter(getApplicationContext()).getStringRemoteConfig(key)));
-    }
+    private void startRemoteConfigEditor(String prefix) {
+        Intent intent = new Intent(DeveloperOptionActivity.this, RemoteConfigFragmentActivity.class);
+        intent.putExtra(REMOTE_CONFIG_PREFIX, prefix.trim());
 
-    private void actionSaveValueRemoteConfig() {
-        String key = remoteConfigKeyEditText.getText().toString().trim();
-        String value = remoteConfigValueEditText.getText().toString().trim();
-        if (key.isEmpty() || value.isEmpty()) {
-            Toast.makeText(this, "Please check the input should not empty", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
-        coreRouter(getApplicationContext()).setStringRemoteConfigLocal(key, value);
-        remoteConfigKeyEditText.setText(null);
-        remoteConfigValueEditText.setText(null);
+        startActivity(intent);
     }
 
     private void actionSaveIpGroupChat() {

@@ -22,7 +22,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
-
+import android.media.MediaPlayer
+import java.lang.Exception
 
 /**
  * @author by stevenfredian on 14/05/19.
@@ -32,14 +33,11 @@ class OnboardingFragment : BaseDaggerFragment(),
         OnboardingVideoListener {
 
     companion object {
-        val VIEW_DEFAULT = 100
-        val VIEW_ENDING = 101
 
         val ARG_TITLE = "title"
         val ARG_VIDEO_PATH = "video_path"
         val ARG_DESC = "desc"
         val ARG_BG_COLOR = "bg_color"
-        val ARG_VIEW_TYPE = "view_type"
         val ARG_POSITION = "position"
         val ARG_DESCKEY = "desc_key"
         val ARG_TTLKEY = "ttl_key"
@@ -72,6 +70,8 @@ class OnboardingFragment : BaseDaggerFragment(),
     private var descKey: String = ""
     private var ttlKey: String = ""
     private var remoteConfig: RemoteConfig? = null
+
+    private var isVideoPrepared: Boolean = false
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -122,9 +122,19 @@ class OnboardingFragment : BaseDaggerFragment(),
 
         videoView?.setZOrderOnTop(true)
         videoView?.setVideoURI(Uri.parse(videoPath))
-        videoView?.setOnErrorListener { p0, p1, p2 -> true }
-        videoView?.setOnPreparedListener {
-            it.isLooping = true
+        videoView?.setOnErrorListener { _, _, _ -> true }
+        videoView?.setOnPreparedListener { mp ->
+            isVideoPrepared = true
+            mp?.isLooping = true
+            mp?.start()
+        }
+
+        videoView?.setOnCompletionListener { mp ->
+            if (mp != null) {
+                mp.setDisplay(null)
+                mp.reset()
+                mp.setDisplay(videoView?.holder)
+            }
         }
 
         return defaultView
@@ -137,11 +147,31 @@ class OnboardingFragment : BaseDaggerFragment(),
     }
 
     override fun onPageSelected(position: Int) {
-        playAnimationTitleDesc()
+        try {
+            videoView?.let {
+                if (!it.isPlaying) {
+                    if (isVideoPrepared) {
+                        it.start()
+                    } else {
+                        it.setOnPreparedListener { mp ->
+                            isVideoPrepared = true
+                            mp?.isLooping = true
+                            mp?.start()
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {}
     }
 
-    private fun playAnimationTitleDesc() {
-        videoView?.start()
+    override fun onPageUnSelected() {
+        try {
+            videoView?.let {
+                if (it.isPlaying && isVideoPrepared) {
+                    it.pause()
+                }
+            }
+        } catch (e: Exception) {}
     }
 
     private fun getTitleMsg(): String {

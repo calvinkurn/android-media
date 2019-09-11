@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.*;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
+import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
 import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
@@ -60,7 +61,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
             if (homeData.getTicker() != null
                     && homeData.getTicker().getTickers() != null
-                    && !homeData.getTicker().getTickers().isEmpty()) {
+                    && !homeData.getTicker().getTickers().isEmpty()
+                    && !HomeFragment.HIDE_TICKER) {
                 list.add(mappingTicker(homeData.getTicker().getTickers()));
             }
 
@@ -83,30 +85,28 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                         if(!homeData.isCache()) {
                             position++;
                             if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT)) {
-                                channel.setHomeAttribution(String.format("%s - sprintSaleProduct - $1 - $2", String.valueOf(position)));
                                 channel.setPosition(position);
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL)) {
-                                channel.setHomeAttribution(String.format("%s - sprintSaleBanner - $1", String.valueOf(position)));
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
-                                channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - lego banner 3 image - %s", String.valueOf(position), channel.getHeader().getName()));
-                                channel.setHomeAttribution(String.format("%s - legoBanner3Image - $1 - $2", String.valueOf(position)));
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_ORGANIC)) {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
-                                channel.setHomeAttribution(String.format("%s - sprintSaleProduct - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setPosition(position);
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT)) {
                                 homeData.getSpotlight().setPromoName(String.format("/ - p%s - spotlight banner", String.valueOf(position)));
                                 homeData.getSpotlight().setHomeAttribution(String.format("%s - spotlightBanner - $1 - $2", String.valueOf(position)));
+                                homeData.getSpotlight().setChannelId(channel.getId());
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_DIGITAL_WIDGET)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_HERO)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_TOPADS)
                                     || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_3_IMAGE)) {
                                 channel.setPromoName(String.format("/ - p%s - %s", String.valueOf(position), channel.getHeader().getName()));
-                                channel.setHomeAttribution(String.format("%s - curatedListBanner - %s - $1 - $2", String.valueOf(position), channel.getHeader().getName()));
+                            } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC)
+                                    || channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL)) {
+                                channel.setPosition(position);
                             }
                         }
 
@@ -182,6 +182,19 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                         homeData.isCache()));
                                 HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
                                         list.size(),channel);
+                                break;
+                            case DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC:
+                            case DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL:
+                                list.add(mappingDynamicChannel(
+                                        channel,
+                                        channel.getEnhanceImpressionProductChannelMix(),
+                                        null,
+                                        false,
+                                        homeData.isCache()));
+                                HomeTrackingUtils.homeDiscoveryWidgetImpression(context,
+                                        list.size(),channel);
+
+                                HomePageTracking.eventEnhanceImpressionBanner(context, channel);
                                 break;
                         }
                     }
@@ -337,7 +350,8 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                     spotlightItem.getCtaTextHexcolor(),
                     spotlightItem.getUrl(),
                     spotlightItem.getApplink(),
-                    spotlight.getPromoName()
+                    spotlight.getPromoName(),
+                    spotlight.getChannelId()
                     ));
         }
 

@@ -20,6 +20,7 @@
       address_id:"$address_id"
       preorder:$preorder
       trade_in:$trade_in
+      vehicle_leasing:$vehicle_leasing
   }) {
   ratesv3 {
     id
@@ -113,6 +114,16 @@
                 cod_price
                 cod_text
                 formatted_price
+            }
+            features {
+                ontime_delivery_guarantee {
+                    available
+                    value
+                    text_label
+                    text_detail
+                    url_detail
+                    icon_url
+                }
             }
         }
     }

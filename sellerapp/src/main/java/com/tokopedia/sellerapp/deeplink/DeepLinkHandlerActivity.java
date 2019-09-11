@@ -13,10 +13,13 @@ import com.tokopedia.applink.DeeplinkMapper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
-import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModule;
+import com.tokopedia.chatbot.applink.ChatbotApplinkModuleLoader;
+import com.tokopedia.config.GlobalConfig;
+import com.tokopedia.core.util.RouterUtils;
+import com.tokopedia.sellerapp.SellerRouterApplication;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModuleLoader;
@@ -26,6 +29,8 @@ import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
+import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModuleLoader;
 import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
@@ -34,6 +39,10 @@ import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModule;
 import com.tokopedia.loginregister.common.applink.LoginRegisterApplinkModuleLoader;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModule;
 import com.tokopedia.phoneverification.applink.PhoneVerificationApplinkModuleLoader;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
+import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
+import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -50,8 +59,6 @@ import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModuleLoader;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModule;
-import com.tokopedia.product.detail.applink.ProductDetailApplinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.topads.auto.internal.AutoAdsLinkModule;
@@ -69,8 +76,8 @@ import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModul
 import com.tokopedia.updateinactivephone.applink.ChangeInactivePhoneApplinkModuleLoader;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModule;
 import com.tokopedia.useridentification.applink.UserIdentificationApplinkModuleLoader;
-import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModule;
-import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeeplinkModuleLoader;
+
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 
 /**
  * @author rizkyfadillah on 26/07/17.
@@ -101,9 +108,14 @@ import com.tokopedia.power_merchant.subscribe.applink.PowerMerchantSubscribeDeep
         UserIdentificationApplinkModule.class,
         ChatbotApplinkModule.class,
         PowerMerchantSubscribeDeeplinkModule.class,
-        AutoAdsLinkModule.class
+        AutoAdsLinkModule.class,
+        FlashsaleDeeplinkModule.class
 })
-
+/* **
+ * Navigation will via RouteManager -> manifest instead.
+ * Put new Deeplink directly into the target activity
+ */
+@Deprecated
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
 
@@ -134,7 +146,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new UserIdentificationApplinkModuleLoader(),
                 new ChatbotApplinkModuleLoader(),
                 new PowerMerchantSubscribeDeeplinkModuleLoader(),
-                new AutoAdsLinkModuleLoader()
+                new AutoAdsLinkModuleLoader(),
+                new FlashsaleDeeplinkModuleLoader()
         );
     }
 
@@ -205,7 +218,8 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         if (context == null)
             return null;
 
-        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        Intent intent = RouteManager.getIntent(context,OPEN_SHOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }

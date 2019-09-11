@@ -27,7 +27,7 @@ import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_add_email.*
+import kotlinx.android.synthetic.main.fragment_add_email_setting_profile.*
 import javax.inject.Inject
 
 
@@ -50,7 +50,7 @@ class AddEmailFragment : BaseDaggerFragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_add_email, container, false)
+        val view = inflater.inflate(R.layout.fragment_add_email_setting_profile, container, false)
         return view
     }
 
@@ -187,9 +187,9 @@ class AddEmailFragment : BaseDaggerFragment() {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
             if(otpCode.isNotBlank()) {
                 val email = et_email.text.toString().trim()
-                viewModel.mutateAddEmail(email, otpCode)
+                viewModel.mutateAddEmail(context!!, email, otpCode)
             }else{
-                onErrorAddEmail(MessageErrorException(getString(R.string.default_request_error_unknown),
+                onErrorAddEmail(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
             }
         }

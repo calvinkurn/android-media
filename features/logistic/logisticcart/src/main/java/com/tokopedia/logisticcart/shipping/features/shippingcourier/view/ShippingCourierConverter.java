@@ -2,8 +2,10 @@ package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
+import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.OntimeDeliveryGuarantee;
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -34,15 +36,17 @@ public class ShippingCourierConverter {
                 courierItemData.setUsePinPoint(true);
             }
         }
-        courierItemData.setNow(shippingCourierViewModel.getServiceData().getOrderPriority().getNow());
-        courierItemData.setPriorityPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getPrice());
-        courierItemData.setPriorityFormattedPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getFormattedPrice());
-        courierItemData.setPriorityInnactiveMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getInactiveMessage());
-        courierItemData.setPriorityDurationMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getDurationMessage());
-        courierItemData.setPriorityFeeMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getFeeMessage());
-        courierItemData.setPriorityWarningboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getWarningBoxMessage());
-        courierItemData.setPriorityCheckboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getCheckboxMessage());
-        courierItemData.setPriorityPdpMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getPdpMessage());
+        if (shippingCourierViewModel.getServiceData().getOrderPriority() != null) {
+            courierItemData.setNow(shippingCourierViewModel.getServiceData().getOrderPriority().getNow());
+            courierItemData.setPriorityPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getPrice());
+            courierItemData.setPriorityFormattedPrice(shippingCourierViewModel.getServiceData().getOrderPriority().getFormattedPrice());
+            courierItemData.setPriorityInnactiveMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getInactiveMessage());
+            courierItemData.setPriorityDurationMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getDurationMessage());
+            courierItemData.setPriorityFeeMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getFeeMessage());
+            courierItemData.setPriorityWarningboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getWarningBoxMessage());
+            courierItemData.setPriorityCheckboxMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getCheckboxMessage());
+            courierItemData.setPriorityPdpMessage(shippingCourierViewModel.getServiceData().getOrderPriority().getStaticMessage().getPdpMessage());
+        }
         courierItemData.setAllowDropshiper(shippingCourierViewModel.isAllowDropshipper());
         courierItemData.setAdditionalPrice(shippingCourierViewModel.getAdditionalFee());
         courierItemData.setPromoCode(shippingCourierViewModel.getProductData().getPromoCode());
@@ -50,7 +54,18 @@ public class ShippingCourierConverter {
         courierItemData.setUt(shippingCourierViewModel.getProductData().getUnixTime());
         courierItemData.setBlackboxInfo(shippingCourierViewModel.getBlackboxInfo());
         courierItemData.setSelected(true);
-
+        if (shippingCourierViewModel.getProductData().getFeatures() != null &&
+                shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee() != null) {
+            OntimeDeliveryGuarantee otd_prev = shippingCourierViewModel.getProductData().getFeatures().getOntimeDeliveryGuarantee();
+            OntimeDelivery otd = new OntimeDelivery(
+                    otd_prev.getAvailable(),
+                    otd_prev.getTextLabel(),
+                    otd_prev.getTextDetail(),
+                    otd_prev.getUrlDetail(),
+                    otd_prev.getValue()
+            );
+            courierItemData.setOntimeDelivery(otd);
+        }
         return courierItemData;
     }
 

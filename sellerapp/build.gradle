@@ -136,7 +136,7 @@ android {
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
-            shrinkResources true
+//            shrinkResources true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
             if (allowProguard()) {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
@@ -145,37 +145,37 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-            if (allowSplit()) {
-                applicationVariants.all { variant ->
-                    variant.outputs.each { output ->
-                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
-                    }
-                    variant.assemble.doLast {
-                        variant.outputs.each { output ->
-                            if (output.zipAlign) {
-                                archiveAPK(variant, output);
-                            }
-                        }
-                    }
-                }
-            } else {
+//            if (allowSplit()) {
+//                applicationVariants.all { variant ->
+//                    variant.outputs.each { output ->
+//                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+//                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
+//                    }
+//                    variant.assemble.doLast {
+//                        variant.outputs.each { output ->
+//                            if (output.zipAlign) {
+//                                archiveAPK(variant, output);
+//                            }
+//                        }
+//                    }
+//                }
+//            } else {
                 applicationVariants.all { variant ->
                     variant.outputs.each { output ->
                         output.versionCodeOverride = (getTkpdVersionCode() * 100);
                     }
                 }
-            }
+//            }
         }
     }
 
-    splits {
-        density {
-            enable allowSplit()
-            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-        }
-    }
+//    splits {
+//        density {
+//            enable allowSplit()
+//            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
+//            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
+//        }
+//    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -185,10 +185,7 @@ android {
         versionCode getTkpdVersionCode()
         versionName getTkpdVersionName()
         ndk {
-            abiFilters "armeabi-v7a", "x86"
-        }
-        packagingOptions {
-            exclude "lib/arm64-v8a/libgnustl_shared.so"
+            abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
     }
 
@@ -206,7 +203,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
-        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
     }
 
     // Specifies 4 flavor dimensions.
@@ -226,6 +223,7 @@ android {
             dimension "client"
         }
     }
+    dynamicFeatures = [rootProject.ext.dynamicFeaturesSellerapp.shopSettings]
 }
 
 repositories {
@@ -234,17 +232,10 @@ repositories {
     }
 }
 
-afterEvaluate {
-    dependencies {
-        liveDevImplementation rootProject.ext.instabugDependencies.instabug
-        stagingDevImplementation rootProject.ext.instabugDependencies.instabug
-    }
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation project(rootProject.ext.libraries.url)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.cacheApi)
@@ -252,19 +243,21 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.imagePicker)
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.baseListSeller)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.coreNetwork)
-    implementation project(rootProject.ext.libraries.network)
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.iris)
-    implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.features.shopPage)
@@ -278,6 +271,7 @@ dependencies {
     implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsManagement)
+    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.seller)
     implementation project(rootProject.ext.features.session)
@@ -305,8 +299,8 @@ dependencies {
     implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
-    implementation project(rootProject.ext.libraries.network)
-    implementation project(rootProject.ext.libraries.config)
+    implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
@@ -331,7 +325,6 @@ dependencies {
     implementation project(rootProject.ext.features.commonDigital)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.paymentSetting)
 
@@ -340,6 +333,10 @@ dependencies {
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.loginregister)
     implementation project(rootProject.ext.features.sessioncommon)
+
+    implementation rootProject.ext.unifyDependencies.icon
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 
     implementation(rootProject.ext.debugToolsDependencies.chuck) {
@@ -366,6 +363,7 @@ dependencies {
     }
 
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
 
@@ -415,6 +413,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
 
+    debugImplementation project.ext.debugToolsDependencies.leakCanary
+
     implementation rootProject.ext.butterKnifeDependencies.butterKnife
     annotationProcessor rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
 
@@ -425,5 +425,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation rootProject.ext.testDependencies.junit
-    implementation project(rootProject.ext.libraries.url)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 }

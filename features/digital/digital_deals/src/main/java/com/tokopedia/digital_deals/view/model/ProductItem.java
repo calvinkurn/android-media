@@ -5,8 +5,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.library.baseadapter.BaseItem;
 
-public class ProductItem implements Parcelable {
+public class ProductItem extends BaseItem implements Parcelable {
 
     @SerializedName("display_name")
     @Expose

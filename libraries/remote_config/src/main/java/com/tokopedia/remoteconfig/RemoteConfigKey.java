@@ -21,7 +21,9 @@ public class RemoteConfigKey {
     public static final String MAINAPP_RATING_MESSAGE = "mainapp_rating_message";
 
     public static final String REFERRAL_SUBHEADER = "referral_subheader";
+    public static final String APP_ENABLE_INDI_CHALLENGES = "app_enable_indi_challenges";
     public static final String APP_REFERRAL_TITLE = "app_referral_title";
+    public static final String APP_REFERRAL_SUBTITLE = "app_referral_subtitle";
     public static final String APP_REFERRAL_HOWITWORKS = "app_referral_howitworks";
     public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
     public static final String APP_SHOW_RECOMENDATION_BUTTON = "mainapp_show_recomendation_button";
@@ -43,6 +45,7 @@ public class RemoteConfigKey {
     public static final String SHOW_NEARBY_CABS = "app_uber_show_nearby_cabs";
     public static final String MAINAPP_FLIGHT_TRANSACTION_MENU = "mainapp_flight_transaction_menu";
     public static final String MAINAPP_FLIGHT_NEW_SEARCH_FLOW = "mainapp_flight_new_search_flow";
+    public static final String CUSTOMER_HOTEL_SHOW_PROMO = "android_customer_hotel_show_promo";
     public static final String ANDROID_CUSTOMER_FLIGHT_BOOKING_NEW_FLOW = "android_customer_flight_booking_new_flow";
     public static final String SHOW_IMAGE_SEARCH = "enable_image_search";
     public static final String IMAGE_SEARCH_ONBOARD_DESC = "app_image_search_showcase_message";
@@ -76,6 +79,7 @@ public class RemoteConfigKey {
     public static final String APP_GLOBAL_NAV_NEW_DESIGN = "app_global_nav_new_design";
 
     public static final String IRIS_GTM_ENABLED_TOGGLE = "app_iris_gtm_enabled";
+    public static final String IRIS_LOG_ENABLED_TOGGLE = "android_iris_log_enabled";
     public static final String IRIS_GTM_CONFIG_TOGGLE = "android_customer_iris_config";
 
     public static final String APP_WEBVIEW_RESO_ENABLED_TOGGLE = "android_webview_resolution_enabled";
@@ -106,6 +110,8 @@ public class RemoteConfigKey {
     public static final String OVO_TNC_LINK = "app_ovo_tnc_link";
     public static final String APP_SHOW_CATEGORY_QUICK_FILTERS = "app_show_category_quick_filters";
 
+    public static final String ENABLE_TOPPAY_TIMEOUT = "android_enable_toppay_timeout";
+
     public static final String ENABLE_GLOBAL_NAV_WIDGET = "android_customer_enable_global_nav_widget";
 
     public static final String HOME_GEOLOCATION_COMPONENT_TITLE = "android_customer_home_geolocation_component_title";
@@ -127,6 +133,7 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
+    public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
@@ -135,8 +142,20 @@ public class RemoteConfigKey {
 
     //feed section
     public static final String CONFIG_AUTOPLAY_VIDEO_WIFI = "android_enable_autoplay_video_wifi";
+    public static final String APP_ENABLE_SALDO_LOCK = "app_enable_saldo_lock";
 
     public static final String ANDROID_SPLASH_IMAGE = "android_customer_splashscreen";
 
     public static final String PLAY_PIP = "android_customer_enable_play_pip";
+
+    public static final String CONFIG_ENABLE_NEW_ROUTE_REACT = "android_customer_enable_route_react";
+
+    public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
+    public static final String ENABLE_CASHSHIELD = "android_customer_enable_cashshield";
+
+    public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
+
+    public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
+
+    public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
 }
