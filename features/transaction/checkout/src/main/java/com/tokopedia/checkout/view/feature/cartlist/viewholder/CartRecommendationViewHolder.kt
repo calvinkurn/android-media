@@ -21,48 +21,56 @@ class CartRecommendationViewHolder(val view: View, val actionListener: ActionLis
     }
 
     fun bind(element: CartRecommendationItemHolderData) {
-        itemView.productCardView.setProductNameText(element.recommendationItem.name)
-        itemView.productCardView.setProductNameVisible(true)
-        itemView.productCardView.setLinesProductTitle(2)
-        itemView.productCardView.setPriceText(element.recommendationItem.price)
-        itemView.productCardView.setPriceVisible(true)
-        itemView.productCardView.setImageProductUrl(element.recommendationItem.imageUrl)
-        itemView.productCardView.setImageProductVisible(true)
-        itemView.productCardView.setImageTopAdsVisible(element.recommendationItem.isTopAds)
-        itemView.productCardView.setButtonWishlistVisible(true)
-        itemView.productCardView.setButtonWishlistImage(element.recommendationItem.isWishlist)
-        itemView.productCardView.setButtonWishlistOnClickListener {
-            if (element.recommendationItem.isWishlist) {
-                actionListener.onRemoveFromWishlist(element.recommendationItem.productId.toString())
+        itemView.productCardView.apply {
+            setProductNameText(element.recommendationItem.name)
+            setProductNameVisible(true)
+            setLinesProductTitle(2)
+            setPriceText(element.recommendationItem.price)
+            setPriceVisible(true)
+            setImageProductUrl(element.recommendationItem.imageUrl)
+            setImageProductVisible(true)
+            setImageTopAdsVisible(element.recommendationItem.isTopAds)
+            setButtonWishlistImage(element.recommendationItem.isWishlist)
+            setButtonWishlistVisible(true)
+            setButtonWishlistOnClickListener {
+                if (element.recommendationItem.isWishlist) {
+                    actionListener.onRemoveFromWishlist(element.recommendationItem.productId.toString())
+                } else {
+                    actionListener.onAddToWishlist(element.recommendationItem.productId.toString())
+                }
+            }
+            setRating(element.recommendationItem.rating)
+            setImageRatingVisible(true)
+            setReviewCount(element.recommendationItem.countReview)
+            setReviewCountVisible(true)
+            removeAllShopBadges()
+            if (element.recommendationItem.badgesUrl.isNotEmpty()) {
+                for (url in element.recommendationItem.badgesUrl) {
+                    url?.also {
+                        addShopBadge(generateBadgeView(it))
+                    }
+                }
+                setShopBadgesVisible(true)
             } else {
-                actionListener.onAddToWishlist(element.recommendationItem.productId.toString())
+                setShopBadgesVisible(false)
             }
-        }
-        itemView.productCardView.setRating(element.recommendationItem.rating)
-        itemView.productCardView.setImageRatingVisible(true)
-        itemView.productCardView.setReviewCount(element.recommendationItem.countReview)
-        itemView.productCardView.setReviewCountVisible(true)
-        itemView.productCardView.removeAllShopBadges()
-        if (element.recommendationItem.badgesUrl.isNotEmpty()) {
-            for (url in element.recommendationItem.badgesUrl) {
-                val view = LayoutInflater.from(itemView.context).inflate(com.tokopedia.productcard.R.layout.layout_badge, null)
-                ImageHandler.loadImageFitCenter(itemView.context, view.findViewById(com.tokopedia.productcard.R.id.badge), url)
-                itemView.productCardView.addShopBadge(view)
+            setShopLocationText(element.recommendationItem.location)
+            setShopLocationVisible(true)
+            setAddToCartVisible(true)
+            setAddToCartOnClickListener {
+                actionListener.onButtonAddToCartClicked(element)
             }
-            itemView.productCardView.setShopBadgesVisible(true)
-        } else {
-            itemView.productCardView.setShopBadgesVisible(false)
+            realignLayout()
         }
-        itemView.productCardView.setShopLocationText(element.recommendationItem.location)
-        itemView.productCardView.setShopLocationVisible(true)
-        itemView.productCardView.setAddToCartVisible(true)
-        itemView.productCardView.setAddToCartOnClickListener {
-            actionListener.onButtonAddToCartClicked(element)
-        }
-        itemView.productCardView.realignLayout()
         itemView.setOnClickListener {
             actionListener.onRecommendationProductClicked(element.recommendationItem.productId.toString())
         }
+    }
+
+    private fun generateBadgeView(url: String): View {
+        val badgeView = LayoutInflater.from(itemView.context).inflate(com.tokopedia.productcard.R.layout.layout_badge, null)
+        ImageHandler.loadImageFitCenter(itemView.context, badgeView.findViewById(com.tokopedia.productcard.R.id.badge), url)
+        return badgeView
     }
 
     fun clearImage() {

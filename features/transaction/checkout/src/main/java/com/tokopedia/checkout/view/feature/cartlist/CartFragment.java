@@ -601,7 +601,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (recommendationList != null) {
                 saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
             }
-            if (recommendationSectionTitle != null) {
+            if (!TextUtils.isEmpty(recommendationSectionTitle)) {
                 saveInstanceCacheManager.put(RecommendationWidget.class.getSimpleName(), recommendationSectionTitle);
             }
         }
@@ -2331,12 +2331,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         CartSectionHeaderHolderData cartSectionHeaderHolderData = null;
-        if ((endlessRecyclerViewScrollListener.getCurrentPage() == 0 && recommendationWidget == null) || (recommendationWidget != null && endlessRecyclerViewScrollListener.getCurrentPage() == 1)) {
+        if ((endlessRecyclerViewScrollListener.getCurrentPage() == 0 && recommendationWidget == null) || (recommendationWidget != null && endlessRecyclerViewScrollListener.getCurrentPage() == 1 && TextUtils.isEmpty(recommendationSectionTitle))) {
             cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
             if (recommendationWidget != null && !TextUtils.isEmpty(recommendationWidget.getTitle())) {
                 cartSectionHeaderHolderData.setTitle(recommendationWidget.getTitle());
                 recommendationSectionTitle = recommendationWidget.getTitle();
-            } else if (recommendationSectionTitle != null && !TextUtils.isEmpty(recommendationSectionTitle)) {
+            } else if (!TextUtils.isEmpty(recommendationSectionTitle)) {
                 cartSectionHeaderHolderData.setTitle(recommendationSectionTitle);
             } else {
                 cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
