@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
@@ -627,7 +626,7 @@ public abstract class SearchSectionFragment
 
     protected void removeSearchPageLoading() {
         if (isFirstActiveTab() && searchNavigationListener != null) {
-            searchNavigationListener.onProductLoadingFinished();
+            searchNavigationListener.removeSearchPageLoading();
         }
     }
 }

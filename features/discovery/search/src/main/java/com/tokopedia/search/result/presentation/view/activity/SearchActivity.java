@@ -405,6 +405,7 @@ public class SearchActivity extends BaseActivity
     private void updateSearchParameterBeforeSearch() {
         setSearchParameterUniqueId();
         setSearchParameterUserIdIfLoggedIn();
+        setSearchParameterDefaultActiveTab();
     }
 
     private void setSearchParameterUniqueId() {
@@ -424,6 +425,24 @@ public class SearchActivity extends BaseActivity
         if(userSession.isLoggedIn()) {
             searchParameter.set(SearchApiConst.USER_ID, userSession.getUserId());
         }
+    }
+
+    private void setSearchParameterDefaultActiveTab() {
+        String activeTab = searchParameter.get(SearchApiConst.ACTIVE_TAB);
+
+        if (shouldSetActiveTabToDefault(activeTab)) {
+            searchParameter.set(SearchApiConst.ACTIVE_TAB, SearchConstant.ActiveTab.PRODUCT);
+        }
+    }
+
+    private boolean shouldSetActiveTabToDefault(String activeTab) {
+        List<String> availableSearchTabs = new ArrayList<>();
+        availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
+        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
+        availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
+        availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
+
+        return !availableSearchTabs.contains(activeTab);
     }
 
     protected void onSearchingStart() {
@@ -653,7 +672,7 @@ public class SearchActivity extends BaseActivity
     }
 
     @Override
-    public void onProductLoadingFinished() {
+    public void removeSearchPageLoading() {
         showLoadingView(false);
         showContainer(true);
         showBottomNavigationForActiveTab();

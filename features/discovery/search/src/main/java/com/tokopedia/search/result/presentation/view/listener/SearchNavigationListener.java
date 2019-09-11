@@ -8,7 +8,7 @@ public interface SearchNavigationListener {
 
     void refreshMenuItemGridIcon(int titleResId, int iconResId);
 
-    void onProductLoadingFinished();
+    void removeSearchPageLoading();
 
     interface ClickListener {
         void onFilterClick();

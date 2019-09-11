@@ -416,7 +416,7 @@ class ProfileListFragment :
 
     private fun removeSearchPageLoading() {
         if (isFirstActiveTab()) {
-            searchNavigationListener.onProductLoadingFinished()
+            searchNavigationListener.removeSearchPageLoading()
         }
     }
 }
