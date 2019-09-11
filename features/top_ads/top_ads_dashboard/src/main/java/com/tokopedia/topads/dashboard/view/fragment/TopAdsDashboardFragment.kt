@@ -27,7 +27,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
+import com.tokopedia.applink.AppUtil
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.label.LabelView
@@ -313,7 +316,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 }
                 startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
             } else {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
+                openDashboard()
             }
         }
 
@@ -325,8 +328,16 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
             if (GlobalConfig.isSellerApp()) {
                 startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_PRODUCT_ADS_LIST), REQUEST_CODE_AD_STATUS)
             } else {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
+                openDashboard()
             }}
+    }
+
+    private fun openDashboard() {
+        if (AppUtil.isSellerInstalled(context)) {
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
+        } else {
+            RouteManager.route(context, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
+        }
     }
 
     private fun onSummaryGroupClicked() {
@@ -340,7 +351,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 }
                 startActivityForResult(intent, REQUEST_CODE_AD_STATUS)
             } else {
-                RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
+                openDashboard()
             }
         }
     }
