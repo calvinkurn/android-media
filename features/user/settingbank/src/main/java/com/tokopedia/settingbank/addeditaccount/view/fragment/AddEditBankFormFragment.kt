@@ -183,7 +183,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             val bankAccountImage: ImageView = bottomLayout.findViewById(R.id.bank_account_image)
             ImageHandler.LoadImage(bankAccountImage, SettingBankUrl.Companion.IMAGE_BOTTOM_DIALOG_ADD_ACCOUNT)
 
-            val closeButton: ImageView = bottomLayout.findViewById(com.tokopedia.design.R.id.close_button)
+            val closeButton: ImageView = bottomLayout.findViewById(com.tokopedia.settingbank.R.id.close_button)
             closeButton.setOnClickListener({ bottomInfoDialog.dismiss() })
 
         }
