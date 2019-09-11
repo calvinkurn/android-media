@@ -133,7 +133,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
         val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
         val appLinkIntent = RouteManager.getIntent(context.applicationContext, baseNotificationModel.appLink?:ApplinkConst.HOME)
-        appLinkIntent.putExtras(intent.extras!!)
+        intent.extras?.let { bundle->
+            appLinkIntent.putExtras(bundle)
+        }
         startActivity(context, appLinkIntent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
@@ -147,7 +149,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun handleProductClick(context: Context, intent: Intent, notificationId: Int) {
         val productInfo: ProductInfo = intent.getParcelableExtra(CMConstant.EXTRA_PRODUCT_INFO)
         val appLinkIntent = RouteManager.getIntent(context.applicationContext, productInfo.appLink?:ApplinkConst.HOME)
-        appLinkIntent.putExtras(intent.extras!!)
+        intent.extras?.let { bundle->
+            appLinkIntent.putExtras(bundle)
+        }
         startActivity(context, appLinkIntent)
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
@@ -179,7 +183,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
         context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         val grid: Grid = intent.getParcelableExtra(CMConstant.ReceiverExtraData.EXTRA_GRID_DATA)
         val appLinkIntent = RouteManager.getIntent(context.applicationContext, grid.appLink?:ApplinkConst.HOME)
-        appLinkIntent.putExtras(intent.extras!!)
+        intent.extras?.let {
+            appLinkIntent.putExtras(it)
+        }
         startActivity(context, appLinkIntent)
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
@@ -203,7 +209,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         persistentButton.text?:"", persistentButton.appLink?:"")
             }
             val appLinkIntent = RouteManager.getIntent(context.applicationContext, persistentButton.appLink?:ApplinkConst.HOME)
-            appLinkIntent.putExtras(intent.extras!!)
+            intent.extras?.let {
+                appLinkIntent.putExtras(it)
+            }
             startActivity(context, appLinkIntent)
         }
     }
@@ -233,7 +241,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                 handleShareActionButtonClick(context, it)
             } ?: let {
                 val appLinkIntent = RouteManager.getIntent(context.applicationContext, it.appLink?:ApplinkConst.HOME)
-                appLinkIntent.putExtras(intent.extras!!)
+                intent.extras?.let { bundle->
+                    appLinkIntent.putExtras(bundle)
+                }
                 startActivity(context, appLinkIntent)
             }
         }
@@ -244,7 +254,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
     private fun handleCarouselImageClick(context: Context, intent: Intent, notificationId: Int) {
         var (appLink) = intent.getParcelableExtra<Carousel>(CMConstant.ReceiverExtraData.CAROUSEL_DATA_ITEM)
         val appLinkIntent = RouteManager.getIntent(context.applicationContext, appLink?:ApplinkConst.HOME)
-        appLinkIntent.putExtras(intent.extras!!)
+        intent.extras?.let { bundle->
+            appLinkIntent.putExtras(bundle)
+        }
         startActivity(context, appLinkIntent)
         NotificationManagerCompat.from(context.applicationContext).cancel(notificationId)
         context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
