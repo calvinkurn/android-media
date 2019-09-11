@@ -4,6 +4,8 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.view.MenuItem;
 
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
@@ -26,6 +28,9 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     public static final String TRADEIN_MONEY_IN = "money-in";
     protected String TRADEIN_TEST_TYPE = TRADEIN_EXCHANGE;
     protected int TRADEIN_TYPE = TRADEIN_OFFLINE;
+    protected String clickEvent = TradeInGTMConstants.ACTION_CLICK_TRADEIN;
+    protected String viewEvent = TradeInGTMConstants.ACTION_VIEW_TRADEIN;
+    protected String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
 
 
     @Override
@@ -65,6 +70,16 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
             TRADEIN_TEST_TYPE = TRADEIN_MONEY_IN;
         }
         setSupportActionBar(toolbar);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
+        super.onCreate(savedInstanceState, persistentState);
+        if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
+            clickEvent = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
+            viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
+            category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
+        }
     }
 
     protected String getDeviceId() {

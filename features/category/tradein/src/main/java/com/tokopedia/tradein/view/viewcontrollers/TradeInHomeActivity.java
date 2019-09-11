@@ -53,9 +53,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private int closeButtonText;
     private int tncStringId;
     private boolean isShowingPermissionPopup;
-    private String clickEvent = TradeInGTMConstants.ACTION_CLICK_TRADEIN;
-    private String viewEvent = TradeInGTMConstants.ACTION_VIEW_TRADEIN;
-    private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -130,9 +127,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
             tncStringId = R.string.money_in_tnc;
-            clickEvent = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
-            viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
-            category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
         } else {
             closeButtonText = R.string.go_to_product_details;
             tncStringId = R.string.tradein_tnc;
