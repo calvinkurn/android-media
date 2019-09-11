@@ -112,6 +112,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -1878,6 +1879,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @Override
     public void sendAnalyticsScreenName(String screenName) {
         cartPageAnalytics.sendScreenName(getActivity(), screenName);
+        Map<String, String> params = new HashMap<>();
+        params.put("deeplinkUrl", ApplinkConst.CART);
+
+        cartPageAnalytics.sendScreenNameV5(screenName, params);
     }
 
     @Override

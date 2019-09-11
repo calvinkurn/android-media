@@ -125,6 +125,7 @@ import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -1572,6 +1573,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsScreenName(String screenName) {
         checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), screenName);
+        if (screenName.equalsIgnoreCase(ConstantTransactionAnalytics.ScreenName.ONE_CLICK_SHIPMENT) ||
+                screenName.equalsIgnoreCase(ConstantTransactionAnalytics.ScreenName.CHECKOUT)) {
+            Map<String, String> params = new HashMap<>();
+            params.put("deeplinkUrl", ApplinkConst.CHECKOUT);
+            checkoutAnalyticsCourierSelection.sendScreenNameV5(screenName, params);
+        }
     }
 
     @Override

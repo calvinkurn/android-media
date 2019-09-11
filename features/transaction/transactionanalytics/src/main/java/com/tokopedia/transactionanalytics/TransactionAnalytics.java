@@ -25,6 +25,10 @@ public abstract class TransactionAnalytics {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
+    public void sendScreenNameV5(String screenName, Map<String, String> params) {
+        TrackApp.getInstance().getGTM().sendScreenV5(screenName, params);
+    }
+
     void sendEventCategoryActionLabel(String event, String eventCategory,
                                       String eventAction, String eventLabel) {
 
