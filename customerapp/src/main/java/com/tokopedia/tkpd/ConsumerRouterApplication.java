@@ -2747,12 +2747,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, BottomSheets.BottomSheetDismissListener dismissListener) {
-        if (fragmentManager != null) {
-            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-            rating.setDialogDismissListener(dismissListener);
-            rating.show(fragmentManager, "AppFeedbackRatingBottomSheet");
-        }
+    public void showAppFeedbackRatingDialog(
+            FragmentManager manager,
+            Context context,
+            BottomSheets.BottomSheetDismissListener dismissListener
+    ) {
+        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+        rating.setDialogDismissListener(dismissListener);
+        rating.showDialog(manager, context);
     }
 
     @Override

@@ -180,6 +180,7 @@ public interface ApplinkConst {
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
+
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
@@ -228,7 +229,6 @@ public interface ApplinkConst {
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
     String KYC = "tokopedia://kyc";
-    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";
