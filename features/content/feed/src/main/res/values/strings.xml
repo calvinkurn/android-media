@@ -84,4 +84,6 @@
     <string name="create_post_as">Buat Sebagai</string>
     <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
     <string name="feed_create_post_shop">Buat Post Toko</string>
+
+    <string name="recommendation_for_you">Rekomendasi Untukmu</string>
 </resources>
