@@ -2,7 +2,7 @@ package com.tokopedia.flight.booking.di;
 
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.review.domain.FlightCancelVoucherUseCase;
+import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase;
 import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
