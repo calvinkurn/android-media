@@ -113,6 +113,8 @@ public abstract class SearchSectionFragment
         initLayoutManager();
         initSwipeToRefresh(view);
         restoreInstanceState(savedInstanceState);
+        onViewCreatedBeforeLoadData(view, savedInstanceState);
+
         startToLoadDataForFirstFragmentPosition();
     }
 
@@ -127,10 +129,12 @@ public abstract class SearchSectionFragment
         }
     }
 
+    protected abstract void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState);
+
     private void startToLoadDataForFirstFragmentPosition() {
         if (getFragmentPosition() == 0) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
 
@@ -227,7 +231,7 @@ public abstract class SearchSectionFragment
     private void startToLoadData() {
         if (canStartToLoadData()) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
 
