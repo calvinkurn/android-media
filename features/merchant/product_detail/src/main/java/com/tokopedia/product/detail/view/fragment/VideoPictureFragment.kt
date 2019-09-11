@@ -3,11 +3,11 @@ package com.tokopedia.product.detail.view.fragment
 import android.content.Context
 import android.content.res.Configuration
 import android.net.Uri
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -98,19 +98,11 @@ class VideoPictureFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.video_picture_view, container, false)
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         view.setOnClickListener {
             onPictureClickListener?.invoke(mediaPosition)
-        }
-
-        video_player_pdp.setOnTouchListener { v, event ->
-            if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                onPictureClickListener?.invoke(mediaPosition)
-            }
-            false
         }
 
         if (mediaSource.isBlank()) return
@@ -232,6 +224,21 @@ class VideoPictureFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun isConnectedToWifi(): Boolean {
+        val wifi: WifiManager = context?.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        if (wifi.isWifiEnabled) {
+            val wifiInfo = wifi.connectionInfo
+
+            if (wifiInfo.networkId == -1) {
+                return false
+            }
+
+            return true
+        } else {
+            return false
+        }
+    }
+
     private fun initPlayer(url: Uri?, protocol: VideoSourceProtocol) {
         if (url == null) return
 
@@ -240,7 +247,13 @@ class VideoPictureFragment : BaseDaggerFragment() {
             video_player_pdp.useController = true
             video_player_pdp.player = mExoPlayer
             mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF
-            mExoPlayer?.playWhenReady = isReadyPlayed
+
+            if (isConnectedToWifi()) {
+                mExoPlayer?.playWhenReady = isReadyPlayed
+            } else {
+                mExoPlayer?.playWhenReady = false
+            }
+
             val isHasStartPosition = currentWindowIndex != C.INDEX_UNSET
             if (isHasStartPosition) {
                 mExoPlayer?.seekTo(currentWindowIndex, currentPosition)
