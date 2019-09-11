@@ -206,6 +206,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         val contact = TravelUpsertContactModel.Contact()
         contact.firstName = getFirstName()
         contact.lastName = getLastName()
+        contact.title = getPassengerTitle()
         if (isMandatoryDoB() || !isDomestic) contact.birthDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
         if (!isDomestic) {
             contact.nationality = passengerModel.passportNationality.countryId
@@ -273,11 +274,11 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     }
 
     fun renderPassengerTitle(passengerTitle: String) {
-        rv_passenger_title.onResetChip()
         when (passengerTitle) {
             FlightPassengerTitle.TUAN -> rv_passenger_title.initiallySelectedChip(0)
             FlightPassengerTitle.NYONYA -> rv_passenger_title.initiallySelectedChip(1)
             FlightPassengerTitle.NONA -> rv_passenger_title.initiallySelectedChip(2)
+            else -> rv_passenger_title.adapter.resetChipSelected()
         }
     }
 
