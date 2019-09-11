@@ -67,7 +67,7 @@
                                 android:layout_height="@dimen/dp_48"
                                 android:layout_marginStart="@dimen/tp_margin_medium"
                                 android:layout_marginLeft="@dimen/tp_margin_medium"
-                                android:layout_marginTop="80dp"
+                                android:layout_marginTop="90dp"
                                 android:contentDescription="@string/tp_label_see_loyalty" />
 
                             <TextView
