@@ -6,11 +6,13 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.Menu
@@ -24,6 +26,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -36,6 +39,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -124,6 +128,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val SHOP_LOCATION_PLACEHOLDER = "{{shop_location}}"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
+        private const val REQUEST_CODE_USER_LOGIN_CART = 102
         private const val VIEW_CONTENT = 1
         private const val VIEW_LOADING = 2
         private const val VIEW_ERROR = 3
@@ -370,9 +375,27 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return true
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val userSession = UserSession(this)
+        if (userSession.isLoggedIn) {
+            val drawable = ContextCompat.getDrawable(this, R.drawable.ic_cart_menu)
+            if (drawable is LayerDrawable) {
+                val countDrawable = CountDrawable(this)
+                val cartCount = LocalCacheHandler(this, "CART").getInt("CACHE_TOTAL_CART", 0)
+                countDrawable.setCount(cartCount.toString())
+                drawable.mutate()
+                drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
+                menu?.findItem(R.id.action_cart)?.icon = drawable
+            }
+        }
+        return true
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_share) {
             onShareShop()
+        } else if (item.itemId == R.id.action_cart) {
+            goToCart()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -396,6 +419,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     shopId, it.shopCore.url, shopShareMsg)
         }
 
+    }
+
+    private fun goToCart() {
+        val userSession = UserSession(this)
+        if (userSession.isLoggedIn) {
+            startActivity(RouteManager.getIntent(this, ApplinkConst.CART))
+        } else {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                    REQUEST_CODE_USER_LOGIN_CART)
+        }
     }
 
     override fun onBackPressed() {
@@ -577,6 +610,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         } else if (requestCode == REQUEST_CODE_FOLLOW) {
             if (resultCode == Activity.RESULT_OK) {
                 refreshData()
+            }
+        } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
+            if (resultCode == Activity.RESULT_OK) {
+                goToCart()
             }
         }
     }
