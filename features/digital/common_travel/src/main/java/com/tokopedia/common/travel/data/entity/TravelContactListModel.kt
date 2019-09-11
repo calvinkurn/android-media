@@ -66,7 +66,7 @@ data class TravelContactListModel (
 
             @SerializedName("phoneCountryCode")
             @Expose
-            val phoneCountryCode: Int = 0,
+            val phoneCountryCode: Int = 62,
 
             @SerializedName("phoneNumber")
             @Expose
@@ -83,18 +83,6 @@ data class TravelContactListModel (
             override fun toString(): String {
                     return if (fullName.isNotBlank()) "$shortTitle $fullName"
                     else "$firstName $lastName"
-            }
-
-            override fun equals(other: Any?): Boolean {
-                    return if (other is Contact) {
-                            (this.uuid.equals(other.uuid)) && (this.type.equals(other.type)) &&
-                                    (this.titleID.equals(other.titleID)) && (this.title.equals(other.title)) &&
-                                    (this.shortTitle.equals(other.shortTitle)) && (this.firstName.equals(other.firstName)) &&
-                                    (this.lastName.equals(other.lastName)) && (this.fullName.equals(other.fullName)) &&
-                                    (this.gender.equals(other.gender)) && (this.birthDate.equals(other.birthDate)) &&
-                                    (this.nationality.equals(other.nationality)) && (this.phoneNumber.equals(other.phoneNumber)) &&
-                                    (this.email.equals(other.email)) && (this.idList.equals(other.idList))
-                    } else false
             }
     }
 }
