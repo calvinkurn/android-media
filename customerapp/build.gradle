@@ -243,9 +243,11 @@ android {
         }
     }
 
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
-//                       rootProject.ext.dynamicFeatures.profileCompletion,
-//                       rootProject.ext.dynamicFeatures.shopOpen
+    dynamicFeatures = [
+            rootProject.ext.dynamicFeatures.shopSettings,
+//          rootProject.ext.dynamicFeatures.digitalTopup
+//          rootProject.ext.dynamicFeatures.profileCompletion,
+//          rootProject.ext.dynamicFeatures.shopOpen
     ]
 }
 

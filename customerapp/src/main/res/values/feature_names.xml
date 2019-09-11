@@ -7,6 +7,8 @@
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
+
+    <string name="title_digital_topup">Digital Topup</string>
     <string name="title_profile_completion">Lengkapi Profil</string>
     <string name="title_change_gender">Tambah Jenis Kelamin</string>
     <string name="title_add_phone">Tambah Nomor Ponsel</string>
