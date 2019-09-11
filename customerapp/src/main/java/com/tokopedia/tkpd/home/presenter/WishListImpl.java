@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
+import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -124,7 +125,8 @@ public class WishListImpl implements WishList {
         userSession = new UserSession(context);
         addToCartUseCase = new AddToCartUseCase(
                 GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart),
-                new GraphqlUseCase()
+                new GraphqlUseCase(),
+                new AddToCartDataMapper()
         );
         getRecommendationUseCase = new GetRecommendationUseCase(GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_recommendation_widget), new GraphqlUseCase(), new UserSession(context));
