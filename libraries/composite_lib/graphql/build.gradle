@@ -38,6 +38,7 @@ project.ext {
 
 
 dependencies {
+    implementation "com.tokopedia.akamai:akamai_bot_lib:1.0.0"
     implementation "com.tokopedia.usecase:usecase:1.0.1"
     implementation rootProject.ext.miscDependencies.gson
     implementation "com.tokopedia.url:url:1.0.1"
