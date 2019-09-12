@@ -273,13 +273,14 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         }
     }
 
-    fun renderPassengerTitle(passengerTitle: String) {
-        when (passengerTitle) {
-            FlightPassengerTitle.TUAN -> rv_passenger_title.initiallySelectedChip(0)
-            FlightPassengerTitle.NYONYA -> rv_passenger_title.initiallySelectedChip(1)
-            FlightPassengerTitle.NONA -> rv_passenger_title.initiallySelectedChip(2)
-            else -> rv_passenger_title.adapter.resetChipSelected()
-        }
+    private fun renderPassengerTitle(passengerTitle: String) {
+        if (passengerTitle.equals(FlightPassengerTitle.TUAN, true))
+            rv_passenger_title.initiallySelectedChip(0)
+        else if (passengerTitle.equals(FlightPassengerTitle.NYONYA, true))
+            rv_passenger_title.initiallySelectedChip(1)
+        else if (passengerTitle.equals(FlightPassengerTitle.NONA, true))
+            rv_passenger_title.initiallySelectedChip(2)
+        else rv_passenger_title.onResetChip()
     }
 
     fun onPassportExpiredClicked() {
