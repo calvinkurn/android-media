@@ -1,15 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Travel & Hotel-->
     <string name="title_hotel_travel">Hotel</string>
-    <string name="title_setting_profile">Data Diri</string>
-    <string name="app_name_setting_profile">Data Diri</string>
     <string name="hotel_app_name">Hotel</string>
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
+    <string name="title_activity_developer_options">DeveloperOptions</string>
+
+    <!--Profile completion-->
+    <string name="title_module_setting_profile">Data Diri Module</string>
+    <string name="title_setting_profile">Data Diri</string>
     <string name="title_profile_completion">Lengkapi Profil</string>
     <string name="title_change_gender">Tambah Jenis Kelamin</string>
     <string name="title_add_phone">Tambah Nomor Ponsel</string>
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
-    <string name="title_activity_developer_options">DeveloperOptions</string>
+
+    <!--TopAds Dashboard-->
+    <string name="title_module_top_ads_dashboard">TopAds Module</string>
+    <string name="top_ads_title_dashboard">TopAds</string>
+    <string name="title_top_ads_add_credit">Tambah Kredit TopAds</string>
+    <string name="title_top_ads_credit_history">Riwayat Kredit</string>
+    <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
+    <string name="topads_menu_seller_centre">Seller Center</string>
 </resources>

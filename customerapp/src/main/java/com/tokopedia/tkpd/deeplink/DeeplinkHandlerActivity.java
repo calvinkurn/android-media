@@ -141,8 +141,6 @@ import com.tokopedia.tokopoints.TokopointApplinkModule;
 import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
 import com.tokopedia.topads.auto.internal.AutoAdsLinkModule;
 import com.tokopedia.topads.auto.internal.AutoAdsLinkModuleLoader;
-import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
-import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
@@ -229,7 +227,6 @@ import rx.schedulers.Schedulers;
         OvoPayWithQrApplinkModule.class,
         WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class,
-        TopAdsDashboardApplinkModule.class,
         AutoAdsLinkModule.class,
         PowerMerchantSubscribeDeeplinkModule.class
 })
@@ -303,7 +300,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoPayWithQrApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader(),
-                    new TopAdsDashboardApplinkModuleLoader(),
                     new AutoAdsLinkModuleLoader(),
                     new PowerMerchantSubscribeDeeplinkModuleLoader()
             );

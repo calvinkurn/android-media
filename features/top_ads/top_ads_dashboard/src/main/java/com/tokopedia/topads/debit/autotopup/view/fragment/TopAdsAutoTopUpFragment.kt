@@ -75,7 +75,7 @@ class TopAdsAutoTopUpFragment:
             sendResultIntentOk()
         } else {
             ToasterError.make(view, ErrorHandler.getErrorMessage(context, it.throwable))
-                    .setAction(R.string.close){}.show()
+                    .setAction(com.tokopedia.abstraction.R.string.close){}.show()
         }
     }
 

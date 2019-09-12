@@ -42,7 +42,7 @@ class TopAdsAddCreditFragment : BaseListFragment<DataCredit, TopAdsCreditTypeFac
     }
 
     private fun initErrorNetworkViewModel() {
-        adapter.errorNetworkModel = ErrorNetworkModel().apply { iconDrawableRes = R.drawable.ic_error_network }
+        adapter.errorNetworkModel = ErrorNetworkModel().apply { iconDrawableRes = com.tokopedia.abstraction.R.drawable.ic_error_network }
     }
 
     override fun loadData(page: Int) {

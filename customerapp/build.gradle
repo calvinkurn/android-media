@@ -245,6 +245,7 @@ android {
 
     dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
 //                       rootProject.ext.dynamicFeatures.profileCompletion
+                       rootProject.ext.dynamicFeatures.topAdsDashboard
     ]
 
 }
@@ -301,7 +302,7 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
-    implementation project(rootProject.ext.features.topAdsDashboard)
+//    implementation project(rootProject.ext.features.topAdsDashboard)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.features.goldMerchantCommon)

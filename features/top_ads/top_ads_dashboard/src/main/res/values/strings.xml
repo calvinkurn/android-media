@@ -105,4 +105,5 @@
     <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
     <string name="tooltip_auto_topup_descr">Kredit TopAds akan terisi secara otomatis dari Saldo Tokopedia.</string>
     <string name="auto_topup_success_changed">Status Auto Top Up Berhasil Diperbaharui</string>
+    <string name="next">Selanjutnya</string>
 </resources>

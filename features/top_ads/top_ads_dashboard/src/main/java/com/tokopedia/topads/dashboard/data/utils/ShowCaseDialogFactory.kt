@@ -1,7 +1,6 @@
 package com.tokopedia.topads.dashboard.data.utils
 
 import com.tokopedia.showcase.ShowCaseBuilder
-import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.topads.dashboard.R
 
 /**
@@ -12,22 +11,22 @@ object ShowCaseDialogFactory {
 
     @JvmStatic
     fun createTkpdShowCase() = ShowCaseBuilder()
-                .customView(R.layout.item_top_ads_show_case)
-                .titleTextColorRes(R.color.white)
-                .spacingRes(R.dimen.spacing_show_case)
-                .arrowWidth(R.dimen.arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
-                .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
-                .textSizeRes(R.dimen.fontvs)
-                .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
+                .customView(R.layout.topads_dashboard_item_show_case)
+                .titleTextColorRes(com.tokopedia.topads.auto.R.color.white)
+                .spacingRes(com.tokopedia.core2.R.dimen.spacing_show_case)
+                .arrowWidth(com.tokopedia.core2.R.dimen.arrow_width_show_case)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .textSizeRes(com.tokopedia.core2.R.dimen.fontvs)
+                .circleIndicatorBackgroundDrawableRes(R.drawable.topads_selector_circle_green)
                 .prevStringRes(R.string.label_back)
                 .nextStringRes(R.string.next)
-                .finishStringRes(R.string.title_done)
+                .finishStringRes(com.tokopedia.core2.R.string.title_done)
                 .useCircleIndicator(true)
                 .clickable(true)
                 .useArrow(true)
                 .useSkipWord(true)
-                .skipStringRes(R.string.title_skip_2)
+                .skipStringRes(com.tokopedia.core2.R.string.title_skip_2)
                 .build()
 }

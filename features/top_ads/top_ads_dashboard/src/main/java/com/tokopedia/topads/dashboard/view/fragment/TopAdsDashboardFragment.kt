@@ -201,7 +201,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 }}}
 
         snackbarRetry = NetworkErrorHelper.createSnackbarWithAction(activity) { loadData() }
-        snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, R.color.green_400))
+        snackbarRetry?.setColorActionRetry(ContextCompat.getColor(activity!!, com.tokopedia.design.R.color.green_400))
         setHasOptionsMenu(true)
     }
 
@@ -371,7 +371,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         swipe_refresh_layout.isRefreshing = true
         topAdsDashboardPresenter.clearTotalAdCache()
         topAdsDashboardPresenter.getAutoTopUpStatus(GraphqlHelper.loadRawString(resources, R.raw.gql_query_get_status_auto_topup))
-        topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(resources, R.raw.gql_get_deposit))
+        topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.gql_get_deposit))
         topAdsDashboardPresenter.getShopInfo()
         topAdsDashboardPresenter.getTickerTopAds(resources)
     }
@@ -668,7 +668,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
                 setTitle(getString(R.string.label_topads_automatic_topup) + ": " + data.statusDesc)
                 setDesc(getString(R.string.tooltip_auto_topup_descr))
                 setWithIcon(false)
-                setTextButton(getString(R.string.label_manage))
+                setTextButton(getString(com.tokopedia.design.R.string.label_manage))
                 btnAction.setOnClickListener { gotoAutoTopup(); dismiss() }
             }.show()
         }
@@ -713,7 +713,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     protected fun showBottomSheetStatisticTypeOptions() {
         val checkedBottomSheetMenu = TopAdsMenuBottomSheets()
                 .setMode(TopAdsOptionMenuAdapter.MODE_CHECKABLE)
-                .setTitle(getString(R.string.drawer_title_statistic))
+                .setTitle(getString(com.tokopedia.core2.R.string.drawer_title_statistic))
 
         checkedBottomSheetMenu.setMenuItemSelected(TopAdsMenuBottomSheets.OnMenuItemSelected { itemId ->
             checkedBottomSheetMenu.dismiss()
@@ -811,7 +811,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         activity?.let {
             val menus = Menus(it)
             menus.setItemMenuList(R.array.top_ads_dashboard_menu_more)
-            menus.setActionText(getString(R.string.close))
+            menus.setActionText(getString(com.tokopedia.abstraction.R.string.close))
             menus.setOnActionClickListener { menus.dismiss() }
 
             menus.setOnItemMenuClickListener { itemMenus, pos ->

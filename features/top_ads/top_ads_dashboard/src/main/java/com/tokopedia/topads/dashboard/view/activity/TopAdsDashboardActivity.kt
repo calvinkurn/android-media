@@ -97,7 +97,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         showCaseDialog.setShowCaseStepListener { previousStep, nextStep, showCaseObject -> false }
 
         val showCaseList = ArrayList<ShowCaseObject>()
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val toolbar = findViewById<Toolbar>(com.tokopedia.product.manage.item.R.id.toolbar)
         if (toolbar.height > 0) {
             val height = toolbar.height
             val width = toolbar.width
@@ -107,7 +107,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                         getString(R.string.topads_showcase_home_title_3),
                         getString(R.string.topads_showcase_home_desc_3),
                         ShowCaseContentPosition.UNDEFINED,
-                        R.color.white, fragment.scrollView))
+                        com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
             }
             if (fragment.isContentVisible) {
                 if (fragment.contentStatisticsView != null) {
@@ -115,7 +115,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                             getString(R.string.topads_showcase_home_title_7),
                             getString(R.string.topads_showcase_home_desc_5),
                             ShowCaseContentPosition.UNDEFINED,
-                            R.color.white, fragment.scrollView))
+                            com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
                 }
 
                 if (fragment.groupSummaryLabelView != null && !isAutoAds) {
@@ -123,14 +123,14 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                             getString(R.string.topads_showcase_home_title_8),
                             getString(R.string.topads_showcase_home_desc_8),
                             ShowCaseContentPosition.UNDEFINED,
-                            R.color.white, fragment.scrollView))
+                            com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
                 }
                 if (fragment.viewGroupPromo != null && !isAutoAds) {
                     showCaseList.add(ShowCaseObject(fragment.viewGroupPromo,
                             getString(R.string.topads_showcase_home_title_1),
                             getString(R.string.topads_showcase_home_desc_1),
                             ShowCaseContentPosition.UNDEFINED,
-                            R.color.white, fragment.scrollView))
+                            com.tokopedia.topads.auto.R.color.white, fragment.scrollView))
                 }
             }
 
@@ -139,7 +139,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
                         getString(R.string.topads_showcase_home_title_6),
                         getString(R.string.topads_showcase_home_desc_6),
                         ShowCaseContentPosition.UNDEFINED,
-                        R.color.white))
+                        com.tokopedia.topads.auto.R.color.white))
             }
 
             showCaseList.add(
@@ -188,7 +188,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AutoAdsWidgetView.REQUEST_KEY_AUTOADS_WIDGET && resultCode == Activity.RESULT_OK) {
-            ToasterAutoAds.showClose(this, getString(R.string.toaster_inactive_success), onClick = {
+            ToasterAutoAds.showClose(this, getString(com.tokopedia.topads.auto.R.string.toaster_inactive_success), onClick = {
                 val fragment = (supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment)
                 fragment.loadData()
                 fragment.loadAutoAds()
