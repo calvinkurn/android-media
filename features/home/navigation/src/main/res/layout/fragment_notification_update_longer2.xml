@@ -5,7 +5,9 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingStart="@dimen/dp_16"
+    android:paddingEnd="@dimen/dp_16">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/layoutBottomSheet"
@@ -13,23 +15,16 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <RelativeLayout
-            android:id="@+id/btnAnchorTop"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_gravity="top"
-            android:background="@color/white"
-            android:clickable="true"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/content_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/content_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20sp" />
-        </RelativeLayout>
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Title"
+            app:typographyType="heading_1"
+            android:textColor="@color/charcoal_grey_88"/>
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/scroll_main"
@@ -37,11 +32,10 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnAnchorTop"
+            app:layout_constraintTop_toBottomOf="@+id/content_title"
             app:layout_constraintVertical_bias="0">
 
             <LinearLayout
-                android:id="@+id/lin_upper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -53,27 +47,27 @@
                     android:layout_gravity="center"
                     android:src="@color/colorAccent" />
 
-                <TextView
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dp_16" />
+                
+                <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/content_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/dp_288"
-                    tools:text="@string/dummy_longer_content"/>
+                    tools:text="@string/dummy_longer_content" />
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
     </android.support.constraint.ConstraintLayout>
 
-    <RelativeLayout
-        android:id="@+id/btnAnchor"
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/cta_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/white">
+        android:text="Button"
+        android:layout_marginBottom="@dimen/dp_16"/>
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </RelativeLayout>
 
 </FrameLayout>
