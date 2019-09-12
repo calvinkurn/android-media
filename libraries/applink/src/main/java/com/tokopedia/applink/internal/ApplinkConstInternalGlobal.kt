@@ -80,6 +80,13 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
 
+    // UserIdentificationInfoActivity
+    // tokopedia-android-internal://global/user-identification-info
+    @JvmField
+    val USER_IDENTIFICATION_INFO = "$INTERNAL_GLOBAL/user-identification-info"
+    @JvmField
+    val PARAM_SOURCE_KYC_SELLER = "seller"
+
     // ChangeGenderActivity
     // tokopedia-android-internal://global/change-gender
     @JvmField

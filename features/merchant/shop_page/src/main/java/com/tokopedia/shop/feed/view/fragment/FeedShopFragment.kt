@@ -23,6 +23,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.util.FeedScrollListener
@@ -38,6 +39,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -95,6 +97,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     lateinit var postTagAnalytics: PostTagAnalytics
 
     @Inject
+    lateinit var feedAnalytics: FeedAnalyticTracker
+
+    @Inject
     lateinit var shopAnalytics: ShopAnalytics
 
     companion object {
@@ -133,6 +138,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        feedAnalytics.sendPendingAnalytics()
     }
 
     override fun onDestroy() {
@@ -581,6 +591,18 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
+    }
+
+    override fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel) {
+
+    }
+
+    override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
+        feedAnalytics.eventShopPageClickReadMore(
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType
+        )
     }
 
     fun hideFAB() {

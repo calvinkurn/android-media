@@ -125,8 +125,6 @@ import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.shop.open.applink.ShopOpenApplinkModule;
-import com.tokopedia.shop.open.applink.ShopOpenApplinkModuleLoader;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
@@ -170,7 +168,6 @@ import rx.schedulers.Schedulers;
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         ReferralDeeplinkModule.class,
-        ShopOpenApplinkModule.class,
         SellerApplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
@@ -243,7 +240,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new CoreDeeplinkModuleLoader(),
                     new InboxDeeplinkModuleLoader(),
                     new ReferralDeeplinkModuleLoader(),
-                    new ShopOpenApplinkModuleLoader(),
                     new OvoUpgradeDeeplinkModuleLoader(),
                     new SellerApplinkModuleLoader(),
                     new TransactionApplinkModuleLoader(),

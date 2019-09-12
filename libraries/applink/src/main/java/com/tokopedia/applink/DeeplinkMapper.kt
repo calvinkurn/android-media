@@ -62,6 +62,7 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.DISCOVERY_SEARCH -> return ApplinkConstInternalDiscovery.SEARCH_RESULT
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+            ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
             ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             else -> ""
         }

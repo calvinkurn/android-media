@@ -4,6 +4,7 @@ package com.tokopedia.core;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -30,6 +31,8 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+
+import timber.log.Timber;
 
 
 /**
@@ -87,6 +90,12 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onResume() {
         super.onResume();
+        boolean status = GCMHandler.isPlayServicesAvailable(this);
+        if(!status){
+            Timber.w("P3Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+                    + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
+                    + " | "+Build.TAGS);
+        }
         moveToHome();
     }
 

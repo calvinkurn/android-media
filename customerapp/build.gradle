@@ -5,7 +5,7 @@ if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 apply plugin: 'io.hansel.preprocessor'
-
+apply plugin: 'com.frogermcs.androiddevmetrics'
 
 def getDpiId(String density) {
 
@@ -221,7 +221,7 @@ android {
     configurations.all {
         resolutionStrategy.force 'com.android.support:multidex:1.0.3'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-        resolutionStrategy.force 'com.squareup.okio:okio:1.11.0'
+        resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
         resolutionStrategy.force 'com.facebook.soloader:soloader:0.6.0'
     }
 
@@ -243,11 +243,13 @@ android {
         }
     }
 
-    dynamicFeatures = [rootProject.ext.dynamicFeatures.shopSettings,
-                       rootProject.ext.dynamicFeatures.settingBank,
-//                       rootProject.ext.dynamicFeatures.profileCompletion
+    dynamicFeatures = [
+            rootProject.ext.dynamicFeatures.shopSettings,
+//          rootProject.ext.dynamicFeatures.digitalTopup
+//          rootProject.ext.dynamicFeatures.profileCompletion,
+//          rootProject.ext.dynamicFeatures.shopOpen,
+//            rootProject.ext.dynamicFeatures.settingBank,
     ]
-
 }
 
 dependencies {
@@ -322,6 +324,7 @@ dependencies {
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
+    implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
@@ -368,7 +371,7 @@ dependencies {
     implementation project(rootProject.ext.features.onboarding)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
-
+    implementation project(rootProject.ext.features.digitalHome)
 
     implementation project(rootProject.ext.libraries.iris)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -546,6 +549,8 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
     devImplementation project.ext.debugToolsDependencies.blockCanary
+    debugImplementation project.ext.debugToolsDependencies.leakCanary
+
     implementation project(rootProject.ext.features.navigationCommon)
     implementation 'com.facebook.soloader:soloader:0.6.0'
 

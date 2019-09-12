@@ -36,16 +36,16 @@ public final class Option implements Parcelable {
     @SerializedName("value")
     @Expose
     String value;
-    @SerializedName("input_type")
+    @SerializedName(value="input_type", alternate={"inputType"})
     @Expose
     String inputType;
-    @SerializedName("hex_color")
+    @SerializedName(value="hex_color", alternate={"hexColor"})
     @Expose
     String hexColor;
     @SerializedName("metric")
     @Expose
     String metric;
-    @SerializedName("total_data")
+    @SerializedName(value="total_data", alternate={"totalData"})
     @Expose
     String totalData;
     @SerializedName("key_min")
@@ -54,10 +54,10 @@ public final class Option implements Parcelable {
     @SerializedName("key_max")
     @Expose
     String keyMax;
-    @SerializedName("val_min")
+    @SerializedName(value="val_min", alternate={"valMin"})
     @Expose
     String valMin;
-    @SerializedName("val_max")
+    @SerializedName(value="val_max", alternate={"valMax"})
     @Expose
     String valMax;
     @SerializedName("icon")
@@ -66,10 +66,10 @@ public final class Option implements Parcelable {
     @SerializedName("description")
     @Expose
     String description;
-    @SerializedName("is_popular")
+    @SerializedName(value="is_popular", alternate={"isPopular"})
     @Expose
     boolean isPopular;
-    @SerializedName("is_new")
+    @SerializedName(value="is_new", alternate={"isNew"})
     @Expose
     boolean isNew;
     @SerializedName("child")

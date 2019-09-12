@@ -23,18 +23,18 @@ import rx.schedulers.Schedulers;
 public class FilterDetailActivityRouter {
 
     public static void launchDetailActivity(AppCompatActivity activity, Filter filter) {
-        launchDetailActivity(activity, filter, false);
+        launchDetailActivity(activity, filter, false, "");
     }
 
     public static void launchDetailActivity(AppCompatActivity activity,
-                                            Filter filter, boolean isUsingTracking) {
+                                            Filter filter, boolean isUsingTracking, String trackingPrefix) {
         if (filter.isColorFilter()) {
             DynamicFilterColorActivity
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
 
         } else if (filter.isOfferingFilter()) {
             DynamicFilterOfferingActivity.Companion
@@ -42,7 +42,7 @@ public class FilterDetailActivityRouter {
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
 
         } else if (filter.isRatingFilter()) {
             DynamicFilterRatingActivity
@@ -50,7 +50,7 @@ public class FilterDetailActivityRouter {
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
 
         } else if (filter.isBrandFilter()) {
             DynamicFilterDetailBrandActivity
@@ -58,23 +58,23 @@ public class FilterDetailActivityRouter {
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
 
         } else if (filter.isLocationFilter()) {
-            launchLocationFilterPage(activity, filter, isUsingTracking);
+            launchLocationFilterPage(activity, filter, isUsingTracking, trackingPrefix);
         } else {
             DynamicFilterDetailGeneralActivity
                     .moveTo(activity,
                             filter.getTitle(),
                             filter.getOptions(),
                             filter.getSearch().getSearchable() == 1,
-                            filter.getSearch().getPlaceholder(), isUsingTracking);
+                            filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
         }
     }
 
     private static void launchLocationFilterPage(final AppCompatActivity activity,
                                                  final Filter filter,
-                                                 final boolean isUsingTracking) {
+                                                 final boolean isUsingTracking, final String trackingPrefix) {
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
@@ -100,7 +100,7 @@ public class FilterDetailActivityRouter {
                         .moveTo(activity,
                                 filter.getTitle(),
                                 filter.getSearch().getSearchable() == 1,
-                                filter.getSearch().getPlaceholder(), isUsingTracking);
+                                filter.getSearch().getPlaceholder(), isUsingTracking, trackingPrefix);
             }
         });
     }
@@ -110,19 +110,21 @@ public class FilterDetailActivityRouter {
                                               String defaultCategoryRootId,
                                               String defaultCategoryId) {
         launchCategoryActivity(activity, filter,
-                defaultCategoryRootId, defaultCategoryId, false);
+                defaultCategoryRootId, defaultCategoryId, false, "");
     }
 
     public static void launchCategoryActivity(AppCompatActivity activity,
                                               Filter filter,
                                               String defaultCategoryRootId,
                                               String defaultCategoryId,
-                                              boolean isUsingTracking) {
+                                              boolean isUsingTracking,
+                                              String trackingPrefix) {
         DynamicFilterCategoryActivity
                 .moveTo(activity,
                         filter.getOptions(),
                         defaultCategoryRootId,
                         defaultCategoryId,
-                        isUsingTracking);
+                        isUsingTracking,
+                        trackingPrefix);
     }
 }
