@@ -13,6 +13,7 @@
         >
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/nested_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none">
@@ -330,6 +331,12 @@
     </android.support.v4.widget.NestedScrollView>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <FrameLayout
+        android:id="@+id/sticky_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"/>
 
     <FrameLayout
         android:id="@+id/progress_bar_layout"
