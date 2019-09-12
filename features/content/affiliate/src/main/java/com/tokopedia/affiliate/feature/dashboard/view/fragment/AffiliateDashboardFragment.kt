@@ -401,8 +401,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
                     "",
                     profileHeader.avatar.orEmpty(),
                     profileHeader.link,
-                    String.format("%s", profileHeader.link),
-                    "test",
+                    String.format(getString(R.string.profile_share_text), profileHeader.link),
+                    String.format(getString(R.string.profile_share_title)),
                     null
             ).also {
                 it.show(fragmentManager)
