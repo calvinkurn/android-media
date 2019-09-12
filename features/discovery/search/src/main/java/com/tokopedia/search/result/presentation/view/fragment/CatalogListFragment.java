@@ -22,7 +22,7 @@ import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.CatalogListSectionContract;

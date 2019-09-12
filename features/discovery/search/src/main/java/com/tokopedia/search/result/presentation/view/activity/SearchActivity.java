@@ -37,7 +37,7 @@ import com.tokopedia.design.drawable.CountDrawable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;

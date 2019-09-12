@@ -38,7 +38,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.fact
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;

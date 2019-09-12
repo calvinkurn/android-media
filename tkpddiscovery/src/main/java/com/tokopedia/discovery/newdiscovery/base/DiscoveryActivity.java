@@ -26,7 +26,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AutoCompleteTracking;

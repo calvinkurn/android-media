@@ -18,7 +18,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;

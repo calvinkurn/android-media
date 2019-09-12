@@ -29,7 +29,7 @@ import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;

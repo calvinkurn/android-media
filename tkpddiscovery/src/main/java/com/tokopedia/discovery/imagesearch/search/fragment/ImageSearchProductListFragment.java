@@ -39,7 +39,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.type
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
