@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.feature.shipment.adapter.PromoNotEligibleAdapter
@@ -39,6 +40,10 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         return R.layout.dialog_promo_not_eligible
     }
 
+    override fun getBaseLayoutResourceId(): Int {
+        return R.layout.bottomsheet_round_base_layout
+    }
+
     override fun state(): BottomSheetsState {
         return BottomSheetsState.FLEXIBLE
     }
@@ -61,6 +66,9 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
     override fun setupDialog(dialog: Dialog?, style: Int) {
         super.setupDialog(dialog, style)
         actionListener.onShow()
+        dialog?.run {
+            findViewById<FrameLayout>(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent)
+        }
     }
 
     override fun title(): String {
