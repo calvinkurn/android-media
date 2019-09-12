@@ -352,7 +352,7 @@ public interface ConstantTransactionAnalytics {
         String NON_PROMO = "non promo";
         String COD = "cod";
 
-        String SOURCE = "source: ";
+        String SOURCE_CART = "source: cart";
     }
 
     interface ScreenName {

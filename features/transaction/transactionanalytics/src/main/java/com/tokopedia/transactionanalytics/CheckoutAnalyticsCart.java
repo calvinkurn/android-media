@@ -798,7 +798,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 EventName.CLICK_RECOMMENDATION,
                 EventCategory.RECOMMENDATION_PAGE,
                 EventAction.CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE + "cart"
+                EventLabel.SOURCE_CART
         );
     }
 
@@ -807,7 +807,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 EventName.CLICK_RECOMMENDATION,
                 EventCategory.RECOMMENDATION_PAGE,
                 EventAction.CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT,
-                EventLabel.SOURCE + "cart"
+                EventLabel.SOURCE_CART
         );
     }
 }
