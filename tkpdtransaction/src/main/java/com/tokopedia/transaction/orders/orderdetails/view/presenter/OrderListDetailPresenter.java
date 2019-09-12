@@ -586,6 +586,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
 
+
     private GraphqlRequest makegraphqlRequestForRecommendation() {
         GraphqlRequest graphqlRequestForRecommendation;
         Map<String, Object> variablesWidget = new HashMap<>();
@@ -594,6 +595,11 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.query_rechrage_widget), RechargeWidgetResponse.class, variablesWidget);
         return graphqlRequestForRecommendation;
+
+    public boolean isValidUrl(String invoiceUrl) {
+        Pattern pattern = Pattern.compile("^(https|HTTPS):\\/\\/");
+        Matcher matcher = pattern.matcher(invoiceUrl);
+        return matcher.find();
     }
 
 }

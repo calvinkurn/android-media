@@ -25,6 +25,9 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.filter.common.manager.FilterSortManager
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper
@@ -35,9 +38,6 @@ import kotlin.collections.HashMap
 abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     private lateinit var categoryNavigationListener: CategoryNavigationListener
-
-    val EXTRA_DATA = "EXTRA_DATA"
-    private val EXTRA_SELECTED_SORT = "EXTRA_SELECTED_SORT"
 
 
     private var gridLayoutManager: GridLayoutManager? = null
@@ -57,10 +57,6 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     private var selectedSort: HashMap<String, String> = HashMap()
 
-    private var isViewShown = false
-    val EXTRA_SELECTED_NAME = "EXTRA_SELECTED_NAME"
-    val EXTRA_FILTER_LIST = "EXTRA_FILTER_LIST"
-    val EXTRA_FILTER_PARAMETER = "EXTRA_FILTER_PARAMETER"
     var totalCount = ""
 
 
@@ -195,6 +191,8 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     protected fun openBottomSheetFilter() {
         if (searchParameter == null || getFilters() == null) return
 
+        FilterTracking.eventSearchResultOpenFilterPage(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE, getScreenName());
+
         bottomSheetListener?.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap())
         bottomSheetListener?.launchFilterBottomSheet()
     }
@@ -202,15 +200,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     protected fun openFilterPage() {
         if (searchParameter == null) return
 
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalDiscovery.FILTER)
-        intent.putExtra(EXTRA_FILTER_LIST, screenName)
-        intent.putExtra(EXTRA_FILTER_PARAMETER, searchParameter.getSearchParameterHashMap())
-
-        startActivityForResult(intent, getFilterRequestCode())
-
-        if (activity != null) {
-            activity!!.overridePendingTransition(R.anim.pull_up, android.R.anim.fade_out)
-        }
+        FilterSortManager.openFilterPage(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE, this, screenName, searchParameter.getSearchParameterHashMap())
     }
 
     private fun isFilterDataAvailable(): Boolean {
@@ -221,29 +211,10 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
         if (activity == null) return
 
-        if (isSortDataAvailable()) {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalDiscovery.SORT)
-            intent.putParcelableArrayListExtra(EXTRA_DATA, sort)
-            if (selectedSort != null) {
-                intent.putExtra(EXTRA_SELECTED_SORT, selectedSort)
-            }
-
-            startActivityForResult(intent, getSortRequestCode())
-
-            if (activity != null) {
-                activity!!.overridePendingTransition(R.anim.pull_up, R.anim.fade_out)
-            }
-        } else {
+        if(!FilterSortManager.openSortActivity(this, sort, selectedSort)) {
             NetworkErrorHelper.showSnackbar(activity, activity!!.getString(R.string.error_sort_data_not_ready))
         }
-
     }
-
-    private fun isSortDataAvailable(): Boolean {
-        return sort != null && sort.isNotEmpty()
-
-    }
-
 
     protected fun renderDynamicFilter(data: DataValue) {
         setFilterData(data.filter)
@@ -368,27 +339,24 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
+        FilterSortManager.handleOnActivityResult(requestCode, resultCode, data, object:FilterSortManager.Callback {
+            override fun onFilterResult(queryParams: MutableMap<String, String>?, selectedFilters: MutableMap<String, String>?, selectedOptions: MutableList<Option>?) {
 
-            if (requestCode == getSortRequestCode()) run {
-                val sortFilterList = HashMap<String, String>(getMapFromIntent(data, EXTRA_SELECTED_SORT))
-                val selectedSortName = data?.getStringExtra(EXTRA_SELECTED_NAME)
+            }
 
-                setSelectedSort(sortFilterList)
-                if (searchParameter != null) {
-                    selectedSort?.let {
-                        searchParameter.getSearchParameterHashMap().putAll(it)
-                    }
+            override fun onSortResult(selectedSort: MutableMap<String, String>, selectedSortName: String?) {
+                setSelectedSort(HashMap(selectedSort))
+                selectedSort.let {
+                    searchParameter.getSearchParameterHashMap().putAll(it)
                 }
 
                 clearDataFilterSort()
                 reloadData()
                 catAnalyticsInstance.eventSortApplied(getDepartMentId(),
                         selectedSortName
-                                ?: "", sortFilterList["ob"]?.toInt() ?: 0)
+                                ?: "", selectedSort["ob"]?.toInt() ?: 0)
             }
-
-        }
+        })
     }
 
     fun clearDataFilterSort() {
@@ -418,6 +386,10 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
         if (bottomSheetListener != null) {
             bottomSheetListener?.setFilterResultCount(formattedResultCount)
         }
+    }
+
+    fun onBottomSheetHide() {
+        FilterTracking.eventSearchResultCloseBottomSheetFilter(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE, screenName, getSelectedFilter())
     }
 
 
