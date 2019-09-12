@@ -422,12 +422,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun goToCart() {
-        val userSession = UserSession(this)
-        if (userSession.isLoggedIn) {
-            startActivity(RouteManager.getIntent(this, ApplinkConst.CART))
-        } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN),
-                    REQUEST_CODE_USER_LOGIN_CART)
+        (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+            shopPageTracking.clickShareButton(shopViewModel.isMyShop(it.shopCore.shopID),
+                    CustomDimensionShopPage.create(it.shopCore.shopID,
+                            it.goldOS.isOfficial == 1,
+                            it.goldOS.isGold == 1))
+            val userSession = UserSession(this)
+            if (userSession.isLoggedIn) {
+                startActivity(RouteManager.getIntent(this, ApplinkConst.CART))
+            } else {
+                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                        REQUEST_CODE_USER_LOGIN_CART)
+            }
         }
     }
 
