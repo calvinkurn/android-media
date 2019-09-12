@@ -83,7 +83,6 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
     }
 
     override fun onSuccessGetContentForm(feedContentForm: FeedContentForm, isFromTemplateToken: Boolean) {
-        super.onSuccessGetContentForm(feedContentForm, isFromTemplateToken)
         if (isFromTemplateToken) {
             val currentIdList = viewModel.adIdList.toList()
             viewModel.adIdList.clear()
@@ -91,7 +90,7 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
                     currentIdList.union(feedContentForm.relatedItems.map { it.id })
             )
         }
-        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+        super.onSuccessGetContentForm(feedContentForm, isFromTemplateToken)
     }
 
     fun clearCache() {

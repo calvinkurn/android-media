@@ -80,7 +80,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         ProductAttachmentAdapter(onDeleteProduct = this::onDeleteProduct)
     }
 
-    protected val invalidatePostCallBack: OnCreatePostCallBack? by lazy {
+    private val invalidatePostCallBack: OnCreatePostCallBack? by lazy {
         activity as? OnCreatePostCallBack
     }
 
