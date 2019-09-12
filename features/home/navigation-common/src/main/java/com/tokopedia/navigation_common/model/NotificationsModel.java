@@ -31,6 +31,10 @@ public class NotificationsModel {
     @Expose
     private String totalCart = "";
 
+    @SerializedName("is_tab_update")
+    @Expose
+    private Boolean isTabUpdate = false;
+
     @SerializedName("inbox")
     @Expose
     private InboxModel inbox = new InboxModel();
@@ -109,5 +113,9 @@ public class NotificationsModel {
 
     public void setChat(ChatModel chat) {
         this.chat = chat;
+    }
+
+    public Boolean getTabUpdate() {
+        return isTabUpdate;
     }
 }

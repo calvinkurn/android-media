@@ -1,5 +1,6 @@
 package com.tokopedia.navigation.presentation.fragment;
 
+import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +48,18 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     @Inject GlobalNavAnalytics globalNavAnalytics;
 
     private boolean isHasAdded = false;
+    private NotificationFragmentListener listener = null;
+
+    public interface NotificationFragmentListener {
+        void goToUpdateTab();
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        if (context instanceof NotificationFragmentListener) {
+            listener = (NotificationFragmentListener) context;
+        }
+    }
 
     @Override
     public int resLayout() {
@@ -144,6 +157,13 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
             isHasAdded = !isHasAdded;
         }
         adapter.updateValue(data, unread);
+    }
+
+    @Override
+    public void goToUpdateTab() {
+        if (listener != null) {
+            listener.goToUpdateTab();
+        }
     }
 
     private List<DrawerNotification> getData() {

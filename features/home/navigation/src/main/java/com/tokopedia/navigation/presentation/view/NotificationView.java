@@ -9,4 +9,6 @@ import com.tokopedia.navigation_common.model.NotificationsModel;
 public interface NotificationView extends LoadDataView {
     void renderNotification(NotificationsModel data, NotifcenterUnread unread,
                             boolean isHasShop);
+
+    void goToUpdateTab();
 }
