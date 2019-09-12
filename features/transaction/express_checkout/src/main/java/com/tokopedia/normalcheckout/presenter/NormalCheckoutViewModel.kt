@@ -70,26 +70,6 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
     fun getProductInfo(productParams: ProductParams, resources: Resources, insuranceEnabled: Boolean, insuranceRecommendationRequest: InsuranceRecommendationRequest) {
 
         launchCatchError(block = {
-            if (isUserSessionActive() && insuranceEnabled) {
-                val insuranceParams = mapOf(INSURANCE_RECOMMENDATION_PARAM_GQL to insuranceRecommendationRequest)
-                val graphqlInsuranceRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSURANCE_RECOMMENDATION],
-                        InsuranceRecommendationGqlResponse::class.java, insuranceParams)
-
-                val insuranceResponse = withContext(Dispatchers.IO) {
-                    graphqlRepository.getReseponse(listOf(graphqlInsuranceRecommendationRequest))
-                }
-
-                insuranceResponse.getSuccessData<InsuranceRecommendationGqlResponse>().let {
-                    insuranceRecommendationResponse = it
-                }
-
-                productInfoResp.value = InsuranceRecommendationContainer(insuranceRecommendationResponse)
-            }
-        }) {
-
-        }
-
-        launchCatchError(block = {
             val paramsInfo = mapOf(PARAM_PRODUCT_ID to productParams.productId?.toInt(),
                     PARAM_SHOP_DOMAIN to productParams.shopDomain,
                     PARAM_PRODUCT_KEY to productParams.productName)
@@ -147,6 +127,25 @@ class NormalCheckoutViewModel @Inject constructor(private val graphqlRepository:
             productInfoResp.value = com.tokopedia.normalcheckout.model.Fail(it)
         }
 
+        launchCatchError(block = {
+            if (isUserSessionActive() && insuranceEnabled) {
+                val insuranceParams = mapOf(INSURANCE_RECOMMENDATION_PARAM_GQL to insuranceRecommendationRequest)
+                val graphqlInsuranceRecommendationRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_INSURANCE_RECOMMENDATION],
+                        InsuranceRecommendationGqlResponse::class.java, insuranceParams)
+
+                val insuranceResponse = withContext(Dispatchers.IO) {
+                    graphqlRepository.getReseponse(listOf(graphqlInsuranceRecommendationRequest))
+                }
+
+                insuranceResponse.getSuccessData<InsuranceRecommendationGqlResponse>().let {
+                    insuranceRecommendationResponse = it
+                }
+
+                productInfoResp.value = InsuranceRecommendationContainer(insuranceRecommendationResponse)
+            }
+        }) {
+
+        }
     }
 
     fun addInsuranceProductToCart(addInsuranceProductToCartRequest: AddInsuranceProductToCartRequest,

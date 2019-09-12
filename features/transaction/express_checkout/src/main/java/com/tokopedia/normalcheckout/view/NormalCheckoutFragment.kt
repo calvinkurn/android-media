@@ -1187,10 +1187,6 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     ?: 0
             adapter.clearAllElements()
             adapter.addDataViewModel(viewModels)
-
-            fragmentViewModel.viewModels.add(insuranceViewModel)
-
-            adapter.addSingleDataViewModel(insuranceViewModel)
             adapter.notifyDataSetChanged()
             renderActionButton(it)
             renderTotalPrice(it, viewModel.selectedwarehouse)
@@ -1201,11 +1197,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
         selectedProductInfo?.let {
 
             insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
-            /*fragmentViewModel.viewModels.add(insuranceViewModel)
+            fragmentViewModel.viewModels.add(insuranceViewModel)
             adapter.addSingleDataViewModel(insuranceViewModel)
             adapter.notifyDataSetChanged()
-            renderActionButton(it)
-            renderTotalPrice(it, viewModel.selectedwarehouse)*/
         }
     }
 
