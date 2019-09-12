@@ -169,8 +169,12 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                         getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY)
             }
 
-            if (passengerModel.passengerTitle != null) { renderPassengerTitle(passengerModel.passengerTitle) }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (passengerModel.passengerTitle != null) { renderPassengerTitle(passengerModel.passengerTitle) }
     }
 
     fun initFirstNameAutoCompleteTv(context: Context) {
@@ -563,7 +567,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                         FlightDateUtil.DEFAULT_VIEW_FORMAT, contact.birthDate))
             }
 
-            if (contact.idList.isNotEmpty()) {
+            if (contact.idList.isNotEmpty() && !isDomestic) {
                 for (id in contact.idList) {
                     if (isPassportId(id)) {
                         passengerModel.passportNumber = id.number
