@@ -19,7 +19,7 @@ import com.tokopedia.transaction.R
 import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics
 
-class RechargeWidgetAdapter(val recommendationItems: List<WidgetGridItem>) : RecyclerView.Adapter<RechargeWidgetAdapter.RechargeWidgetViewHolder>() {
+class RechargeWidgetAdapter(private val recommendationItems: List<WidgetGridItem>) : RecyclerView.Adapter<RechargeWidgetAdapter.RechargeWidgetViewHolder>() {
 
     private val viewMap = SparseBooleanArray()
 
@@ -30,14 +30,14 @@ class RechargeWidgetAdapter(val recommendationItems: List<WidgetGridItem>) : Rec
     }
 
     override fun onBindViewHolder(holder: RechargeWidgetViewHolder, position: Int) {
-        val item = recommendationItems.get(position)
+        val item = recommendationItems[position]
         holder.renderTitle(item)
         holder.renderImage(item)
         holder.renderProduct(item)
         holder.renderSubtitle(item)
         holder.renderFooter(item)
 
-        if (item.applink?.isNotEmpty() ?: false) {
+        if (item.applink?.isNotEmpty() == true) {
             holder.itemView.setOnClickListener {
                 RouteManager.route(holder.itemView.context, item.applink)
                 OrderListAnalytics.eventWidgetClick(item, position)
@@ -62,15 +62,15 @@ class RechargeWidgetAdapter(val recommendationItems: List<WidgetGridItem>) : Rec
 
     class RechargeWidgetViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        var title: TextView = itemView.findViewById(R.id.title)
-        var icon: AppCompatImageView = itemView.findViewById(R.id.icon)
-        var productName: TextView = itemView.findViewById(R.id.productName)
-        var subtitle: TextView = itemView.findViewById(R.id.subtitle)
-        var footer: View = itemView.findViewById(R.id.footer)
-        var tagLine: TextView = itemView.findViewById(R.id.tagLine)
-        var pricePrefix: TextView = itemView.findViewById(R.id.pricePrefix)
-        var strikeThroughPrice: TextView = itemView.findViewById(R.id.strikeThroughPrice)
-        var price: TextView = itemView.findViewById(R.id.price)
+        private var title: TextView = itemView.findViewById(R.id.title)
+        private var icon: AppCompatImageView = itemView.findViewById(R.id.icon)
+        private var productName: TextView = itemView.findViewById(R.id.productName)
+        private var subtitle: TextView = itemView.findViewById(R.id.subtitle)
+        private var footer: View = itemView.findViewById(R.id.footer)
+        private var tagLine: TextView = itemView.findViewById(R.id.tagLine)
+        private var pricePrefix: TextView = itemView.findViewById(R.id.pricePrefix)
+        private var strikeThroughPrice: TextView = itemView.findViewById(R.id.strikeThroughPrice)
+        private var price: TextView = itemView.findViewById(R.id.price)
 
         fun renderTitle(element: WidgetGridItem) {
             if (element.titleFirst.isNullOrEmpty()) {
@@ -96,13 +96,13 @@ class RechargeWidgetAdapter(val recommendationItems: List<WidgetGridItem>) : Rec
 
         }
 
-        fun hasPrice(element: WidgetGridItem): Boolean {
+        private fun hasPrice(element: WidgetGridItem): Boolean {
             return element.price.isNullOrEmpty().not()
                     || element.pricePrefix.isNullOrEmpty().not()
                     || element.originalPrice.isNullOrEmpty().not()
         }
 
-        fun hasTagLabel(element: WidgetGridItem): Boolean {
+        private fun hasTagLabel(element: WidgetGridItem): Boolean {
             return !element.tagName.isNullOrEmpty()
         }
 
@@ -185,7 +185,7 @@ class RechargeWidgetAdapter(val recommendationItems: List<WidgetGridItem>) : Rec
             return itemView.context.resources.getDrawable(drawable)
         }
 
-        fun renderPrice(element: WidgetGridItem) {
+        private fun renderPrice(element: WidgetGridItem) {
             if (hasPrice(element)) {
 
                 if (element.pricePrefix.isNullOrEmpty()) {
