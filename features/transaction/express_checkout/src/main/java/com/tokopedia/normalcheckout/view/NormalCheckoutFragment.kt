@@ -1187,6 +1187,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     ?: 0
             adapter.clearAllElements()
             adapter.addDataViewModel(viewModels)
+            if (insuranceViewModel.cartShopsList != null &&
+                    insuranceViewModel.cartShopsList.isNotEmpty()) {
+                adapter.addSingleDataViewModel(insuranceViewModel)
+            }
             adapter.notifyDataSetChanged()
             renderActionButton(it)
             renderTotalPrice(it, viewModel.selectedwarehouse)
