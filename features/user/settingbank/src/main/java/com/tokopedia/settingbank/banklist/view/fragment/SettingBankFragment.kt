@@ -156,7 +156,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     private fun showErrorAddAccount(reason: String) {
         var errorMessage = reason
         if (errorMessage.isEmpty()) {
-            errorMessage = activity!!.getString(R.string.default_request_error_unknown)
+            errorMessage = activity!!.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown)
         }
         ToasterError.make(view, errorMessage, BaseToaster.LENGTH_LONG)
                 .show()

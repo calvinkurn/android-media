@@ -13,6 +13,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.settingbank.R
@@ -25,6 +28,7 @@ import com.tokopedia.settingbank.banklist.data.SettingBankUrl
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import com.tokopedia.settingbank.addeditaccount.di.DaggerAddEditAccountComponent
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_edit_bank_form.*
 import javax.inject.Inject
 
@@ -44,6 +48,8 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     @Inject
     lateinit var presenter: AddEditBankPresenter
 
+    @Inject
+    lateinit var userSession : UserSessionInterface
 
     lateinit var bottomInfoDialog: BottomSheetDialog
     lateinit var alertDialog: Dialog
@@ -101,7 +107,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             }
         })
         bank_name_et.setCompoundDrawablesWithIntrinsicBounds(null, null,
-                MethodChecker.getDrawable(activity, R.drawable.ic_arrow_down_grey), null);
+                MethodChecker.getDrawable(activity, com.tokopedia.design.R.drawable.ic_arrow_down_grey), null);
         bank_name_et.setOnClickListener({
             goToAddBank()
         })
@@ -113,10 +119,10 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
 
-        alertDialog.setTitle(getString(R.string.add_bank_account_prompt_title))
+        alertDialog.setTitle(getString(com.tokopedia.settingbank.R.string.add_bank_account_prompt_title))
         alertDialog.setDesc(composeMakeMainDescription())
-        alertDialog.setBtnCancel(getString(R.string.edit))
-        alertDialog.setBtnOk(getString(R.string.yes_correct))
+        alertDialog.setBtnCancel(getString(com.tokopedia.design.R.string.edit))
+        alertDialog.setBtnOk(getString(com.tokopedia.settingbank.R.string.yes_correct))
         alertDialog.setOnCancelClickListener({
             alertDialog.dismiss()
         })
@@ -138,17 +144,17 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         return if (bankFormModel.status == BankFormModel.Companion.STATUS_ADD) {
             String.format("%s %s %s %s" +
                     " %s.",
-                    getString(R.string.you_will_add_account),
+                    getString(com.tokopedia.settingbank.R.string.you_will_add_account),
                     bank_name_et.text.toString(),
                     account_number_et.text.toString(),
-                    getString(R.string.under_name),
+                    getString(com.tokopedia.settingbank.R.string.under_name),
                     account_name_et.text.toString())
         } else String.format("%s %s %s %s" +
                 " %s.",
-                getString(R.string.you_will_change_account_into),
+                getString(com.tokopedia.settingbank.R.string.you_will_change_account_into),
                 bank_name_et.text.toString(),
                 account_number_et.text.toString(),
-                getString(R.string.under_name),
+                getString(com.tokopedia.settingbank.R.string.under_name),
                 account_name_et.text.toString())
 
     }
@@ -177,7 +183,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
             val bankAccountImage: ImageView = bottomLayout.findViewById(R.id.bank_account_image)
             ImageHandler.LoadImage(bankAccountImage, SettingBankUrl.Companion.IMAGE_BOTTOM_DIALOG_ADD_ACCOUNT)
 
-            val closeButton: ImageView = bottomLayout.findViewById(R.id.close_button)
+            val closeButton: ImageView = bottomLayout.findViewById(com.tokopedia.settingbank.R.id.close_button)
             closeButton.setOnClickListener({ bottomInfoDialog.dismiss() })
 
         }
@@ -213,7 +219,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
 
                 if (activity!!.intent.getStringExtra(AddEditBankActivity
                                 .Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_EDIT)
-                    (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_edit_bank))
+                    (activity!! as AddEditBankActivity).setTitle(getString(com.tokopedia.settingbank.R.string.title_edit_bank))
 
             }
             activity!!.intent.getStringExtra(AddEditBankActivity
@@ -221,7 +227,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
                     BankFormModel.Companion.STATUS_ADD -> goToAddBankFirstTime()
             activity!!.intent.getStringExtra(AddEditBankActivity
                     .Companion.PARAM_ACTION) == BankFormModel.Companion.STATUS_EDIT -> {
-                (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_edit_bank))
+                (activity!! as AddEditBankActivity).setTitle(getString(com.tokopedia.settingbank.R.string.title_edit_bank))
                 bankFormModel = activity!!.intent.getParcelableExtra(AddEditBankActivity.Companion
                         .PARAM_DATA)
                 account_name_et.setText(bankFormModel.accountName)
@@ -312,16 +318,16 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     private fun enableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
+        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
                 .bg_button_green_enabled))
-        submit_button.setTextColor(MethodChecker.getColor(context, R.color.white))
+        submit_button.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.white))
         submit_button.isEnabled = true
     }
 
     private fun disableSubmitButton() {
-        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, R.drawable
+        MethodChecker.setBackground(submit_button, MethodChecker.getDrawable(context, com.tokopedia.design.R.drawable
                 .bg_button_disabled))
-        submit_button.setTextColor(MethodChecker.getColor(context, R.color.black_38))
+        submit_button.setTextColor(MethodChecker.getColor(context, com.tokopedia.design.R.color.black_38))
         submit_button.isEnabled = false
     }
 
@@ -346,6 +352,11 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         val bundle = Bundle()
         bankFormModel.accountId = accountId
         bundle.putParcelable(AddEditBankActivity.PARAM_DATA, bankFormModel)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_ID,bankFormModel.accountId)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NAME,bankFormModel.accountName)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NO,bankFormModel.accountNumber)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_ID,bankFormModel.bankId)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_BANK_NAME,bankFormModel.bankName)
         intent.putExtras(bundle)
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
@@ -385,7 +396,7 @@ class AddEditBankFormFragment : AddEditBankContract.View,
         try {
             if (successRetrieveBank(resultCode, data)) {
 
-                (activity!! as AddEditBankActivity).setTitle(getString(R.string.title_add_bank))
+                (activity!! as AddEditBankActivity).setTitle(getString(com.tokopedia.settingbank.R.string.title_add_bank))
                 bankFormModel.status = BankFormModel.Companion.STATUS_ADD
                 disableSubmitButton()
                 onResultChooseBank(resultCode, data)
@@ -443,7 +454,15 @@ class AddEditBankFormFragment : AddEditBankContract.View,
     }
 
     fun onGoToCOTP() {
-        val intent = presenter.getCotpIntent(activity)
+        val OTP_TYPE_ADD_BANK_ACCOUNT = 12
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_BANK_ACCOUNT)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+        intent.putExtras(bundle)
         startActivityForResult(intent, REQUEST_OTP)
     }
 
