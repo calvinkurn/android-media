@@ -16,6 +16,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
 
     lateinit var listener: FilterChipAdapter.OnClickListener
     lateinit var adapter: FilterChipAdapter
+    lateinit var layoutManager: LinearLayoutManager
 
     constructor(context: Context) : super(context) {
         init()
@@ -36,7 +37,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
 
     fun buildView() {
         visibility = View.VISIBLE
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         chip_recycler_view.layoutManager = layoutManager
     }
 
@@ -72,7 +73,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
 
     fun initiallySelectedChip(position: Int) {
         if (position < adapter.itemCount) {
-            with(chip_recycler_view.findViewHolderForAdapterPosition(position) as FilterChipAdapter.ViewHolder?) {
+            with(layoutManager.findViewByPosition(position) as FilterChipAdapter.ViewHolder?) {
                 this?.chips?.isSelected = true
             }
         }
