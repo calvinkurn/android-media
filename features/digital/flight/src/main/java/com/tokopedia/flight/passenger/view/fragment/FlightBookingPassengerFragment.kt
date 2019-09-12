@@ -168,6 +168,8 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                 startActivityForResult(FlightBookingNationalityActivity.createIntent(context,
                         getString(R.string.flight_passport_search_hint)), REQUEST_CODE_PICK_ISSUER_COUNTRY)
             }
+
+            if (passengerModel.passengerTitle != null) { renderPassengerTitle(passengerModel.passengerTitle) }
         }
     }
 
@@ -268,8 +270,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0)
             rv_passenger_title.selectOnlyOneChip(true)
         }
-
-        if (passengerModel.passengerTitle != null) { renderPassengerTitle(passengerModel.passengerTitle) }
     }
 
     private fun renderPassengerTitle(passengerTitle: String) {
