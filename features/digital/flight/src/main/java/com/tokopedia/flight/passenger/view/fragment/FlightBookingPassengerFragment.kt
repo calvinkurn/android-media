@@ -269,7 +269,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             rv_passenger_title.selectOnlyOneChip(true)
         }
 
-        if (passengerModel.passengerTitle.isNotBlank()) { renderPassengerTitle(passengerModel.passengerTitle) }
+        if (passengerModel.passengerTitle != null) { renderPassengerTitle(passengerModel.passengerTitle) }
     }
 
     private fun renderPassengerTitle(passengerTitle: String) {
