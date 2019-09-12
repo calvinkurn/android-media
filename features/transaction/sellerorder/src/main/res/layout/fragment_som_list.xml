@@ -80,7 +80,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="@dimen/dp_10"
             android:visibility="visible"
-            app:floating_left_icon="@drawable/ic_filter"
+            app:floating_left_icon="@drawable/ic_som_filter"
             app:floating_title="@string/seller_filter"
             app:floating_title_allcaps="false" />
     </FrameLayout>
