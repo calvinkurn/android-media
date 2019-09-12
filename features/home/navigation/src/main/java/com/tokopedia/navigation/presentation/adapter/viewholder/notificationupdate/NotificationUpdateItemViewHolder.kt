@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
@@ -64,9 +66,9 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
 
     protected open fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
         container.setOnClickListener {
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
-            RouteManager.route(itemView.context, element.appLink)
+//            RouteManager.route(itemView.context, element.appLink)
         }
     }
 

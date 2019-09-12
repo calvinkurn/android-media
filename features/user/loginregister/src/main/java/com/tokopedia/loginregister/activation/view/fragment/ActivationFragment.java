@@ -27,6 +27,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.widget.PinEditText;
@@ -378,6 +380,7 @@ public class ActivationFragment extends BaseDaggerFragment
             finishLoadingProgress();
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
+            RouteManager.route(getContext(), ApplinkConst.DISCOVERY_NEW_USER);
         } else if (requestCode == REQUEST_AUTO_LOGIN) {
             finishLoadingProgress();
         }

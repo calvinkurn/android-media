@@ -5,7 +5,6 @@ import android.content.Context;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.service.DownloadService;
 import com.tokopedia.core.session.model.LoginProviderModel;
 import com.tokopedia.sellerapp.welcome.interactor.WelcomeInteractor;
 import com.tokopedia.sellerapp.welcome.interactor.WelcomeInteractorImpl;
@@ -20,6 +19,7 @@ import java.util.List;
 
 public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
 
+    public static final int DISCOVER_LOGIN = 22;
     String PROVIDER_CACHE_KEY = "provider_cache";
     String BACKGROUND_CACHE_KEY = "background_cache_key";
 
@@ -87,19 +87,19 @@ public class WelcomeFragmentPresenterImpl implements WelcomeFragmentPresenter {
             @Override
             public void onError(String s) {
                 view.showSplash();
-                view.onMessageError(DownloadService.DISCOVER_LOGIN, s);
+                view.onMessageError(DISCOVER_LOGIN, s);
             }
 
             @Override
             public void onTimeout() {
                 view.showSplash();
-                view.onMessageError(DownloadService.DISCOVER_LOGIN, "");
+                view.onMessageError(DISCOVER_LOGIN, "");
             }
 
             @Override
             public void onThrowable(Throwable e) {
                 view.showSplash();
-                view.onMessageError(DownloadService.DISCOVER_LOGIN, "");
+                view.onMessageError(DISCOVER_LOGIN, "");
             }
         });
     }

@@ -24,7 +24,10 @@ import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewMode
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
 import com.tokopedia.search.result.presentation.model.ProfileViewModel
 import com.tokopedia.search.result.presentation.model.TotalSearchCountViewModel
-import com.tokopedia.search.result.presentation.view.listener.*
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
+import com.tokopedia.search.result.presentation.view.listener.ProfileListener
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProfileListTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProfileListTypeFactoryImpl
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -60,6 +63,31 @@ class ProfileListFragment :
 
     var nextPage : Int = 1
 
+    var hasLoadData = false
+
+    var fragmentPosition = 0
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        context?.let {
+            attachNavigationListener(it)
+            attachRedirectionListener(it)
+        }
+    }
+
+    private fun attachNavigationListener(context: Context) {
+        if (context is SearchNavigationListener) {
+            this.searchNavigationListener = context
+        }
+    }
+
+    private fun attachRedirectionListener(context: Context) {
+        if (context is RedirectionListener) {
+            this.redirectionListener = context
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (userVisibleHint && ::searchNavigationListener.isInitialized) {
@@ -69,12 +97,19 @@ class ProfileListFragment :
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if(isVisibleToUser) {
+        if(isVisibleToUser && canStartToLoadData()) {
+            hasLoadData = true
             onSwipeRefresh()
         }
         if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
+    }
+
+    private fun canStartToLoadData(): Boolean {
+        return !hasLoadData
+                && isAdded
+                && ::presenter.isInitialized
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -193,14 +228,6 @@ class ProfileListFragment :
         }
     }
 
-    fun attachNavigationListener(searchNavigationListener: SearchNavigationListener) {
-        this.searchNavigationListener = searchNavigationListener
-    }
-
-    fun attachRedirectionListener(redirectionListener: RedirectionListener) {
-        this.redirectionListener = redirectionListener
-    }
-
     override fun onFollowButtonClicked(adapterPosition: Int, profileModel: ProfileViewModel) {
         SearchTracking.eventClickFollowActionProfileResultProfileTab(
             context,
@@ -226,32 +253,30 @@ class ProfileListFragment :
 
     companion object {
         private val EXTRA_QUERY = "EXTRA_QUERY"
+        private const val EXTRA_FRAGMENT_POSITION = "EXTRA_FRAGMENT_POSITION"
         private const val SCREEN_SEARCH_PAGE_PROFILE_TAB = "Search result - Profile tab"
 
-        fun newInstance(query: String,
-                        searchhNavigationListener: SearchNavigationListener,
-                        redirectionListener: RedirectionListener): ProfileListFragment {
+        fun newInstance(query: String, fragmentPosition: Int): ProfileListFragment {
             val args = Bundle()
             args.putString(EXTRA_QUERY, query)
+            args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition)
+
             val profileListFragment = ProfileListFragment()
             profileListFragment.arguments = args
-            profileListFragment.attachNavigationListener(searchhNavigationListener)
-            profileListFragment.attachRedirectionListener(redirectionListener)
+
             return profileListFragment
         }
     }
 
-    private fun loadDataFromArguments() {
-        query = arguments!!.getString(EXTRA_QUERY) ?: ""
-    }
-
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
-        query = savedInstanceState.getString(EXTRA_QUERY)?:""
+        query = savedInstanceState.getString(EXTRA_QUERY) ?: ""
+        fragmentPosition = savedInstanceState.getInt(EXTRA_FRAGMENT_POSITION)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(EXTRA_QUERY, query)
+        outState.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -357,7 +382,7 @@ class ProfileListFragment :
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
-        return false
+        return fragmentPosition == 0
     }
 
     override fun getBaseAppComponent(): BaseAppComponent {
@@ -369,5 +394,11 @@ class ProfileListFragment :
 
         val cache = LocalCacheHandler(activity!!.applicationContext, GCM_STORAGE)
         return cache.getString(GCM_ID, "")
+    }
+
+    fun backToTop() {
+        view?.let {
+            getRecyclerView(view)?.smoothScrollToPosition(0)
+        }
     }
 }

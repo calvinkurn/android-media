@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
+import android.support.design.widget.BottomSheetDialogFragment
 import android.support.design.widget.Snackbar
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -42,6 +43,7 @@ import com.tokopedia.navigation.presentation.view.listener.NotificationSectionFi
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
+import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
@@ -60,6 +62,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private val selectedItemList = HashMap<Int, Int>()
     private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var bottomActionView: BottomActionView
+
+    private lateinit var filterRecyclerView: RecyclerView
+    val filterAdapter = NotificationUpdateFilterAdapter(NotificationUpdateFilterTypeFactoryImpl(this))
+    private lateinit var longerTextDialog: BottomSheetDialogFragment
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return NotificationUpdateTypeFactoryImpl(this)
@@ -137,6 +143,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 }
             }
         })
+
+        filterRecyclerView = view.findViewById(R.id.filter_list)
+        filterRecyclerView.adapter = filterAdapter
     }
 
     private fun onSuccessMarkAllReadNotificationUpdate(): () -> Unit {
@@ -153,54 +162,54 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun createFilterView(): View? {
         val filterView = activity?.layoutInflater?.inflate(R.layout
                 .fragment_filter_notification_update, null)
-        var filterRecyclerView = filterView?.findViewById<RecyclerView>(R.id.section_filter_list)
-        var reset = filterView?.findViewById<View>(R.id.reset)
-        var submit = filterView?.findViewById<TextViewCompat>(R.id.submit)
-        var closeFilter = filterView?.findViewById<View>(R.id.close_cross)
-
-        setActionViewProperties(submit, reset, false)
-
-        closeFilter?.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-
-        filterRecyclerView?.let {
-            for (i in 0 until it.itemDecorationCount) {
-                filterRecyclerView.removeItemDecorationAt(i)
-            }
-            val staticDimen24dp = it.context.resources.getDimensionPixelOffset(R.dimen.dp_24)
-            it.addItemDecoration(SpacingItemDecoration(staticDimen24dp, filterViewModel.size))
-            it.layoutManager = LinearLayoutManager(it.context)
-            val filterAdapter = NotificationUpdateFilterAdapter(NotificationUpdateFilterTypeFactoryImpl(this))
-            it.adapter = filterAdapter
-            filterAdapter.addElement(filterViewModel)
-        }
-        reset?.setOnClickListener { resetView ->
-            (filterRecyclerView?.adapter as NotificationUpdateFilterAdapter)?.let {
-                for ((key, value) in selectedItemList) {
-                    filterViewModel[key].list[value].selected = false
-                    (filterRecyclerView.adapter as NotificationUpdateFilterAdapter).notifyItemChanged(
-                            key,
-                            value
-                    )
-                }
-                selectedItemList.clear()
-                setActionViewProperties(
-                        bottomSheetDialog?.findViewById(R.id.submit),
-                        bottomSheetDialog?.findViewById(R.id.reset),
-                        selectedItemList.size > 0
-                )
-                presenter.resetFilter()
-            }
-        }
-
-        submit?.setOnClickListener {
-            cursor = ""
-            presenter.filterBy(selectedItemList, filterViewModel)
-            analytics.trackClickFilterRequest(getLabelFilterName())
-            loadInitialData()
-            bottomSheetDialog.dismiss()
-        }
+//        var filterRecyclerView = filterView?.findViewById<RecyclerView>(R.id.section_filter_list)
+//        var reset = filterView?.findViewById<View>(R.id.reset)
+//        var submit = filterView?.findViewById<TextViewCompat>(R.id.submit)
+//        var closeFilter = filterView?.findViewById<View>(R.id.close_cross)
+//
+//        setActionViewProperties(submit, reset, false)
+//
+//        closeFilter?.setOnClickListener {
+//            bottomSheetDialog.dismiss()
+//        }
+//
+//        filterRecyclerView?.let {
+//            for (i in 0 until it.itemDecorationCount) {
+//                filterRecyclerView.removeItemDecorationAt(i)
+//            }
+//            val staticDimen24dp = it.context.resources.getDimensionPixelOffset(R.dimen.dp_24)
+//            it.addItemDecoration(SpacingItemDecoration(staticDimen24dp, filterViewModel.size))
+//            it.layoutManager = LinearLayoutManager(it.context)
+//            val filterAdapter = NotificationUpdateFilterAdapter(NotificationUpdateFilterTypeFactoryImpl(this))
+//            it.adapter = filterAdapter
+//            filterAdapter.addElement(filterViewModel)
+//        }
+//        reset?.setOnClickListener { resetView ->
+//            (filterRecyclerView?.adapter as NotificationUpdateFilterAdapter)?.let {
+//                for ((key, value) in selectedItemList) {
+//                    filterViewModel[key].list[value].selected = false
+//                    (filterRecyclerView.adapter as NotificationUpdateFilterAdapter).notifyItemChanged(
+//                            key,
+//                            value
+//                    )
+//                }
+//                selectedItemList.clear()
+//                setActionViewProperties(
+//                        bottomSheetDialog?.findViewById(R.id.submit),
+//                        bottomSheetDialog?.findViewById(R.id.reset),
+//                        selectedItemList.size > 0
+//                )
+//                presenter.resetFilter()
+//            }
+//        }
+//
+//        submit?.setOnClickListener {
+//            cursor = ""
+//            presenter.filterBy(selectedItemList, filterViewModel)
+//            analytics.trackClickFilterRequest(getLabelFilterName())
+//            loadInitialData()
+//            bottomSheetDialog.dismiss()
+//        }
         return filterView
     }
 
@@ -310,6 +319,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit {
         return {
             filterViewModel = it
+            filterAdapter.addElement(filterViewModel)
             var bottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(activity)
             bottomSheetDialog.setCustomContentView(createFilterView(), "", false)
             this.bottomSheetDialog = bottomSheetDialog
@@ -326,14 +336,16 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    override fun itemClicked(notifId: String, adapterPosition: Int, needToResetCounter: Boolean, templateKey: String) {
+    override fun itemClicked(viewModel: NotificationUpdateItemViewModel, adapterPosition: Int) {
         adapter.notifyItemChanged(adapterPosition)
-        analytics.trackClickNotifList(templateKey)
-        presenter.markReadNotif(notifId)
+        analytics.trackClickNotifList(viewModel.templateKey)
+        presenter.markReadNotif(viewModel.notificationId)
+        val needToResetCounter = !viewModel.isRead
         if (needToResetCounter) {
             updateMarkAllReadCounter()
             notifyBottomActionView()
         }
+        showTextLonger(viewModel)
     }
 
     private fun updateMarkAllReadCounter() {
@@ -423,5 +435,34 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         return View.OnClickListener {
             RouteManager.route(it.context, ApplinkConstInternalMarketplace.CART)
         }
+    }
+
+    private fun showTextLonger(model: NotificationUpdateItemViewModel) {
+
+        val bundle = Bundle()
+        bundle.putString(PARAM_CONTENT_IMAGE, model.contentUrl)
+        bundle.putString(PARAM_CONTENT_IMAGE_TYPE, model.typeLink.toString())
+        bundle.putString(PARAM_CTA_APPLINK, model.appLink)
+        bundle.putString(PARAM_CONTENT_TEXT, model.body)
+        bundle.putString(PARAM_CONTENT_TITLE, model.title)
+
+
+        if (!::longerTextDialog.isInitialized) {
+            longerTextDialog = NotificationUpdateLongerTextFragment2.createInstance(bundle)
+        } else {
+            longerTextDialog.arguments = bundle
+        }
+
+        if (!longerTextDialog.isAdded)
+            longerTextDialog.show(activity?.supportFragmentManager, "Longer Text Bottom Sheet")
+    }
+
+    companion object {
+        val PARAM_CONTENT_TITLE = "content title"
+        val PARAM_CONTENT_TEXT = "content text"
+        val PARAM_CONTENT_IMAGE = "content image"
+        val PARAM_CONTENT_IMAGE_TYPE = "content image type"
+        val PARAM_CTA_TEXT = "cta text"
+        val PARAM_CTA_APPLINK = "cta applink"
     }
 }

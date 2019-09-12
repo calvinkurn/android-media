@@ -18,8 +18,8 @@ import android.view.Window;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.GalleryBrowser;
 import com.tokopedia.core.ImageGallery;
+import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core2.R;
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
 import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
@@ -42,7 +42,7 @@ public abstract class BaseUploadImageDialog {
     private String cameraFileLoc;
 
     public interface UploadImageDialogListener {
-        void onSuccess(List<AttachmentResCenterVersion2DB> data);
+        void onSuccess(List<ResCenterAttachment> data);
         void onFailed();
     }
 

@@ -784,4 +784,13 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+
+    public void eventViewInformationAndWarningTickerInCart(String tickerId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART,
+                tickerId
+        );
+    }
 }

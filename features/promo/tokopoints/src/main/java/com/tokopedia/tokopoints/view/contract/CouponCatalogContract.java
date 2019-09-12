@@ -52,7 +52,7 @@ public interface CouponCatalogContract {
 
         void onPreValidateError(String title, String message);
 
-        void gotoSendGiftPage(int id, String title, String pointStr);
+        void gotoSendGiftPage(int id, String title, String pointStr, String banner);
 
         void onFinishRendering();
     }
@@ -64,6 +64,6 @@ public interface CouponCatalogContract {
 
         void fetchLatestStatus(List<Integer> catalogsIds);
 
-        void startSendGift(int id, String title, String pointStr);
+        void startSendGift(int id, String title, String pointStr, String banner);
     }
 }

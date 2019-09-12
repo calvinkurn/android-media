@@ -34,6 +34,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
@@ -81,6 +82,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     OrderListAnalytics orderListAnalytics;
     String fromPayment = null;
     String orderId;
+    RequestCancelInfo requestCancelInfo;
 
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
@@ -400,6 +402,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setActionButtons(details.actionButtons());
         }
         getView().setMainViewVisible(View.VISIBLE);
+        this.requestCancelInfo = details.getRequestCancelInfo();
     }
 
 
@@ -566,5 +569,14 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         if (!TextUtils.isEmpty(fileName)) {
             Insurance_File_Name = fileName;
         }
+    }
+
+    public String getCancelTime() {
+        return requestCancelInfo.getRequestCancelNote();
+    }
+
+    public boolean shouldShowTimeForCancellation(){
+        return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
+                && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
 }
