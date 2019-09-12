@@ -11,7 +11,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.presentation.AutoCompleteContract;
 import com.tokopedia.discovery.autocomplete.presentation.presenter.AutoCompletePresenter;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
@@ -52,7 +52,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
     @Inject
     AutoCompletePresenter autoCompletePresenter;
     @Inject
-    SearchTracking searchTracking;
+    DiscoveryTracking discoveryTracking;
 
     private SearchComponent searchComponent;
 
@@ -90,7 +90,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
         handleIntentAutoComplete(searchParameter);
 
         if (intent.getBooleanExtra(FROM_APP_SHORTCUTS, false)) {
-            searchTracking.eventSearchShortcut();
+            discoveryTracking.eventSearchShortcut();
         }
     }
 

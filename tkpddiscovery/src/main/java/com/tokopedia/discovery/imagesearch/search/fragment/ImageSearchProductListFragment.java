@@ -27,7 +27,7 @@ import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductL
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
@@ -411,7 +411,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                     dataLayerList.add(productItem.getProductAsObjectDataLayerForImageSearchImpression());
                 }
             }
-            SearchTracking.eventImpressionImageSearchResultProduct(getActivity(), dataLayerList);
+            DiscoveryTracking.eventImpressionImageSearchResultProduct(getActivity(), dataLayerList);
         }
     }
 
@@ -476,7 +476,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onEmptyButtonClicked() {
-        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
+        DiscoveryTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
@@ -546,7 +546,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
         // tracking?
-        //data.setTrackerListName(String.format(SearchTracking.imageClick, item.getPosition()));
+        //data.setTrackerListName(String.format(DiscoveryTracking.imageClick, item.getPosition()));
         Intent intent = getProductIntent(item.getProductID());
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         sendItemClickTrackingEvent(item);
@@ -611,7 +611,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
-        SearchTracking.trackEventClickImageSearchResultProduct(
+        DiscoveryTracking.trackEventClickImageSearchResultProduct(
                 item.getProductAsObjectDataLayerForImageSearchClick()
         );
     }

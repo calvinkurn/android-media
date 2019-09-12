@@ -2,10 +2,10 @@ package com.tokopedia.search.similarsearch;
 
 import android.content.Context;
 
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.similarsearch.view.SimilarSearchActivity;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.search.analytics.SearchEventTracking;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.track.TrackApp;
 
