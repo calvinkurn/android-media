@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener;
+package com.tokopedia.search.result.presentation.view.listener;
 
 import com.tokopedia.topads.sdk.view.DisplayMode;
 
