@@ -39,9 +39,4 @@ public class TradeInGTMConstants {
 
     public static final String CATEGORY_MONEYIN_PRICERANGE_PAGE ="money in price range page";
 
-    " 'event' : 'viewMoneyIn',
-            'eventCategory' : 'harga final money in',
-            'eventAction' : 'view harga final',
-            'eventLabel' : '{{diagnostic id - IMEI}}'"
-
 }

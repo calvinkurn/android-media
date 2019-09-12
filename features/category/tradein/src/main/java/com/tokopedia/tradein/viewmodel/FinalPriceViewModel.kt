@@ -95,7 +95,7 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
                     "page" to 1,
                     "addr_ids" to "",
                     "feature" to "",
-                    "show_corner" to true,
+                    "show_corner" to false,
                     "show_address" to true)
             val queryString = GraphqlHelper.loadRawString(applicationInstance.resources, R.raw.tradein_address_corner)
             val response = repository?.getGQLData(queryString, MoneyInKeroGetAddressResponse.ResponseData::class.java, request) as MoneyInKeroGetAddressResponse.ResponseData?
