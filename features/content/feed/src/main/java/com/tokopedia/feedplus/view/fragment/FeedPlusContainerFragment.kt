@@ -293,6 +293,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun hideAllFab(isInitial: Boolean) {
+        if (activity == null) {
+            return
+        }
+
         if (isInitial) {
             fab_feed.hide()
         } else {

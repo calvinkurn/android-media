@@ -46,6 +46,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -173,6 +174,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     lateinit var profileAnalytics: ProfileAnalytics
 
     @Inject
+    lateinit var feedAnalytics: FeedAnalyticTracker
+
+    @Inject
     lateinit var postTagAnalytics: PostTagAnalytics
 
     @Inject
@@ -285,6 +289,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onPause() {
         super.onPause()
         unregisterBroadcastReceiver()
+        feedAnalytics.sendPendingAnalytics()
     }
 
     override fun onDestroy() {
@@ -1054,6 +1059,23 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
+    }
+
+    override fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel) {
+        feedAnalytics.eventProfileClickHashtag(
+                isOwner,
+                trackingPostModel.postId.toString(),
+                hashtagText
+        )
+    }
+
+    override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
+        feedAnalytics.eventProfileClickReadMore(
+                isOwner,
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType
+        )
     }
 
     private fun initVar(savedInstanceState: Bundle?) {

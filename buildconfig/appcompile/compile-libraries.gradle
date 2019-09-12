@@ -14,10 +14,6 @@ include "libraries:core_network"
 include 'libraries:date_picker_range'
 include 'libraries:dynamic_features'
 include "libraries:fingerprint"
-include "libraries:global_config"
-include "libraries:graphql"
-include "libraries:cache_manager"
-//include "libraries:cache_manager_no_op"
 include "libraries:image_picker"
 include "libraries:image_preview"
 include 'libraries:imageuploader'
@@ -36,8 +32,7 @@ include "libraries:remote_config"
 include "libraries:sharedata"
 include "libraries:travel_calendar"
 include "libraries:tracking_optimizer"
-include "libraries:use_case"
-include "libraries:user_session"
+include "libraries:twitter_share"
 include "libraries:video_recorder"
 include "libraries:videoplayer"
 include "libraries:websocket"
@@ -52,7 +47,6 @@ include "libraries:linker"
 include "libraries:webview"
 include "libraries:akamai_bot_lib"
 include "libraries:collapsing_tab_layout"
-include "libraries:url"
 
 include "libraries:videouploader"
 

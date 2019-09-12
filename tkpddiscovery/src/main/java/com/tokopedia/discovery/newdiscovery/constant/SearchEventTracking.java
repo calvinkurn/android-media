@@ -61,6 +61,7 @@ public interface SearchEventTracking {
         String SEARCH_IMAGE_PICKER_CLICK_GALLERY = "click image search by gallery";
         String ADD_WISHLIST = "add wishlist";
         String REMOVE_WISHLIST = "remove wishlist";
+        String CLICK_CART_BUTTON = "click cart button - search result";
     }
 
     interface Label {
