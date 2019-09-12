@@ -315,6 +315,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         }
 
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
+        eventsAnalytics.sendProductLoadEvent(EventsAnalytics.VIEW_PRODUCT, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_VIEW_PRODUCT, data);
         eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
     }
 
@@ -406,6 +407,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
             }
             tvExpandableTermsNCondition.toggle();
         } else if (v.getId() == R.id.btn_book) {
+            eventsAnalytics.sendPayTicketEvent(toolbar.getTitle().toString());
             eventsDetailsPresenter.bookBtnClick();
         }
     }

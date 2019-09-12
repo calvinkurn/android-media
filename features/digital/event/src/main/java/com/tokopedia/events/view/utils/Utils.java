@@ -52,6 +52,8 @@ import rx.schedulers.Schedulers;
  */
 
 public class Utils {
+
+    public static int MAX_ITEMS_FOR_GA = 5;
     private static Utils singleInstance;
     private List<CategoryItemsViewModel> topEvents;
     private HashSet<Integer> likedEventSet;

@@ -174,7 +174,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
             searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
             mView.navigateToActivityRequest(searchIntent,
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
-            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_SEARCH, "");
             return true;
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);

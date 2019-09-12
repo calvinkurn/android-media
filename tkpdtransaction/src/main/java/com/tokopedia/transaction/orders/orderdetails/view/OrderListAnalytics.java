@@ -35,7 +35,8 @@ public class OrderListAnalytics {
     private static final String EVENT_ADD_TO_CART = "addToCart";
 
     private static final String ID = "id";
-    private static final String CATEGORY = "deals";
+    private static final String CATEGORY_DEALS = "deals";
+    private static final String CATEGORY_EVENTS = "hiburan";
     private static final String NAME = "name";
     private static final String PRICE = "price";
     private static final String EVENT_TRANSACTION = "transaction";
@@ -76,6 +77,7 @@ public class OrderListAnalytics {
     private static final String REMOVE_WISHLIST = "click remove - wishlist on product recommendation";
     private List<Object> dataLayerList = new ArrayList<>();
     private String recomTitle;
+    public static String DIGITAL_EVENT = "digital - event";
 
 
     @Inject
@@ -110,7 +112,7 @@ public class OrderListAnalytics {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, LOAD_MORE_EVENT_ACTION, eventLabel));
     }
 
-    public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId) {
+    public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId, int categoryType) {
         Map<String, Object> products = new HashMap<>();
         Map<String, Object> purchase = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -119,7 +121,11 @@ public class OrderListAnalytics {
         products.put(ID, String.valueOf(entityProductId));
         products.put(NAME, entityProductName);
         products.put(PRICE, totalTicketPrice);
-        products.put("Category", CATEGORY);
+        if (categoryType == 1) {
+            products.put("Category", CATEGORY_DEALS);
+        } else {
+            products.put("Category", CATEGORY_EVENTS);
+        }
         products.put(QUANTITY, quantity);
         products.put(BRAND, brandName);
         products.put(COUPON_CODE, "none");
@@ -139,7 +145,11 @@ public class OrderListAnalytics {
 
         Map<String, Object> map = new HashMap<>();
         map.put("event", EVENT_TRANSACTION);
-        map.put("eventCategory", EVENT_CARTEGORY);
+        if (categoryType == 1) {
+            map.put("eventCategory", EVENT_CARTEGORY);
+        } else {
+            map.put("eventCategory", DIGITAL_EVENT);
+        }
         map.put("eventAction", ACTION);
         map.put("eventLabel", brandName);
         map.put("currentSite", "tokopediadigital");

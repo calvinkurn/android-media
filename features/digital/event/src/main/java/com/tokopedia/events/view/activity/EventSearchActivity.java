@@ -143,7 +143,7 @@ public class EventSearchActivity extends EventBaseActivity implements
     public void setTopEvents(List<CategoryItemsViewModel> searchViewModels) {
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
             TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, eventSearchPresenter, true);
-            rvTopEventSuggestions.setLayoutManager(layoutManager);
+            rvTopEventSuggestions.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             rvTopEventSuggestions.setAdapter(adapter);
             rvTopEventSuggestions.removeOnScrollListener(rvOnScrollListener);
             tvTopevents.setText(Utils.Constants.TOP_EVENTS);

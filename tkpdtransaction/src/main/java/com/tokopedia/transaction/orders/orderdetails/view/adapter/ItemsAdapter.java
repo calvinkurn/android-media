@@ -244,7 +244,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 metaDataInfo = gson.fromJson(item.getMetaData(), MetaDataInfo.class);
             }
             if (metaDataInfo != null) {
-                presenter.sendThankYouEvent(metaDataInfo);
                 if (itemType == ITEM_DEALS || itemType == ITEM_DEALS_SHORT || itemType == ITEM_EVENTS) {
                     if (TextUtils.isEmpty(metaDataInfo.getEntityImage())) {
                         ImageHandler.loadImage(context, dealImage, item.getImageUrl(), R.color.grey_1100, R.color.grey_1100);
@@ -258,6 +257,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     }
                 }
                 if (itemType == ITEM_DEALS) {
+                    presenter.sendThankYouEvent(metaDataInfo, ITEM_DEALS);
                     final MetaDataInfo metaDataInfo1 = metaDataInfo;
                     if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                         validDate.setText(" ".concat(metaDataInfo.getEndDate()));
@@ -279,6 +279,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
 
                 if (itemType == ITEM_EVENTS) {
+                    presenter.sendThankYouEvent(metaDataInfo, ITEM_EVENTS);
                     final MetaDataInfo metaDataInfo1 = metaDataInfo;
                     if (metaDataInfo.getEntityPackages() != null && !TextUtils.isEmpty(metaDataInfo.getEntityPackages().get(0).getCity())) {
                         eventCity.setText(metaDataInfo.getEntityPackages().get(0).getCity());
@@ -579,7 +580,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             }
 
             if (metaDataInfo != null) {
-                presenter.sendThankYouEvent(metaDataInfo);
+                presenter.sendThankYouEvent(metaDataInfo, ITEM_DEALS);
                 setEventDetails.setDetailTitle(context.getResources().getString(R.string.purchase_detail));
                 if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
                     validDate.setText(" ".concat(metaDataInfo.getEndDate()));

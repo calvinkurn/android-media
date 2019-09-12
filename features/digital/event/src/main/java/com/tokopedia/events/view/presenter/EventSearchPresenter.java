@@ -33,7 +33,6 @@ import com.tokopedia.usecase.RequestParams;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 
 import rx.Subscriber;
 
@@ -185,7 +184,7 @@ public class EventSearchPresenter
                 showCards = false;
                 getEventsListBySearch(searchText);
                 searchTag = searchText;
-                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
+                eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.CLICK_SEARCH_ICON, searchText);
             }
             if (searchText.length() == 0) {
                 mView.setTopEvents(mTopEvents);
@@ -200,7 +199,6 @@ public class EventSearchPresenter
         showCards = true;
         getEventsListBySearch(searchText);
         searchTag = searchText;
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
     }
 
     @Override
@@ -351,7 +349,8 @@ public class EventSearchPresenter
         mView = (EventSearchContract.EventSearchView) view;
         isEventCalendar = mView.getActivity().getIntent().
                 getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
-        mTopEvents = mView.getActivity().getIntent().getParcelableArrayListExtra(Utils.Constants.TOPEVENTS);
+        mTopEvents = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
+                .getTopEvents();
         if (isEventCalendar) {
             searchSubmitted("");
         } else {

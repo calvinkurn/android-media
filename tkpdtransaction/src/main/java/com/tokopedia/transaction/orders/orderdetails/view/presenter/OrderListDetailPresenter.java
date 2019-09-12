@@ -555,9 +555,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return (matcher.find() || this.isdownloadable);
     }
 
-    public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
+    public void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType) {
         if ("true".equalsIgnoreCase(this.fromPayment)) {
-            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId);
+            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType);
         }
     }
 

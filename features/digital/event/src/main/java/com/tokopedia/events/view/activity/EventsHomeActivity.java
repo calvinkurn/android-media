@@ -145,6 +145,7 @@ public class EventsHomeActivity extends EventBaseActivity
         });
 
         setLightToolbarStyle();
+        eventsAnalytics.sendGeneralEvent("", "", "", "");
 
     }
 
@@ -274,6 +275,7 @@ public class EventsHomeActivity extends EventBaseActivity
             if (categoryViewModel.getItems() != null && categoryViewModel.getItems().size() != 0) {
                 if ("carousel".equalsIgnoreCase(categoryViewModel.getName())) {
                     adapter = new SlidingImageAdapter(EventsHomeActivity.this, eventHomePresenter.getCarouselImages(categoryViewModel.getItems()), eventHomePresenter);
+                    adapter.addItems(categoryViewModel.getItems());
                     setViewPagerListener();
                     tabLayout.setViewPager(viewPager);
                     eventHomePresenter.startBannerSlide(viewPager);
@@ -348,6 +350,7 @@ public class EventsHomeActivity extends EventBaseActivity
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_CATEGORY_CLICK, String.format("%s - %d", tab.getText(), tab.getPosition()));
                 try {
                     View customeView = tab.getCustomView();
                     ImageView icon = customeView.findViewById(R.id.category_icon);
@@ -478,6 +481,7 @@ public class EventsHomeActivity extends EventBaseActivity
         if (v.getId() == R.id.tv_addtocalendar) {
             eventHomePresenter.onClickEventCalendar();
         } else if (v.getId() == R.id.search_input_view) {
+            eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.CLICK_SEARCH_ACTION, "");
             eventHomePresenter.onOptionMenuClick(R.id.action_menu_search);
         } else if (v.getId() == R.id.promo_event) {
             eventHomePresenter.onOptionMenuClick(R.id.action_promo);
