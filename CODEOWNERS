@@ -53,12 +53,14 @@
 /features/top_ads/top_ads_autoads/     @tokopedia/minion-dave
 
 /features/digital/flight/               @tokopedia/minion-mark
-/features/digital/train/               @tokopedia/minion-mark
-/features/digital/hotel/               @tokopedia/minion-mark
+/features/digital/train/                @tokopedia/minion-mark
+/features/digital/hotel/                @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
-/featires/digital/common_travel         @tokopedia/minion-mark
+/features/digital/common_travel         @tokopedia/minion-mark
+/features/digital/digital_homepage          @tokopedia/minion-mark
 /libraries/travel_calendar              @tokopedia/minion-mark
+/features/digital/travel_homepage       @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
 /features/payment/payment_setting/              @tokopedia/minion-bob
@@ -93,7 +95,6 @@
 /features/user/loginregister/                   @tokopedia/minion-kevin
 /features/user/sessioncommon/                   @tokopedia/minion-kevin
 /features/user/loginphone/                      @tokopedia/minion-kevin
-/features/user/bankdb/                          @tokopedia/minion-kevin
 /features/user/notifcenter/                     @tokopedia/minion-kevin
 /features/user/attachproduct/                   @tokopedia/minion-kevin
 /features/user/talk/                            @tokopedia/minion-kevin
@@ -125,12 +126,13 @@
 /libraries/williamchart/                @tokopedia/minion-stuart
 /libraries/date_picker_range/           @tokopedia/minion-stuart
 /libraries/imageuploader/               @tokopedia/minion-stuart
+/libraries/twitter_share/               @tokopedia/minion-stuart
+/libraries/youtubeutils/                @tokopedia/minion-stuart
 /libraries/use_case/                    @tokopedia/core-team
 /libraries/react_native/                @tokopedia/core-team
 /libraries/applink/                     @tokopedia/core-team
 /libraries/push_notification/           @tokopedia/core-team
 /libraries/user_session/                @tokopedia/minion-kevin
-/libraries/youtubeutils/                @tokopedia/minion-stuart
 
 /libraries/common_network/              @tokopedia/core-team
 
@@ -153,7 +155,7 @@
 /features/im/challenges                 @tokopedia/minion-yoda
 /features/im/referral                   @tokopedia/minion-yoda
 /libraries/linker                       @tokopedia/minion-yoda
-/libraries/cmnotification               @tokopedia/minion-yoda
+/libraries/cm_push_notifications        @tokopedia/minion-yoda
 
 /libraries/pagination                   @tokopedia/minion-solo
 /libraries/common_network/              @tokopedia/minion-solo

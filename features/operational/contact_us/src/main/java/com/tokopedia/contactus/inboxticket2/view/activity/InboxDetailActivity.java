@@ -98,7 +98,8 @@ public class InboxDetailActivity extends InboxBaseActivity
     public static final String PARAM_TICKET_T_ID = "id";
     public static final String IS_OFFICIAL_STORE = "is_official_store";
     private CloseableBottomSheetDialog helpFullBottomSheet, closeComplainBottomSheet,servicePrioritiesBottomSheet;
-    List<CommentsItem> commentsItems = new ArrayList<>();
+    private List<CommentsItem> commentsItems;
+    private boolean iscloseAllow = false;
 
     private boolean isSendButtonEnabled = false;
 
@@ -125,6 +126,10 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void renderMessageList(Tickets ticketDetail) {
         commentsItems = ticketDetail.getComments();
+        if(commentsItems ==null){
+            commentsItems = new ArrayList<>();
+        }
+        iscloseAllow = ticketDetail.isAllowClose();
         Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
 
         edMessage.getText().clear();
@@ -701,12 +706,17 @@ public class InboxDetailActivity extends InboxBaseActivity
                 }
             }
             if (agreed) {
-                closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-                closeComplainBottomSheet.setCustomContentView(new CloseComplainBottomSheet(InboxDetailActivity.this, this), "", true);
-                closeComplainBottomSheet.show();
                 viewReplyButton.setVisibility(View.GONE);
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick(true, commentPosition, item.getId());
                 helpFullBottomSheet.dismiss();
+                if(iscloseAllow){
+                    closeComplainBottomSheet = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
+                    closeComplainBottomSheet.setCustomContentView(new CloseComplainBottomSheet(InboxDetailActivity.this, this), "", true);
+                    closeComplainBottomSheet.show();
+                }else{
+                    textToolbar.setVisibility(View.VISIBLE);
+                }
+
             } else {
                 ((InboxDetailContract.InboxDetailPresenter) mPresenter).onClick(false, commentPosition, item.getId());
                 textToolbar.setVisibility(View.VISIBLE);
