@@ -85,11 +85,6 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
                 }
             }
         })
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_TRADEIN,
-                TradeInGTMConstants.CATEGORY_TRADEIN_HARGA_FINAL,
-                TradeInGTMConstants.ACTION_VIEW_HARGA_FINAL,
-                "")
     }
 
     fun getAddress() {

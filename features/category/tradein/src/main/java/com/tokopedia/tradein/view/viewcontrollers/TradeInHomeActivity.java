@@ -53,6 +53,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private int closeButtonText;
     private int tncStringId;
     private boolean isShowingPermissionPopup;
+    private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -76,17 +77,25 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 String page = intent.getStringExtra(TradeInGTMConstants.PAGE);
                 String action = intent.getStringExtra(TradeInGTMConstants.ACTION);
                 String value = intent.getStringExtra(TradeInGTMConstants.VALUE);
+                String cekFisik = TradeInGTMConstants.CEK_FISIK_TRADE_IN;
+                String cekFungsi = TradeInGTMConstants.CEK_FUNGSI_TRADE_IN;
+                String cekFisikResult = TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN;
+                if(TRADEIN_TYPE == TRADEIN_MONEYIN){
+                    cekFisik = TradeInGTMConstants.CEK_FISIK_MONEY_IN;
+                    cekFungsi = TradeInGTMConstants.CEK_FUNGSI_MONEY_IN;
+                    cekFisikResult = TradeInGTMConstants.CEK_FISIK_RESULT_MONEY_IN;
+                }
                 if (TradeInGTMConstants.CEK_FISIK.equals(page)) {
                     if (TradeInGTMConstants.CLICK_SALIN.equals(action)
                             || TradeInGTMConstants.CLICK_SOCIAL_SHARE.equals(action))
                         sendGeneralEvent(clickEvent,
-                                TradeInGTMConstants.CEK_FISIK_TRADE_IN, action, value);
+                                cekFisik, action, value);
                 } else if (TradeInGTMConstants.CEK_FUNGSI_TRADE_IN.equals(page)) {
                     sendGeneralEvent(clickEvent,
-                            TradeInGTMConstants.CEK_FUNGSI_TRADE_IN, action, value);
+                            cekFungsi, action, value);
                 } else if (TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN.equals(page)) {
                     sendGeneralEvent(viewEvent,
-                            TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN, action, value);
+                            cekFisikResult, action, value);
                 }
             }
         }
@@ -127,6 +136,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
             tncStringId = R.string.money_in_tnc;
+            category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
         } else {
             closeButtonText = R.string.go_to_product_details;
             tncStringId = R.string.tradein_tnc;

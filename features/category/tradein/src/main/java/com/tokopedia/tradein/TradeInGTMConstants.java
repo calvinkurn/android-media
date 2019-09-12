@@ -5,8 +5,11 @@ public class TradeInGTMConstants {
     public static final String CLICK_SALIN = "click salin";
     public static final String CLICK_SOCIAL_SHARE = "click social share";
     public static final String CEK_FISIK_TRADE_IN = "cek fisik trade in";
+    public static final String CEK_FISIK_MONEY_IN = "cek fisik money in";
     public static final String CEK_FUNGSI_TRADE_IN = "cek fungsi trade in";
+    public static final String CEK_FUNGSI_MONEY_IN = "cek fungsi money in";
     public static final String CEK_FISIK_RESULT_TRADE_IN = "cek fisik result trade in";
+    public static final String CEK_FISIK_RESULT_MONEY_IN = "cek fisik result money in";
 
     public static final String ACTION_VIEW_TRADEIN = "viewTradeIn";
     public static final String ACTION_VIEW_MONEYIN = "viewMoneyIn";
@@ -32,7 +35,13 @@ public class TradeInGTMConstants {
 
     public static final String CATEGORY_TRADEIN_START_PAGE = "trade in start page";
     public static final String CATEGORY_TRADEIN_HARGA_FINAL ="harga final trade in";
+    public static final String CATEGORY_MONEYIN_HARGA_FINAL ="harga final money in";
 
     public static final String CATEGORY_MONEYIN_PRICERANGE_PAGE ="money in price range page";
+
+    " 'event' : 'viewMoneyIn',
+            'eventCategory' : 'harga final money in',
+            'eventAction' : 'view harga final',
+            'eventLabel' : '{{diagnostic id - IMEI}}'"
 
 }

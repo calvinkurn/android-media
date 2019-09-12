@@ -21,6 +21,8 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticaddaddress.AddressConstants;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
 import com.tokopedia.tradein.R;
+import com.tokopedia.tradein.TradeInGTMConstants;
+import com.tokopedia.tradein.model.DeviceAttr;
 import com.tokopedia.tradein.model.DeviceDataResponse;
 import com.tokopedia.tradein.model.KYCDetails;
 import com.tokopedia.tradein.model.TradeInParams;
@@ -37,13 +39,13 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     public static final int FINAL_PRICE_REQUEST_CODE = 22456;
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
     private final static int PINPOINT_ACTIVITY_REQUEST_CODE = 1302;
+    private final static String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
     private FinalPriceViewModel viewModel;
     private String orderValue = "";
     private String deviceId = "";
     private int checkoutString = R.string.buy_now;
     private int hargeTncString = R.string.harga_tnc;
     private int tncStringId = R.string.tradein_tnc;
-    private final static String EXTRA_ADDRESS_NEW = "EXTRA_ADDRESS_NEW";
     /**
      * price_valid_until
      */
@@ -64,6 +66,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
     private TextView mTvButtonPayOrKtp;
     private TextView tvTitle;
     private int tradeInStringId = R.string.tukar_tambah;
+    private String category = TradeInGTMConstants.CATEGORY_TRADEIN_HARGA_FINAL;
 
     public static Intent getHargaFinalIntent(Context context) {
         return new Intent(context, FinalPriceActivity.class);
@@ -126,6 +129,7 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
             hargeTncString = R.string.moneyin_harga_tnc;
             tncStringId = R.string.money_in_tnc;
             tradeInStringId = R.string.money_in;
+            category = TradeInGTMConstants.CATEGORY_MONEYIN_HARGA_FINAL;
         }
         viewModel.getDeviceDiagData().observe(this, this);
         viewModel.getAddressLiveData().observe(this, result -> {
@@ -201,9 +205,12 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
             mTvModelNew.setText(tradeInData.getProductName());
             mTvPriceNew.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeInData.getNewPrice(), true));
         }
-        mTvModelName.setText(deviceDataResponse.getDeviceAttr().getModel());
+        DeviceAttr attr = deviceDataResponse.getDeviceAttr();
+        if (attr != null) {
+            mTvModelName.setText(attr.getModel());
+            deviceId = attr.getImei().get(0);
+        }
         orderValue = CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true);
-        deviceId = deviceDataResponse.getDeviceAttr().getImei().get(0);
         mTvSellingPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(deviceDataResponse.getOldPrice(), true));
         mTvValidTill.setText(String.format(getString(R.string.price_valid_until), deviceDataResponse.getExpiryTimeFmt()));
         List<String> deviceReview = deviceDataResponse.getDeviceReview();
@@ -233,6 +240,10 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         }
         setVisibilityGroup(View.VISIBLE);
         hideProgressBar();
+        sendGeneralEvent(viewEvent,
+                category,
+                TradeInGTMConstants.ACTION_VIEW_HARGA_FINAL,
+                deviceId);
     }
 
     private void setVisibilityGroup(int visibility) {
@@ -306,6 +317,10 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         mTvButtonPayOrKtp.setText(checkoutString);
         mTvButtonPayOrKtp.setOnClickListener(v -> {
             goToCheckout();
+            sendGeneralEvent(clickEvent,
+                    category,
+                    "click "+checkoutString+" button",
+                    "");
         });
     }
 
@@ -330,8 +345,8 @@ public class FinalPriceActivity extends BaseTradeInActivity implements Observer<
         mTvButtonPayOrKtp.setText(R.string.do_ktp);
         mTvButtonPayOrKtp.setOnClickListener(v -> {
             goToKycActivity();
-            sendGeneralEvent("clickTradeIn",
-                    "harga final trade in",
+            sendGeneralEvent(clickEvent,
+                    category,
                     "click lanjut foto ktp",
                     "");
 

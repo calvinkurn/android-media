@@ -30,7 +30,6 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     protected int TRADEIN_TYPE = TRADEIN_OFFLINE;
     protected String clickEvent = TradeInGTMConstants.ACTION_CLICK_TRADEIN;
     protected String viewEvent = TradeInGTMConstants.ACTION_VIEW_TRADEIN;
-    protected String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
 
 
     @Override
