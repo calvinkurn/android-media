@@ -2161,6 +2161,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
 
         if (insuranceCartResponse != null &&
+                insuranceCartResponse.getCartShopsList() != null &&
                 !insuranceCartResponse.getCartShopsList().isEmpty()) {
             for (InsuranceCartShops insuranceCartShops : insuranceCartResponse.getCartShopsList()) {
                 for (InsuranceCartShopItems insuranceCartShopItems : insuranceCartShops.getShopItemsList()) {
