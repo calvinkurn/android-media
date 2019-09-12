@@ -39,7 +39,7 @@ class DeactivatePowerMerchantUseCase @Inject constructor(private val graphqlUseC
     }
 
     companion object {
-        private const val QUEST_KEY = "quest"
+        private const val QUEST_KEY = "quest_data"
         fun createRequestParam(questionData: MutableList<PMCancellationQuestionnaireAnswerModel>): RequestParams {
             return RequestParams.create().apply {
                 putObject(QUEST_KEY, questionData)
