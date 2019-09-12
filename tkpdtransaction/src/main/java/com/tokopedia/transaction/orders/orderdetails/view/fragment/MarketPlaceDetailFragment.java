@@ -75,6 +75,7 @@ import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 import com.tokopedia.unifycomponents.ticker.TickerData;
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
@@ -364,7 +365,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     }
 
     @Override
-    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos) {
+    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
         List<TickerData> tickerData = new ArrayList<>();
         for (AdditionalTickerInfo info : tickerInfos) {
             tickerData.add(new TickerData(info.getTitle(), info.getNotes(), Ticker.TYPE_ANNOUNCEMENT, true));
@@ -372,6 +373,19 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         if (getContext()!= null) {
             mTickerInfos.addPagerView(new TickerPagerAdapter(getContext(), tickerData), tickerData);
             mTickerInfos.setVisibility(View.VISIBLE);
+            if (url != null) {
+                mTickerInfos.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(CharSequence charSequence) {
+                        RouteManager.route(getContext(), url);
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
+            }
         }
     }
 

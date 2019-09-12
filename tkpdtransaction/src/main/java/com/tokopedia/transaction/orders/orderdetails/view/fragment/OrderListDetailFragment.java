@@ -231,7 +231,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos) {
+    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
 
     }
 

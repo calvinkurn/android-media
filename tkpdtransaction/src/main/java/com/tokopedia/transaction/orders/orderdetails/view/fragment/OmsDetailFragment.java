@@ -274,7 +274,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     }
 
     @Override
-    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos) {
+    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
 
     }
 
