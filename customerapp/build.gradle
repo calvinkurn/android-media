@@ -248,7 +248,8 @@ android {
             rootProject.ext.dynamicFeatures.topAdsDashboard,
 //          rootProject.ext.dynamicFeatures.digitalTopup
 //          rootProject.ext.dynamicFeatures.profileCompletion,
-//          rootProject.ext.dynamicFeatures.shopOpen
+//          rootProject.ext.dynamicFeatures.shopOpen,
+//            rootProject.ext.dynamicFeatures.settingBank,
     ]
 }
 
@@ -372,7 +373,6 @@ dependencies {
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.digitalHome)
-
 
     implementation project(rootProject.ext.libraries.iris)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession

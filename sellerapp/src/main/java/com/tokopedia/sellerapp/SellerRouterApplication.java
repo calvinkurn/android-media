@@ -897,17 +897,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Fragment getChannelFragment(Bundle bundle) {
-        return null;
-    }
-
-    @Override
-    public String getChannelFragmentTag() {
-        return "";
-    }
-
-
-    @Override
     public void init() {
     }
 
@@ -937,11 +926,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
-    }
-
-    @Override
-    public String getDesktopLinkGroupChat() {
-        return "";
     }
 
     @Override
@@ -1382,11 +1366,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void refreshFCMTokenFromForegroundToCM() {
 
-    }
-
-    @Override
-    public com.tokopedia.iris.Iris getIris() {
-        return null;
     }
 
     public String getContactUsBaseURL() {

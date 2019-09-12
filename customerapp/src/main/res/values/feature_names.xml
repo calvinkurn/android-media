@@ -23,6 +23,11 @@
     <string name="title_shop_is_active">Toko Sudah Aktif</string>
     <string name="title_shop_setting">Pengaturan Toko</string>
 
+    <!-- Dynamic feature for Setting Bank-->
+    <string name="setting_bank_app_name">Rekening Bank</string>
+    <string name="title_setting_bank">Rekening Bank</string>
+    <string name="title_choose_bank">Pilih Bank</string>
+
     <!--TopAds Dashboard-->
     <string name="title_module_top_ads_dashboard">TopAds Module</string>
     <string name="top_ads_title_dashboard">TopAds</string>
