@@ -3,29 +3,6 @@ apply plugin: 'com.android.library'
 //region android dependencies
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
-
-    defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 28
-        versionCode 1
-        versionName project.version
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        debug {
-            testCoverageEnabled true
-        }
-
-        release {
-            minifyEnabled false
-            //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            proguardFiles 'proguard-rules.pro'
-        }
-    }
-
     sourceSets {
         main.java.srcDirs += 'src/main/options'
         main.java.srcDirs += 'src/main/views'

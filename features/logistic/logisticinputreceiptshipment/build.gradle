@@ -24,14 +24,14 @@ project.ext {
 }
 
 dependencies {
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation project(rootProject.ext.libraries.cacheApi)
 
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.debugToolsDependencies.chuck

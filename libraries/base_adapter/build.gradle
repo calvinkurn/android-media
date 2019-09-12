@@ -32,7 +32,7 @@ project.ext {
 
 
 dependencies {
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
 }
 
 apply from: '../../publish_local.gradle'

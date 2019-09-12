@@ -24,8 +24,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.datePickerRange)
@@ -36,12 +36,12 @@ dependencies {
 
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.topAdsAutoAds)
 
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.productManageItem)
-    implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.features.tkpdseller)
 
     implementation rootProject.ext.networkDependencies.glide
 

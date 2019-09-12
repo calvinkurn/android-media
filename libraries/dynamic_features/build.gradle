@@ -15,7 +15,7 @@ buildscript {
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
 
     implementation rootProject.ext.unifyDependencies.components
 

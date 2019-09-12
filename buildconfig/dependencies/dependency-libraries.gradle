@@ -13,6 +13,7 @@ ext {
 
     // Sort and categorize alphabetically by folder name
     libraries = [
+            akamai_bot_lib         : ":libraries:akamai_bot_lib",
             analytics               : ":libraries:analytics",
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",
@@ -20,7 +21,7 @@ ext {
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
             cacheApi                : ":libraries:cache_api",
             cameraview              : ":libraries:cameraview",
-            cmnotification          : ":libraries:cm_push_notifications",
+            cmPushNotifications     : ":libraries:cm_push_notifications",
             commonNetwork           : ":libraries:common_network",
             collapsingTabLayout     : ":libraries:collapsing_tab_layout",
             core_legacy             : ":libraries:core_legacy",
@@ -40,10 +41,10 @@ ext {
             linker                  : ":libraries:linker",
             locationmanager         : ":libraries:locationmanager",
             logger                  : ":libraries:logger",
-            omsApi                  : ":libraries:oms",
+            oms                     : ":libraries:oms",
             pagination              : ":libraries:pagination",
             permissionchecker       : ":libraries:permissionchecker",
-            pushNotif               : ":libraries:push_notification",
+            pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",
             sharedata               : ":libraries:sharedata",
@@ -60,7 +61,7 @@ ext {
             youtubeApi              : ":libraries:YouTubeAndroidPlayerApi",
             youtubeutil             : ":libraries:youtubeutil",
 
-            abstraction             : ":tkpdabstraction",
+            tkpdabstraction         : ":tkpdabstraction",
             design                  : ":tkpddesign"
     ]
 }

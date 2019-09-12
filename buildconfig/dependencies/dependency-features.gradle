@@ -25,7 +25,7 @@ ext {
             affiliateCommon                 : ":features:content:affiliate_common",
             profile                         : ":features:content:profile",
 
-            browse                          : ":features:digital:digital_browse",
+            digitalBrowse                   : ":features:digital:digital_browse",
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
             commonTravel                    : ":features:digital:common_travel",
@@ -67,7 +67,7 @@ ext {
 //            saldodetails                    : ":features:fintech:saldo_details_no_op",
             tokoCash                        : ":features:fintech:tokocash",
 //            tokoCash                      : ":features:fintech:tokocash_no_op",
-            ovo                             : ":features:fintech:ovo_pay_with_qr",
+            ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
 
             accountHome                     : ":features:home:account-home",
             navigation                      : ":features:home:navigation",
@@ -100,7 +100,6 @@ ext {
             ovop2p                          : ":features:ovop2p",
             productManageItem               : ":features:merchant:product_manage_item",
             productManageList               : ":features:merchant:product_manage_list",
-            productManageDetail             : ":features:merchant:product_detail",
             productShare                    : ":features:merchant:product_share",
             report                          : ":features:merchant:report",
             common_promo                    : ":features:im:common_promo",
@@ -127,8 +126,8 @@ ext {
 //            payment                         : ":features:payment:payment_no_op",
             paymentSetting                  : ":features:payment:payment_setting",
 //            paymentSetting                  : ":features:payment:payment_setting_no_op",
-            paymentManagementSystem         : ":features:payment:pms",
-//            paymentManagementSystem   : ":features:payment:pms_no_op",
+            pms                             : ":features:payment:pms",
+//            pms                             : ":features:payment:pms_no_op",
             withdraw                        : ":features:payment:withdraw",
 
             gallery                         : ":features:product:gallery",
@@ -148,7 +147,7 @@ ext {
             topAdsManagement                : ":features:top_ads:top_ads_management",
 //            topAdsManagement          : ":features:top_ads:top_ads_management_no_op",
             topAdsManagementCommon          : ":features:top_ads:top_ads_management_common",
-            topAdsSourceTagging             : ":features:top_ads:top_ads_management_sourcetagging",
+            topAdsManagementSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",
 
             atc_common                      : ":features:transaction:atc_common",
             transactiondata                 : ":features:transaction:transactiondata",
@@ -191,13 +190,12 @@ ext {
             vote                            : ":features:user:vote",
 
 
-            content                         : ":tkpdcontent",
-            core                            : ":tkpdcore",
-            discovery                       : ":tkpddiscovery",
-            inbox                           : ":tkpdinbox",
-            seller                          : ":tkpdseller",
-            session                         : ":tkpdsession",
-            transaction                     : ":tkpdtransaction",
-            transactioncommon               : ":tkpdtransaction-common"
+            tkpdcore                        : ":tkpdcore",
+            tkpddiscovery                   : ":tkpddiscovery",
+            tkpdinbox                       : ":tkpdinbox",
+            tkpdseller                      : ":tkpdseller",
+            tkpdsession                     : ":tkpdsession",
+            tkpdtransaction                 : ":tkpdtransaction",
+            tkpdtransactioncommon           : ":tkpdtransaction-common"
     ]
 }
