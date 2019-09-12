@@ -686,9 +686,9 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
     public void renderPassengerTitle(String passengerTitle) {
         rvPassengerTitle.onResetChip();
         switch (passengerTitle) {
-            case FlightPassengerTitle.TUAN: rvPassengerTitle.initiallySelectedChip(0);
-            case FlightPassengerTitle.NYONYA: rvPassengerTitle.initiallySelectedChip(1);
-            case FlightPassengerTitle.NONA: rvPassengerTitle.initiallySelectedChip(2);
+            case FlightPassengerTitle.TUAN: rvPassengerTitle.selectChipByPosition(0);
+            case FlightPassengerTitle.NYONYA: rvPassengerTitle.selectChipByPosition(1);
+            case FlightPassengerTitle.NONA: rvPassengerTitle.selectChipByPosition(2);
         }
     }
 

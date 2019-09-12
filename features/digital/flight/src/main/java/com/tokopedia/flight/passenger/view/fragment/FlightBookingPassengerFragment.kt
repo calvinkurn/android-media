@@ -278,11 +278,11 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
     private fun renderPassengerTitle(passengerTitle: String) {
         if (passengerTitle.equals(FlightPassengerTitle.TUAN, true))
-            rv_passenger_title.initiallySelectedChip(0)
+            rv_passenger_title.selectChipByPosition(0)
         else if (passengerTitle.equals(FlightPassengerTitle.NYONYA, true))
-            rv_passenger_title.initiallySelectedChip(1)
+            rv_passenger_title.selectChipByPosition(1)
         else if (passengerTitle.equals(FlightPassengerTitle.NONA, true))
-            rv_passenger_title.initiallySelectedChip(2)
+            rv_passenger_title.selectChipByPosition(2)
         else rv_passenger_title.onResetChip()
     }
 

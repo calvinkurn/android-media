@@ -18,6 +18,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
     : RecyclerView.Adapter<FilterChipAdapter.ViewHolder>() {
 
     var selectOnlyOneChip = false
+    var initialPositionSelected: Int? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
             = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.widget_filter_chip_item, parent, false))
@@ -30,7 +31,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
             chips.isSelected = false
             chips.setOnClickListener {
                 if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
-                chips.isSelected = !chips.isSelected
+                if (initialPositionSelected != null) chips.isSelected = position == initialPositionSelected
                 if (selectedColor > 0) {
                     if (chips.isSelected) setTextColor(selectedColor)
                     else setTextColor(com.tokopedia.design.R.color.black_56)
@@ -41,6 +42,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
     }
 
     fun resetChipSelected() {
+        initialPositionSelected = null
         notifyDataSetChanged()
     }
 

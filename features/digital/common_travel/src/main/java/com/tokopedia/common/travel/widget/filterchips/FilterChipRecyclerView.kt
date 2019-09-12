@@ -41,9 +41,10 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
         chip_recycler_view.layoutManager = layoutManager
     }
 
-    fun setItem(strings: ArrayList<String>, selectedTextColor: Int = 0) {
+    fun setItem(strings: ArrayList<String>, selectedTextColor: Int = 0, initialSelectedItemPos: Int? = null) {
         if (listener != null) {
             adapter = FilterChipAdapter(strings, listener, this, selectedTextColor)
+            if (initialSelectedItemPos != null) adapter.initialPositionSelected = initialSelectedItemPos
             chip_recycler_view.adapter = adapter
         }
     }
@@ -71,9 +72,9 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
         adapter?.selectOnlyOneChip = boolean
     }
 
-    fun initiallySelectedChip(position: Int) {
+    fun selectChipByPosition(position: Int) {
         if (position < adapter.itemCount) {
-            with(layoutManager.findViewByPosition(position) as FilterChipAdapter.ViewHolder?) {
+            with(chip_recycler_view.findViewHolderForAdapterPosition(position) as FilterChipAdapter.ViewHolder?) {
                 this?.chips?.isSelected = true
             }
         }
