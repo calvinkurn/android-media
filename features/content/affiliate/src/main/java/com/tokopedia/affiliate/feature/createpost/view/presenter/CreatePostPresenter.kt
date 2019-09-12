@@ -6,11 +6,22 @@ import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormU
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetFeedForEditUseCase
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
+import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
+import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
+import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kotlin.extensions.view.debugTrace
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import rx.Subscriber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author by milhamj on 9/26/18.
@@ -18,20 +29,36 @@ import javax.inject.Inject
 class CreatePostPresenter @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getContentFormUseCase: GetContentFormUseCase,
-        private val getFeedUseCase: GetFeedForEditUseCase)
-    : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter {
+        private val getFeedUseCase: GetFeedForEditUseCase,
+        private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
+        private val twitterManager: TwitterManager
+) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener, CoroutineScope {
+
+    private var followersCount: Int? = null
+
+    private val job: Job = Job()
+    override val coroutineContext: CoroutineContext
+        get() = job + Dispatchers.IO
+
+    override fun attachView(view: CreatePostContract.View?) {
+        super.attachView(view)
+        twitterManager.setListener(this)
+        getFollowersCount()
+        invalidateShareOptions()
+    }
 
     override fun detachView() {
         super.detachView()
         getContentFormUseCase.unsubscribe()
         getFeedUseCase.unsubscribe()
+        getProfileHeaderUseCase.unsubscribe()
     }
 
     override fun fetchContentForm(idList: MutableList<String>, type: String, postId: String) {
         view.showLoading()
         getContentFormUseCase.execute(
                 GetContentFormUseCase.createRequestParams(idList, type, postId),
-                GetContentFormSubscriber(view, type)
+                GetContentFormSubscriber(view, type, null)
         )
     }
 
@@ -46,8 +73,80 @@ class CreatePostPresenter @Inject constructor(
                         },
                         type
                 ),
-                GetContentFormSubscriber(view, type)
+                GetContentFormSubscriber(view, type, token)
         )
+    }
+
+    override fun onAuthenticationSuccess(oAuthToken: String, oAuthSecret: String) {
+        twitterManager.shouldPostToTwitter = true
+        invalidateShareOptions()
+    }
+
+    override fun invalidateShareOptions() {
+        view?.onGetAvailableShareTypeList(getShareOptions())
+        shouldChangeShareHeaderText()
+    }
+
+    private fun shouldChangeShareHeaderText() {
+        view?.changeShareHeaderText(getShareHeaderText())
+    }
+
+    private fun getFollowersCount() {
+        getProfileHeaderUseCase.execute(
+                GetProfileHeaderUseCase.createRequestParams(userSession.userId.toInt()),
+                object : Subscriber<GraphqlResponse>() {
+                    override fun onNext(t: GraphqlResponse?) {
+                        followersCount = t?.let(::getFollowersCount)
+                        invalidateShareOptions()
+                    }
+
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        e?.debugTrace()
+                    }
+                }
+        )
+    }
+
+    override fun onShareButtonClicked(type: ShareType, isChecked: Boolean) {
+        if (isChecked) {
+            when (type) {
+                is ShareType.Twitter -> if (!twitterManager.isAuthenticated) {
+                    authenticateTwitter()
+                    invalidateShareOptions()
+                } else {
+                    twitterManager.shouldPostToTwitter = true
+                }
+            }
+        } else {
+            twitterManager.shouldPostToTwitter = false
+        }
+
+        shouldChangeShareHeaderText()
+    }
+
+    private fun authenticateTwitter() {
+        launch {
+            view?.onAuthenticateTwitter(
+                    twitterManager.getAuthenticator()
+            )
+        }
+    }
+
+    private fun getShareOptions(): List<ShareType> {
+        return listOf(
+                ShareType.Tokopedia(followersCount),
+                ShareType.Twitter(twitterManager.shouldPostToTwitter)
+        )
+    }
+
+    private fun getShareHeaderText(): String {
+        val activeShareOptions = getShareOptions().filter(ShareType::isActivated)
+        val context = view?.getContext()
+        return if (context == null) "" else activeShareOptions.joinToString { context.getString(it.keyRes) }
     }
 
     override fun getFeedDetail(postId: String, isAffiliate: Boolean) {
@@ -69,7 +168,12 @@ class CreatePostPresenter @Inject constructor(
         })
     }
 
-    companion object{
+    private fun getFollowersCount(response: GraphqlResponse): Int {
+        val data: ProfileHeaderData = response.getData(ProfileHeaderData::class.java)
+        return data.bymeProfileHeader.profile.totalFollower.number
+    }
+
+    companion object {
         private const val MESSAGE_POST_NOT_FOUND = "Post tidak ditemukan"
         private const val PARAM_DETAIL = "detail"
     }

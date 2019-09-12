@@ -130,6 +130,7 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
             return@setOnClickListener
             fragment.saveDraftAndSubmit()
         }
+        shareTo.setOnClickListener { openShareBottomSheetDialog() }
     }
 
     override fun updateHeader(header: HeaderViewModel) {
@@ -138,6 +139,10 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         badge.loadImage(header.badge)
         badge.showWithCondition(header.badge.isNotBlank())
         name.text = header.title
+    }
+
+    override fun updateShareHeader(text: String) {
+        shareTo.text = text
     }
 
     override fun onBackPressed() {
@@ -158,5 +163,11 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         }
         dialog.setCancelable(true)
         dialog.show()
+    }
+
+    private fun openShareBottomSheetDialog() {
+        if (fragment is BaseCreatePostFragment) {
+            (fragment as BaseCreatePostFragment).openShareBottomSheetDialog()
+        }
     }
 }

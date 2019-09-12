@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="host_digital" translatable="false">digital</string>
+    <string name="host_recharge" translatable="false">recharge</string>
 
     <!--
         If the link is Ended with {id}, must end with "/"
@@ -8,4 +9,5 @@
     -->
     <string name="path_telco" translatable="false">/telco</string>
     <string name="path_telco_cart" translatable="false">/cart</string>
+    <string name="path_home" translatable="false">/home</string>
 </resources>

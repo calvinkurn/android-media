@@ -10,7 +10,7 @@ import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.discovery.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract;
 import com.tokopedia.discovery.newdiscovery.base.DefaultSearchSubscriber;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;

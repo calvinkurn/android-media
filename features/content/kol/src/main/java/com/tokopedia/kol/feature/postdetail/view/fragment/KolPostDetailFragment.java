@@ -31,6 +31,7 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
@@ -47,6 +48,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
@@ -139,6 +141,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Inject
     KolPostDetailAnalytics analytics;
 
+    @Inject
+    FeedAnalyticTracker feedAnalytics;
+
     KolPostDetailAdapter adapter;
 
     public static KolPostDetailFragment getInstance(Bundle bundle) {
@@ -217,6 +222,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onStart() {
         super.onStart();
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        feedAnalytics.sendPendingAnalytics();
     }
 
     @Override
@@ -991,6 +1002,21 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             RouteManager.route(getContext(), post.getContent().getBody().getMedia().get(0).getApplink());
         }
         analytics.eventClickOtherPost(post.getId());
+    }
+
+    @Override
+    public void onHashtagClicked(@NotNull String hashtagText, @NotNull TrackingPostModel trackingPostModel) {
+        feedAnalytics.eventDetailClickHashtag(
+                String.valueOf(trackingPostModel.getPostId()),
+                trackingPostModel.getActivityName(),
+                trackingPostModel.getMediaType(),
+                hashtagText
+        );
+    }
+
+    @Override
+    public void onReadMoreClicked(@NotNull TrackingPostModel trackingPostModel) {
+
     }
 
     private void onGoToLink(String link) {

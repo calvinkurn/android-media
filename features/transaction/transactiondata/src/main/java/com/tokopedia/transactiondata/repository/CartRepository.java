@@ -5,7 +5,7 @@ import com.tokopedia.transactiondata.apiservice.CartResponse;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
-import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
+import com.tokopedia.transactiondata.entity.response.checkout.CheckoutResponse;
 import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.transactiondata.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
 import com.tokopedia.transactiondata.entity.response.couponlist.CouponDataResponse;
@@ -145,11 +145,12 @@ public class CartRepository implements ICartRepository {
     }
 
     @Override
-    public Observable<CheckoutDataResponse> checkout(Map<String, String> param) {
-        return cartApi.checkout(param).map(new Func1<Response<CartResponse>, CheckoutDataResponse>() {
+    public Observable<CheckoutResponse> checkout(Map<String, String> param) {
+        return cartApi.checkout(param).map(new Func1<Response<CartResponse>, CheckoutResponse>() {
             @Override
-            public CheckoutDataResponse call(Response<CartResponse> cartResponseResponse) {
-                return cartResponseResponse.body().convertDataObj(CheckoutDataResponse.class);
+            public CheckoutResponse call(Response<CartResponse> cartResponseResponse) {
+                // NEED CHECK BEFORE REFACTOR
+                return cartResponseResponse.body().convertResponseObj(CheckoutResponse.class);
             }
         });
     }

@@ -1,45 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
-    android:orientation="vertical"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_cancellation_id"
-        style="@style/TextView.Micro.BlackDisabled"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_16"
-        tools:text="Cancellation ID: 1234567890" />
+        android:orientation="vertical"
+        android:paddingRight="@dimen/dp_16">
 
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_cancellation_journey"
-        style="@style/TextView.Small.Bold"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingRight="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_5"
-        tools:text="Jakarta (CGK) - Surabaya (SUB)" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_cancellation_created_time"
+            style="@style/TextView.Small"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:textColor="@color/Neutral_N700_44"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:text="Tanggal Pembatalan: 12 Apr 2018, 11:30" />
 
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_cancellation_created_time"
-        style="@style/TextView.Small"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingRight="@dimen/dp_16"
-        tools:text="Tanggal Pembatalan: 12 Apr 2018, 11:30" />
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_cancellation_journey"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:textColor="@color/black_70"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
+            tools:text="Jakarta (CGK) - Surabaya (SUB)" />
 
-    <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/txt_cancellation_status"
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_cancellation_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="BERHASIL" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_cancellation_notes"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
+            app:typographyType="body_3"
+            tools:text="Proses verifikasi berlangsung maks. 1x24 jam" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/img_arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_8"
-        tools:text="BERHASIL" />
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        app:srcCompat="@drawable/ic_arrow_right_grey" />
 
-</LinearLayout>
+</RelativeLayout>

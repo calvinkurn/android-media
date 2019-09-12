@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.affiliate.feature.createpost.TOKEN
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -79,6 +80,18 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         if (adapter.itemCount > 0) {
             productAttachmentLayoutManager.scrollToPosition(adapter.itemCount - 1)
         }
+    }
+
+    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm, isFromTemplateToken: Boolean) {
+        super.onSuccessGetContentForm(feedContentForm, isFromTemplateToken)
+        if (isFromTemplateToken) {
+            val currentIdList = viewModel.adIdList.toList()
+            viewModel.adIdList.clear()
+            viewModel.adIdList.addAll(
+                    currentIdList.union(feedContentForm.relatedItems.map { it.id })
+            )
+        }
+        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
     }
 
     fun clearCache() {
