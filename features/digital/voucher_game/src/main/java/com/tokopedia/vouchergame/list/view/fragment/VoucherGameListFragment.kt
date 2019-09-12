@@ -259,6 +259,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         return true
     }
 
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        searchInputView.searchText = ""
+    }
+
     override fun getRecyclerViewLayoutManager(): RecyclerView.LayoutManager {
         val layoutManager = GridLayoutManager(context, 3, GridLayoutManager.VERTICAL, false)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {

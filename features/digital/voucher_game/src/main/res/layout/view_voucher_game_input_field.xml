@@ -20,13 +20,12 @@
         app:typographyType="body_3"
         tools:visibility="visible" />
 
-    <AutoCompleteTextView
+    <com.tokopedia.design.text.BackEditText
         android:id="@+id/ac_input"
         style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_5"
-        android:focusable="false"
         android:hint="id_field"
         android:inputType="number"
         android:imeOptions="actionDone"

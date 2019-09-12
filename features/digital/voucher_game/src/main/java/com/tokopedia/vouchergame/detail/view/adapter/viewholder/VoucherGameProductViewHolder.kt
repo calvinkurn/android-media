@@ -22,7 +22,7 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
                 product_promo_price.visibility = View.INVISIBLE
                 product_price.text = product.attributes.price
             } else {
-                product_promo_label.text = product.attributes.productLabels.joinToString { "," }
+                product_promo_label.text = product.attributes.productLabels.joinToString(",", limit = 2)
                 product_promo_price.text = product.attributes.price
                 product_price.text = product.attributes.promo.newPrice
             }

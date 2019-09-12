@@ -54,19 +54,16 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
         ac_input.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 listener.onFinishInput()
+                clearFocus()
             }
             false
         }
-//        ac_input.setOnKeyListener { _, keyCode, event ->
-//            if (event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK) {
-//                listener.onFinishInput()
-//            }
-//            false
-//        }
-    }
-
-    fun clearFocusAutoComplete() {
-        ac_input.clearFocus()
+        ac_input.setKeyImeChangeListener { _, event ->
+            if (event.keyCode == KeyEvent.KEYCODE_BACK) {
+                listener.onFinishInput()
+                clearFocus()
+            }
+        }
     }
 
     fun setLabel(label: String) {
