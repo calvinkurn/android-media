@@ -12,6 +12,7 @@ public interface FilterEventTracking {
         String FILTER_PRODUCT = "filter product";
         String PREFIX_SEARCH_RESULT_PAGE = "Search Result Page";
         String PREFIX_CATEGORY_PAGE = "Category Page";
+        String PREFIX_CATALOG_PAGE = "catalog page";
     }
 
     interface Action {

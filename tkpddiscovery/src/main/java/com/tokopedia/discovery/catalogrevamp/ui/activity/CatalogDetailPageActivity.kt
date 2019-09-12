@@ -7,11 +7,8 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.core.share.DefaultShare
@@ -23,6 +20,7 @@ import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailProductLis
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -102,7 +100,7 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         initSwitchButton()
         initBottomSheetListener()
 
-        bottomSheetFilterView?.initFilterBottomSheet()
+        bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATALOG_PAGE)
 
     }
 
@@ -120,19 +118,11 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
                 showBottomNavigation()
             }
 
-            override fun isSearchShown(): Boolean {
-                return false
-            }
-
-            override fun hideKeyboard() {
-                KeyboardHandler.hideSoftKeyboard(this@CatalogDetailPageActivity)
-            }
-
             override fun getActivity(): AppCompatActivity {
                 return this@CatalogDetailPageActivity
             }
         })
-        bottomSheetFilterView?.closeView()
+        bottomSheetFilterView?.onBackPressed()
         if (supportActionBar != null)
             supportActionBar!!.setHomeAsUpIndicator(
                     com.tokopedia.core2.R.drawable.ic_webview_back_button
@@ -283,14 +273,6 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
 
     override fun setFilterResultCount(formattedResultCount: String?) {
         bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
-    }
-
-    override fun closeFilterBottomSheet() {
-        bottomSheetFilterView?.closeView()
-    }
-
-    override fun isBottomSheetShown(): Boolean {
-        return bottomSheetFilterView?.isBottomSheetShown ?: false
     }
 
     override fun launchFilterBottomSheet() {
