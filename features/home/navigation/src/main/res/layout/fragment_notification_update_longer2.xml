@@ -1,21 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:id="@+id/container">
+    android:orientation="vertical">
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/layoutBottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white">
+
+        <RelativeLayout
+            android:id="@+id/btnAnchorTop"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_gravity="top"
+            android:background="@color/white"
+            android:clickable="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/content_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp" />
+        </RelativeLayout>
 
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/scroll_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnAnchorTop"
+            app:layout_constraintVertical_bias="0">
 
             <LinearLayout
                 android:id="@+id/lin_upper"
@@ -33,27 +56,13 @@
                 <TextView
                     android:id="@+id/content_text"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="@dimen/dp_288"
+                    tools:text="@string/dummy_longer_content"/>
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 
-        <RelativeLayout
-            android:clickable="true"
-            android:id="@+id/btnAnchorTop"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="top"
-            android:background="@color/white">
-
-            <TextView
-                android:id="@+id/content_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20sp" />
-        </RelativeLayout>
-
-
-    </FrameLayout>
+    </android.support.constraint.ConstraintLayout>
 
     <RelativeLayout
         android:id="@+id/btnAnchor"

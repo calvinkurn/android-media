@@ -100,12 +100,14 @@ class NotificationUpdateLongerTextFragment2 : BottomSheetDialogFragment() {
 //            dismiss()
 //        }
 
-        contentTextView.text = contentText + "\n" + contentText + "\n" +contentText + "\n" + contentText+ "\n" + contentText + "\n" +contentText + "\n" + contentText
+        val lorem = getString(R.string.dummy_longer_content)
+        val longContent = lorem.repeat(7)
+        contentTextView.text = longContent
         if (contentImageUrl.isNotBlank()) {
             ImageHandler.loadImage2(contentImageView, contentImageUrl, R.drawable.ic_loading_toped_new)
             contentImageView.show()
         } else {
-//            contentImageView.hide()
+            contentImageView.hide()
         }
 
         contentTitleView.text = contentTitle
