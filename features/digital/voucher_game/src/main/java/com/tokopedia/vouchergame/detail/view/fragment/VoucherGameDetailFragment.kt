@@ -3,15 +3,13 @@ package com.tokopedia.vouchergame.detail.view.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.graphics.Rect
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -48,6 +46,8 @@ import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
 import com.tokopedia.vouchergame.list.view.model.VoucherGameOperatorAttributes
 import kotlinx.android.synthetic.main.fragment_voucher_game_detail.*
+import kotlinx.android.synthetic.main.fragment_voucher_game_detail.btn_info_icon
+import kotlinx.android.synthetic.main.fragment_voucher_game_detail.view.*
 import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
 import java.util.regex.Pattern
 import javax.inject.Inject
@@ -306,7 +306,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         if (dataCollection.isEmpty()) adapter.showEmpty()
         else {
             val listData = mutableListOf<Visitable<*>>()
-            val decorator = VoucherGameProductDecorator(ITEM_DECORATOR_SIZE, resources)
+            val decorator = VoucherGameProductDecorator(ITEM_DECORATOR_SIZE_DP, resources)
             val trackingList = mutableListOf<VoucherGameProduct>()
 
             for ((index, productList) in dataCollection.withIndex()) {
@@ -355,13 +355,26 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     private fun setupOperatorDetail() {
+        // Enlarge info button touch area with TouchDelegate
+        operator_detail_container.post {
+            val delegateArea = Rect()
+            btn_info_icon.getHitRect(delegateArea)
+
+            delegateArea.top -= INFO_TOUCH_AREA_SIZE_PX
+            delegateArea.left -= INFO_TOUCH_AREA_SIZE_PX
+            delegateArea.bottom += INFO_TOUCH_AREA_SIZE_PX
+            delegateArea.right += INFO_TOUCH_AREA_SIZE_PX
+
+            operator_detail_container.apply { touchDelegate = TouchDelegate(delegateArea, btn_info_icon) }
+        }
+
         if (::voucherGameOperatorData.isInitialized) {
             voucherGameOperatorData.run {
                 product_name.text = name
                 ImageHandler.LoadImage(product_image, imageUrl)
 
                 product_image.setOnClickListener { showProductInfo(name, description) }
-                info_icon.setOnClickListener {
+                btn_info_icon.setOnClickListener {
                     voucherGameAnalytics.eventClickInfoButton()
                     showProductInfo(name, description)
                 }
@@ -456,8 +469,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickNextBuyButton() {
-        // Enquire again as temporary solution for soft keyboard back press not detected issue
-        enquireFields()
         if (isEnquired) {
             if (::voucherGameOperatorData.isInitialized) {
                 productTrackingList.find { it.item == selectedProduct }?.run {
@@ -502,7 +513,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     companion object {
 
-        const val ITEM_DECORATOR_SIZE = 8
+        const val ITEM_DECORATOR_SIZE_DP = 6
+        const val INFO_TOUCH_AREA_SIZE_PX = 20
 
         const val EXTRA_PARAM_OPERATOR_DATA = "EXTRA_PARAM_OPERATOR_DATA"
         const val TAG_VOUCHER_GAME_INFO = "voucherGameInfo"

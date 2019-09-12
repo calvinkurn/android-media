@@ -15,6 +15,7 @@
         android:layout_above="@+id/checkout_view">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/operator_detail_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp">
@@ -23,6 +24,7 @@
                 android:id="@+id/product_image_container"
                 android:layout_width="@dimen/dp_52"
                 android:layout_height="@dimen/dp_52"
+                android:layout_margin="@dimen/dp_2"
                 app:cardCornerRadius="@dimen/dp_5"
                 app:cardElevation="@dimen/dp_2"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -64,16 +66,17 @@
                 app:typographyWeight="bold"
                 tools:text="Cara Input Nomor ID" />
 
-            <ImageView
-                android:id="@+id/info_icon"
+            <Button
+                android:id="@+id/btn_info_icon"
                 android:layout_width="@dimen/dp_16"
                 android:layout_height="@dimen/dp_16"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
+                android:background="@drawable/ic_info_black"
+                android:paddingBottom="@dimen/dp_5"
                 app:layout_constraintBottom_toBottomOf="@+id/product_name"
                 app:layout_constraintStart_toEndOf="@+id/product_name"
-                app:layout_constraintTop_toTopOf="@+id/product_name"
-                app:srcCompat="@drawable/ic_info_black" />
+                app:layout_constraintTop_toTopOf="@+id/product_name" />
 
         </android.support.constraint.ConstraintLayout>
 
@@ -81,7 +84,10 @@
             android:id="@+id/input_field_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
+            android:layout_marginLeft="@dimen/dp_2"
             android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_2"
             app:cardCornerRadius="@dimen/dp_5"
             app:cardElevation="@dimen/dp_2"
             app:layout_constraintBottom_toBottomOf="parent"
