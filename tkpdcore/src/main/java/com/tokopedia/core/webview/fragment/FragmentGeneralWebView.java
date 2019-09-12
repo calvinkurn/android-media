@@ -587,15 +587,13 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 ((IDigitalModuleRouter) getActivity().getApplication())
                         .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                 return true;
-            } else if (getActivity() != null &&
-                    Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
-                if (getActivity().getApplication() instanceof TkpdCoreRouter &&
-                        (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
-
+            } else if (getActivity() != null
+                    && Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)
+                    && getActivity().getApplication() instanceof TkpdCoreRouter
+                    && (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
                     ((TkpdCoreRouter) getActivity().getApplication())
                             .getApplinkUnsupported(getActivity())
                             .showAndCheckApplinkUnsupported();
-                }
             } else {
                 Activity activity = getActivity();
                 if (activity != null) {
