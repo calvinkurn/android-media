@@ -31,7 +31,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
             chips.isSelected = if (initialPositionSelected != null) position == initialPositionSelected else false
             chips.setOnClickListener {
                 if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
-                if (initialPositionSelected != null) chips.isSelected = !chips.isSelected
+                chips.isSelected = !chips.isSelected
                 if (selectedColor > 0) {
                     if (chips.isSelected) setTextColor(selectedColor)
                     else setTextColor(com.tokopedia.design.R.color.black_56)
