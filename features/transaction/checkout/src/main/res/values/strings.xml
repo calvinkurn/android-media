@@ -332,5 +332,7 @@
     <string name="text_button_positive">Ya, Hapus Produk</string>
     <string name="text_button_negative">Kembali</string>
     <string name="checkout_insurance_default_title">Produk Asuransi</string>
+    <string name="update_insurance_data_success">Rincian Aplikasi Asuransi Berhasil Diperbarui</string>
+    <string name="remove_macro_insurance_success">Produk Asuransi Berhasil Dihapus</string>
 
 </resources>
