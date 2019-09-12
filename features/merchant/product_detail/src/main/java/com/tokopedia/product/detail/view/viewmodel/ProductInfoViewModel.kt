@@ -91,8 +91,8 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     val loadTopAdsProduct = MutableLiveData<RequestDataState<List<RecommendationWidget>>>()
 
+    var warehouseId: String = ""
     var multiOrigin: WarehouseInfo = WarehouseInfo()
-
     val userId: String
         get() = userSessionInterface.userId
 
@@ -131,8 +131,12 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                 needRequestCod = it.shouldShowCod
             }
 
-            val p2ShopDeferred = getProductInfoP2ShopAsync(productInfoP1.productInfo.basic.shopID,
-                    productInfoP1.productInfo.basic.id.toString(), forceRefresh)
+            val p2ShopDeferred = getProductInfoP2ShopAsync(
+                    productInfoP1.productInfo.basic.shopID,
+                    productInfoP1.productInfo.basic.id.toString(),
+                    warehouseId,
+                    forceRefresh
+            )
 
             val p2GeneralDeferred = getProductInfoP2GeneralAsync(productInfoP1.productInfo.basic.shopID,
                     productInfoP1.productInfo.basic.id, productInfoP1.productInfo.basic.price,
@@ -165,15 +169,17 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         }
     }
 
-
-    private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String,
+    private suspend fun getProductInfoP2ShopAsync(shopId: Int, productId: String, warehouseId: String,
                                                   forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
         return async(Dispatchers.IO) {
             val shopParams = mapOf(PARAM_SHOP_IDS to listOf(shopId),
                     PARAM_SHOP_FIELDS to DEFAULT_SHOP_FIELDS)
             val shopRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_SHOP], ShopInfo.Response::class.java, shopParams)
 
-            val nearestWarehouseParam = mapOf("productIds" to listOf(productId))
+            val nearestWarehouseParam = mapOf(
+                    "productIds" to listOf(productId),
+                    "warehouseID" to warehouseId
+            )
             val nearestWarehouseRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_MULTI_ORIGIN],
                     MultiOriginWarehouse.Response::class.java, nearestWarehouseParam)
 
