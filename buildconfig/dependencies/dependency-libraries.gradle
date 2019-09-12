@@ -1,34 +1,7 @@
 ext {
 
-    // Sort alphabetically by name
-    tkpdAbstractionVersion = '2.22'
-    tkpdAnalyticsVersion = '2.22'
-    tkpdApplinkVersion = '2.22'
-    tkpdCacheApiVersion = '2.22'
-    tkpdCommonNetworkVersion = '2.22'
-    tkpdDesignVersion = '2.22'
-    tkpdGraphqlVersion = '2.22'
-    tkpdOmsVersion = '2.22'
-    tkpdPaginationVersion = '2.22'
-    tkpdPushNotifVersion = '2.22'
-    tkpdTrackingOptimizerVersion = '2.22'
-    tkpdVideoplayerVersion = '2.22'
-    tkpdYoutubeUtilVersion = '2.22'
-    tkpdBaseAdapterlVersion = '2.22'
-    tkpdGraphViewVersion = '2.22'
-    tkpdUrlVersion = '2.22'
-
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
-            abstraction           : "com.tokopedia.abstraction:abstraction:${tkpdAbstractionVersion}",
-            applink               : "com.tokopedia.applink:applink:${tkpdApplinkVersion}",
-            cacheapi              : "com.tokopedia.cacheapi:cacheapi:${tkpdCacheApiVersion}",
-            design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
-            omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
-            pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
-            trackingOptimizer     : "com.tokopedia.trackingoptimizer:trackingoptimizer:${tkpdTrackingOptimizerVersion}",
-            videoplayer           : "com.tokopedia.videoplayer:videoplayer:${tkpdVideoplayerVersion}",
-            youtubeutil           : "com.tokopedia.youtubeutil:youtubeutil:${tkpdYoutubeUtilVersion}",
             usecase               : "com.tokopedia.usecase:usecase:1.0.1",
             cachemanager          : "com.tokopedia.cachemanager:cachemanager:2.24",
             globalconfig          : "com.tokopedia.config:global_config:1.0.2",
