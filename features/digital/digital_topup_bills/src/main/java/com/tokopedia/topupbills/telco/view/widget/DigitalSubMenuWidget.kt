@@ -68,18 +68,18 @@ class DigitalSubMenuWidget @JvmOverloads constructor(@NotNull context: Context, 
 
     fun headerLeftActive(submenu: DigitalProductSubMenu) {
         listener.onClickSubMenu(submenu)
-        titleHeaderLeft.setTextColor(resources.getColorFromResources(context, R.color.font_white_primary_70))
+        titleHeaderLeft.setTextColor(resources.getColorFromResources(context, com.tokopedia.design.R.color.font_white_primary_70))
         titleHeaderRight.setTextColor(resources.getColorFromResources(context, R.color.digital_title_header_non_active))
-        layoutHeaderLeft.setBackgroundResource(R.drawable.bg_round_corner_solid_green)
+        layoutHeaderLeft.setBackgroundResource(com.tokopedia.design.R.drawable.bg_round_corner_solid_green)
         layoutHeaderRight.setBackgroundResource(R.color.digital_grey_bg_header)
     }
 
     fun headerRightActive(submenu: DigitalProductSubMenu) {
         listener.onClickSubMenu(submenu)
         titleHeaderLeft.setTextColor(resources.getColorFromResources(context, R.color.digital_title_header_non_active))
-        titleHeaderRight.setTextColor(resources.getColorFromResources(context, R.color.font_white_primary_70))
+        titleHeaderRight.setTextColor(resources.getColorFromResources(context, com.tokopedia.design.R.color.font_white_primary_70))
         layoutHeaderLeft.setBackgroundResource(R.color.digital_grey_bg_header)
-        layoutHeaderRight.setBackgroundResource(R.drawable.bg_round_corner_solid_green)
+        layoutHeaderRight.setBackgroundResource(com.tokopedia.design.R.drawable.bg_round_corner_solid_green)
     }
 
     interface ActionListener {
