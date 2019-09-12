@@ -590,11 +590,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private GraphqlRequest makegraphqlRequestForRecommendation() {
         GraphqlRequest graphqlRequestForRecommendation;
         Map<String, Object> variablesWidget = new HashMap<>();
-        variablesWidget.put(TAB_ID,DEFAULT_TAB_ID);
+        variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
         graphqlRequestForRecommendation = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.query_rechrage_widget), RechargeWidgetResponse.class, variablesWidget);
         return graphqlRequestForRecommendation;
+    }
 
     public boolean isValidUrl(String invoiceUrl) {
         Pattern pattern = Pattern.compile("^(https|HTTPS):\\/\\/");
