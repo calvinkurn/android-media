@@ -5,6 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class AdditionalTickerInfo {
 
+    @SerializedName("title")
+    @Expose
+    private String title;
     @SerializedName("notes")
     @Expose
     private String notes;
@@ -14,6 +17,14 @@ public class AdditionalTickerInfo {
     @SerializedName("urlText")
     @Expose
     private String urlText;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getNotes() {
         return notes;
@@ -42,7 +53,8 @@ public class AdditionalTickerInfo {
     @Override
     public String toString() {
         return "AdditionalTickerInfo{" +
-                "notes='" + notes + '\'' +
+                "title='" + title + '\'' +
+                ", notes='" + notes + '\'' +
                 ", urlDetail='" + urlDetail + '\'' +
                 ", urlText='" + urlText + '\'' +
                 '}';

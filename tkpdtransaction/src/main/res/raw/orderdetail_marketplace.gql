@@ -201,6 +201,7 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       backgroundColor
     }
     additionalTickerInfo {
+      title
       notes
       urlDetail
       urlText

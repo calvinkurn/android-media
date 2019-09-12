@@ -367,7 +367,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos) {
         List<TickerData> tickerData = new ArrayList<>();
         for (AdditionalTickerInfo info : tickerInfos) {
-            tickerData.add(new TickerData(null, info.getNotes(), Ticker.TYPE_ANNOUNCEMENT, true));
+            tickerData.add(new TickerData(info.getTitle(), info.getNotes(), Ticker.TYPE_ANNOUNCEMENT, true));
         }
         if (getContext()!= null) {
             mTickerInfos.addPagerView(new TickerPagerAdapter(getContext(), tickerData), tickerData);
