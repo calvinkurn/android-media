@@ -31,12 +31,14 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics;
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta;
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter;
 import com.tokopedia.feedcomponent.util.FeedScrollListener;
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets;
+import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder;
@@ -46,6 +48,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentOptionViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
@@ -105,7 +108,8 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
-        RelatedPostAdapter.RelatedPostListener {
+        RelatedPostAdapter.RelatedPostListener,
+        HighlightAdapter.HighlightListener {
 
     private static final String PERFORMANCE_POST_DETAIL = "mp_explore_detail";
     private static final int OPEN_KOL_COMMENT = 101;
@@ -136,6 +140,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Inject
     KolPostDetailAnalytics analytics;
+
+    @Inject
+    FeedAnalyticTracker feedAnalytics;
 
     KolPostDetailAdapter adapter;
 
@@ -193,8 +200,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         swipeToRefresh.setOnRefreshListener(this);
 
         KolPostDetailTypeFactory typeFactory = new KolPostDetailTypeFactoryImpl(this,
-                this, this, this, this, this, this,
-                this, this, this, this,
+                this,
+                this, this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
+                this,
                 this, userSession);
         adapter = new KolPostDetailAdapter(typeFactory);
         recyclerView.setAdapter(adapter);
@@ -207,6 +222,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onStart() {
         super.onStart();
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(getScreenName());
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        feedAnalytics.sendPendingAnalytics();
     }
 
     @Override
@@ -802,6 +823,16 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onLikeClick(int positionInFeed, int columnNumber, int id, boolean isLiked) {
+
+    }
+
+    @Override
+    public void onCommentClick(int positionInFeed, int columnNumber, int id) {
+
+    }
+
+    @Override
     public void onShareClick(int positionInFeed, int id, @NotNull String title,
                              @NotNull String description, @NotNull String url,
                              @NotNull String imageUrl) {
@@ -889,6 +920,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onHighlightItemClicked(int positionInFeed, @NotNull String redirectUrl) {
+
+    }
+
+    @Override
     public void onPostTagItemBuyClicked(int positionInFeed, @NotNull PostTagItem postTagItem) {
         presenter.addPostTagItemToCart(positionInFeed, postTagItem);
     }
@@ -968,6 +1004,21 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         analytics.eventClickOtherPost(post.getId());
     }
 
+    @Override
+    public void onHashtagClicked(@NotNull String hashtagText, @NotNull TrackingPostModel trackingPostModel) {
+        feedAnalytics.eventDetailClickHashtag(
+                String.valueOf(trackingPostModel.getPostId()),
+                trackingPostModel.getActivityName(),
+                trackingPostModel.getMediaType(),
+                hashtagText
+        );
+    }
+
+    @Override
+    public void onReadMoreClicked(@NotNull TrackingPostModel trackingPostModel) {
+
+    }
+
     private void onGoToLink(String link) {
         if (getActivity() != null && !TextUtils.isEmpty(link)) {
             if (RouteManager.isSupportApplink(getActivity(), link)) {
@@ -980,4 +1031,5 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             }
         }
     }
+
 }

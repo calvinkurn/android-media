@@ -84,8 +84,10 @@ open class RecommendationPageViewModel @Inject constructor(
                 graphqlRepository.getReseponse(listOf(gqlRecommendationRequest), cacheStrategy)
             }
             gqlData.getSuccessData<PrimaryProductEntity>().productRecommendationProductDetail?.let {
-                val productDetailResponse = it.data.get(0).recommendation.get(0)
-                productInfoDataModel.value = ProductInfoDataModel(productDetailResponse)
+                if(it.data[0].recommendation.isNotEmpty()){
+                    val productDetailResponse = it.data[0].recommendation[0]
+                    productInfoDataModel.value = ProductInfoDataModel(productDetailResponse)
+                }
             }
         }) {
         }
@@ -98,13 +100,13 @@ open class RecommendationPageViewModel @Inject constructor(
      */
     fun getRecommendationList(
             productIds: List<String>,
+            ref: String,
             onErrorGetRecommendation: ((errorMessage: String?) -> Unit)?) {
         getRecommendationUseCase.execute(
                 getRecommendationUseCase.getRecomParams(
                         1,
-                        xSource,
-                        pageName,
-                        productIds), object : Subscriber<List<RecommendationWidget>>() {
+                        productIds,
+                        ref), object : Subscriber<List<RecommendationWidget>>() {
             override fun onNext(t: List<RecommendationWidget>?) {
                 recommendationListModel.value = t
             }
@@ -193,6 +195,5 @@ open class RecommendationPageViewModel @Inject constructor(
      * [isLoggedIn] is the function get user session is login or not login
      */
     fun isLoggedIn() = userSessionInterface.isLoggedIn
-
 
 }

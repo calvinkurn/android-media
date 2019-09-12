@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Sort
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter
 import com.tokopedia.hotel.search.presentation.adapter.HotelOptionMenuAdapter.Companion.MODE_NORMAL
@@ -27,7 +26,7 @@ class HotelClosedSortBottomSheets : BottomSheets() {
     override fun getLayoutResourceId(): Int = com.tokopedia.abstraction.R.layout.fragment_base_list
 
     override fun initView(view: View?) {
-        val recyclerView = view?.findViewById<RecyclerView>(R.id.recycler_view)
+        val recyclerView = view?.findViewById<RecyclerView>(com.tokopedia.abstraction.R.id.recycler_view)
         val adapter = HotelOptionMenuAdapter(mode, menu)
                 .apply {
                     listener = onMenuSelect

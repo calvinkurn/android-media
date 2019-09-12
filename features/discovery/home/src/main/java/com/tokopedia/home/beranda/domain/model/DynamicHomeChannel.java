@@ -611,7 +611,8 @@ public class DynamicHomeChannel {
                             "impressions", DataLayer.listOf(
                                     list.toArray(new Object[list.size()])
 
-                            ))
+                            )),
+                    "channelId", id
             );
         }
 

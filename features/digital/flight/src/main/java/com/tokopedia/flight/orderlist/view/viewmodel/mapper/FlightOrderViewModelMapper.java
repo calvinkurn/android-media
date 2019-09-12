@@ -38,6 +38,7 @@ public class FlightOrderViewModelMapper {
                     successViewModel.setStatus(flightOrder.getStatus());
                     successViewModel.setPdf(flightOrder.getPdf());
                     successViewModel.setContactUsUrl(flightOrder.getContactUsUrl());
+                    successViewModel.setCancellationInfo(flightOrder.getCancellationInfo());
                     visitables.add(successViewModel);
                     break;
                 case FlightStatusOrderType.EXPIRED:

@@ -16,9 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.discovery.common.data.Option;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
+import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.model.GuidedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;

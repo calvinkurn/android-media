@@ -22,7 +22,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.*;
+import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.CLICK_CARI;
+import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.LONG_CLICK;
+import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.LONG_PRESS;
+import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.PRODUCT_SEARCH;
+import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.USER_ID;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -135,27 +139,18 @@ public class SearchTracking {
     }
 
     public void trackImpressionSearchResultShop(List<Object> shopItemList, String keyword) {
-        // Shop Impression tracking is turned off for now.
-
-        // Currently this tracking is hit every time Search Activity is started,
-        // even though the user might not want to go to the Shop Tab,
-        // so tracking shop impression is not accurate.
-
-        // This tracking will be turned on again if it is possible to only track shop  impression
-        // when the user go to Shop Tab
-
-//        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-//                DataLayer.mapOf(EVENT, "promoView",
-//                        EVENT_CATEGORY, "search result",
-//                        EVENT_ACTION, "impression - shop",
-//                        EVENT_LABEL, keyword,
-//                        ECOMMERCE, DataLayer.mapOf(
-//                                "promoView", DataLayer.mapOf(
-//                                        "promotions", DataLayer.listOf(shopItemList.toArray(new Object[shopItemList.size()]))
-//                                )
-//                        )
-//                )
-//        );
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, "promoView",
+                        EVENT_CATEGORY, "search result",
+                        EVENT_ACTION, "impression - shop",
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(shopItemList.toArray(new Object[shopItemList.size()]))
+                                )
+                        )
+                )
+        );
     }
 
     public void trackSearchResultShopItemClick(Object shopItem, String keyword) {
@@ -174,26 +169,17 @@ public class SearchTracking {
     }
 
     public void trackImpressionSearchResultShopProductPreview(List<Object> shopItemProductList, String keyword) {
-        // Shop Impression tracking is turned off for now.
-
-        // Currently this tracking is hit every time Search Activity is started,
-        // even though the user might not want to go to the Shop Tab,
-        // so tracking shop impression is not accurate.
-
-        // This tracking will be turned on again if it is possible to only track shop  impression
-        // when the user go to Shop Tab
-
-//        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-//                DataLayer.mapOf(EVENT, "productView",
-//                        EVENT_CATEGORY, "search result",
-//                        EVENT_ACTION, "impression - product - shop tab",
-//                        EVENT_LABEL, keyword,
-//                        ECOMMERCE, DataLayer.mapOf(
-//                                "currencyCode", "IDR",
-//                                "impressions", DataLayer.listOf(shopItemProductList.toArray(new Object[shopItemProductList.size()]))
-//                        )
-//                )
-//        );
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(EVENT, "productView",
+                        EVENT_CATEGORY, "search result",
+                        EVENT_ACTION, "impression - product - shop tab",
+                        EVENT_LABEL, keyword,
+                        ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(shopItemProductList.toArray(new Object[shopItemProductList.size()]))
+                        )
+                )
+        );
     }
 
     public void trackSearchResultShopProductPreviewClick(Object shopItemProduct, String keyword) {
@@ -371,26 +357,6 @@ public class SearchTracking {
         ));
     }
 
-    public static void eventSearchResultFilter(Context context, String screenName, Map<String, String> selectedFilter) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_PRODUCT,
-                SearchEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ));
-    }
-
-    public static void eventSearchResultCloseBottomSheetFilter(Context context,
-                                                               String screenName,
-                                                               Map<String, String> selectedFilter) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_PRODUCT,
-                SearchEventTracking.Action.APPLY_FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ));
-    }
-
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
         if (selectedFilter == null) {
             return "";
@@ -424,69 +390,6 @@ public class SearchTracking {
         } else {
             return filterEventLabel + "&" + sortEventLabel;
         }
-    }
-
-    public static void eventSearchResultFilterJourney(Context context,
-                                                      String filterName,
-                                                      String filterValue,
-                                                      boolean isInsideDetail, boolean isActive) {
-
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_JOURNEY,
-                SearchEventTracking.Action.CLICK.toLowerCase() + " - "
-                        + filterName + ": " + filterValue + " - "
-                        + (isInsideDetail ? "inside lihat semua" : "outside lihat semua"),
-                Boolean.toString(isActive)
-        ));
-    }
-
-    public static void eventSearchResultApplyFilterDetail(Context context, String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_JOURNEY,
-                SearchEventTracking.Action.SIMPAN_ON_LIHAT_SEMUA + filterName,
-                ""
-        ));
-    }
-
-    public static void eventSearchResultBackFromFilterDetail(Context context, String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_JOURNEY,
-                SearchEventTracking.Action.BACK_ON_LIHAT_SEMUA + filterName,
-                ""
-        ));
-    }
-
-    public static void eventSearchResultNavigateToFilterDetail(Context context, String filterName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_JOURNEY,
-                SearchEventTracking.Action.CLICK_LIHAT_SEMUA + filterName,
-                ""
-        ));
-    }
-
-    public static void eventSearchResultOpenFilterPageProduct(Context context) {
-        eventSearchResultOpenFilterPage(context, "product");
-    }
-
-    public static void eventSearchResultOpenFilterPageCatalog(Context context) {
-        eventSearchResultOpenFilterPage(context,"catalog");
-    }
-
-    public static void eventSearchResultOpenFilterPageShop(Context context) {
-        eventSearchResultOpenFilterPage(context,"shop");
-    }
-
-    private static void eventSearchResultOpenFilterPage(Context context, String tabName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER.toLowerCase() + " " + tabName,
-                SearchEventTracking.Action.CLICK_FILTER,
-                ""
-        ));
     }
 
     public static void eventSearchNoResult(Context context,
@@ -670,5 +573,14 @@ public class SearchTracking {
 
     private String generateWishlistClickEventLabel(String keyword, String productId) {
         return keyword + " - " + productId;
+    }
+
+    public void eventActionClickCartButton(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.EventSearchResult,
+                SearchEventTracking.Action.CLICK_CART_BUTTON,
+                keyword
+        );
     }
 }

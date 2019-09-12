@@ -72,12 +72,32 @@ constructor(
         return params
     }
 
+    fun getRecomParams(pageNumber: Int,
+                       productIds: List<String>,
+
+                       ref: String = ""): RequestParams {
+        val params = RequestParams.create()
+        val productIdsString = TextUtils.join(",", productIds)
+
+        if (userSession.isLoggedIn) {
+            params.putInt(USER_ID, userSession.userId.toInt())
+        } else {
+            params.putInt(USER_ID, 0)
+        }
+        params.putInt(PAGE_NUMBER, pageNumber)
+        params.putString(PRODUCT_IDS, productIdsString)
+        params.putString(REF, ref)
+        params.putString(X_DEVICE, DEFAULT_VALUE_X_DEVICE)
+        return params
+    }
+
     companion object {
         val USER_ID = "userID"
         val X_SOURCE = "xSource"
         val PAGE_NUMBER = "pageNumber"
         val X_DEVICE = "xDevice"
         val PAGE_NAME = "pageName"
+        val REF = "ref"
         val DEFAULT_VALUE_X_SOURCE = "recom_widget"
         val DEFAULT_VALUE_X_DEVICE = "android"
         val DEFAULT_PAGE_NAME = ""

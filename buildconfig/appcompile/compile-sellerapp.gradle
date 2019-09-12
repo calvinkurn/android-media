@@ -107,7 +107,6 @@ include "features:transaction:transactiondata"
 include "features:transaction:express_checkout_common"
 
 include "features:user:attachproduct"
-include "features:user:bankdb"
 include "features:user:chat_common"
 include "features:user:chatbot"
 //include "features:user:chatbot_no_op"

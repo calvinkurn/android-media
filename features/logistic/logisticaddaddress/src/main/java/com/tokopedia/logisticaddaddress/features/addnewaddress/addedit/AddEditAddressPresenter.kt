@@ -33,9 +33,6 @@ class AddEditAddressPresenter @Inject constructor(private val context: Context,
                                                   private val addAddressMapper: AddAddressMapper) : BaseDaggerPresenter<AddEditAddressListener>() {
     var googleApiClient: GoogleApiClient? = null
 
-    private val defaultLat: Double by lazy { -6.175794 }
-    private val defaultLong: Double by lazy { 106.826457 }
-
     fun connectGoogleApi(addEditAddressFragment: AddEditAddressFragment) {
         this.googleApiClient = GoogleApiClient.Builder(context)
                 .addApi(LocationServices.API)

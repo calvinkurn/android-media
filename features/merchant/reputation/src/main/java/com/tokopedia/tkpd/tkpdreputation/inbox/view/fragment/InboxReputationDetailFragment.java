@@ -25,7 +25,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
@@ -34,8 +33,6 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.router.productdetail.PdpRouter;
-import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.imagepreview.ImagePreviewActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
@@ -56,6 +53,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxR
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailItemViewModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.InboxReputationDetailPassModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +87,9 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
 
     @Inject
     GlobalCacheManager cacheManager;
+
+    @Inject
+    UserSessionInterface userSession;
 
     String reputationId = "0";
     int role = 0;
@@ -385,7 +386,7 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
                 FragmentManager manager = getActivity().getSupportFragmentManager();
 
                 ((ReputationRouter)getActivity().getApplicationContext())
-                        .showAppFeedbackRatingDialog(manager, null);
+                        .showAppFeedbackRatingDialog(manager, getContext(), null);
             }
         }
         refreshPage();
@@ -532,6 +533,11 @@ public class InboxReputationDetailFragment extends BaseDaggerFragment
             startActivity(((ReputationRouter) getActivity().getApplicationContext())
                     .getTopProfileIntent(getActivity(), String.valueOf(userId)));
         }
+    }
+
+    @Override
+    public UserSessionInterface getUserSession() {
+        return userSession;
     }
 
     private String getReputationSmileyMessage(String name) {

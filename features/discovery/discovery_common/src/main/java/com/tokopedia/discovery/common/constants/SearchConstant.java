@@ -104,4 +104,16 @@ public interface SearchConstant {
     interface SearchProfile {
         String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
     }
+
+    interface SearchTabPosition {
+        int TAB_FIRST_POSITION = 0;
+        int TAB_SECOND_POSITION = 1;
+        int TAB_THIRD_POSITION = 2;
+        int TAB_FORTH_POSITION = 3;
+    }
+
+    interface Cart {
+        String CART_LOCAL_CACHE_NAME = "CART";
+        String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
+    }
 }

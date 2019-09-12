@@ -221,7 +221,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void showErroNoConnection() {
+    public void showErrorNoConnection() {
         showError(getString(R.string.error_no_internet_connection));
     }
 
