@@ -581,19 +581,16 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     }
 
     fun getPassengerTitleId(passengerTitle: String): Int {
-        return when (passengerTitle.toLowerCase()) {
-            FlightPassengerTitle.TUAN -> FlightPassengerTitleType.TUAN
-            FlightPassengerTitle.NYONYA -> FlightPassengerTitleType.NYONYA
-            FlightPassengerTitle.NONA -> FlightPassengerTitleType.NONA
-            else -> FlightPassengerTitleType.TUAN
-        }
+        return if (passengerTitle.equals(FlightPassengerTitle.TUAN, true)) FlightPassengerTitleType.TUAN
+        else if (passengerTitle.equals(FlightPassengerTitle.NYONYA, true)) FlightPassengerTitleType.NYONYA
+        else FlightPassengerTitleType.NONA
     }
 
     fun getPassengerTypeString(passengerType: Int): String = when (passengerType) {
         FlightBookingPassenger.ADULT -> "adult"
         FlightBookingPassenger.CHILDREN -> "child"
         FlightBookingPassenger.INFANT -> "infant"
-        else -> "adult"
+        else -> ""
     }
 
     fun isAdultPassenger(): Boolean = passengerModel.type == FlightBookingPassenger.ADULT
