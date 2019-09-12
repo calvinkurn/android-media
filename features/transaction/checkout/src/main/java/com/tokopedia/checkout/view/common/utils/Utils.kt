@@ -1,11 +1,14 @@
 package com.tokopedia.checkout.view.common.utils
 
+import android.content.Context
 import android.os.Build
 import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import kotlin.math.roundToInt
 
 /**
  * Created by fwidjaja on 2019-04-25.
@@ -31,4 +34,11 @@ object Utils {
         return result.toString()
     }
 
+    @JvmStatic
+    fun convertDpToPixel(dp: Float, context: Context): Int {
+        val resources = context.resources
+        val metrics = resources.displayMetrics
+        val px = dp * (metrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+        return px.roundToInt()
+    }
 }

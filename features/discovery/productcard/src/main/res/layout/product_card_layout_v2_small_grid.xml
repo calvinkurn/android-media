@@ -314,11 +314,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewAddToCart"
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_8"
             android:background="@drawable/productcard_module_bg_button_atc"
             android:foreground="?selectableItemBackground"
             android:gravity="center"
@@ -328,7 +328,8 @@
             android:textColor="@color/orange_red"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/labelOffers"
             app:typographyType="heading_6"
             tools:visibility="visible" />
