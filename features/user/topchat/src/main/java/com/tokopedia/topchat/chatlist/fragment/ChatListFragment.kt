@@ -6,6 +6,8 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
@@ -272,27 +274,30 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
     private fun showFilterDialog() {
         activity?.let {
-            val menus = Menus(it)
-
+            val itemMenus = ArrayList<Menus.ItemMenus>()
             val arrayFilterString = arrayListOf(
                     it.getString(R.string.filter_chat_all),
                     it.getString(R.string.filter_chat_unread),
                     it.getString(R.string.filter_chat_read),
                     it.getString(R.string.filter_chat_unreplied)
             )
-            val itemMenus = ArrayList<Menus.ItemMenus>()
+
             for ((index, title) in arrayFilterString.withIndex()) {
                 if(index == filterChecked) itemMenus.add(Menus.ItemMenus(title, true))
                 else itemMenus.add(Menus.ItemMenus(title, false))
             }
-            menus.setTitle(getString(R.string.label_filter))
-            menus.itemMenuList = itemMenus
-            menus.setOnItemMenuClickListener { _, pos ->
-                filterChecked = pos-1
-                loadInitialData()
-                menus.dismiss()
+
+            Menus(it, R.style.BottomFilterDialogTheme).apply {
+                window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+                setTitle(getString(R.string.label_filter))
+                itemMenuList = itemMenus
+                setOnItemMenuClickListener { _, pos ->
+                    filterChecked = pos - 1
+                    loadInitialData()
+                    dismiss()
+                }
+                show()
             }
-            menus.show()
         }
     }
 
