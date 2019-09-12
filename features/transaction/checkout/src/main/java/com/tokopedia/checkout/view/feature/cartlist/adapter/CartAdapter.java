@@ -600,7 +600,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             cartDataList.add(++insuranceIndex, insuranceCartShops);
         }
 
-        notifyItemRangeInserted(insuranceIndex,1);
+        notifyDataSetChanged();
     }
 
     public List<InsuranceCartShops> getSelectedRecommendedInsuranceList() {
