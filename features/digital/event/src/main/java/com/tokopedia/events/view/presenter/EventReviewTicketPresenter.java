@@ -290,7 +290,7 @@ public class EventReviewTicketPresenter
         address.setName(Utils.getUserSession(mView.getActivity()).getName());
         address.setCity("");
         address.setEmail(this.email);
-        address.setMobile(this.number);
+        address.setMobile("6289561423900");
         address.setLatitude("");
         address.setLongitude("");
         meta.setEntityAddress(address);

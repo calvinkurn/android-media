@@ -59,6 +59,7 @@ public class EventsHomeActivity extends EventBaseActivity
 
     public static final int REQUEST_CODE_EVENTLOCATIONACTIVITY = 101;
     public static final int REQUEST_CODE_EVENTSEARCHACTIVITY = 901;
+    public static final String SCREEN_NAME = "digital/events";
 
     private Menu mMenu;
 
@@ -145,7 +146,7 @@ public class EventsHomeActivity extends EventBaseActivity
         });
 
         setLightToolbarStyle();
-        eventsAnalytics.sendGeneralEvent("", "", "", "");
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
 
     }
 
@@ -350,7 +351,7 @@ public class EventsHomeActivity extends EventBaseActivity
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_CATEGORY_CLICK, String.format("%s - %d", tab.getText(), tab.getPosition()));
+                eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CATEGORY_CLICK, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_CATEGORY_CLICK, String.format("%s - %d", tab.getText(), tab.getPosition()));
                 try {
                     View customeView = tab.getCustomView();
                     ImageView icon = customeView.findViewById(R.id.category_icon);
@@ -462,7 +463,7 @@ public class EventsHomeActivity extends EventBaseActivity
 
     @Override
     public String getScreenName() {
-        return eventHomePresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override

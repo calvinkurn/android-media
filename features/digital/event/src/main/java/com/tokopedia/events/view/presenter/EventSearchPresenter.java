@@ -181,10 +181,9 @@ public class EventSearchPresenter
     public void searchTextChanged(String searchText) {
         if (searchText != null) {
             if (searchText.length() > 2) {
-                showCards = false;
+                showCards = true;
                 getEventsListBySearch(searchText);
                 searchTag = searchText;
-                eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.CLICK_SEARCH_ICON, searchText);
             }
             if (searchText.length() == 0) {
                 mView.setTopEvents(mTopEvents);
@@ -199,6 +198,7 @@ public class EventSearchPresenter
         showCards = true;
         getEventsListBySearch(searchText);
         searchTag = searchText;
+        eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.CLICK_SEARCH_ICON, searchText);
     }
 
     @Override

@@ -35,6 +35,7 @@ public class EventsAnalytics {
     private static final String PRICE = "price";
     private static final String BRAND = "brand";
     private static final String CATEGORY = "category";
+    private static final String CATEGORY_ID = "category_id";
     private static final String VARIANT = "variant";
     private static final String QUANTITY = "quantity";
     private static final String CART_ID = "cart_id";
@@ -80,7 +81,7 @@ public class EventsAnalytics {
     private static final String HASH_ADD = "add";
     private static final String EVENT_CHECKOUT = "checkout";
     private static final String ACTION_VIEW_CHECKOUT = "view checkout";
-    private static final String ACTION_PROCEED_PAYMENT = "proceed to payment";
+    private static final String ACTION_PROCEED_PAYMENT = "click proceed payment";
     private static final String KEY_OPTIONS = "option";
     private static final String KEY_STEP = "step";
     private static final String CREATIVE = "creative";
@@ -94,6 +95,10 @@ public class EventsAnalytics {
     public void eventDigitalEventTracking(String action, String label) {
         Log.d("EVENTSGA", action + " - " + label);
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_DIGITAL_EVENT, DIGITAL_EVENT, action, label));
+    }
+
+    public void sendScreenNameEvent(String screenName) {
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
     }
 
     public void sendGeneralEvent(String eventName, String eventCategory, String eventAction, String eventLabel) {
@@ -192,7 +197,7 @@ public class EventsAnalytics {
         Map<String, Object> ecommerce = new HashMap<>();
 
         Map<String, Object> actionField = new HashMap<>();
-        actionField.put(LIST, String.format("%s - %s - %s", EVENT, position, model.getDisplayName()));
+        actionField.put(LIST, String.format("%s - %s - %s", EVENT, String.valueOf(position), model.getDisplayName()));
 
         Map<String, Object> products = new HashMap<>();
         products.put(NAME, model.getTitle());
@@ -201,13 +206,13 @@ public class EventsAnalytics {
         products.put(CATEGORY, EVENT);
         products.put(VARIANT, "none");
         products.put(BRAND, "none");
-        products.put(LIST, String.format("%s - %s - %s", EVENT, position, model.getDisplayName()));
+        products.put(LIST, String.format("%s - %s - %s", EVENT, String.valueOf(position), model.getDisplayName()));
         products.put(POSITION, position);
 
         Map<String, Object> click = new HashMap<>();
         click.put(HASH_ACTION_FIELD, actionField);
         ecommerce.put(HASH_CLICK, actionField);
-        ecommerce.put(KEY_PRODUCTS, products);
+        ecommerce.put(KEY_PRODUCTS, Collections.singletonList(products));
 
         generalEvents.put(ECOMMERCE_LABEL, ecommerce);
         TrackApp.getInstance().getGTM().sendGeneralEvent(generalEvents);
@@ -278,6 +283,7 @@ public class EventsAnalytics {
             productMap.put(ID, String.valueOf(selectedPackageViewModel.getId()));
             productMap.put(PRICE, String.valueOf(selectedPackageViewModel.getSalesPrice()));
             productMap.put(CATEGORY, EVENT);
+            productMap.put(CATEGORY_ID, String.valueOf(selectedPackageViewModel.getCategoryId()));
             productMap.put(QUANTITY, selectedPackageViewModel.getSelectedQuantity());
             productMap.put(VARIANT, "none");
             productMap.put(CART_ID, "0");

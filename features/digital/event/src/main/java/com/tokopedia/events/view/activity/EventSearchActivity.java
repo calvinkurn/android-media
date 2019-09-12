@@ -142,7 +142,7 @@ public class EventSearchActivity extends EventBaseActivity implements
     @Override
     public void setTopEvents(List<CategoryItemsViewModel> searchViewModels) {
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, eventSearchPresenter, true);
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, eventSearchPresenter, false, false);
             rvTopEventSuggestions.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
             rvTopEventSuggestions.setAdapter(adapter);
             rvTopEventSuggestions.removeOnScrollListener(rvOnScrollListener);
@@ -162,8 +162,8 @@ public class EventSearchActivity extends EventBaseActivity implements
     @Override
     public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards) {
         if (suggestions != null && !suggestions.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, eventSearchPresenter, showCards);
-            if (showCards)
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, eventSearchPresenter, showCards, true);
+            if (!showCards)
                 filterBtn.setVisibility(View.VISIBLE);
             adapter.setHighLightText(highlight);
             rvTopEventSuggestions.setLayoutManager(layoutManager);

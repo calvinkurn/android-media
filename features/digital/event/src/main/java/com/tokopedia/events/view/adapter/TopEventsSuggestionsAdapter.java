@@ -45,15 +45,17 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
     private boolean showCards;
     private boolean isFooterAdded = false;
     private EventsAnalytics eventsAnalytics;
+    private boolean shouldFireEvent;
 
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
 
-    public TopEventsSuggestionsAdapter(Context context, List<CategoryItemsViewModel> categoryItems, EventSearchPresenter presenter, boolean showcards) {
+    public TopEventsSuggestionsAdapter(Context context, List<CategoryItemsViewModel> categoryItems, EventSearchPresenter presenter, boolean showcards, boolean shouldFireEvent) {
         this.mContext = context;
         this.mPresenter = presenter;
         this.categoryItems = categoryItems;
         this.showCards = showcards;
+        this.shouldFireEvent = shouldFireEvent;
         mPresenter.setupCallback(this);
     }
     
@@ -67,7 +69,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         View v;
         switch (viewType) {
             case ITEM:
-                if (showCards) {
+                if (!showCards) {
                     v = inflater.inflate(R.layout.event_category_item_revamp, parent, false);
                     holder = new EventsTitleHolder(v);
                 } else {
@@ -89,7 +91,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
         switch (getItemViewType(position)) {
             case ITEM:
                 CategoryItemsViewModel model = categoryItems.get(position);
-                if (showCards) {
+                if (!showCards) {
                     ((EventsTitleHolder) holder).setViewHolder(model, position);
                     ((EventsTitleHolder) holder).setShown(model.isTrack());
                 } else {
@@ -190,7 +192,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                 categoryItems.get(titleHolder.getAdapterPosition()).setTrack(true);
                 itemsForGA.add(categoryItems.get(titleHolder.getIndex()));
                 int  itemsToSend = (categoryItems.size() - 1) - titleHolder.getAdapterPosition();
-                if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
+                if (this.shouldFireEvent && itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
                     eventsAnalytics.sendSearchProductImpressions(EventsAnalytics.EVENT_PRODUCT_VIEW, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.EVENT_PRODUCT_RESULT, categoryItems);
                 }
             }
@@ -201,7 +203,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                 categoryItems.get(holder1.getAdapterPosition()).setTrack(true);
                 itemsForGA.add(categoryItems.get(holder1.getIndex()));
                 int  itemsToSend = (categoryItems.size() - 1) - holder1.getAdapterPosition();
-                if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
+                if (this.shouldFireEvent && itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
                     eventsAnalytics.sendSearchProductImpressions(EventsAnalytics.EVENT_PRODUCT_VIEW, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.EVENT_PRODUCT_IMRESSION, categoryItems);
                 }
             }
