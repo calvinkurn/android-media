@@ -22,7 +22,6 @@ include 'libraries:locationmanager'
 include "libraries:logger"
 include 'libraries:iris'
 //include 'libraries:iris_no_op'
-include "libraries:pagination"
 include "libraries:oms"
 include "libraries:push_notification"
 include 'libraries:permissionchecker'
@@ -36,7 +35,6 @@ include "libraries:video_recorder"
 include "libraries:videoplayer"
 include "libraries:websocket"
 include "libraries:williamchart"
-include "libraries:YouTubeAndroidPlayerApi"
 include "libraries:youtubeutil"
 include "libraries:track"
 include "libraries:trackinterface"
