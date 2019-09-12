@@ -49,9 +49,9 @@ dependencies {
 
 project.ext {
     artifactId = 'tradein'
-    groupId = 'com.tokopedia.tradein'
+    groupId = 'com.tokopedia.category'
     versionName = "1.0.0"
-    artifactName = "tradein-release"
+    artifactName = "categorytradein-release"
 }
 
 apply from: '../../../publish_local.gradle'

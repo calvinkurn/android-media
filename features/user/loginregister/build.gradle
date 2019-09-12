@@ -67,10 +67,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'loginregister'
-    groupId = 'com.tokopedia.loginregister'
+    artifactId = 'login-register'
+    groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "loginregister-release"
+    artifactName = "userloginregister-release"
 }
 
 apply from: '../../../publish_local.gradle'

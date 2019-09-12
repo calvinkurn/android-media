@@ -28,8 +28,8 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'topadsmanagementsourcetagging'
-    groupId = 'com.tokopedia.topadsmanagementsourcetagging'
+    artifactId = 'management-source-tagging'
+    groupId = 'com.tokopedia.topads'
     versionName = "1.0.0"
     artifactName = "topadsmanagementsourcetagging-release"
 }

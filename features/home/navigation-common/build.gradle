@@ -27,9 +27,9 @@ dependencies {
 
 project.ext {
     artifactId = 'navigation-common'
-    groupId = 'com.tokopedia.navigation_common'
+    groupId = 'com.tokopedia.home'
     versionName = "1.0.0"
-    artifactName ="navigation_common-release"
+    artifactName ="homenavigationcommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -19,9 +19,9 @@ dependencies {
 
 project.ext {
     artifactId = 'fingerprint'
-    groupId = 'com.tokopedia.fingerprint'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName ="fingerprint-release"
+    artifactName ="libraryfingerprint-release"
 }
 
 apply from: '../../publish_local.gradle'

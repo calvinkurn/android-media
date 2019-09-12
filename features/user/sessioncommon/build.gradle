@@ -44,10 +44,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'sessioncommon'
-    groupId = 'com.tokopedia.sessioncommon'
+    artifactId = 'session-common'
+    groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "sessioncommon-release"
+    artifactName = "usersessioncommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -11,12 +11,6 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-project.ext {
-    artifactId = 'top_ads_dashboard'
-    groupId = 'com.tokopedia.topads'
-    versionName = "1.0.0"
-    artifactName ="top_ads_dashboard-release"
-}
 
 dependencies {
     implementation project(rootProject.ext.features.topAdsManagementCommon)
@@ -75,6 +69,13 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+}
+
+project.ext {
+    artifactId = 'dashboard'
+    groupId = 'com.tokopedia.topads'
+    versionName = "1.0.0"
+    artifactName ="topadsdashboard-release"
 }
 
 apply from: '../../../publish_local.gradle'

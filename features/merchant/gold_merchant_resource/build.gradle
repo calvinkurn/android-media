@@ -10,10 +10,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'goldmerchantresource'
-    groupId = 'com.tokopedia.goldmerchantresource'
+    artifactId = 'gm-resource'
+    groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName = "goldmerchantresource-release"
+    artifactName = "merchantgmresource-release"
 }
 
 apply from: '../../../publish_local.gradle'

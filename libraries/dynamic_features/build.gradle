@@ -23,7 +23,7 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'dynamicfeature'
+    artifactId = 'dynamic-feature'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
     artifactName ="librarydynamicfeature-release"

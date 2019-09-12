@@ -53,10 +53,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'feedcomponent'
-    groupId = 'com.tokopedia.feedcomponent'
+    artifactId = 'feed-component'
+    groupId = 'com.tokopedia.content'
     versionName = "1.0.0"
-    artifactName ="feedcomponent-release"
+    artifactName ="contentfeedcomponent-release"
 }
 
 apply from: '../../../publish_local.gradle'

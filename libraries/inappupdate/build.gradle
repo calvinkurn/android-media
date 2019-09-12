@@ -18,15 +18,15 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'inappupdate'
-    groupId = 'com.tokopedia.inappupdate'
-    versionName = "1.0.0"
-    artifactName = "inappupdate-release"
-}
-
 dependencies {
     implementation rootProject.ext.playServicesDependencies.core
+}
+
+project.ext {
+    artifactId = 'inapp-update'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "libraryinappupdate-release"
 }
 
 apply from: '../../publish_local.gradle'

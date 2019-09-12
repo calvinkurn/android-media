@@ -27,9 +27,9 @@ dependencies {
 
 project.ext {
     artifactId = 'searchbar'
-    groupId = 'com.tokopedia.searchbar'
+    groupId = 'com.tokopedia.home'
     versionName = "1.0.0"
-    artifactName = "searchbar-release"
+    artifactName = "homesearchbar-release"
 }
 
 apply from: '../../../publish_local.gradle'

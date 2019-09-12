@@ -45,10 +45,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'corenetwork'
-    groupId = 'com.tokopedia.corenetwork'
+    artifactId = 'core-network'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "corenetwork-release"
+    artifactName = "librarycorenetwork-release"
 }
 
 apply from: '../../publish_local.gradle'

@@ -29,9 +29,9 @@ dependencies {
 
 project.ext {
     artifactId = 'officialstore'
-    groupId = 'com.tokopedia.officialstore'
+    groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName = "officialstore-release"
+    artifactName = "merchantofficialstore-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -72,9 +72,9 @@ dependencies {
 
 project.ext {
     artifactId = 'events'
-    groupId = 'com.tokopedia.events'
+    groupId = 'com.tokopedia.digital'
     versionName = "1.0.0"
-    artifactName ="tkpdevents-release"
+    artifactName ="digitalevents-release"
 }
 
 apply from: '../../../publish_local.gradle'

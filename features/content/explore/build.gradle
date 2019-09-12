@@ -53,9 +53,9 @@ dependencies {
 
 project.ext {
     artifactId = 'explore'
-    groupId = 'com.tokopedia.explore'
+    groupId = 'com.tokopedia.content'
     versionName = "1.0.0"
-    artifactName = "explore-release"
+    artifactName = "contentexplore-release"
 }
 
 apply from: '../../../publish_local.gradle'

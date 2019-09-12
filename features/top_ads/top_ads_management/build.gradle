@@ -11,12 +11,6 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-project.ext {
-    artifactId = 'top_ads_management'
-    groupId = 'com.tokopedia.topads'
-    versionName = "1.0.0"
-    artifactName ="top_ads_management-release"
-}
 
 dependencies {
     implementation project(rootProject.ext.libraries.applink)
@@ -76,6 +70,13 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation project(rootProject.ext.libraries.core_legacy)
+}
+
+project.ext {
+    artifactId = 'management'
+    groupId = 'com.tokopedia.topads'
+    versionName = "1.0.0"
+    artifactName ="topadsmanagement-release"
 }
 
 apply from: '../../../publish_local.gradle'

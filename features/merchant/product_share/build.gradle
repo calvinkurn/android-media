@@ -28,10 +28,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'productshare'
-    groupId = 'com.tokopedia.productshare'
+    artifactId = 'product-share'
+    groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName = "productshare-release"
+    artifactName = "merchantproductshare-release"
 }
 
 apply from: '../../../publish_local.gradle'

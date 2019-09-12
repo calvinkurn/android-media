@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'tokopoints'
-    groupId = 'com.tokopedia.tokopoints'
-    versionName = "1.0.0"
-    artifactName = "tokopoints-release"
-}
-
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
@@ -54,6 +47,13 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+project.ext {
+    artifactId = 'tokopoints'
+    groupId = 'com.tokopedia.promo'
+    versionName = "1.0.0"
+    artifactName = "promotokopoints-release"
 }
 
 apply from: '../../../publish_local.gradle'

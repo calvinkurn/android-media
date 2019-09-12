@@ -12,12 +12,7 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-project.ext {
-    artifactId = 'challenges'
-    groupId = 'com.tokopedia.challenges'
-    versionName = "1.0.0"
-    artifactName = "challenges-release"
-}
+
 dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -42,6 +37,13 @@ dependencies {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.networkDependencies.glide
+}
+
+project.ext {
+    artifactId = 'challenges'
+    groupId = 'com.tokopedia.im'
+    versionName = "1.0.0"
+    artifactName = "imchallenges-release"
 }
 
 apply from: '../../../publish_local.gradle'

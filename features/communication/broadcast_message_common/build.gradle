@@ -14,10 +14,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'broadcastmessagecommon'
-    groupId = 'com.tokopedia.broadcastmessagecommon'
+    artifactId = 'broadcast-message-common'
+    groupId = 'com.tokopedia.communication'
     versionName = "1.0.0"
-    artifactName = "broadcastmessagecommon-release"
+    artifactName = "communicationbroadcastmessagecommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

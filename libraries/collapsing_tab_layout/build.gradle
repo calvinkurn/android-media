@@ -18,10 +18,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'colapsingtablayout'
-    groupId = 'com.tokopedia.colapsingtablayout'
+    artifactId = 'colapsing-tab-layout'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "colapsingtablayout-release"
+    artifactName = "librarycolapsingtablayout-release"
 }
 
 apply from: '../../publish_local.gradle'

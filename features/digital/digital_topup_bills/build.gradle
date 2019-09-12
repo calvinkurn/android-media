@@ -61,10 +61,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'topupbills'
+    artifactId = 'topup-bills'
     groupId = 'com.tokopedia.digital'
     versionName = "1.0.0"
-    artifactName ="discoverycommon-release"
+    artifactName ="digitaltopupbills-release"
 }
 
 apply from: '../../../publish_local.gradle'

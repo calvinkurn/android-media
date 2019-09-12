@@ -57,10 +57,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'settingbank'
-    groupId = 'com.tokopedia.settingbank'
+    artifactId = 'setting-bank'
+    groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "settingbank-release"
+    artifactName = "usersettingbank-release"
 }
 
 apply from: '../../../publish_local.gradle'

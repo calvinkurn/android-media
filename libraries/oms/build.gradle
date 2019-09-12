@@ -15,13 +15,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'oms'
-    groupId = 'com.tokopedia.oms'
-    versionName = "1.0.0"
-    artifactName ="oms-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -36,4 +29,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
+
+project.ext {
+    artifactId = 'oms'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="libraryoms-release"
+}
+
 apply from: '../../publish_local.gradle'

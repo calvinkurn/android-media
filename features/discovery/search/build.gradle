@@ -21,13 +21,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'search'
-    groupId = 'com.tokopedia.search'
-    versionName = "1.0.0"
-    artifactName ="tkpdsearch-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -101,6 +94,13 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+}
+
+project.ext {
+    artifactId = 'search'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoverysearch-release"
 }
 
 apply from: '../../../publish_local.gradle'

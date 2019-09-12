@@ -16,10 +16,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'baselistseller'
-    groupId = 'com.tokopedia.baselistseller'
+    artifactId = 'base-list-seller'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "baselistseller-release"
+    artifactName = "librarybaselistseller-release"
 }
 
 apply from: '../../publish_local.gradle'

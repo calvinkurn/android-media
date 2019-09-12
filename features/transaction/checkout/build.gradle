@@ -16,13 +16,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "checkout"
-    groupId = "com.tokopedia.transaction"
-    versionName = "1.0.0"
-    artifactName = "checkout-release"
-}
-
 dependencies {
 
     implementation project(rootProject.ext.libraries.track)
@@ -85,4 +78,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = "checkout"
+    groupId = "com.tokopedia.transaction"
+    versionName = "1.0.0"
+    artifactName = "transactioncheckout-release"
+}
+
 apply from: "$rootProject.projectDir/publish_local.gradle"

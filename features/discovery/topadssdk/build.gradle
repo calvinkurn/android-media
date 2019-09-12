@@ -12,14 +12,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'topads'
-    groupId = 'com.tokopedia.topads.sdk'
-    versionName = "1.0.0"
-    artifactName ="tkpdtopadssdk-release"
-}
-
-
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -43,6 +35,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+}
+
+project.ext {
+    artifactId = 'sdk'
+    groupId = 'com.tokopedia.topads'
+    versionName = "1.0.0"
+    artifactName ="topadssdk-release"
 }
 
 apply from: '../../../publish_local.gradle'

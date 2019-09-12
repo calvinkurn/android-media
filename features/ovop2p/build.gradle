@@ -13,13 +13,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'ovop2p'
-    groupId = 'com.tokopedia.ovop2p'
-    versionName = "1.0.0"
-    artifactName = "ovop2p-release"
-}
-
 dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -37,3 +30,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 }
+
+project.ext {
+    artifactId = 'ovop2p'
+    groupId = 'com.tokopedia.ovop2p'
+    versionName = "1.0.0"
+    artifactName = "ovop2p-release"
+}
+
+apply from: '../../publish_local.gradle'

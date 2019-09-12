@@ -15,13 +15,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'reactnative'
-    groupId = 'com.tokopedia.tkpdreactnative'
-    versionName = "1.0.0"
-    artifactName ="react_native-release"
-}
-
 dependencies {
 
     implementation project(rootProject.ext.libraries.akamai_bot_lib)
@@ -60,6 +53,13 @@ dependencies {
     implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.1'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
+}
+
+project.ext {
+    artifactId = 'react-native'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "libraryreactnative-release"
 }
 
 apply from: '../../publish_local.gradle'

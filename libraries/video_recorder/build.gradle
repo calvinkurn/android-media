@@ -23,10 +23,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'videorecorder'
-    groupId = 'com.tokopedia.videorecorder'
+    artifactId = 'video-recorder'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName ="videorecorder-release"
+    artifactName = "libraryvideorecorder-release"
 }
 
 apply from: '../../publish_local.gradle'

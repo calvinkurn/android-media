@@ -12,13 +12,6 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'digital_common'
-    groupId = 'com.tokopedia.common.digital'
-    versionName = "1.0.0"
-    artifactName = "digital-common-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -45,6 +38,13 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.networkDependencies.glide
+}
+
+project.ext {
+    artifactId = 'common'
+    groupId = 'com.tokopedia.digital'
+    versionName = "1.0.0"
+    artifactName = "digitalcommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

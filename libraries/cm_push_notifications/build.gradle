@@ -25,12 +25,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'cm_push_notifications'
-    groupId = 'com.tokopedia.notifications'
-    versionName = "1.0.0"
-    artifactName ="cm_push_notifications-release"
-}
 dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
 
@@ -62,6 +56,13 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
+}
+
+project.ext {
+    artifactId = 'cm-push-notifications'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="librarycmpushnotifications-release"
 }
 
 apply from: '../../publish_local.gradle'

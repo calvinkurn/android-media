@@ -55,10 +55,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'chatbot'
-    groupId = 'com.tokopedia.chatbot'
+    artifactId = 'chat-bot'
+    groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "chatbot-release"
+    artifactName = "userchatbot-release"
 }
 
 apply from: '../../../publish_local.gradle'

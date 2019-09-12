@@ -30,10 +30,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'kolcommon'
-    groupId = 'com.tokopedia.kolcommon'
+    artifactId = 'kol-common'
+    groupId = 'com.tokopedia.content'
     versionName = "1.0.0"
-    artifactName = "kolcommon-release"
+    artifactName = "contentkolcommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

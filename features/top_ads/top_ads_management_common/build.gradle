@@ -37,8 +37,8 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'topadsmanagementcommon'
-    groupId = 'com.tokopedia.topadsmanagementcommon'
+    artifactId = 'management-common'
+    groupId = 'com.tokopedia.topads'
     versionName = "1.0.0"
     artifactName = "topadsmanagementcommon-release"
 }

@@ -73,9 +73,9 @@ dependencies {
 
 project.ext {
     artifactId = 'affiliate'
-    groupId = 'com.tokopedia.affiliate'
+    groupId = 'com.tokopedia.content'
     versionName = "1.0.0"
-    artifactName = "affiliate-release"
+    artifactName = "contentaffiliate-release"
 }
 
 apply from: '../../../publish_local.gradle'

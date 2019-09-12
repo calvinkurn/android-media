@@ -27,13 +27,6 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'home'
-    groupId = 'com.tokopedia.home'
-    versionName = "1.0.0"
-    artifactName ="tkpdhome-release"
-}
-
 dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
@@ -128,6 +121,13 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.banner
+}
+
+project.ext {
+    artifactId = 'home'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoveryhome-release"
 }
 
 apply from: '../../../publish_local.gradle'

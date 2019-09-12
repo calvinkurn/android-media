@@ -1,12 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-project.ext {
-    artifactId = 'contactus'
-    groupId = 'com.tokopedia.contactus'
-    versionName = "1.0.0"
-    artifactName = "contactus-release"
-}
 
 buildscript {
     repositories {
@@ -58,10 +52,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'contactus'
-    groupId = 'com.tokopedia.contactus'
+    artifactId = 'contact-us'
+    groupId = 'com.tokopedia.operational'
     versionName = "1.0.0"
-    artifactName = "contactus-release"
+    artifactName = "operatinalcontactus-release"
 }
 
 apply from: '../../../publish_local.gradle'

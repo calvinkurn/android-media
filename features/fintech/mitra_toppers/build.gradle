@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'mitra_toppers'
-    groupId = 'com.tokopedia.mitratoppers'
-    versionName = "1.0.0"
-    artifactName ="mitra_toppers-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -39,6 +32,13 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.stetho
     implementation rootProject.ext.tkpdInternalLibDependencies.url
+}
+
+project.ext {
+    artifactId = 'mitra-toppers'
+    groupId = 'com.tokopedia.fintech'
+    versionName = "1.0.0"
+    artifactName ="fintechmitratoppers-release"
 }
 
 apply from: '../../../publish_local.gradle'

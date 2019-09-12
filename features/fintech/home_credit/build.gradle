@@ -2,14 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'home_credit'
-    groupId = 'com.tokopedia.homecredit'
-    versionName = "1.0.0"
-    artifactName ="home_credit-release"
-}
-
-
 buildscript {
     repositories {
         mavenCentral()
@@ -34,10 +26,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'homecredit'
-    groupId = 'com.tokopedia.homecredit'
+    artifactId = 'home-credit'
+    groupId = 'com.tokopedia.fintech'
     versionName = "1.0.0"
-    artifactName = "homecredit-release"
+    artifactName ="fintechhomecredit-release"
 }
 
 apply from: '../../../publish_local.gradle'

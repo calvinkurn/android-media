@@ -34,10 +34,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'imagepicker'
-    groupId = 'com.tokopedia.imagepicker'
+    artifactId = 'image-picker'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "imagepicker-release"
+    artifactName = "libraryimagepicker-release"
 }
 
 apply from: '../../publish_local.gradle'

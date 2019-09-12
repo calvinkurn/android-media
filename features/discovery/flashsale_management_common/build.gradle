@@ -15,10 +15,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'flashsalemanagement'
-    groupId = 'com.tokopedia.flashsalemanagement'
+    artifactId = 'flashsale-management-common'
+    groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
-    artifactName = "flashsalemanagement-release"
+    artifactName ="discoveryflashsalemanagementcommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

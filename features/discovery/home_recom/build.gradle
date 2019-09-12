@@ -62,7 +62,7 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'homerecommendation'
+    artifactId = 'home-recommendation'
     groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
     artifactName ="discoveryhomerecommendation-release"

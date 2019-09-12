@@ -63,10 +63,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'expresscheckout'
-    groupId = 'com.tokopedia.expresscheckout'
+    artifactId = 'express-checkout'
+    groupId = 'com.tokopedia.transaction'
     versionName = "1.0.0"
-    artifactName = "expresscheckout-release"
+    artifactName = "transactionexpresscheckout-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -15,12 +15,7 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-project.ext {
-    artifactId = 'referral'
-    groupId = 'com.tokopedia.referral'
-    versionName = "1.0.0"
-    artifactName = "referral-release"
-}
+
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -49,6 +44,13 @@ dependencies {
     }
     implementation rootProject.ext.networkDependencies.glide
     compile project(path: ':libraries:remote_config')
+}
+
+project.ext {
+    artifactId = 'referral'
+    groupId = 'com.tokopedia.im'
+    versionName = "1.0.0"
+    artifactName = "imreferral-release"
 }
 
 apply from: '../../../publish_local.gradle'

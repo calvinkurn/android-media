@@ -56,9 +56,9 @@ dependencies {
 
 project.ext {
     artifactId = 'train'
-    groupId = 'com.tokopedia.train'
+    groupId = 'com.tokopedia.travel'
     versionName = "1.0.0"
-    artifactName ="tkpdtrain-release"
+    artifactName ="traveltrain-release"
 }
 
 apply from: '../../../publish_local.gradle'

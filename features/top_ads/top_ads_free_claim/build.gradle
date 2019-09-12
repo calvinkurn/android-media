@@ -22,8 +22,8 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'topadsfreeclaim'
-    groupId = 'com.tokopedia.topadsfreeclaim'
+    artifactId = 'free-claim'
+    groupId = 'com.tokopedia.topads'
     versionName = "1.0.0"
     artifactName = "topadsfreeclaim-release"
 }

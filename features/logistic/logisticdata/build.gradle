@@ -16,13 +16,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "logisticdata"
-    groupId = "com.tokopedia.logistic"
-    versionName = "1.0.0"
-    artifactName = "logisticdata-release"
-}
-
 dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.maps
@@ -37,6 +30,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.playServicesDependencies.analytics;
+}
+
+project.ext {
+    artifactId = "data"
+    groupId = "com.tokopedia.logistic"
+    versionName = "1.0.0"
+    artifactName = "logisticdata-release"
 }
 
 apply from: '../../../publish_local.gradle'

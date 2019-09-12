@@ -52,9 +52,9 @@ dependencies {
 
 project.ext {
     artifactId = 'talk'
-    groupId = 'com.tokopedia.talk'
+    groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "talk-release"
+    artifactName = "usertalk-release"
 }
 
 apply from: '../../../publish_local.gradle'

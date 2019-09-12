@@ -47,10 +47,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'phoneverification'
-    groupId = 'com.tokopedia.phoneverification'
+    artifactId = 'phone-verification'
+    groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "phoneverification-release"
+    artifactName = "userphoneverification-release"
 }
 
 apply from: '../../../publish_local.gradle'

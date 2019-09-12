@@ -53,10 +53,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'common_travel'
-    groupId = 'com.tokopedia.common.travel'
+    artifactId = 'common'
+    groupId = 'com.tokopedia.travel'
     versionName = "1.0.0"
-    artifactName = "commontravel-release"
+    artifactName = "travelcommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

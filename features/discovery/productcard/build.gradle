@@ -33,10 +33,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'productcard'
-    groupId = 'com.tokopedia.productcard'
+    artifactId = 'product-card'
+    groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
-    artifactName = "productcard-release"
+    artifactName = "discoveryproductcard-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -16,13 +16,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'topchat'
-    groupId = 'com.tokopedia.topchat'
-    versionName = "1.0.0"
-    artifactName = "topchat-release"
-}
-
 dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -95,6 +88,13 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.unifyDependencies.components
+}
+
+project.ext {
+    artifactId = 'topchat'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName = "usertopchat-release"
 }
 
 apply from: '../../../publish_local.gradle'

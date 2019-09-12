@@ -47,10 +47,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'changepassword'
-    groupId = 'com.tokopedia.changepassword'
+    artifactId = 'change-password'
+    groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "changepassword-release"
+    artifactName = "userchangepassword-release"
 }
 
 apply from: '../../../publish_local.gradle'

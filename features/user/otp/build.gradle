@@ -47,9 +47,9 @@ dependencies {
 
 project.ext {
     artifactId = 'otp'
-    groupId = 'com.tokopedia.otp'
+    groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "otp-release"
+    artifactName = "userotp-release"
 }
 
 apply from: '../../../publish_local.gradle'

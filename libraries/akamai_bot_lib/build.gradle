@@ -8,9 +8,9 @@ dependencies {
 
 project.ext {
     artifactId = 'akamaibot'
-    groupId = 'com.tokopedia.akamaibot'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "akamaibot-release"
+    artifactName = "libraryakamaibot-release"
 }
 
 apply from: '../../publish_local.gradle'

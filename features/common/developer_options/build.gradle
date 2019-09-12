@@ -45,10 +45,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'developeroptions'
-    groupId = 'com.tokopedia.developeroptions'
+    artifactId = 'developer-options'
+    groupId = 'com.tokopedia.common'
     versionName = "1.0.0"
-    artifactName ="developer_options-release"
+    artifactName ="commondeveloperoptions-release"
 }
 
 apply from: '../../../publish_local.gradle'

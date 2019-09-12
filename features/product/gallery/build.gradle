@@ -16,13 +16,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'payment-setting'
-    groupId = 'com.tokopedia.payment'
-    versionName = "1.0.0"
-    artifactName ="payment_setting-release"
-}
-
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
@@ -39,6 +32,13 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spekApi
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
+}
+
+project.ext {
+    artifactId = 'gallery'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoverygallery-release"
 }
 
 apply from: '../../../publish_local.gradle'

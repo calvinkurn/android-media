@@ -27,10 +27,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'datepickerrange'
-    groupId = 'com.tokopedia.datepickerrange'
+    artifactId = 'date-picker-range'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "datepickerrange-release"
+    artifactName = "librarydatepickerrange-release"
 }
 
 apply from: '../../publish_local.gradle'

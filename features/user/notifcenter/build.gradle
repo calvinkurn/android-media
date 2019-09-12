@@ -17,13 +17,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'notifcenter'
-    groupId = 'com.tokopedia.notifcenter'
-    versionName = "1.0.0"
-    artifactName = "notifcenter-release"
-}
-
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
@@ -56,10 +49,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'notifcenter'
-    groupId = 'com.tokopedia.notifcenter'
+    artifactId = 'notification-center'
+    groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "notifcenter-release"
+    artifactName = "usernotification-release"
 }
 
 apply from: '../../../publish_local.gradle'

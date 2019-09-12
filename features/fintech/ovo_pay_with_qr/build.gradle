@@ -2,14 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'ovo_pay_with_qr'
-    groupId = 'com.tokopedia.ovo'
-    versionName = "1.0.0"
-    artifactName ="ovo-release"
-}
-
-
 buildscript {
     repositories {
         mavenCentral()
@@ -39,6 +31,13 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation project(rootProject.ext.libraries.webview)
+}
+
+project.ext {
+    artifactId = 'ovo'
+    groupId = 'com.tokopedia.fintech'
+    versionName = "1.0.0"
+    artifactName ="fintechovo-release"
 }
 
 apply from: '../../../publish_local.gradle'

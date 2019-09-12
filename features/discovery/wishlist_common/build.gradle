@@ -12,13 +12,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'wishlist-common'
-    groupId = 'com.tokopedia.wishlist'
-    versionName = "1.0.0"
-    artifactName ="wishlist_common-release"
-}
-
 dependencies {
 
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -26,6 +19,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
+}
+
+project.ext {
+    artifactId = 'wishlist-common'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoverywishlistcommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

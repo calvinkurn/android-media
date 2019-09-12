@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'product-manage-item'
-    groupId = 'com.tokopedia.product'
-    versionName = "1.0.0"
-    artifactName ="product_manage_item-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -69,6 +62,13 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
+}
+
+project.ext {
+    artifactId = 'product-manage-item'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="merchantproductmanageitem-release"
 }
 
 apply from: '../../../publish_local.gradle'

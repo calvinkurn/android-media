@@ -92,9 +92,9 @@ dependencies {
 
 project.ext {
     artifactId = 'kol'
-    groupId = 'com.tokopedia.kol'
+    groupId = 'com.tokopedia.content'
     versionName = "1.0.0"
-    artifactName ="kol-release"
+    artifactName ="contentkol-release"
 }
 
 apply from: '../../../publish_local.gradle'

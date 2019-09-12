@@ -43,9 +43,9 @@ dependencies {
 
 project.ext {
     artifactId = 'video-uploader'
-    groupId = 'com.tokopedia.videouploader'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "videouploader-release"
+    artifactName = "libraryvideouploader-release"
 }
 
 apply from: '../../publish_local.gradle'

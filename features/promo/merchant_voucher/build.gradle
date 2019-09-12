@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'merchant-voucher'
-    groupId = 'com.tokopedia.merchantvoucher'
-    versionName = "1.0.0"
-    artifactName ="merchant_voucher-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -38,6 +31,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.guava
+}
+
+project.ext {
+    artifactId = 'merchant-voucher'
+    groupId = 'com.tokopedia.promo'
+    versionName = "1.0.0"
+    artifactName ="promomerchantvoucher-release"
 }
 
 apply from: '../../../publish_local.gradle'

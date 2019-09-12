@@ -55,10 +55,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'digital_deals'
-    groupId = 'com.tokopedia.digital_deals'
+    artifactId = 'deals'
+    groupId = 'com.tokopedia.digital'
     versionName = "1.0.0"
-    artifactName ="digital_deals-release"
+    artifactName ="digitaldeals-release"
 }
 
 apply from: '../../../publish_local.gradle'

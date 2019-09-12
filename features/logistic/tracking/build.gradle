@@ -16,13 +16,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "logistictracking"
-    groupId = "com.tokopedia.logistic"
-    versionName = "1.0.0"
-    artifactName = "logistictracking-release"
-}
-
 dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -45,6 +38,13 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
+}
+
+project.ext {
+    artifactId = "tracking"
+    groupId = "com.tokopedia.logistic"
+    versionName = "1.0.0"
+    artifactName = "logistictracking-release"
 }
 
 apply from: '../../../publish_local.gradle'

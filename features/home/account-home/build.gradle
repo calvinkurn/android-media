@@ -75,10 +75,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'accounthome'
-    groupId = 'com.tokopedia.accounthome'
+    artifactId = 'account'
+    groupId = 'com.tokopedia.home'
     versionName = "1.0.0"
-    artifactName = "accounthome-release"
+    artifactName = "homeaccount-release"
 }
 
 apply from: '../../../publish_local.gradle'

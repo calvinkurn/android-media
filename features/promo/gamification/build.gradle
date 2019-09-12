@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'gamification'
-    groupId = 'com.tokopedia.gamification'
-    versionName = "1.0.0"
-    artifactName = "gamification-release"
-}
-
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
@@ -56,4 +49,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
 }
 
+project.ext {
+    artifactId = 'gamification'
+    groupId = 'com.tokopedia.promo'
+    versionName = "1.0.0"
+    artifactName = "promogamification-release"
+}
 apply from: '../../../publish_local.gradle'

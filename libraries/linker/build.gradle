@@ -12,19 +12,19 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'linker'
-    groupId = 'com.tokopedia.linker'
-    versionName = "1.0.0"
-    artifactName = "linker-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation (rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
+}
+
+project.ext {
+    artifactId = 'linker'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarylinker-release"
 }
 
 apply from: '../../publish_local.gradle'

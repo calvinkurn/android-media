@@ -14,9 +14,9 @@ buildscript {
 
 project.ext {
     artifactId = 'logger'
-    groupId = 'com.tokopedia.logger'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "logger-release"
+    artifactName = "librarylogger-release"
 }
 
 apply from: '../../publish_local.gradle'

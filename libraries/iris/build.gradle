@@ -88,9 +88,9 @@ dependencies {
 
 project.ext {
     artifactId = 'iris'
-    groupId = 'com.tokopedia.iris'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "iris-release"
+    artifactName = "libraryiris-release"
 }
 
 apply from: '../../publish_local.gradle'

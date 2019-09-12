@@ -12,9 +12,9 @@ dependencies {
 
 project.ext {
     artifactId = 'kotlin-extensions'
-    groupId = 'com.tokopedia.kotlin.extensions'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "kotlin_extensions-release"
+    artifactName = "librarykotlinextensions-release"
 }
 
 apply from: '../../publish_local.gradle'

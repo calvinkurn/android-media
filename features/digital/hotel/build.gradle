@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'hotel'
-    groupId = 'com.tokopedia.hotel'
-    versionName = "1.0.0"
-    artifactName = "tkpdhotel-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -75,6 +68,13 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
+}
+
+project.ext {
+    artifactId = 'hotel'
+    groupId = 'com.tokopedia.travel'
+    versionName = "1.0.0"
+    artifactName = "travelhotel-release"
 }
 
 apply from: '../../../publish_local.gradle'

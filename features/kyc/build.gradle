@@ -13,12 +13,7 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-project.ext {
-    artifactId = 'kyc'
-    groupId = 'com.tokopedia.kyc'
-    versionName = "1.0.0"
-    artifactName = "kyc-release"
-}
+
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
@@ -37,6 +32,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+}
+
+project.ext {
+    artifactId = 'kyc'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName = "userkyc-release"
 }
 
 apply from: '../../publish_local.gradle'

@@ -12,13 +12,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'bottomsheetbuilder'
-    groupId = 'com.tokopedia.bottomsheetbuilder'
-    versionName = "1.0.0"
-    artifactName ="bottomsheetbuilder-release"
-}
-
 dependencies {
 
     implementation rootProject.ext.supportLibDependencies.design
@@ -27,6 +20,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile rootProject.ext.testDependencies.junit
+}
+
+project.ext {
+    artifactId = 'bottom-sheet-builder'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="librarybottomsheetbuilder-release"
 }
 
 apply from: '../../publish_local.gradle'

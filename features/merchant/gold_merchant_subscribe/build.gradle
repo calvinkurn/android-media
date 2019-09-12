@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'gold_merchant-subscribe'
-    groupId = 'com.tokopedia.gm'
-    versionName = "1.0.0"
-    artifactName ="gold_merchant_subscribe-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -51,6 +44,13 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation project(rootProject.ext.libraries.core_legacy)
+}
+
+project.ext {
+    artifactId = 'gm-subscribe'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="merchantgmsubscribe-release"
 }
 
 apply from: '../../../publish_local.gradle'

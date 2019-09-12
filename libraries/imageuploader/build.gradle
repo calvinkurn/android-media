@@ -33,10 +33,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'imageuploader'
-    groupId = 'com.tokopedia.imageuploader'
+    artifactId = 'image-uploader'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "imageuploader-release"
+    artifactName = "libraryimageuploader-release"
 }
 
 apply from: '../../publish_local.gradle'

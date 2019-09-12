@@ -22,10 +22,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'imagepreview'
-    groupId = 'com.tokopedia.imagepreview'
+    artifactId = 'image-preview'
+    groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "imagepreview-release"
+    artifactName = "libraryimagepreview-release"
 }
 
 apply from: '../../publish_local.gradle'

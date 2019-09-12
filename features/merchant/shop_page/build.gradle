@@ -16,14 +16,6 @@ buildscript {
     }
 }
 
-
-project.ext {
-    artifactId = 'shop-page'
-    groupId = 'com.tokopedia.shop'
-    versionName = "1.0.0"
-    artifactName ="shop_page-release"
-}
-
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -83,6 +75,13 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     
     implementation project(rootProject.ext.libraries.track)
+}
+
+project.ext {
+    artifactId = 'shop-page'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="merchanshop_page-release"
 }
 
 apply from: '../../../publish_local.gradle'
