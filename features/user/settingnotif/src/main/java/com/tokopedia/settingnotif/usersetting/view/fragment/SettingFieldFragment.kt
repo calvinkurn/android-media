@@ -1,17 +1,14 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.RawRes
 import android.support.annotation.StringRes
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -25,7 +22,6 @@ import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
 import com.tokopedia.settingnotif.usersetting.di.UserSettingModule
 import com.tokopedia.settingnotif.usersetting.domain.pojo.setusersetting.SetUserSettingResponse
-import com.tokopedia.settingnotif.usersetting.view.activity.PushNotificationCheckerActivity
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldAdapter
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactoryImpl
