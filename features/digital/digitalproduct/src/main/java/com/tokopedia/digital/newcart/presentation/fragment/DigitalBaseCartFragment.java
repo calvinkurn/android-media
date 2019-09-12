@@ -323,7 +323,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
                         ((DigitalModuleRouter) getActivity().getApplicationContext())
                                 .showAppFeedbackRatingDialog(
-                                        manager, () -> {
+                                        manager,
+                                        getContext(),
+                                        () -> {
                                             if (getActivity() != null) {
                                                 getActivity().setResult(DigitalRouter.Companion.getPAYMENT_SUCCESS());
                                                 closeView();
