@@ -26,7 +26,6 @@ project.ext {
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
 
     implementation project(rootProject.ext.libraries.abstraction)
