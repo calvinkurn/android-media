@@ -36,8 +36,8 @@ class SimilarProductRecommendationItemViewHolder (
             setLabelDiscountVisible(element.productItem.slashedPriceInt > 0 && element.productItem.discountPercentage > 0)
             setImageRatingVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
             setReviewCountVisible(element.productItem.rating > 0 && element.productItem.countReview > 0)
-            setShopBadgesVisible(element.productItem.badgesUrl.isNotEmpty())
-            setShopLocationVisible(true)
+            setShopLocationVisible(element.productItem.badgesUrl.isNotEmpty())
+            setShopBadgesVisible(true)
             setButtonWishlistImage(element.productItem.isWishlist)
             setProductNameText(element.productItem.name)
             setPriceText(element.productItem.price)
@@ -49,6 +49,7 @@ class SimilarProductRecommendationItemViewHolder (
             setRating(element.productItem.rating)
             mapBadges(element.productItem.badgesUrl)
             setShopLocationText(element.productItem.location)
+            setShopNameText(element.productItem.shopName)
             realignLayout()
             setImageProductViewHintListener(element.productItem, object: ViewHintListener {
                 override fun onViewHint() {
