@@ -25,7 +25,7 @@ android {
 project.ext {
     artifactId = 'common_network'
     groupId = 'com.tokopedia.common.network'
-    versionName = "${tkpdCommonNetworkVersion}"
+    versionName = "1.0.0"
     artifactName = "common_network-release"
 }
 

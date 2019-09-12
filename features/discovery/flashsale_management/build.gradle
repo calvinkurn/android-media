@@ -15,7 +15,7 @@ buildscript {
 project.ext {
     artifactId = 'flashsale-management'
     groupId = 'com.tokopedia.flashsale'
-    versionName = "${tkpdFlashsaleManagementVersion}"
+    versionName = "1.0.0"
     artifactName ="flashsale_management-release"
 }
 

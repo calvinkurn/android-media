@@ -13,10 +13,10 @@ android {
 }
 
 project.ext {
-    artifactId = 'common_digital'
-    groupId = 'com.tokopedia.common_digital'
+    artifactId = 'digital_common'
+    groupId = 'com.tokopedia.common.digital'
     versionName = "1.0.0"
-    artifactName = "tkpdcommondigital-release"
+    artifactName = "digital-common-release"
 }
 
 buildscript {

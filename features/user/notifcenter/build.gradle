@@ -20,7 +20,7 @@ buildscript {
 project.ext {
     artifactId = 'notifcenter'
     groupId = 'com.tokopedia.notifcenter'
-    versionName = "${tkpdNotifCenterVersion}"
+    versionName = "1.0.0"
     artifactName = "notifcenter-release"
 }
 

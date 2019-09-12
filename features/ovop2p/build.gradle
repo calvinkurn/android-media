@@ -16,7 +16,7 @@ buildscript {
 project.ext {
     artifactId = 'ovop2p'
     groupId = 'com.tokopedia.ovop2p'
-    versionName = "${tkpdOvoP2PTransfer}"
+    versionName = "1.0.0"
     artifactName = "ovop2p-release"
 }
 

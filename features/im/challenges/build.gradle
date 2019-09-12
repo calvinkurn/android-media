@@ -15,7 +15,7 @@ buildscript {
 project.ext {
     artifactId = 'challenges'
     groupId = 'com.tokopedia.challenges'
-    versionName = "${tkpdChallengesVersion}"
+    versionName = "1.0.0"
     artifactName = "challenges-release"
 }
 dependencies {

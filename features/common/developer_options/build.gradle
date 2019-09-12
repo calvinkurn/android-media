@@ -22,7 +22,7 @@ buildscript {
 project.ext {
     artifactId = 'developeroptions'
     groupId = 'com.tokopedia.developeroptions'
-    versionName = "${tkpdDeveloperOptions}"
+    versionName = "1.0.0"
     artifactName ="developer_options-release"
 }
 

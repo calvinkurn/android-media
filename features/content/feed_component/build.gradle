@@ -22,7 +22,7 @@ buildscript {
 project.ext {
     artifactId = 'feedcomponent'
     groupId = 'com.tokopedia.feedcomponent'
-    versionName = "${tkpdFeedComponentVersion}"
+    versionName = "1.0.0"
     artifactName ="feedcomponent-release"
 }
 

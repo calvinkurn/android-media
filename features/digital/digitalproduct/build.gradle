@@ -21,7 +21,7 @@ buildscript {
 project.ext {
     artifactId = 'digital'
     groupId = 'com.tokopedia.digital'
-    versionName = "${tkpdDigitalVersion}"
+    versionName = "1.0.0"
     artifactName = "tkpddigital-release"
 }
 

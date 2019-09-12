@@ -16,10 +16,10 @@ buildscript {
 }
 
 project.ext {
-    artifactId = "${artifactIdTransactionData}"
-    groupId = "${groupIdTransaction}"
-    versionName = "${transactionGroupVersion}"
-    artifactName = "${artifactIdTransactionData}-release"
+    artifactId = "transactiondata"
+    groupId = "com.tokopedia.transaction"
+    versionName = "1.0.0"
+    artifactName = "transactiondata-release"
 }
 
 dependencies {

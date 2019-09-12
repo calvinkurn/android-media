@@ -25,7 +25,7 @@ android {
 project.ext {
     artifactId = 'analytics'
     groupId = 'com.tokopedia.analytics'
-    versionName = "${tkpdAnalyticsVersion}"
+    versionName = "1.0.0"
     artifactName ="analytics-release"
 }
 

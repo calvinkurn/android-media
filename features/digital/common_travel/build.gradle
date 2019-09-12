@@ -9,7 +9,7 @@ repositories {
 project.ext {
     artifactId = 'common_travel'
     groupId = 'com.tokopedia.common.travel'
-    versionName = "${tkpdTravelVersion}"
+    versionName = "1.0.0"
     artifactName = "commontravel-release"
 }
 

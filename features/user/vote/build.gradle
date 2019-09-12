@@ -28,7 +28,7 @@ android {
 project.ext {
     artifactId = 'vote'
     groupId = 'com.tokopedia.vote'
-    versionName = "${tkpdVoteVersion}"
+    versionName = "1.0.0"
     artifactName ="vote-release"
 }
 dependencies {

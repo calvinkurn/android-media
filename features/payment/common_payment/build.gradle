@@ -18,7 +18,7 @@ buildscript {
 project.ext {
     artifactId = 'common_payment'
     groupId = 'com.tokopedia.common.payment'
-    versionName = "${tkpdPaymentVersion}"
+    versionName = "1.0.0"
     artifactName = 'commonpayment-release'
 }
 

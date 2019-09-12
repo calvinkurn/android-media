@@ -16,7 +16,7 @@ buildscript {
 project.ext {
     artifactId = 'videoplayer'
     groupId = 'com.tokopedia.videoplayer'
-    versionName = "${tkpdVideoplayerVersion}"
+    versionName = "1.0.0"
     artifactName ="videoplayer-release"
 }
 

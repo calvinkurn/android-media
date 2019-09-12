@@ -16,7 +16,7 @@ buildscript {
 project.ext {
     artifactId = 'kyc'
     groupId = 'com.tokopedia.kyc'
-    versionName = "${tkpdKycVersion}"
+    versionName = "1.0.0"
     artifactName = "kyc-release"
 }
 dependencies {

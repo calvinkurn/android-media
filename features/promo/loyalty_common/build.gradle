@@ -17,7 +17,7 @@ buildscript {
 project.ext {
     artifactId = 'loyalty-common'
     groupId = 'com.tokopedia.loyalty'
-    versionName = "${tkpdLoyaltyVersion}"
+    versionName = "1.0.0"
     artifactName = "loyalty_common-release"
 }
 

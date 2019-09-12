@@ -28,7 +28,7 @@ android {
 project.ext {
     artifactId = 'groupchat'
     groupId = 'com.tokopedia.groupchat'
-    versionName = "${tkpdGroupchatVersion}"
+    versionName = "1.0.0"
     artifactName ="groupchat-release"
 }
 

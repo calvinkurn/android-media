@@ -18,7 +18,7 @@ buildscript {
 project.ext {
     artifactId = 'recentview'
     groupId = 'com.tokopedia.recentview'
-    versionName = "${tkpdRecentviewVersion}"
+    versionName = "1.0.0"
     artifactName ="recentview-release"
 }
 

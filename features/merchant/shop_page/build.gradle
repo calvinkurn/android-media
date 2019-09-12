@@ -20,7 +20,7 @@ buildscript {
 project.ext {
     artifactId = 'shop-page'
     groupId = 'com.tokopedia.shop'
-    versionName = "${tkpdShopVersion}"
+    versionName = "1.0.0"
     artifactName ="shop_page-release"
 }
 

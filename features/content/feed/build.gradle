@@ -26,7 +26,7 @@ buildscript {
 project.ext {
     artifactId = 'feed'
     groupId = 'com.tokopedia.feedplus'
-    versionName = "${tkpdFeedVersion}"
+    versionName = "1.0.0"
     artifactName = "feed-release"
 }
 

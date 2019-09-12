@@ -19,7 +19,7 @@ buildscript {
 project.ext {
     artifactId = 'topchat'
     groupId = 'com.tokopedia.topchat'
-    versionName = "${tkpdInboxVersion}"
+    versionName = "1.0.0"
     artifactName = "topchat-release"
 }
 

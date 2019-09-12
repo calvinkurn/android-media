@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'shop-settings'
     groupId = 'com.tokopedia.shop'
-    versionName = "${tkpdShopVersion}"
+    versionName = "1.0.0"
     artifactName ="shop_settings-release"
 }
 

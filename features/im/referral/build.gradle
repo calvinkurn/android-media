@@ -18,7 +18,7 @@ buildscript {
 project.ext {
     artifactId = 'referral'
     groupId = 'com.tokopedia.referral'
-    versionName = "${tkpdReferralVersion}"
+    versionName = "1.0.0"
     artifactName = "referral-release"
 }
 dependencies {

@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'changephonenumber'
     groupId = 'com.tokopedia.changephonenumber'
-    versionName = "${tkpdChangePhoneNumberVersion}"
+    versionName = "1.0.0"
     artifactName ="change_phone_number-release"
 }
 

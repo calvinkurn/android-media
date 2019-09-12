@@ -18,7 +18,7 @@ buildscript {
 project.ext {
     artifactId = 'kolcommon'
     groupId = 'com.tokopedia.kolcommon'
-    versionName = "${tkpdKolCommonVersion}"
+    versionName = "1.0.0"
     artifactName = "kolcommon-release"
 }
 

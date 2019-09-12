@@ -28,7 +28,7 @@ buildscript {
 project.ext {
     artifactId = 'cm_push_notifications'
     groupId = 'com.tokopedia.notifications'
-    versionName = "${tkpdPushNotifVersion}"
+    versionName = "1.0.0"
     artifactName ="cm_push_notifications-release"
 }
 dependencies {

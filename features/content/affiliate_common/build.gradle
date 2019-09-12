@@ -22,7 +22,7 @@ buildscript {
 project.ext {
     artifactId = 'affiliatecommon'
     groupId = 'com.tokopedia.affiliatecommon'
-    versionName = "${tkpdAffiliateCommonVersion}"
+    versionName = "1.0.0"
     artifactName ="affiliatecommon-release"
 }
 

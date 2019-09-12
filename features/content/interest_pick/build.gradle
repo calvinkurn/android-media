@@ -22,7 +22,7 @@ buildscript {
 project.ext {
     artifactId = 'interestpick'
     groupId = 'com.tokopedia.interestpick'
-    versionName = "${tkpdInterestPickVersion}"
+    versionName = "1.0.0"
     artifactName = "interestpick-release"
 }
 

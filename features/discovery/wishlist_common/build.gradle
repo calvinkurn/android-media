@@ -15,7 +15,7 @@ buildscript {
 project.ext {
     artifactId = 'wishlist-common'
     groupId = 'com.tokopedia.wishlist'
-    versionName = "${tkpdWishlistVersion}"
+    versionName = "1.0.0"
     artifactName ="wishlist_common-release"
 }
 

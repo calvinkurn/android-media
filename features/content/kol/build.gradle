@@ -20,7 +20,7 @@ buildscript {
 project.ext {
     artifactId = 'kol'
     groupId = 'com.tokopedia.kol'
-    versionName = "${tkpdKolVersion}"
+    versionName = "1.0.0"
     artifactName ="kol-release"
 }
 

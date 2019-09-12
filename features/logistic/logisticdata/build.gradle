@@ -17,10 +17,10 @@ buildscript {
 }
 
 project.ext {
-    artifactId = "${artifactIdLogisticData}"
-    groupId = "${groupIdLogistic}"
-    versionName = "${logisticGroupVersion}"
-    artifactName = "${artifactIdLogisticData}-release"
+    artifactId = "logisticdata"
+    groupId = "com.tokopedia.logistic"
+    versionName = "1.0.0"
+    artifactName = "logisticdata-release"
 }
 
 dependencies {

@@ -14,7 +14,7 @@ buildscript {
 project.ext {
     artifactId = 'top_ads_management'
     groupId = 'com.tokopedia.topads'
-    versionName = "${tkpdTopAdsSDKVersion}"
+    versionName = "1.0.0"
     artifactName ="top_ads_management-release"
 }
 

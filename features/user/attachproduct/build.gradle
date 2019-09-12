@@ -19,7 +19,7 @@ buildscript {
 project.ext {
     artifactId = 'attachproduct'
     groupId = 'com.tokopedia.attachproduct'
-    versionName = "${tkpdInboxVersion}"
+    versionName = "1.0.0"
     artifactName = "attachproduct-release"
 }
 

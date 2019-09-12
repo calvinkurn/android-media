@@ -3,10 +3,10 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 project.ext {
-    artifactId = "${artifactIdCheckout}"
-    groupId = "${groupIdTransaction}"
-    versionName = "${transactionCheckoutVersion}"
-    artifactName = "${artifactIdCheckout}-release"
+    artifactId = "shipping_recommendation"
+    groupId = "com.tokopedia.shippingrecommendation"
+    versionName = "1.0.0"
+    artifactName = "checkout-release"
 }
 
 repositories {

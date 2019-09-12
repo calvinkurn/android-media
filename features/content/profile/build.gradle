@@ -22,7 +22,7 @@ buildscript {
 project.ext {
     artifactId = 'profile'
     groupId = 'com.tokopedia.profile'
-    versionName = "${tkpdProfileVersion}"
+    versionName = "1.0.0"
     artifactName ="profile-release"
 }
 

@@ -23,7 +23,7 @@ buildscript {
 project.ext {
     artifactId = 'promo-checkout'
     groupId = 'com.tokopedia.promocheckout'
-    versionName = "${promoCheckoutVersion}"
+    versionName = "1.0.0"
     artifactName ="promo_checkout-release"
 }
 

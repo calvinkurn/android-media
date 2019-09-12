@@ -15,7 +15,7 @@ android {
 project.ext {
     artifactId = 'product-draft-database'
     groupId = 'com.tokopedia.productdraftdatabase'
-    versionName = "${tkpdProductVersion}"
+    versionName = "1.0.0"
     artifactName ="product_draft_database-release"
 }
 

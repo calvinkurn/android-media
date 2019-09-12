@@ -9,7 +9,7 @@ repositories {
 project.ext {
     artifactId = 'train'
     groupId = 'com.tokopedia.train'
-    versionName = "${tkpdTrainVersion}"
+    versionName = "1.0.0"
     artifactName ="tkpdtrain-release"
 }
 

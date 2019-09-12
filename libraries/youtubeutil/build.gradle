@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'youtubeutil'
     groupId = 'com.tokopedia.youtubeutil'
-    versionName = "${tkpdYoutubeUtilVersion}"
+    versionName = "1.0.0"
     artifactName ="applink-release"
 }
 

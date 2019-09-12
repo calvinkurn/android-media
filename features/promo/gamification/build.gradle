@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'gamification'
     groupId = 'com.tokopedia.gamification'
-    versionName = "${tkpdGamificationVersion}"
+    versionName = "1.0.0"
     artifactName = "gamification-release"
 }
 
