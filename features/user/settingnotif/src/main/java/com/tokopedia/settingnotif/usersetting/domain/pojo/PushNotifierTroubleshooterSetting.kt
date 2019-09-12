@@ -11,5 +11,4 @@ data class PushNotifierTroubleshooterSetting(
     override fun type(typeFactory: SettingFieldTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

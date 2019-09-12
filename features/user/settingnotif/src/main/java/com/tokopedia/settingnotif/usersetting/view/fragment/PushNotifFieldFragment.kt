@@ -1,6 +1,7 @@
 package com.tokopedia.settingnotif.usersetting.view.fragment
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.domain.pojo.PushNotifierTroubleshooterSetting
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory

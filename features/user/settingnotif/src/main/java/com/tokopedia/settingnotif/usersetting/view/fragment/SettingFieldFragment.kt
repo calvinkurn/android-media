@@ -18,6 +18,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.network.constant.ErrorNetMessage.MESSAGE_ERROR_SERVER
 import com.tokopedia.settingnotif.R
 import com.tokopedia.settingnotif.usersetting.di.DaggerUserSettingComponent
@@ -99,8 +101,7 @@ abstract class SettingFieldFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun goToPushNotificationCheckerPage() {
-        val intent = Intent(context, PushNotificationCheckerActivity::class.java)
-        startActivity(intent)
+        RouteManager.route(context, ApplinkConst.PUSHNOTIFCHECKER)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
