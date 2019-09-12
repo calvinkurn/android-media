@@ -19,14 +19,14 @@ class GetSubscriberUpdateInsuranceProductData(val view: ICartListView,
         val updateInsuranceDataGqlResponse: UpdateInsuranceDataGqlResponse?
         if (graphqlResponse?.getData<UpdateInsuranceDataGqlResponse>(UpdateInsuranceDataGqlResponse::class.java) != null) {
             updateInsuranceDataGqlResponse = graphqlResponse.getData(UpdateInsuranceDataGqlResponse::class.java)
-            if (updateInsuranceDataGqlResponse!!.data.updateCart.status.equals(SUCCESS_RESPONSE_STATUS_VALUE, ignoreCase = true)) {
+            if (updateInsuranceDataGqlResponse?.data?.updateCart?.status.equals(SUCCESS_RESPONSE_STATUS_VALUE, ignoreCase = true)) {
                 view.showToastMessageGreen(view.activity.resources.getString(R.string.update_insurance_data_success))
                 val productIdList = ArrayList<Long>()
                 productIdList.add(productId)
                 view.removeInsuranceProductItem(productIdList)
                 presenter.getInsuranceTechCart()
             } else {
-                view.showToastMessageRed(updateInsuranceDataGqlResponse.data.updateTransactional.errorMessage)
+                view.showToastMessageRed(updateInsuranceDataGqlResponse?.data?.updateTransactional?.errorMessage)
             }
         }
         view.hideProgressLoading()
