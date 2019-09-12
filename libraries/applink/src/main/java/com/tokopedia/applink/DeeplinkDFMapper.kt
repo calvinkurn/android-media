@@ -16,6 +16,8 @@ import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 
 /**
  * Dynamic Feature Deeplink Mapper
@@ -101,7 +103,9 @@ object DeeplinkDFMapper {
 //                        deeplink, MODULE_USER_SETTING_BANK,
 //                        context.getString(R.string.applink_setting_bank_title))
 //                }
-                deeplink.startsWith(TOPADS_DASHBOARD_CUSTOMER) -> {
+                deeplink.startsWith(TOPADS_DASHBOARD_CUSTOMER)
+                        || deeplink.startsWith(TOPADS_DASHBOARD_SELLER)
+                        || deeplink.startsWith(TOPADS_DASHBOARD_INTERNAL) -> {
                     getDFDeeplinkIfNotInstalled(context,
                         deeplink, MODULE_TOPADS_DASHBOARD,
                         context.getString(R.string.applink_topads_dashboard_title))

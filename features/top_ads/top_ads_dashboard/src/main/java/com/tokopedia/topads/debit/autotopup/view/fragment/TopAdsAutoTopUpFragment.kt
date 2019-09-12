@@ -112,6 +112,10 @@ class TopAdsAutoTopUpFragment:
         }
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_top_ads_auto_topup, container, false)
     }
