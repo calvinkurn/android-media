@@ -107,6 +107,7 @@ final class CatalogListPresenter
         if(searchCatalogModel == null) {
             isSearchCatalogReturnedNull = true;
             getView().renderRetryInit();
+            getView().removeLoading();
             return;
         }
 
@@ -116,6 +117,7 @@ final class CatalogListPresenter
         if (!isHasNextPage(searchCatalogModel.paging.uriNext)) {
             getView().unSetTopAdsEndlessListener();
         }
+        getView().removeLoading();
     }
 
     private boolean isHasNextPage(String uriNext) {
@@ -144,6 +146,7 @@ final class CatalogListPresenter
         }
 
         getView().hideRefreshLayout();
+        getView().removeLoading();
     }
 
     @Override
