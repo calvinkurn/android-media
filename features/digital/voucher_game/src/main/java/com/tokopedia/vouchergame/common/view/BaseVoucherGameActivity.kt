@@ -78,9 +78,9 @@ abstract class BaseVoucherGameActivity: BaseSimpleActivity(), VoucherGameMenuBot
     }
 
     private fun showBottomMenus() {
-        val hotelMenuBottomSheets = VoucherGameMenuBottomSheets()
-        hotelMenuBottomSheets.listener = this
-        hotelMenuBottomSheets.show(supportFragmentManager, TAG_VOUCHER_GAME_MENU)
+        val voucherGameMenuBottomSheets = VoucherGameMenuBottomSheets()
+        voucherGameMenuBottomSheets.listener = this
+        voucherGameMenuBottomSheets.show(supportFragmentManager, TAG_VOUCHER_GAME_MENU)
     }
 
     abstract fun shouldShowOptionMenu(): Boolean
