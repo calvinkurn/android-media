@@ -95,7 +95,6 @@
 /features/user/loginregister/                   @tokopedia/minion-kevin
 /features/user/sessioncommon/                   @tokopedia/minion-kevin
 /features/user/loginphone/                      @tokopedia/minion-kevin
-/features/user/bankdb/                          @tokopedia/minion-kevin
 /features/user/notifcenter/                     @tokopedia/minion-kevin
 /features/user/attachproduct/                   @tokopedia/minion-kevin
 /features/user/talk/                            @tokopedia/minion-kevin

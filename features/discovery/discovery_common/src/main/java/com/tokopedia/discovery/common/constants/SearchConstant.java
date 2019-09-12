@@ -4,10 +4,6 @@ public interface SearchConstant {
 
     String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
-    String EXTRA_FORCE_SWIPE_TO_SHOP = "EXTRA_FORCE_SWIPE_TO_SHOP";
-
-    String EXTRA_ACTIVE_TAB_POSITION = "EXTRA_ACTIVE_TAB_POSITION";
-
     String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
@@ -120,5 +116,12 @@ public interface SearchConstant {
         String GCM_ID = "gcm_id";
         String GCM_STORAGE = "GCM_STORAGE";
         String GCM_LOCAL_CACHE = "GCM_LOCAL_CACHE";
+    }
+
+    interface ActiveTab {
+        String PRODUCT = "product";
+        String SHOP = "shop";
+        String CATALOG = "catalog";
+        String PROFILE = "profile";
     }
 }
