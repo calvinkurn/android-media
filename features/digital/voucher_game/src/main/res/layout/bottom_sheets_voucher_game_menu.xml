@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
-        android:text="@string/voucher_game_menu_promo"
+        android:text="@string/vg_menu_promo"
         android:textColor="@color/black_70"
         app:typographyType="heading_5" />
 
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
-        android:text="@string/voucher_game_menu_help"
+        android:text="@string/vg_menu_help"
         android:textColor="@color/black_70"
         app:typographyType="heading_5" />
 
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_16"
         android:paddingBottom="@dimen/dp_16"
-        android:text="@string/voucher_game_menu_transaction_list"
+        android:text="@string/vg_menu_transaction_list"
         android:textColor="@color/black_70"
         app:typographyType="heading_5" />
 
