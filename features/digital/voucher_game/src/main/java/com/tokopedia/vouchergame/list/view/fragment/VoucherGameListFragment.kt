@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -207,7 +208,9 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             voucherGameAnalytics.eventClickViewAllBanner()
             RouteManager.route(context, ApplinkConst.PROMO_LIST)
         }
-        promo_banner.setBannerSeeAllTextColor(R.color.green_250)
+        context?.let {
+            promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, R.color.unify_G500))
+        }
         promo_banner.setBannerIndicator(Indicator.GREEN)
         promo_banner.buildView()
     }
