@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">sellerorder</string>
     <string name="title_som_list">Penjualan</string>
+    <string name="title_som_filter">Filter</string>
     <string name="hint_search_product">Cari produk atau invoice</string>
     <string name="response_due">Batas Response</string>
     <string name="seller_info">Seller Info</string>
+    <string name="seller_filter">Filter</string>
 
     <string name="status_new">Pesanan Baru</string>
     <string name="date">date</string>
@@ -18,4 +20,14 @@
     <string name="empty_peluang_desc">Cek Peluang dan ambil pesanan yang tidak diproses penjual lain.</string>
     <string name="btn_cek_peluang">Cek Peluang</string>
     <string name="key_all_order">all_order</string>
+
+    <string name="title_tanggal">Tanggal</string>
+    <string name="title_type">Tipe Pesanan</string>
+    <string name="title_courier">Kurir</string>
+    <string name="title_see_all">Lihat Semua</string>
+    <string name="title_status">Status</string>
+    <string name="subtitle_status">Pilih Status</string>
+    <string name="mulai_dari">Mulai Dari</string>
+    <string name="sampai">Sampai</string>
+    <string name="terapkan">Terapkan</string>
 </resources>

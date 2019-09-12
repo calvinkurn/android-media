@@ -48,6 +48,12 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".list.presentation.activity.SomFilterActivity"
+            android:label="@string/title_som_filter"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 </manifest>
 

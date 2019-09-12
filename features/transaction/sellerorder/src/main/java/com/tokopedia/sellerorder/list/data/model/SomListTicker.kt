@@ -42,6 +42,10 @@ data class SomListTicker (
                     @Expose
                     val tickerId: Int = 0,
 
+                    @SerializedName("short_desc")
+                    @Expose
+                    val shortDesc: String = "",
+
                     @SerializedName("body")
                     @Expose
                     val body: String = "",

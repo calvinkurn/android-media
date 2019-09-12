@@ -25,16 +25,12 @@ class SomListViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
     val orderListResult = MutableLiveData<Result<MutableList<SomListOrder.Data.OrderList.Order>>>()
 
     fun loadSomListData(tickerQuery: String, filterQuery: String) {
-        launch {
-            getTickerList(tickerQuery)
-            getFilterList(filterQuery)
-        }
+        launch { getTickerList(tickerQuery) }
+        launch { getFilterList(filterQuery) }
     }
 
     fun loadOrderList(orderQuery: String, paramOrder: SomListOrderParam) {
-        launch {
-            getOrderList(orderQuery, paramOrder)
-        }
+        launch { getOrderList(orderQuery, paramOrder) }
     }
 
     suspend fun getTickerList(rawQuery: String) {

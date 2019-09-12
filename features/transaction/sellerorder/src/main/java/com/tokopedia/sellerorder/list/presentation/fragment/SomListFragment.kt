@@ -27,6 +27,7 @@ import com.tokopedia.sellerorder.list.data.model.SomListOrder
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomListTicker
 import com.tokopedia.sellerorder.list.di.SomListComponent
+import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.bottomsheet.TickerDetailBottomSheetFragment
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
@@ -38,10 +39,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.empty_list.*
 import kotlinx.android.synthetic.main.fragment_som_list.*
-import java.text.DateFormat
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
@@ -116,6 +113,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             layoutManager = LinearLayoutManager(activity)
             adapter = somListItemAdapter
         }
+        filter_action_button.setOnClickListener {
+            startActivity(Intent(context, SomFilterActivity::class.java))
+        }
     }
 
     private fun setListener() {
@@ -170,7 +170,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 val listTickerData = arrayListOf<TickerData>()
                 tickerList.forEach {
                     if (it.isActive) {
-                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, false))
+                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true))
                     }
                 }
 
@@ -189,13 +189,14 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 }
             } else {
                 tickerList.first().let {
-                    ticker_info?.setTextDescription(it.body)
+                    ticker_info?.visibility = View.VISIBLE
+                    ticker_info?.setHtmlDescription(it.shortDesc)
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
                         override fun onDescriptionViewClick(link: CharSequence?) {
                             // changed to open bottomsheet
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
-                            showTickerBottomSheet(it.body)
+                            // showTickerBottomSheet(it.body)
                         }
 
                         override fun onDismiss() {}
@@ -242,8 +243,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             index++
         }
 
-        quick_filter.renderFilter(listQuickFilter, currentIndex)
-        quick_filter.setListener { keySelected ->
+        quick_filter?.renderFilter(listQuickFilter, currentIndex)
+        quick_filter?.setListener { keySelected ->
             mapOrderStatus.forEach { (key, listOrderStatusId) ->
                 if (keySelected.equals(key, true)) {
                     tabActive = keySelected
