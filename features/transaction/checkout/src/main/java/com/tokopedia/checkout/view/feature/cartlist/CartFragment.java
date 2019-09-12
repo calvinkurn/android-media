@@ -369,6 +369,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         progressDialog.setCancelable(false);
 
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            // Remove default cardview margin on Kitkat or lower
             int pixel = CommonUtils.convertDpToPixel(-6, getContext());
             ((ViewGroup.MarginLayoutParams) cardHeader.getLayoutParams()).setMargins(pixel, pixel, pixel, pixel);
         }
