@@ -258,6 +258,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                 }
             }
         }
+
         if (isAdultPassenger()) {
             val entries = resources.getStringArray(R.array.flight_adult_titles)
             rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0)
@@ -268,9 +269,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             rv_passenger_title.selectOnlyOneChip(true)
         }
 
-        if (passengerModel.passengerTitle != null) {
-            renderPassengerTitle(passengerModel.passengerTitle.toLowerCase())
-        }
+        if (passengerModel.passengerTitle.isNotBlank()) { renderPassengerTitle(passengerModel.passengerTitle) }
     }
 
     private fun renderPassengerTitle(passengerTitle: String) {
