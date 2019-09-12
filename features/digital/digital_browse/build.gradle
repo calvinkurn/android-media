@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'digital_browse'
     groupId = 'com.tokopedia.digital_browse'
-    versionName = "2.22"
+    versionName = "1.0.0"
     artifactName = "tkpddigitalbrowse-release"
 }
 

@@ -15,7 +15,7 @@ android {
 project.ext {
     artifactId = 'common_digital'
     groupId = 'com.tokopedia.common_digital'
-    versionName = "2.22"
+    versionName = "1.0.0"
     artifactName = "tkpdcommondigital-release"
 }
 

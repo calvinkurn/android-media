@@ -15,7 +15,7 @@ android {
 project.ext {
     artifactId = 'flight'
     groupId = 'com.tokopedia.flight'
-    versionName = "2.22"
+    versionName = "1.0.0"
     artifactName ="tkpdflight-release"
 }
 
