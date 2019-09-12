@@ -77,7 +77,6 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             clickEvent = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
             viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
-            category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
         }
     }
 
