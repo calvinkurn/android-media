@@ -185,7 +185,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         const val REQUEST_CODE_ADD_PHONE = 100
         const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
         const val REQUEST_CODE_ADD_PIN = 102
-        const val OTP_TYPE_PHONE_VERIFICATION = 11
+        const val OTP_TYPE_PHONE_VERIFICATION = 124
 
         const val ONBOARD_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/onboard_add_pin.png"
 
