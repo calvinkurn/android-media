@@ -11,7 +11,7 @@ class GetSubscriberUpdateInsuranceProductData(val view: ICartListView,
                                               val presenter: ICartListPresenter,
                                               val productId: Long) : Subscriber<GraphqlResponse>() {
 
-    val SUCCESS_RESPONSE_MESSAGE = "Rincian Aplikasi Asuransi Diperbarui"
+    val SUCCESS_RESPONSE_MESSAGE = "Rincian Aplikasi Asuransi Berhasil Diperbarui"
     val SUCCESS_RESPONSE_STATUS_VALUE = "ok"
 
     override fun onNext(graphqlResponse: GraphqlResponse?) {

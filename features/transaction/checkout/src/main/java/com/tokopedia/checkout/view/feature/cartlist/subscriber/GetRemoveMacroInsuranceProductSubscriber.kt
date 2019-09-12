@@ -10,7 +10,7 @@ class GetRemoveMacroInsuranceProductSubscriber(val view: ICartListView,
                                                val productId: List<Long>,
                                                val showToaster: Boolean) : Subscriber<GraphqlResponse>() {
 
-    val SUCCESS_RESPONSE_MESSAGE = "Produk Asuransi Dihapus Berhasil"
+    val SUCCESS_RESPONSE_MESSAGE = "Produk Asuransi Berhasil Dihapus"
 
     override fun onError(e: Throwable?) {
         view.hideProgressLoading()
