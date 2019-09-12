@@ -139,6 +139,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         private const val STICKY_SHOW_DELAY: Long = 3 * 60 * 1000
 
+        private const val CART_LOCAL_CACHE_NAME = "CART"
+        private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
+
         @JvmStatic
         fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
                 .apply { putExtra(SHOP_ID, shopId) }
@@ -377,11 +380,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val userSession = UserSession(this)
-        if (userSession.isLoggedIn) {
+        if (GlobalConfig.isSellerApp()) {
+//        if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)) {
+            menu?.removeItem(R.id.action_cart)
+        } else if (userSession.isLoggedIn) {
             val drawable = ContextCompat.getDrawable(this, R.drawable.ic_cart_menu)
             if (drawable is LayerDrawable) {
                 val countDrawable = CountDrawable(this)
-                val cartCount = LocalCacheHandler(this, "CART").getInt("CACHE_TOTAL_CART", 0)
+                val cartCount = LocalCacheHandler(this, CART_LOCAL_CACHE_NAME).getInt(TOTAL_CART_CACHE_KEY, 0)
                 countDrawable.setCount(cartCount.toString())
                 drawable.mutate()
                 drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
@@ -395,7 +401,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (item.itemId == R.id.action_share) {
             onShareShop()
         } else if (item.itemId == R.id.action_cart) {
-            goToCart()
+            onClickCart()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -421,19 +427,23 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     }
 
-    private fun goToCart() {
+    private fun onClickCart() {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
             shopPageTracking.clickShareButton(shopViewModel.isMyShop(it.shopCore.shopID),
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1))
-            val userSession = UserSession(this)
-            if (userSession.isLoggedIn) {
-                startActivity(RouteManager.getIntent(this, ApplinkConst.CART))
-            } else {
-                startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN),
-                        REQUEST_CODE_USER_LOGIN_CART)
-            }
+            goToCart()
+        }
+    }
+
+    private fun goToCart() {
+        val userSession = UserSession(this)
+        if (userSession.isLoggedIn) {
+            startActivity(RouteManager.getIntent(this, ApplinkConst.CART))
+        } else {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                    REQUEST_CODE_USER_LOGIN_CART)
         }
     }
 
