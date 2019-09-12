@@ -19,8 +19,8 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHei
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.banner.Banner
-import com.tokopedia.design.banner.BannerPagerAdapter
-import com.tokopedia.design.banner.BannerView
+import com.tokopedia.banner.BannerView
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -153,7 +153,7 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
         }
     }
 
-    override fun getBannerAdapter(): BannerPagerAdapter {
+    override fun getBannerAdapter(): BannerViewPagerAdapter {
         return TravelHomepageBannerPagerAdapter(promoImageUrls, onPromoClickListener)
     }
 
