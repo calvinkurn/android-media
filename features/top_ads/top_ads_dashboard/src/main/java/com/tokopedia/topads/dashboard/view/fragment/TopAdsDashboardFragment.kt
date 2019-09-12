@@ -180,9 +180,9 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         topAdsDashboardPresenter.resetDate()
         selectedStatisticType = TopAdsStatisticsType.PRODUCT_ADS
         totalProductAd = Integer.MIN_VALUE
-        val refresh = RefreshHandler(activity, swipe_refresh_layout, RefreshHandler.OnRefreshHandlerListener {
+        swipe_refresh_layout.setOnRefreshListener {
             refreshData()
-        })
+        }
         initTicker()
         initShopInfoComponent()
         initSummaryComponent()
