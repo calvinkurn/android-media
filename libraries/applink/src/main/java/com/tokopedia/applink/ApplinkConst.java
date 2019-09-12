@@ -94,6 +94,7 @@ public interface ApplinkConst {
             "={customMessage}&source={source}&opponent_name={opponent_name}&avatar={avatar}";
     String CHATBOT = "tokopedia://chatbot/{message_id}";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
+    String GROUPCHAT_DETAIL = "tokopedia://groupchat/{channel_id}";
     String REFERRAL = "tokopedia://referral";
     String OFFICIAL_STORES_PROMO = "tokopedia://official-stores/promo/{slug}";
     String OFFICIAL_STORE_PROMO = "tokopedia://official-store/promo/{slug}";
@@ -181,6 +182,7 @@ public interface ApplinkConst {
     String SETTING_ACCOUNT = "tokopedia://setting/account";
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
+
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
@@ -229,7 +231,6 @@ public interface ApplinkConst {
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
 
     String KYC = "tokopedia://kyc";
-    String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";
 
     String CONSUMER_SPLASH_SCREEN = "tokopedia://splashscreen/consumer";
     String IMAGE_PREVIEW = "tokopedia://imagepreview";

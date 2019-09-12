@@ -37,6 +37,7 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.affiliate.AffiliateRouter;
+import com.tokopedia.analytics.debugger.TetraDebugger;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerRouter;
 import com.tokopedia.applink.ApplinkConst;
@@ -168,9 +169,6 @@ import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
-import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
-import com.tokopedia.groupchat.room.view.activity.PlayActivity;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -301,7 +299,6 @@ import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -517,6 +514,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     private CacheManager cacheManager;
 
+    private TetraDebugger tetraDebugger;
     private Iris mIris;
 
     @Override
@@ -531,6 +529,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NetworkClient.init(getApplicationContext());
         initCMPushNotification();
         initIris();
+        initTetraDebugger();
     }
 
     private void initDaggerInjector() {
@@ -540,6 +539,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void initIris() {
         mIris = IrisAnalytics.Companion.getInstance(this);
         mIris.initialize();
+    }
+
+    private void initTetraDebugger() {
+        if (com.tokopedia.config.GlobalConfig.isAllowDebuggingTools()) {
+            tetraDebugger = TetraDebugger.Companion.instance(context);
+            tetraDebugger.init();
+        }
+    }
+    private void setTetraUserId(String userId) {
+        if (tetraDebugger != null) {
+            tetraDebugger.setUserId(userId);
+        }
     }
 
     private FlightConsumerComponent getFlightConsumerComponent() {
@@ -1901,22 +1912,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGroupChatIntent(Context context, String channelUrl) {
-        return PlayActivity.getCallingIntent(context, channelUrl);
+        return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
     }
 
     @Override
     public Intent getWithdrawIntent(Context context, boolean isSeller) {
         return WithdrawActivity.getCallingIntent(context, isSeller);
-    }
-
-    @Override
-    public Fragment getChannelFragment(Bundle bundle) {
-        return ChannelFragment.createInstance();
-    }
-
-    @Override
-    public String getChannelFragmentTag() {
-        return ChannelFragment.class.getSimpleName();
     }
 
     public Intent getInboxChannelsIntent(Context context) {
@@ -2283,11 +2284,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getDesktopLinkGroupChat() {
-        return ChatroomUrl.DESKTOP_URL;
-    }
-
-    @Override
     public void gotoTopAdsDashboard(Context context) {
         goToApplinkActivity(context, ApplinkConst.CustomerApp.TOPADS_DASHBOARD);
     }
@@ -2544,6 +2540,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
         new IndiSession(activity).doLogout();
         refreshFCMTokenFromForegroundToCM();
+
+        mIris.setUserId("");
+        setTetraUserId("");
     }
 
     @Override
@@ -2572,6 +2571,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             invalidateCategoryMenuData();
             onLogout(getApplicationComponent());
             mIris.setUserId("");
+            setTetraUserId("");
 
             Intent intent = getHomeIntent(activity);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -2583,11 +2583,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public boolean isEnableInterestPick() {
         return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
-    }
-
-    @Override
-    public Intent getSettingBankIntent(Context context) {
-        return SettingBankActivity.Companion.createIntent(context);
     }
 
     @Override
@@ -2728,12 +2723,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, BottomSheets.BottomSheetDismissListener dismissListener) {
-        if (fragmentManager != null) {
-            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-            rating.setDialogDismissListener(dismissListener);
-            rating.show(fragmentManager, "AppFeedbackRatingBottomSheet");
-        }
+    public void showAppFeedbackRatingDialog(
+            FragmentManager manager,
+            Context context,
+            BottomSheets.BottomSheetDismissListener dismissListener
+    ) {
+        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+        rating.setDialogDismissListener(dismissListener);
+        rating.showDialog(manager, context);
     }
 
     @Override

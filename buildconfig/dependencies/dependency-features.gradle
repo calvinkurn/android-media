@@ -2,7 +2,6 @@ ext {
 
     // Sort alphabetically by name
     tkpdAttachProductVersion = '2.22'
-    tkpdBankDBVersion = '2.22'
     tkpdChallengesVersion = '2.22'
     tkpdChangePhoneNumberVersion = '2.22'
     tkpdContactUsVersion = '2.22'
@@ -87,7 +86,6 @@ ext {
     artifactIdLogisticUploadAwb = 'logisticuploadawb'
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
-    artifactIdLogisticListAddress = 'logisticlistaddress'
     logisticGroupVersion = '2.22'
 
     groupIdPayment = 'com.tokopedia.payment'
@@ -210,6 +208,7 @@ ext {
             hotel                           : ":features:digital:hotel",
             travelHomepage                  : ":features:digital:travel_homepage",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
+            digitalHome                     : ":features:digital:digital_homepage",
 
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
@@ -248,7 +247,6 @@ ext {
             logisticdata                    : ":features:logistic:logisticdata",
             logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment",
 //            logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment_no_op",
-            logisticlistaddress             : ":features:logistic:logisticlistaddress",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             tracking                        : ":features:logistic:tracking",
 //            tracking                      : ":features:logistic:tracking_no_op",
@@ -330,7 +328,6 @@ ext {
             expressCheckoutCommon           : ":features:transaction:express_checkout_common",
 
             attachproduct                   : ":features:user:attachproduct",
-            bankdb                          : ":features:user:bankdb",
             changepassword                  : ":features:user:changepassword",
 //            changepassword                  : ":features:user:changepassword_no_op",
             changePhoneNumber               : ":features:user:changephonenumber",

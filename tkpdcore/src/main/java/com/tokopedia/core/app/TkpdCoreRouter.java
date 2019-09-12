@@ -165,12 +165,9 @@ public interface TkpdCoreRouter {
 
     Intent getInboxMessageIntent(Context context);
 
-    String getDesktopLinkGroupChat();
-
     String getStringRemoteConfig(String key);
 
     void setStringRemoteConfigLocal(String key, String value);
-    Intent getSettingBankIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
 
