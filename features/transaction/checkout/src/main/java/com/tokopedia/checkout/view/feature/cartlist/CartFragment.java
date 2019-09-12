@@ -2343,14 +2343,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         if ((endlessRecyclerViewScrollListener.getCurrentPage() == 0 && recommendationWidget == null) || (recommendationWidget != null && endlessRecyclerViewScrollListener.getCurrentPage() == 1 && TextUtils.isEmpty(recommendationSectionTitle))) {
             cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
             if (recommendationWidget != null && !TextUtils.isEmpty(recommendationWidget.getTitle())) {
-                cartSectionHeaderHolderData.setTitle(recommendationWidget.getTitle());
                 recommendationSectionTitle = recommendationWidget.getTitle();
-            } else if (!TextUtils.isEmpty(recommendationSectionTitle)) {
-                cartSectionHeaderHolderData.setTitle(recommendationSectionTitle);
-            } else {
+            } else if (TextUtils.isEmpty(recommendationSectionTitle)) {
                 recommendationSectionTitle = getString(R.string.checkout_module_title_recommendation);
-                cartSectionHeaderHolderData.setTitle(recommendationSectionTitle);
             }
+            cartSectionHeaderHolderData.setTitle(recommendationSectionTitle);
         }
 
         if (cartRecommendationItemHolderDataList.size() > 0) {
