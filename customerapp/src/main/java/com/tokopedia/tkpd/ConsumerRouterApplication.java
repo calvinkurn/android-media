@@ -2282,11 +2282,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void gotoTopAdsDashboard(Context context) {
-        goToApplinkActivity(context, ApplinkConst.CustomerApp.TOPADS_DASHBOARD);
-    }
-
-    @Override
     public String getContactUsBaseURL() {
         return TkpdBaseURL.ContactUs.URL_HELP;
     }
