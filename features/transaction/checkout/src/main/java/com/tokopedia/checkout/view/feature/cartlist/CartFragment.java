@@ -17,6 +17,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -365,6 +367,11 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         progressDialog.setCancelable(false);
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            int pixel = CommonUtils.convertDpToPixel(-6, getContext());
+            ((ViewGroup.MarginLayoutParams) cardHeader.getLayoutParams()).setMargins(pixel, pixel, pixel, pixel);
+        }
 
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
