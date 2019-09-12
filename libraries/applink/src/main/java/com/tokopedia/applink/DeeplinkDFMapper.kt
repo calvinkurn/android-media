@@ -75,11 +75,11 @@ object DeeplinkDFMapper {
 //                        deeplink, MODULE_USER_PROFILE_COMPLETION,
 //                        context.getString(R.string.applink_profile_completion_title))
 //                }
-                deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE) -> {
-                    getDFDeeplinkIfNotInstalled(context,
-                            deeplink, MODULE_HOMEPAGE_TRAVEL,
-                            context.getString(R.string.title_travel_homepage))
-                }
+//                deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                            deeplink, MODULE_HOMEPAGE_TRAVEL,
+//                            context.getString(R.string.title_travel_homepage))
+//                }
                 else -> null
             }
         }
