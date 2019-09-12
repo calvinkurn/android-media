@@ -380,8 +380,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         val userSession = UserSession(this)
-        if (GlobalConfig.isSellerApp()) {
-//        if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)) {
+        if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)) {
             menu?.removeItem(R.id.action_cart)
         } else if (userSession.isLoggedIn) {
             val drawable = ContextCompat.getDrawable(this, R.drawable.ic_cart_menu)
