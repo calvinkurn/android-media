@@ -23,7 +23,7 @@
     </LinearLayout>
 
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/headerLayout"
         android:layout_below="@+id/topLayout"
         android:layout_width="match_parent"
@@ -106,7 +106,7 @@
             tools:text="12 October pukul 13.55 2018 akhir kiamat semua dunia akan musnah"
             tools:visibility="visible" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <FrameLayout
         android:id="@+id/captionLayout"

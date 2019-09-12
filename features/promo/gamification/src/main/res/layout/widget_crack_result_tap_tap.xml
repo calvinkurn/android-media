@@ -13,7 +13,7 @@
         tools:background="@color/font_black_primary_70" />
 
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_reward"
         android:layout_width="@dimen/dp_160"
         android:layout_height="@dimen/dp_160"

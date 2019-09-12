@@ -1,6 +1,6 @@
 package com.tokopedia.shipping_recommendation.shippingduration.view
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.shipping_recommendation.R
 import com.tokopedia.shipping_recommendation.domain.shipping.LogisticPromoViewModel

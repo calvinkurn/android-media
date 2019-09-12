@@ -15,10 +15,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +23,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
+
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.snackbar.Snackbar;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
@@ -289,9 +291,9 @@ public class PreviewProductImage extends TActivity {
         notificationBuilder.setProgress(0, 0, true);
         notificationManager.notify(randomNotificationId, notificationBuilder.build());
 
-        SimpleTarget<Bitmap> targetListener = new SimpleTarget<Bitmap>() {
+        CustomTarget<Bitmap> targetListener = new CustomTarget<Bitmap>() {
             @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
                 final String path = CommonUtils.SaveImageFromBitmap(PreviewProductImage.this,
                         resource, filenameParam);
                 if (path == null) {
@@ -352,8 +354,8 @@ public class PreviewProductImage extends TActivity {
             }
 
             @Override
-            public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                super.onLoadFailed(e, errorDrawable);
+            public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                super.onLoadFailed(errorDrawable);
                 notificationBuilder.setContentText(getString(R.string.download_failed))
                         .setProgress(0, 0, false);
                 notificationBuilder.getNotification().flags |= Notification.FLAG_AUTO_CANCEL;
@@ -373,6 +375,11 @@ public class PreviewProductImage extends TActivity {
                             }
                         })
                         .show();
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable placeholder) {
+
             }
         };
         ImageHandler.loadImageBitmap2(getApplicationContext(), fileLocations.get(vpImage.getCurrentItem()), targetListener);

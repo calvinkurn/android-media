@@ -3,9 +3,9 @@ package com.tokopedia.design.bottomsheet
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
-import android.support.design.widget.BottomSheetDialog
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView

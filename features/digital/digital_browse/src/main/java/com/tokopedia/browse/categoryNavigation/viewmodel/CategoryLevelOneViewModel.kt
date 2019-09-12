@@ -1,7 +1,7 @@
 package com.tokopedia.browse.categoryNavigation.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoryAllList
 import com.tokopedia.browse.categoryNavigation.domain.usecase.GetCategoryLevelOneUseCase
 import com.tokopedia.usecase.coroutines.Fail

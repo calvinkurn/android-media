@@ -16,7 +16,7 @@
 
 package com.db.williamchart.model;
 
-import android.support.annotation.FloatRange;
+import androidx.annotation.FloatRange;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -74,7 +74,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
 
-    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher

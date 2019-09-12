@@ -179,7 +179,7 @@
                         android:text="Comment Here\n\tComment Here\n\t\tComment There"
                         android:textSize="@dimen/sp_14"/>
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/image_holder"
                         android:layout_width="match_parent"
                         android:layout_marginTop="@dimen/margin_vs"

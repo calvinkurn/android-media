@@ -2,7 +2,7 @@ package com.tokopedia.abstraction.base.view.widget;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.v4.widget.SwipeRefreshLayout;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;

@@ -24,8 +24,8 @@ package com.tkpd.library.ui.view;
  */
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
+import androidx.core.view.ViewCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
@@ -34,8 +34,8 @@ import com.tokopedia.core2.BuildConfig;
 import java.lang.reflect.Field;
 
 /**
- * {@link android.support.v7.widget.LinearLayoutManager} which wraps its content. Note that this class will always
- * wrap the content regardless of {@link android.support.v7.widget.RecyclerView} layout parameters.
+ * {@link androidx.recyclerview.widget.LinearLayoutManager} which wraps its content. Note that this class will always
+ * wrap the content regardless of {@link androidx.recyclerview.widget.RecyclerView} layout parameters.
  * <p/>
  * Now it's impossible to run add/remove animations with child views which have arbitrary dimensions (height for
  * VERTICAL orientation and width for HORIZONTAL). However if child views have fixed dimensions
@@ -43,7 +43,7 @@ import java.lang.reflect.Field;
  * If animations are not used at all then a normal measuring procedure will run and child views will be measured during
  * the measure pass.
  */
-public class LinearLayoutManager extends android.support.v7.widget.LinearLayoutManager {
+public class LinearLayoutManager extends androidx.recyclerview.widget.LinearLayoutManager {
 
     private static boolean canMakeInsetsDirty = true;
     private static Field insetsDirtyField = null;

@@ -2,7 +2,7 @@ package com.tokopedia.chat_common.view.adapter.viewholder;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;

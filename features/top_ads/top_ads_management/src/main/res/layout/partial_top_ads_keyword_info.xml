@@ -8,13 +8,13 @@
     android:layout_marginTop="@dimen/dp_10"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_keyword_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:text="@string/top_ads_keyword_phrase_match"
         style="@style/TextView.Title.Bold"/>
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_keyword_desc"
         android:paddingTop="2dp"
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
         tools:text="@string/top_ads_keyword_phrase_match_positive_description"
         android:maxLines="4"
         style="@style/TextView.Small.BlackDisabled"/>
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/text_keyword_example"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

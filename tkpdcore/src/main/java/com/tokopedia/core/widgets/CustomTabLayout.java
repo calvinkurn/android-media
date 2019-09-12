@@ -3,7 +3,7 @@ package com.tokopedia.core.widgets;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
-import android.support.design.widget.TabLayout;
+import com.google.android.material.tabs.TabLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;

@@ -11,7 +11,7 @@
         android:fillViewport="true"
         android:scrollbars="none">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/dp_30"
@@ -27,7 +27,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/search_no"
                 app:layout_constraintStart_toStartOf="@+id/search_no" />
 
-            <android.support.v7.widget.SearchView
+            <androidx.appcompat.widget.SearchView
                 android:id="@+id/search_no"
                 android:layout_width="@dimen/dp_0"
                 android:layout_height="wrap_content"
@@ -172,7 +172,7 @@
                 app:layout_constraintStart_toStartOf="@+id/search_no"
                 app:layout_constraintTop_toBottomOf="@+id/trnsfr_amt_edtv" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/msg"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -191,7 +191,7 @@
                     android:textColor="@color/clr_6b767e"
                     android:textSize="@dimen/sp_16"
                     android:theme="@style/msgEditTextTheme" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/proceed"
@@ -207,7 +207,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/msg"
                 app:layout_constraintVertical_bias="0" />
 
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
     <include

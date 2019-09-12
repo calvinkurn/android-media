@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.network;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 

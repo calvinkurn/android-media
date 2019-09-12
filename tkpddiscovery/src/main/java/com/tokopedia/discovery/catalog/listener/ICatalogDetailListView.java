@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.catalog.listener;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.discovery.catalog.model.CatalogDetailItem;
 import com.tokopedia.discovery.catalog.model.CatalogDetailListLocation;

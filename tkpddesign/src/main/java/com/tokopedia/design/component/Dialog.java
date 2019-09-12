@@ -1,7 +1,7 @@
 package com.tokopedia.design.component;
 
 import android.app.Activity;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.View;

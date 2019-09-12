@@ -1,6 +1,6 @@
 package com.tokopedia.seller.opportunity.domain.interactor;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;

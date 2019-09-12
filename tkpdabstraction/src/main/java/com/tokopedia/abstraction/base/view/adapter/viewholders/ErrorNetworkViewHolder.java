@@ -1,7 +1,7 @@
 package com.tokopedia.abstraction.base.view.adapter.viewholders;
 
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;

@@ -1,6 +1,6 @@
 package com.tokopedia.seller.product.picker.view.adapter;
 
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;

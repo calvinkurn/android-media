@@ -1,7 +1,7 @@
 package com.tokopedia.core.analytics.container;
 
 import android.content.Context;
-import android.support.v4.util.Preconditions;
+import androidx.core.util.Preconditions;
 import android.text.TextUtils;
 
 import com.moe.pushlibrary.MoEHelper;

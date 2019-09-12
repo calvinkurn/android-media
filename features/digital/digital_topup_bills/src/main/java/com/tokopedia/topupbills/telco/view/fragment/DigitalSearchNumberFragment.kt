@@ -7,8 +7,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.ContactsContract
-import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.InputType
 import android.text.TextUtils

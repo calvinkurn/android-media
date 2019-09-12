@@ -170,9 +170,9 @@
             android:layout_height="match_parent"
             android:clickable="true"
             android:foreground="?selectableItemBackground"
-            android:paddingStart="@dimen/dp_8"
             android:paddingLeft="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8">
+            android:paddingRight="@dimen/dp_8"
+            android:paddingStart="@dimen/dp_8">
 
             <ImageView
                 android:layout_width="@dimen/dp_24"

@@ -20,7 +20,7 @@
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8">
             
-            <android.support.v7.widget.AppCompatCheckBox
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/ic_checkbox"
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"

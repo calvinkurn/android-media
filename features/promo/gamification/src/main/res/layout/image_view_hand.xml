@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.AppCompatImageView android:id="@+id/ic_hand"
+<androidx.appcompat.widget.AppCompatImageView android:id="@+id/ic_hand"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     app:srcCompat="@drawable/ic_hand"

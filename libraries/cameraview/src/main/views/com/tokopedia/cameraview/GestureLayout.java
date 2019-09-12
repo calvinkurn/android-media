@@ -2,7 +2,7 @@ package com.tokopedia.cameraview;
 
 import android.content.Context;
 import android.graphics.PointF;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 

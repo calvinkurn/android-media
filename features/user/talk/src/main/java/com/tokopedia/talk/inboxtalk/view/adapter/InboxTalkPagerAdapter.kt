@@ -1,9 +1,9 @@
 package com.tokopedia.talk.inboxtalk.view.adapter
 
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.util.SparseArrayCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.collection.SparseArrayCompat
 import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity

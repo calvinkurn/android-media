@@ -3,7 +3,7 @@ package com.tokopedia.imagepicker.picker.main.builder;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;

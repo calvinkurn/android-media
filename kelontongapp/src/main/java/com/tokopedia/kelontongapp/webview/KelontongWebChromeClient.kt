@@ -8,7 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.View
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -21,9 +21,9 @@ import java.util.Date
 
 import android.app.Activity.RESULT_OK
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
 import android.webkit.GeolocationPermissions
 import com.tokopedia.kelontongapp.PERMISSION_REQUEST_LOCATION
 import com.tokopedia.kelontongapp.R

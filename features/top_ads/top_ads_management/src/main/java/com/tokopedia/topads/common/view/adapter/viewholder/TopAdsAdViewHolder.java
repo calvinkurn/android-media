@@ -1,9 +1,9 @@
 package com.tokopedia.topads.common.view.adapter.viewholder;
 
 import android.graphics.drawable.Drawable;
-import android.support.annotation.LayoutRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
+import androidx.annotation.LayoutRes;
+import androidx.core.content.ContextCompat;
+import androidx.cardview.widget.CardView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;

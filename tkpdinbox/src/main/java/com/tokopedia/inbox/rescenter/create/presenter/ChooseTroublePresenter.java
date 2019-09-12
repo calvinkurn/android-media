@@ -1,7 +1,7 @@
 package com.tokopedia.inbox.rescenter.create.presenter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.inbox.rescenter.create.model.passdata.ActionParameterPassData;
 

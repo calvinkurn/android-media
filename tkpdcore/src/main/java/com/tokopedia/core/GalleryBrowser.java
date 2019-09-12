@@ -1,6 +1,6 @@
 package com.tokopedia.core;
 
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 @Deprecated
 public class GalleryBrowser extends AppCompatActivity{

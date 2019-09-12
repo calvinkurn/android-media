@@ -2,7 +2,7 @@ package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;

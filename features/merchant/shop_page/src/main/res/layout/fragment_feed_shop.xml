@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/mainView"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -19,18 +19,18 @@
             android:layout_height="match_parent"
             android:clipToPadding="false">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:paddingTop="@dimen/dp_8"
                 android:orientation="vertical"
-                app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:reverseLayout="false" />
 
         </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <FrameLayout
         android:id="@+id/loadingLayout"
@@ -45,7 +45,7 @@
             android:layout_gravity="center" />
     </FrameLayout>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_feed"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"

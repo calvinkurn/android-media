@@ -1,7 +1,7 @@
 package com.tokopedia.core;
 
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;

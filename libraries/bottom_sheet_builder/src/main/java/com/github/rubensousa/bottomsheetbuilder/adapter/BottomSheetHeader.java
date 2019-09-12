@@ -16,7 +16,7 @@
 
 package com.github.rubensousa.bottomsheetbuilder.adapter;
 
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 
 class BottomSheetHeader implements BottomSheetItem {
 

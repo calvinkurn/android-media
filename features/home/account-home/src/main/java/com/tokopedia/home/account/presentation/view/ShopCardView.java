@@ -2,10 +2,6 @@ package com.tokopedia.home.account.presentation.view;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -14,6 +10,11 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -107,7 +108,7 @@ public class ShopCardView extends BaseCustomView {
             Glide.with(getContext())
                     .load(url)
                     .dontAnimate()
-                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .into(shopReputation);
             shopReputation.setVisibility(VISIBLE);
         } else {

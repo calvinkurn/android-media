@@ -119,11 +119,11 @@
             android:textSize="@dimen/sp_16"
             android:textStyle="normal" />
 
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="@dimen/space_med" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/vote_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -133,7 +133,7 @@
             tools:itemCount="2"
             tools:listitem="@layout/vote_option_image" />
 
-        <android.support.v4.widget.Space
+        <androidx.legacy.widget.Space
             android:layout_width="match_parent"
             android:layout_height="@dimen/space_med" />
 

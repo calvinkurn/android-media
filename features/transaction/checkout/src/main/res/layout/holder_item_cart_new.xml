@@ -41,7 +41,7 @@
                     android:paddingRight="@dimen/dp_8"
                     android:theme="@style/TransactionCheckbox" />
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:id="@+id/iv_product_card"
                     android:layout_width="@dimen/dp_52"
                     android:layout_height="@dimen/dp_52"
@@ -60,7 +60,7 @@
                         tools:ignore="ContentDescription"
                         tools:src="@drawable/empty_photo" />
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
                 <RelativeLayout
                     android:id="@+id/rl_product_info"
@@ -202,7 +202,7 @@
                                 android:layout_height="@dimen/dp_24"
                                 app:srcCompat="@drawable/bg_button_counter_minus_checkout" />
 
-                            <android.support.v7.widget.AppCompatEditText
+                            <androidx.appcompat.widget.AppCompatEditText
                                 android:id="@+id/et_qty"
                                 android:layout_width="@dimen/dp_60"
                                 android:layout_height="wrap_content"
@@ -305,7 +305,7 @@
 
                 </LinearLayout>
 
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/et_remark"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

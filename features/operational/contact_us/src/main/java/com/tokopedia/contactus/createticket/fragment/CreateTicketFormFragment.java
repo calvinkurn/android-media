@@ -8,7 +8,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -210,7 +210,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
         imageAdapter.setCanUpload(true);
 
         attachment.setLayoutManager(new LinearLayoutManager(getActivity(),
-                android.support.v7.widget.LinearLayoutManager.HORIZONTAL, false));
+                androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false));
         attachment.setAdapter(imageAdapter);
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
 

@@ -116,14 +116,14 @@
 
     </RelativeLayout>
 
-    <android.support.v4.widget.SwipeRefreshLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/add_comment_area"
         android:layout_below="@id/header"
         android:id="@+id/swipe_refresh_layout">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/comment_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -139,6 +139,6 @@
             android:scrollbarTrackVertical="@color/grey_400"
             android:scrollbars="vertical"
             tools:visibility="gone" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
