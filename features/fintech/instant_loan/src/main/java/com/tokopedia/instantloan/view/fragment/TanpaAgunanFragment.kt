@@ -332,9 +332,8 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
     }
 
     override fun navigateToLoginPage() {
-        if (activity != null && activity!!.application is InstantLoanRouter) {
-            startActivityForResult((activity!!.application as InstantLoanRouter).getLoginIntent(getContext()), LOGIN_REQUEST_CODE)
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+        startActivityForResult(intent, LOGIN_REQUEST_CODE)
     }
 
     override fun showToastMessage(message: String, duration: Int) {
@@ -355,13 +354,20 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         } else {
             sendCariPinjamanClickEvent()
 
-            startActivity((activity!!
-                    .application as InstantLoanRouter).getWebviewActivityWithIntent(context,
+            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                     URLEncoder.encode(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
                             widgetAddRemove.getLoanValue().toString(),
                             selectedLoanPeriodType.value?.toLowerCase(),
                             loanPeriodValueTV.tag as String,
                             (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))
+
+            /*startActivity((activity!!
+                    .application as InstantLoanRouter).getWebviewActivityWithIntent(context,
+                    URLEncoder.encode(WEB_LINK_NO_COLLATERAL + String.format(LOAN_AMOUNT_QUERY_PARAM,
+                            widgetAddRemove.getLoanValue().toString(),
+                            selectedLoanPeriodType.value?.toLowerCase(),
+                            loanPeriodValueTV.tag as String,
+                            (loanCategoryValueTV.tag as Int).toString()), "UTF-8")))*/
 
         }
     }

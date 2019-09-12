@@ -43,6 +43,8 @@ import com.tokopedia.instantloan.view.presenter.InstantLoanLendingDataPresenter
 import com.tokopedia.instantloan.view.ui.HeightWrappingViewPager
 import com.tokopedia.instantloan.view.ui.InstantLoanItem
 import com.tokopedia.instantloan.view.ui.PartnerDataPageItem
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_instant_loan.*
 import kotlinx.android.synthetic.main.il_other_financial_products.*
@@ -402,10 +404,8 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (application is InstantLoanRouter) {
-            instantLoanEnabled = (application as InstantLoanRouter).isInstantLoanEnabled
-        }
-
+        val remoteConfig = FirebaseRemoteConfigImpl(this)
+        instantLoanEnabled = remoteConfig.getBoolean(RemoteConfigKey.SHOW_INSTANT_LOAN, true)
         if (intent != null && intent.extras != null) {
             val bundle = intent.extras
             val tabName = bundle!!.getString(TAB_NAME)

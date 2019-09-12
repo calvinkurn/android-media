@@ -76,8 +76,8 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModule;
 import com.tokopedia.instantdebitbca.data.view.applink.InstantDebitBcaApplinkModuleLoader;
-import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
-import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
+//import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
+//import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
 import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
@@ -205,7 +205,7 @@ import rx.schedulers.Schedulers;
         NotifCenterApplinkModule.class,
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
-        InstantLoanAppLinkModule.class,
+//        InstantLoanAppLinkModule.class,
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         AffiliateApplinkModule.class,
@@ -278,7 +278,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new NotifCenterApplinkModuleLoader(),
                     new HomeNavigationApplinkModuleLoader(),
                     new AccountHomeApplinkModuleLoader(),
-                    new InstantLoanAppLinkModuleLoader(),
+                    /*new InstantLoanAppLinkModuleLoader(),*/
                     new RecentViewApplinkModuleLoader(),
                     new ChangePasswordDeeplinkModuleLoader(),
                     new AffiliateApplinkModuleLoader(),
