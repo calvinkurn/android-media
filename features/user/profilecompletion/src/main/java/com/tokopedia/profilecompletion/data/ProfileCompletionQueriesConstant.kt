@@ -3,6 +3,7 @@ package com.tokopedia.profilecompletion.data
 object ProfileCompletionQueriesConstant {
     const val MUTATION_CHANGE_GENDER = "change_gender"
     const val MUTATION_ADD_EMAIL = "add_email"
+    const val MUTATION_CHECK_EMAIL = "check_email"
     const val MUTATION_ADD_PHONE = "add_phone"
     const val MUTATION_ADD_BOD = "add_bod"
     const val MUTATION_CHECK_PHONE = "check_msisdn"

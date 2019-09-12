@@ -8,6 +8,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.UserProfileCompletionUpdateBodData
 import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
+import com.tokopedia.profilecompletion.addemail.data.CheckEmailPojo
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
@@ -36,6 +37,18 @@ class ProfileCompletionQueryModule {
     @Provides
     fun provideChangeGenderGraphQlUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<ChangeGenderPojo> = GraphqlUseCase(graphqlRepository)
+
+    @ProfileCompletionSettingScope
+    @Provides
+    @IntoMap
+    @StringKey(ProfileCompletionQueriesConstant.MUTATION_CHECK_EMAIL)
+    fun provideRawMutationCheckEmail(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_email)
+
+
+    @Provides
+    fun provideCheckEmailGraphQlUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<CheckEmailPojo> = GraphqlUseCase(graphqlRepository)
 
     @ProfileCompletionSettingScope
     @Provides
