@@ -49,19 +49,19 @@ class SearchSectionPagerAdapter(
     }
 
     private fun createProductFragment(): ProductListFragment {
-        return ProductListFragment.newInstance(searchParameter, TAB_FIRST_POSITION)
+        return ProductListFragment.newInstance(searchParameter)
     }
 
     private fun createCatalogFragment(): CatalogListFragment {
-        return CatalogListFragment.newInstance(searchParameter, TAB_SECOND_POSITION)
+        return CatalogListFragment.newInstance(searchParameter)
     }
 
     private fun createShopFragment(): ShopListFragment {
-        return ShopListFragment.newInstance(searchParameter, TAB_THIRD_POSITION)
+        return ShopListFragment.newInstance(searchParameter)
     }
 
     private fun createProfileFragment(): ProfileListFragment {
-        return ProfileListFragment.newInstance(searchParameter.getSearchQuery(), TAB_FORTH_POSITION)
+        return ProfileListFragment.newInstance(searchParameter)
     }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {

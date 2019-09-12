@@ -17,6 +17,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -54,6 +55,7 @@ import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView;
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveWithBackView;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
@@ -94,6 +96,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -192,6 +195,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private List<CartWishlistItemHolderData> wishLists;
     private List<CartRecentViewItemHolderData> recentViewList;
     private List<CartRecommendationItemHolderData> recommendationList;
+    private CartSectionHeaderHolderData recommendationSectionHeader;
+    private WishListActionListener recommendationWishlistActionListener;
     private boolean hasTriedToLoadWishList;
     private boolean hasTriedToLoadRecentViewList;
     private boolean hasTriedToLoadRecommendation;
@@ -228,6 +233,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     }).getType(), null);
             recommendationList = saveInstanceCacheManager.get(CartRecommendationItemHolderData.class.getSimpleName(),
                     (new TypeToken<ArrayList<CartRecommendationItemHolderData>>() {
+                    }).getType(), null);
+            recommendationSectionHeader = saveInstanceCacheManager.get(CartSectionHeaderHolderData.class.getSimpleName(),
+                    (new TypeToken<CartSectionHeaderHolderData>() {
                     }).getType(), null);
         } else {
             cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
@@ -363,6 +371,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         progressDialog.setMessage(getString(R.string.title_loading));
         progressDialog.setCancelable(false);
 
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            // Remove default cardview margin on Kitkat or lower
+            int pixel = Utils.convertDpToPixel(-6, getContext());
+            ((ViewGroup.MarginLayoutParams) cardHeader.getLayoutParams()).setMargins(pixel, pixel, pixel, pixel);
+        }
+
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         cartRecyclerView.setLayoutManager(layoutManager);
@@ -422,7 +436,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
                 if (hasLoadRecommendation) {
-                    dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
+                    dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), cartAdapter.getAllCartItemProductId());
                 }
             }
         };
@@ -598,6 +612,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (recommendationList != null) {
                 saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
             }
+            if (recommendationSectionHeader != null) {
+                saveInstanceCacheManager.put(CartSectionHeaderHolderData.class.getSimpleName(), recommendationSectionHeader);
+            }
         }
     }
 
@@ -679,14 +696,69 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         RouteManager.route(getActivity(), appLink);
     }
 
+    private WishListActionListener getRecommendationWishlistActionListener() {
+        if (recommendationWishlistActionListener == null) {
+            recommendationWishlistActionListener = new WishListActionListener() {
+                @Override
+                public void onErrorAddWishList(String errorMessage, String productId) {
+                    showToastMessageRed(errorMessage);
+                    cartAdapter.notifyByProductId(productId, false);
+                    cartAdapter.notifyWishlist(productId, false);
+                    cartAdapter.notifyRecentView(productId, false);
+                    cartAdapter.notifyRecommendation(productId, false);
+                }
+
+                @Override
+                public void onSuccessAddWishlist(String productId) {
+                    showToastMessageGreen(getString(R.string.toast_message_add_wishlist_success));
+                    cartAdapter.notifyByProductId(productId, true);
+                    cartAdapter.notifyWishlist(productId, true);
+                    cartAdapter.notifyRecentView(productId, true);
+                    cartAdapter.notifyRecommendation(productId, true);
+                    cartPageAnalytics.eventClickAddWishlistOnPrimaryProduct();
+                }
+
+                @Override
+                public void onErrorRemoveWishlist(String errorMessage, String productId) {
+                    showToastMessageRed(errorMessage);
+                    cartAdapter.notifyByProductId(productId, true);
+                    cartAdapter.notifyWishlist(productId, true);
+                    cartAdapter.notifyRecentView(productId, true);
+                    cartAdapter.notifyRecommendation(productId, true);
+                }
+
+                @Override
+                public void onSuccessRemoveWishlist(String productId) {
+                    showToastMessageGreen(getString(R.string.toast_message_remove_wishlist_success));
+                    cartAdapter.notifyByProductId(productId, false);
+                    cartAdapter.notifyWishlist(productId, false);
+                    cartAdapter.notifyRecentView(productId, false);
+                    cartAdapter.notifyRecommendation(productId, false);
+                    cartPageAnalytics.eventClickRemoveWishlistOnPrimaryProduct();
+                }
+            };
+        }
+        return recommendationWishlistActionListener;
+    }
+
     @Override
     public void onAddToWishlist(@NotNull String productId) {
         dPresenter.processAddToWishlist(productId, userSession.getUserId(), this);
     }
 
     @Override
+    public void onAddRecommendationToWishlist(@NotNull String productId) {
+        dPresenter.processAddToWishlist(productId, userSession.getUserId(), getRecommendationWishlistActionListener());
+    }
+
+    @Override
     public void onRemoveFromWishlist(@NotNull String productId) {
         dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), this);
+    }
+
+    @Override
+    public void onRemoveRecommendationFromWishlist(@NotNull String productId) {
+        dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), getRecommendationWishlistActionListener());
     }
 
     public void onProductClicked(@NotNull String productId) {
@@ -1257,7 +1329,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
 
             if (recommendationList == null) {
-                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage());
+                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), cartAdapter.getAllCartItemProductId());
             } else {
                 renderRecommendation(null);
             }
@@ -1765,6 +1837,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
         cartAdapter.notifyWishlist(productId, false);
         cartAdapter.notifyRecentView(productId, false);
+        cartAdapter.notifyRecommendation(productId, false);
     }
 
     @Override
@@ -1773,6 +1846,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartAdapter.notifyByProductId(productId, true);
         cartAdapter.notifyWishlist(productId, true);
         cartAdapter.notifyRecentView(productId, true);
+        cartAdapter.notifyRecommendation(productId, true);
     }
 
     @Override
@@ -1781,6 +1855,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartAdapter.notifyByProductId(productId, true);
         cartAdapter.notifyWishlist(productId, true);
         cartAdapter.notifyRecentView(productId, true);
+        cartAdapter.notifyRecommendation(productId, true);
     }
 
     @Override
@@ -1789,6 +1864,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         cartAdapter.notifyByProductId(productId, false);
         cartAdapter.notifyWishlist(productId, false);
         cartAdapter.notifyRecentView(productId, false);
+        cartAdapter.notifyRecommendation(productId, false);
     }
 
     @Override
@@ -2291,11 +2367,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void renderRecommendation(@Nullable List<RecommendationItem> recommendationItems) {
+    public void renderRecommendation(@Nullable RecommendationWidget recommendationWidget) {
         List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
 
-        if (recommendationItems != null) {
+        if (recommendationWidget != null) {
             // Render from API
+            List<RecommendationItem> recommendationItems = recommendationWidget.getRecommendationItemList();
             for (RecommendationItem recommendationItem : recommendationItems) {
                 CartRecommendationItemHolderData cartRecommendationItemHolderData =
                         new CartRecommendationItemHolderData(recommendationItem);
@@ -2309,9 +2386,18 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         CartSectionHeaderHolderData cartSectionHeaderHolderData = null;
-        if (endlessRecyclerViewScrollListener.getCurrentPage() == 0) {
-            cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
-            cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
+        if ((endlessRecyclerViewScrollListener.getCurrentPage() == 0 && recommendationWidget == null) || (recommendationWidget != null && endlessRecyclerViewScrollListener.getCurrentPage() == 1 && recommendationSectionHeader == null)) {
+            if (recommendationSectionHeader != null) {
+                cartSectionHeaderHolderData = recommendationSectionHeader;
+            } else {
+                cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
+                if (recommendationWidget != null && !TextUtils.isEmpty(recommendationWidget.getTitle())) {
+                    cartSectionHeaderHolderData.setTitle(recommendationWidget.getTitle());
+                } else {
+                    cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
+                }
+                recommendationSectionHeader = cartSectionHeaderHolderData;
+            }
         }
 
         if (cartRecommendationItemHolderDataList.size() > 0) {

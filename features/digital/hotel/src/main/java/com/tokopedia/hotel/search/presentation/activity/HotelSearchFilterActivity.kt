@@ -16,7 +16,7 @@ class HotelSearchFilterActivity : BaseSimpleActivity() {
 
     override fun getParentViewResourceID() = R.id.parent_view
 
-    override fun getToolbarId(): Int = R.id.toolbar
+    override fun getToolbarResourceID(): Int = R.id.toolbar
 
     override fun isShowCloseButton(): Boolean = true
 

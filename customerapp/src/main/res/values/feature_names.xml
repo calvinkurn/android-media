@@ -7,6 +7,8 @@
     <string name="hotel_order_detail_title">Detail Pesanan</string>
     <string name="hotel_booking_activity_title">Pemesanan</string>
     <string name="hotel_e_voucher">E-voucher</string>
+
+    <string name="title_digital_topup">Digital Topup</string>
     <string name="title_profile_completion">Lengkapi Profil</string>
     <string name="title_change_gender">Tambah Jenis Kelamin</string>
     <string name="title_add_phone">Tambah Nomor Ponsel</string>
@@ -18,4 +20,9 @@
     <string name="title_shop_postal_code">Kode Pos</string>
     <string name="title_shop_is_active">Toko Sudah Aktif</string>
     <string name="title_shop_setting">Pengaturan Toko</string>
+
+    <!-- Dynamic feature for Setting Bank-->
+    <string name="setting_bank_app_name">Rekening Bank</string>
+    <string name="title_setting_bank">Rekening Bank</string>
+    <string name="title_choose_bank">Pilih Bank</string>
 </resources>
