@@ -534,7 +534,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             }
             actionBtnLayout.addView(textView);
             if(!stickyButtonAdded){
-                //Cant add the same textview as it has a parent already so manking a new instance of the textview and adding it for the sticky
+                //Cant add the same textview as it has a parent already so making a new instance of the textview and adding it for the sticky
                 TextView stickyTextView = new TextView(getContext());
                 stickyTextView.setText(actionButton.getLabel());
                 stickyTextView.setPadding(getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16), getResources().getDimensionPixelSize(R.dimen.dp_16));
