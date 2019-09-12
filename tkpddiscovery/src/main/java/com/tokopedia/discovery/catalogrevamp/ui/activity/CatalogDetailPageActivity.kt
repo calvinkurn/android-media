@@ -16,6 +16,7 @@ import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.core.share.DefaultShare
 import com.tokopedia.discovery.R
+import com.tokopedia.discovery.catalog.activity.CatalogDetailActivity
 import com.tokopedia.discovery.catalogrevamp.analytics.CatalogDetailPageAnalytics
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailPageFragment
 import com.tokopedia.discovery.catalogrevamp.ui.fragment.CatalogDetailProductListingFragment
@@ -27,6 +28,8 @@ import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
 import java.util.*
 import kotlin.collections.HashMap
@@ -44,32 +47,18 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
     private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var catalogName: String =""
 
-    object DeeplinkIntents {
-        @JvmStatic
-        @DeepLink(ApplinkConst.DISCOVERY_CATALOG)
-        fun defaultIntent(context: Context, bundle: Bundle): Intent {
-            val intent = createIntent(context, bundle.getString(EXTRA_CATALOG_ID),
-                    bundle.getString(EXTRA_CATEGORY_DEPARTMENT_ID),
-                    bundle.getString(EXTRA_CATEGORY_DEPARTMENT_NAME))
-            return intent
-                    .putExtras(bundle)
-        }
-    }
-
     companion object {
-        private val STATE_GRID = 1
-        private val STATE_LIST = 2
-        private val STATE_BIG = 3
+        private const val STATE_GRID = 1
+        private const val STATE_LIST = 2
+        private const val STATE_BIG = 3
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
+
         @JvmStatic
-        fun createIntent(context: Context, catalogId: String?, departmentId: String?, departmentName: String?): Intent {
-            val intent = Intent(context, CatalogDetailPageActivity::class.java)
-            intent.putExtra(EXTRA_CATALOG_ID, catalogId)
-            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_ID, departmentId)
-            intent.putExtra(EXTRA_CATEGORY_DEPARTMENT_NAME, departmentName)
-            return intent
+        fun isCatalogRevampEnabled(context: Context): Boolean {
+            val remoteConfig = FirebaseRemoteConfigImpl(context)
+            return remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_CATALOG_REVAMP, true)
         }
     }
 
@@ -83,8 +72,8 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         fragment.setListener(this)
         return fragment
     }
+
     private fun getNewCatalogDetailListingFragment(catalogName: String): Fragment {
-        catalogId = intent.getStringExtra(EXTRA_CATALOG_ID)
         val departmentId: String = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_ID)
         val departmentName: String = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_NAME)
         return CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
@@ -95,7 +84,16 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         setContentView(R.layout.activity_catalog_detail_page)
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
         searchNavContainer = findViewById(R.id.search_nav_container)
+        catalogId = intent.getStringExtra(EXTRA_CATALOG_ID)
+        sendTo()
         prepareView()
+    }
+
+    private fun sendTo() {
+        if(!isCatalogRevampEnabled(this)){
+            startActivity(CatalogDetailActivity.createIntent(this, catalogId))
+            finish()
+        }
     }
 
     private fun prepareView() {

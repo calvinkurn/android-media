@@ -37,14 +37,6 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     String catalogId;
     private LinkerData shareData;
 
-
-    @DeepLink(Constants.Applinks.DISCOVERY_CATALOG)
-    public static Intent getCallingApplinkCatalogIntent(Context context, Bundle bundle) {
-        Intent intent = createIntent(context, bundle.getString(EXTRA_CATALOG_ID));
-        return intent
-                .putExtras(bundle);
-    }
-
     public static Intent createIntent(Context context, String catalogId) {
         Intent intent = new Intent(context, CatalogDetailActivity.class);
         intent.putExtra(EXTRA_CATALOG_ID, catalogId);
