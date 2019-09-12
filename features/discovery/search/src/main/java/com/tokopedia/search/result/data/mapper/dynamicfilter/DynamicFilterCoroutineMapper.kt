@@ -2,7 +2,7 @@ package com.tokopedia.search.result.data.mapper.dynamicfilter
 
 import com.google.gson.Gson
 import com.tokopedia.discovery.common.Mapper
-import com.tokopedia.discovery.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.constant.ResponseStatus
 import retrofit2.Response

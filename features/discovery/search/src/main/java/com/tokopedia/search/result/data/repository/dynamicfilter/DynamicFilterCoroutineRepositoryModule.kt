@@ -2,8 +2,8 @@ package com.tokopedia.search.result.data.repository.dynamicfilter
 
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.coroutines.Repository
-import com.tokopedia.discovery.common.data.DynamicFilterModel
 import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
+import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.result.data.source.dynamicfilter.DynamicFilterCoroutineDataSource
 import com.tokopedia.search.result.data.source.dynamicfilter.DynamicFilterCoroutineDataSourceModule
 import dagger.Module
