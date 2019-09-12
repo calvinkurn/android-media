@@ -6,7 +6,9 @@ import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardHeaderPojo
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuery
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.ShareableByMeProfileViewModel
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.feedcomponent.data.pojo.profileheader.BymeProfileHeader
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
 
@@ -21,7 +23,8 @@ class GetAffiliateDashboardSubscriber(
         mainView.hideLoading()
         val query = response.getData<DashboardQuery>(DashboardQuery::class.java)
         mainView.onSuccessGetDashboardItem(
-                mappingHeader(query.affiliateStats, query.balance)
+                mappingHeader(query.affiliateStats, query.balance),
+                mappingByMeProfile(query.header)
         )
     }
 
@@ -42,6 +45,13 @@ class GetAffiliateDashboardSubscriber(
                 it.productClick,
                 it.productSold,
                 it.productCount
+        )
+    }
+
+    private fun mappingByMeProfile(header: BymeProfileHeader) = header.let {
+        ShareableByMeProfileViewModel(
+                it.profile.avatar,
+                it.profile.link
         )
     }
 }

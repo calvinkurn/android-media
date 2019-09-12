@@ -37,6 +37,10 @@ import javax.inject.Inject
  */
 class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel, DashboardItemTypeFactory>(), AffiliateCuratedProductContract.View, CuratedProductSortTypeFactoryImpl.OnClickListener {
 
+    interface CuratedProductListener {
+        fun shouldShareProfile()
+    }
+
     companion object {
         private const val EXTRA_TYPE = "type"
 
@@ -64,6 +68,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     private lateinit var sortDialogView: View
 
     private val sortAdapter: CuratedProductSortAdapter by lazy { CuratedProductSortAdapter(CuratedProductSortTypeFactoryImpl(this), emptyList()) }
+
+    private var listener: CuratedProductListener? = null
 
     @Inject
     lateinit var presenter: AffiliateCuratedProductPresenter
@@ -150,6 +156,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     override fun onDestroy() {
         super.onDestroy()
+        listener = null
         presenter.detachView()
     }
 
@@ -175,6 +182,10 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
                 shouldShareProfile()
             }
         }
+    }
+
+    fun setListener(listener: CuratedProductListener) {
+        this.listener = listener
     }
 
     private fun openApplink(applink: String) {
@@ -213,7 +224,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     private fun onSaveSortOption() {
-        currentSort = (sortAdapter.list as List<CuratedProductSortViewModel>).firstOrNull { it.isChecked }?.id ?: 1
+        currentSort = (sortAdapter.list as List<CuratedProductSortViewModel>).firstOrNull { it.isChecked }?.id
+                ?: 1
         sortDialog.dismiss()
         loadInitialData()
     }
@@ -224,6 +236,6 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     private fun shouldShareProfile() {
-
+        listener?.shouldShareProfile()
     }
 }

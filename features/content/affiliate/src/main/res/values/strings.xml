@@ -133,7 +133,7 @@
     <string name="affiliate_product_berakhir">Produk Afiliasi Berakhir</string>
     <string name="create_post">Buat Post</string>
     <string name="af_sort">Urutkan</string>
-    <string name="af_curated_empty_title">Share Postmu Sekarang</string>
+    <string name="af_curated_empty_title">Share profilmu, yuk!</string>
     <string name="af_curated_empty_subtitle">Semakin sering share, Semakin besar kesempatanmu mendapatkan komisi</string>
     <string name="af_share_now">Share Sekarang</string>
     <string name="af_review_count_format">(%s)</string>

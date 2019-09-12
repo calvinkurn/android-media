@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.dashboard.data.pojo;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.feedcomponent.data.pojo.profileheader.BymeProfileHeader;
 
 /**
  * @author by yfsx on 19/09/18.
@@ -27,6 +28,10 @@ public class DashboardQuery {
     @SerializedName("balance")
     @Expose
     private DashboardBalance balance;
+
+    @SerializedName("bymeProfileHeader")
+    @Expose
+    private BymeProfileHeader header;
 
     public DashboardProduct getProduct() {
         return product;
@@ -66,5 +71,13 @@ public class DashboardQuery {
 
     public void setBalance(DashboardBalance balance) {
         this.balance = balance;
+    }
+
+    public BymeProfileHeader getHeader() {
+        return header;
+    }
+
+    public void setHeader(BymeProfileHeader header) {
+        this.header = header;
     }
 }

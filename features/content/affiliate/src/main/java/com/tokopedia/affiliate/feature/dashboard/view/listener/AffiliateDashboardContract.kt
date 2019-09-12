@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.ShareableByMeProfileViewModel
 import com.tokopedia.calendar.Legend
 import java.util.*
 
@@ -20,7 +21,7 @@ interface AffiliateDashboardContract {
 
         fun hideLoading()
 
-        fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel)
+        fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel, byMeHeader: ShareableByMeProfileViewModel)
 
         fun onErrorCheckAffiliate(error: String)
 

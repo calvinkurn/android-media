@@ -3,7 +3,6 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.SwipeRefreshLayout
@@ -24,6 +23,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.viewpager.Affiliat
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboardPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.ShareableByMeProfileViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
@@ -32,10 +32,10 @@ import com.tokopedia.calendar.UnifyCalendar
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.EmptyState
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.videorecorder.utils.showToast
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -44,7 +44,7 @@ import kotlin.properties.Delegates
 /**
  * Created by jegul on 2019-09-02.
  */
-class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContract.View {
+class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContract.View, ShareBottomSheets.OnShareItemClickListener, AffiliateCuratedProductFragment.CuratedProductListener {
 
     companion object {
         fun newInstance(bundle: Bundle): AffiliateDashboardFragment {
@@ -105,6 +105,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     private lateinit var holidayList: List<Legend>
 
+    private lateinit var profileHeader: ShareableByMeProfileViewModel
+
     override fun getScreenName(): String = "Dashboard"
 
     override fun initInjector() {
@@ -157,8 +159,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     private fun setupView(view: View) {
         fragmentManager?.let {
-            if (!::directFragmentCurated.isInitialized) directFragmentCurated = AffiliateCuratedProductFragment.newInstance(1)
-            if (!::indirectFragmentCurated.isInitialized) indirectFragmentCurated = AffiliateCuratedProductFragment.newInstance(2)
+            if (!::directFragmentCurated.isInitialized) directFragmentCurated = AffiliateCuratedProductFragment.newInstance(1).apply { setListener(this@AffiliateDashboardFragment) }
+            if (!::indirectFragmentCurated.isInitialized) indirectFragmentCurated = AffiliateCuratedProductFragment.newInstance(2).apply { setListener(this@AffiliateDashboardFragment) }
             vpCuratedProduct.adapter = AffiliateCuratedProductPagerAdapter(it, listOf(
                     directFragmentCurated,
                     indirectFragmentCurated
@@ -178,7 +180,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
     }
 
-    override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel) {
+    override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel, byMeHeader: ShareableByMeProfileViewModel) {
         tvTotalSaldo.text = MethodChecker.fromHtml(header.totalSaldoAktif)
         tvAffiliateIncome.text = MethodChecker.fromHtml(header.saldoString)
         tvTotalViewed.text = MethodChecker.fromHtml(header.seenCount)
@@ -191,6 +193,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         if (startDate != null && endDate != null) showChangesAppliedToaster()
 
         srlRefresh.isRefreshing = false
+
+        this.profileHeader = byMeHeader
     }
 
     override fun onErrorCheckAffiliate(error: String) {
@@ -390,7 +394,23 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         }
     }
 
-    private fun shouldShareProfile() {
+    override fun shouldShareProfile() {
+        if (::profileHeader.isInitialized) {
+            ShareBottomSheets.newInstance(
+                    this,
+                    "",
+                    profileHeader.avatar.orEmpty(),
+                    profileHeader.link,
+                    String.format("%s", profileHeader.link),
+                    "test",
+                    null
+            ).also {
+                it.show(fragmentManager)
+            }
+        }
+    }
+
+    override fun onShareItemClicked(packageName: String) {
 
     }
 }

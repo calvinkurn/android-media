@@ -1,4 +1,4 @@
-query GetDashboard() {
+query GetDashboard($userID:Int!) {
   affiliateStats{
     totalCommission
     productClick
@@ -17,5 +17,11 @@ query GetDashboard() {
   balance {
     seller_usable
     buyer_usable
+  }
+  bymeProfileHeader(userIDTarget:$userID) {
+    profile {
+      avatar
+      link
+    }
   }
 }
