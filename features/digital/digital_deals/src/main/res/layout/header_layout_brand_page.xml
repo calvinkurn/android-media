@@ -115,29 +115,40 @@
 
     <TextView
         android:id="@+id/tv_popular"
-        android:layout_width="wrap_content"
+        style="@style/TextView.Medium.FontMedium.BlackPrimary"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/black_39"
-        android:textSize="@dimen/sp_17"
-        android:textStyle="normal"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/divider2"
-        tools:text="Deals di Jakarta " />
+        android:ellipsize="end"
+        android:lines="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintWidth_default="wrap"
+        app:layout_constraintEnd_toStartOf="@+id/number_of_locations"
+        tools:text="Popujsddddddddddsta " />
 
     <TextView
         android:id="@+id/number_of_locations"
-        android:layout_width="wrap_content"
+        style="@style/TextView.Medium.FontMedium.BlackPrimary"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
+        android:layout_marginTop="@dimen/dp_16"
         android:textColor="@color/black_38"
-        android:textSize="@dimen/sp_17"
-        android:textStyle="normal"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_popular"
-        app:layout_constraintLeft_toRightOf="@+id/tv_popular"
-        app:layout_constraintTop_toTopOf="@+id/tv_popular"
-        tools:text="(23)" />
+        android:layout_marginRight="@dimen/dp_80"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/barrier"
+        app:layout_constraintTop_toBottomOf="@+id/divider2"
+        app:layout_constraintWidth_default="wrap"
+        tools:text="msdsddd23)" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="tv_popular" />
 
 </android.support.constraint.ConstraintLayout>

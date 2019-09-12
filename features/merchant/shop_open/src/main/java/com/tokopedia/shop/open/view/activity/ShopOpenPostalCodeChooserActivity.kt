@@ -35,7 +35,7 @@ class ShopOpenPostalCodeChooserActivity : BaseSimpleActivity(), HasComponent<Bas
         super.onCreate(savedInstanceState)
         supportActionBar?.let {
             it.elevation = 0f
-            toolbar.setNavigationIcon(R.drawable.ic_close)
+            toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_close)
         }
 
     }

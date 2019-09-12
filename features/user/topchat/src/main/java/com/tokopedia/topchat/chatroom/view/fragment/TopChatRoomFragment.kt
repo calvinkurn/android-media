@@ -33,7 +33,6 @@ import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
-import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -57,7 +56,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.TopChatChatMenuFactory
-import com.tokopedia.topchat.chatroom.view.customview.*
+import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
+import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
+import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
 import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
@@ -73,7 +74,6 @@ import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.webview.BaseSimpleWebViewActivity
-import java.lang.IllegalStateException
 import java.net.URLEncoder
 import javax.inject.Inject
 
@@ -557,7 +557,21 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         if (data == null) return
         val message = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE) ?: return
         view?.let {
-            Toaster.showNormal(it, message, Snackbar.LENGTH_SHORT)
+            Toaster.showNormalWithAction(
+                    it,
+                    message,
+                    Snackbar.LENGTH_LONG,
+                    getString(R.string.chat_check_cart),
+                    onClickSeeButtonOnAtcSuccessToaster()
+            )
+        }
+    }
+
+    private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
+        return View.OnClickListener {
+            val cartIntent = (activity!!.application as TopChatRouter).getCartIntent(activity)
+            analytics.eventClickSeeButtonOnAtcSuccessToaster()
+            activity?.startActivity(cartIntent)
         }
     }
 
@@ -668,27 +682,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
+        (viewState as TopChatViewState).sendAnalyticsClickATC(element)
         val atcPageIntent = presenter.getAtcPageIntent(context, element)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
-    }
-
-    private fun onSuccessAddToCart(): (addToCartResult: AddToCartDataModel) -> Unit {
-        return {
-            showSnackbarAddToCartWithAction(it)
-        }
-    }
-
-    private fun showSnackbarAddToCartWithAction(it: AddToCartDataModel) {
-        if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
-            ToasterNormal.make(view,
-                    it.data.message[0].replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.chat_check_cart)) {
-                analytics.eventClickSeeButtonOnAtcSuccessToaster()
-                activity?.startActivity((activity!!.application as TopChatRouter)
-                        .getCartIntent(activity))
-            }.show()
-        } else {
-            ToasterError.make(view, it.errorMessage[0], ToasterNormal.LENGTH_LONG).show()
-        }
     }
 
     private fun showSnackbarAddToCart(it: AddToCartDataModel) {

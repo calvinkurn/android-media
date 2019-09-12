@@ -1,5 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
 
 android{
     testOptions {
@@ -15,6 +16,10 @@ repositories {
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
@@ -49,6 +54,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.kotlinMockito2
     testImplementation rootProject.ext.testDependencies.powerMockito
     testImplementation rootProject.ext.miscDependencies.coroutineCore
+
     
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
