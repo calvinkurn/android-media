@@ -93,6 +93,9 @@ data class ProductData(
         @SerializedName("price")
         val price: String = "0",
         @Expose
+        @SerializedName("price_fmt")
+        val priceFormat: String = "0",
+        @Expose
         @SerializedName("currency")
         val currency: String = "",
         @Expose
@@ -141,10 +144,14 @@ data class Campaign(
         val active: Boolean,
         @SerializedName("original_price")
         val originalPrice: Int,
+        @SerializedName("original_price_fmt")
+        val originalPriceFormat: String,
         @SerializedName("discount_percentage")
         val discountPercentage: Int,
         @SerializedName("discount_price")
-        val discountPrice: Int
+        val discountPrice: Int,
+        @SerializedName("discount_price_fmt")
+        val discountPriceFormat: String
 )
 
 data class Variant (

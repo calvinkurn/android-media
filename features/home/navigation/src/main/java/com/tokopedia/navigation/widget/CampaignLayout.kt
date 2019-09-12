@@ -30,7 +30,7 @@ class CampaignLayout @JvmOverloads constructor(
             return
         }
 
-        campaignPrice.text = campaign.originalPrice.toString()
+        campaignPrice.text = campaign.originalPriceFormat.toString()
         campaignDiscount.text = "${campaign.discountPercentage}%"
     }
 }

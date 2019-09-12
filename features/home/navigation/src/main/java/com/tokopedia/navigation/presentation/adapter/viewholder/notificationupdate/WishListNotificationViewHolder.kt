@@ -33,7 +33,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
 
         with(product) {
             productName.text = name
-            productPrice.text = price
+            productPrice.text = priceFormat
             productCampaign.setupCampaign(campaign)
             productVariant.setupVariant(variant)
             ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_loading_toped_new)
