@@ -42,6 +42,7 @@
     <string name="shop_status_moderated">Dalam Pengawasan</string>
     <string name="shop_status_inactive">Toko Sudah Tidak Aktif</string>
     <string name="shop_voucher_cashback_rb">%srb</string>
+    <string name="shop_see_shop_button">Lihat Toko</string>
 
     <string name="title_total_prods">Produk</string>
 
