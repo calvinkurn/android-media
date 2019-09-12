@@ -296,8 +296,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 input_field_label.text = getString(R.string.input_field_error_message)
                 input_field_label.setTextColor(ContextCompat.getColor(this, R.color.red_600))
             } else {
-                input_field_label.text = getString(R.string.input_field_label_message)
-                input_field_label.setTextColor(ContextCompat.getColor(this, R.color.black_70))
+                input_field_label.visibility = View.GONE
             }
         }
     }
