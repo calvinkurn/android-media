@@ -6,8 +6,9 @@ ext {
             developerOptions                : ":features:common:developer_options",
             nps                             : ":features:common:nps",
 
-            tradeIn                     : ":features:category:tradein",
-            basemvvm               : ":features:category:basemvvm",
+            agerestriction                  : ":features:category:age_restriction",
+            tradeIn                         : ":features:category:tradein",
+            basemvvm                        : ":features:category:basemvvm",
 
             broadcastMessage                : ":features:communication:broadcast_message",
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op
@@ -27,6 +28,7 @@ ext {
             browse                          : ":features:digital:digital_browse",
             digitalDeals                    : ":features:digital:digital_deals",
             commonDigital                   : ":features:digital:common_digital",
+            commonTravel                    : ":features:digital:common_travel",
             digitalproduct                  : ":features:digital:digitalproduct",
             digitalTopupBills               : ":features:digital:digital_topup_bills",
             event                           : ":features:digital:event",
@@ -59,11 +61,13 @@ ext {
             instantDebitBca                 : ":features:digital:instant_debit_bca",
             instantLoan                     : ":features:fintech:instant_loan",
 //            instantLoan                   : ":features:fintech:instant_loan_no_op",
+            merchantLendingWidget           : ":features:fintech:merchant_lending_widget",
             mitraToppers                    : ":features:fintech:mitra_toppers",
             saldodetails                  : ":features:fintech:saldo_details",
 //            saldodetails                    : ":features:fintech:saldo_details_no_op",
             tokoCash                        : ":features:fintech:tokocash",
 //            tokoCash                      : ":features:fintech:tokocash_no_op",
+            ovo                             : ":features:fintech:ovo_pay_with_qr",
 
             accountHome                     : ":features:home:account-home",
             navigation                      : ":features:home:navigation",
@@ -115,9 +119,10 @@ ext {
             officialStore                  : ":features:merchant:official_store",
             onboarding                      : ":features:user:onboarding",
             contactUs                       : ":features:operational:contact_us",
-            csat_rating                       : ":features:operational:csat_rating",
 //            contactUs                       : ":features:operational:contact_us_no_op",
+            csat_rating                       : ":features:operational:csat_rating",
 
+            commonPayment                   : ":features:payment:common_payment",
             payment                         : ":features:payment:payment",
 //            payment                         : ":features:payment:payment_no_op",
             paymentSetting                  : ":features:payment:payment_setting",
@@ -184,6 +189,8 @@ ext {
 //            userIdentification              : ":features:user:user_identification_no_op",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",
+
+
             content                         : ":tkpdcontent",
             core                            : ":tkpdcore",
             discovery                       : ":tkpddiscovery",
@@ -191,11 +198,6 @@ ext {
             seller                          : ":tkpdseller",
             session                         : ":tkpdsession",
             transaction                     : ":tkpdtransaction",
-            transactioncommon               : ":tkpdtransaction-common",
-            commonTravel                    : ":features:digital:common_travel",
-            commonPayment                   : ":features:payment:common_payment",
-            ovo                             : ":features:fintech:ovo_pay_with_qr",
-            agerestriction                  : ":features:category:age_restriction",
-            merchantLendingWidget           : ":features:fintech:merchant_lending_widget"
+            transactioncommon               : ":tkpdtransaction-common"
     ]
 }
