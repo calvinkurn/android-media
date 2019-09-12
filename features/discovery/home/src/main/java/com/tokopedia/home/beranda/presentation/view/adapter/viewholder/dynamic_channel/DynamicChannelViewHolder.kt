@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
 
 import android.content.Context
-import android.support.annotation.LayoutRes
 import android.text.TextUtils
 import android.view.View
 import android.widget.TextView
@@ -28,6 +27,9 @@ abstract class DynamicChannelViewHolder(itemView: View,
 
     lateinit var countDownView: CountDownView
 
+    /**
+     * List of possible layout from backend
+     */
     companion object {
         const val TYPE_SPRINT_SALE = 0
         const val TYPE_SPRINT_LEGO = 1
@@ -37,9 +39,6 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_CURATED = 5
         const val TYPE_BANNER = 6
         const val TYPE_BANNER_CAROUSEL = 7
-
-        @LayoutRes
-        val MASTER_LAYOUT_DC = R.layout.home_master_dynamic_channel
     }
 
     protected fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
@@ -65,8 +64,12 @@ abstract class DynamicChannelViewHolder(itemView: View,
             val channel = element.channel
             val channelHeaderName = element.channel.header.name
 
+            /**
+             * Requirement:
+             * Only hit impression tracker when get data from cloud
+             */
             if (!element.isCache) {
-                itemView.addOnImpressionListener(channel, OnProductImpressedListener(
+                itemView.addOnImpressionListener(channel, OnItemImpressedListener(
                         channel,
                         listener,
                         adapterPosition,
@@ -124,21 +127,36 @@ abstract class DynamicChannelViewHolder(itemView: View,
         }
     }
 
+    /**
+     * Abstract function to let child of dynamic channel view holder
+     * defines its own list of item
+     */
     protected abstract fun setupContent(channel: DynamicHomeChannel.Channels)
 
     protected abstract fun getViewHolderClassName(): String
 
+    /**
+     * Even though tracker only has 1 implementation, but every dynamic channel has different tracker,
+     * so you can override this function and apply see all tracker
+     */
     protected abstract fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String)
 
     private fun hasExpiredTime(channel: DynamicHomeChannel.Channels): Boolean {
         return channel.header.expiredTime != null && !TextUtils.isEmpty(channel.header.expiredTime)
     }
 
-    class OnProductImpressedListener(val channel: DynamicHomeChannel.Channels,
-                                     val listener: HomeCategoryListener,
-                                     val position: Int,
-                                     val layoutType: Int) : ViewHintListener {
+    /**
+     * Impression listener, list of all dynamic channel tracker impression both for Iris or GTM
+     */
+    class OnItemImpressedListener(val channel: DynamicHomeChannel.Channels,
+                                  val listener: HomeCategoryListener,
+                                  val position: Int,
+                                  private val layoutType: Int) : ViewHintListener {
         override fun onViewHint() {
+            sendIrisTracker(layoutType)
+        }
+
+        private fun sendIrisTracker(layoutType: Int) {
             when(layoutType) {
                 TYPE_SPRINT_SALE -> {
                     listener.putEEToIris(
@@ -171,9 +189,9 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 }
                 TYPE_BANNER, TYPE_BANNER_CAROUSEL -> {
                     val bannerType = when(layoutType) {
-                        TYPE_BANNER -> "non carousel"
-                        TYPE_BANNER_CAROUSEL -> "carousel"
-                        else -> "non carousel"
+                        TYPE_BANNER -> BannerOrganicViewHolder.TYPE_NON_CAROUSEL
+                        TYPE_BANNER_CAROUSEL -> BannerOrganicViewHolder.TYPE_CAROUSEL
+                        else -> BannerOrganicViewHolder.TYPE_NON_CAROUSEL
                     }
                     listener.putEEToIris(
                             HomePageTracking.getEnhanceImpressionProductChannelMix(

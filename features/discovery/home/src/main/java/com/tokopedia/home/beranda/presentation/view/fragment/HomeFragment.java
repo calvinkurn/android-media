@@ -1534,16 +1534,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onDynamicIconScrollStart() {
-
-    }
-
-    @Override
-    public void onDynamicIconScrollEnd() {
-
-    }
-
-    @Override
     public void putEEToTrackingQueue(HashMap<String, Object> data) {
         if (trackingQueue!=null) {
             trackingQueue.putEETracking(data);

@@ -66,10 +66,6 @@ interface HomeCategoryListener {
 
     fun setActivityStateListener(activityStateListener: ActivityStateListener)
 
-    fun onDynamicIconScrollStart()
-
-    fun onDynamicIconScrollEnd()
-
     fun onSpotlightItemClicked(actionLink: String)
 
     fun onTokopointCheckNowClicked(applink: String)

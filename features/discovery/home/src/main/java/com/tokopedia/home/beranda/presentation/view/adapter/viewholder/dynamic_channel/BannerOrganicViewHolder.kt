@@ -58,6 +58,8 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     var bannerImage = itemView.findViewById<ImageView>(R.id.banner_image)
 
     companion object {
+        val TYPE_CAROUSEL = "carousel"
+        val TYPE_NON_CAROUSEL = "non carousel"
         @LayoutRes
         val LAYOUT = R.layout.home_dc_banner_recyclerview
     }

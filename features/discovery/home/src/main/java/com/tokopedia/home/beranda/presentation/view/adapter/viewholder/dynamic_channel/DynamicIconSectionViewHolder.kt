@@ -64,16 +64,6 @@ class DynamicIconSectionViewHolder(val view: View,
                 LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = linearLayoutManager
         recyclerView.clearOnScrollListeners()
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    listener.onDynamicIconScrollStart()
-                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    listener.onDynamicIconScrollEnd()
-                }
-            }
-        })
     }
     override fun bind(element: DynamicIconSectionViewModel) {
         adapter?.run { setSectionData(element) }
