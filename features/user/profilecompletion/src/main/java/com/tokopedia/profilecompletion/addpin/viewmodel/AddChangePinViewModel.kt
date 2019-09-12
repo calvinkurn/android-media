@@ -40,7 +40,7 @@ class AddChangePinViewModel @Inject constructor(
         get() = mutableCheckPinResponse
 
     private val mutableGetStatusPinResponse = MutableLiveData<Result<StatusPinData>>()
-    val getStatusetPinResponse: LiveData<Result<StatusPinData>>
+    val getStatusPinResponse: LiveData<Result<StatusPinData>>
         get() = mutableGetStatusPinResponse
 
     private val mutableValidatePinResponse = MutableLiveData<Result<ValidatePinData>>()
@@ -160,7 +160,7 @@ class AddChangePinViewModel @Inject constructor(
     private fun onErrorGetStatusPin(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
-            mutableCheckPinResponse.value = Fail(it)
+            mutableGetStatusPinResponse.value = Fail(it)
         }
     }
 
@@ -192,7 +192,7 @@ class AddChangePinViewModel @Inject constructor(
     private fun onErrorValidatePin(): (Throwable) -> Unit {
         return {
             it.printStackTrace()
-            mutableCheckPinResponse.value = Fail(it)
+            mutableValidatePinResponse.value = Fail(it)
         }
     }
 

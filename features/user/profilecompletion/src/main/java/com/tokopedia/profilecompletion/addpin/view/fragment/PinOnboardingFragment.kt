@@ -67,7 +67,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
     }
 
     private fun initObserver(){
-        addChangePinViewModel.getStatusetPinResponse.observe(this, Observer {
+        addChangePinViewModel.getStatusPinResponse.observe(this, Observer {
             when(it){
                 is Success -> onSuccessGetStatusPin(it.data)
                 is Fail -> onErrorGetStatusPin(it.throwable)
@@ -77,9 +77,9 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
     private fun onSuccessGetStatusPin(statusPinData: StatusPinData){
         if(statusPinData.isPhoneNumberExist && statusPinData.isPhoneNumberVerified){
-            goToVerificationActivity()
+            goToAddPin()
         }else{
-            showChangeEmailDialog()
+            showAddPhoneDialog()
         }
     }
 
@@ -90,7 +90,7 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         }
     }
 
-    private fun showChangeEmailDialog() {
+    private fun showAddPhoneDialog() {
         val dialog = UnifyDialog(activity as Activity, UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER)
         dialog.setTitle(getString(R.string.title_dialog_add_phone))
         dialog.setDescription(getString(R.string.subtitle_dialog_add_phone))
@@ -109,30 +109,9 @@ class PinOnboardingFragment: BaseDaggerFragment(){
         startActivityForResult(intent, REQUEST_CODE_ADD_PHONE)
     }
 
-    private fun goToVerificationActivity(){
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
-        val bundle = Bundle()
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
-        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "sms")
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
-
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
-    }
-
-    private fun goToAddPin(data: Intent?){
-        data?.extras?.run {
-            val uuid = this.getString(ApplinkConstInternalGlobal.PARAM_UUID)
-
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
-            val bundle = Bundle()
-            bundle.putString(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
-            intent.putExtras(bundle)
-            startActivityForResult(intent, REQUEST_CODE_ADD_PIN)
-        }
+    private fun goToAddPin(){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        startActivityForResult(intent, REQUEST_CODE_ADD_PIN)
     }
 
     private fun onSuccessAddPhoneNumber(data: Intent?){
@@ -156,9 +135,6 @@ class PinOnboardingFragment: BaseDaggerFragment(){
                     REQUEST_CODE_ADD_PHONE -> {
                         onSuccessAddPhoneNumber(data)
                     }
-                    REQUEST_CODE_COTP_PHONE_VERIFICATION -> {
-                        goToAddPin(data)
-                    }
                 }
             }
         }
@@ -176,16 +152,14 @@ class PinOnboardingFragment: BaseDaggerFragment(){
 
     override fun onDestroy() {
         super.onDestroy()
-        addChangePinViewModel.getStatusetPinResponse.removeObservers(this)
+        addChangePinViewModel.getStatusPinResponse.removeObservers(this)
         addChangePinViewModel.clear()
     }
 
     companion object {
 
         const val REQUEST_CODE_ADD_PHONE = 100
-        const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
         const val REQUEST_CODE_ADD_PIN = 102
-        const val OTP_TYPE_PHONE_VERIFICATION = 124
 
         const val ONBOARD_PICT_URL = "https://ecs7.tokopedia.net/img/android/others/onboard_add_pin.png"
 

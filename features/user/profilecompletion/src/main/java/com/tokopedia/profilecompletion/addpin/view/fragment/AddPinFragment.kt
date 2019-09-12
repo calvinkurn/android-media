@@ -4,6 +4,7 @@ import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.text.Editable
@@ -14,6 +15,7 @@ import android.view.ViewGroup
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addpin.data.AddChangePinData
@@ -23,6 +25,7 @@ import com.tokopedia.profilecompletion.addpin.viewmodel.AddChangePinViewModel
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_add_pin.*
 import javax.inject.Inject
 
@@ -34,13 +37,14 @@ import javax.inject.Inject
 class AddPinFragment: BaseDaggerFragment(){
 
     @Inject
+    lateinit var userSession: UserSessionInterface
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val addChangePinViewModel by lazy { viewModelProvider.get(AddChangePinViewModel::class.java) }
 
     private var isConfirmPin = false
     private var pin = ""
-    private var validateToken = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -51,8 +55,6 @@ class AddPinFragment: BaseDaggerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        initVar()
-
         inputPin.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {}
 
@@ -61,8 +63,11 @@ class AddPinFragment: BaseDaggerFragment(){
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if(s?.length == 6){
                     if(isConfirmPin){
-                        showLoading()
-                        addChangePinViewModel.validatePin(s.toString())
+                        if(s.toString() == pin){
+                            goToVerificationActivity()
+                        }else{
+                            displayErrorPin(getString(R.string.error_wrong_pin))
+                        }
                     }else{
                         showLoading()
                         addChangePinViewModel.checkPin(s.toString())
@@ -82,18 +87,11 @@ class AddPinFragment: BaseDaggerFragment(){
         getComponent(ProfileCompletionSettingComponent::class.java).inject(this)
     }
 
-    private fun initVar(){
-        val uuid = arguments?.getString(ApplinkConstInternalGlobal.PARAM_UUID)
-        if(!uuid.isNullOrEmpty()){
-            validateToken = uuid
-        }
-    }
-
     private fun initObserver(){
         addChangePinViewModel.addPinResponse.observe(this, Observer {
             when(it){
                 is Success -> onSuccessAddPin(it.data)
-                is Fail -> onError(it.throwable)
+                is Fail -> onErrorAddPin(it.throwable)
             }
         })
 
@@ -103,24 +101,35 @@ class AddPinFragment: BaseDaggerFragment(){
                 is Fail -> onError(it.throwable)
             }
         })
+    }
 
-        addChangePinViewModel.validatePinResponse.observe(this, Observer {
-            when(it){
-                is Success -> onSuccessValidatePin(it.data)
-                is Fail -> onError(it.throwable)
-            }
-        })
+    private fun goToVerificationActivity(){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val bundle = Bundle()
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
+        bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, true)
+        bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true)
+
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_COTP_PHONE_VERIFICATION)
     }
 
     private fun onSuccessAddPin(addChangePinData: AddChangePinData){
-        dismissLoading()
-        if(addChangePinData.success) displayConfirmPin()
+        if(addChangePinData.success){
+            activity?.let {
+                it.setResult(Activity.RESULT_OK)
+                it.finish()
+            }
+        }
     }
 
     private fun onSuccessCheckPin(checkPinData: CheckPinData){
         when{
             checkPinData.valid -> {
-                if(validateToken.isNotEmpty()) addChangePinViewModel.addPin(validateToken)
+                dismissLoading()
+                displayConfirmPin()
             }
             checkPinData.errorMessage.isNotEmpty() -> {
                 dismissLoading()
@@ -129,19 +138,9 @@ class AddPinFragment: BaseDaggerFragment(){
         }
     }
 
-    private fun onSuccessValidatePin(validatePinData: ValidatePinData){
-        dismissLoading()
-        when{
-            validatePinData.valid -> {
-                activity?.let {
-                    it.setResult(Activity.RESULT_OK)
-                    it.finish()
-                }
-            }
-            validatePinData.errorMessage.isNotEmpty() -> {
-                displayErrorPin(validatePinData.errorMessage)
-            }
-        }
+    private fun onErrorAddPin(throwable: Throwable){
+        onError(throwable)
+        displayInitPin()
     }
 
     private fun onError(throwable: Throwable){
@@ -149,6 +148,25 @@ class AddPinFragment: BaseDaggerFragment(){
         view?.run{
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (resultCode) {
+            Activity.RESULT_OK -> {
+                when (requestCode) {
+                    REQUEST_CODE_COTP_PHONE_VERIFICATION -> {
+                        data?.extras?.run {
+                            this.getString(ApplinkConstInternalGlobal.PARAM_UUID)?.let { uuid ->
+                                if(uuid.isNotEmpty()) {
+                                    showLoading()
+                                    addChangePinViewModel.addPin(uuid)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -165,9 +183,9 @@ class AddPinFragment: BaseDaggerFragment(){
         hideErrorPin()
         title.text = getString(R.string.confirm_create_pin)
         subtitle.text = getString(R.string.subtitle_confirm_create_pin)
-        inputPin.setText("")
         isConfirmPin = true
-        if(!inputPin.text.toString().isEmpty()) pin = inputPin.text.toString()
+        if(inputPin.text.toString().isNotEmpty()) pin = inputPin.text.toString()
+        inputPin.setText("")
     }
 
     private fun displayErrorPin(error: String){
@@ -207,6 +225,10 @@ class AddPinFragment: BaseDaggerFragment(){
     }
 
     companion object {
+
+        const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
+        const val OTP_TYPE_PHONE_VERIFICATION = 124
+
         fun createInstance(bundle: Bundle): AddPinFragment {
             val fragment = AddPinFragment()
             fragment.arguments = bundle
