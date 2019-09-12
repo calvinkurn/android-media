@@ -133,6 +133,7 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
+    public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";

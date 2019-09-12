@@ -50,12 +50,14 @@ include "features:discovery:search"
 
 include "features:fintech:mitra_toppers"
 
+include "dynamic-features:digital:digital_topup"
+include "dynamic-features:merchant:shop_settings"
+include "dynamic-features:merchant:shop_open"
 include "dynamic-features:travel:hotel_travel"
 include "dynamic-features:user:profilecompletion"
-include "dynamic-features:merchant:shop_settings"
+include "dynamic-features:user:settingbank"
 
 include "features:fintech:home_credit"
-include "features:fintech:reksa_dana"
 include "features:digital:instant_debit_bca"
 include "features:fintech:instant_loan"
 //include "features:fintech:instant_loan_no_op"
@@ -84,7 +86,6 @@ include "features:logistic:logisticuploadawb"
 //include "features:logistic:logisticuploadawb_no_op"
 include "features:logistic:logisticinputreceiptshipment"
 //include 'features:logistic:logisticinputreceiptshipment_no_op'
-include "features:logistic:logisticlistaddress"
 //include "features:logistic:logisticinsurance_no_op"
 
 include "features:merchant:gold_merchant_common"
@@ -154,7 +155,6 @@ include "features:transaction:checkout"
 include "features:transaction:transactioninvoice"
 
 include "features:user:attachproduct"
-include "features:user:bankdb"
 include "features:user:chat_common"
 include "features:user:chatbot"
 //include "features:user:chatbot_no_op"

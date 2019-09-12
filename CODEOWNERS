@@ -95,7 +95,6 @@
 /features/user/loginregister/                   @tokopedia/minion-kevin
 /features/user/sessioncommon/                   @tokopedia/minion-kevin
 /features/user/loginphone/                      @tokopedia/minion-kevin
-/features/user/bankdb/                          @tokopedia/minion-kevin
 /features/user/notifcenter/                     @tokopedia/minion-kevin
 /features/user/attachproduct/                   @tokopedia/minion-kevin
 /features/user/talk/                            @tokopedia/minion-kevin
@@ -127,12 +126,13 @@
 /libraries/williamchart/                @tokopedia/minion-stuart
 /libraries/date_picker_range/           @tokopedia/minion-stuart
 /libraries/imageuploader/               @tokopedia/minion-stuart
+/libraries/twitter_share/               @tokopedia/minion-stuart
+/libraries/youtubeutils/                @tokopedia/minion-stuart
 /libraries/use_case/                    @tokopedia/core-team
 /libraries/react_native/                @tokopedia/core-team
 /libraries/applink/                     @tokopedia/core-team
 /libraries/push_notification/           @tokopedia/core-team
 /libraries/user_session/                @tokopedia/minion-kevin
-/libraries/youtubeutils/                @tokopedia/minion-stuart
 
 /libraries/common_network/              @tokopedia/core-team
 

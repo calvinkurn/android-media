@@ -169,9 +169,6 @@ import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
-import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
-import com.tokopedia.groupchat.room.view.activity.PlayActivity;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -302,7 +299,6 @@ import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
-import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -1916,22 +1912,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getGroupChatIntent(Context context, String channelUrl) {
-        return PlayActivity.getCallingIntent(context, channelUrl);
+        return RouteManager.getIntent(context, ApplinkConst.GROUPCHAT_DETAIL, channelUrl);
     }
 
     @Override
     public Intent getWithdrawIntent(Context context, boolean isSeller) {
         return WithdrawActivity.getCallingIntent(context, isSeller);
-    }
-
-    @Override
-    public Fragment getChannelFragment(Bundle bundle) {
-        return ChannelFragment.createInstance();
-    }
-
-    @Override
-    public String getChannelFragmentTag() {
-        return ChannelFragment.class.getSimpleName();
     }
 
     public Intent getInboxChannelsIntent(Context context) {
@@ -2298,11 +2284,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getDesktopLinkGroupChat() {
-        return ChatroomUrl.DESKTOP_URL;
-    }
-
-    @Override
     public void gotoTopAdsDashboard(Context context) {
         goToApplinkActivity(context, ApplinkConst.CustomerApp.TOPADS_DASHBOARD);
     }
@@ -2605,11 +2586,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getSettingBankIntent(Context context) {
-        return SettingBankActivity.Companion.createIntent(context);
-    }
-
-    @Override
     public void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_desc, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
         LinkerData shareData = LinkerData.Builder.getLinkerBuilder()
                 .setType(LinkerData.INDI_CHALLENGE_TYPE)
@@ -2747,12 +2723,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, BottomSheets.BottomSheetDismissListener dismissListener) {
-        if (fragmentManager != null) {
-            AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-            rating.setDialogDismissListener(dismissListener);
-            rating.show(fragmentManager, "AppFeedbackRatingBottomSheet");
-        }
+    public void showAppFeedbackRatingDialog(
+            FragmentManager manager,
+            Context context,
+            BottomSheets.BottomSheetDismissListener dismissListener
+    ) {
+        AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
+        rating.setDialogDismissListener(dismissListener);
+        rating.showDialog(manager, context);
     }
 
     @Override
