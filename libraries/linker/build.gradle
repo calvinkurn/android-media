@@ -12,6 +12,13 @@ buildscript {
     }
 }
 
+project.ext {
+    artifactId = 'linker'
+    groupId = 'com.tokopedia.linker'
+    versionName = "1.0.0"
+    artifactName = "linker-release"
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -19,3 +26,5 @@ dependencies {
         exclude module: 'answers-shim'
     }
 }
+
+apply from: '../../publish_local.gradle'

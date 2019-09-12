@@ -34,6 +34,15 @@ android {
     }
 }
 
+project.ext {
+    artifactId = 'logger'
+    groupId = 'com.tokopedia.logger'
+    versionName = "1.0.0"
+    artifactName = "logger-release"
+}
+
 dependencies {
 
 }
+
+apply from: '../../publish_local.gradle'

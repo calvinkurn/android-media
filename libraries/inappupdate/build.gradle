@@ -41,6 +41,15 @@ android {
     }
 }
 
+project.ext {
+    artifactId = 'inappupdate'
+    groupId = 'com.tokopedia.inappupdate'
+    versionName = "1.0.0"
+    artifactName = "inappupdate-release"
+}
+
 dependencies {
     implementation rootProject.ext.playServicesDependencies.core
 }
+
+apply from: '../../publish_local.gradle'

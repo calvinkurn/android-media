@@ -1,5 +1,12 @@
 apply plugin: 'com.android.library'
 
+project.ext {
+    artifactId = 'resource_common'
+    groupId = 'com.tokopedia.resources.common'
+    versionName = "1.0.0"
+    artifactName = "resource-common-release"
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -12,3 +19,5 @@ android {
         versionName "1.0"
     }
 }
+
+apply from: '../../../publish_local.gradle'

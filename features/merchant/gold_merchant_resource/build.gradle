@@ -1,6 +1,13 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
+project.ext {
+    artifactId = 'goldmerchantresource'
+    groupId = 'com.tokopedia.goldmerchantresource'
+    versionName = "1.0.0"
+    artifactName = "goldmerchantresource-release"
+}
+
 dependencies {
 
     testCompile rootProject.ext.testDependencies.junit
@@ -8,3 +15,5 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 }
+
+apply from: '../../../publish_local.gradle'
