@@ -45,3 +45,5 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
 }
+
+apply from: '../../../publish_local.gradle'

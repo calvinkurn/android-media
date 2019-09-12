@@ -19,3 +19,12 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.twitter
 }
+
+project.ext {
+    artifactId = 'twittershare'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="librarytwittershare-release"
+}
+
+apply from: '../../publish_local.gradle'

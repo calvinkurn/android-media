@@ -32,3 +32,12 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.tkpddesign)
 }
+
+project.ext {
+    artifactId = 'common'
+    groupId = 'com.tokopedia.transaction'
+    versionName = "1.0.0"
+    artifactName ="transactioncommon-release"
+}
+
+apply from: '../publish_local.gradle'

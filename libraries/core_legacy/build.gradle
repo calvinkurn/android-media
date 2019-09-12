@@ -33,7 +33,7 @@ android {
 project.ext {
     artifactId = 'core'
     groupId = 'com.tokopedia.core'
-    versionName = "2.23"
+    versionName = "1.0.0"
     artifactName ="tkpdcore-release"
 }
 

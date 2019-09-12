@@ -25,12 +25,6 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'vote'
-    groupId = 'com.tokopedia.vote'
-    versionName = "1.0.0"
-    artifactName ="vote-release"
-}
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -47,3 +41,12 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+
+project.ext {
+    artifactId = 'vote'
+    groupId = 'com.tokopedia.vote'
+    versionName = "1.0.0"
+    artifactName = "vote-release"
+}
+
+apply from: '../../../publish_local.gradle'

@@ -60,3 +60,12 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
 }
+
+project.ext {
+    artifactId = 'loginphone'
+    groupId = 'com.tokopedia.loginphone'
+    versionName = "1.0.0"
+    artifactName = "loginphone-release"
+}
+
+apply from: '../../../publish_local.gradle'

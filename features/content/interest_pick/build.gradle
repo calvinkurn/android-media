@@ -19,13 +19,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'interestpick'
-    groupId = 'com.tokopedia.interestpick'
-    versionName = "1.0.0"
-    artifactName = "interestpick-release"
-}
-
 dependencies {
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -53,3 +46,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'interestpick'
+    groupId = 'com.tokopedia.interestpick'
+    versionName = "1.0.0"
+    artifactName = "interestpick-release"
+}
+
+apply from: '../../../publish_local.gradle'

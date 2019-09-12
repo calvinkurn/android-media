@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'ovo_pay_with_qr'
     groupId = 'com.tokopedia.ovo'
-    versionName = "2.23"
+    versionName = "1.0.0"
     artifactName ="ovo-release"
 }
 
@@ -40,3 +40,5 @@ dependencies {
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation project(rootProject.ext.libraries.webview)
 }
+
+apply from: '../../../publish_local.gradle'

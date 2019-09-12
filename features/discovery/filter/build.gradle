@@ -38,3 +38,12 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.parceler
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 }
+
+project.ext {
+    artifactId = 'filter'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoveryfilter-release"
+}
+
+apply from: '../../../publish_local.gradle'

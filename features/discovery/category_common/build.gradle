@@ -34,3 +34,12 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 }
+
+project.ext {
+    artifactId = 'categorycommon'
+    groupId = 'com.tokopedia.categorycommon'
+    versionName = "1.0.0"
+    artifactName = "categorycommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

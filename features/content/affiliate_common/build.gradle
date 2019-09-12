@@ -19,13 +19,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'affiliatecommon'
-    groupId = 'com.tokopedia.affiliatecommon'
-    versionName = "1.0.0"
-    artifactName ="affiliatecommon-release"
-}
-
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -46,3 +39,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation 'io.reactivex:rxkotlin:0.60.0'
 }
+
+project.ext {
+    artifactId = 'affiliatecommon'
+    groupId = 'com.tokopedia.affiliatecommon'
+    versionName = "1.0.0"
+    artifactName ="affiliatecommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

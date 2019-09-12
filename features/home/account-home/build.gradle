@@ -73,3 +73,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.webview)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 }
+
+project.ext {
+    artifactId = 'accounthome'
+    groupId = 'com.tokopedia.accounthome'
+    versionName = "1.0.0"
+    artifactName = "accounthome-release"
+}
+
+apply from: '../../../publish_local.gradle'

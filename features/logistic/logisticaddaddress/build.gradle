@@ -19,7 +19,7 @@ buildscript {
 
 project.ext {
     artifactId = "logisticaddaddress"
-    groupId = "com.tokopedia.logistic"
+    groupId = "com.tokopedia.logisticaddress"
     versionName = "1.0.0"
     artifactName = "logisticaddaddress-release"
 }
@@ -55,3 +55,5 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.mockk
 }
+
+apply from: '../../../publish_local.gradle'

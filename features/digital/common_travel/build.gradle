@@ -6,13 +6,6 @@ repositories {
     maven { url 'https://hansel.io/maven' }
 }
 
-project.ext {
-    artifactId = 'common_travel'
-    groupId = 'com.tokopedia.common.travel'
-    versionName = "1.0.0"
-    artifactName = "commontravel-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -58,3 +51,12 @@ dependencies {
 
     implementation rootProject.ext.debugToolsDependencies.stetho
 }
+
+project.ext {
+    artifactId = 'common_travel'
+    groupId = 'com.tokopedia.common.travel'
+    versionName = "1.0.0"
+    artifactName = "commontravel-release"
+}
+
+apply from: '../../../publish_local.gradle'

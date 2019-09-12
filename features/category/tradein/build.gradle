@@ -46,3 +46,12 @@ dependencies {
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     testImplementation 'junit:junit:4.12'
 }
+
+project.ext {
+    artifactId = 'tradein'
+    groupId = 'com.tokopedia.tradein'
+    versionName = "1.0.0"
+    artifactName = "tradein-release"
+}
+
+apply from: '../../../publish_local.gradle'

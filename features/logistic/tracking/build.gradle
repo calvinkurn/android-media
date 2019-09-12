@@ -46,3 +46,5 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
+
+apply from: '../../../publish_local.gradle'

@@ -19,3 +19,12 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+project.ext {
+    artifactId = 'expresscheckoutcommon'
+    groupId = 'com.tokopedia.expresscheckout'
+    versionName = "1.0.0"
+    artifactName = "expresscheckoutcommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

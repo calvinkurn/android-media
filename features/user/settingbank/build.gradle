@@ -55,3 +55,12 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
 }
+
+project.ext {
+    artifactId = 'settingbank'
+    groupId = 'com.tokopedia.settingbank'
+    versionName = "1.0.0"
+    artifactName = "settingbank-release"
+}
+
+apply from: '../../../publish_local.gradle'

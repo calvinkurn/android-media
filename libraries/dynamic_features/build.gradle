@@ -21,3 +21,12 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.core
 }
+
+project.ext {
+    artifactId = 'dynamicfeature'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="librarydynamicfeature-release"
+}
+
+apply from: '../../publish_local.gradle'

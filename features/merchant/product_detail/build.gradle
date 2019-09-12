@@ -89,3 +89,12 @@ dependencies {
 
     testImplementation rootProject.ext.testDependencies.assertJ
 }
+
+project.ext {
+    artifactId = 'productdetail'
+    groupId = 'com.tokopedia.productdetail'
+    versionName = "1.0.0"
+    artifactName = "productdetail-release"
+}
+
+apply from: '../../../publish_local.gradle'

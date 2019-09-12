@@ -31,3 +31,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
+
+project.ext {
+    artifactId = 'imageuploader'
+    groupId = 'com.tokopedia.imageuploader'
+    versionName = "1.0.0"
+    artifactName = "imageuploader-release"
+}
+
+apply from: '../../publish_local.gradle'

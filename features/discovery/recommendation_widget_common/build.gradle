@@ -31,3 +31,12 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
+
+project.ext {
+    artifactId = 'recommendationwidgetcommon'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoveryrecommendationwidgetcommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

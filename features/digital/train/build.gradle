@@ -6,13 +6,6 @@ repositories {
     maven { url 'https://hansel.io/maven' }
 }
 
-project.ext {
-    artifactId = 'train'
-    groupId = 'com.tokopedia.train'
-    versionName = "1.0.0"
-    artifactName ="tkpdtrain-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -60,3 +53,12 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
 }
+
+project.ext {
+    artifactId = 'train'
+    groupId = 'com.tokopedia.train'
+    versionName = "1.0.0"
+    artifactName ="tkpdtrain-release"
+}
+
+apply from: '../../../publish_local.gradle'

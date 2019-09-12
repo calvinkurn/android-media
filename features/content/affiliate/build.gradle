@@ -18,13 +18,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'affiliate'
-    groupId = 'com.tokopedia.affiliate'
-    versionName = "1.0.0"
-    artifactName = "affiliate-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -76,6 +69,13 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
 
     implementation project(rootProject.ext.libraries.twitterShare)
+}
+
+project.ext {
+    artifactId = 'affiliate'
+    groupId = 'com.tokopedia.affiliate'
+    versionName = "1.0.0"
+    artifactName = "affiliate-release"
 }
 
 apply from: '../../../publish_local.gradle'

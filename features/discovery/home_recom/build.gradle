@@ -60,3 +60,12 @@ dependencies {
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
+
+project.ext {
+    artifactId = 'homerecommendation'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoveryhomerecommendation-release"
+}
+
+apply from: '../../../publish_local.gradle'

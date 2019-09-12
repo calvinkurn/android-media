@@ -16,13 +16,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'explore'
-    groupId = 'com.tokopedia.explore'
-    versionName = "1.0.0"
-    artifactName = "explore-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -56,6 +49,13 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+project.ext {
+    artifactId = 'explore'
+    groupId = 'com.tokopedia.explore'
+    versionName = "1.0.0"
+    artifactName = "explore-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -27,3 +27,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'webview'
+    groupId = 'com.tokopedia.webview'
+    versionName = "1.0.0"
+    artifactName = "webview-release"
+}
+
+apply from: '../../publish_local.gradle'

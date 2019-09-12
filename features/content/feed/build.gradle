@@ -23,13 +23,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'feed'
-    groupId = 'com.tokopedia.feedplus'
-    versionName = "1.0.0"
-    artifactName = "feed-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -99,6 +92,13 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+}
+
+project.ext {
+    artifactId = 'feed'
+    groupId = 'com.tokopedia.feed'
+    versionName = "1.0.0"
+    artifactName = "feed-release"
 }
 
 apply from: '../../../publish_local.gradle'

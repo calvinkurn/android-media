@@ -38,3 +38,5 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 }
+
+apply from: '../../publish_local.gradle'

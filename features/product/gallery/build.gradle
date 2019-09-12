@@ -40,3 +40,5 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
 }
+
+apply from: '../../../publish_local.gradle'

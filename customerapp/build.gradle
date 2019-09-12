@@ -293,7 +293,7 @@ dependencies {
     implementation project(rootProject.ext.features.search)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
-    implementation project(rootProject.ext.features.homeRecommendation)
+    implementation project(rootProject.ext.features.homeRecom)
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.profile)
@@ -370,7 +370,7 @@ dependencies {
     implementation project(rootProject.ext.features.onboarding)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
-    implementation project(rootProject.ext.features.digitalHome)
+    implementation project(rootProject.ext.features.digitalHomepage)
 
 
     implementation project(rootProject.ext.libraries.iris)
@@ -434,7 +434,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation rootProject.ext.supportLibDependencies.tkpddesign
+    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
 
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor

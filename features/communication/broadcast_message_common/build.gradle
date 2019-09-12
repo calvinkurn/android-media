@@ -12,3 +12,12 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+project.ext {
+    artifactId = 'broadcastmessagecommon'
+    groupId = 'com.tokopedia.broadcastmessagecommon'
+    versionName = "1.0.0"
+    artifactName = "broadcastmessagecommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

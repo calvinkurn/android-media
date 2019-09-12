@@ -21,3 +21,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 }
+
+project.ext {
+    artifactId = 'csatrating'
+    groupId = 'com.tokopedia.operational'
+    versionName = "1.0.0"
+    artifactName ="operationalcsatrating-release"
+}
+
+apply from: '../../../publish_local.gradle'

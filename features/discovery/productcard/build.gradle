@@ -31,3 +31,12 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 }
+
+project.ext {
+    artifactId = 'productcard'
+    groupId = 'com.tokopedia.productcard'
+    versionName = "1.0.0"
+    artifactName = "productcard-release"
+}
+
+apply from: '../../../publish_local.gradle'

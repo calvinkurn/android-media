@@ -21,3 +21,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 }
+
+project.ext {
+    artifactId = 'sharedata'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="librarysharedata-release"
+}
+
+apply from: '../../publish_local.gradle'

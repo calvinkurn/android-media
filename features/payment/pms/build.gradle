@@ -52,3 +52,5 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+
+apply from: '../../../publish_local.gradle'

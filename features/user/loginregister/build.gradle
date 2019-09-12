@@ -65,3 +65,12 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+
+project.ext {
+    artifactId = 'loginregister'
+    groupId = 'com.tokopedia.loginregister'
+    versionName = "1.0.0"
+    artifactName = "loginregister-release"
+}
+
+apply from: '../../../publish_local.gradle'

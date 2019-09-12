@@ -53,3 +53,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'chatbot'
+    groupId = 'com.tokopedia.chatbot'
+    versionName = "1.0.0"
+    artifactName = "chatbot-release"
+}
+
+apply from: '../../../publish_local.gradle'

@@ -26,3 +26,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'officialstore'
+    groupId = 'com.tokopedia.officialstore'
+    versionName = "1.0.0"
+    artifactName = "officialstore-release"
+}
+
+apply from: '../../../publish_local.gradle'

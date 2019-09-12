@@ -43,3 +43,12 @@ dependencies {
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
 }
+
+project.ext {
+    artifactId = 'corenetwork'
+    groupId = 'com.tokopedia.corenetwork'
+    versionName = "1.0.0"
+    artifactName = "corenetwork-release"
+}
+
+apply from: '../../publish_local.gradle'

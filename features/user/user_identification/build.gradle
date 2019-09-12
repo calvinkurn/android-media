@@ -43,3 +43,11 @@ dependencies {
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
 
+project.ext {
+    artifactId = 'useridentification'
+    groupId = 'com.tokopedia.useridentification'
+    versionName = "1.0.0"
+    artifactName = "useridentification-release"
+}
+
+apply from: '../../../publish_local.gradle'

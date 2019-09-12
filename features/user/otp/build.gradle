@@ -43,6 +43,13 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-
-
 }
+
+project.ext {
+    artifactId = 'otp'
+    groupId = 'com.tokopedia.otp'
+    versionName = "1.0.0"
+    artifactName = "otp-release"
+}
+
+apply from: '../../../publish_local.gradle'

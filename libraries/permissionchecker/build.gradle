@@ -4,3 +4,12 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
 }
+
+project.ext {
+    artifactId = 'permissionchecker'
+    groupId = 'com.tokopedia.permissionchecker'
+    versionName = "1.0.0"
+    artifactName = "permissionchecker-release"
+}
+
+apply from: '../../publish_local.gradle'

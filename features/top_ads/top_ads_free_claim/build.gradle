@@ -20,3 +20,12 @@ dependencies {
 
     implementation project(rootProject.ext.features.topAdsManagementCommon)
 }
+
+project.ext {
+    artifactId = 'topadsfreeclaim'
+    groupId = 'com.tokopedia.topadsfreeclaim'
+    versionName = "1.0.0"
+    artifactName = "topadsfreeclaim-release"
+}
+
+apply from: '../../../publish_local.gradle'

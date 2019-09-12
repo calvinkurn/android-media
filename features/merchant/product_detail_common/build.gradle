@@ -19,3 +19,12 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 }
+
+project.ext {
+    artifactId = 'productdetailcommon'
+    groupId = 'com.tokopedia.productdetailcommon'
+    versionName = "1.0.0"
+    artifactName = "productdetailcommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

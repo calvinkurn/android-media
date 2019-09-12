@@ -24,7 +24,7 @@ buildscript {
 project.ext {
     artifactId = 'search'
     groupId = 'com.tokopedia.search'
-    versionName = "3.30"
+    versionName = "1.0.0"
     artifactName ="tkpdsearch-release"
 }
 

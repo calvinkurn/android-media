@@ -67,3 +67,5 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.assertJCore
     testImplementation 'org.json:json:20140107'
 }
+
+apply from: '../../publish_local.gradle'

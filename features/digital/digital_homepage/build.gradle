@@ -51,3 +51,12 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.analytics
 }
+
+project.ext {
+    artifactId = 'homepage'
+    groupId = 'com.tokopedia.digital'
+    versionName = "1.0.0"
+    artifactName ="digitalhomepage-release"
+}
+
+apply from: '../../../publish_local.gradle'

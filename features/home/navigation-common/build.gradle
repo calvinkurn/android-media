@@ -24,3 +24,12 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.tkpdabstraction)
 }
+
+project.ext {
+    artifactId = 'navigation-common'
+    groupId = 'com.tokopedia.navigation_common'
+    versionName = "1.0.0"
+    artifactName ="navigation_common-release"
+}
+
+apply from: '../../../publish_local.gradle'

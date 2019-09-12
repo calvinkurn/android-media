@@ -15,13 +15,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'kolcommon'
-    groupId = 'com.tokopedia.kolcommon'
-    versionName = "1.0.0"
-    artifactName = "kolcommon-release"
-}
-
 dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -34,6 +27,13 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
     compile project(path: ':tkpdabstraction')
+}
+
+project.ext {
+    artifactId = 'kolcommon'
+    groupId = 'com.tokopedia.kolcommon'
+    versionName = "1.0.0"
+    artifactName = "kolcommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

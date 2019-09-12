@@ -38,3 +38,5 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.playServicesDependencies.analytics;
 }
+
+apply from: '../../../publish_local.gradle'

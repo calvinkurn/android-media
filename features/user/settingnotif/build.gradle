@@ -33,3 +33,12 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.components
 }
+
+project.ext {
+    artifactId = 'settingnotif'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName ="usersettingnotif-release"
+}
+
+apply from: '../../../publish_local.gradle'

@@ -20,3 +20,12 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
 
 }
+
+project.ext {
+    artifactId = 'imagepreview'
+    groupId = 'com.tokopedia.imagepreview'
+    versionName = "1.0.0"
+    artifactName = "imagepreview-release"
+}
+
+apply from: '../../publish_local.gradle'

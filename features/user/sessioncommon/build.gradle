@@ -42,3 +42,12 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.platformEngine
     testImplementation rootProject.ext.testDependencies.junitPlatformRunner
 }
+
+project.ext {
+    artifactId = 'sessioncommon'
+    groupId = 'com.tokopedia.sessioncommon'
+    versionName = "1.0.0"
+    artifactName = "sessioncommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

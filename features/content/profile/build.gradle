@@ -19,13 +19,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'profile'
-    groupId = 'com.tokopedia.profile'
-    versionName = "1.0.0"
-    artifactName ="profile-release"
-}
-
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
@@ -75,3 +68,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'profile'
+    groupId = 'com.tokopedia.profile'
+    versionName = "1.0.0"
+    artifactName ="profile-release"
+}
+
+apply from: '../../../publish_local.gradle'

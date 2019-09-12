@@ -30,3 +30,12 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.junitJupiterApi
     testRuntimeOnly rootProject.ext.testDependencies.junitJupiterEngine
 }
+
+project.ext {
+    artifactId = 'travelcalendar'
+    groupId = 'com.tokopedia.travelcalendar'
+    versionName = "1.0.0"
+    artifactName ="travelcalendar-release"
+}
+
+apply from: '../../publish_local.gradle'

@@ -35,3 +35,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'instantdebitbca'
+    groupId = 'com.tokopedia.digital'
+    versionName = "1.0.0"
+    artifactName ="instantdebitbca-release"
+}
+
+apply from: '../../../publish_local.gradle'

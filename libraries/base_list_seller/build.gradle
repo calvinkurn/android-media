@@ -3,7 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
 
-    implementation rootProject.ext.supportLibDependencies.tkpddesign
+    implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.appCompactV7
 
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -14,3 +14,12 @@ dependencies {
     })
     testCompile rootProject.ext.testDependencies.junit
 }
+
+project.ext {
+    artifactId = 'baselistseller'
+    groupId = 'com.tokopedia.baselistseller'
+    versionName = "1.0.0"
+    artifactName = "baselistseller-release"
+}
+
+apply from: '../../publish_local.gradle'

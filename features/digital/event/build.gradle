@@ -21,13 +21,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'events'
-    groupId = 'com.tokopedia.events'
-    versionName = "1.0.0"
-    artifactName ="tkpdevents-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -75,6 +68,13 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+project.ext {
+    artifactId = 'events'
+    groupId = 'com.tokopedia.events'
+    versionName = "1.0.0"
+    artifactName ="tkpdevents-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -33,3 +33,11 @@ dependencies {
 
 }
 
+project.ext {
+    artifactId = 'useridentificationcommon'
+    groupId = 'com.tokopedia.useridentificationcommon'
+    versionName = "1.0.0"
+    artifactName = "useridentificationcommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

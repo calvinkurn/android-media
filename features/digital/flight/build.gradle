@@ -12,13 +12,6 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'flight'
-    groupId = 'com.tokopedia.flight'
-    versionName = "1.0.0"
-    artifactName ="tkpdflight-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -83,6 +76,13 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+}
+
+project.ext {
+    artifactId = 'flight'
+    groupId = 'com.tokopedia.flight'
+    versionName = "1.0.0"
+    artifactName ="tkpdflight-release"
 }
 
 apply from: '../../../publish_local.gradle'

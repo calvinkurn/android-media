@@ -17,13 +17,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'kol'
-    groupId = 'com.tokopedia.kol'
-    versionName = "1.0.0"
-    artifactName ="kol-release"
-}
-
 dependencies {
 
     api (rootProject.ext.serviceDependencies.crashlytics) {
@@ -95,6 +88,13 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+}
+
+project.ext {
+    artifactId = 'kol'
+    groupId = 'com.tokopedia.kol'
+    versionName = "1.0.0"
+    artifactName ="kol-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'home_credit'
     groupId = 'com.tokopedia.homecredit'
-    versionName = "2.23"
+    versionName = "1.0.0"
     artifactName ="home_credit-release"
 }
 
@@ -32,3 +32,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'homecredit'
+    groupId = 'com.tokopedia.homecredit'
+    versionName = "1.0.0"
+    artifactName = "homecredit-release"
+}
+
+apply from: '../../../publish_local.gradle'

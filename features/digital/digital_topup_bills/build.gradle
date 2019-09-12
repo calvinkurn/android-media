@@ -59,3 +59,12 @@ dependencies {
         exclude group: "com.android.support"
     }
 }
+
+project.ext {
+    artifactId = 'topupbills'
+    groupId = 'com.tokopedia.digital'
+    versionName = "1.0.0"
+    artifactName ="discoverycommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

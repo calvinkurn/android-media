@@ -39,3 +39,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation 'io.reactivex:rxkotlin:0.60.0'
 }
+
+project.ext {
+    artifactId = 'onboarding'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName ="useronboarding-release"
+}
+
+apply from: '../../../publish_local.gradle'

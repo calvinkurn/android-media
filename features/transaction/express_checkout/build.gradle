@@ -61,3 +61,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 }
+
+project.ext {
+    artifactId = 'expresscheckout'
+    groupId = 'com.tokopedia.expresscheckout'
+    versionName = "1.0.0"
+    artifactName = "expresscheckout-release"
+}
+
+apply from: '../../../publish_local.gradle'

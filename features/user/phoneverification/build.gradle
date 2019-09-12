@@ -45,3 +45,12 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
 }
+
+project.ext {
+    artifactId = 'phoneverification'
+    groupId = 'com.tokopedia.phoneverification'
+    versionName = "1.0.0"
+    artifactName = "phoneverification-release"
+}
+
+apply from: '../../../publish_local.gradle'

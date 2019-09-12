@@ -41,3 +41,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'agerestriction'
+    groupId = 'com.tokopedia.category'
+    versionName = "1.0.0"
+    artifactName ="categoryagerestriction-release"
+}
+
+apply from: '../../../publish_local.gradle'

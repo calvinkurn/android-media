@@ -63,6 +63,13 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
-
 }
+
+project.ext {
+    artifactId = 'profilecompilation'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName ="userprofilecompilation-release"
+}
+
+apply from: '../../../publish_local.gradle'
