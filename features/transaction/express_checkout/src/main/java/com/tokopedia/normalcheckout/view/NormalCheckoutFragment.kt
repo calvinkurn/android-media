@@ -23,7 +23,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -100,6 +99,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     private lateinit var router: NormalCheckoutRouter
     private lateinit var adapter: CheckoutVariantAdapter
 
+    private var insuranceViewModel = InsuranceRecommendationViewModel()
     var shopId: String? = null
     var categoryId: String? = null
     lateinit var productId: String
@@ -1187,6 +1187,10 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     ?: 0
             adapter.clearAllElements()
             adapter.addDataViewModel(viewModels)
+
+            fragmentViewModel.viewModels.add(insuranceViewModel)
+
+            adapter.addSingleDataViewModel(insuranceViewModel)
             adapter.notifyDataSetChanged()
             renderActionButton(it)
             renderTotalPrice(it, viewModel.selectedwarehouse)
@@ -1195,11 +1199,13 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun onSuccessInsuranceRecommendation(insuranceRecommendation: InsuranceRecommendationGqlResponse) {
         selectedProductInfo?.let {
-            fragmentViewModel.viewModels.add(ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation))
-            adapter.addSingleDataViewModel(ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation))
+
+            insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
+            /*fragmentViewModel.viewModels.add(insuranceViewModel)
+            adapter.addSingleDataViewModel(insuranceViewModel)
             adapter.notifyDataSetChanged()
             renderActionButton(it)
-            renderTotalPrice(it, viewModel.selectedwarehouse)
+            renderTotalPrice(it, viewModel.selectedwarehouse)*/
         }
     }
 
