@@ -172,11 +172,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (passengerModel.passengerTitle != null) { renderPassengerTitle(passengerModel.passengerTitle) }
-    }
-
     fun initFirstNameAutoCompleteTv(context: Context) {
         travelContactArrayAdapter = TravelContactArrayAdapter(context,
                 com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(),
@@ -267,11 +262,11 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         if (isAdultPassenger()) {
             val entries = resources.getStringArray(R.array.flight_adult_titles)
-            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0)
+            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0, getPassengerTitleId(passengerModel.passengerTitle) - 1)
             rv_passenger_title.selectOnlyOneChip(true)
         } else {
             val entries = resources.getStringArray(R.array.flight_child_infant_titles)
-            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0)
+            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0, getPassengerTitleId(passengerModel.passengerTitle) - 1)
             rv_passenger_title.selectOnlyOneChip(true)
         }
     }

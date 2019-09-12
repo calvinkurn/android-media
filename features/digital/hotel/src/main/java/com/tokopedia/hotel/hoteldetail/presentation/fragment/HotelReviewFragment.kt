@@ -106,7 +106,7 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         filter_recycler_view.selectOnlyOneChip(true)
 
         //initially select recent search chip
-        filter_recycler_view.initiallySelectedChip(0)
+        filter_recycler_view.selectChipByPosition(0)
     }
 
     private fun onErrorGetResult(throwable: Throwable) {
