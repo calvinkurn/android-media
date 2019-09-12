@@ -22,6 +22,7 @@ query GetDashboard($userID:Int!) {
     profile {
       avatar
       link
+      affiliateName
     }
   }
 }

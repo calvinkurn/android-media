@@ -50,6 +50,7 @@ class GetAffiliateDashboardSubscriber(
 
     private fun mappingByMeProfile(header: BymeProfileHeader) = header.let {
         ShareableByMeProfileViewModel(
+                it.profile.affiliateName,
                 it.profile.avatar,
                 it.profile.link
         )

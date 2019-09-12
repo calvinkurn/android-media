@@ -98,6 +98,7 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -108,7 +109,6 @@ import com.tokopedia.showcase.ShowCaseDialog
 import com.tokopedia.showcase.ShowCaseObject
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.item_share_ig_by_me.view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -185,7 +185,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     @Inject
     lateinit var affiliatePreference: AffiliatePreference
 
-    private lateinit var byMeTemplatedView: View
+    private lateinit var byMeInstastoryView: ByMeInstastoryView
 
     companion object {
         private const val PARAM_TAB_NAME = "{tab_name}"
@@ -203,8 +203,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         private const val OPEN_CONTENT_REPORT = 1130
         private const val FOLLOW_HEADER = "follow_header"
         private const val FOLLOW_FOOTER = "follow_footer"
-
-        private const val IG_STORY_TEMP = "ig_story_temp"
 
         fun createInstance(bundle: Bundle): ProfileFragment {
             val fragment = ProfileFragment()
@@ -1203,8 +1201,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
         )
 
-        if (!::byMeTemplatedView.isInitialized) byMeTemplatedView = LayoutInflater.from(context).inflate(R.layout.item_share_ig_by_me, null)
-        byMeTemplatedView.tv_user_name.text = element.formattedAffiliateName
+        if (!::byMeInstastoryView.isInitialized) context?.let { ctx -> byMeInstastoryView = ByMeInstastoryView(ctx) }
+        byMeInstastoryView.setUserName(element.formattedAffiliateName)
 
         val selfProfile = userSession.userId == userId.toString()
                 && element.isAffiliate
@@ -1449,12 +1447,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
             shareProfile.setOnClickListener {
                 checkShouldChangeUsername(headerViewModel.link) {
-                    byMeTemplatedView.iv_avatar.setImageDrawable(iv_profile.drawable)
+                    byMeInstastoryView.setAvatarDrawable(iv_profile.drawable)
                     linkerData = showShareBottomSheet(
                             headerViewModel,
                             String.format(getString(R.string.profile_share_text), headerViewModel.link),
                             String.format(getString(R.string.profile_share_title)),
-                            byMeTemplatedView.toSquareBitmap()
+                            byMeInstastoryView.getTempFileUri()
                     )
                     profileAnalytics.eventClickShareProfileIni(isOwner, userId.toString())
                     isShareProfile = true
@@ -1788,7 +1786,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             element: ProfileHeaderViewModel,
             shareFormat: String,
             shareTitle: String,
-            imageBitmap: Bitmap?
+            imageUri: String?
     ): LinkerData {
         val bottomSheet = ShareBottomSheets.newInstance(
                 this@ProfileFragment,
@@ -1797,11 +1795,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
                 element.link,
                 shareFormat,
                 shareTitle,
-                imageBitmap?.let { image ->
-                    val ctx = context
-                    if (ctx != null) MethodChecker.getUri(context, image.toTempFile(ctx, IG_STORY_TEMP)).toString()
-                    else null
-                }
+                imageUri
         ).also {
             it.show(fragmentManager)
         }

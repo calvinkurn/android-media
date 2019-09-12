@@ -33,6 +33,7 @@ import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
+import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.EmptyState
 import com.tokopedia.unifycomponents.Toaster
@@ -78,6 +79,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var esShareNow: EmptyState
     private lateinit var srlRefresh: SwipeRefreshLayout
     private lateinit var ivAfIncomeInfo: ImageView
+    private lateinit var bmivShare: ByMeInstastoryView
 
     private lateinit var calendarBottomSheet: CloseableBottomSheetDialog
     private lateinit var calendarView: View
@@ -154,6 +156,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             esShareNow = findViewById(R.id.es_share_now)
             srlRefresh = findViewById(R.id.srl_refresh)
             ivAfIncomeInfo = findViewById(R.id.iv_af_income_info)
+            bmivShare = findViewById(R.id.bmiv_share)
         }
     }
 
@@ -194,7 +197,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
         srlRefresh.isRefreshing = false
 
-        this.profileHeader = byMeHeader
+        profileHeader = byMeHeader
+        initByMeInstastoryView(byMeHeader)
     }
 
     override fun onErrorCheckAffiliate(error: String) {
@@ -282,7 +286,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     private fun getMinDate(): Date {
-        val minDate = "2009-01-01"
+        val minDate = "2015-01-01"
         val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         return dateFormatter.parse(minDate)
     }
@@ -399,14 +403,21 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             ShareBottomSheets.newInstance(
                     this,
                     "",
-                    profileHeader.avatar.orEmpty(),
+                    profileHeader.avatar,
                     profileHeader.link,
                     String.format(getString(R.string.profile_share_text), profileHeader.link),
                     String.format(getString(R.string.profile_share_title)),
-                    null
+                    bmivShare.getTempFileUri()
             ).also {
                 it.show(fragmentManager)
             }
+        }
+    }
+
+    private fun initByMeInstastoryView(byMeHeader: ShareableByMeProfileViewModel) {
+        bmivShare.apply {
+            setUserName(byMeHeader.formattedUserName)
+            ivAvatar.loadImageCircle(byMeHeader.avatar)
         }
     }
 
