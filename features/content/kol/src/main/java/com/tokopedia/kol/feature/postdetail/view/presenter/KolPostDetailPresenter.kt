@@ -13,6 +13,7 @@ import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetRelatedPostUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
@@ -21,16 +22,26 @@ import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCa
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract
 import com.tokopedia.kol.feature.postdetail.view.subscriber.FollowUnfollowDetailSubscriber
 import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubscriber
+import com.tokopedia.kolcommon.data.pojo.Whitelist
+import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
+import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase
+import rx.Observable
 
 import java.util.ArrayList
 
 import javax.inject.Inject
 
 import rx.Subscriber
+import rx.functions.Func1
+import rx.schedulers.Schedulers
 
 /**
  * @author by milhamj on 27/07/18.
@@ -46,6 +57,7 @@ class KolPostDetailPresenter @Inject constructor(
         private val deletePostUseCase: DeletePostUseCase,
         private val atcUseCase: AddToCartUseCase,
         private val getRelatedPostUseCase: GetRelatedPostUseCase,
+        private val getWhitelistUseCase: GetWhitelistUseCase,
         private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<KolPostDetailContract.View>(), KolPostDetailContract.Presenter {
 
@@ -295,5 +307,31 @@ class KolPostDetailPresenter @Inject constructor(
             list.add(RelatedPostItemViewModel(item))
         }
         return list
+    }
+
+    override fun getWhitelist(authorId: String) {
+        getWhitelistUseCase.clearRequest()
+        getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
+                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
+        )
+        getWhitelistUseCase.execute(RequestParams.EMPTY, object: Subscriber<GraphqlResponse>() {
+            override fun onNext(t: GraphqlResponse) {
+                val query = t.getData<WhitelistQuery>(WhitelistQuery::class.java)
+                val whitelist = if (query != null) {
+                    query.whitelist
+                } else {
+                    Whitelist()
+                }
+                view?.onSuccessGetWhitelist(whitelist)
+            }
+
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable) {
+                e.debugTrace()
+
+            }
+        })
     }
 }

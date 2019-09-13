@@ -78,6 +78,7 @@ import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
+import com.tokopedia.kolcommon.data.pojo.Whitelist;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
@@ -992,6 +993,13 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSuccessGetWhitelist(Whitelist whitelist) {
+        if (!whitelist.getAuthors().isEmpty()) {
+            showFeedFab(whitelist);
+        }
+    }
+
+    @Override
     public void onRelatedPostImpression(@NotNull FeedPostRelated.Datum post) {
         analytics.eventImpressionOtherPost(post.getId());
     }
@@ -1032,4 +1040,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
+    private void showFeedFab(Whitelist whitelist) {
+
+    }
 }
