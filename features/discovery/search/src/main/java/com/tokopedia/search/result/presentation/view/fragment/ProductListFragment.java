@@ -26,6 +26,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.manager.SimilarSearchManager;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
@@ -56,7 +57,6 @@ import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceM
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
-import com.tokopedia.search.similarsearch.SimilarSearchManager;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
@@ -335,10 +335,7 @@ public class ProductListFragment
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
-
-        if (similarSearchManager.isSimilarSearchEnable()){
-            startShowCase();
-        }
+        startShowCase();
     }
 
     private void stopSearchResultPagePerformanceMonitoring() {
@@ -537,7 +534,7 @@ public class ProductListFragment
     public void onLongClick(ProductItemViewModel item, int adapterPosition) {
         if(similarSearchManager == null || getSearchParameter() == null) return;
 
-        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item);
+        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item.getProductID());
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
@@ -977,7 +974,7 @@ public class ProductListFragment
         if (getActivity() == null) {
             return false;
         }
-        return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
+        return !ShowCasePreference.hasShown(getActivity(), tag);
     }
 
     private ShowCaseDialog createShowCaseDialog() {
