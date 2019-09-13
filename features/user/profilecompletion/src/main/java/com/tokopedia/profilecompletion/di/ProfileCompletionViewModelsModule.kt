@@ -17,7 +17,7 @@ import dagger.multibindings.IntoMap
 
 @Module
 @ProfileCompletionSettingScope
-abstract class ProfileCompletionViewModelModule {
+abstract class ProfileCompletionViewModelsModule {
     @Binds
     @ProfileCompletionSettingScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory

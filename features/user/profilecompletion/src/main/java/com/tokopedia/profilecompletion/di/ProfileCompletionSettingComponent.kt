@@ -14,7 +14,7 @@ import dagger.Component
 @ProfileCompletionSettingScope
 @Component(modules = [
     ProfileCompletionSettingModule::class,
-    ProfileCompletionViewModelModule::class,
+    ProfileCompletionViewModelsModule::class,
     ProfileCompletionQueryModule::class,
     ImageUploadSettingProfileModule::class
 ], dependencies = [BaseAppComponent::class])
