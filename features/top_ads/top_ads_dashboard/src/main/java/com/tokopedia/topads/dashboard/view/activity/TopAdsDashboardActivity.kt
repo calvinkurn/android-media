@@ -93,7 +93,7 @@ class TopAdsDashboardActivity : BaseSimpleActivity(), HasComponent<TopAdsDashboa
         val fragment = supportFragmentManager.findFragmentByTag(TAG) as TopAdsDashboardFragment
                 ?: return
 
-        showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase()
+        showCaseDialog = ShowCaseDialogFactory.createTkpdShowCase(this)
         showCaseDialog.setShowCaseStepListener { previousStep, nextStep, showCaseObject -> false }
 
         val showCaseList = ArrayList<ShowCaseObject>()
