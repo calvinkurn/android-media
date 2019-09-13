@@ -103,6 +103,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     private var tabPosition = 0
     lateinit var remoteConfig: RemoteConfig
+    private lateinit var cartLocalCacheHandler: LocalCacheHandler
 
     private val errorTextView by lazy {
         findViewById<TextView>(R.id.message_retry)
@@ -202,6 +203,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         GraphqlClient.init(this)
         initInjector()
         remoteConfig = FirebaseRemoteConfigImpl(this)
+        cartLocalCacheHandler = LocalCacheHandler(this, CART_LOCAL_CACHE_NAME)
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
         shopPageTracking = ShopPageTrackingBuyer(
                 TrackingQueue(this))
@@ -386,7 +388,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             val drawable = ContextCompat.getDrawable(this, R.drawable.ic_cart_menu)
             if (drawable is LayerDrawable) {
                 val countDrawable = CountDrawable(this)
-                val cartCount = LocalCacheHandler(this, CART_LOCAL_CACHE_NAME).getInt(TOTAL_CART_CACHE_KEY, 0)
+                val cartCount = cartLocalCacheHandler.getInt(TOTAL_CART_CACHE_KEY, 0)
                 countDrawable.setCount(cartCount.toString())
                 drawable.mutate()
                 drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
