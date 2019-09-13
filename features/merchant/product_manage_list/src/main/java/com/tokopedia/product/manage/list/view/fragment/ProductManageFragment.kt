@@ -6,10 +6,10 @@ import android.app.ProgressDialog
 import android.content.*
 import android.graphics.Typeface
 import android.os.Bundle
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AlertDialog
+import com.google.android.material.appbar.AppBarLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AlertDialog
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod

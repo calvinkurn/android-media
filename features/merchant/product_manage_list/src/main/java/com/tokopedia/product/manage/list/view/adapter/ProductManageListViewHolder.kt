@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.list.view.adapter
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import android.widget.CheckBox
 import android.widget.CompoundButton

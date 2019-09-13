@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.list.data.model
 
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import com.tokopedia.product.manage.list.R
 
 abstract class BulkBottomSheetType(

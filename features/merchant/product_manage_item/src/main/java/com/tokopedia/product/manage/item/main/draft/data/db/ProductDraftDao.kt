@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.item.main.draft.data.db
 
-import android.arch.persistence.room.*
+import androidx.room.*
 
 @Dao
 interface ProductDraftDao {

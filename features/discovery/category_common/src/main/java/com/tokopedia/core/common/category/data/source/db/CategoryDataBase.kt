@@ -1,7 +1,7 @@
 package com.tokopedia.core.common.category.data.source.db
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 @Entity(tableName = DBMetaData.DB_TABLE)
 data class CategoryDataBase(
