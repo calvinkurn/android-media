@@ -4,9 +4,12 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.feedplus.profilerecommendation.domain.model.FollowRecommendationQuery
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecommendationContract
+import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationInfoViewModel
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.model.FollowResponseModel
+import rx.Subscriber
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -15,7 +18,7 @@ import javax.inject.Inject
  */
 class FollowRecommendationPresenter @Inject constructor(
         private val getFollowRecommendationUseCase: GetFollowRecommendationUseCase,
-        private val getFollowKolPostGqlUseCase: FollowKolPostGqlUseCase
+        private val followKolPostGqlUseCase: FollowKolPostGqlUseCase
 ) : BaseDaggerPresenter<FollowRecommendationContract.View>(), FollowRecommendationContract.Presenter {
 
     override fun getFollowRecommendationList(idList: List<Int>, cursor: String) {
@@ -28,6 +31,35 @@ class FollowRecommendationPresenter @Inject constructor(
 
             })
         }
+    }
+
+    override fun followUnfollowRecommendation(id: String, action: FollowRecommendationAction) {
+        followKolPostGqlUseCase.execute(
+                FollowKolPostGqlUseCase.createRequestParams(id.toInt(),
+                        when (action) {
+                            FollowRecommendationAction.FOLLOW -> FollowKolPostGqlUseCase.PARAM_FOLLOW
+                            FollowRecommendationAction.UNFOLLOW -> FollowKolPostGqlUseCase.PARAM_UNFOLLOW
+                        }),
+                object : Subscriber<FollowResponseModel>() {
+                    override fun onNext(t: FollowResponseModel) {
+                        if (t.errorMessage.isNullOrEmpty() && t.isSuccess) {
+                            when (action) {
+                                FollowRecommendationAction.FOLLOW -> view.onSuccessFollowRecommendation(id)
+                                FollowRecommendationAction.UNFOLLOW -> view.onSuccessUnfollowRecommendation(id)
+                            }
+                        }
+                        else view.onGetError(t.errorMessage)
+                    }
+
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        view.onGetError(e?.localizedMessage.orEmpty())
+                    }
+                }
+        )
     }
 
     private fun getRecommendationCardList(query: FollowRecommendationQuery): List<FollowRecommendationCardViewModel> = query.data.mapIndexed { index, data ->
@@ -48,7 +80,13 @@ class FollowRecommendationPresenter @Inject constructor(
     }
 
     private fun getRecommendationInfo(query: FollowRecommendationQuery): FollowRecommendationInfoViewModel = FollowRecommendationInfoViewModel(
-            instructionText = try { String.format(query.meta.assets.instruction, query.meta.minFollowed) } catch (e: Exception) { "" },
+            minFollowed = query.meta.minFollowed,
+            instructionText = query.meta.assets.instruction,
             buttonCTA = query.meta.assets.buttonCta
     )
+
+    override fun detachView() {
+        super.detachView()
+        followKolPostGqlUseCase.unsubscribe()
+    }
 }

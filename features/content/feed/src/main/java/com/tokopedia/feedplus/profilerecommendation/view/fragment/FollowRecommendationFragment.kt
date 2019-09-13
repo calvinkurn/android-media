@@ -10,14 +10,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.adapter.FollowRecommendationAdapter
 import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecommendationContract
 import com.tokopedia.feedplus.profilerecommendation.view.presenter.FollowRecommendationPresenter
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationInfoViewModel
 import com.tokopedia.feedplus.profilerecommendation.di.DaggerFollowRecommendationComponent
+import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -42,6 +47,8 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
     private lateinit var rvFollowRecom: RecyclerView
     private lateinit var btnAction: UnifyButton
     private lateinit var tvInfo: TextView
+
+    private lateinit var infoViewModel: FollowRecommendationInfoViewModel
 
     override fun getScreenName(): String {
         return "Follow Recommendation"
@@ -81,6 +88,7 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
             adapter = followRecommendationAdapter
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
+        btnAction.setOnClickListener { onBtnActionClicked() }
     }
 
     override fun onGetFollowRecommendationList(recomList: List<FollowRecommendationCardViewModel>, cursor: String) {
@@ -90,8 +98,8 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
     }
 
     override fun onGetFollowRecommendationInfo(infoViewModel: FollowRecommendationInfoViewModel) {
-        btnAction.text = infoViewModel.buttonCTA
-        tvInfo.text = infoViewModel.instructionText
+        this.infoViewModel = infoViewModel
+        setupInfo(infoViewModel, if(!::followRecommendationAdapter.isInitialized) followRecommendationAdapter.getFollowedCount() else 0)
     }
 
     override fun onDestroy() {
@@ -99,7 +107,49 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
         presenter.detachView()
     }
 
-    override fun onFollowButtonClicked(authorId: String) {
+    override fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecommendationAction) {
+        presenter.followUnfollowRecommendation(authorId, actionToCall)
+    }
 
+    override fun onFollowStateChanged(followCount: Int) {
+        setupInfo(infoViewModel, followCount)
+    }
+
+    override fun onSuccessFollowRecommendation(id: String) {
+        followRecommendationAdapter.updateFollowState(id, FollowRecommendationAction.FOLLOW)
+    }
+
+    override fun onSuccessUnfollowRecommendation(id: String) {
+        followRecommendationAdapter.updateFollowState(id, FollowRecommendationAction.UNFOLLOW)
+    }
+
+    override fun onGetError(error: String) {
+        view?.let { view -> Toaster.showError(view, error, 2000) }
+    }
+
+    private fun setupInfo(infoViewModel: FollowRecommendationInfoViewModel, numOfFollowed: Int) {
+        if (infoViewModel.minFollowed <= numOfFollowed) {
+            btnAction.text = getString(R.string.feed_open_feed)
+            tvInfo.text = getString(R.string.feed_finish_follow_recommendation)
+        }
+        else {
+            btnAction.text = infoViewModel.buttonCTA
+            tvInfo.text = try { String.format(infoViewModel.instructionText, infoViewModel.minFollowed - numOfFollowed) } catch (e: Exception) { "" }
+        }
+    }
+
+    private fun onBtnActionClicked() {
+        if (infoViewModel.minFollowed <= followRecommendationAdapter.getFollowedCount()) openFeed()
+        else followAllRecommendation()
+    }
+
+    private fun openFeed() {
+        if (RouteManager.isSupportApplink(context, ApplinkConst.FEED)) {
+            RouteManager.route(context, ApplinkConst.FEED)
+        }
+    }
+
+    private fun followAllRecommendation() {
+        TODO("Handle follow all recommendation")
     }
 }

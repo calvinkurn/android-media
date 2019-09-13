@@ -11,6 +11,7 @@ import android.widget.TextView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
 import com.tokopedia.kotlin.extensions.view.*
 
@@ -23,7 +24,8 @@ class FollowRecommendationAdapter(
     : RecyclerView.Adapter<FollowRecommendationAdapter.FollowRecommendationCardViewHolder>() {
 
     interface ActionListener {
-        fun onFollowButtonClicked(authorId: String)
+        fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecommendationAction)
+        fun onFollowStateChanged(followCount: Int)
     }
 
     private val itemList: MutableList<FollowRecommendationCardViewModel> = list.toMutableList()
@@ -61,6 +63,17 @@ class FollowRecommendationAdapter(
             clear()
             addAll(newList)
         }
+    }
+
+    fun getFollowedCount(): Int = itemList.count(FollowRecommendationCardViewModel::isFollowed)
+
+    fun updateFollowState(id: String, action: FollowRecommendationAction) {
+        val itemIndex = itemList.indexOfFirst { it.authorId == id }
+        itemList[itemIndex] = itemList[itemIndex].copy(
+                isFollowed = action == FollowRecommendationAction.FOLLOW
+        )
+        notifyItemChanged(itemIndex)
+        listener.onFollowStateChanged(getFollowedCount())
     }
 
     private fun updateItems(newList: List<FollowRecommendationCardViewModel>) {
@@ -112,12 +125,16 @@ class FollowRecommendationAdapter(
             }
 
             setBadge(element.badgeUrl)
-            setButtonFollow(element.isFollowed, element.enabledFollowText, element.disabledFollowText)
+            setButtonFollow(element.isFollowed)
         }
 
         private fun initViewListener(element: FollowRecommendationCardViewModel) {
             btnFollow.setOnClickListener {
-                listener.onFollowButtonClicked(element.authorId)
+                listener.onFollowButtonClicked(
+                        element.authorId,
+                        element.isFollowed,
+                        if (element.isFollowed) FollowRecommendationAction.UNFOLLOW else FollowRecommendationAction.FOLLOW
+                )
             }
         }
 
@@ -133,8 +150,16 @@ class FollowRecommendationAdapter(
             }
         }
 
-        private fun setButtonFollow(isFollowed: Boolean, textEnabled: String, textDisabled: String) {
-            btnFollow.text = if (isFollowed) textEnabled else textDisabled
+        private fun setButtonFollow(isFollowed: Boolean) {
+            btnFollow.apply {
+                if (isFollowed) {
+                    text = itemView.context.getString(R.string.following)
+                    buttonVariant = 2
+                } else {
+                    text = itemView.context.getString(R.string.action_follow_english)
+                    buttonVariant = 1
+                }
+            }
         }
 
         private fun loadImageOrDefault(imageView: ImageView, imageUrl: String) {

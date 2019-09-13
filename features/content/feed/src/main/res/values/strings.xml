@@ -86,4 +86,7 @@
     <string name="feed_create_post_shop">Buat Post Toko</string>
 
     <string name="recommendation_for_you">Rekomendasi Untukmu</string>
+
+    <string name="feed_open_feed">Buka Feed</string>
+    <string name="feed_finish_follow_recommendation">Yeay, updatenya siap dilihat!</string>
 </resources>

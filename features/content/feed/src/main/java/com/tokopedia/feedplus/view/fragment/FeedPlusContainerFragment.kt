@@ -312,6 +312,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     fun onGoToLink(link: String) {
+        //TODO("Return this to previous code")
         startActivity(Intent(context, FollowRecommendationActivity::class.java))
 //        if (!TextUtils.isEmpty(link)) {
 //            RouteManager.route(activity, link)
