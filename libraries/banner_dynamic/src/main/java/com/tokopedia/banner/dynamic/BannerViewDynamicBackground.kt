@@ -30,7 +30,8 @@ import com.tokopedia.kotlin.extensions.view.show
 /**
  * @author by furqan on 13/09/2019
  */
-class BannerViewDynamicBackground : BannerView {
+class BannerViewDynamicBackground @JvmOverloads constructor(context: Context, attrs: AttributeSet? =  null, defStyleAttr: Int  = 0)
+    : BannerView(context, attrs, defStyleAttr) {
 
     private lateinit var imgBannerBackground: ImageView
 
@@ -38,12 +39,6 @@ class BannerViewDynamicBackground : BannerView {
     private lateinit var bannerRoot: View
 
     private var currentBitmapDrawable: BitmapDrawable? = null
-
-    constructor(context: Context) : super(context) {}
-
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
     override fun init() {
         val view = View.inflate(context, R.layout.layout_card_banner_dynamic_background, this)
@@ -113,8 +108,7 @@ class BannerViewDynamicBackground : BannerView {
                 val manager: LinearLayoutManager =
                         recyclerView.layoutManager as LinearLayoutManager
                 val position = manager.findFirstCompletelyVisibleItemPosition()
-                if (
-                        position != currentImagePosition && position != -1) {
+                if (position != currentImagePosition && position != -1) {
 
                     val url = promoImageUrls[position]
                     ImageHandler.loadImageBlurWithViewTarget(
