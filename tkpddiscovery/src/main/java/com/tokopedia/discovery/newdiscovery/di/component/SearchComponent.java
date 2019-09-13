@@ -8,7 +8,7 @@ import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductLis
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryCatalogFragment;
 import com.tokopedia.discovery.newdiscovery.di.module.SearchModule;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
 
 import dagger.Component;
@@ -17,7 +17,7 @@ import dagger.Component;
  * Created by henrypriyono on 10/10/17.
  */
 
-@SearchScope
+@DiscoveryScope
 @Component(modules = SearchModule.class, dependencies = AppComponent.class)
 public interface SearchComponent {
 

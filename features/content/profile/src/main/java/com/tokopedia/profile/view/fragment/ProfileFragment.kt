@@ -1597,7 +1597,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             affiliatePreference.setFirstTimeEducation(userSession.userId)
 
         } else {
-            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
+            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }

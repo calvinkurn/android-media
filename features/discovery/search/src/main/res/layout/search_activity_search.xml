@@ -28,14 +28,15 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:clipChildren="false">
 
                 <ImageView
                     android:id="@+id/action_up_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
-                    app:srcCompat="@drawable/discovery_ic_back" />
+                    app:srcCompat="@drawable/search_ic_back" />
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/searchTextView"
@@ -53,6 +54,14 @@
                     android:background="@drawable/bg_autocomplete_input"
                     app:typographyType="body_2"
                     app:typographyWeight="reguler" />
+
+                <ImageView
+                    android:id="@+id/search_cart_button"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:scaleType="centerInside"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    app:srcCompat="@drawable/search_ic_cart"/>
 
                 <ImageView
                     android:id="@+id/search_change_grid_button"
@@ -182,10 +191,6 @@
 
     <com.tokopedia.filter.widget.BottomSheetFilterView
         android:id="@+id/bottomSheetFilter"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        app:behavior_hideable="true"
-        app:layout_behavior="com.tokopedia.filter.widget.UserLockBottomSheetBehavior"/>
+        style="@style/BottomSheetFilterStyle"/>
 
 </android.support.design.widget.CoordinatorLayout>

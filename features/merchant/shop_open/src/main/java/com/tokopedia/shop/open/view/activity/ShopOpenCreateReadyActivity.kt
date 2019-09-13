@@ -36,12 +36,12 @@ class ShopOpenCreateReadyActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.also {
             it.elevation = 0f
-            toolbar.setNavigationIcon(R.drawable.ic_close)
+            toolbar.setNavigationIcon(com.tokopedia.design.R.drawable.ic_close)
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.drawable.ic_close){
+        if (item.itemId == com.tokopedia.design.R.drawable.ic_close){
             onBackPressed()
         }
         return super.onOptionsItemSelected(item)

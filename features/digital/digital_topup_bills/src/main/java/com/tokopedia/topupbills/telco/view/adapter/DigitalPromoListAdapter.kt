@@ -90,12 +90,12 @@ class DigitalPromoListAdapter(val digitalPromoList: List<TelcoPromo>) :
             var btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_green_rounded)
             if (telcoPromo.voucherCodeCopied) {
                 btnCopyPromo.text = context.getString(R.string.text_has_copied_promo_code)
-                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.white))
+                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
             } else {
                 containerBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_round)
                 btnCopyBg = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_border_green)
                 btnCopyPromo.text = context.getString(R.string.text_copy_promo_code)
-                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, R.color.tkpd_main_green))
+                btnCopyPromo.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.tkpd_main_green))
             }
             container.background = containerBg
             btnCopyPromo.background = btnCopyBg
