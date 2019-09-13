@@ -62,7 +62,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
 
     private fun getItemClickListener(product: ProductData, element: NotificationUpdateItemViewModel): View.OnClickListener {
         return View.OnClickListener {
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
             listener.getAnalytic().trackAtcToPdpClick(product)
             RouteManager.route(
