@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.Target
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.banner.dynamic.R
@@ -29,7 +30,7 @@ class BannerDynamicPagerAdapter(bannerImageUrls: List<String>,
 
         val layoutParams = itemView.layoutParams
 
-        if (parent.width != 0 ) {
+        if (parent.width != 0) {
             layoutParams.width = (parent.width * 0.9).toInt()
         } else {
             val mWinMgr = itemView.context
