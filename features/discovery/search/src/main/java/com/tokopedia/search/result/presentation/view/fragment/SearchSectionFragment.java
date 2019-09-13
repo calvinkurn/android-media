@@ -22,18 +22,20 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.common.data.Option;
-import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.newdynamicfilter.controller.FilterController;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterHelper;
-import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
-import com.tokopedia.discovery.newdynamicfilter.helper.SortHelper;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking;
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController;
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.common.data.Sort;
+import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper;
+import com.tokopedia.filter.newdynamicfilter.helper.SortHelper;
+import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.search.R;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
@@ -111,6 +113,8 @@ public abstract class SearchSectionFragment
         initLayoutManager();
         initSwipeToRefresh(view);
         restoreInstanceState(savedInstanceState);
+        onViewCreatedBeforeLoadData(view, savedInstanceState);
+
         startToLoadDataForFirstFragmentPosition();
     }
 
@@ -125,10 +129,12 @@ public abstract class SearchSectionFragment
         }
     }
 
+    protected abstract void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState);
+
     private void startToLoadDataForFirstFragmentPosition() {
         if (getFragmentPosition() == 0) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
 
@@ -225,7 +231,7 @@ public abstract class SearchSectionFragment
     private void startToLoadData() {
         if (canStartToLoadData()) {
             hasLoadData = true;
-            refreshLayout.post(this::onFirstTimeLaunch);
+            onFirstTimeLaunch();
         }
     }
 
@@ -418,6 +424,8 @@ public abstract class SearchSectionFragment
     protected void openBottomSheetFilter() {
         if(searchParameter == null || getFilters() == null) return;
 
+        FilterTracking.eventSearchResultOpenFilterPage(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, getScreenName());
+
         bottomSheetListener.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap());
         bottomSheetListener.launchFilterBottomSheet();
     }
@@ -579,7 +587,7 @@ public abstract class SearchSectionFragment
     }
 
     public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
+        FilterTracking.eventSearchResultCloseBottomSheetFilter(FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE, getScreenName(), getSelectedFilter());
     }
 
     protected void removeSelectedFilter(String uniqueId) {

@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatDelegate;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookSdk;
 import com.facebook.soloader.SoLoader;
+import com.github.anrwatchdog.ANRError;
 import com.github.anrwatchdog.ANRWatchDog;
 import com.google.firebase.FirebaseApp;
 import com.moengage.inapp.InAppManager;
@@ -73,6 +74,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import kotlin.jvm.functions.Function1;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -85,17 +88,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_NAME = "Promo";
     private final String NOTIFICATION_CHANNEL_ID = "custom_sound";
     private final String NOTIFICATION_CHANNEL_DESC = "notification channel for custom sound.";
-
-    private final String[] LOGENTRIES_TOKEN = new String[]
-            {Arrays.toString(new char[]{48, 56, 102, 99, 100, 49, 52, 56, 45, 49, 52, 97, 97, 45, 52,
-                    100, 56, 57, 45, 97, 99, 54, 55, 45, 52, 102, 55, 48, 102, 101, 102,
-                    100, 50, 102, 51, 55}),
-            Arrays.toString(new char[]{54, 48, 54, 54, 52, 101, 97, 55, 45, 52, 100, 54, 49,
-                    45, 52, 100, 102, 49, 45, 98, 51, 57, 99, 45, 51, 54, 53, 100,
-                    99, 54, 52, 55, 97, 99, 101, 100}),
-            Arrays.toString(new char[]{51, 51, 97, 99, 99, 56, 101, 55, 45, 49, 98, 53, 99, 45,
-                    52, 48, 51, 101, 45, 98, 100, 51, 49, 45, 55, 99, 49, 101, 54, 49, 98, 98,
-                    101, 102, 50, 99})};
 
     CharacterPerMinuteActivityLifecycleCallbacks callback;
 
@@ -158,7 +150,13 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         NetworkClient.init(getApplicationContext());
 
         if (!com.tokopedia.config.GlobalConfig.DEBUG) {
-            new ANRWatchDog().setANRListener(Crashlytics::logException).start();
+            // do not replace with method reference "Crashlytics::logException", will not work in dynamic feature
+            new ANRWatchDog().setANRListener(new ANRWatchDog.ANRListener() {
+                @Override
+                public void onAppNotResponding(ANRError anrError) {
+                    Crashlytics.logException(anrError);
+                }
+            }).start();
         }
 
         if (callback == null) {
@@ -168,7 +166,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         LogWrapper.init(this);
         if (LogWrapper.instance != null) {
-            LogWrapper.instance.setLogentriesToken(LOGENTRIES_TOKEN);
+            LogWrapper.instance.setLogentriesToken(TimberWrapper.LOGENTRIES_TOKEN);
         }
         TimberWrapper.init(this);
 
@@ -436,7 +434,21 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @Override
     public void setCategoryAbTestingConfig() {
-        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(), this::openNewBelanja, this::openOldBelanja);
+        CategoryNavigationConfig.INSTANCE.updateCategoryConfig(getApplicationContext(),
+                // do not replace with method reference "this::openNewBelanja", will not work in dynamic feature
+                new Function1<Context, Intent>() {
+                    @Override
+                    public Intent invoke(Context context) {
+                        return ConsumerMainApplication.this.openNewBelanja(context);
+                    }
+                },
+                // do not replace with method reference "this::openOldBelanja", will not work in dynamic feature
+                new Function1<Context, Intent>() {
+                    @Override
+                    public Intent invoke(Context context) {
+                        return ConsumerMainApplication.this.openOldBelanja(context);
+                    }
+                });
     }
 
     Intent openNewBelanja(Context context) {

@@ -366,17 +366,6 @@ public class SearchTracking {
         ));
     }
 
-    public static void eventSearchResultCloseBottomSheetFilter(Context context,
-                                                               String screenName,
-                                                               Map<String, String> selectedFilter) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.FILTER_PRODUCT,
-                SearchEventTracking.Action.APPLY_FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ));
-    }
-
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
         if (selectedFilter == null) {
             return "";
@@ -656,5 +645,14 @@ public class SearchTracking {
 
     private String generateWishlistClickEventLabel(String keyword, String productId) {
         return keyword + " - " + productId;
+    }
+
+    public void eventActionClickCartButton(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.SEARCH_RESULT,
+                SearchEventTracking.Category.EventSearchResult,
+                SearchEventTracking.Action.CLICK_CART_BUTTON,
+                keyword
+        );
     }
 }

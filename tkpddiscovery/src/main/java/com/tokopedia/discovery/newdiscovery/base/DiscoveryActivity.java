@@ -35,9 +35,6 @@ import java.util.List;
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 
-/**
- * Created by hangnadi on 10/3/17.
- */
 public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.SearchViewListener,
         DiscoverySearchView.ImageSearchClickListener,
@@ -165,16 +162,12 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     private void handleQueryTextSubmitBasedOnCurrentTab() throws RuntimeException {
-        String query = searchParameter.getSearchQuery();
-
         switch (searchView.getSuggestionFragment().getCurrentTab()) {
             case SearchMainFragment.PAGER_POSITION_PRODUCT:
                 onProductQuerySubmit();
-                sendSearchProductGTM(query);
                 break;
             case SearchMainFragment.PAGER_POSITION_SHOP:
                 onShopQuerySubmit();
-                sendSearchShopGTM(query);
                 break;
             default:
                 throw new RuntimeException("Please handle this function if you have new tab of suggestion search view.");
@@ -211,36 +204,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         return ApplinkConstInternalDiscovery.SEARCH_RESULT
                 + "?"
                 + UrlParamHelper.generateUrlParamString(searchParameter.getSearchParameterHashMap());
-    }
-
-    private void sendSearchProductGTM(String keyword) {
-        if (keyword != null &&
-                !TextUtils.isEmpty(keyword)) {
-            eventDiscoverySearch(keyword);
-        }
-    }
-
-    public void eventDiscoverySearch(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                SearchEventTracking.Category.EVENT_TOP_NAV,
-                SearchEventTracking.Action.SEARCH_PRODUCT,
-                label);
-    }
-
-    private void sendSearchShopGTM(String keyword) {
-        if (keyword != null &&
-                !TextUtils.isEmpty(keyword)) {
-            eventDiscoverySearchShop(keyword);
-        }
-    }
-
-    public void eventDiscoverySearchShop(String label) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.EVENT_CLICK_TOP_NAV,
-                SearchEventTracking.Category.EVENT_TOP_NAV,
-                SearchEventTracking.Action.SEARCH_SHOP,
-                label);
     }
 
     private void sendVoiceSearchGTM(String keyword) {

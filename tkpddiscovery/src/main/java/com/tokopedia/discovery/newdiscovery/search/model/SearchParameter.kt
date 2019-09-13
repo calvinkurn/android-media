@@ -3,7 +3,7 @@ package com.tokopedia.discovery.newdiscovery.search.model
 import android.os.Parcel
 import android.os.Parcelable
 import com.tkpd.library.utils.URLParser
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst
 
 class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
 
@@ -15,6 +15,12 @@ class SearchParameter(private val deepLinkUri: String = "") : Parcelable {
 
     constructor(searchParameter: SearchParameter) : this(searchParameter.deepLinkUri) {
         setSearchParameterHashMap(HashMap(searchParameter.searchParameterHashMap))
+
+        cleanUpNullValuesInMap()
+    }
+
+    fun cleanUpNullValuesInMap() {
+        searchParameterHashMap.values.remove(null)
     }
 
     private fun setSearchParameterHashMap(searchParameterHashMap : HashMap<String, String>) {

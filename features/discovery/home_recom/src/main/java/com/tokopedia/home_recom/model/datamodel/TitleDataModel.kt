@@ -10,7 +10,8 @@ import com.tokopedia.home_recom.view.viewholder.TitleViewHolder
  * This class for holding data for type factory pattern [TitleViewHolder]
  */
 class TitleDataModel (
-        val title: String
+        val title: String,
+        val appLinkSeeMore: String
 ) : HomeRecommendationDataModel {
 
     companion object {

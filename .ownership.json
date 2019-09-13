@@ -1,6 +1,6 @@
 {
-  "name": "android-tokopedia-core",
-  "description": "main repo android app tokopedia, contain customerapp and sellerapp",
-  "owner": "ricoharisin",
-  "slack_channel": "mobileapp"
+    "name": "android-tokopedia-core",
+    "description": "Code base for android application (seller app & customer app).",
+    "owner": "ricoharisin",
+    "slack_channel": "mobileapp"
 }

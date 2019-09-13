@@ -20,12 +20,12 @@ import javax.inject.Inject;
 
 public class GetDealsListRequestUseCase extends RestRequestUseCase {
 
-    private HashMap<String, Object> params;
+    private RequestParams params;
 
     @Inject
     public GetDealsListRequestUseCase(){ }
 
-    public void setRequestParams(HashMap<String, Object> requestParams) {
+    public void setRequestParams(RequestParams requestParams) {
         this.params = requestParams;
     }
 
@@ -33,26 +33,15 @@ public class GetDealsListRequestUseCase extends RestRequestUseCase {
     protected List<RestRequest> buildRequest(RequestParams requestParams) {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        String param = String.valueOf(params.get(DealsHomePresenter.TAG));
-        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST +"/" + param;
+        String url = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST_V2;
         //Request 1
         Type token = new TypeToken<DataResponse<DealsResponse>>() {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)
+                .setQueryParams(params.getParameters())
                 .build();
         tempRequest.add(restRequest1);
-
-        Type token2 = new TypeToken<DataResponse<AllBrandsResponse>>() {
-        }.getType();
-
-        params.remove(DealsHomePresenter.TAG);
-        String url2 = DealsUrl.DEALS_DOMAIN + DealsUrl.HelperUrl.DEALS_LIST_SEARCH;
-        RestRequest restRequest2 = new RestRequest.Builder(url2, token2)
-                .setQueryParams(params)
-                .build();
-
-        tempRequest.add(restRequest2);
         return tempRequest;
     }
 }

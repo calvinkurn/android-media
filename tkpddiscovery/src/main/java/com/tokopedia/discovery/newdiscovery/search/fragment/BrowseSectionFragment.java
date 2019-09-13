@@ -23,19 +23,18 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.activity.SortProductActivity;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.common.data.Filter;
-import com.tokopedia.discovery.common.data.Option;
-import com.tokopedia.discovery.common.data.Sort;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
-import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
-import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.Filter;
+import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.common.data.Sort;
+import com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity;
+import com.tokopedia.filter.newdynamicfilter.SortProductActivity;
+import com.tokopedia.filter.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 
@@ -70,7 +69,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
     private static final String LIST_GRID = "list";
 
     private BottomNavigationListener bottomNavigationListener;
-    private BottomSheetListener bottomSheetListener;
     private RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
     private LinearLayoutManager linearLayoutManager;
@@ -161,9 +159,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         if (context instanceof BottomNavigationListener) {
             this.bottomNavigationListener = (BottomNavigationListener) context;
         }
-        if (context instanceof BottomSheetListener) {
-            this.bottomSheetListener = (BottomSheetListener) context;
-        }
         if (context instanceof RedirectionListener) {
             this.redirectionListener = (RedirectionListener) context;
         }
@@ -192,13 +187,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
 
     public void showBottomBarNavigation(boolean show) {
         if (bottomNavigationListener == null) {
-            return;
-        }
-
-        boolean isBottomSheetShown = bottomSheetListener != null
-                && bottomSheetListener.isBottomSheetShown();
-
-        if (show && isBottomSheetShown) {
             return;
         }
 
@@ -527,28 +515,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
         setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
-    }
-
-    @Override
-    public void setTotalSearchResultCount(String formattedResultCount) {
-        if (bottomSheetListener != null) {
-            bottomSheetListener.setFilterResultCount(formattedResultCount);
-        }
-    }
-
-    protected RecyclerView.OnScrollListener getRecyclerViewBottomSheetScrollListener() {
-        return new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING && bottomSheetListener != null) {
-                    bottomSheetListener.closeFilterBottomSheet();
-                }
-            }
-        };
-    }
-
-    public void onBottomSheetHide() {
-        SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }
 
     protected void removeSelectedFilter(String uniqueId) {
