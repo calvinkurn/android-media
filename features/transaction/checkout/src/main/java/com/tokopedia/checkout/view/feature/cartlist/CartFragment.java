@@ -101,6 +101,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.transaction.common.dialog.UnifyDialog;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
@@ -508,8 +509,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         List<CartItemData> toBeDeletedCartItemDataList = cartAdapter.getSelectedCartItemData();
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
         if (toBeDeletedCartItemDataList.size() > 0) {
-            final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
-            dialog.setOnOkClickListener(v -> {
+            final UnifyDialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
+            dialog.setOkOnClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), true);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
@@ -520,7 +521,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
                 dialog.dismiss();
             });
-            dialog.setOnCancelClickListener(v -> {
+            dialog.setSecondaryOnClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
@@ -629,8 +630,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
         ArrayList<CartItemData> cartItemDatas = new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
-        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(1);
-        dialog.setOnOkClickListener(view -> {
+        final UnifyDialog dialog = getDialogDeleteConfirmation(1);
+        dialog.setOkOnClickListener(view -> {
             if (cartItemDatas.size() > 0) {
                 dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
@@ -641,7 +642,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
             dialog.dismiss();
         });
-        dialog.setOnCancelClickListener(view -> {
+        dialog.setSecondaryOnClickListener(view -> {
             if (cartItemDatas.size() > 0) {
                 dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
@@ -1045,8 +1046,8 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
         ));
-        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
-        dialog.setOnOkClickListener(view -> {
+        final UnifyDialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
+        dialog.setOkOnClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
                 dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, true);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductWithAddToWishList(
@@ -1057,7 +1058,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             }
             dialog.dismiss();
         });
-        dialog.setOnCancelClickListener(view -> {
+        dialog.setSecondaryOnClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
                 dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
@@ -1675,18 +1676,14 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @NonNull
-    private com.tokopedia.design.component.Dialog getDialogDeleteConfirmation(int count) {
-        final com.tokopedia.design.component.Dialog dialog =
-                new com.tokopedia.design.component.Dialog(getActivity(),
-                        com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
-        dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
-        dialog.setDesc(String.format(getString(R.string.label_dialog_message_remove_cart_multiple_item),
-                String.valueOf(count)));
-        dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
-        dialog.setBtnCancel(getString(R.string.label_dialog_action_delete));
-        dialog.getAlertDialog().setCancelable(true);
-        dialog.getAlertDialog().setCanceledOnTouchOutside(true);
-        return dialog;
+    private UnifyDialog getDialogDeleteConfirmation(int count) {
+        UnifyDialog unifyDialog = new UnifyDialog(getActivity(), UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER);
+        unifyDialog.setTitle(getString(R.string.label_dialog_title_delete_item, count));
+        unifyDialog.setDescription(getString(R.string.label_dialog_message_remove_cart_item));
+        unifyDialog.setOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
+        unifyDialog.setSecondary(getString(R.string.label_dialog_action_delete));
+        unifyDialog.setCancelable(true);
+        return unifyDialog;
     }
 
     @Override
