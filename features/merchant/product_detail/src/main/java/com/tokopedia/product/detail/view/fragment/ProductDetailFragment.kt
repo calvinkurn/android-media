@@ -471,7 +471,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     tv_available_at?.visible()
                 }
             }
-            trackTradeIn(it)
+            trackProductView(it)
         }
         context?.let {
             LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
@@ -1417,7 +1417,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     productInfo?.category?.detail?.firstOrNull()?.id ?: "")
 
             if (delegateTradeInTracking) {
-                trackTradeIn(tradeInParams.isEligible == 1)
+                trackProductView(tradeInParams.isEligible == 1)
                 delegateTradeInTracking = false
             }
 
@@ -2199,7 +2199,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    private fun trackTradeIn(isElligible: Boolean) {
+    private fun trackProductView(isElligible: Boolean) {
         if (productInfo != null && shopInfo != null) {
             productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
                     isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)

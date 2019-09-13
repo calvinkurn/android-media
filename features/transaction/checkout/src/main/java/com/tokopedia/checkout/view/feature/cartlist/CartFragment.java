@@ -2389,18 +2389,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         }
 
         CartSectionHeaderHolderData cartSectionHeaderHolderData = null;
-        if ((endlessRecyclerViewScrollListener.getCurrentPage() == 0 && recommendationWidget == null) || (recommendationWidget != null && endlessRecyclerViewScrollListener.getCurrentPage() == 1 && recommendationSectionHeader == null)) {
-            if (recommendationSectionHeader != null) {
-                cartSectionHeaderHolderData = recommendationSectionHeader;
-            } else {
-                cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
-                if (recommendationWidget != null && !TextUtils.isEmpty(recommendationWidget.getTitle())) {
-                    cartSectionHeaderHolderData.setTitle(recommendationWidget.getTitle());
-                } else {
-                    cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
-                }
-                recommendationSectionHeader = cartSectionHeaderHolderData;
-            }
+        if ((recommendationItems == null && endlessRecyclerViewScrollListener.getCurrentPage() == 0) || (recommendationItems != null && endlessRecyclerViewScrollListener.getCurrentPage() == 1)) {
+            cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
+            cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
         }
 
         if (cartRecommendationItemHolderDataList.size() > 0) {

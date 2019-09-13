@@ -50,6 +50,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -678,9 +679,22 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong ->
-                        mPresenter.fetchLatestStatus(Arrays.asList(data.getId()))
-                );
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        mPresenter.fetchLatestStatus(Arrays.asList(data.getId()));
+                    }
+                });
 
         //Coupon impression ga
         AnalyticsTrackerUtil.sendEvent(getContext(),
