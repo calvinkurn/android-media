@@ -1163,7 +1163,7 @@ open class PlayViewStateImpl(
         (view.findViewById(R.id.nickname) as TextView).text = getStringResource(R.string.from) + " " + channelInfoViewModel.adminName
         channelInfoViewModel.pinnedMessageViewModel?.let {
             (view.findViewById(R.id.message) as TextView).text = it.message
-            ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, R
+            ImageHandler.loadImage(activity, view.findViewById(R.id.thumbnail), it.thumbnail, com.tokopedia.abstraction.R
                     .drawable.loading_page)
             if (!TextUtils.isEmpty(it.imageUrl)) {
                 view.findViewById<ImageView>(R.id.thumbnail).setOnClickListener {
