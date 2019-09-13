@@ -72,6 +72,7 @@ class WebSocketViewModel
         val responseData = Gson().fromJson(json, WebSocketResponseData::class.java)
         val msgId = responseData.msgId.toString()
         val message = responseData.message.censoredReply.trim()
+        val time = responseData.startTime
 
         val contact = ItemChatAttributesContactPojo(
                 responseData.fromUid.toString(),
@@ -82,7 +83,7 @@ class WebSocketViewModel
                 responseData.fromRole,
                 responseData.imageUri
         )
-        return IncomingChatWebSocketModel(msgId, message, "", contact)
+        return IncomingChatWebSocketModel(msgId, message, time, contact)
     }
 
     private fun mapToIncomingTypeState(response: WebSocketResponse, isTyping: Boolean): IncomingTypingWebSocketModel {

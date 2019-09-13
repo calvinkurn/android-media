@@ -14,6 +14,7 @@ query get_existing_message_id($page: Int!, $perPage: Int!, $filter: String!, $ta
               thumbnail
             }
             lastReplyMessage
+            lastReplyTimeStr
             readStatus
             unreads
             fraudStatus

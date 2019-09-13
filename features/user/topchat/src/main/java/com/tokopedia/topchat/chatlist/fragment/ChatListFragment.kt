@@ -176,7 +176,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
                 if(adapter.hasEmptyModel()) {
                     adapter.clearAllElements()
                 }
-                val attributes = ItemChatAttributesPojo(newChat.message, newChat.contact)
+                val attributes = ItemChatAttributesPojo(newChat.message, newChat.time, newChat.contact)
                 val item = ItemChatListPojo(newChat.messageId, attributes, "")
                 adapter.list.add(0, item)
                 adapter.notifyItemInserted(0)
@@ -187,6 +187,8 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
                 (existingThread as ItemChatListPojo).attributes?.lastReplyMessage = newChat.message
                 existingThread.attributes?.unreads = existingThread.attributes?.unreads.toZeroIfNull() + 1
+                existingThread.attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_UNREAD
+                existingThread.attributes?.lastReplyTimeStr = newChat.time
                 adapter.list.removeAt(index)
                 adapter.list.add(0, existingThread)
                 adapter.notifyItemRangeChanged(0, index+1)
@@ -197,6 +199,8 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
             else -> {
                 (existingThread as ItemChatListPojo).attributes?.lastReplyMessage = newChat.message
                 existingThread.attributes?.unreads = existingThread.attributes?.unreads.toZeroIfNull() + 1
+                existingThread.attributes?.readStatus = ChatItemListViewHolder.STATE_CHAT_UNREAD
+                existingThread.attributes?.lastReplyTimeStr = newChat.time
                 adapter.notifyItemChanged(0)
             }
         }

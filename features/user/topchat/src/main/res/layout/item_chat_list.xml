@@ -36,7 +36,7 @@
         app:layout_constraintStart_toEndOf="@+id/space"
         app:layout_constraintTop_toTopOf="@id/thumbnail"
         app:layout_constraintHorizontal_bias="0"
-        app:typographyType="body_2"
+        app:typographyType="heading_4"
         app:typographyWeight="bold"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Steven Fredian" />
@@ -96,13 +96,14 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/unread_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="12:15"
+        android:layout_width="@dimen/dp_8"
+        android:layout_height="@dimen/dp_8"
+        tools:text="1"
         android:textColor="@color/Neutral_N700_44"
         app:layout_constraintBottom_toBottomOf="@id/message"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/message"
+        android:background="@drawable/circle_red_notification"
         app:typographyType="body_3" />
 
 

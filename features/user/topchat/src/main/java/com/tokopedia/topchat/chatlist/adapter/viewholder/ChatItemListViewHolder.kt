@@ -3,20 +3,19 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 import android.graphics.Typeface.ITALIC
 import android.graphics.Typeface.NORMAL
 import android.support.annotation.LayoutRes
+import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 /**
  * @author : Steven 2019-08-07
@@ -30,6 +29,7 @@ class ChatItemListViewHolder(
     private val thumbnail: ImageView = itemView.findViewById(R.id.thumbnail)
     private val message: TextView = itemView.findViewById(R.id.message)
     private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
+    private val time: Typography = itemView.findViewById(R.id.time)
 
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
@@ -52,6 +52,7 @@ class ChatItemListViewHolder(
 
             bindReadState(attributes.readStatus, attributes.unreads)
             bindMessageState(attributes.lastReplyMessage)
+            bindTimeStamp(attributes.lastReplyTimeStr)
         }
 
     }
@@ -85,13 +86,38 @@ class ChatItemListViewHolder(
             STATE_CHAT_UNREAD -> {
                 userName.setWeight(Typography.TypographyWeight.BOLD)
                 unreadCounter.show()
-                unreadCounter.text = unreads.toZeroIfNull().toString()
+//                unreadCounter.text = unreads.toZeroIfNull().toString()
             }
 
             STATE_CHAT_READ -> {
                 userName.setWeight(Typography.TypographyWeight.REGULAR)
                 unreadCounter.hide()
             }
+        }
+    }
+
+    private fun bindTimeStamp(lastReplyTimeStr: String) {
+        time.text = convertToRelativeDate(lastReplyTimeStr)
+    }
+
+    private fun convertToRelativeDate(timeStamp: String): String {
+        val smsTime = Calendar.getInstance()
+        smsTime.timeInMillis = timeStamp.toLongOrZero()
+
+        val now = Calendar.getInstance()
+
+        val timeFormatString = "hh:mm"
+        val dateTimeFormatString = "dd MMM"
+        val dateTimeYearFormatString = "dd MMM yy"
+        val HOURS = (60 * 60 * 60).toLong()
+        return if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE)) {
+            DateFormat.format(timeFormatString, smsTime).toString()
+        } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1) {
+            "Kemarin"
+        } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
+            DateFormat.format(dateTimeFormatString, smsTime).toString()
+        } else {
+            DateFormat.format(dateTimeYearFormatString, smsTime).toString()
         }
     }
 

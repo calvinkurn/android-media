@@ -13,6 +13,9 @@ data class ItemChatAttributesPojo(
         @SerializedName("lastReplyMessage")
         @Expose
         var lastReplyMessage: String = "",
+        @SerializedName("lastReplyTimeStr")
+        @Expose
+        var lastReplyTimeStr: String = "",
         @SerializedName("readStatus")
         @Expose
         var readStatus: Int,
@@ -27,6 +30,6 @@ data class ItemChatAttributesPojo(
         var contact: ItemChatAttributesContactPojo?
 
 ) {
-        constructor(lastReplyMessage: String, contact: ItemChatAttributesContactPojo?)
-                :this(lastReplyMessage, ChatItemListViewHolder.STATE_CHAT_UNREAD, 0, 0, contact)
+        constructor(lastReplyMessage: String, lastReplyTimeStr: String, contact: ItemChatAttributesContactPojo?)
+                :this(lastReplyMessage, lastReplyTimeStr, ChatItemListViewHolder.STATE_CHAT_UNREAD, 1, 0, contact)
 }
