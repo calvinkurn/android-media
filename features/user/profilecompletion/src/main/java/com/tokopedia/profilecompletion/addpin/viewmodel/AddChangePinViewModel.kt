@@ -147,7 +147,7 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun getStatusPin(){
-        rawQueries[ProfileCompletionQueriesConstant.QUERY_STATUS_PIN]?.let { query ->
+        rawQueries[ProfileCompletionQueriesConstant.QUERY_GET_STATUS_PIN]?.let { query ->
             getStatusPinUseCase.setTypeClass(StatusPinPojo::class.java)
             getStatusPinUseCase.setGraphqlQuery(query)
             getStatusPinUseCase.execute(

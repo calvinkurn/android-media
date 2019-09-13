@@ -13,7 +13,7 @@ object ProfileCompletionQueriesConstant {
     const val QUERY_PROFILE_COMPLETION = "profile_completion"
     const val QUERY_PROFILE_ROLE = "profile_role"
     const val QUERY_CHECK_PIN = "check_pin"
-    const val QUERY_STATUS_PIN = "status_pin"
+    const val QUERY_GET_STATUS_PIN = "get_status_pin"
     const val QUERY_VALIDATE_PIN = "validate_pin"
 
     const val PARAM_GENDER = "gender"
