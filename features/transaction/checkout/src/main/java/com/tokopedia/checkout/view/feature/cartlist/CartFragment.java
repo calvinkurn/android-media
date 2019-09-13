@@ -999,12 +999,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position) {
+    public void onPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal) {
         trackingPromoCheckoutUtil.cartImpressionTicker(cartPromoGlobal.getPromoCodeSafe());
     }
 
     @Override
-    public void onCartPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
+    public void onPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
         sendAnalyticsOnClickCancelPromoCodeAndCouponBanner();
     }
 
@@ -1271,6 +1271,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (cartListData.getShopGroupDataList().isEmpty()) {
                 if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.EMPTY) {
                     cartAdapter.addPromoStackingVoucherData(promoStackingData);
+                    if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
+                        onPromoGlobalTrackingImpression(promoStackingData);
+                    }
                 }
                 cartAdapter.addCartEmptyData();
 
@@ -1289,6 +1292,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
                 }
                 cartAdapter.addPromoStackingVoucherData(promoStackingData);
+                if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
+                    onPromoGlobalTrackingImpression(promoStackingData);
+                }
 
                 if (cartListData.getCartPromoSuggestion().isVisible()) {
                     cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());

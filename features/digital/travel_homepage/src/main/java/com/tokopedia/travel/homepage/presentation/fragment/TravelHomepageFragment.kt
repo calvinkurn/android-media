@@ -56,6 +56,9 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         return view
     }
 
+//    override fun getSwipeRefreshLayoutResourceId() = 0
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         travel_homepage_toolbar.setNavigationOnClickListener { activity?.onBackPressed() }
