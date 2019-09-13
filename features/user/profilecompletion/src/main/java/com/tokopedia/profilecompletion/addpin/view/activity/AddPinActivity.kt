@@ -25,8 +25,6 @@ class AddPinActivity: BaseSimpleActivity(), HasComponent<ProfileCompletionSettin
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
-            val bodTitle = intent.extras?.getString(ApplinkConstInternalGlobal.PARAM_BOD_TITLE)
-            updateTitle(bodTitle)
             bundle.putAll(intent.extras)
         }
         return AddPinFragment.createInstance(bundle)
