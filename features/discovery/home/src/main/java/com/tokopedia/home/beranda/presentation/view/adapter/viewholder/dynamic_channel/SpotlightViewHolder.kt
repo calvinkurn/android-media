@@ -47,17 +47,6 @@ class SpotlightViewHolder(itemView: View, val listener: HomeCategoryListener) : 
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(itemView.context,
                 LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.clearOnScrollListeners()
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    listener.onDynamicIconScrollStart()
-                } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    listener.onDynamicIconScrollEnd()
-                }
-            }
-        })
     }
 
     override fun bind(element: SpotlightViewModel) {
