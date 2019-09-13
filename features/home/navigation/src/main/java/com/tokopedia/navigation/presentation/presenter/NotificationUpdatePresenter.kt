@@ -121,7 +121,7 @@ class NotificationUpdatePresenter @Inject constructor(
     private fun getCartRequestParams(product: ProductData): RequestParams {
         val addToCartRequestParams = AddToCartRequestParams()
         addToCartRequestParams.productId = product.productId.toLongOrZero()
-        addToCartRequestParams.shopId = product.shop.id
+        addToCartRequestParams.shopId = product.shop?.id ?: -1
         addToCartRequestParams.quantity = 1
         addToCartRequestParams.notes = ""
 
