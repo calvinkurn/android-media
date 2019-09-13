@@ -166,7 +166,7 @@ class ProfileCompletionQueryModule {
     @IntoMap
     @StringKey(ProfileCompletionQueriesConstant.QUERY_GET_STATUS_PIN)
     fun provideRawQueryGetStatusPin(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_status_pin)
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_status_pin)
 
 
     @Provides
