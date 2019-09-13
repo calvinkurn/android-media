@@ -1,7 +1,6 @@
 package com.tokopedia.settingnotif.usersetting.domain.pojo
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.settingnotif.usersetting.view.adapter.SettingFieldTypeFactory
 
 data class PushNotifierTroubleshooterSetting(
