@@ -430,7 +430,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     private fun onClickCart() {
         (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
-            shopPageTracking.clickShareButton(shopViewModel.isMyShop(it.shopCore.shopID),
+            shopPageTracking.clickCartButton(shopViewModel.isMyShop(it.shopCore.shopID),
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1))
