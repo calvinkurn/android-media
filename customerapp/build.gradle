@@ -248,7 +248,9 @@ android {
 //          rootProject.ext.dynamicFeatures.digitalTopup
 //          rootProject.ext.dynamicFeatures.profileCompletion,
 //          rootProject.ext.dynamicFeatures.shopOpen,
-//            rootProject.ext.dynamicFeatures.settingBank,
+//          rootProject.ext.dynamicFeatures.settingBank,
+//          rootProject.ext.dynamicFeatures.hotelTravel,
+//          rootProject.ext.dynamicFeatures.homepageTravel
             rootProject.ext.dynamicFeatures.groupChat
     ]
 }

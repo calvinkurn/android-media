@@ -43,6 +43,7 @@ object DeeplinkDFMapper {
     private val MODULE_GROUPCHAT = "groupchat"
     private val MODULE_USER_PROFILE_COMPLETION = "profilecompletion"
     private val MODULE_USER_SETTING_BANK = "settingbank"
+    private val MODULE_HOMEPAGE_TRAVEL = "homepage_travel"
 
 
     private var manager: SplitInstallManager? = null
@@ -106,6 +107,11 @@ object DeeplinkDFMapper {
 //                    getDFDeeplinkIfNotInstalled(context,
 //                        deeplink, MODULE_USER_SETTING_BANK,
 //                        context.getString(R.string.applink_setting_bank_title))
+//                }
+//                deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                            deeplink, MODULE_HOMEPAGE_TRAVEL,
+//                            context.getString(R.string.title_travel_homepage))
 //                }
                 else -> null
             }
