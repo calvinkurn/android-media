@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.addpin.data.*
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -48,8 +48,8 @@ class AddChangePinViewModel @Inject constructor(
         get() = mutableValidatePinResponse
 
     fun addPin(token: String){
-        rawQueries[ProfileCompletionQueriesConstant.MUTATION_CREATE_PIN]?.let { query ->
-            val params = mapOf(ProfileCompletionQueriesConstant.PARAM_TOKEN to token)
+        rawQueries[ProfileCompletionQueryConstant.MUTATION_CREATE_PIN]?.let { query ->
+            val params = mapOf(ProfileCompletionQueryConstant.PARAM_TOKEN to token)
 
             addPinUseCase.setTypeClass(AddPinPojo::class.java)
             addPinUseCase.setRequestParams(params)
@@ -80,11 +80,11 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun changePin(pin: String, pinConfirm: String, pinOld: String){
-        rawQueries[ProfileCompletionQueriesConstant.MUTATION_UPDATE_PIN]?.let { query ->
+        rawQueries[ProfileCompletionQueryConstant.MUTATION_UPDATE_PIN]?.let { query ->
             val params = mapOf(
-                    ProfileCompletionQueriesConstant.PARAM_PIN to pin,
-                    ProfileCompletionQueriesConstant.PARAM_PIN_CONFIRM to pinConfirm,
-                    ProfileCompletionQueriesConstant.PARAM_PIN_OLD to pinOld)
+                    ProfileCompletionQueryConstant.PARAM_PIN to pin,
+                    ProfileCompletionQueryConstant.PARAM_PIN_CONFIRM to pinConfirm,
+                    ProfileCompletionQueryConstant.PARAM_PIN_OLD to pinOld)
 
             changePinUseCase.setTypeClass(ChangePinPojo::class.java)
             changePinUseCase.setRequestParams(params)
@@ -115,8 +115,8 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun checkPin(pin: String){
-        rawQueries[ProfileCompletionQueriesConstant.QUERY_CHECK_PIN]?.let { query ->
-            val params = mapOf(ProfileCompletionQueriesConstant.PARAM_PIN to pin)
+        rawQueries[ProfileCompletionQueryConstant.QUERY_CHECK_PIN]?.let { query ->
+            val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
 
             checkPinUseCase.setTypeClass(CheckPinPojo::class.java)
             checkPinUseCase.setRequestParams(params)
@@ -147,7 +147,7 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun getStatusPin(){
-        rawQueries[ProfileCompletionQueriesConstant.QUERY_GET_STATUS_PIN]?.let { query ->
+        rawQueries[ProfileCompletionQueryConstant.QUERY_GET_STATUS_PIN]?.let { query ->
             getStatusPinUseCase.setTypeClass(StatusPinPojo::class.java)
             getStatusPinUseCase.setGraphqlQuery(query)
             getStatusPinUseCase.execute(
@@ -176,8 +176,8 @@ class AddChangePinViewModel @Inject constructor(
     }
 
     fun validatePin(pin: String){
-        rawQueries[ProfileCompletionQueriesConstant.QUERY_VALIDATE_PIN]?.let { query ->
-            val params = mapOf(ProfileCompletionQueriesConstant.PARAM_PIN to pin)
+        rawQueries[ProfileCompletionQueryConstant.QUERY_VALIDATE_PIN]?.let { query ->
+            val params = mapOf(ProfileCompletionQueryConstant.PARAM_PIN to pin)
 
             validatePinUseCase.setTypeClass(ValidatePinPojo::class.java)
             validatePinUseCase.setRequestParams(params)
