@@ -1,7 +1,6 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Handler
 import android.support.constraint.ConstraintLayout
@@ -287,7 +286,8 @@ open class PlayViewStateImpl(
                 youTubePlayer,
                 setChatListHasSpaceOnTop(),
                 liveIndicator,
-                analytics
+                analytics,
+                activity
         )
         sponsorHelper = SponsorHelper(viewModel, sponsorLayout, sponsorImage, analytics, listener)
         welcomeHelper = PlayWelcomeHelper(viewModel, analytics, activity, view)

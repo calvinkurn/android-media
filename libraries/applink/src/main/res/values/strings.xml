@@ -20,4 +20,7 @@
 
     <string name="host_groupchat_webview">/groupchat</string>
     <string name="path_groupchat_webview">/.*\\/.*\\/</string>
+
+    <!--Digital Topup-->
+    <string name="digital_topup_title">Digital Topup</string>
 </resources>

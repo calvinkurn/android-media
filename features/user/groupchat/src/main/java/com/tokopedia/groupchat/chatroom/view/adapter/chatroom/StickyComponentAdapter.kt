@@ -17,6 +17,7 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.domain.pojo.AttributeStickyComponentData
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
@@ -35,7 +36,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
 
     class StickyComponentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        val title = itemView.findViewById<TextView>(com.tokopedia.design.R.id.tv_title)
+        val title = itemView.findViewById<TextView>(R.id.tv_title)
         val subtitle = itemView.findViewById<TextView>(R.id.tv_subtitle)
         val image = itemView.findViewById<ImageView>(R.id.iv_image)
         val byMeIcon = itemView.findViewById<ImageView>(R.id.iv_byme)
@@ -62,6 +63,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
             subtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             subtitle.setTypeface(null, Typeface.BOLD)
             subtitle.setTextColor(MethodChecker.getColor(title.context, com.tokopedia.design.R.color.orange_red))
+            atcStickyPlay.hide()
 
 
             itemView.animate().setDuration(200)
@@ -111,6 +113,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
         ) {
             when (stickyComponentViewModel.componentType.toLowerCase()) {
                 StickyComponentViewModel.TYPE_PRODUCT -> {
+                    atcStickyPlay.show()
                     atcStickyPlay.setOnClickListener {
                         val attribute = Gson().fromJson(
                                 stickyComponentViewModel.attributeData,

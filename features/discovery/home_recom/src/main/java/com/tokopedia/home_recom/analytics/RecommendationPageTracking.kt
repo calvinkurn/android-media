@@ -535,5 +535,19 @@ class RecommendationPageTracking {
 
             getTracker().sendScreenAuthenticated(screenName, customDimension)
         }
+
+        // No 91 Done
+        fun sendScreenSimilarProductRecommendationPage(
+                screenName: String,
+                productId: String?,
+                pageSource: String
+        ){
+            val customDimension= DataLayer.mapOf(
+                    CUSTOM_DIMENSION_PAGE_SOURCE, pageSource,
+                    CUSTOM_DIMENSION_PRODUCT_ID, productId
+            ) as MutableMap<String, String>
+
+            getTracker().sendScreenAuthenticated(screenName, customDimension)
+        }
     }
 }

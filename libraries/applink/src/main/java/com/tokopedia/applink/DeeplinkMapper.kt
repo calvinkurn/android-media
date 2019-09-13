@@ -65,6 +65,8 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_NOTIFICATION -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
             ApplinkConst.GROUPCHAT_LIST -> return ApplinkConstInternalMarketplace.GROUPCHAT_LIST
             ApplinkConst.GROUPCHAT_DETAIL -> return ApplinkConstInternalMarketplace.GROUPCHAT_DETAIL
+            ApplinkConst.KYC -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
         }
         when {
             specialNavigationMapper(deeplink, ApplinkConst.Play.HOST) -> {
@@ -96,6 +98,7 @@ object DeeplinkMapper {
         return when (deeplink) {
             ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
+            ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             else -> ""
         }
     }

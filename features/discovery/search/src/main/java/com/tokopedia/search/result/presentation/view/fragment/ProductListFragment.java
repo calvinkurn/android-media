@@ -22,7 +22,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.design.price.DynamicBackgroundSeekBar;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
@@ -137,11 +136,10 @@ public class ProductListFragment
 
     private FilterController quickFilterController = new FilterController();
 
-    public static ProductListFragment newInstance(SearchParameter searchParameter, int fragmentPosition) {
+    public static ProductListFragment newInstance(SearchParameter searchParameter) {
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
-        args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
-        
+
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
 
@@ -162,7 +160,6 @@ public class ProductListFragment
     private void loadDataFromArguments() {
         if(getArguments() != null) {
             copySearchParameter(getArguments().getParcelable(EXTRA_SEARCH_PARAMETER));
-            setFragmentPosition(getArguments().getInt(EXTRA_FRAGMENT_POSITION));
         }
     }
 
@@ -194,8 +191,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState) {
         bindView(view);
         initTopAdsConfig();
         initTopAdsParams();
@@ -204,6 +200,11 @@ public class ProductListFragment
         if (getUserVisibleHint()) {
             setupSearchNavigation();
         }
+    }
+
+    @Override
+    protected boolean isFirstActiveTab() {
+        return getActiveTab().equals(SearchConstant.ActiveTab.PRODUCT);
     }
 
     @Override
@@ -267,7 +268,6 @@ public class ProductListFragment
     }
 
     private void setupListener() {
-        recyclerView.addOnScrollListener(getRecyclerViewBottomSheetScrollListener());
 
         staggeredGridLayoutLoadMoreTriggerListener = getEndlessRecyclerViewListener(getStaggeredGridLayoutManager());
 
@@ -436,8 +436,6 @@ public class ProductListFragment
 
     @Override
     protected void onFirstTimeLaunch() {
-        super.onFirstTimeLaunch();
-
         isFirstTimeLoad = true;
         reloadData();
     }
@@ -613,9 +611,9 @@ public class ProductListFragment
 
         setFilterToQuickFilterController(option, isQuickFilterSelectedReversed);
 
-        Map<String, String> parameterFromFilter = quickFilterController.getParameter();
-        applyFilterToSearchParameter(parameterFromFilter);
-        setSelectedFilter(new HashMap<>(parameterFromFilter));
+        Map<String, String> queryParams = quickFilterController.getParameter();
+        refreshSearchParameter(queryParams);
+        refreshFilterController(new HashMap<>(queryParams));
 
         clearDataFilterSort();
         reloadData();
@@ -841,7 +839,7 @@ public class ProductListFragment
 
     @Override
     public void removeLoading() {
-        redirectionListener.onProductLoadingFinished();
+        removeSearchPageLoading();
         adapter.removeLoading();
     }
 

@@ -33,6 +33,7 @@ private class SearchProfileUseCase(
 
         graphqlRequest.variables = variables
 
+        graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
         return graphqlUseCase
