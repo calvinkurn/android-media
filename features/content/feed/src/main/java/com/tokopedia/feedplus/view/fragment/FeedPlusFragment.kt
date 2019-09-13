@@ -203,11 +203,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         retainInstance = true
     }
 
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
-
     private fun initVar() {
         val typeFactory = FeedPlusTypeFactoryImpl(this, analytics, userSession)
         adapter = FeedPlusAdapter(typeFactory)
