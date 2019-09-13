@@ -385,17 +385,21 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (GlobalConfig.isSellerApp() || !remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SHOP, true)) {
             menu?.removeItem(R.id.action_cart)
         } else if (userSession.isLoggedIn) {
-            val drawable = ContextCompat.getDrawable(this, R.drawable.ic_cart_menu)
-            if (drawable is LayerDrawable) {
-                val countDrawable = CountDrawable(this)
-                val cartCount = cartLocalCacheHandler.getInt(TOTAL_CART_CACHE_KEY, 0)
-                countDrawable.setCount(cartCount.toString())
-                drawable.mutate()
-                drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
-                menu?.findItem(R.id.action_cart)?.icon = drawable
-            }
+            showCartBadge(menu)
         }
         return true
+    }
+
+    private fun showCartBadge(menu: Menu?) {
+        val drawable = ContextCompat.getDrawable(this, R.drawable.ic_cart_menu)
+        if (drawable is LayerDrawable) {
+            val countDrawable = CountDrawable(this)
+            val cartCount = cartLocalCacheHandler.getInt(TOTAL_CART_CACHE_KEY, 0)
+            countDrawable.setCount(cartCount.toString())
+            drawable.mutate()
+            drawable.setDrawableByLayerId(R.id.ic_cart_count, countDrawable)
+            menu?.findItem(R.id.action_cart)?.icon = drawable
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
