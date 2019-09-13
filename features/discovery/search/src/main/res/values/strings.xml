@@ -56,4 +56,8 @@
     <string name="post_count_value">%1$s post</string>
     <string name="btn_following_text">Following</string>
     <string name="btn_follow_text">Follow</string>
+    <string name="sort">Sort</string>
+    <string name="filter">Filter</string>
+    <string name="list">List</string>
+    <string name="msg_empty_search_with_filter_2">Hasil pencarian untuk \"%s\" tidak ditemukan. Coba kurangi filter pencarian Anda :</string>
 </resources>
