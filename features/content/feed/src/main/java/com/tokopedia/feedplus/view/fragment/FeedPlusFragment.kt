@@ -31,6 +31,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
@@ -782,6 +783,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
+        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        dialog.setTitle(getString(com.tokopedia.profile.R.string.profile_delete_post))
+        dialog.setDesc(getString(com.tokopedia.profile.R.string.profile_after_delete_cant))
+        dialog.setBtnOk(getString(com.tokopedia.profile.R.string.kol_title_delete))
+        dialog.setBtnCancel(getString(com.tokopedia.profile.R.string.kol_title_cancel))
+        dialog.setOnOkClickListener {
+            presenter.deletePost(id, rowNumber)
+            dialog.dismiss()
+        }
+        dialog.setOnCancelClickListener { dialog.dismiss() }
+        return dialog
+    }
+
     override fun onGoToLink(link: String) {
         if (!TextUtils.isEmpty(link)) {
             RouteManager.route(activity, link)
@@ -1245,7 +1260,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             val menus = createBottomMenu(context!!, deletable, reportable, false, object : PostMenuListener {
                 override fun onDeleteClicked() {
-
+                    createDeleteDialog(positionInFeed, postId).show()
                 }
 
                 override fun onReportClick() {
@@ -1458,6 +1473,28 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
+    }
+
+    override fun onSuccessDeletePost(rowNumber: Int) {
+        adapter.getlist().removeAt(rowNumber)
+        adapter.notifyItemRemoved(rowNumber)
+        val snackbar = ToasterNormal.make(view,
+                getString(R.string.profile_post_deleted),
+                BaseToaster.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
+        if (adapter.getlist().isEmpty()) {
+            showRefresh()
+            onRefresh()
+        }
+    }
+
+    override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
+        ToasterError.make(view, errorMessage, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again) {
+                    presenter.deletePost(id, rowNumber)
+                }
+                .show()
     }
 
     private fun doShare(body: String, title: String) {
