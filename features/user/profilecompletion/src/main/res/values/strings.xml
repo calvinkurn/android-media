@@ -116,5 +116,5 @@
     <string name="info_create_pin">Hindari menggunakan kombinasi angka yang mudah ditebak, seperti tanggal lahir atau nomor telepon.</string>
     <string name="confirm_create_pin">Konfirmasi PIN Tokopedia</string>
     <string name="subtitle_confirm_create_pin">Masukkan kembali PIN Tokopedia kamu</string>
-    <string name="error_wrong_pin">Pin yang Anda masukkan tidak sesuai</string>
+    <string name="error_wrong_pin">PIN yang Anda masukkan tidak sesuai</string>
 </resources>

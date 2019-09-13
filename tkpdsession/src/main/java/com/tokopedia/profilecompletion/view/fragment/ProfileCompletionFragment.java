@@ -1,5 +1,6 @@
 package com.tokopedia.profilecompletion.view.fragment;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -260,8 +261,14 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE_PIN){
-            if(getActivity() != null)
+            if(getActivity() != null){
+                if(resultCode == Activity.RESULT_OK){
+                    updateProgressBar(this.data.getCompletion(), this.data.getCompletion() + 10);
+                    setViewEnabled();
+                    loadFragment(this.data, pair);
+                }
                 getActivity().finish();
+            }
         }
     }
 
@@ -285,7 +292,7 @@ public class ProfileCompletionFragment extends BaseDaggerFragment
         } else if (edit == EditUserProfileUseCase.EDIT_VERIF) {
             data.setPhoneVerified(true);
             presenter.setMsisdnVerifiedToCache(true);
-            updateProgressBar(data.getCompletion(), data.getCompletion() + 30);
+            updateProgressBar(data.getCompletion(), data.getCompletion() + 20);
         }
         setViewEnabled();
         loadFragment(data, pair);

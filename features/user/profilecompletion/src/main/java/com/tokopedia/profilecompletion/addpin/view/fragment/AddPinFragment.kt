@@ -66,6 +66,8 @@ class AddPinFragment: BaseDaggerFragment(){
                         if(s.toString() == pin){
                             goToVerificationActivity()
                         }else{
+                            inputPin.setText("")
+                            inputPin.requestFocus()
                             displayErrorPin(getString(R.string.error_wrong_pin))
                         }
                     }else{
@@ -77,6 +79,7 @@ class AddPinFragment: BaseDaggerFragment(){
                 }
             }
         })
+        inputPin.requestFocus()
 
         initObserver()
     }
@@ -133,7 +136,9 @@ class AddPinFragment: BaseDaggerFragment(){
             }
             checkPinData.errorMessage.isNotEmpty() -> {
                 dismissLoading()
+                inputPin.setText("")
                 displayErrorPin(checkPinData.errorMessage)
+                inputPin.requestFocus()
             }
         }
     }
@@ -149,6 +154,7 @@ class AddPinFragment: BaseDaggerFragment(){
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
+        inputPin.requestFocus()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -175,6 +181,7 @@ class AddPinFragment: BaseDaggerFragment(){
         title.text = getString(R.string.create_pin)
         subtitle.text = getString(R.string.subtitle_create_pin)
         inputPin.setText("")
+        inputPin.requestFocus()
         isConfirmPin = false
         pin = ""
     }
@@ -186,6 +193,7 @@ class AddPinFragment: BaseDaggerFragment(){
         isConfirmPin = true
         if(inputPin.text.toString().isNotEmpty()) pin = inputPin.text.toString()
         inputPin.setText("")
+        inputPin.requestFocus()
     }
 
     private fun displayErrorPin(error: String){
