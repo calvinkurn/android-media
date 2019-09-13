@@ -23,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_10"
+        android:layout_below="@+id/txt_passenger_cancellation_status"
         android:visibility="gone"
         tools:visibility="visible"/>
 
@@ -30,7 +31,7 @@
         android:id="@+id/passenger_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txt_passenger_cancellation_status"
+        android:layout_below="@+id/txt_second_passenger_cancellation_status"
         android:orientation="horizontal">
 
         <TextView
@@ -61,8 +62,8 @@
         android:id="@+id/recycler_view_passenger_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/passenger_container"
-        android:layout_alignStart="@id/passenger_container"
+        android:layout_alignLeft="@+id/passenger_container"
+        android:layout_alignStart="@+id/passenger_container"
         android:layout_below="@+id/passenger_container"
         android:layout_marginTop="@dimen/dp_10"
         android:visibility="gone" />
