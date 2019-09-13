@@ -517,10 +517,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_UPCOMING)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_soft_pink));
-            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.red_500));
             sprintSaleText.setText(String.format("%s - %s", sprintSaleViewModel
                     .getFormattedStartDate(), sprintSaleViewModel.getFormattedEndDate()));
-            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), R.color.red_500));
+            sprintSaleText.setTextColor(MethodChecker.getColor(getActivity(), com.tokopedia.design.R.color.red_500));
         } else if (sprintSaleViewModel.getSprintSaleType().equalsIgnoreCase(SprintSaleViewModel.TYPE_ACTIVE)) {
             MethodChecker.setBackground(sprintSaleText, MethodChecker.getDrawable(getActivity(),
                     R.drawable.bg_rounded_red_label));
