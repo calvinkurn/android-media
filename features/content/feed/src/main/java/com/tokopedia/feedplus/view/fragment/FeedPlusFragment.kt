@@ -785,10 +785,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
         val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(com.tokopedia.profile.R.string.profile_delete_post))
-        dialog.setDesc(getString(com.tokopedia.profile.R.string.profile_after_delete_cant))
-        dialog.setBtnOk(getString(com.tokopedia.profile.R.string.kol_title_delete))
-        dialog.setBtnCancel(getString(com.tokopedia.profile.R.string.kol_title_cancel))
+        dialog.setTitle(getString(R.string.feed_delete_post))
+        dialog.setDesc(getString(R.string.feed_after_delete_cant))
+        dialog.setBtnOk(getString(R.string.action_delete))
+        dialog.setBtnCancel(getString(R.string.cancel))
         dialog.setOnOkClickListener {
             presenter.deletePost(id, rowNumber)
             dialog.dismiss()
