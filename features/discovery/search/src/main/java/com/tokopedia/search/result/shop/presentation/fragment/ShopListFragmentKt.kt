@@ -76,15 +76,11 @@ class ShopListFragmentKt:
     }
 
     private fun initRefreshLayout() {
-        refreshLayout = view?.findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout)
+        refreshLayout = view?.findViewById(R.id.swipe_refresh_layout)
 
         refreshLayout?.setOnRefreshListener {
-            reloadSearchShop()
+            searchShopViewModel?.onViewReloadData()
         }
-    }
-
-    private fun reloadSearchShop() {
-        searchShopViewModel?.reloadSearchShop()
     }
 
     private fun initGridLayoutManager() {
@@ -94,15 +90,9 @@ class ShopListFragmentKt:
     private fun initLoadMoreListener() {
         gridLayoutLoadMoreTriggerListener = object : EndlessRecyclerViewScrollListener(gridLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (userVisibleHint) {
-                    searchMoreShop()
-                }
+                searchShopViewModel?.onViewLoadMore(userVisibleHint)
             }
         }
-    }
-
-    private fun searchMoreShop() {
-        searchShopViewModel?.searchMoreShop()
     }
 
     private fun initRecyclerView() {
@@ -176,21 +166,21 @@ class ShopListFragmentKt:
 
     private fun updateScrollListener() {
         gridLayoutLoadMoreTriggerListener?.updateStateAfterGetData()
-        gridLayoutLoadMoreTriggerListener?.setHasNextPage(searchShopViewModel?.getIsHasNextPage() ?: false)
+        gridLayoutLoadMoreTriggerListener?.setHasNextPage(searchShopViewModel?.getHasNextPage() ?: false)
     }
 
     private fun showRetryLayout(searchShopLiveData: State<List<Visitable<*>>>) {
-        val retryClickedListener = NetworkErrorHelper.RetryClickedListener { retrySearchShop() }
+        // TODO:: Put retry click listener as global variable
+        val retryClickedListener = NetworkErrorHelper.RetryClickedListener {
+            searchShopViewModel?.onViewClickRetry()
+        }
 
+        // TODO:: Use "Event" LiveData to show network error, do not use if else here
         if (isSearchShopLiveDataContainItems(searchShopLiveData)) {
             NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity, retryClickedListener).showRetrySnackbar()
         }
-    }
-
-    private fun retrySearchShop() {
-        searchShopViewModel?.retrySearchShop()
     }
 
     private fun isSearchShopLiveDataContainItems(searchShopLiveData: State<List<Visitable<*>>>): Boolean {

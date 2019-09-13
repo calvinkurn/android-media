@@ -62,10 +62,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
+import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CART_LOCAL_CACHE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SEARCH_RESULT_TRACE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.SearchTabPosition.TAB_FIRST_POSITION;
@@ -119,7 +121,7 @@ public class SearchActivity extends BaseActivity
     @Inject SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
     @Inject RemoteConfig remoteConfig;
-    @Inject LocalCacheHandler localCacheHandler;
+    @Inject @Named(CART_LOCAL_CACHE) LocalCacheHandler cartLocalCacheHandler;
 
     private PerformanceMonitoring performanceMonitoring;
     private SearchParameter searchParameter;
@@ -231,7 +233,7 @@ public class SearchActivity extends BaseActivity
         Drawable drawable = ContextCompat.getDrawable(this, R.drawable.search_ic_cart);
         if (drawable instanceof LayerDrawable) {
             CountDrawable countDrawable = new CountDrawable(this);
-            int cartCount = localCacheHandler.getInt(CACHE_TOTAL_CART, 0);
+            int cartCount = cartLocalCacheHandler.getInt(CACHE_TOTAL_CART, 0);
             countDrawable.setCount(String.valueOf(cartCount));
             drawable.mutate();
             ((LayerDrawable) drawable).setDrawableByLayerId(R.id.ic_cart_count, countDrawable);

@@ -14,6 +14,9 @@ import com.tokopedia.search.result.common.State.Success
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel.AceSearchShop
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel.AceSearchShop.ShopItem
+import com.tokopedia.search.result.shop.domain.model.SearchShopModel.AceSearchShop.ShopItem.ShopItemProduct
 import com.tokopedia.search.result.shop.presentation.mapper.ShopViewModelMapperModule
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
@@ -29,41 +32,47 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 import org.spekframework.spek2.style.gherkin.FeatureBody
 
-class SearchShopViewModelTest: Spek({
+class SearchShopViewModelTest : Spek({
 
     InstantTaskExecutorRuleSpek(this)
 
-    val pagingWithNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "Some random string indicating has next page")
-    val pagingWithoutNextPage = SearchShopModel.AceSearchShop.Paging(uriNext = "")
+    val pagingWithNextPage = AceSearchShop.Paging(uriNext = "Some random string indicating has next page")
+    val pagingWithoutNextPage = AceSearchShop.Paging(uriNext = "")
 
-    val shopItemList: List<SearchShopModel.AceSearchShop.ShopItem> = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "1"))
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "2"))
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "3"))
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "4"))
+    val shopItemProductList: List<ShopItemProduct> = mutableListOf<ShopItemProduct>().also {
+        it.add(ShopItemProduct(id = 1))
+        it.add(ShopItemProduct(id = 2))
+        it.add(ShopItemProduct(id = 3))
     }
 
-    val moreShopItemList: List<SearchShopModel.AceSearchShop.ShopItem> = mutableListOf<SearchShopModel.AceSearchShop.ShopItem>().also {
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "5"))
-        it.add(SearchShopModel.AceSearchShop.ShopItem(id = "6"))
+    val shopItemList: List<ShopItem> = mutableListOf<ShopItem>().also {
+        it.add(ShopItem(id = "1", productList = shopItemProductList))
+        it.add(ShopItem(id = "2"))
+        it.add(ShopItem(id = "3", productList = shopItemProductList))
+        it.add(ShopItem(id = "4"))
     }
 
-    val aceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
+    val moreShopItemList: List<ShopItem> = mutableListOf<ShopItem>().also {
+        it.add(ShopItem(id = "5", productList = shopItemProductList))
+        it.add(ShopItem(id = "6"))
+    }
+
+    val aceSearchShopWithNextPage = AceSearchShop(
             paging = pagingWithNextPage,
             shopList = shopItemList
     )
 
-    val aceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
+    val aceSearchShopWithoutNextPage = AceSearchShop(
             paging = pagingWithoutNextPage,
             shopList = shopItemList
     )
 
-    val moreAceSearchShopWithNextPage = SearchShopModel.AceSearchShop(
+    val moreAceSearchShopWithNextPage = AceSearchShop(
             paging = pagingWithNextPage,
             shopList = moreShopItemList
     )
 
-    val moreAceSearchShopWithoutNextPage = SearchShopModel.AceSearchShop(
+    val moreAceSearchShopWithoutNextPage = AceSearchShop(
             paging = pagingWithoutNextPage,
             shopList = moreShopItemList
     )
@@ -125,12 +134,8 @@ class SearchShopViewModelTest: Spek({
             val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("search shop use case will be successful and return search shop data") {
-                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
-            }
-
             When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = true, isViewAdded = true)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Then("verify search shop API is called once") {
@@ -143,9 +148,9 @@ class SearchShopViewModelTest: Spek({
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
             When("handle view not visible or not added") {
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = true, isViewAdded = false)
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = false, isViewAdded = true)
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = false, isViewAdded = false)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = false)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = false, isViewAdded = true)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = false, isViewAdded = false)
             }
 
             Then("verify search shop API is never called") {
@@ -157,14 +162,10 @@ class SearchShopViewModelTest: Spek({
             val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("search shop use case will be successful and return search shop data") {
-                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
-            }
-
             When("handle view is visible and added, and then not visible, then visible again") {
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = true, isViewAdded = true)
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = false, isViewAdded = true)
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = true, isViewAdded = true)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = false, isViewAdded = true)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Then("verify search shop API is only called once") {
@@ -185,7 +186,7 @@ class SearchShopViewModelTest: Spek({
             }
 
             When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = true, isViewAdded = true)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Then("assert search shop state is success and contains search shop data") {
@@ -208,7 +209,7 @@ class SearchShopViewModelTest: Spek({
             }
 
             When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = true, isViewAdded = true)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Then("assert search shop state is error with no data") {
@@ -228,7 +229,7 @@ class SearchShopViewModelTest: Spek({
             }
 
             When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isVisibleToUser = true, isViewAdded = true)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
             Then("assert search shop state is success and only contains empty search data") {
@@ -236,6 +237,93 @@ class SearchShopViewModelTest: Spek({
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
                 searchShopState.shouldOnlyHaveEmptySearchModel()
+            }
+        }
+    }
+
+    Feature("Handle View Scroll to Load More") {
+        createTestInstance()
+
+        Scenario("View load more and visible, and has next page") {
+            val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+
+            Given("view has loaded first page and has next page") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            When("handle view load more and visible") {
+                searchShopViewModel.onViewLoadMore(isViewVisible =true)
+            }
+
+            Then("verify search more shop API is called once") {
+                searchMoreShopUseCase.isExecuted()
+            }
+        }
+
+        Scenario("View load more and visible, but does not have next page") {
+            val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+
+            Given("view has loaded first page and does not have next page") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModelWithoutNextPage)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            When("handle view load more and visible") {
+                searchShopViewModel.onViewLoadMore(isViewVisible = true)
+            }
+
+            Then("verify search more shop API is never called") {
+                searchMoreShopUseCase.isNeverExecuted()
+            }
+        }
+
+        Scenario("View load more but not visible") {
+            val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+
+            Given("view has loaded first page and has next page") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            When("handle view load more but not visible") {
+                searchShopViewModel.onViewLoadMore(isViewVisible = false)
+            }
+
+            Then("verify search more shop API is never called") {
+                searchMoreShopUseCase.isNeverExecuted()
+            }
+        }
+
+        Scenario("View load more twice and visible, but does not have next page after first load more") {
+            val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+
+            Given("view has loaded first page and has next page") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Given("search more shop API will return data with has next page is false") {
+                searchMoreShopUseCase.stubExecuteOnBackground()
+                        .returns(searchMoreShopModelWithoutNextPage)
+                        .andThen(searchMoreShopModel)
+            }
+
+            When("handle view load more twice and visible") {
+                searchShopViewModel.onViewLoadMore(isViewVisible = true)
+                searchShopViewModel.onViewLoadMore(isViewVisible = true)
+            }
+
+            Then("verify search more shop API is only called once") {
+                searchMoreShopUseCase.isExecuted()
             }
         }
     }
@@ -248,19 +336,17 @@ class SearchShopViewModelTest: Spek({
             val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("search shop and search more shop API call will be successful and return search shop data") {
+            Given("view has load first page data successfully") {
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Given("search more shop API call will be successful and return search shop data") {
                 searchMoreShopUseCase.stubExecuteOnBackground().returns(searchMoreShopModel)
             }
 
-            When("execute search shop and search more shop") {
-                searchShopViewModel.searchShop()
-                searchShopViewModel.searchMoreShop()
-            }
-
-            Then("verify search shop and search more shop API called once") {
-                searchShopUseCase.isExecuted()
-                searchMoreShopUseCase.isExecuted()
+            When("handle view load more and visible") {
+                searchShopViewModel.onViewLoadMore(true)
             }
 
             Then("assert search shop state is success and contains data from search shop and search more shop") {
@@ -277,20 +363,18 @@ class SearchShopViewModelTest: Spek({
             val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("search shop API call will be successful, but search more shop API call will fail") {
-                val exception = Exception("Mock exception for testing error")
+            Given("view has load first page data successfully") {
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Given("search more shop API call will fail") {
+                val exception = Exception("Mock exception for testing error")
                 searchMoreShopUseCase.stubExecuteOnBackground().throws(exception)
             }
 
-            When("execute search shop and search more shop") {
-                searchShopViewModel.searchShop()
-                searchShopViewModel.searchMoreShop()
-            }
-
-            Then("verify search shop and search more shop API called once") {
-                searchShopUseCase.isExecuted()
-                searchMoreShopUseCase.isExecuted()
+            When("handle view load more and visible") {
+                searchShopViewModel.onViewLoadMore(true)
             }
 
             Then("assert search shop state is error, but still contains data from search shop") {
@@ -299,73 +383,6 @@ class SearchShopViewModelTest: Spek({
                 searchShopState.shouldBeInstanceOf<Error<*>>()
                 searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
                 searchShopState.shouldHaveShopItemCount(shopItemList.size)
-            }
-        }
-
-        Scenario("Search More Shop without Next Page after Search Shop") {
-            val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
-            val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
-            val searchShopViewModel by memoized<SearchShopViewModel>()
-
-            Given("search shop API call will return data with has next page is false") {
-                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModelWithoutNextPage)
-                searchMoreShopUseCase.stubExecuteOnBackground().returns(searchMoreShopModel)
-            }
-
-            When("execute search shop then search more shop") {
-                searchShopViewModel.searchShop()
-                searchShopViewModel.searchMoreShop()
-            }
-
-            Then("verify search shop API is called, and search more shop API is not called") {
-                searchShopUseCase.isExecuted()
-                searchMoreShopUseCase.isNeverExecuted()
-            }
-
-            Then("assert search shop state is success, but only have search shop data") {
-                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
-
-                searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveHeaderAndShopItemFromSecondToLastElement()
-                searchShopState.shouldHaveShopItemCount(shopItemList.size)
-            }
-        }
-
-        Scenario("Search More Shop without Next Page after Search More SHop") {
-            val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
-            val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
-            val searchShopViewModel by memoized<SearchShopViewModel>()
-
-            Given("search more shop API will return data with has next page is false") {
-                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
-                searchMoreShopUseCase.stubExecuteOnBackground()
-                        .returns(searchMoreShopModelWithoutNextPage)
-                        .andThen(
-                                SearchShopModel(
-                                        SearchShopModel.AceSearchShop(
-                                                shopList = moreShopItemList.map { it.copy() }.toList()
-                                        )
-                                )
-                        )
-            }
-
-            When("execute search shop and then search more shop twice") {
-                searchShopViewModel.searchShop()
-                searchShopViewModel.searchMoreShop()
-                searchShopViewModel.searchMoreShop()
-            }
-
-            Then("verify search shop API and search more shop API called once") {
-                searchShopUseCase.isExecuted()
-                searchMoreShopUseCase.isExecuted()
-            }
-
-            Then("assert search shop state is success, without data from second search more shop API call") {
-                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
-
-                searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveHeaderAndShopItemFromSecondToLastElement()
-                searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
             }
         }
     }
@@ -387,7 +404,7 @@ class SearchShopViewModelTest: Spek({
 
             When("execute search shop, and then retry") {
                 searchShopViewModel.searchShop()
-                searchShopViewModel.retrySearchShop()
+                searchShopViewModel.onViewClickRetry()
             }
 
             Then("verify search shop API called twice") {
@@ -420,7 +437,7 @@ class SearchShopViewModelTest: Spek({
             When("execute search shop, search more shop, and then retry") {
                 searchShopViewModel.searchShop()
                 searchShopViewModel.searchMoreShop()
-                searchShopViewModel.retrySearchShop()
+                searchShopViewModel.onViewClickRetry()
             }
 
             Then("verify search shop API called twice") {
@@ -450,7 +467,7 @@ class SearchShopViewModelTest: Spek({
             }
 
             When("execute reload search shop") {
-                searchShopViewModel.reloadSearchShop()
+                searchShopViewModel.onViewReloadData()
             }
 
             Then("verify search shop API called once") {
@@ -479,7 +496,7 @@ class SearchShopViewModelTest: Spek({
             When("execute reload search shop") {
                 searchShopViewModel.searchShop()
                 searchShopViewModel.searchMoreShop()
-                searchShopViewModel.reloadSearchShop()
+                searchShopViewModel.onViewReloadData()
             }
 
             Then("verify search shop API is called twice and search more shop API is called once") {
@@ -523,9 +540,26 @@ private fun State<List<Visitable<*>>>?.shouldHaveHeaderAndLoadingMoreWithShopIte
 
 private fun State<List<Visitable<*>>>?.shouldHaveHeaderAndShopItemFromSecondToLastElement() {
     this?.data?.first().shouldBeInstanceOf<ShopHeaderViewModel>()
-    this?.data.secondToLast().forEachIndexed { index, shopItem ->
-        shopItem.shouldBeInstanceOf<ShopViewModel.ShopItem>()
-        (shopItem as ShopViewModel.ShopItem).position = index + 1
+    this?.data.secondToLast().forEachIndexed { index, visitable ->
+        visitable.verifyShopItemIsCorrect(index)
+    }
+}
+
+private fun Visitable<*>.verifyShopItemIsCorrect(index: Int) {
+    this.shouldBeInstanceOf<ShopViewModel.ShopItem>()
+
+    val shopItem = this as ShopViewModel.ShopItem
+    shopItem.shouldHaveCorrectPosition(index + 1)
+    shopItem.shouldHaveCorrectProductItemPosition()
+}
+
+private fun ShopViewModel.ShopItem.shouldHaveCorrectPosition(expectedPosition: Int) {
+    this.position shouldBe expectedPosition
+}
+
+private fun ShopViewModel.ShopItem.shouldHaveCorrectProductItemPosition() {
+    this.productList.forEachIndexed { index, productItem ->
+        productItem.position shouldBe index + 1
     }
 }
 

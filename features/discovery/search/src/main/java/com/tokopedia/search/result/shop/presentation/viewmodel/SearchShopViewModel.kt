@@ -47,7 +47,7 @@ class SearchShopViewModel(
     private val searchParameter = searchParameter.toMutableMap()
     private val loadingMoreModel = LoadingMoreModel()
     private var hasLoadData = false
-    private var isHasNextPage = false
+    private var hasNextPage = false
 
     init {
         setSearchParameterUniqueId()
@@ -82,8 +82,8 @@ class SearchShopViewModel(
         searchParameter[SearchApiConst.START] = startRow
     }
 
-    fun onViewVisibilityChanged(isVisibleToUser: Boolean, isViewAdded: Boolean) {
-        if (isVisibleToUser && isViewAdded && !hasLoadData) {
+    fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean) {
+        if (isViewVisible && isViewAdded && !hasLoadData) {
             hasLoadData = true
             searchShop()
         }
@@ -107,10 +107,6 @@ class SearchShopViewModel(
 
     private fun isSearchShopListContainItems(): Boolean {
         return searchShopMutableList.isNotEmpty()
-    }
-
-    private fun isAnotherJobStillRunning(): Boolean {
-        return masterJob.isActive
     }
 
     private fun updateSearchShopLiveDataStateToLoading() {
@@ -156,7 +152,7 @@ class SearchShopViewModel(
     }
 
     private fun updateIsHasNextPage(searchShopModel: SearchShopModel) {
-        isHasNextPage = searchShopModel.aceSearchShop.paging.uriNext.isNotEmpty()
+        hasNextPage = searchShopModel.aceSearchShop.paging.uriNext.isNotEmpty()
     }
 
     private fun createVisitableListFromModel(searchShopModel: SearchShopModel): List<Visitable<*>> {
@@ -225,12 +221,12 @@ class SearchShopViewModel(
 
     private fun setShopProductItemPosition(shopItemProductList: List<ShopViewModel.ShopItem.ShopItemProduct>) {
         for ((index, shopItemProduct) in shopItemProductList.withIndex()) {
-            shopItemProduct.position = index
+            shopItemProduct.position = index + 1
         }
     }
 
     private fun addLoadingMoreModel(visitableList: MutableList<Visitable<*>>) {
-        if (isHasNextPage) {
+        if (hasNextPage) {
             visitableList.add(loadingMoreModel)
         }
     }
@@ -253,8 +249,8 @@ class SearchShopViewModel(
         }
     }
 
-    private fun catchCancellationException(e: Throwable) {
-        e.printStackTrace()
+    private fun catchCancellationException(e: Throwable?) {
+        e?.printStackTrace()
     }
 
     private fun catchSearchShopError(e: Throwable?) {
@@ -267,20 +263,26 @@ class SearchShopViewModel(
         searchShopLiveData.postValue(Error("", searchShopMutableList))
     }
 
-    private fun getDynamicFilter() {
-        launchCatchError(block = {
-            tryGetDynamicFilter()
-        }, onError = {
-            catchGetDynamicFilterError()
-        })
-    }
+//    private fun getDynamicFilter() {
+//        launchCatchError(block = {
+//            tryGetDynamicFilter()
+//        }, onError = {
+//            catchGetDynamicFilterError()
+//        })
+//    }
+//
+//    private suspend fun tryGetDynamicFilter() {
+//
+//    }
+//
+//    private fun catchGetDynamicFilterError() {
+//
+//    }
 
-    private suspend fun tryGetDynamicFilter() {
-
-    }
-
-    private fun catchGetDynamicFilterError() {
-
+    fun onViewLoadMore(isViewVisible: Boolean) {
+        if (hasNextPage && isViewVisible) {
+            searchMoreShop()
+        }
     }
 
     fun searchMoreShop() {
@@ -292,8 +294,6 @@ class SearchShopViewModel(
     }
 
     private suspend fun trySearchMoreShop() {
-        if(!isHasNextPage) return
-
         val searchShopModel = requestSearchShopModel(getTotalShopItemCount(), searchShopLoadMoreUseCase)
 
         searchShopLoadMoreSuccess(searchShopModel)
@@ -325,7 +325,7 @@ class SearchShopViewModel(
         return visitableList
     }
 
-    fun retrySearchShop() {
+    fun onViewClickRetry() {
         launchCatchError(block = {
             tryRetrySearchShop()
         }, onError = {
@@ -346,7 +346,7 @@ class SearchShopViewModel(
         return !isSearchShopListContainItems()
     }
 
-    fun reloadSearchShop() {
+    fun onViewReloadData() {
         launchCatchError(block = {
             tryReloadSearchShop()
         }, onError = {
@@ -372,8 +372,8 @@ class SearchShopViewModel(
         return searchShopLiveData
     }
 
-    fun getIsHasNextPage(): Boolean {
-        return isHasNextPage
+    fun getHasNextPage(): Boolean {
+        return hasNextPage
     }
 
     override fun onCleared() {
