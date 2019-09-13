@@ -55,6 +55,7 @@ class AddPinFragment: BaseDaggerFragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        displayInitPin()
         inputPin.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {}
 
@@ -67,7 +68,7 @@ class AddPinFragment: BaseDaggerFragment(){
                             goToVerificationActivity()
                         }else{
                             inputPin.setText("")
-                            inputPin.requestFocus()
+                            inputPin.focus()
                             displayErrorPin(getString(R.string.error_wrong_pin))
                         }
                     }else{
@@ -79,7 +80,6 @@ class AddPinFragment: BaseDaggerFragment(){
                 }
             }
         })
-        inputPin.requestFocus()
 
         initObserver()
     }
@@ -138,7 +138,7 @@ class AddPinFragment: BaseDaggerFragment(){
                 dismissLoading()
                 inputPin.setText("")
                 displayErrorPin(checkPinData.errorMessage)
-                inputPin.requestFocus()
+                inputPin.focus()
             }
         }
     }
@@ -154,7 +154,7 @@ class AddPinFragment: BaseDaggerFragment(){
             val errorMessage = ErrorHandlerSession.getErrorMessage(context, throwable)
             Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
         }
-        inputPin.requestFocus()
+        inputPin.focus()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -181,7 +181,7 @@ class AddPinFragment: BaseDaggerFragment(){
         title.text = getString(R.string.create_pin)
         subtitle.text = getString(R.string.subtitle_create_pin)
         inputPin.setText("")
-        inputPin.requestFocus()
+        inputPin.focus()
         isConfirmPin = false
         pin = ""
     }
@@ -193,7 +193,7 @@ class AddPinFragment: BaseDaggerFragment(){
         isConfirmPin = true
         if(inputPin.text.toString().isNotEmpty()) pin = inputPin.text.toString()
         inputPin.setText("")
-        inputPin.requestFocus()
+        inputPin.focus()
     }
 
     private fun displayErrorPin(error: String){
