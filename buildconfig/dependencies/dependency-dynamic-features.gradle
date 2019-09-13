@@ -7,6 +7,7 @@ ext {
             shopSettings                    : ":dynamic-features:merchant:shop_settings",
             shopOpen                        : ":dynamic-features:merchant:shop_open",
             settingBank                     : ":dynamic-features:user:settingbank",
+            homepageTravel                  : ":dynamic-features:travel:homepage_travel"
     ]
 
     dynamicFeaturesSellerapp = [

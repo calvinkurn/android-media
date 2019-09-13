@@ -55,6 +55,8 @@ include "dynamic-features:merchant:shop_settings"
 include "dynamic-features:merchant:shop_open"
 include "dynamic-features:travel:hotel_travel"
 include "dynamic-features:user:profilecompletion"
+include "dynamic-features:merchant:shop_settings"
+include "dynamic-features:travel:homepage_travel"
 include "dynamic-features:user:settingbank"
 
 include "features:fintech:home_credit"
