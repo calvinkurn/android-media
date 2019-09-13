@@ -410,7 +410,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment
     }
 
     private void registerEmail() {
-        registerAnalytics.trackClickSignUpButtonEmail();
+        registerAnalytics.trackClickSignUpButtonEmail(getContext());
         presenter.onRegisterClicked(
                 email.getText().toString(),
                 name.getText().toString(),

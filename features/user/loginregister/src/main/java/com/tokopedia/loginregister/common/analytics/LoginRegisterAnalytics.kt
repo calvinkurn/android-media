@@ -250,6 +250,9 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     //#11
     fun eventClickLoginEmailButton(applicationContext: Context) {
+        applicationContext?.let {
+            getCashShield(it).send()
+        }
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -291,6 +294,9 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     //#12
     fun eventClickLoginGoogle(applicationContext: Context) {
+        applicationContext?.let {
+            getCashShield(it).send()
+        }
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -306,6 +312,10 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     //#13
     fun eventClickLoginFacebook(applicationContext: Context) {
+        applicationContext?.let {
+            getCashShield(it).send()
+        }
+
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -330,7 +340,10 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
 
-    fun eventClickRegisterFromLogin() {
+    fun eventClickRegisterFromLogin(context: Context?) {
+        context?.let {
+            getCashShield(it).send()
+        }
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_LOGIN,
                 CATEGORY_LOGIN,
@@ -546,10 +559,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
     fun eventSuccessRegisterEmail(context: Context?, userId: Int, name: String, email: String) {
-        context?.let {
-            getCashShield(it).send()
-        }
-
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -599,9 +608,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
 
     fun eventSuccessLogin(context: Context?, actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
-        context?.let {
-            getCashShield(it).send()
-        }
 
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessLoginWithEmail(registerAnalytics)

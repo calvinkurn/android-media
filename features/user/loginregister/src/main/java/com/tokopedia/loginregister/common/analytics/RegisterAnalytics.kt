@@ -306,7 +306,10 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     //#R19
-    fun trackClickSignUpButtonEmail() {
+    fun trackClickSignUpButtonEmail(context: Context?) {
+        context?.let {
+            getCashShield(it).send()
+        }
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_REGISTER,
                 CATEGORY_REGISTER_WITH_EMAIL_PAGE,
@@ -502,10 +505,6 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     fun trackSuccessRegister(context: Context?, loginMethod: String) {
-        context?.let {
-            getCashShield(it).send()
-        }
-
         when(loginMethod){
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail()
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()

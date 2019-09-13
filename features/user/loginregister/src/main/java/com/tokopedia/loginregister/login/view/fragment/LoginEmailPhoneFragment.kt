@@ -492,6 +492,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun onLoginFacebookClick() {
+
         if (activity != null) {
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
@@ -551,7 +552,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun goToRegisterInitial(source: String) {
         if (activity != null) {
-            analytics.eventClickRegisterFromLogin()
+            analytics.eventClickRegisterFromLogin(context)
             val intent = RegisterInitialActivity.getCallingIntent(activity)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
