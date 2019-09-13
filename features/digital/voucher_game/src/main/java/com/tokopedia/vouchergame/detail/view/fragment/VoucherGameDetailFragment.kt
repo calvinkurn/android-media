@@ -93,7 +93,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             voucherGameViewModel = viewModelProvider.get(VoucherGameDetailViewModel::class.java)
 
             //Setup adapter
-            adapter = VoucherGameDetailAdapter(it,
+            adapter = VoucherGameDetailAdapter(it, resources,
                     VoucherGameDetailAdapterFactory(this),
                     this, this)
         }

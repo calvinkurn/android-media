@@ -282,8 +282,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val model = EmptyModel()
-        model.title = "Data kosong"
-        model.description = "Tidak ada data yang ditemukan :("
+        model.title = getString(R.string.vg_empty_state_title)
+        model.description = getString(R.string.vg_empty_state_desc)
         return model
     }
 
