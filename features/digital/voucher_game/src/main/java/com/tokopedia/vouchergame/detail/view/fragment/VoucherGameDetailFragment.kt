@@ -109,6 +109,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         super.onActivityCreated(savedInstanceState)
         voucherGameViewModel.voucherGameProducts.observe(this, Observer {
             it.run {
+                input_field_container_shimmering.visibility = View.GONE
                 when(it) {
                     is Success -> {
                         adapter.hideLoading()
@@ -146,6 +147,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private fun initView() {
         setupOperatorDetail()
+
+        // Show input fields shimmering layout
+        input_field_container.visibility = View.GONE
+        input_field_container_shimmering.visibility = View.VISIBLE
 
         recycler_view.adapter = adapter
         val layoutManager = GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
@@ -227,6 +232,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                     input_field_2.setHint(secondField.placeholder)
                 }
             }
+            input_field_container.visibility = View.VISIBLE
 
             // Enquire if all required fields are filled
             input_field_1.setListener(object : VoucherGameInputFieldWidget.ActionListener {
