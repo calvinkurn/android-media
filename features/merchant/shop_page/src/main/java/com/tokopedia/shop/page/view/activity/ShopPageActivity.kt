@@ -622,7 +622,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODER_USER_LOGIN) {
             if (resultCode == Activity.RESULT_OK) {
-                invalidateOptionsMenu()
                 refreshData()
             }
         } else if (requestCode == REQUEST_CODE_FOLLOW) {
@@ -631,7 +630,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             }
         } else if (requestCode == REQUEST_CODE_USER_LOGIN_CART) {
             if (resultCode == Activity.RESULT_OK) {
-                invalidateOptionsMenu()
                 goToCart()
             }
         }
