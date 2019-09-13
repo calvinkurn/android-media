@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -22,14 +23,20 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.gamification.GamificationEventTracking;
 import com.tokopedia.gamification.R;
+import com.tokopedia.gamification.applink.ApplinkUtil;
+import com.tokopedia.gamification.cracktoken.activity.CrackTokenActivity;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
 import com.tokopedia.gamification.util.HexValidator;
+import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.TrackAppUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class WidgetRewardCrackResult extends FrameLayout {
+public class WidgetRewardCrackResult extends FrameLayout implements View.OnClickListener {
     private static final float REWARD_SCALE_FACTOR = 1.2f;
     private static final String BENIFIT_TYPE_REWARD_POINT = "reward_point";
     private static final String BENIFIT_TYPE_LOYALTY_POINT = "loyalty_point";
@@ -82,6 +89,9 @@ public class WidgetRewardCrackResult extends FrameLayout {
         tvPoints = view.findViewById(R.id.tv_points);
         tvLoyalty = view.findViewById(R.id.tv_loyalty);
         tvCoupons = view.findViewById(R.id.tv_coupons);
+        rlPoints.setOnClickListener(this);
+        rlLoyalty.setOnClickListener(this);
+        rlCoupons.setOnClickListener(this);
     }
 
     public void showCounterAnimations(List<CrackBenefitEntity> crackBenefits) {
@@ -309,5 +319,47 @@ public class WidgetRewardCrackResult extends FrameLayout {
         rlCoupons.clearAnimation();
         rlLoyalty.clearAnimation();
         rlPoints.clearAnimation();
+    }
+
+    @Override
+    public void onClick(View v) {
+        int id = v.getId();
+        if(id == R.id.rl_points || id == R.id.rl_loyalty) {
+            ApplinkUtil.navigateToAssociatedPage((Activity) getContext(), ApplinkConst.TOKOPOINTS, null, CrackTokenActivity.class);
+            if(id == R.id.rl_points)
+                trackPointsIconClick();
+            else
+                trackLoyaltyIconClick();
+        } else if(id == R.id. rl_coupons) {
+            ApplinkUtil.navigateToAssociatedPage((Activity) getContext(), ApplinkConst.COUPON_LISTING, null, CrackTokenActivity.class);
+            trackKuponIconClick();
+        }
+    }
+
+    private void trackPointsIconClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.EXPIRED_TOKEN,
+                GamificationEventTracking.Action.CLICK_POINT_ICON,
+                ""
+        ));
+    }
+
+    private void trackLoyaltyIconClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.EXPIRED_TOKEN,
+                GamificationEventTracking.Action.CLICK_LOYALTY_ICON,
+                ""
+        ));
+    }
+
+    private void trackKuponIconClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                GamificationEventTracking.Category.EXPIRED_TOKEN,
+                GamificationEventTracking.Action.CLICK_KUPON_ICON,
+                ""
+        ));
     }
 }

@@ -4,7 +4,6 @@ import android.support.annotation.DrawableRes;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
-import com.tokopedia.filter.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 public class EmptySearchModel implements Visitable<BrowseSectionTypeFactory> {
 
@@ -13,7 +12,6 @@ public class EmptySearchModel implements Visitable<BrowseSectionTypeFactory> {
     private String title;
     private String content;
     private String buttonText;
-    private FilterFlagSelectedModel filterFlagSelectedModel;
 
     public int getImageRes() {
         return imageRes;
@@ -45,14 +43,6 @@ public class EmptySearchModel implements Visitable<BrowseSectionTypeFactory> {
 
     public void setButtonText(String buttonText) {
         this.buttonText = buttonText;
-    }
-
-    public FilterFlagSelectedModel getFilterFlagSelectedModel() {
-        return filterFlagSelectedModel;
-    }
-
-    public void setFilterFlagSelectedModel(FilterFlagSelectedModel filterFlagSelectedModel) {
-        this.filterFlagSelectedModel = filterFlagSelectedModel;
     }
 
     @Override

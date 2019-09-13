@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
@@ -21,8 +20,9 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySection
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -46,14 +46,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     override fun setFilterResultCount(formattedResultCount: String?) {
         bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
-    }
-
-    override fun closeFilterBottomSheet() {
-        bottomSheetFilterView?.closeView()
-    }
-
-    override fun isBottomSheetShown(): Boolean {
-        return bottomSheetFilterView?.isBottomSheetShown ?: false
     }
 
     override fun launchFilterBottomSheet() {
@@ -183,7 +175,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         initSwitchButton()
         initBottomSheetListener()
 
-        bottomSheetFilterView?.initFilterBottomSheet()
+        bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE)
 
     }
 
@@ -199,20 +191,18 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
             override fun onHide() {
                 showBottomNavigation()
-            }
-
-            override fun isSearchShown(): Boolean {
-                return false
-            }
-
-            override fun hideKeyboard() {
-                KeyboardHandler.hideSoftKeyboard(this@CategoryNavActivity)
+                sendBottomSheetHideEvent()
             }
 
             override fun getActivity(): AppCompatActivity {
                 return this@CategoryNavActivity
             }
         })
+    }
+
+    private fun sendBottomSheetHideEvent() {
+        val selectedFragment = categorySectionPagerAdapter?.getItem(pager.currentItem) as BaseCategorySectionFragment
+        selectedFragment.onBottomSheetHide()
     }
 
     private fun applyFilter(filterParameter: Map<String, String>) {
@@ -279,7 +269,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         pager.offscreenPageLimit = 3
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                bottomSheetFilterView?.closeView()
+
             }
 
             override fun onPageSelected(position: Int) {
