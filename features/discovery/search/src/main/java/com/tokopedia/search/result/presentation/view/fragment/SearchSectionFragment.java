@@ -20,8 +20,8 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -35,6 +35,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
@@ -102,8 +103,7 @@ public abstract class SearchSectionFragment
         initSwipeToRefresh(view);
         restoreInstanceState(savedInstanceState);
         onViewCreatedBeforeLoadData(view, savedInstanceState);
-
-        startToLoadDataForFirstActiveTab();
+        startToLoadDataForFirstFragmentPosition();
     }
 
     protected abstract void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState);
@@ -119,8 +119,10 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void startToLoadDataForFirstActiveTab() {
-        if (isFirstActiveTab()) {
+    protected abstract void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState);
+
+    private void startToLoadDataForFirstFragmentPosition() {
+        if (getFragmentPosition() == 0) {
             hasLoadData = true;
             onFirstTimeLaunch();
         }

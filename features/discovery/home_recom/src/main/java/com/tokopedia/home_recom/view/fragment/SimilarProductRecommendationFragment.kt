@@ -86,6 +86,11 @@ open class SimilarProductRecommendationFragment : BaseListFragment<SimilarProduc
                     it.status.isEmpty() -> showEmpty()
                     it.status.isError() -> showGetListError(Throwable(it.message))
                     it.status.isSuccess() -> {
+                        it.data?.get(0)?.let {
+                            activity?.run{
+                                (this as HomeRecommendationActivity).supportActionBar?.title = it.header
+                            }
+                        }
                         renderList(mapDataModel(it.data ?: emptyList()), true)
                     }
                 }

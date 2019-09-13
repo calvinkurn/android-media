@@ -9,14 +9,14 @@ import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
-import com.tokopedia.design.banner.BannerPagerAdapter
-import com.tokopedia.design.banner.BannerView
+import com.tokopedia.banner.BannerView
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.travel.homepage.R
 import kotlinx.android.synthetic.main.travel_homepage_slider_banner_design_card.view.*
 
 class TravelHomepageBannerPagerAdapter(bannerImageUrls: List<String>,
                                        onPromoClickListener: BannerView.OnPromoClickListener) :
-        BannerPagerAdapter(bannerImageUrls, onPromoClickListener) {
+        BannerViewPagerAdapter(bannerImageUrls, onPromoClickListener) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -41,6 +41,10 @@ class TravelHomepageBannerPagerAdapter(bannerImageUrls: List<String>,
         itemView.banner_card.visibility = View.VISIBLE
 
         return BannerViewHolder(itemView)
+    }
+
+    override fun getBannerImageId(): Int {
+        return R.id.image
     }
 
     override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
