@@ -9,19 +9,18 @@ import android.net.wifi.WifiManager
  */
 class ContentNetworkListener constructor(val context: Context) {
 
-    private var wifiManager: WifiManager
+    private var wifiManager: WifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
 
     companion object {
         @SuppressLint("StaticFieldLeak")
         private var instance: ContentNetworkListener? = null
 
         fun getInstance(context: Context): ContentNetworkListener {
-            return instance ?: ContentNetworkListener(context)
+            if (instance == null) {
+                instance = ContentNetworkListener(context)
+            }
+            return instance!!
         }
-    }
-
-    init {
-        wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     }
 
     fun isWifiEnabled() : Boolean {
