@@ -20,9 +20,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -33,7 +31,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
                                             private val getModerateShopUseCase: GetModerateShopUseCase,
                                             private val requestModerateShopUseCase: RequestModerateShopUseCase,
-                                            dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
+                                            dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
@@ -41,28 +39,47 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
         get() = userSessionInterface.isLoggedIn
 
     val shopInfoResp = MutableLiveData<Result<ShopInfo>>()
-    val whiteListResp =  MutableLiveData<Result<Pair<Boolean, String>>>()
+    val whiteListResp = MutableLiveData<Result<Pair<Boolean, String>>>()
     val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()
     val shopModerateResp = MutableLiveData<Result<ShopModerateRequestData>>()
+    val shopFavourite = MutableLiveData<ShopInfo.FavoriteData>()
 
-    fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false){
+    fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
         if (id == 0 && shopDomain == null) return
         launchCatchError(block = {
             getShopInfoUseCase.params = GQLGetShopInfoUseCase
-                    .createParams(if (id == 0)listOf() else listOf(id), shopDomain)
+                    .createParams(if (id == 0) listOf() else listOf(id), shopDomain)
             getShopInfoUseCase.isFromCacheFirst = !isRefresh
-            val shopInfo = withContext(Dispatchers.IO){getShopInfoUseCase.executeOnBackground()}
+            val shopInfo = withContext(Dispatchers.IO) { getShopInfoUseCase.executeOnBackground() }
             shopInfoResp.value = Success(shopInfo)
-            withContext(Dispatchers.IO){getShopReputation(shopInfo.shopCore.shopID, isRefresh)}?.let {
-                badge -> shopBadgeResp.value = (shopInfo.goldOS.isOfficial != 1) to badge
+            withContext(Dispatchers.IO) { getShopReputation(shopInfo.shopCore.shopID, isRefresh) }?.let { badge ->
+                shopBadgeResp.value = (shopInfo.goldOS.isOfficial != 1) to badge
             }
-        }){
+            shopFavourite.value = getFavoriteAsync(shopId, shopDomain).await()
+
+        }) {
             shopInfoResp.value = Fail(it)
         }
     }
 
-    fun getFeedWhiteList(shopId: String){
+    private fun getFavoriteAsync(shopId: String? = null, shopDomain: String? = null): Deferred<ShopInfo.FavoriteData> {
+        return async(Dispatchers.IO) {
+            val id = shopId?.toIntOrNull() ?: 0
+            var favoritInfo = ShopInfo.FavoriteData()
+
+            try {
+                getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
+                getShopInfoUseCase.isFromCacheFirst = false
+                favoritInfo = getShopInfoUseCase.executeOnBackground().favoriteData
+            } catch (t: Throwable) {
+            }
+
+            favoritInfo
+        }
+    }
+
+    fun getFeedWhiteList(shopId: String) {
         getWhitelistUseCase.execute(
                 GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_SHOP, shopId),
                 object : Subscriber<GraphqlResponse>() {
@@ -77,8 +94,9 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                     override fun onNext(graphqlResponse: GraphqlResponse?) {
                         graphqlResponse?.let {
                             val error = it.getError(WhitelistQuery::class.java)
-                            if (error == null || error.isEmpty()){
-                                val whitelist = it.getData<WhitelistQuery>(WhitelistQuery::class.java)?.whitelist ?: return
+                            if (error == null || error.isEmpty()) {
+                                val whitelist = it.getData<WhitelistQuery>(WhitelistQuery::class.java)?.whitelist
+                                        ?: return
                                 if (TextUtils.isEmpty(whitelist.error)) {
                                     whiteListResp.value = Success(whitelist.isWhitelist to whitelist.url)
                                 } else {
@@ -103,23 +121,27 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                 object : Subscriber<Boolean>() {
                     override fun onCompleted() {}
 
-                    override fun onError(e: Throwable) { onError(e) }
+                    override fun onError(e: Throwable) {
+                        onError(e)
+                    }
 
-                    override fun onNext(success: Boolean) { onSuccess(success) }
-        })
+                    override fun onNext(success: Boolean) {
+                        onSuccess(success)
+                    }
+                })
     }
 
-    private suspend fun getShopReputation(shopId: String, isRefresh: Boolean): ShopBadge?{
+    private suspend fun getShopReputation(shopId: String, isRefresh: Boolean): ShopBadge? {
         getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
         getShopReputationUseCase.isFromCacheFirst = !isRefresh
         return try {
-             getShopReputationUseCase.executeOnBackground()
-        } catch (t: Throwable){
+            getShopReputationUseCase.executeOnBackground()
+        } catch (t: Throwable) {
             null
         }
     }
 
-    fun getModerateShopInfo(){
+    fun getModerateShopInfo() {
         getModerateShopUseCase.execute(object : Subscriber<ShopModerateRequestData>() {
             override fun onNext(t: ShopModerateRequestData?) {
                 t?.let { shopModerateResp.value = Success(it) }
@@ -127,14 +149,16 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
 
             override fun onCompleted() {}
 
-            override fun onError(e: Throwable?) { e?.let { shopModerateResp.value = Fail(it) }}
+            override fun onError(e: Throwable?) {
+                e?.let { shopModerateResp.value = Fail(it) }
+            }
 
         })
     }
 
-    fun moderateShopRequest(shopId: Int, moderateNotes:String, onSuccess: ()-> Unit, onError: (Throwable?) -> Unit){
+    fun moderateShopRequest(shopId: Int, moderateNotes: String, onSuccess: () -> Unit, onError: (Throwable?) -> Unit) {
         requestModerateShopUseCase.execute(
-                RequestModerateShopUseCase.createRequestParams(shopId,moderateNotes),
+                RequestModerateShopUseCase.createRequestParams(shopId, moderateNotes),
                 object : Subscriber<Boolean>() {
                     override fun onNext(t: Boolean?) {
                         if (t == true) {
@@ -146,7 +170,9 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
 
                     override fun onCompleted() {}
 
-                    override fun onError(e: Throwable?) { onError(e)}
+                    override fun onError(e: Throwable?) {
+                        onError(e)
+                    }
                 })
     }
 
