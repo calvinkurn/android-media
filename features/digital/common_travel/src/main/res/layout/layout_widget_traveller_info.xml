@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/user_contact_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12">
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_contact_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textStyle="bold"
+            app:fontSize="small"
+            app:layout_constraintEnd_toStartOf="@+id/ic_edit_contact"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/ic_edit_contact"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:textViewTheme="lightPrimary"
+            tools:text="Stevanus Kurniawan Suharyanto dasdnjnj" />
+
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_contact_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_2"
+            app:fontSize="micro"
+            app:layout_constraintTop_toBottomOf="@+id/tv_contact_name"
+            app:textViewTheme="lightSecondary"
+            tools:text="stevanus.suharyanto@tokopedia.com " />
+
+        <com.tokopedia.design.component.TextViewCompat
+            android:id="@+id/tv_contact_phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fontSize="micro"
+            app:layout_constraintTop_toBottomOf="@+id/tv_contact_email"
+            app:textViewTheme="lightSecondary"
+            tools:text="+62 131 014 7481" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/ic_edit_contact"
+            android:layout_width="@dimen/dp_18"
+            android:layout_height="@dimen/dp_18"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_travel_edit" />
+
+    </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

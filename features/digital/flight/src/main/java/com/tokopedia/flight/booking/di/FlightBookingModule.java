@@ -35,14 +35,4 @@ public class FlightBookingModule {
         return new FlightCancelVoucherUseCase(context, graphqlUseCase);
     }
 
-    @FlightBookingScope
-    @Provides
-    GraphqlRepository provideGraphqlRepository() { return GraphqlInteractor.getInstance().getGraphqlRepository(); }
-
-    @FlightBookingScope
-    @Provides
-    MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(GraphqlRepository graphqlRepository) {
-        return new MultiRequestGraphqlUseCase(graphqlRepository);
-    }
-
 }

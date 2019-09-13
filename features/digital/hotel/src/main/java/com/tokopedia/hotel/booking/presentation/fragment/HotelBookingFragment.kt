@@ -24,7 +24,9 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.model.TravelContactData
+import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.hotel.R
@@ -44,6 +46,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_booking.*
+import kotlinx.android.synthetic.main.layout_widget_traveller_info.*
 import kotlinx.android.synthetic.main.widget_info_text_view.view.*
 import javax.inject.Inject
 
@@ -292,11 +295,16 @@ class HotelBookingFragment : HotelBaseFragment() {
         }
         renderContactData()
 
-        iv_edit_contact.setOnClickListener {
-            context?.run {
-                startActivityForResult(HotelContactDataActivity.getCallingIntent(this, hotelBookingPageModel.contactData), REQUEST_CODE_CONTACT_DATA)
+        widget_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
+            override fun onClickEdit() {
+                context?.run {
+                    startActivityForResult(TravelContactDataActivity.getCallingIntent(this, hotelBookingPageModel.contactData,
+                            TravelContactDataActivity.HOTEL),
+                            REQUEST_CODE_CONTACT_DATA)
+                }
             }
-        }
+
+        })
 
         if (hotelBookingPageModel.guestName.isNotEmpty() && hotelBookingPageModel.isForOtherGuest == 1) {
             radio_button_contact_guest.isChecked = true
@@ -321,11 +329,11 @@ class HotelBookingFragment : HotelBaseFragment() {
 
     private fun renderContactData() {
         val contactData = hotelBookingPageModel.contactData
-        tv_contact_name.text = contactData.name
-        tv_contact_email.text = contactData.email
-        tv_contact_phone_number.text = getString(R.string.hotel_booking_contact_detail_phone_number,
-                contactData.phoneCode, contactData.phone)
-        user_contact_info.invalidate()
+        widget_traveller_info.setContactName(contactData.name)
+        widget_traveller_info.setContactEmail(contactData.email)
+        widget_traveller_info.setContactPhoneNum(getString(R.string.hotel_booking_contact_detail_phone_number,
+                contactData.phoneCode, contactData.phone))
+        widget_traveller_info.invalidate()
     }
 
     private fun toggleShowGuestForm(value: Boolean) {
