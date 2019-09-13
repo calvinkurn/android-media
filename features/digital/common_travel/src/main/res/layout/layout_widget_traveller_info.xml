@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_12"
-    app:cardElevation="@dimen/dp_1"
+    android:layout_margin="@dimen/dp_2"
+    app:cardElevation="@dimen/dp_4"
     app:cardCornerRadius="@dimen/dp_4">
 
     <android.support.constraint.ConstraintLayout
@@ -62,7 +62,7 @@
             android:layout_height="@dimen/dp_16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_travel_edit" />
+            app:srcCompat="@drawable/ic_traveller_contact_edit" />
 
     </android.support.constraint.ConstraintLayout>
 </android.support.v7.widget.CardView>
