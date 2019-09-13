@@ -72,6 +72,7 @@ public class GetCuratedProductListSubscriber extends Subscriber<GraphqlResponse>
                     pojo.getTotalClick(),
                     pojo.getTotalSold(),
                     pojo.getProductCommission() != null ? pojo.getProductCommission() : "",
+                    pojo.getCommission() != null ? pojo.getCommission() : "",
                     pojo.isIsActive(),
                     pojo.isIsActive() ? activeSection : inactiveSection,
                     (type != null) && (index == 0 || pojoList.get(index-1).isIsActive() != pojo.isIsActive()),

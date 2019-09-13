@@ -86,13 +86,14 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         })
     }
 
-    override fun hasInitialSwipeRefresh(): Boolean {
-        return activity is AffiliateCuratedProductActivity
-    }
+    override fun hasInitialSwipeRefresh(): Boolean = activity is AffiliateCuratedProductActivity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         presenter.attachView(this)
-        return inflater.inflate(R.layout.fragment_af_curated_product, container, false)
+        return inflater.inflate(
+                if (hasInitialSwipeRefresh()) R.layout.fragment_af_curated_product_refresh else R.layout.fragment_af_curated_product,
+                container,
+                false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

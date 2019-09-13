@@ -29,7 +29,7 @@ class DashboardItemViewHolder(
     private val tvName: TextView = itemView.findViewById(R.id.tv_name)
     private val tvBuyCount: TextView = itemView.findViewById(R.id.tv_buy_count)
     private val tvClickCount: TextView = itemView.findViewById(R.id.tv_click_count)
-    private val tvProductCommission: TextView = itemView.findViewById(R.id.tv_product_commission)
+    private val tvComission: TextView = itemView.findViewById(R.id.tv_comission)
     private val llFromPost: LinearLayout = itemView.findViewById(R.id.ll_from_post)
     private val llFromTraffic: LinearLayout = itemView.findViewById(R.id.ll_from_traffic)
     private val cardView: CardView = itemView.findViewById(R.id.card_view)
@@ -50,7 +50,7 @@ class DashboardItemViewHolder(
         tvBuyCount.text = element.itemSold
         cardView.setOnClickListener { onItemClick(element) }
         tvSection.text = element.sectionName
-        tvProductCommission.text = element.productCommission
+        tvComission.text = element.earnedComission
         if (element.productRating >= 0) {
             val rating = (element.productRating / 100.0f * 5).toInt()
             rbCuratedTraffic.updateRating(rating)

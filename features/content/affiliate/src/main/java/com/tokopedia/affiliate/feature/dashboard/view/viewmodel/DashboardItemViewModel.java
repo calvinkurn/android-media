@@ -18,6 +18,7 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
     private String itemClicked;
     private String itemSold;
     private String productCommission;
+    private String earnedComission;
     private boolean isActive;
     private String sectionName;
     private boolean shouldShowSection;
@@ -28,7 +29,7 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
 
     public DashboardItemViewModel(String id, String imageUrl, String title, String value,
                                   String itemClicked, String itemSold,
-                                  String productCommission, boolean isActive, String sectionName, boolean shouldShowSection,
+                                  String productCommission, String earnedComission, boolean isActive, String sectionName, boolean shouldShowSection,
                                   Integer type, String createPostApplink,
                                   int reviewCount, int productRating) {
         this.id = id;
@@ -38,6 +39,7 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.itemClicked = itemClicked;
         this.itemSold = itemSold;
         this.productCommission = productCommission;
+        this.earnedComission = earnedComission;
         this.isActive = isActive;
         this.sectionName = sectionName;
         this.shouldShowSection = shouldShowSection;
@@ -153,6 +155,14 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
 
     public void setProductRating(int productRating) {
         this.productRating = productRating;
+    }
+
+    public String getEarnedComission() {
+        return earnedComission;
+    }
+
+    public void setEarnedComission(String earnedComission) {
+        this.earnedComission = earnedComission;
     }
 
     @Override

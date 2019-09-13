@@ -91,10 +91,11 @@
                         app:typographyWeight="bold"/>
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv_product_commission"
+                        android:id="@+id/tv_comission"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginStart="@dimen/dp_4"
                         android:textColor="@color/af_commission_blue"
                         android:textSize="@dimen/sp_14"
                         app:typographyType="body_3"
