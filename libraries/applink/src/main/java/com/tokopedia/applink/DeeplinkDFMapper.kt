@@ -6,8 +6,11 @@ import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
@@ -33,8 +36,13 @@ object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
     private val MODULE_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val MODULE_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
+    private val MODULE_SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val MODULE_HOTEL_TRAVEL = "hotel_travel"
+    private val MODULE_DIGITAL_TOPUP = "digital_topup"
     private val MODULE_USER_PROFILE_COMPLETION = "profilecompletion"
+    private val MODULE_USER_SETTING_BANK = "settingbank"
+    private val MODULE_HOMEPAGE_TRAVEL = "homepage_travel"
+
 
     private var manager: SplitInstallManager? = null
 
@@ -68,6 +76,11 @@ object DeeplinkDFMapper {
 //                            deeplink, MODULE_HOTEL_TRAVEL,
 //                            context.getString(R.string.title_hotel))
 //                }
+//                deeplink.startsWith(ApplinkConsInternalDigital.TELCO_DIGITAL) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                            deeplink, MODULE_DIGITAL_TOPUP,
+//                            context.getString(R.string.digital_topup_title))
+//                }
                 deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
                     getDFDeeplinkIfNotInstalled(context,
                         deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
@@ -77,6 +90,21 @@ object DeeplinkDFMapper {
 //                    getDFDeeplinkIfNotInstalled(context,
 //                        deeplink, MODULE_USER_PROFILE_COMPLETION,
 //                        context.getString(R.string.applink_profile_completion_title))
+//                }
+//                deeplink.startsWith(OPEN_SHOP) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                            deeplink, MODULE_SHOP_OPEN_CUSTOMERAPP,
+//                            context.getString(R.string.title_open_shop))
+//                }
+//                deeplink.startsWith(ApplinkConstInternalGlobal.SETTING_BANK) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                        deeplink, MODULE_USER_SETTING_BANK,
+//                        context.getString(R.string.applink_setting_bank_title))
+//                }
+//                deeplink.startsWith(ApplinkConst.TRAVEL_SUBHOMEPAGE) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                            deeplink, MODULE_HOMEPAGE_TRAVEL,
+//                            context.getString(R.string.title_travel_homepage))
 //                }
                 else -> null
             }

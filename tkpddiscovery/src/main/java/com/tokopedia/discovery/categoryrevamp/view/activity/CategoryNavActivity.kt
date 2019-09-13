@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
@@ -21,7 +20,7 @@ import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySection
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
@@ -47,14 +46,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     override fun setFilterResultCount(formattedResultCount: String?) {
         bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
-    }
-
-    override fun closeFilterBottomSheet() {
-        bottomSheetFilterView?.closeView()
-    }
-
-    override fun isBottomSheetShown(): Boolean {
-        return bottomSheetFilterView?.isBottomSheetShown ?: false
     }
 
     override fun launchFilterBottomSheet() {
@@ -286,7 +277,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         pager.offscreenPageLimit = 3
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                bottomSheetFilterView?.closeView()
+
             }
 
             override fun onPageSelected(position: Int) {
