@@ -86,4 +86,5 @@
     <string name="feed_create_post_shop">Buat Post Toko</string>
     <string name="feed_delete_post">Hapus Post</string>
     <string name="feed_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
+    <string name="feed_post_deleted">Post berhasil dihapus</string>
 </resources>

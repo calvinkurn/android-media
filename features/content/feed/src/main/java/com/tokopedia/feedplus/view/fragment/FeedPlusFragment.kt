@@ -1479,7 +1479,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         adapter.getlist().removeAt(rowNumber)
         adapter.notifyItemRemoved(rowNumber)
         val snackbar = ToasterNormal.make(view,
-                getString(R.string.profile_post_deleted),
+                getString(R.string.feed_post_deleted),
                 BaseToaster.LENGTH_LONG
         )
         snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
