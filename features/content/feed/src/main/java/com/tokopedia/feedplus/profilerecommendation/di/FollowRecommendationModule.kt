@@ -7,6 +7,10 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowRecommendationUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
+import com.tokopedia.kolcommon.model.FollowResponseModel
+import com.tokopedia.usecase.UseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -24,6 +28,12 @@ class FollowRecommendationModule {
     @FollowRecommendationScope
     @Provides
     @Named(GetFollowRecommendationUseCase.FOLLOW_RECOMMENDATION_QUERY)
-    fun provideFollowRecommendationQuery(@ApplicationContext context: Context) =
+    fun provideFollowRecommendationQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_follow_recommendation)
+
+    @FollowRecommendationScope
+    @Provides
+    fun provideFollowKolPostUseCase(@ApplicationContext context: Context): FollowKolPostGqlUseCase {
+        return FollowKolPostGqlUseCase(context, GraphqlUseCase())
+    }
 }

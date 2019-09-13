@@ -6,6 +6,7 @@ import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowReco
 import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecommendationContract
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationInfoViewModel
+import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -13,7 +14,8 @@ import javax.inject.Inject
  * Created by jegul on 2019-09-11.
  */
 class FollowRecommendationPresenter @Inject constructor(
-        private val getFollowRecommendationUseCase: GetFollowRecommendationUseCase
+        private val getFollowRecommendationUseCase: GetFollowRecommendationUseCase,
+        private val getFollowKolPostGqlUseCase: FollowKolPostGqlUseCase
 ) : BaseDaggerPresenter<FollowRecommendationContract.View>(), FollowRecommendationContract.Presenter {
 
     override fun getFollowRecommendationList(idList: List<Int>, cursor: String) {
