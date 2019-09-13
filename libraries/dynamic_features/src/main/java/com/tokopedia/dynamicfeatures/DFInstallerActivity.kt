@@ -74,15 +74,22 @@ class DFInstallerActivity : BaseSimpleActivity() {
                 imageUrl = defaultImageUrl
             }
         }
+
+        super.onCreate(savedInstanceState)
+        manager = SplitInstallManagerFactory.create(this)
         if (moduleName.isEmpty()) {
             finish()
+            return
         }
-        super.onCreate(savedInstanceState)
+        if (RouteManager.isApplinkDeclaredInManifest(this, applink)) {
+            launchAndForwardIntent(applink)
+            finish()
+            return
+        }
         if (moduleNameTranslated.isNotEmpty()) {
             setTitle(getString(R.string.installing_x, moduleNameTranslated))
         }
         setContentView(R.layout.activity_dynamic_feature_installer)
-        manager = SplitInstallManagerFactory.create(this)
         initializeViews()
         if (manager.installedModules.contains(moduleName)) {
             onSuccessfulLoad(moduleName, launch = true)
@@ -177,15 +184,19 @@ class DFInstallerActivity : BaseSimpleActivity() {
         Timber.w("P1Installed Module {$moduleName}")
         progressGroup.visibility = View.INVISIBLE
         if (launch && manager.installedModules.contains(moduleName)) {
-            RouteManager.getIntentNoFallback(this, applink)?.let {
-                it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
-                intent.extras?.let { passBundle ->
-                    it.putExtras(passBundle)
-                }
-                startActivity(it)
-            }
+            launchAndForwardIntent(applink)
         }
         this.finish()
+    }
+
+    private fun launchAndForwardIntent(applink: String) {
+        RouteManager.getIntentNoFallback(this, applink)?.let {
+            it.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
+            intent.extras?.let { passBundle ->
+                it.putExtras(passBundle)
+            }
+            startActivity(it)
+        }
     }
 
     /** Listener used to handle changes in state for install requests. */
