@@ -20,7 +20,7 @@ import dagger.multibindings.StringKey
 
 @ProfileCompletionScope
 @Module
-class ProfileCompletionQueryModule {
+class ProfileCompletionQueriesModule {
 
     @Provides
     @IntoMap

@@ -13,7 +13,7 @@ import dagger.Component;
 @ProfileCompletionScope
 @Component(modules = {
         ProfileCompletionModule.class,
-        ProfileCompletionQueryModule.class,
+        ProfileCompletionQueriesModule.class,
         ProfileCompletionViewModelModule.class
 }, dependencies = AppComponent.class)
 public interface ProfileCompletionComponent {
