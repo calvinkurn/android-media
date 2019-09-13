@@ -9,13 +9,12 @@ import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentForm
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
 import com.tokopedia.twitter_share.TwitterManager
-import rx.Subscription
-import rx.android.schedulers.AndroidSchedulers
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.debugTrace
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -59,7 +58,22 @@ class CreatePostPresenter @Inject constructor(
         view.showLoading()
         getContentFormUseCase.execute(
                 GetContentFormUseCase.createRequestParams(idList, type, postId),
-                GetContentFormSubscriber(view, type)
+                GetContentFormSubscriber(view, type, null)
+        )
+    }
+
+    override fun fetchContentFormByToken(token: String, type: String) {
+        view.showLoading()
+        getContentFormUseCase.execute(
+                GetContentFormUseCase.createRequestParams(
+                        try {
+                            token.decodeToUtf8()
+                        } catch (e: Exception) {
+                            token
+                        },
+                        type
+                ),
+                GetContentFormSubscriber(view, type, token)
         )
     }
 
