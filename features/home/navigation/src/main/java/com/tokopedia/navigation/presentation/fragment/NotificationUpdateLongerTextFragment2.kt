@@ -54,12 +54,13 @@ class NotificationUpdateLongerTextFragment2 : BottomSheetDialogFragment() {
         return view
     }
 
-
+    override fun getTheme(): Int {
+        return R.style.BottomSheetDialogTheme
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
         //create dialog
-        val bottomSheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), theme)
         bottomSheetDialog.setOnShowListener {
             //To Anchor View Bottom
             val dialog = it as BottomSheetDialog
