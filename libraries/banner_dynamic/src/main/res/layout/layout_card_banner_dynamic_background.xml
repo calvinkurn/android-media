@@ -21,12 +21,12 @@
             android:scaleType="centerCrop"
             android:id="@+id/img_banner_background"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/banner_background_height" />
+            android:layout_height="@dimen/banner_dynamic_background_height" />
 
         <ImageView
             android:id="@+id/overlay_img"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/banner_background_height"
+            android:layout_height="@dimen/banner_dynamic_background_height"
             android:scaleType="centerCrop"
             android:background="#31353B"
             android:alpha="0.32" />
@@ -35,7 +35,7 @@
             android:layout_gravity="bottom"
             android:id="@+id/overlay_round"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/banner_background_overlay_size"
+            android:layout_height="@dimen/banner_dynamic_background_overlay_size"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
     </FrameLayout>
@@ -62,7 +62,7 @@
         android:id="@+id/card_banner_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/banner_margin_top"
+        android:layout_marginTop="@dimen/dp_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"
         tools:layout_height="wrap_content" />
