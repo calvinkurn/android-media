@@ -81,15 +81,6 @@ public class FilterTracking {
         ));
     }
 
-    public static void eventSearchResultFilter(String trackingPrefix, String screenName, Map<String, String> selectedFilter) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                FilterEventTracking.Event.SEARCH_RESULT,
-                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_PRODUCT,
-                FilterEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
-                generateFilterEventLabel(selectedFilter)
-        ));
-    }
-
     private static String generateFilterEventLabel(Map<String, String> selectedFilter) {
         if (selectedFilter == null) {
             return "";

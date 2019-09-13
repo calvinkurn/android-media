@@ -1,5 +1,8 @@
 ext {
 
+    // this file is no longer needed
+    // Put the corresponding dynamic features in dynamic-feature-<<app>>.cfg
+
     dynamicFeatures = [
             digitalTopup                    : ":dynamic-features:digital:digital_topup",
             groupChat                       : ":dynamic-features:user:groupchat",

@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
@@ -102,8 +103,7 @@ public abstract class SearchSectionFragment
         initSwipeToRefresh(view);
         restoreInstanceState(savedInstanceState);
         onViewCreatedBeforeLoadData(view, savedInstanceState);
-
-        startToLoadDataForFirstActiveTab();
+        startToLoadDataForFirstFragmentPosition();
     }
 
     protected abstract void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState);
@@ -119,8 +119,10 @@ public abstract class SearchSectionFragment
         }
     }
 
-    private void startToLoadDataForFirstActiveTab() {
-        if (isFirstActiveTab()) {
+    protected abstract void onViewCreatedBeforeLoadData(@NonNull View view, @Nullable Bundle savedInstanceState);
+
+    private void startToLoadDataForFirstFragmentPosition() {
+        if (getFragmentPosition() == 0) {
             hasLoadData = true;
             onFirstTimeLaunch();
         }

@@ -187,8 +187,7 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
     protected fun openBottomSheetFilter() {
         if (searchParameter == null || getFilters() == null) return
-
-        FilterTracking.eventSearchResultOpenFilterPage(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE, getScreenName());
+        FilterTracking.eventSearchResultOpenFilterPage(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE, getScreenName())
 
         bottomSheetListener?.loadFilterItems(getFilters(), searchParameter.getSearchParameterHashMap())
         bottomSheetListener?.launchFilterBottomSheet()
@@ -388,6 +387,5 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
     fun onBottomSheetHide() {
         FilterTracking.eventSearchResultCloseBottomSheetFilter(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE, screenName, getSelectedFilter())
     }
-
 
 }
