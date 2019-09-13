@@ -1,11 +1,10 @@
 package com.tokopedia.feedplus.profilerecommendation.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
-import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.feedplus.profilerecommendation.domain.model.FollowRecommendationQuery
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecommendationContract
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationInfoViewModel
 import java.lang.Exception
 import javax.inject.Inject
@@ -29,20 +28,20 @@ class FollowRecommendationPresenter @Inject constructor(
         }
     }
 
-    private fun getRecommendationCardList(query: FollowRecommendationQuery): List<RecommendationCardViewModel> = query.data.map { data ->
-        RecommendationCardViewModel(
+    private fun getRecommendationCardList(query: FollowRecommendationQuery): List<FollowRecommendationCardViewModel> = query.data.mapIndexed { index, data ->
+        FollowRecommendationCardViewModel(
+                header = if (index == 0) query.meta.assets.title else null,
                 image1Url = if (data.media.isNotEmpty()) data.media[0].thumbnail else "",
                 image2Url = if (data.media.size > 1) data.media[1].thumbnail else "",
                 image3Url = if (data.media.size > 2) data.media[2].thumbnail else "",
-                profileImageUrl = data.header.avatar,
+                avatar = data.header.avatar,
                 badgeUrl = data.header.avatarBadgeImage,
-                profileName = data.header.avatarTitle,
+                title = data.header.avatarTitle,
                 description = data.header.avatarDescription,
-                redirectUrl = data.header.avatarApplink,
-                cta = FollowCta(
-                        textFalse = data.header.followCta.textFalse,
-                        textTrue = data.header.followCta.textTrue
-                )
+                enabledFollowText = data.header.followCta.textFalse,
+                disabledFollowText = data.header.followCta.textTrue,
+                isFollowed = data.header.followCta.isFollow,
+                authorId = data.header.followCta.authorID
         )
     }
 

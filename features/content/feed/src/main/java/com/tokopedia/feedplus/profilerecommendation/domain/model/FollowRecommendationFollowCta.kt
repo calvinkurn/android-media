@@ -13,5 +13,17 @@ data class FollowRecommendationFollowCta(
 
         @SerializedName("textFalse")
         @Expose
-        val textFalse: String = ""
+        val textFalse: String = "",
+
+        @SerializedName("isFollow")
+        @Expose
+        val isFollow: Boolean = false,
+
+        @SerializedName("authorID")
+        @Expose
+        val authorID: String = "",
+
+        @SerializedName("authorType")
+        @Expose
+        val authorType: String = ""
 )

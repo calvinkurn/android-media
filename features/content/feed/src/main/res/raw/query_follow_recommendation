@@ -31,6 +31,9 @@ query onboardingRecommendations(
         followCta {
           textTrue
           textFalse
+          isFollow
+          authorID
+          authorType
         }
       }
       media {

@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.profilerecommendation.view.adapter
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -9,39 +10,44 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.design.component.ButtonCompat
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
-import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
 import com.tokopedia.kotlin.extensions.view.*
 
 /**
  * Created by jegul on 2019-09-11.
  */
-class FollowRecommendationAdapter(list: List<RecommendationCardViewModel>)
-    : RecyclerView.Adapter<FollowRecommendationAdapter.FollowRecommendationViewHolder>() {
+class FollowRecommendationAdapter(
+        list: List<FollowRecommendationCardViewModel>,
+        private val listener: ActionListener)
+    : RecyclerView.Adapter<FollowRecommendationAdapter.FollowRecommendationCardViewHolder>() {
 
-    private val itemList: MutableList<RecommendationCardViewModel> = list.toMutableList()
+    interface ActionListener {
+        fun onFollowButtonClicked(authorId: String)
+    }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowRecommendationViewHolder {
+    private val itemList: MutableList<FollowRecommendationCardViewModel> = list.toMutableList()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FollowRecommendationCardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_follow_recommendation_card, parent, false)
-        return FollowRecommendationViewHolder(view)
+        return FollowRecommendationCardViewHolder(view)
     }
 
     override fun getItemCount(): Int {
         return itemList.size
     }
 
-    override fun onBindViewHolder(holder: FollowRecommendationViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FollowRecommendationCardViewHolder, position: Int) {
         holder.bind(itemList[position])
     }
 
-    override fun onViewRecycled(holder: FollowRecommendationViewHolder) {
+    override fun onViewRecycled(holder: FollowRecommendationCardViewHolder) {
         super.onViewRecycled(holder)
         holder.onViewRecycled()
     }
 
-    fun addItems(list: List<RecommendationCardViewModel>) {
+    fun addItems(list: List<FollowRecommendationCardViewModel>) {
+        updateItems(list)
         itemList.addAll(list)
     }
 
@@ -49,18 +55,33 @@ class FollowRecommendationAdapter(list: List<RecommendationCardViewModel>)
         itemList.clear()
     }
 
-    inner class FollowRecommendationViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    fun setItems(newList: List<FollowRecommendationCardViewModel>) {
+        updateItems(newList)
+        itemList.apply {
+            clear()
+            addAll(newList)
+        }
+    }
 
-        private val ivImage1 = itemView.findViewById<ImageView>(R.id.ivImage1)
-        private val ivImage2 = itemView.findViewById<ImageView>(R.id.ivImage2)
-        private val ivImage3 = itemView.findViewById<ImageView>(R.id.ivImage3)
-        private val ivProfile = itemView.findViewById<ImageView>(R.id.ivProfile)
-        private val tvDescription = itemView.findViewById<TextView>(R.id.tvDescription)
-        private val tvName = itemView.findViewById<TextView>(R.id.tvName)
-        private val btnFollow = itemView.findViewById<UnifyButton>(R.id.btnFollow)
-        private val ivBadge = itemView.findViewById<ImageView>(R.id.ivBadge)
+    private fun updateItems(newList: List<FollowRecommendationCardViewModel>) {
+        val callback = FollowRecommendationDiffUtilCallback(itemList, newList)
+        val result = DiffUtil.calculateDiff(callback)
+        result.dispatchUpdatesTo(this)
+    }
 
-        fun bind(element: RecommendationCardViewModel) {
+    inner class FollowRecommendationCardViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+
+        private val ivImage1 = itemView.findViewById<ImageView>(R.id.iv_image1)
+        private val ivImage2 = itemView.findViewById<ImageView>(R.id.iv_image2)
+        private val ivImage3 = itemView.findViewById<ImageView>(R.id.iv_image3)
+        private val ivProfile = itemView.findViewById<ImageView>(R.id.iv_profile)
+        private val tvDescription = itemView.findViewById<TextView>(R.id.tv_description)
+        private val tvName = itemView.findViewById<TextView>(R.id.tv_name)
+        private val btnFollow = itemView.findViewById<UnifyButton>(R.id.btn_follow)
+        private val ivBadge = itemView.findViewById<ImageView>(R.id.iv_badge)
+        private val tvHeader = itemView.findViewById<TextView>(R.id.tv_header)
+
+        fun bind(element: FollowRecommendationCardViewModel) {
             initView(element)
             initViewListener(element)
         }
@@ -72,15 +93,18 @@ class FollowRecommendationAdapter(list: List<RecommendationCardViewModel>)
             ivProfile.clearImage()
         }
 
-        private fun initView(element: RecommendationCardViewModel) {
+        private fun initView(element: FollowRecommendationCardViewModel) {
             loadImageOrDefault(ivImage1, element.image1Url)
             loadImageOrDefault(ivImage2, element.image2Url)
             loadImageOrDefault(ivImage3, element.image3Url)
+            tvName.text = element.title
             tvDescription.text = element.description
-            tvName.text = element.profileName
+            tvHeader.text = element.header
 
-            if (!TextUtils.isEmpty(element.profileImageUrl)) {
-                ivProfile.loadImageCircle(element.profileImageUrl)
+            if (element.header == null) tvHeader.gone() else tvHeader.visible()
+
+            if (!TextUtils.isEmpty(element.avatar)) {
+                ivProfile.loadImageCircle(element.avatar)
             } else {
                 ivProfile.setImageDrawable(
                         MethodChecker.getDrawable(itemView.context, R.drawable.error_drawable)
@@ -88,32 +112,12 @@ class FollowRecommendationAdapter(list: List<RecommendationCardViewModel>)
             }
 
             setBadge(element.badgeUrl)
-
-            if (element.template.ctaLink) {
-                btnFollow.show()
-                setButtonUi(element.cta)
-            } else {
-                btnFollow.invisible()
-            }
+            setButtonFollow(element.isFollowed, element.enabledFollowText, element.disabledFollowText)
         }
 
-        private fun initViewListener(element: RecommendationCardViewModel) {
-            itemView.setOnClickListener {
-//                listener.onRecommendationAvatarClick(
-//                        positionInFeed,
-//                        adapterPosition,
-//                        element.redirectUrl
-//                )
-            }
-
+        private fun initViewListener(element: FollowRecommendationCardViewModel) {
             btnFollow.setOnClickListener {
-//                listener.onRecommendationActionClick(
-//                        positionInFeed,
-//                        adapterPosition,
-//                        element.cta.authorID,
-//                        element.cta.authorType,
-//                        element.cta.isFollow
-//                )
+                listener.onFollowButtonClicked(element.authorId)
             }
         }
 
@@ -129,14 +133,8 @@ class FollowRecommendationAdapter(list: List<RecommendationCardViewModel>)
             }
         }
 
-        private fun setButtonUi(cta: FollowCta) {
-            if (cta.isFollow) {
-//                btnFollow.buttonCompatType = ButtonCompat.SECONDARY
-                btnFollow.text = cta.textTrue
-            } else {
-//                btnFollow.buttonCompatType = ButtonCompat.PRIMARY
-                btnFollow.text = cta.textFalse
-            }
+        private fun setButtonFollow(isFollowed: Boolean, textEnabled: String, textDisabled: String) {
+            btnFollow.text = if (isFollowed) textEnabled else textDisabled
         }
 
         private fun loadImageOrDefault(imageView: ImageView, imageUrl: String) {
@@ -147,6 +145,28 @@ class FollowRecommendationAdapter(list: List<RecommendationCardViewModel>)
                         MethodChecker.getColor(imageView.context, R.color.feed_image_default)
                 )
             }
+        }
+    }
+
+    inner class FollowRecommendationDiffUtilCallback(
+            private val oldList: List<FollowRecommendationCardViewModel>,
+            private val newList: List<FollowRecommendationCardViewModel>
+    ) : DiffUtil.Callback() {
+
+        override fun areItemsTheSame(oldPos: Int, newPos: Int): Boolean {
+            return oldList[oldPos].authorId == newList[newPos].authorId
+        }
+
+        override fun getOldListSize(): Int {
+            return oldList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newList.size
+        }
+
+        override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean {
+            return oldList[oldPos] == newList[newPos]
         }
     }
 }
