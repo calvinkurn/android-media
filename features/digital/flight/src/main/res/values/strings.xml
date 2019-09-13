@@ -100,7 +100,7 @@
     <string name="flight_label_normal_price">Harga Normal</string>
     <string name="flight_label_saving_price">Hemat</string>
     <string name="flight_booking_finish_transaction_label">Selesaikan Pesanan Anda Dalam</string>
-    <string name="flight_booking_contact_information">Informasi Kontak</string>
+    <string name="flight_booking_contact_information">Data Pemesan</string>
     <string name="flight_booking_contact_name_hint">Nama Lengkap (sesuai KTP/SIM/Passport)</string>
     <string name="flight_booking_contact_email_hint">Email</string>
     <string name="flight_booking_departure_trip_card_title">Penerbangan Pergi</string>
@@ -144,7 +144,7 @@
     <string name="flight_label_detail_price">Rincian Harga</string>
     <string name="flight_label_continued_payment">Lanjut Pembayaran</string>
     <string name="flight_label_return_flight">Penerbangan Pulang</string>
-    <string name="flight_booking_toolbar_title">Isi Data Pemesan</string>
+    <string name="flight_booking_toolbar_title">Isi Data Penumpang</string>
     <string name="flight_dashboard_toolbar_title">Tiket Pesawat</string>
     <string name="flight_select_passenger_toolbar_title">Penumpang</string>
     <string name="flight_duration_hh">%1$d Jm</string>
@@ -338,14 +338,14 @@
     <string name="flight_passenger_update_title">Ubah Data Penumpang</string>
     <string name="flight_list_passenger_add_passenger_label">+ Tambah Penumpang</string>
     <string name="flight_booking_list_passenger_selected_error" formatted="false">Harap pilih penumpang %s</string>
-    <string name="flight_passenger_data_diri_label">DATA DIRI</string>
+    <string name="flight_passenger_data_diri_label">Identitas Penumpang</string>
     <string name="flight_passenger_tipe_penumpang_hint">Tipe Penumpang</string>
-    <string name="flight_passenger_data_passport_label">DATA PASSPORT</string>
+    <string name="flight_passenger_data_passport_label">Data Passport</string>
     <string name="flight_passenger_data_passport_description">Data passport diperlukan untuk penerbangan internasional</string>
-    <string name="flight_passenger_passport_number_hint">Nomor Passport</string>
-    <string name="flight_passenger_passport_expiration_hint">Tanggal Berakhir Passport</string>
+    <string name="flight_passenger_passport_number_hint">Nomor Paspor</string>
+    <string name="flight_passenger_passport_expiration_hint">Tanggal Berakhir Paspor</string>
     <string name="flight_passenger_nationality_hint">Kewarganegaraan</string>
-    <string name="flight_passenger_passport_issuer_country_hint">Negara Penerbit Passport</string>
+    <string name="flight_passenger_passport_issuer_country_hint">Negara Penerbit Paspor</string>
     <string name="flight_passenger_update_success">Data penumpang berhasil diubah.</string>
     <string name="flight_passenger_delete_success">Data penumpang berhasil dihapus.</string>
     <string name="flight_passenger_delete_dialog_title">Hapus Data Penumpang</string>

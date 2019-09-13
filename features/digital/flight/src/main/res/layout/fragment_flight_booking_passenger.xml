@@ -62,7 +62,8 @@
                 android:paddingLeft="@dimen/dp_4"
                 android:paddingEnd="@dimen/dp_4"
                 android:paddingRight="@dimen/dp_4"
-                android:text="@string/flight_passenger_data_diri_label" />
+                android:text="@string/flight_passenger_data_diri_label"
+                android:textSize="@dimen/sp_18"/>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_first_name"
@@ -82,6 +83,8 @@
                     android:imeActionLabel="@string/label_next"
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/et_last_name"
+                    android:dropDownHeight="@dimen/dp_100"
+                    android:inputType="textNoSuggestions|textVisiblePassword"
                     android:singleLine="true"
                     android:textColor="@color/font_black_primary_70" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
@@ -171,7 +174,8 @@
                 android:paddingLeft="@dimen/padding_16"
                 android:paddingEnd="@dimen/padding_16"
                 android:paddingRight="@dimen/padding_16"
-                android:text="@string/flight_passenger_data_passport_label" />
+                android:text="@string/flight_passenger_data_passport_label"
+                android:textSize="@dimen/dp_18"/>
 
             <android.support.v7.widget.AppCompatTextView
                 style="@style/TextView.Micro"

@@ -53,7 +53,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
     @Override
     public void bind(final FlightBookingPassengerViewModel viewModel) {
         headerLabel.setTitle(String.valueOf(viewModel.getHeaderTitle()));
-        headerLabel.setContentColorValue(itemView.getResources().getColor(R.color.colorPrimary));
+        headerLabel.setContentColorValue(itemView.getResources().getColor(R.color.bg_button_green_border_outline));
         headerLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
