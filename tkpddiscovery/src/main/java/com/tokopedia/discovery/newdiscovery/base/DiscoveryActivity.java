@@ -24,9 +24,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
+import com.tokopedia.discovery.newdiscovery.constant.DiscoveryEventTracking;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
@@ -216,9 +216,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void eventDiscoveryVoiceSearch(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.SEARCH,
-                SearchEventTracking.Category.SEARCH,
-                SearchEventTracking.Action.VOICE_SEARCH,
+                DiscoveryEventTracking.Event.SEARCH,
+                DiscoveryEventTracking.Category.SEARCH,
+                DiscoveryEventTracking.Action.VOICE_SEARCH,
                 label);
     }
 

@@ -3,7 +3,7 @@ package com.tokopedia.discovery.newdiscovery.analytics;
 /**
  * Created by meta on 15/11/18.
  */
-public class SearchConstant {
+public class DiscoveryTrackingConstant {
 
     static String EVENT = "event";
     static String EVENT_CATEGORY = "eventCategory";

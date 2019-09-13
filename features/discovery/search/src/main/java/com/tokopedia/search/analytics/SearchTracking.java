@@ -1,13 +1,9 @@
-package com.tokopedia.discovery.newdiscovery.analytics;
+package com.tokopedia.search.analytics;
 
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.appsflyer.AFInAppEventParameterName;
-import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
-import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
@@ -22,11 +18,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.CLICK_CARI;
-import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.LONG_CLICK;
-import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.LONG_PRESS;
-import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.PRODUCT_SEARCH;
-import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.USER_ID;
+import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT;
+import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_ACTION;
+import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_CATEGORY;
+import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_LABEL;
+import static com.tokopedia.search.analytics.SearchTrackingConstant.USER_ID;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -35,13 +31,7 @@ import static com.tokopedia.discovery.newdiscovery.analytics.SearchConstant.USER
 public class SearchTracking {
 
     private static final String ACTION_FIELD = "/searchproduct - p$1 - product";
-    public static final String ACTION_IMAGE_SEARCH = "/imagesearch";
-    public static final String EVENT = "event";
-    public static final String EVENT_CATEGORY = "eventCategory";
-    public static final String EVENT_ACTION = "eventAction";
-    public static final String EVENT_LABEL = "eventLabel";
     public static final String ECOMMERCE = "ecommerce";
-    public static final String EVENT_EMPTY = "";
     public static final String EVENT_CATEGORY_SEARCH_RESULT_PROFILE = "search result profile";
     public static final String EVENT_CATEGORY_EMPTY_SEARCH = "empty search";
     public static final String EVENT_CATEGORY_SEARCH_RESULT = "search result";
@@ -51,7 +41,6 @@ public class SearchTracking {
     public static final String VALUE_FOLLOW = "follow";
     public static final String VALUE_UNFOLLOW = "unfollow";
     public static final String EVENT_CLICK_SEARCH_RESULT = "clickSearchResult";
-    public static final String EVENT_VIEW_TOP_NAV = "viewTopNav";
     public static final String EVENT_ACTION_CLICK_FOLLOW_ACTION_PROFILE = "click - %s profile";
     public static final String EVENT_ACTION_CLICK_NEW_SEARCH = "click - lakukan pencarian baru";
     public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
@@ -109,33 +98,17 @@ public class SearchTracking {
 
     public void eventAppsFlyerViewListingSearch(Context context, JSONArray productsId, String keyword, ArrayList<String> prodIds) {
         Map<String, Object> listViewEvent = new HashMap<>();
-        listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
-        listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
-        listViewEvent.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
-        listViewEvent.put(AFInAppEventParameterName.SEARCH_STRING, keyword);
+        listViewEvent.put("af_content_id", prodIds);
+        listViewEvent.put("af_currency", "IDR");
+        listViewEvent.put("af_content_type", "product");
+        listViewEvent.put("af_search_string", keyword);
         if (productsId.length() > 0) {
-            listViewEvent.put(AFInAppEventParameterName.SUCCESS, "success");
+            listViewEvent.put("af_success", "success");
         } else {
-            listViewEvent.put(AFInAppEventParameterName.SUCCESS, "fail");
+            listViewEvent.put("af_success", "fail");
         }
 
-        TrackApp.getInstance().getAppsFlyer().sendTrackEvent(AFInAppEventType.SEARCH, listViewEvent);
-    }
-
-    public void eventSearchImagePickerClickCamera() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.SEARCH_IMAGE_PICKER_CLICK_CAMERA,
-                "");
-    }
-
-    public void eventSearchImagePickerClickGallery() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.IMAGE_SEARCH_CLICK,
-                SearchEventTracking.Category.IMAGE_SEARCH,
-                SearchEventTracking.Action.SEARCH_IMAGE_PICKER_CLICK_GALLERY,
-                "");
+        TrackApp.getInstance().getAppsFlyer().sendTrackEvent("af_search", listViewEvent);
     }
 
     public void trackImpressionSearchResultShop(List<Object> shopItemList, String keyword) {
@@ -238,43 +211,12 @@ public class SearchTracking {
         );
     }
 
-    public static void trackEventClickImageSearchResultProduct(Object item) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
-                EVENT_CATEGORY, SearchEventTracking.Category.IMAGE_SEARCH_RESULT,
-                EVENT_ACTION, SearchEventTracking.Action.CLICK_PRODUCT,
-                EVENT_LABEL, "",
-                ECOMMERCE, DataLayer.mapOf(
-                        "click", DataLayer.mapOf(
-                                    "actionField", DataLayer.mapOf("list", ACTION_IMAGE_SEARCH),
-                                             "products", DataLayer.listOf(item)
-                                        )
-                            )
-                )
-        );
-    }
-
     public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue, List<Object> list, String eventLabel) {
         trackingQueue.putEETracking(
                 (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
                         "eventCategory", "search result",
                         "eventAction", "impression - product",
                         "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        list.toArray(new Object[list.size()])
-                                ))
-                )
-        );
-    }
-
-    public static void eventImpressionImageSearchResultProduct(Context context, List<Object> list) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", SearchEventTracking.Category.IMAGE_SEARCH_RESULT,
-                        "eventAction", "impression - product",
-                        "eventLabel", "",
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "impressions", DataLayer.listOf(
@@ -311,31 +253,12 @@ public class SearchTracking {
         ));
     }
 
-    public static void eventSearchResultShare(Context context, String screenName) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_SHARE,
-                SearchEventTracking.Action.CLICK_BAR + screenName,
-                ""
-        ));
-    }
-
     public static void eventSearchResultChangeGrid(Context context, String gridName, String screenName) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,
                 SearchEventTracking.Category.GRID_MENU,
                 SearchEventTracking.Action.CLICK_CHANGE_GRID + gridName,
                 screenName
-        ));
-    }
-
-    public static void eventSearchResultFavoriteShopClick(Context context, String keyword, String shopName,
-                                                          int page, int position) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
-                SearchEventTracking.Action.FAVORITE_SHOP_CLICK,
-                keyword + " - " + shopName + " - " + Integer.toString(page) + " - " + Integer.toString(position)
         ));
     }
 
@@ -414,17 +337,6 @@ public class SearchTracking {
                         !TextUtils.isEmpty(alternativeKeyword) ? alternativeKeyword : "none/other",
                         generateFilterEventLabel(selectedFilter))
         );
-    }
-
-    public void eventSearchShortcut() {
-        Map<String, Object> eventTracking = new HashMap<>();
-        eventTracking.put(SearchConstant.EVENT, LONG_CLICK);
-        eventTracking.put(SearchConstant.EVENT_CATEGORY, LONG_PRESS);
-        eventTracking.put(SearchConstant.EVENT_ACTION, CLICK_CARI);
-        eventTracking.put(SearchConstant.EVENT_LABEL, PRODUCT_SEARCH);
-        eventTracking.put(USER_ID, userSessionInterface.isLoggedIn() ? userSessionInterface.getUserId() : "0");
-
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(eventTracking);
     }
 
     public static void eventUserClickProfileResultInTabProfile(Object profileData,

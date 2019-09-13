@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.newdiscovery.di.scope;
+package com.tokopedia.search.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
