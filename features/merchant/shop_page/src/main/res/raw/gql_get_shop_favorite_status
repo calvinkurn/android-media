@@ -2,12 +2,12 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String){
     shopInfoByID(input: {
         shopIDs: $shopIds,
         fields: $fields,
-        domain: $shopDomain
-    }){
+        domain: $shopDomain}){
         result {
             favoriteData{
                 totalFavorite
                 alreadyFavorited
+            }
         }
         error {
             message

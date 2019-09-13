@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -23,6 +24,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
+import javax.inject.Named
 
 class ShopPageViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
@@ -31,6 +33,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
                                             private val getModerateShopUseCase: GetModerateShopUseCase,
                                             private val requestModerateShopUseCase: RequestModerateShopUseCase,
+                                            @Named(ShopPageConstant.SHOP_FAVORITE_QUERY) private val gqlFavorite: String,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -71,6 +74,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
             try {
                 getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
                 getShopInfoUseCase.isFromCacheFirst = false
+                getShopInfoUseCase.gqlFavoriteQuery = gqlFavorite
                 favoritInfo = getShopInfoUseCase.executeOnBackground().favoriteData
             } catch (t: Throwable) {
             }
