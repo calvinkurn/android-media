@@ -10,31 +10,31 @@ import java.util.ArrayList;
 public class Whitelist {
 
     @SerializedName("iswhitelist")
-    private boolean isWhitelist;
+    private boolean isWhitelist = false;
 
     @SerializedName("url")
-    private String url;
+    private String url = "";
 
     @SerializedName("error")
-    private String error;
+    private String error = "";
 
     @SerializedName("title")
-    private String title;
+    private String title = "";
 
     @SerializedName("title_identifier")
-    private String titleIdentifier;
+    private String titleIdentifier = "";
 
     @SerializedName("description")
-    private String description;
+    private String description = "";
 
     @SerializedName("post_success")
-    private String postSuccessMessage;
+    private String postSuccessMessage = "";
 
     @SerializedName("image_url")
-    private String imageUrl;
+    private String imageUrl = "";
 
     @SerializedName("authors")
-    private ArrayList<Author> authors;
+    private ArrayList<Author> authors = new ArrayList<>();
 
     public boolean isWhitelist() {
         return isWhitelist;
