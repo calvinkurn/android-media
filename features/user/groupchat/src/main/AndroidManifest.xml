@@ -10,7 +10,7 @@
 
         <activity
             android:name=".channel.view.activity.ChannelActivity"
-            android:label="@string/activity_channel"
+            android:label="@string/groupchat_title"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
