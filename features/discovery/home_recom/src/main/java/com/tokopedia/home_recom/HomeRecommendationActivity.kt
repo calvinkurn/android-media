@@ -51,12 +51,6 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      */
     override fun getNewFragment(): Fragment {
         return when{
-//            intent.hasExtra(PRODUCT_ID) && intent.hasExtra(REF) -> {
-//                val productId = intent.getStringExtra(PRODUCT_ID)
-//                val ref = intent.getStringExtra(REF)
-//                if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(productId, ref)
-//                else RecommendationFragment.newInstance(productId, ref)
-//            }
             intent.data != null -> {
                 val ref = intent.data?.getQueryParameter("ref") ?: ""
                 if(isSimilarProduct(intent?.data?.toString() ?: "")) SimilarProductRecommendationFragment.newInstance(
