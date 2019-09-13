@@ -24,13 +24,14 @@ class CampaignLayout @JvmOverloads constructor(
         campaignDiscount = findViewById(R.id.tv_discount)
     }
 
-    fun setupCampaign(campaign: Campaign) {
+    fun setupCampaign(campaign: Campaign?) {
+        if (campaign == null) return
         if (campaign.discountPercentage == 0) {
             hide()
             return
         }
 
-        campaignPrice.text = campaign.originalPriceFormat.toString()
+        campaignPrice.text = campaign.originalPriceFormat
         campaignDiscount.text = "${campaign.discountPercentage}%"
     }
 }
