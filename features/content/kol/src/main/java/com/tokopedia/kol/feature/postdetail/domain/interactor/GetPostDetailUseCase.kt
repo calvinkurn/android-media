@@ -7,6 +7,7 @@ import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
+import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -18,11 +19,30 @@ import javax.inject.Inject
  */
 class GetPostDetailUseCase @Inject constructor(
         @ApplicationContext val context: Context,
-        private val getDynamicFeedUseCase: GetDynamicFeedUseCase) : UseCase<PostDetailViewModel>() {
+        private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
+        private val getWhitelistUseCase: GetWhitelistUseCase) : UseCase<PostDetailViewModel>() {
 
+    companion object {
+        private const val LIMIT_3 = 3
+
+        @JvmOverloads
+        fun createRequestParams(userId: String, cursor: String = "", source: String, sourceId:
+        String = ""):
+                RequestParams {
+            val requestParams = RequestParams.create()
+            requestParams.putString(GetDynamicFeedUseCase.PARAM_USER_ID, userId)
+            requestParams.putInt(GetDynamicFeedUseCase.PARAM_LIMIT, LIMIT_3)
+            requestParams.putString(GetDynamicFeedUseCase.PARAM_CURSOR, cursor)
+            requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE, source)
+            requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, sourceId)
+            requestParams.putInt(GetKolPostDetailUseCase.PARAM_ID, sourceId.toIntOrZero())
+            return requestParams
+        }
+    }
 
     override fun createObservable(requestParams: RequestParams): Observable<PostDetailViewModel> {
         val domain = PostDetailViewModel()
+//        Observable.zip(getPostDetail(domain, createParamDynamicFeed(requestParams)), )
         return getPostDetail(domain, createParamDynamicFeed(requestParams))
                 .flatMap { addFooter(domain) }
     }
@@ -34,6 +54,19 @@ class GetPostDetailUseCase @Inject constructor(
                 requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE, ""),
                 requestParams.getString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, "")
         )
+    }
+
+    private fun getPostDetail(domain: PostDetailViewModel, requestParams: RequestParams?):
+            Observable<PostDetailViewModel> {
+        return getDynamicFeedUseCase.createObservable(requestParams)
+                .flatMap {
+                    domain.dynamicPostViewModel.cursor = it.cursor
+                    domain.dynamicPostViewModel.hasNext = it.hasNext
+                    domain.dynamicPostViewModel.postList = it.postList
+                    Observable.just(domain)
+                }
+                .flatMap { addFooter(domain) }
+
     }
 
     private fun addFooter(domain: PostDetailViewModel): Observable<PostDetailViewModel> {
@@ -58,36 +91,5 @@ class GetPostDetailUseCase @Inject constructor(
             }
         }
         return footerModel
-    }
-
-    private fun getPostDetail(domain: PostDetailViewModel, requestParams: RequestParams?):
-            Observable<PostDetailViewModel> {
-        return getDynamicFeedUseCase.createObservable(requestParams)
-                .flatMap {
-                    domain.dynamicPostViewModel.cursor = it.cursor
-                    domain.dynamicPostViewModel.hasNext = it.hasNext
-                    domain.dynamicPostViewModel.postList = it.postList
-                    Observable.just(domain)
-                }
-
-    }
-
-
-    companion object {
-        private const val LIMIT_3 = 3
-
-        @JvmOverloads
-        fun createRequestParams(userId: String, cursor: String = "", source: String, sourceId:
-        String = ""):
-                RequestParams {
-            val requestParams = RequestParams.create()
-            requestParams.putString(GetDynamicFeedUseCase.PARAM_USER_ID, userId)
-            requestParams.putInt(GetDynamicFeedUseCase.PARAM_LIMIT, LIMIT_3)
-            requestParams.putString(GetDynamicFeedUseCase.PARAM_CURSOR, cursor)
-            requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE, source)
-            requestParams.putString(GetDynamicFeedUseCase.PARAM_SOURCE_ID, sourceId)
-            requestParams.putInt(GetKolPostDetailUseCase.PARAM_ID, sourceId.toIntOrZero())
-            return requestParams
-        }
     }
 }

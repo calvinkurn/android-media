@@ -30,6 +30,7 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
     : BaseViewModel(baseDispatcher){
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
+    val whitelistResp = MutableLiveData<Result<WhitelistDomain>>()
 
     init {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
@@ -50,7 +51,7 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
         }
     }
 
-    fun getWhitelist(listener: OnGetWhitelistData) {
+    fun getWhitelist() {
         getWhitelistUseCase.clearRequest()
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
                 GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
@@ -58,14 +59,14 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
         getWhitelistUseCase.execute(RequestParams.EMPTY, object: Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse) {
                 val query = t.getData<WhitelistQuery>(WhitelistQuery::class.java)
-                listener.onSuccessGetWhitelistData(getWhitelistDomain(query))
+                whitelistResp.value = Success(getWhitelistDomain(query))
             }
 
             override fun onCompleted() {
             }
 
             override fun onError(e: Throwable) {
-                Fail(e)
+                whitelistResp.value = Fail(e)
             }
         })
 
@@ -87,11 +88,6 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
                 authors = query.whitelist.authors ?: arrayListOf()
             }
         }
-    }
-
-    interface OnGetWhitelistData {
-        fun onSuccessGetWhitelistData(whitelistDomain: WhitelistDomain)
-        fun onErrorGetWhitelistData(errString: String)
     }
 
 }
