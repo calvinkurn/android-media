@@ -499,7 +499,6 @@ public abstract class BrowseSectionFragment extends BaseDaggerFragment
         setSortData(savedInstanceState.<Sort>getParcelableArrayList(EXTRA_SORT));
         showBottomBar = savedInstanceState.getBoolean(EXTRA_SHOW_BOTTOM_BAR);
         isGettingDynamicFilter = savedInstanceState.getBoolean(EXTRA_IS_GETTING_DYNNAMIC_FILTER);
-        setFlagFilterHelper((FilterFlagSelectedModel) savedInstanceState.getParcelable(EXTRA_FLAG_FILTER_HELPER));
     }
 
     protected void removeSelectedFilter(String uniqueId) {
