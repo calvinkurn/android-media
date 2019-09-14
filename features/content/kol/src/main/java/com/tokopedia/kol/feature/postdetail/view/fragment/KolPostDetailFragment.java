@@ -90,6 +90,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
+
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 
 /**
@@ -1002,6 +1005,14 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     public void onSuccessGetWhitelist(Whitelist whitelist) {
         if (!whitelist.getAuthors().isEmpty()) {
             createPostFab.render(whitelist);
+            createPostFab.setOnFabBymeClicked(() -> {
+                goToCreateAffiliate();
+                return Unit.INSTANCE;
+            });
+            createPostFab.setOnFabLinkClicked((link) -> {
+                onGoToLink(link);
+                return Unit.INSTANCE;
+            });
         }
     }
 
@@ -1043,6 +1054,12 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                         String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
                 );
             }
+        }
+    }
+
+    private void goToCreateAffiliate() {
+        if (getContext() != null) {
+            RouteManager.route(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
         }
     }
 
