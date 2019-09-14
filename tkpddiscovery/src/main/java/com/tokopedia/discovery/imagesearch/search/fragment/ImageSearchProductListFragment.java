@@ -23,11 +23,12 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.manager.SimilarSearchManager;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListAdapter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.discovery.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
@@ -39,8 +40,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.type
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.discovery.similarsearch.SimilarSearchManager;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
@@ -411,7 +411,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
                     dataLayerList.add(productItem.getProductAsObjectDataLayerForImageSearchImpression());
                 }
             }
-            SearchTracking.eventImpressionImageSearchResultProduct(getActivity(), dataLayerList);
+            DiscoveryTracking.eventImpressionImageSearchResultProduct(getActivity(), dataLayerList);
         }
     }
 
@@ -476,7 +476,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onEmptyButtonClicked() {
-        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
+        DiscoveryTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
@@ -546,7 +546,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
         // tracking?
-        //data.setTrackerListName(String.format(SearchTracking.imageClick, item.getPosition()));
+        //data.setTrackerListName(String.format(DiscoveryTracking.imageClick, item.getPosition()));
         Intent intent = getProductIntent(item.getProductID());
         intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         sendItemClickTrackingEvent(item);
@@ -569,7 +569,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     public void onLongClick(ProductItem item, int adapterPosition) {
-        SimilarSearchManager.getInstance(getContext()).startSimilarSearchIfEnable(getQueryKey(),item);
+        SimilarSearchManager.getInstance(getContext()).startSimilarSearchIfEnable(getQueryKey(),item.getProductID());
     }
     public void onWishlistButtonClicked(ProductItem productItem) {
         presenter.handleWishlistButtonClicked(productItem);
@@ -611,7 +611,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void sendItemClickTrackingEvent(ProductItem item) {
-        SearchTracking.trackEventClickImageSearchResultProduct(
+        DiscoveryTracking.trackEventClickImageSearchResultProduct(
                 item.getProductAsObjectDataLayerForImageSearchClick()
         );
     }

@@ -2,7 +2,7 @@ package com.tokopedia.travel.homepage.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.banner.BannerView
+import com.tokopedia.banner.BannerView
 import com.tokopedia.travel.homepage.R
 import com.tokopedia.travel.homepage.data.TravelHomepageBannerModel
 import com.tokopedia.travel.homepage.presentation.customview.TravelHomepageBannerViewDynamicBackground
