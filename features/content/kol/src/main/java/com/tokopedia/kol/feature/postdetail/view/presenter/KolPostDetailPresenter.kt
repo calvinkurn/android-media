@@ -22,26 +22,21 @@ import com.tokopedia.kol.feature.postdetail.domain.interactor.GetPostDetailUseCa
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract
 import com.tokopedia.kol.feature.postdetail.view.subscriber.FollowUnfollowDetailSubscriber
 import com.tokopedia.kol.feature.postdetail.view.subscriber.GetKolPostDetailSubscriber
-import com.tokopedia.kolcommon.data.pojo.Whitelist
-import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
-import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.view.debugTrace
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import com.tokopedia.vote.domain.usecase.SendVoteUseCase
-import rx.Observable
 
 import java.util.ArrayList
 
 import javax.inject.Inject
 
 import rx.Subscriber
-import rx.functions.Func1
-import rx.schedulers.Schedulers
 
 /**
  * @author by milhamj on 27/07/18.

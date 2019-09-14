@@ -7,7 +7,7 @@ import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
-import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase

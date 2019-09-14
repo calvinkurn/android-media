@@ -2,26 +2,21 @@ package com.tokopedia.feedplus.view.presenter
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
-import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
-import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
-import rx.Observable
 import rx.Subscriber
-import rx.functions.Func1
-import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDispatcher,
@@ -77,15 +72,15 @@ class FeedPlusContainerViewModel @Inject constructor(baseDispatcher: CoroutineDi
             WhitelistDomain()
         } else {
             WhitelistDomain().apply {
-                error = query.whitelist.error ?: ""
-                url = query.whitelist.url ?: ""
+                error = query.whitelist.error
+                url = query.whitelist.url
                 isWhitelist = query.whitelist.isWhitelist
-                title = query.whitelist.title ?: ""
-                desc = query.whitelist.description ?: ""
-                titleIdentifier = query.whitelist.titleIdentifier ?: ""
-                postSuccessMessage = query.whitelist.postSuccessMessage ?: ""
-                image = query.whitelist.imageUrl ?: ""
-                authors = query.whitelist.authors ?: arrayListOf()
+                title = query.whitelist.title
+                desc = query.whitelist.description
+                titleIdentifier = query.whitelist.titleIdentifier
+                postSuccessMessage = query.whitelist.postSuccessMessage
+                image = query.whitelist.imageUrl
+                authors = ArrayList(query.whitelist.authors)
             }
         }
     }

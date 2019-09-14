@@ -78,7 +78,7 @@ import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
-import com.tokopedia.kolcommon.data.pojo.Whitelist;
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
@@ -88,8 +88,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import kotlin.Unit;
 
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 

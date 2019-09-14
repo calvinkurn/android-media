@@ -29,7 +29,7 @@ import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
-import com.tokopedia.kolcommon.data.pojo.Author
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.usecase.coroutines.Fail

@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem;
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
-import com.tokopedia.kolcommon.data.pojo.Whitelist;
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.List;
