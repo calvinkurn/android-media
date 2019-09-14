@@ -27,6 +27,7 @@ class CreatePostFabView @JvmOverloads constructor(
 
     init {
         View.inflate(context, R.layout.layout_create_post_fab, this)
+        hideAllFab(true)
     }
 
     fun render(whitelist: Whitelist) {
@@ -42,6 +43,25 @@ class CreatePostFabView @JvmOverloads constructor(
             val author = whitelist.authors.first()
             fab_feed.setOnClickListener { onFabLinkClicked?.invoke(author.link) }
         }
+    }
+
+    fun hideAllFab(isInitial: Boolean = false) {
+        if (context == null) {
+            return
+        }
+
+        if (isInitial) {
+            fab_feed.hide()
+        } else {
+            fab_feed.animation = AnimationUtils.loadAnimation(context, R.anim.rotate_backward)
+        }
+
+        fab_feed_byme.hide()
+        fab_feed_shop.hide()
+        text_fab_byme.hide()
+        text_fab_shop.hide()
+        layout_grey_popup.hide()
+        isFabExpanded = false
     }
 
     private fun fabClickListener(whitelistDomain: Whitelist): OnClickListener {
@@ -72,24 +92,4 @@ class CreatePostFabView @JvmOverloads constructor(
             }
         }
     }
-
-    private fun hideAllFab(isInitial: Boolean = false) {
-        if (context == null) {
-            return
-        }
-
-        if (isInitial) {
-            fab_feed.hide()
-        } else {
-            fab_feed.animation = AnimationUtils.loadAnimation(context, R.anim.rotate_backward)
-        }
-
-        fab_feed_byme.hide()
-        fab_feed_shop.hide()
-        text_fab_byme.hide()
-        text_fab_shop.hide()
-        layout_grey_popup.hide()
-        isFabExpanded = false
-    }
-
 }

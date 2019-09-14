@@ -86,6 +86,6 @@ public interface KolPostDetailContract {
 
         void getRelatedPost(String activityId);
 
-        void getWhitelist(String authorId);
+        void getWhitelist();
     }
 }

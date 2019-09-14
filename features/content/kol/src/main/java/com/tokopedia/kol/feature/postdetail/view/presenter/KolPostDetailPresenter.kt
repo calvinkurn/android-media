@@ -304,7 +304,7 @@ class KolPostDetailPresenter @Inject constructor(
         return list
     }
 
-    override fun getWhitelist(authorId: String) {
+    override fun getWhitelist() {
         getWhitelistUseCase.clearRequest()
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
                 GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_ENTRY_POINT))
@@ -312,11 +312,7 @@ class KolPostDetailPresenter @Inject constructor(
         getWhitelistUseCase.execute(RequestParams.EMPTY, object: Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse) {
                 val query = t.getData<WhitelistQuery>(WhitelistQuery::class.java)
-                val whitelist = if (query != null) {
-                    query.whitelist
-                } else {
-                    Whitelist()
-                }
+                val whitelist = query?.whitelist ?: Whitelist()
                 view?.onSuccessGetWhitelist(whitelist)
             }
 

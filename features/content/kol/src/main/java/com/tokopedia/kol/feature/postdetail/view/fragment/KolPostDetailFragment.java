@@ -54,6 +54,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
+import com.tokopedia.feedcomponent.view.widget.CreatePostFabView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
@@ -119,6 +120,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private Integer postId;
     private SwipeToRefresh swipeToRefresh;
     private RecyclerView recyclerView;
+    private CreatePostFabView createPostFab;
     private ImageView likeButton, commentButton, shareButton;
     private TextView likeCount, commentCount, shareText;
     private View footer;
@@ -181,6 +183,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.fragment_kol_post_detail, container, false);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
+        createPostFab = view.findViewById(R.id.create_post_fab);
         likeButton = view.findViewById(R.id.like_button);
         commentButton = view.findViewById(R.id.comment_button);
         shareButton = view.findViewById(R.id.share_button);
@@ -278,6 +281,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
             trackImpression(dynamicPostViewModel);
             presenter.getRelatedPost(String.valueOf(dynamicPostViewModel.getId()));
+
+            if (isOwner()) {
+                presenter.getWhitelist();
+            }
         }
         setFooter(postDetailViewModel);
         recyclerView.clearOnScrollListeners();
@@ -311,8 +318,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private boolean isOwner() {
-        return userSession.getUserId().equals(
-                (dynamicPostViewModel.getHeader().getFollowCta().getAuthorID()));
+        return dynamicPostViewModel != null
+                && userSession.getUserId().equals(
+                        dynamicPostViewModel.getHeader().getFollowCta().getAuthorID());
     }
 
     private void setFooter(PostDetailViewModel postDetailViewModel) {
@@ -993,7 +1001,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onSuccessGetWhitelist(Whitelist whitelist) {
         if (!whitelist.getAuthors().isEmpty()) {
-            showFeedFab(whitelist);
+            createPostFab.render(whitelist);
         }
     }
 
@@ -1038,7 +1046,4 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         }
     }
 
-    private void showFeedFab(Whitelist whitelist) {
-
-    }
 }
