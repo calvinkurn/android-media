@@ -15,6 +15,7 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
         BaseCustomView(context, attrs, defStyleAttr) {
 
     private var listener: TravellerInfoWidgetListener? = null
+    var phoneCode: Int = 0
 
     init {
         View.inflate(context, R.layout.layout_widget_traveller_info, this)
@@ -25,6 +26,19 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
     fun setContactEmail(email: String) { tv_contact_email.text = email }
 
     fun setContactPhoneNum (phoneNum: String) { tv_contact_phone_number.text = phoneNum }
+
+    fun setContactPhoneNum (phoneCode: Int, phoneNum: String) {
+        this.phoneCode = phoneCode
+        tv_contact_phone_number.text = "${phoneCode}${phoneNum}"
+    }
+
+    fun getContactName(): String = tv_contact_name.text.toString().trim()
+
+    fun getContactEmail(): String = tv_contact_email.text.toString().trim()
+
+    fun getContactPhoneNum(): String = tv_contact_phone_number.text.toString().trim()
+
+    fun getContactPhoneCode(): Int = phoneCode
 
     fun setListener(listener: TravellerInfoWidgetListener) {
         this.listener = listener

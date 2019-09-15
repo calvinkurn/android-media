@@ -3,6 +3,7 @@ package com.tokopedia.flight.bookingV2.presentation.presenter
 import android.util.Patterns
 import com.tokopedia.common.travel.domain.GetPhoneCodeUseCase
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
+import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.TravelTickerFlightPage
 import com.tokopedia.common.travel.ticker.TravelTickerInstanceId
 import com.tokopedia.common.travel.ticker.domain.TravelTickerUseCase
@@ -170,11 +171,6 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         }
     }
 
-    override fun onPhoneCodeResultReceived(phoneCode: CountryPhoneCode) {
-        view.getCurrentBookingParamViewModel().phoneCode = phoneCode
-        view.renderPhoneCodeView(String.format("+%s", phoneCode.countryPhoneCode))
-    }
-
     override fun onPassengerResultReceived(passengerViewModel: FlightBookingPassengerViewModel) {
         val passengerViewModels = view.getCurrentBookingParamViewModel().passengerViewModels
         val indexPassenger = passengerViewModels.indexOf(passengerViewModel)
@@ -301,7 +297,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 view.renderPassengersList(view.getCurrentBookingParamViewModel().passengerViewModels)
                 view.setContactName(view.getCurrentBookingParamViewModel().contactName)
                 view.setContactEmail(view.getCurrentBookingParamViewModel().contactEmail)
-                view.setContactPhoneNumber(view.getCurrentBookingParamViewModel().contactPhone)
+                view.setContactPhoneNumber(view.getCurrentBookingParamViewModel().contactPhone, view.getCurrentBookingParamViewModel().phoneCode.countryPhoneCode.toInt())
                 val expiredDate = view.getExpiredTransactionDate()
                 if (expiredDate != null) {
                     view.getCurrentBookingParamViewModel().orderDueTimestamp = FlightDateUtil.dateToString(expiredDate, FlightDateUtil.DEFAULT_TIMESTAMP_FORMAT)
@@ -313,7 +309,6 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 view.renderFinishTimeCountDown(expiredDate)
             }
             view.getCurrentBookingParamViewModel().phoneCode = flightBookingCartData.defaultPhoneCode
-            view.renderPhoneCodeView(String.format("+%s", view.getCurrentBookingParamViewModel().phoneCode.countryPhoneCode))
 
             val oldTotalPrice = actionCalculateCurrentTotalPrice(flightBookingCartData.departureTrip, flightBookingCartData.returnTrip)
             var resultTotalPrice = oldTotalPrice
@@ -809,6 +804,11 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
             Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() &&
                     !contactEmail.contains(".@") && !contactEmail.contains("@.")
 
+    override fun onContactDataResultRecieved(contactData: TravelContactData) {
+        view.setContactName(contactData.name)
+        view.setContactEmail(contactData.email)
+        view.setContactPhoneNumber(contactData.phone, contactData.phoneCode)
+    }
 
     companion object {
 
