@@ -29,6 +29,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity
 import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity
+import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter
 import com.tokopedia.flight.booking.view.fragment.FlightBookingAmenityFragment
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment
@@ -147,7 +148,6 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
     private fun initView () {
         context?.let {
-            tv_header.text = passengerModel.headerTitle
 
             renderViewBasedOnType()
             renderPassengerData()
@@ -264,13 +264,13 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             val entries = resources.getStringArray(R.array.flight_adult_titles)
             rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0,
                     if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
-            rv_passenger_title.selectOnlyOneChip(true)
         } else {
             val entries = resources.getStringArray(R.array.flight_child_infant_titles)
             rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0,
                     if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
-            rv_passenger_title.selectOnlyOneChip(true)
         }
+        rv_passenger_title.selectOnlyOneChip(true)
+        rv_passenger_title.canDiselectAfterSelect(false)
     }
 
     private fun renderPassengerTitle(passengerTitle: String) {
@@ -372,7 +372,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         rv_meals.setHasFixedSize(true)
         rv_meals.isNestedScrollingEnabled = false
         rv_meals.adapter = mealAdapter
-        mealAdapter.setDescriptionTextColor(resources.getColor(R.color.colorPrimary))
+        mealAdapter.setDescriptionTextColor(resources.getColor(R.color.bg_button_green_border_outline))
         mealAdapter.setViewModels(models)
         mealAdapter.notifyDataSetChanged()
     }
@@ -439,7 +439,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         rv_luggages.setHasFixedSize(true)
         rv_luggages.isNestedScrollingEnabled = false
         rv_luggages.adapter = luggageAdapter
-        luggageAdapter.setDescriptionTextColor(resources.getColor(R.color.colorPrimary))
+        luggageAdapter.setDescriptionTextColor(resources.getColor(R.color.bg_button_green_border_outline))
         luggageAdapter.setViewModels(models)
         luggageAdapter.notifyDataSetChanged()
 
@@ -459,12 +459,12 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
     fun renderViewBasedOnType() {
         if (isAdultPassenger()) {
-            tv_subheader.text = getString(R.string.flight_booking_passenger_adult_subtitle)
-            if (isMandatoryDoB() || isDomestic) til_birth_date.visibility = View.VISIBLE else View.GONE
+            (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_adult_title))
+          if (isMandatoryDoB() || isDomestic) til_birth_date.visibility = View.VISIBLE else View.GONE
         } else {
+            if (isChildPassenger()) (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_child_title))
+            else (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_infant_title))
             til_birth_date.visibility = View.VISIBLE
-            if (isChildPassenger()) tv_subheader.text = getString(R.string.flight_booking_passenger_child_subtitle)
-            else getString(R.string.flight_booking_passenger_infant_subtitle)
         }
 
         if (isAdultPassenger() || isChildPassenger()) {

@@ -19,6 +19,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
 
     var selectOnlyOneChip = false
     var initialPositionSelected: Int? = null
+    var canDiselectAfterSelect = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
             = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.widget_filter_chip_item, parent, false))
@@ -31,7 +32,8 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
             chips.isSelected = if (initialPositionSelected != null) position == initialPositionSelected else false
             chips.setOnClickListener {
                 if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
-                chips.isSelected = !chips.isSelected
+                if (canDiselectAfterSelect) chips.isSelected = !chips.isSelected
+                else if (!chips.isSelected) chips.isSelected = true
                 if (selectedColor > 0) {
                     if (chips.isSelected) setTextColor(selectedColor)
                     else setTextColor(com.tokopedia.design.R.color.black_56)

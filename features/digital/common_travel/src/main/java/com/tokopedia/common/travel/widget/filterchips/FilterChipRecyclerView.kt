@@ -72,6 +72,10 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
         adapter?.selectOnlyOneChip = boolean
     }
 
+    fun canDiselectAfterSelect(boolean: Boolean) {
+        adapter?.canDiselectAfterSelect = boolean
+    }
+
     fun selectChipByPosition(position: Int) {
         if (position < adapter.itemCount) {
             with(chip_recycler_view.findViewHolderForAdapterPosition(position) as FilterChipAdapter.ViewHolder?) {

@@ -31,6 +31,10 @@ class FlightBookingPassengerActivity: BaseFlightActivity(), HasComponent<FlightP
         super.onCreate(savedInstanceState)
     }
 
+    fun updateActivityTitle(title: String) {
+        updateTitle(title)
+    }
+
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putParcelable(EXTRA_PASSENGER, passengerModel)

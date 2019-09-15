@@ -169,6 +169,9 @@
     <string name="flight_label_see_detail">Lihat Detail</string>
     <string name="flight_label_transit">Transit di %1$s • %2$s</string>
     <string name="flight_label_currency">Rp%1$s</string>
+    <string name="flight_booking_passenger_adult_title">Penumpang Dewasa</string>
+    <string name="flight_booking_passenger_child_title">Penumpang Anak</string>
+    <string name="flight_booking_passenger_infant_title">Penumpang Bayi</string>
     <string name="flight_booking_passenger_adult_subtitle">Usia diatas 12 tahun</string>
     <string name="flight_booking_passenger_child_subtitle">Usia 2 - 12 tahun</string>
     <string name="flight_booking_passenger_infant_subtitle">Usia dibawah 2 tahun</string>
@@ -195,9 +198,9 @@
     <string name="flight_there_is_zero_flight_for_the_filter">Terdapat 0 penerbangan yang sesuai dengan filter.</string>
     <string name="change_date">Ubah Tanggal</string>
     <string name="reset_filter">Reset Filter</string>
-    <string name="flight_booking_passenger_first_name_hint">Nama Depan (sesuai KTP/SIM/Passport)</string>
+    <string name="flight_booking_passenger_first_name_hint">Nama Depan (sesuai KTP/Paspor/Lainnya)</string>
     <string name="flight_booking_passenger_firstname_secondary_hint">Isi Nama Depan</string>
-    <string name="flight_booking_passenger_last_name_hint">Nama Belakang (sesuai KTP/SIM/Passport)</string>
+    <string name="flight_booking_passenger_last_name_hint">Nama Belakang (sesuai KTP/Paspor/Lainnya)</string>
     <string name="flight_booking_passenger_last_name_secondary_hint">Isi Nama Belakang</string>
     <string name="flight_booking_passenger_birthdate_hint">Tanggal Lahir</string>
     <string name="flight_booking_passenger_birthdate_secondary_hint">Pilih Tanggal Lahir</string>
