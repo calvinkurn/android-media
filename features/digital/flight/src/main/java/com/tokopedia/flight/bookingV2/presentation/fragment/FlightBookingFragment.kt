@@ -267,7 +267,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     override fun setContactPhoneNumber(phone: String) {
-        widget_partial_traveller_info.setContactPhoneNum(phone)
+        widget_partial_traveller_info.setContactPhoneNum(DEFAULT_PHONE_CODE, phone)
     }
 
     override fun setContactPhoneNumber(phone: String, phoneCode: Int) {
@@ -611,6 +611,8 @@ class FlightBookingFragment : BaseDaggerFragment(),
         private val KEY_CART_DATA = "KEY_CART_DATA"
         private val KEY_PARAM_VIEW_MODEL_DATA = "KEY_PARAM_VIEW_MODEL_DATA"
         private val KEY_PARAM_EXPIRED_DATE = "KEY_PARAM_EXPIRED_DATE"
+
+        private val DEFAULT_PHONE_CODE = 62
 
         private val REQUEST_CODE_PASSENGER = 1
         private val REQUEST_CODE_CONTACT_FORM = 2

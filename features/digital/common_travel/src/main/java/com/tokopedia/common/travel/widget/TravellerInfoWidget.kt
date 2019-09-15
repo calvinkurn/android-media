@@ -29,7 +29,7 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
 
     fun setContactPhoneNum (phoneCode: Int, phoneNum: String) {
         this.phoneCode = phoneCode
-        tv_contact_phone_number.text = "${phoneCode}${phoneNum}"
+        tv_contact_phone_number.text = "+${phoneCode} ${phoneNum}"
     }
 
     fun getContactName(): String = tv_contact_name.text.toString().trim()
