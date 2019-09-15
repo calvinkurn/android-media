@@ -228,7 +228,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
         showMessageErrorInSnackBar(resId)
     }
 
-    override fun getContactPhoneNumber(): String = widget_partial_traveller_info.getContactPhoneNum()
+    override fun getContactPhoneNumber(): String = widget_partial_traveller_info.getContactPhoneNumWithCode().replace("\\s".toRegex(), "")
 
     override fun showContactPhoneNumberEmptyError(resId: Int) {
         showMessageErrorInSnackBar(resId)
