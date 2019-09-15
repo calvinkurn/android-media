@@ -115,6 +115,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
     }
 
     override fun onGetProfileData() {
+        view.showContactDataProgressBar()
         compositeSubscription.add(view.getProfileObservable()
                 .onBackpressureDrop()
                 .subscribeOn(Schedulers.io())
@@ -123,6 +124,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                 .subscribe(object : Subscriber<ProfileInfo>() {
                     override fun onNext(profileInfo: ProfileInfo?) {
                         if (profileInfo != null && isViewAttached) {
+                            view.hideContactDataProgressBar()
                             if (view.getContactName().isEmpty()) {
                                 view.setContactName(profileInfo.fullname)
                             }
@@ -146,6 +148,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                     }
 
                     override fun onError(e: Throwable?) {
+                        view.hideContactDataProgressBar()
                         e?.printStackTrace()
                     }
                 }))

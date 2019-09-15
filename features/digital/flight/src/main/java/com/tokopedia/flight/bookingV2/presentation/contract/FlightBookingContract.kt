@@ -124,6 +124,10 @@ interface FlightBookingContract {
 
         fun renderTickerView(travelTickerViewModel: TravelTickerViewModel)
 
+        fun showContactDataProgressBar()
+
+        fun hideContactDataProgressBar()
+
     }
 
     interface Presenter : FlightBaseBookingContract.Presenter<View> {

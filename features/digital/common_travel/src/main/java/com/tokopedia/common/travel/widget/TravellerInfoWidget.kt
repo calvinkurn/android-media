@@ -45,6 +45,14 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
 
     fun getContactPhoneCode(): Int = phoneCode
 
+    fun showLoadingBar() {
+        loading_bar.visibility = View.VISIBLE
+    }
+
+    fun hideLoadingBar() {
+        loading_bar.visibility = View.GONE
+    }
+
     fun setListener(listener: TravellerInfoWidgetListener) {
         this.listener = listener
         ic_edit_contact.setOnClickListener { listener.onClickEdit() }

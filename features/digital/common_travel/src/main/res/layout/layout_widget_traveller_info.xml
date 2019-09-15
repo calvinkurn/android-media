@@ -17,6 +17,18 @@
         android:paddingRight="@dimen/dp_12"
         android:paddingBottom="@dimen/dp_12">
 
+        <ProgressBar
+            android:id="@+id/loading_bar"
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"
+            />
+
         <com.tokopedia.design.component.TextViewCompat
             android:id="@+id/tv_contact_name"
             android:layout_width="0dp"

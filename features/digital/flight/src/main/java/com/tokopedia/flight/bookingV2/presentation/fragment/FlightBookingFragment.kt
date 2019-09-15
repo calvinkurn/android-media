@@ -502,6 +502,14 @@ class FlightBookingFragment : BaseDaggerFragment(),
         dialogFragment.show(fragmentManager!!.beginTransaction(), INTERRUPT_DIALOG_TAG)
     }
 
+    override fun showContactDataProgressBar() {
+        widget_partial_traveller_info.showLoadingBar()
+    }
+
+    override fun hideContactDataProgressBar() {
+        widget_partial_traveller_info.hideLoadingBar()
+    }
+
     override fun getDepartureFlightDetailViewModel(): FlightDetailViewModel =
             flightBookingCartData.departureTrip
 
