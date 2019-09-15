@@ -18,20 +18,11 @@ import dagger.multibindings.IntoMap
 
 @Module
 @ChatListScope
-abstract class ChatListViewModelModule {
-
-    @Binds
-    @ChatListScope
-    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+abstract class ChatNotificationsViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(ChatItemListViewModel::class)
-    internal abstract fun getChatItemList(viewModel: ChatItemListViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(WebSocketViewModel::class)
-    internal abstract fun provideWebsocket(viewModel: WebSocketViewModel): ViewModel
+    @ViewModelKey(ChatTabCounterViewModel::class)
+    internal abstract fun provideChatTabCounterViewModel(viewModel: ChatTabCounterViewModel): ViewModel
 
 }

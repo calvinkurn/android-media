@@ -3,7 +3,6 @@ package com.tokopedia.topchat.chatlist.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
-import com.tokopedia.topchat.chatroom.di.ChatScope
 import dagger.Component
 
 /**
@@ -15,7 +14,9 @@ import dagger.Component
         modules = [ChatListNetworkModule::class,
                     ChatListSettingModule::class,
                     ChatListQueryModule::class,
-                    ChatListViewModelModule::class],
+                    ChatNotificationsQueryModule::class,
+                    ChatListViewModelModule::class,
+                    ChatNotificationsViewModelModule::class],
         dependencies = [BaseAppComponent::class]
 )
 

@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.debug
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.ChatListPagerAdapter
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
@@ -30,6 +31,7 @@ import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
 import com.tokopedia.topchat.chatlist.listener.ChatListWebSocketContract
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
+import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -51,6 +53,7 @@ class ChatListActivity : BaseTabActivity()
 
     lateinit var viewModelProvider: ViewModelProvider
     lateinit var webSocketViewModel: WebSocketViewModel
+    lateinit var chatNotifCounterViewModel: ChatTabCounterViewModel
 
     private var fragmentViewCreated = false
 
@@ -91,10 +94,12 @@ class ChatListActivity : BaseTabActivity()
 
         initTabLayout()
         setObserver()
+        initData()
     }
 
     private fun setObserver() {
         viewModelProvider = ViewModelProviders.of(this@ChatListActivity, viewModelFactory)
+
         webSocketViewModel = viewModelProvider.get(WebSocketViewModel::class.java)
         webSocketViewModel?.itemChat?.observe(this,
                 Observer { result ->
@@ -108,6 +113,24 @@ class ChatListActivity : BaseTabActivity()
                     }
                 }
         )
+
+        chatNotifCounterViewModel = viewModelProvider.get(ChatTabCounterViewModel::class.java)
+        chatNotifCounterViewModel.chatNotifCounter.observe(this,
+                Observer { result ->
+                    when (result) {
+                        is Success -> {
+                            tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
+                            tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
+                            initTabLayout()
+                        }
+                    }
+                }
+        )
+
+    }
+
+    private fun initData() {
+        chatNotifCounterViewModel.queryGetNotifCounter()
     }
 
 
@@ -140,6 +163,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun initTabLayout() {
+        tabLayout.removeAllTabs()
         for (i in 0 until tabList.size) {
             tabLayout.addTab(tabLayout.newTab())
             tabLayout.setBackgroundColor(MethodChecker.getColor(this, R.color.white))
@@ -147,8 +171,9 @@ class ChatListActivity : BaseTabActivity()
         for (i in 0 until tabLayout.tabCount) {
             val title = tabList[i].title
             val icon = tabList[i].icon
+            val counter = tabList[i].counter
             val tab = tabLayout.getTabAt(i)
-            tab?.customView = createCustomView(title, icon)
+            tab?.customView = createCustomView(title, icon, counter)
             if (i == viewPager.currentItem) {
                 setTabSelectedView(tab?.customView)
             }
@@ -175,13 +200,33 @@ class ChatListActivity : BaseTabActivity()
         })
     }
 
-    private fun createCustomView(title: String, icon: Int): View? {
+    private fun createCustomView(title: String, icon: Int, counter: String): View? {
         val customView = LayoutInflater.from(this).inflate(R.layout.item_chat_tab, null)
         val titleView = customView.findViewById<TextView>(R.id.title)
         val iconView = customView.findViewById<ImageView>(R.id.icon)
-        titleView.text = title
+        titleView.text = setTitleTab(title,counter)
         iconView.setImageDrawable(MethodChecker.getDrawable(this, icon))
         return customView
+    }
+
+    private fun setTitleTab(title: String, counter: String): CharSequence? {
+        if(counter.toLongOrZero() > 0) {
+            val counterFormatted: String =
+                if (counter.toLongOrZero() > 99) {
+                    "99+"
+                } else {
+                    counter
+                }
+
+            return if(title.length > 10) {
+                title.take(9) + ".. ($counterFormatted)"
+            } else {
+                "$title ($counterFormatted)"
+            }
+
+
+        }
+        return title
     }
 
     private fun setTabSelectedView(customView: View?) {

@@ -38,7 +38,7 @@ suspend fun OkHttpClient.easyWebSocket(url: String, accessToken: String) = suspe
 
                 override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                     debug(TAG, "Failure $t")
-                    it.resumeWithException(t)
+//                    it.resumeWithException(t)
                 }
 
                 override fun onClosing(webSocket: WebSocket, code: Int, reason: String?) {

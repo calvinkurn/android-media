@@ -110,9 +110,11 @@ class ChatItemListViewHolder(
         val dateTimeFormatString = "dd MMM"
         val dateTimeYearFormatString = "dd MMM yy"
         val HOURS = (60 * 60 * 60).toLong()
-        return if (now.get(Calendar.DATE) == smsTime.get(Calendar.DATE)) {
+        return if ((now.get(Calendar.DATE) == smsTime.get(Calendar.DATE))
+                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))) {
             DateFormat.format(timeFormatString, smsTime).toString()
-        } else if (now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1) {
+        } else if ((now.get(Calendar.DATE) - smsTime.get(Calendar.DATE) == 1)
+                && (now.get(Calendar.MONTH) == smsTime.get(Calendar.MONTH))){
             "Kemarin"
         } else if (now.get(Calendar.YEAR) == smsTime.get(Calendar.YEAR)) {
             DateFormat.format(dateTimeFormatString, smsTime).toString()

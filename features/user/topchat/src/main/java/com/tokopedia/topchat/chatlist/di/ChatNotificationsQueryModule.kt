@@ -21,26 +21,19 @@ import dagger.multibindings.StringKey
 
 @ChatListScope
 @Module
-class ChatListQueryModule {
+class ChatNotificationsQueryModule {
 
     @ChatListScope
     @Provides
     @IntoMap
-    @StringKey(ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE)
-    fun provideRawQueryGetChatListMessage(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_chat_list_message)
+    @StringKey(ChatListQueriesConstant.QUERY_CHAT_NOTIFICATION)
+    fun provideRawQueryGetChatNotif(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_get_chat_notification)
 
-    @ChatListScope
-    @Provides
-    @IntoMap
-    @StringKey(ChatListQueriesConstant.QUERY_DELETE_CHAT_MESSAGE)
-    fun provideRawQueryDeleteChatListMessage(@ApplicationContext context: Context): String =
-            GraphqlHelper.loadRawString(context.resources, R.raw.query_chat_delete)
 
     @Provides
-    fun provideGetChatListMessageInfoUseCase(graphqlRepository: GraphqlRepository)
-            : GraphqlUseCase<ChatListPojo> = GraphqlUseCase<ChatListPojo>(graphqlRepository).apply {
-        setTypeClass(ChatListPojo::class.java)
+    fun provideGetChatNotifUseCase(graphqlRepository: GraphqlRepository)
+            : GraphqlUseCase<NotificationsPojo> = GraphqlUseCase<NotificationsPojo>(graphqlRepository).apply {
+        setTypeClass(NotificationsPojo::class.java)
     }
-
 }

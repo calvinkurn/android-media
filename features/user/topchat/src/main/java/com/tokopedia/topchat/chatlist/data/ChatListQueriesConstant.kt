@@ -5,6 +5,7 @@ package com.tokopedia.topchat.chatlist.data
  */
 object ChatListQueriesConstant {
 
+    const val QUERY_CHAT_NOTIFICATION = "chat_notification"
     const val QUERY_CHAT_LIST_MESSAGE = "chat_list_message"
     const val QUERY_DELETE_CHAT_MESSAGE = "delete_chat_message"
 

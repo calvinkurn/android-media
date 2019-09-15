@@ -27,7 +27,7 @@ class ChatListPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm) {
 
     data class ChatListTab (
             val title: String,
-            val counter: String,
+            var counter: String,
             val fragment: Fragment,
             @DrawableRes val icon: Int
     )
