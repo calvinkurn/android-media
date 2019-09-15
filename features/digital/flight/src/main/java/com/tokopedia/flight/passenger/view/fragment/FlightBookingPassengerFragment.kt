@@ -29,7 +29,6 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
 import com.tokopedia.flight.booking.view.activity.FlightBookingAmenityActivity
 import com.tokopedia.flight.booking.view.activity.FlightBookingNationalityActivity
-import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter
 import com.tokopedia.flight.booking.view.fragment.FlightBookingAmenityFragment
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNationalityFragment
@@ -51,6 +50,7 @@ import com.tokopedia.flight.common.util.FlightPassengerInfoValidator
 import com.tokopedia.flight.common.util.FlightPassengerTitle
 import com.tokopedia.flight.common.util.FlightPassengerTitleType
 import com.tokopedia.flight.passenger.di.FlightPassengerComponent
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.passenger.viewmodel.FlightPassengerViewModel
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.*
 import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.button_submit
