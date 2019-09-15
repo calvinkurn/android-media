@@ -194,14 +194,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
                 sendBottomSheetHideEvent()
             }
 
-            override fun isSearchShown(): Boolean {
-                return false
-            }
-
-            override fun hideKeyboard() {
-                KeyboardHandler.hideSoftKeyboard(this@CategoryNavActivity)
-            }
-
             override fun getActivity(): AppCompatActivity {
                 return this@CategoryNavActivity
             }

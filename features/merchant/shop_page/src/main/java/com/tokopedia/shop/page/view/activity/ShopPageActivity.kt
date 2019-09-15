@@ -226,6 +226,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             }
         })
 
+        shopViewModel.shopFavourite.observe(this, Observer {
+            shopPageViewHolder.updateFavoriteData(it ?: ShopInfo.FavoriteData())
+        })
+
         shopPageViewHolder = ShopPageHeaderViewHolder(shopPageHeader, this, shopPageTracking, this)
         initAdapter()
         supportActionBar?.setDisplayShowTitleEnabled(false)
@@ -313,7 +317,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
         stickyLoginTextView.setOnClickListener {
             shopPageTracking.eventClickOnStickyLogin(true)
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN) }
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODER_USER_LOGIN)
+        }
         stickyLoginTextView.setOnDismissListener(View.OnClickListener {
             shopPageTracking.eventClickOnStickyLogin(false)
             stickyLoginTextView.dismiss()
