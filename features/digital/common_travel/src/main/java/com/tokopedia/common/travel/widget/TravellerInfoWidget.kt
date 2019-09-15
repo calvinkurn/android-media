@@ -45,7 +45,7 @@ class TravellerInfoWidget @JvmOverloads constructor(context: Context, attrs: Att
 
     fun getContactPhoneCode(): Int = phoneCode
 
-    fun getContactPhoneNumWithCode(): String = tv_contact_phone_number.text.toString().trim()
+    fun getContactPhoneNumWithCode(): String = "${phoneCode}${phoneNum}"
 
     fun setListener(listener: TravellerInfoWidgetListener) {
         this.listener = listener
