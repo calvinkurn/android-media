@@ -180,8 +180,6 @@ public class FlightBookingPassengerFragment extends BaseDaggerFragment implement
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_flight_booking_passenger, container, false);
 
-        tvHeader = (AppCompatTextView) view.findViewById(R.id.tv_header);
-        tvSubheader = (AppCompatTextView) view.findViewById(R.id.tv_subheader);
         tilFirstName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_first_name);
         etFirstName = (AppCompatAutoCompleteTextView) view.findViewById(R.id.et_first_name);
         tilLastName = (TkpdHintTextInputLayout) view.findViewById(R.id.til_last_name);
