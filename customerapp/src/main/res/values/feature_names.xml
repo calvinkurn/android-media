@@ -28,6 +28,10 @@
     <string name="title_setting_bank">Rekening Bank</string>
     <string name="title_choose_bank">Pilih Bank</string>
 
+    <!-- Dynamic feature for Travel Subhomepage-->
+    <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
+    <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
+
     <!--TopAds Dashboard-->
     <string name="title_module_top_ads_dashboard">TopAds Module</string>
     <string name="top_ads_title_dashboard">TopAds</string>

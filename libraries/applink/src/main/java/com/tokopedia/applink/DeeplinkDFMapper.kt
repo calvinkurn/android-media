@@ -6,18 +6,20 @@ import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.ApplinkConst.HOTEL
+import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
+import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
-import com.tokopedia.config.GlobalConfig
-import tokopedia.applink.R
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
+import com.tokopedia.config.GlobalConfig
+import tokopedia.applink.R
 
 /**
  * Dynamic Feature Deeplink Mapper
@@ -37,16 +39,36 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
-    private val MODULE_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
-    private val MODULE_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
-    private val MODULE_SHOP_OPEN_CUSTOMERAPP = "shop_open"
-    private val MODULE_HOTEL_TRAVEL = "hotel_travel"
-    private val MODULE_DIGITAL_TOPUP = "digital_topup"
-    private val MODULE_USER_PROFILE_COMPLETION = "profilecompletion"
-    private val MODULE_USER_SETTING_BANK = "settingbank"
+    private val SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
+    private val SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
+    private val SHOP_OPEN_CUSTOMERAPP = "shop_open"
+    private val HOTEL_TRAVEL = "hotel_travel"
+    private val DIGITAL_TOPUP = "digital_topup"
+    private val USER_PROFILE_COMPLETION = "profilecompletion"
+    private val USER_SETTING_BANK = "settingbank"
+    private val HOMEPAGE_TRAVEL = "homepage_travel"
     private val MODULE_TOPADS_DASHBOARD = "topads_dashboard"
 
+
     private var manager: SplitInstallManager? = null
+    private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
+        mutableListOf<DFP>().apply {
+//            DFP({ it.startsWith(HOTEL) }, HOTEL_TRAVEL, R.string.title_hotel)
+//            DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, HOMEPAGE_TRAVEL, R.string.title_travel_homepage)
+//            DFP({ it.startsWith(TELCO_DIGITAL) }, DIGITAL_TOPUP, R.string.digital_topup_title)
+//            DFP({ it.startsWith(OPEN_SHOP) }, SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop)
+            DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title)
+//            DFP({ it.startsWith(SETTING_PROFILE) }, USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title)
+//            DFP({ it.startsWith(SETTING_BANK) }, USER_SETTING_BANK, R.string.applink_setting_bank_title)
+//            DFP({it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_SELLER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, MODULE_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title)
+        }
+    }
+
+    private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
+        mutableListOf<DFP>().apply {
+            DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title)
+        }
+    }
 
     /**
      * map the original deeplink to [Dynamic Feature Install] Deeplink
@@ -61,58 +83,23 @@ object DeeplinkDFMapper {
         if (deeplink.startsWith(DYNAMIC_FEATURE_INSTALL_BASE)) {
             return null
         }
-        if (GlobalConfig.isSellerApp()) {
-            return when {
-                deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
-                    getDFDeeplinkIfNotInstalled(context,
-                        deeplink, MODULE_SHOP_SETTINGS_SELLERAPP,
-                        context.getString(R.string.shop_settings_title))
-                }
-                else -> null
-            }
+        return if (GlobalConfig.isSellerApp()) {
+            executeDeeplinkPattern(context, deeplink, deeplinkDFPatternListSellerApp)
         } else {
-            return when {
-//                uncomment this section to enable dynamic feature in hotel
-//                deeplink.startsWith(ApplinkConst.HOTEL) -> {
-//                    getDFDeeplinkIfNotInstalled(context,
-//                            deeplink, MODULE_HOTEL_TRAVEL,
-//                            context.getString(R.string.title_hotel))
-//                }
-//                deeplink.startsWith(ApplinkConsInternalDigital.TELCO_DIGITAL) -> {
-//                    getDFDeeplinkIfNotInstalled(context,
-//                            deeplink, MODULE_DIGITAL_TOPUP,
-//                            context.getString(R.string.digital_topup_title))
-//                }
-                deeplink.startsWith(SHOP_SETTINGS_BASE) -> {
-                    getDFDeeplinkIfNotInstalled(context,
-                        deeplink, MODULE_SHOP_SETTINGS_CUSTOMERAPP,
-                        context.getString(R.string.shop_settings_title))
-                }
-//                deeplink.startsWith(SETTING_PROFILE) -> {
-//                    getDFDeeplinkIfNotInstalled(context,
-//                        deeplink, MODULE_USER_PROFILE_COMPLETION,
-//                        context.getString(R.string.applink_profile_completion_title))
-//                }
-//                deeplink.startsWith(OPEN_SHOP) -> {
-//                    getDFDeeplinkIfNotInstalled(context,
-//                            deeplink, MODULE_SHOP_OPEN_CUSTOMERAPP,
-//                            context.getString(R.string.title_open_shop))
-//                }
-//                deeplink.startsWith(ApplinkConstInternalGlobal.SETTING_BANK) -> {
-//                    getDFDeeplinkIfNotInstalled(context,
-//                        deeplink, MODULE_USER_SETTING_BANK,
-//                        context.getString(R.string.applink_setting_bank_title))
-//                }
-//                deeplink.startsWith(TOPADS_DASHBOARD_CUSTOMER)
-//                        || deeplink.startsWith(TOPADS_DASHBOARD_SELLER)
-//                        || deeplink.startsWith(TOPADS_DASHBOARD_INTERNAL) -> {
-//                    getDFDeeplinkIfNotInstalled(context,
-//                        deeplink, MODULE_TOPADS_DASHBOARD,
-//                        context.getString(R.string.applink_topads_dashboard_title))
-//                }
-                else -> null
+            executeDeeplinkPattern(context, deeplink, deeplinkDFPatternListCustomerApp)
+        }
+    }
+
+    private fun executeDeeplinkPattern(context: Context,
+                                       deeplink: String,
+                                       list: List<DFP>): String? {
+        list.forEach {
+            if (it.logic(deeplink)) {
+                return getDFDeeplinkIfNotInstalled(context,
+                    deeplink, it.moduleId, context.getString(it.moduleNameResourceId))
             }
         }
+        return null
     }
 
     private fun getDFDeeplinkIfNotInstalled(context: Context, deeplink: String,
@@ -148,3 +135,12 @@ object DeeplinkDFMapper {
     }
 
 }
+
+/**
+ * Class to hold dynamic feature pattern, used for mapping
+ */
+class DFP(
+    val logic: ((deeplink: String) -> Boolean),
+    val moduleId: String,
+    val moduleNameResourceId: Int
+)

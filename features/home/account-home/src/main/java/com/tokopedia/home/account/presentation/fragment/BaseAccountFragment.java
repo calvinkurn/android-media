@@ -156,7 +156,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
         } else {
             sendTracking(PEMBELI, BY_ME_CURATION, "", true);
-            RouteManager.route(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
+            RouteManager.route(getContext(), ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST);
         }
     }
 

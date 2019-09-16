@@ -136,7 +136,9 @@ public class SearchInputView extends BaseCustomView {
         searchTextView.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                focusChangeListener.onFocusChanged(hasFocus);
+                if (focusChangeListener != null) {
+                    focusChangeListener.onFocusChanged(hasFocus);
+                }
             }
         });
         searchTextView.addTextChangedListener(getSearchTextWatcher());
