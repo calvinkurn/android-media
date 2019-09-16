@@ -40,6 +40,7 @@ query getCampaignInfo($slug: String!, $shop_id: Int!){
                     dep_name
                     dep_full_name
                 }
+                max_custom_stock
             }
             banners
             logistics{
