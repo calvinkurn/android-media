@@ -39,7 +39,7 @@ include "features:discovery:category_common"
 include "features:discovery:discovery_common"
 include 'features:discovery:productcard'
 include 'features:discovery:filter'
-include 'features:discovery:imagesearch'
+include 'features:discovery:image_search'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:home"
 //include "features:discovery:home_no_op"
