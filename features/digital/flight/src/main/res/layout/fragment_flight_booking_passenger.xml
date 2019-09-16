@@ -50,7 +50,7 @@
                 android:layout_weight="1"
                 android:hint="@string/flight_booking_passenger_first_name_hint">
 
-                <android.support.v7.widget.AppCompatAutoCompleteTextView
+                <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
                     android:id="@+id/et_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                     android:paddingRight="10dp"
                     android:singleLine="true"
                     android:textColor="@color/font_black_primary_70"
-                    app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
+                    app:editTextDrawableRightCompat="@drawable/ic_arrow_down_grey" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
         </LinearLayout>
@@ -213,7 +213,7 @@
                     android:paddingRight="10dp"
                     android:singleLine="true"
                     android:textColor="@color/font_black_primary_70"
-                    app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
+                    app:editTextDrawableRightCompat="@drawable/ic_arrow_down_grey"  />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
 
@@ -244,7 +244,7 @@
                     android:paddingRight="10dp"
                     android:singleLine="true"
                     android:textColor="@color/font_black_primary_70"
-                    app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
+                    app:editTextDrawableRightCompat="@drawable/ic_arrow_down_grey"  />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
 
@@ -275,7 +275,7 @@
                     android:paddingRight="10dp"
                     android:singleLine="true"
                     android:textColor="@color/font_black_primary_70"
-                    app:drawableRightCompat="@drawable/ic_arrow_down_grey" />
+                    app:editTextDrawableRightCompat="@drawable/ic_arrow_down_grey"  />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
         </LinearLayout>
 

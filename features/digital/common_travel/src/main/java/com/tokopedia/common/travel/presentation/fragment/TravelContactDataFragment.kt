@@ -143,7 +143,8 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
 
             contactData.phoneCode = contact.phoneCountryCode
             spinnerData.clear()
-            spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contact.phoneCountryCode)
+            if (contact.phoneCountryCode != 0) spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contact.phoneCountryCode)
+            else spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, DEFAULT_PHONE_CODE_NUMBER_ID)
             spinnerAdapter.notifyDataSetChanged()
         }
     }
@@ -203,6 +204,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         const val EXTRA_CONTACT_DATA = "extra_contact_data"
         const val REQUEST_CODE_PHONE_CODE = 300
         const val MIN_PHONE_NUMBER_DIGIT = 9
+        const val DEFAULT_PHONE_CODE_NUMBER_ID = 62
 
         fun getInstance(contactData: TravelContactData, travelProduct: String): TravelContactDataFragment =
             TravelContactDataFragment().also {

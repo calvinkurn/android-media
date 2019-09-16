@@ -262,12 +262,12 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
 
         if (isAdultPassenger()) {
             val entries = resources.getStringArray(R.array.flight_adult_titles)
-            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0,
-                    if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
+            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)),
+                    initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
         } else {
             val entries = resources.getStringArray(R.array.flight_child_infant_titles)
-            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)), 0,
-                    if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
+            rv_passenger_title.setItem(ArrayList(Arrays.asList(*entries)),
+                    initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(passengerModel.passengerTitle) - 1 else null)
         }
         rv_passenger_title.selectOnlyOneChip(true)
         rv_passenger_title.canDiselectAfterSelect(false)

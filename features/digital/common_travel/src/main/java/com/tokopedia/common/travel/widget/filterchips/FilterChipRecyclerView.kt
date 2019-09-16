@@ -41,7 +41,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
         chip_recycler_view.layoutManager = layoutManager
     }
 
-    fun setItem(strings: ArrayList<String>, selectedTextColor: Int = 0, initialSelectedItemPos: Int? = null) {
+    fun setItem(strings: ArrayList<String>, selectedTextColor: Int = com.tokopedia.design.R.color.snackbar_border_normal, initialSelectedItemPos: Int? = null) {
         if (listener != null) {
             adapter = FilterChipAdapter(strings, listener, this, selectedTextColor)
             if (initialSelectedItemPos != null) adapter.initialPositionSelected = initialSelectedItemPos

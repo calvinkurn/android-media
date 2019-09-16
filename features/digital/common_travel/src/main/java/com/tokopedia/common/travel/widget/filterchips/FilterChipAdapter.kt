@@ -14,7 +14,7 @@ import com.tokopedia.design.text.Chips
 
 class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
                   val onResetChipListener: ResetChipListener,
-                  @ColorRes val selectedColor: Int = com.tokopedia.design.R.color.black_56)
+                  @ColorRes val selectedColor: Int = com.tokopedia.design.R.color.snackbar_border_normal)
     : RecyclerView.Adapter<FilterChipAdapter.ViewHolder>() {
 
     var selectOnlyOneChip = false
