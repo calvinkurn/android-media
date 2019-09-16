@@ -7,13 +7,13 @@ import android.net.Uri;
 import android.util.Base64;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.data.mapper.ImageProductMapper;
 import com.tokopedia.imagesearch.domain.model.SearchResultModel;
+import com.tokopedia.imagesearch.helper.ImageHelper;
 import com.tokopedia.imagesearch.network.response.ImageSearchProductResponse;
 import com.tokopedia.imagesearch.search.exception.ImageNotSupportedException;
 import com.tokopedia.usecase.RequestParams;
@@ -69,7 +69,7 @@ public class GetImageSearchUseCase extends UseCase<SearchResultModel> {
                     Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
                     try {
                         if (myBitmap == null) {
-                            myBitmap = ImageHandler.getBitmapFromUri(context, Uri.parse(imagePath),
+                            myBitmap = ImageHelper.getBitmapFromUri(context, Uri.parse(imagePath),
                                     OPTIMUM_WIDTH, OPTIMUM_HEIGHT);
                         }
 
@@ -80,7 +80,7 @@ public class GetImageSearchUseCase extends UseCase<SearchResultModel> {
 
                         } else if (myBitmap.getWidth() > OPTIMUM_WIDTH ||
                                 myBitmap.getHeight() > OPTIMUM_HEIGHT) {
-                            myBitmap = ImageHandler.resizeImage(myBitmap, OPTIMUM_WIDTH, OPTIMUM_HEIGHT);
+                            myBitmap = ImageHelper.resizeImage(myBitmap, OPTIMUM_WIDTH, OPTIMUM_HEIGHT);
                         }
 
                         if (myBitmap.getHeight() > MAX_HEIGHT ||
@@ -88,7 +88,7 @@ public class GetImageSearchUseCase extends UseCase<SearchResultModel> {
                             throw new ImageNotSupportedException();
                         }
 
-                        myBitmap = ImageHandler.RotatedBitmap(myBitmap, imagePath);
+                        myBitmap = ImageHelper.RotatedBitmap(myBitmap, imagePath);
                     } catch (IOException exception) {
                         exception.printStackTrace();
                     }
