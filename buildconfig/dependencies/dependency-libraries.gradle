@@ -5,8 +5,8 @@ ext {
             usecase                 : "com.tokopedia.usecase:usecase:1.0.1",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
             globalconfig            : "com.tokopedia.config:global_config:1.0.2",
-            graphql                 : "com.tokopedia.graphql:graphql:1.0.4",
-            network                 : "com.tokopedia.network:network:1.0.2",
+            graphql                 : "com.tokopedia.graphql:graphql:1.0.5",
+            network                 : "com.tokopedia.network:network:1.0.3",
             url                     : "com.tokopedia.url:url:1.0.1",
             usersession             : "com.tokopedia.user.session:user_session:1.0.6"
     ]
@@ -18,6 +18,7 @@ ext {
             applink                 : ":libraries:applink",
             baseAdapter             : ":libraries:base_adapter",
             baseListSeller          : ":libraries:base_list_seller",
+            bannerDynamic           : ":libraries:banner_dynamic",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
             cacheApi                : ":libraries:cache_api",
             cameraview              : ":libraries:cameraview",

@@ -7,6 +7,8 @@ if (!project.hasProperty("disable-performance-plugin")) {
 apply plugin: 'io.hansel.preprocessor'
 apply plugin: 'com.frogermcs.androiddevmetrics'
 
+apply from: '../tools/dynamic_feature_inclusion.gradle'
+
 def getDpiId(String density) {
 
     def DPI_ID = ['null': 0, 'mdpi': 1, 'hdpi': 2, 'xhdpi': 3, 'xxhdpi': 4]
@@ -243,12 +245,9 @@ android {
         }
     }
 
-    dynamicFeatures = [
-            rootProject.ext.dynamicFeatures.shopSettings,
-//          rootProject.ext.dynamicFeatures.digitalTopup
-//          rootProject.ext.dynamicFeatures.profileCompletion,
-//          rootProject.ext.dynamicFeatures.shopOpen
-    ]
+    // put Dynamic Feature Modules in dynamic-feature-customerapp.cfg
+    // to disable dynamic feature, use command option -Pdisable-dynamic-feature
+    dynamicFeatures = getDynamicFeatureIfEnabled(project)
 }
 
 dependencies {
@@ -371,7 +370,6 @@ dependencies {
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.digitalHomepage)
-
 
     implementation project(rootProject.ext.libraries.iris)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession

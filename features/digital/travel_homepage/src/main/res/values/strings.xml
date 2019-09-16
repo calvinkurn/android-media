@@ -1,5 +1,5 @@
 <resources>
-    <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
+    <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
     <string name="travel_homepage_section_see_all">Lihat semua</string>
     
     <string name="travel_prefix_strikethrough"><![CDATA[<strike>%1$s</strike> <strong>%2$s</strong>]]></string>

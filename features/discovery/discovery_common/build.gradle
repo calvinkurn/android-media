@@ -6,13 +6,9 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.miscDependencies.gson
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation rootProject.ext.miscDependencies.dagger
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.unifyDependencies.components
+    implementation project(rootProject.ext.libraries.track)
 }
 
 project.ext {

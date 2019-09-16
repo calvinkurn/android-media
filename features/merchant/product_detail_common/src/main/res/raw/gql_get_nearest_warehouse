@@ -1,5 +1,5 @@
-query getNearestWarehouse($productIds: [String!]!){
-    GetNearestWarehouse(productIDs:$productIds) {
+query getNearestWarehouse($productIds: [String!]! , $warehouseID: String){
+    GetNearestWarehouse(productIDs:$productIds, warehouseID:$warehouseID) {
         header{
             processTime
             messages

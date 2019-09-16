@@ -14,7 +14,6 @@ import com.tokopedia.discovery.newdiscovery.di.module.ApiModule;
 import com.tokopedia.discovery.newdiscovery.di.module.AttributeModule;
 import com.tokopedia.discovery.newdiscovery.di.module.BannerModule;
 import com.tokopedia.discovery.newdiscovery.di.module.ProductModule;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.hotlist.di.scope.HotlistScope;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.usecase.GetHotlistInitializeUseCase;
