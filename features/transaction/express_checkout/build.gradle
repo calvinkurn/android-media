@@ -36,6 +36,7 @@ dependencies {
     implementation project(rootProject.ext.features.tradeIn)
     implementation project(rootProject.ext.features.basemvvm)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.playServicesDependencies.tagManager
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.analyticsDependencies.appsflyer
 

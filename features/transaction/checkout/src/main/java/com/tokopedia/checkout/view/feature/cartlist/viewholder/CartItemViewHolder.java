@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.cartlist.SimilarProduct;
 import com.tokopedia.checkout.view.common.utils.NoteTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
@@ -33,6 +34,7 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.unifycomponents.ticker.Ticker;
+import com.tokopedia.unifycomponents.ticker.TickerCallback;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -274,7 +276,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarningAndError(CartItemHolderData data) {
         if (data.getCartItemData().isParentHasErrorOrWarning()) {
-            if (!data.getCartItemData().isDisableAllProducts()) {
+            if (!data.getCartItemData().isDisableAllProducts() || (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
                 renderErrorItemHeader(data);
                 renderWarningItemHeader(data);
                 setWarningAndErrorVisibility(data);
@@ -630,19 +632,39 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
 
-            String errorDescription = data.getCartItemData().getErrorMessageDescription();
-            if (!TextUtils.isEmpty(errorDescription)) {
+            SimilarProduct similarProduct = data.getCartItemData().getSimilarProduct();
+            if (similarProduct != null) {
                 tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
-                tickerError.setTextDescription(errorDescription);
-            } else {
-                tickerError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                tickerError.setDescriptionClickEvent(new TickerCallback() {
+                    @Override
+                    public void onDescriptionViewClick(CharSequence url) {
+                        actionListener.onCartItemSimilarProductUrlClicked(url.toString());
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
+                tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_link, similarProduct.getUrl(), similarProduct.getText()));
+                actionListener.onCartItemShowTickerOutOfStock(data.getCartItemData().getOriginData().getProductId());
+            }
+            else {
+                String errorDescription = data.getCartItemData().getErrorMessageDescription();
+                if (!TextUtils.isEmpty(errorDescription)) {
+                    tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                    tickerError.setTextDescription(errorDescription);
+                } else {
+                    tickerError.setTickerTitle(null);
+                    tickerError.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                }
             }
             tickerError.setTickerType(Ticker.TYPE_ERROR);
             tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerError.setCloseButtonVisibility(View.GONE);
             tickerError.setVisibility(View.VISIBLE);
+            tickerError.requestLayout();
             layoutError.setVisibility(View.VISIBLE);
-
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
             btnDelete.setImageResource(R.drawable.ic_delete_cart);
@@ -654,15 +676,17 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().isWarning()) {
             String warningDescription = data.getCartItemData().getWarningMessageDescription();
             if (!TextUtils.isEmpty(warningDescription)) {
-                tickerWarning.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
+                tickerWarning.setTickerTitle(data.getCartItemData().getWarningMessageTitle());
                 tickerWarning.setTextDescription(warningDescription);
             } else {
-                tickerWarning.setTextDescription(data.getCartItemData().getErrorMessageTitle());
+                tickerWarning.setTickerTitle(null);
+                tickerWarning.setTextDescription(data.getCartItemData().getWarningMessageTitle());
             }
             tickerWarning.setTickerType(Ticker.TYPE_WARNING);
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
+            tickerWarning.requestLayout();
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
             tickerWarning.setVisibility(View.GONE);

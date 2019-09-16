@@ -18,6 +18,16 @@ import rx.schedulers.Schedulers
 import javax.inject.Inject
 import javax.inject.Named
 
+/**
+ * A Class ViewModel For Primary Product Recommendation Page.
+ *
+ * @param graphqlRepository gql repository for getResponse from network with GQL request
+ * @param userSessionInterface the handler of user session
+ * @param addWishListUseCase use case for add wishlist
+ * @param removeWishlistUseCase use case for remove wishlist
+ * @param addToCartUseCase use case for add add product to cart
+ * @param dispatcher the dispatcher for coroutine
+ */
 class PrimaryProductViewModel @Inject constructor(private val graphqlRepository: GraphqlRepository,
                                                   private val userSessionInterface: UserSessionInterface,
                                                   private val addWishListUseCase: AddWishListUseCase,
@@ -25,7 +35,12 @@ class PrimaryProductViewModel @Inject constructor(private val graphqlRepository:
                                                   private val addToCartUseCase: AddToCartUseCase,
                                                   @Named("Main")
                                                   val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
-
+    /**
+     * [removeWishList] is the void for handling remove wishlist item
+     * @param productId the primary product id
+     * @param onSuccessRemoveWishlist the callback for handling success remove wishlist to update UI
+     * @param onErrorRemoveWishList the callback for handling error removed wishlist to update UI
+     */
     fun removeWishList(productId: String,
                        onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
                        onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
@@ -49,6 +64,12 @@ class PrimaryProductViewModel @Inject constructor(private val graphqlRepository:
         })
     }
 
+    /**
+     * [addWishList] is the void for handling adding wishlist item
+     * @param productId the primary product id
+     * @param onSuccessAddWishlist the callback for handling success added wishlist to update UI
+     * @param onErrorAddWishList the callback for handling error added wishlist to update UI
+     */
     fun addWishList(productId: String,
                     onErrorAddWishList: ((errorMessage: String?) -> Unit)?,
                     onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
@@ -72,6 +93,12 @@ class PrimaryProductViewModel @Inject constructor(private val graphqlRepository:
         })
     }
 
+    /**
+     * [addToCart] is the void for handling adding add to cart
+     * @param addTocartRequestParams the default pojo request to add cart
+     * @param success the callback for handling success add to cart
+     * @param error the callback for handling error add to cart
+     */
     fun addToCart(addTocartRequestParams: AddToCartRequestParams,
                   success: (Map<String, Any>) -> Unit,
                   error: (Throwable) -> Unit) {
@@ -107,5 +134,8 @@ class PrimaryProductViewModel @Inject constructor(private val graphqlRepository:
                 })
     }
 
+    /**
+     * [isLoggedIn] is the function get user session is login or not login
+     */
     fun isLoggedIn() = userSessionInterface.isLoggedIn
 }

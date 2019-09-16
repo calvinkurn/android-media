@@ -569,9 +569,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         if (availableCheckout) {
-            shipmentAdapterActionListener.onCartDataEnableToCheckout();
+            shipmentAdapterActionListener.onDataEnableToCheckout();
         } else {
-            shipmentAdapterActionListener.onCartDataDisableToCheckout(null);
+            shipmentAdapterActionListener.onDataDisableToCheckout(null);
         }
     }
 
@@ -755,6 +755,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         double shippingFee = 0;
         double insuranceFee = 0;
         double orderPriorityFee = 0;
+        int totalBookingFee = 0;
         for (Object shipmentData : shipmentDataList) {
             if (shipmentData instanceof ShipmentCartItemModel) {
                 ShipmentCartItemModel shipmentSingleAddressItem =
@@ -797,9 +798,12 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     additionalFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                             .getSelectedCourier().getAdditionalPrice();
                 }
+                if (shipmentSingleAddressItem.getIsLeasingProduct()) {
+                    totalBookingFee += shipmentSingleAddressItem.getBookingFee();
+                }
             }
         }
-        totalPrice = totalItemPrice + shippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee -
+        totalPrice = totalItemPrice + shippingFee + insuranceFee + orderPriorityFee + totalPurchaseProtectionPrice + additionalFee + totalBookingFee -
                 shipmentCostModel.getPromoPrice() - tradeInPrice - (double) shipmentCostModel.getTotalDiscWithoutCashback();
         shipmentCostModel.setTotalWeight(totalWeight);
         shipmentCostModel.setAdditionalFee(additionalFee);
@@ -833,6 +837,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             notifyDataSetChanged();
         }
 
+        shipmentCostModel.setBookingFee(totalBookingFee);
         updateCheckoutButtonData(null);
     }
 

@@ -2,7 +2,6 @@ ext {
 
     // Sort alphabetically by name
     tkpdAttachProductVersion = '2.22'
-    tkpdBankDBVersion = '2.22'
     tkpdChallengesVersion = '2.22'
     tkpdChangePhoneNumberVersion = '2.22'
     tkpdContactUsVersion = '2.22'
@@ -18,6 +17,7 @@ ext {
     tkpdFeedComponentVersion = '2.22'
     tkpdFlashsaleManagementVersion = '2.22'
     tkpdFlightVersion = '2.22'
+    tkpdTravelHomepageVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
     tkpdPowerMerchantVersion = '2.22'
@@ -86,7 +86,6 @@ ext {
     artifactIdLogisticUploadAwb = 'logisticuploadawb'
     artifactIdLogisticTracking = 'tracking'
     artifactIdLogisticAddAddress = 'logisticaddaddress'
-    artifactIdLogisticListAddress = 'logisticlistaddress'
     logisticGroupVersion = '2.22'
 
     groupIdPayment = 'com.tokopedia.payment'
@@ -163,6 +162,7 @@ ext {
             topAdsAutoAds        : "com.tokopedia.topads:top_ads_autoads:${tkpdTopAdsSDKVersion}",
             transaction             : "com.tokopedia.transaction:transaction:${tkpdTransactionVersion}",
             transactioncommon       : "com.tokopedia.transaction:transaction-common:${tkpdTransactionVersion}",
+            travelHomepage          : "com.tokopedia.travel.homepage:travel_homepage:${tkpdTravelHomepageVersion}",
             userIdentification      : "com.tokopedia.user:user:${tkpdUserIdentification}",
             userIdentificationCommon: "com.tokopedia.user:user:${tkpdUserIdentificationCommon}",
             vote                    : "com.tokopedia.user:user:${tkpdVoteVersion}",
@@ -206,7 +206,9 @@ ext {
             train                           : ":features:digital:train",
 //            train                         : ":features:digital:train_no_op",
             hotel                           : ":features:digital:hotel",
+            travelHomepage                  : ":features:digital:travel_homepage",
             imagePreviewSlider              : ":features:digital:imagepreviewslider",
+            digitalHome                     : ":features:digital:digital_homepage",
 
             categoryCommon                  : ":features:discovery:category_common",
             discoveryCommon                 : ":features:discovery:discovery_common",
@@ -222,6 +224,7 @@ ext {
             topAdsSdk                       : ":features:discovery:topadssdk",
             wishlistCommon                  : ":features:discovery:wishlist_common",
             productCard                     : ":features:discovery:productcard",
+            filter                          : ":features:discovery:filter",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
             homecredit                      : ":features:fintech:home_credit",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
@@ -244,7 +247,6 @@ ext {
             logisticdata                    : ":features:logistic:logisticdata",
             logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment",
 //            logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment_no_op",
-            logisticlistaddress             : ":features:logistic:logisticlistaddress",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             tracking                        : ":features:logistic:tracking",
 //            tracking                      : ":features:logistic:tracking_no_op",
@@ -267,6 +269,7 @@ ext {
             productManageList               : ":features:merchant:product_manage_list",
             productManageDetail             : ":features:merchant:product_detail",
             productShare                    : ":features:merchant:product_share",
+            report                          : ":features:merchant:report",
             common_promo                    : ":features:im:common_promo",
             referral                        : ":features:im:referral",
 
@@ -325,7 +328,6 @@ ext {
             expressCheckoutCommon           : ":features:transaction:express_checkout_common",
 
             attachproduct                   : ":features:user:attachproduct",
-            bankdb                          : ":features:user:bankdb",
             changepassword                  : ":features:user:changepassword",
 //            changepassword                  : ":features:user:changepassword_no_op",
             changePhoneNumber               : ":features:user:changephonenumber",
@@ -344,6 +346,7 @@ ext {
             phoneVerification               : ":features:user:phoneverification",
             profileCompletion               : ":features:user:profilecompletion",
             settingbank                     : ":features:user:settingbank",
+            settingnotif                    : ":features:user:settingnotif",
             talk                            : ":features:user:talk",
             topchat                         : ":features:user:topchat",
 //            topchat                         : ":features:user:topchat_no_op",

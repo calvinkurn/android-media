@@ -47,8 +47,8 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
         presenter.fetchContentForm(viewModel.productIdList, viewModel.authorType, viewModel.postId)
     }
 
-    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
-        super.onSuccessGetContentForm(feedContentForm)
+    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm, isFromTemplateToken: Boolean) {
+        super.onSuccessGetContentForm(feedContentForm, isFromTemplateToken)
         if (shouldGoAttachProduct) {
             if (viewModel.productIdList.isEmpty() || viewModel.productIdList.first().isBlank()) {
                 goToAttachProduct(true)

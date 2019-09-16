@@ -40,7 +40,6 @@
 -libraryjars libs/signpost-commonshttp4-1.2.1.2.jar
 -libraryjars libs/signpost-core-1.2.1.2.jar
 -libraryjars libs/simple.facebook-2.1.jar
--libraryjars libs/twitter4j-core-3.0.5.jar
 -libraryjars libs/universal-image-loader-1.8.6.jar
 
 
@@ -48,13 +47,12 @@
 -dontpreverify
 -repackageclasses ''
 -allowaccessmodification
--optimizations !code/simplification/arithmetic
+-dontoptimize
 -keepattributes *Annotation*
 
 -dontwarn com.comscore.**
 -dontwarn com.squareup.**
 -dontwarn oauth.signpost.**
--dontwarn twitter4j.**
 -dontwarn com.google.ads.**
 -dontwarn javax.management.**
 -dontwarn javax.xml.**
@@ -106,7 +104,7 @@ public protected *;
 -keep public class it.partytrack.sdk.MultipleReferrerReceiver{ public protected *;
 }
 -keep public class com.google.android.gms.ads.identifier.** { public protected *;
-} 
+}
 -keepattributes SourceFile,LineNumberTable
 
 -keep class butterknife.** { *; }
@@ -189,23 +187,28 @@ public protected *;
 
 -keep class com.tokopedia.core.util.GlobalConfig
 -keep class com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity
+-keep class com.tokopedia.payment.model.PaymentPassData
+-keep class com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData
 
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
+-keep class com.tokopedia.feedplus.data.pojo.** { *; }
 # -- End of Feeds --
 
 -dontwarn android.content.pm.PackageManager
 
--keep public class com.tokopedia.design.bottomnavigation.BottomNavigation { *; }
--keep public class android.support.design.widget.BottomNavigationView { *; }
--keep public class android.support.design.internal.BottomNavigationMenuView { *; }
--keep public class android.support.design.internal.BottomNavigationPresenter { *; }
--keep public class android.support.design.internal.BottomNavigationItemView { *; }
+-dontwarn com.tokopedia.topchat.R$id
 
 # -- Coroutines --
 -keepclassmembernames class kotlinx.** {
     volatile <fields>;
 }
 
+-keep public class com.tokopedia.design.component.BottomNavigation { *; }
+-keep public class android.support.design.widget.BottomNavigationView { *; }
+-keep public class android.support.design.internal.BottomNavigationMenuView { *; }
+-keep public class android.support.design.internal.BottomNavigationPresenter { *; }
+-keep public class android.support.design.internal.BottomNavigationItemView { *; }
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
+-keep class com.github.anrwatchdog.** { *; }

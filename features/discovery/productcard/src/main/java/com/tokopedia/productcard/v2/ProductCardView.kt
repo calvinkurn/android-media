@@ -75,6 +75,7 @@ abstract class ProductCardView: BaseCustomView {
     protected var labelCredibility: Label? = null
     protected var labelOffers: Label? = null
     protected var imageTopAds: ImageView? = null
+    protected var blankSpaceConfig = BlankSpaceConfig()
 
     constructor(context: Context): super(context) {
         init()
@@ -275,6 +276,74 @@ abstract class ProductCardView: BaseCustomView {
         return cardViewProductCard?.maxCardElevation ?: 0f
     }
 
+    open fun setProductModel(productCardModel: ProductCardModel, blankSpaceConfig: BlankSpaceConfig = this.blankSpaceConfig) {
+        this.blankSpaceConfig = blankSpaceConfig
+
+        removeAllShopBadges()
+
+        initProductImage(productCardModel.productImageUrl)
+        initProductName(productCardModel.productName)
+        initProductPrice(productCardModel.formattedPrice)
+        initLabelDiscount(productCardModel.discountPercentage)
+        initSlashedPrice(productCardModel.slashedPrice)
+        initRating(productCardModel.ratingCount)
+        initReview(productCardModel.reviewCount)
+        initWishlist(productCardModel.isWishlistVisible, productCardModel.isWishlisted)
+
+        realignLayout()
+    }
+
+    private fun initProductImage(productImageUrl: String) {
+        imageProduct.configureVisibilityWithBlankSpaceConfig(
+                productImageUrl.isNotEmpty(), blankSpaceConfig.imageProduct) {
+            ImageHandler.loadImageThumbs(context, it, productImageUrl)
+        }
+    }
+
+    private fun initProductName(productName: String) {
+        textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
+    }
+
+    private fun initProductPrice(formattedPrice: String) {
+        textViewPrice.setTextWithBlankSpaceConfig(formattedPrice, blankSpaceConfig.price)
+    }
+
+    private fun initLabelDiscount(discountPercentage: String) {
+        labelDiscount.setTextWithBlankSpaceConfig(discountPercentage, blankSpaceConfig.discountPercentage)
+    }
+
+    private fun initSlashedPrice(slashedPrice: String) {
+        textViewSlashedPrice.configureVisibilityWithBlankSpaceConfig(
+                slashedPrice.isNotEmpty(), blankSpaceConfig.slashedPrice) {
+            it.text = slashedPrice
+            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        }
+    }
+
+    private fun initRating(ratingCount: Int) {
+        linearLayoutImageRating.configureVisibilityWithBlankSpaceConfig(
+                ratingCount > 0, blankSpaceConfig.ratingCount) {
+            setRating(ratingCount)
+        }
+    }
+
+    private fun initReview(reviewCount: Int) {
+        textViewReviewCount.configureVisibilityWithBlankSpaceConfig(
+                reviewCount > 0, blankSpaceConfig.reviewCount) {
+            it.text = getReviewCountFormattedAsText(reviewCount)
+        }
+    }
+
+    private fun initWishlist(isWishlistVisible: Boolean, isWishlisted: Boolean) {
+        buttonWishlist.configureVisibilityWithBlankSpaceConfig(isWishlistVisible, blankSpaceConfig.buttonWishlist) {
+            if (isWishlisted) {
+                it.setImageResource(R.drawable.product_card_ic_wishlist_red)
+            } else {
+                it.setImageResource(R.drawable.product_card_ic_wishlist)
+            }
+        }
+    }
+
     open fun setImageProductVisible(isVisible: Boolean) {
         imageProduct?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
@@ -360,6 +429,10 @@ abstract class ProductCardView: BaseCustomView {
     open fun setLabelDiscountText(discount: Int) {
         val discountText = Integer.toString(discount) + "%"
         labelDiscount?.text = discountText
+    }
+
+    open fun setLabelDiscountText(discount: String) {
+        labelDiscount?.text = discount
     }
 
     open fun setSlashedPriceVisible(isVisible: Boolean) {
@@ -500,4 +573,6 @@ abstract class ProductCardView: BaseCustomView {
             constraintSet.clear(layoutId, side)
         }
     }
+
+
 }

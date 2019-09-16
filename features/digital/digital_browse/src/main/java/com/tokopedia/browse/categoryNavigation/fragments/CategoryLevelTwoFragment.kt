@@ -116,7 +116,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
     private fun routeToCategoryLevelTwo(context: Context, categoryApplink: String) {
         RouteManager.route(context, categoryApplink)
-        CategoryAnalytics.createInstance().eventClickLihatSemua(context,label_lihat_semua.text.toString())
+        CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
 
     }
 
@@ -157,7 +157,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
         })
 
-        categoryLevelTwoViewModel.getCategoryHotlist().observe(this, Observer<List<ListItem>> {
+        categoryLevelTwoViewModel.getCategoryHotlist().observe(this, Observer<MutableList<ListItem>> {
             categoryHotlist.clear()
             categoryHotlist.addAll(it as List<ListItem>)
             hotlist.adapter?.notifyDataSetChanged()

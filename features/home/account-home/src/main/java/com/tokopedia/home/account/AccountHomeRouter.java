@@ -17,15 +17,11 @@ public interface AccountHomeRouter {
 
     void doLogoutAccount(Activity activity);
 
-    Intent getIntentCreateShop(Context context);
-
     Intent getManageAddressIntent(Context context);
 
     void goToManageShopShipping(Context context);
 
     void goToManageShopProduct(Context context);
-
-    Intent getSettingBankIntent(Context context);
 
     void goToManageCreditCard(Context context);
 

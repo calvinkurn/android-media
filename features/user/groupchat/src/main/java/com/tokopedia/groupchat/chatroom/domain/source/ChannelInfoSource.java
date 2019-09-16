@@ -16,6 +16,7 @@ import com.tokopedia.groupchat.room.view.fragment.PlayFragment;
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel;
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,8 +73,8 @@ public class ChannelInfoSource {
 
     }
 
-    public Observable<StickyComponentViewModel> getStickyComponent(String channelUuid,
-                                                                   HashMap<String, Object> requestParam) {
+    public Observable<StickyComponentsViewModel> getStickyComponent(String channelUuid,
+                                                                    HashMap<String, Object> requestParam) {
         return chatroomApi.getStickyComponent(channelUuid, requestParam)
                 .map(stickyComponentMapper);
     }

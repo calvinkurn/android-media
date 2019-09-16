@@ -19,10 +19,10 @@ public class ShopOpenCreateSuccessActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_no_toolbar);
+        setContentView(com.tokopedia.seller.R.layout.activity_no_toolbar);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.container, ShopOpenCreateSuccessFragment.newInstance(),
+                    .replace(com.tokopedia.design.R.id.container, ShopOpenCreateSuccessFragment.newInstance(),
                             ShopOpenCreateSuccessFragment.TAG)
                     .commit();
         }

@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
@@ -100,7 +101,7 @@ class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent>
         }
 
         @JvmStatic
-        fun getAutomaticLogin(context: Context, email: String, password: String): Intent {
+        fun getAutomaticLogin(context: Context, email: String, password: String, source : String): Intent {
             val intent = Intent(context, LoginActivity::class.java)
             val bundle = Bundle()
             bundle.putBoolean(LoginEmailPhoneFragment.IS_AUTO_LOGIN, true)
@@ -108,6 +109,7 @@ class LoginActivity : BaseSimpleActivity(), HasComponent<LoginRegisterComponent>
             bundle.putInt(LoginEmailPhoneFragment.AUTO_LOGIN_METHOD, METHOD_EMAIL)
             bundle.putString(LoginEmailPhoneFragment.AUTO_LOGIN_EMAIL, email)
             bundle.putString(LoginEmailPhoneFragment.AUTO_LOGIN_PASS, password)
+            bundle.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
             intent.putExtras(bundle)
             return intent
         }

@@ -1,8 +1,6 @@
 package com.tokopedia.flight.cancellation.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.R;
-import com.tokopedia.flight.cancellation.constant.FlightCancellationStatus;
 import com.tokopedia.flight.cancellation.view.contract.FlightCancellationDetailContract;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListPassengerViewModel;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationListViewModel;
@@ -26,22 +24,6 @@ public class FlightCancellationDetailPresenter extends BaseDaggerPresenter<Fligh
     @Override
     public void onViewCreated() {
         addAirportDetailsToPassengers();
-    }
-
-    @Override
-    public void checkCancellationStatus() {
-        switch (getView().getFlightCancellationList().getCancellations().getStatus()) {
-            case FlightCancellationStatus.REFUNDED :
-                getView().renderCancellationStatus(R.string.flight_cancellation_status_success);
-                break;
-            case FlightCancellationStatus.ABORTED:
-                getView().renderCancellationStatus(R.string.flight_cancellation_status_failed);
-                break;
-            case FlightCancellationStatus.REQUESTED:
-            case FlightCancellationStatus.PENDING:
-                getView().renderCancellationStatus(R.string.flight_cancellation_status_on_progress);
-                break;
-        }
     }
 
     private void addAirportDetailsToPassengers() {

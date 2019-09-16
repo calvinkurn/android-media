@@ -20,6 +20,7 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
     protected List<FlightOrderJourney> orderJourney;
     private List<CancellationEntity> cancellations;
     protected String contactUsUrl;
+    private String cancellationInfo;
 
     public FlightOrderSuccessViewModel() {
     }
@@ -88,4 +89,12 @@ public class FlightOrderSuccessViewModel implements Visitable<FlightOrderTypeFac
     public void setContactUsUrl(String contactUsUrl) { this.contactUsUrl = contactUsUrl; }
 
     public String getContactUsUrl() { return contactUsUrl; }
+
+    public String getCancellationInfo() {
+        return cancellationInfo;
+    }
+
+    public void setCancellationInfo(String cancellationInfo) {
+        this.cancellationInfo = cancellationInfo;
+    }
 }

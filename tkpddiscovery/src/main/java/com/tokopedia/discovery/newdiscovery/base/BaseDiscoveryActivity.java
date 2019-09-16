@@ -1,30 +1,17 @@
 package com.tokopedia.discovery.newdiscovery.base;
 
-import android.content.Context;
 import android.os.Bundle;
 
-import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.URLParser;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.discovery.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
-import com.tokopedia.track.TrackApp;
-
-import org.json.JSONArray;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by hangnadi on 9/26/17.
@@ -34,12 +21,9 @@ public class BaseDiscoveryActivity
         extends BaseActivity
         implements BaseDiscoveryContract.View, HasComponent {
 
-    private static final String KEY_FORCE_SWIPE_TO_SHOP = "KEY_FORCE_SWIPE_TO_SHOP";
     private static final String KEY_TAB_POSITION = "KEY_TAB_POSITION";
-    private static final String KEY_REQUEST_OS = "KEY_REQUEST_OS";
 
     private BaseDiscoveryContract.Presenter presenter;
-    private boolean forceSwipeToShop;
     private int activeTabPosition;
 
     private Boolean isPause = false;
@@ -53,7 +37,6 @@ public class BaseDiscoveryActivity
 
         if (savedInstanceState != null) {
             setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION, 0));
-            setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP, false));
         }
     }
 
@@ -70,14 +53,6 @@ public class BaseDiscoveryActivity
 
     public void setActiveTabPosition(int activeTabPosition) {
         this.activeTabPosition = activeTabPosition;
-    }
-
-    public boolean isForceSwipeToShop() {
-        return forceSwipeToShop;
-    }
-
-    public void setForceSwipeToShop(boolean forceSwipeToShop) {
-        this.forceSwipeToShop = forceSwipeToShop;
     }
 
     public void setPresenter(BaseDiscoveryContract.Presenter presenter) {
@@ -105,37 +80,6 @@ public class BaseDiscoveryActivity
 
     @Override
     public void onHandleImageResponseSearch(ProductViewModel productViewModel) {
-        JSONArray afProdIds = new JSONArray();
-        HashMap<String, String> category = new HashMap<String, String>();
-        ArrayList<String> prodIdArray = new ArrayList<>();
-
-        if (productViewModel.getProductList().size() > 0) {
-            for (int i = 0; i < productViewModel.getProductList().size(); i++) {
-                if (i < 3) {
-                    prodIdArray.add(productViewModel.getProductList().get(i).getProductID());
-                    afProdIds.put(productViewModel.getProductList().get(i).getProductID());
-                } else {
-                    break;
-                }
-                category.put(String.valueOf(productViewModel.getProductList().get(i).getCategoryID()), productViewModel.getProductList().get(i).getCategoryName());
-            }
-        }
-        TrackingUtils.eventAppsFlyerViewListingSearch(this, afProdIds,productViewModel.getQuery(),prodIdArray);
-        sendMoEngageSearchAttempt(this, productViewModel.getQuery(), !productViewModel.getProductList().isEmpty(), category);
-        ImageSearchActivity.moveTo(this, productViewModel);
-        finish();
-    }
-
-    public void sendMoEngageSearchAttempt(Context context, String keyword, boolean isResultFound, HashMap<String, String> category) {
-        Map<String, Object> value = DataLayer.mapOf(
-                SearchEventTracking.MOENGAGE.KEYWORD, keyword,
-                SearchEventTracking.MOENGAGE.IS_RESULT_FOUND, isResultFound
-        );
-        if (category != null) {
-            value.put(SearchEventTracking.MOENGAGE.CATEGORY_ID_MAPPING, new JSONArray(Arrays.asList(category.keySet().toArray())));
-            value.put(SearchEventTracking.MOENGAGE.CATEGORY_NAME_MAPPING, new JSONArray((category.values())));
-        }
-        TrackApp.getInstance().getMoEngage().sendTrackEvent(value, SearchEventTracking.EventMoEngage.SEARCH_ATTEMPT);
     }
 
     @Override
@@ -181,11 +125,6 @@ public class BaseDiscoveryActivity
     }
 
     @Override
-    public void onHandleImageSearchResponseSuccess() {
-
-    }
-
-    @Override
     public void showImageNotSupportedError() {
 
     }
@@ -193,14 +132,12 @@ public class BaseDiscoveryActivity
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(KEY_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
         outState.putInt(KEY_TAB_POSITION, getActiveTabPosition());
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        setForceSwipeToShop(savedInstanceState.getBoolean(KEY_FORCE_SWIPE_TO_SHOP));
         setActiveTabPosition(savedInstanceState.getInt(KEY_TAB_POSITION));
     }
 

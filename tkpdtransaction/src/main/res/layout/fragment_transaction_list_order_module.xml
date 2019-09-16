@@ -28,31 +28,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/quick_filter">
-        <FrameLayout
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/order_list_rv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <include
-                android:id="@+id/empty_state_order_list"
-                layout="@layout/empty_state_normal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/quick_filter"
-                android:visibility="gone" />
-            <include
-                android:id="@+id/empty_state_marketplace"
-                layout="@layout/empty_state_marketplace"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/quick_filter"
-                android:visibility="gone" />
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/order_list_rv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:divider="@android:color/transparent"
-                android:listSelector="@android:color/transparent" />
-        </FrameLayout>
+            android:divider="@android:color/transparent"
+            android:listSelector="@android:color/transparent" />
+
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
     <LinearLayout
         android:id="@+id/filterDate"
