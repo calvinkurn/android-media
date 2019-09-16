@@ -311,27 +311,6 @@ public class ProductItem extends ImpressHolder implements Parcelable, Visitable<
         return typeFactory.type(this);
     }
 
-    public Object getProductAsObjectDataLayerForImageSearchImpression() {
-        return DataLayer.mapOf(
-                "name", getProductName(),
-                "id", getProductID(),
-                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "category", getCategoryBreadcrumb(),
-                "list", DiscoveryTracking.ACTION_IMAGE_SEARCH,
-                "position", Integer.toString(getPosition())
-        );
-    }
-
-    public Object getProductAsObjectDataLayerForImageSearchClick() {
-        return DataLayer.mapOf(
-                "name", getProductName(),
-                "id", getProductID(),
-                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "category", "",
-                "position", Integer.toString(getPosition())
-        );
-    }
-
     public void setProductWishlistUrl(String productWishlistUrl) {
         this.productWishlistUrl = productWishlistUrl;
     }

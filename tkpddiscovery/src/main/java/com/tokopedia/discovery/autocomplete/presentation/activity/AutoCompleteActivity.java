@@ -13,8 +13,8 @@ import com.tokopedia.discovery.autocomplete.presentation.AutoCompleteContract;
 import com.tokopedia.discovery.autocomplete.presentation.presenter.AutoCompletePresenter;
 import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.discovery.newdiscovery.base.DiscoveryActivity;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
-import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
+import com.tokopedia.discovery.newdiscovery.di.component.DaggerDiscoveryComponent;
+import com.tokopedia.discovery.newdiscovery.di.component.DiscoveryComponent;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.graphql.data.GraphqlClient;
 
@@ -54,7 +54,7 @@ public class AutoCompleteActivity extends DiscoveryActivity
     @Inject
     DiscoveryTracking discoveryTracking;
 
-    private SearchComponent searchComponent;
+    private DiscoveryComponent discoveryComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,11 +69,11 @@ public class AutoCompleteActivity extends DiscoveryActivity
     }
 
     private void initInjector() {
-        searchComponent =
-                DaggerSearchComponent.builder()
+        discoveryComponent =
+                DaggerDiscoveryComponent.builder()
                         .appComponent(getApplicationComponent())
                         .build();
-        searchComponent.inject(this);
+        discoveryComponent.inject(this);
     }
 
     @Override
