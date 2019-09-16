@@ -1070,4 +1070,18 @@ public class ProductListFragment
             getActivity().finish();
         }
     }
+
+    @Override
+    public void setDefaultLayoutType(int defaultView) {
+        switch (defaultView) {
+            case SearchConstant.DefaultViewType.SMALL_GRID:
+                switchLayoutTypeTo(SearchConstant.GridType.SMALL_GRID);
+                break;
+            case SearchConstant.DefaultViewType.LIST:
+                switchLayoutTypeTo(SearchConstant.GridType.LIST);
+                break;
+            default:
+                break;
+        }
+    }
 }
