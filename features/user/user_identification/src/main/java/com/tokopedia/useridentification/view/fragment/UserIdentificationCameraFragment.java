@@ -412,6 +412,9 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     }
 
     private void onSuccessImageTakenFromCamera(File cameraResultFile) {
+        if(!isAdded()){
+            return;
+        }
         if (cameraResultFile.exists()) {
             ImageHandler.loadImageFromFile(getContext(), imagePreview, cameraResultFile);
             imagePath = cameraResultFile.getAbsolutePath();
