@@ -70,6 +70,7 @@
     <string name="flash_sale_no_discount">-%</string>
     <string name="flash_sale_x_percent">%1$s%%</string>
     <string name="flash_sale_min_stock_x">Minimal stok %1$d</string>
+    <string name="flash_sale_max_stock_x">Stok maksimal %1$d</string>
     <string name="flash_sale_html_process_web_view"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding:16px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
     <string name="html_process_web_view_no_padding"><![CDATA[<html><head><style type="text/css">body{font-size:14px; padding-top:24px; margin:0;color:#808080;} img{display: inline;max-width: 100%% ]]>!<![CDATA[important ;height:auto ]]>!<![CDATA[important;} ol,ul{padding-left:24px} ul>li, ol>li{padding-left:0; margin-left:0; margin-bottom:3px;}</style></head><body>]]>%1$s<![CDATA[</body></html>]]></string>
 
