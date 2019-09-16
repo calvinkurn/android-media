@@ -48,7 +48,7 @@ object DeeplinkDFMapper {
 
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
-        mutableListOf<DFP>().apply {
+        listOf(
 //            DFP({ it.startsWith(HOTEL) }, HOTEL_TRAVEL, R.string.title_hotel)
 //            DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, HOMEPAGE_TRAVEL, R.string.title_travel_homepage)
 //            DFP({ it.startsWith(TELCO_DIGITAL) }, DIGITAL_TOPUP, R.string.digital_topup_title)
@@ -56,13 +56,13 @@ object DeeplinkDFMapper {
             DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title)
 //            DFP({ it.startsWith(SETTING_PROFILE) }, USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title)
 //            DFP({ it.startsWith(SETTING_BANK) }, USER_SETTING_BANK, R.string.applink_setting_bank_title)
-        }
+        )
     }
 
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
-        mutableListOf<DFP>().apply {
+        listOf(
             DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title)
-        }
+        )
     }
 
     /**
