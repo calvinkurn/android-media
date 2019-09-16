@@ -18,11 +18,10 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24">
 
-            <android.support.v7.widget.AppCompatAutoCompleteTextView
+            <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
-                android:background="@color/white"
                 android:hint="@string/travel_contact_data_name_hint" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
