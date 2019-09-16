@@ -91,11 +91,6 @@ class AddEmailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun onSuccessCheckEmail(email: String) {
-
-    }
-
-
     private fun goToVerificationActivity(email: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
         val bundle = Bundle()
