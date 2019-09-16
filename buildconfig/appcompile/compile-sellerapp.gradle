@@ -1,4 +1,6 @@
 // Sort alphabetically by name
+includeDynamicFeatureIfEnabled("sellerapp")
+
 include "features:category:tradein_common"
 include "features:category:tradein"
 
@@ -135,9 +137,6 @@ include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:tradein_common"
 include "features:fintech:merchant_lending_widget"
-
-
-include "dynamic-features:merchant:shop_settings_sellerapp"
 
 include 'tkpdloyalty'
 include 'tkpdcore'

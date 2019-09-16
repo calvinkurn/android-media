@@ -489,7 +489,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         attributes.setClientId(digitalModuleRouter.getTrackingClientId());
         attributes.setAppsFlyer(DeviceUtil.getAppsFlyerIdentifierParam(
                 TrackApp.getInstance().getAppsFlyer().getUniqueId(),
-                TrackApp.getInstance().getAppsFlyer().getGoogleAdId()));
+                ""));
         requestBodyCheckout.setAttributes(attributes);
         requestBodyCheckout.setRelationships(
                 new Relationships(new Cart(new Data(

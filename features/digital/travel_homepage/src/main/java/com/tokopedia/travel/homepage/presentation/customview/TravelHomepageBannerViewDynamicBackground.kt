@@ -19,8 +19,8 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHei
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.banner.Banner
-import com.tokopedia.design.banner.BannerPagerAdapter
-import com.tokopedia.design.banner.BannerView
+import com.tokopedia.banner.BannerView
+import com.tokopedia.banner.BannerViewPagerAdapter
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -46,17 +46,17 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
     override fun init() {
         val view = View.inflate(context, R.layout.travel_homepage_card_banner_dynamic_background, this)
         view.findViewById<View>(R.id.overlay_round).background = MethodChecker.getDrawable(
-                view.context, R.drawable.background_banner_image_mask)
-        bannerRecyclerView = view.findViewById(R.id.banner_recyclerview)
-        bannerIndicator = view.findViewById(R.id.banner_indicator_container)
-        bannerSeeAll = view.findViewById(R.id.banner_see_all)
+                view.context, com.tokopedia.travel.homepage.R.drawable.travel_homepage_bg_banner_image_mask)
+        bannerRecyclerView = view.findViewById(com.tokopedia.banner.R.id.banner_recyclerview)
+        bannerIndicator = view.findViewById(com.tokopedia.banner.R.id.banner_indicator_container)
+        bannerSeeAll = view.findViewById(com.tokopedia.banner.R.id.banner_see_all)
         imgBannerBackground = view.findViewById(R.id.img_banner_background)
         cardBannerView = view.findViewById(R.id.card_banner_view)
 
-        bannerSeeAll.setMargin(resources.getDimensionPixelSize(R.dimen.dp_5), resources.getDimensionPixelSize(R.dimen.dp_5),
-                resources.getDimensionPixelSize(R.dimen.dp_16), resources.getDimensionPixelSize(R.dimen.dp_5))
-        bannerIndicator.setMargin(resources.getDimensionPixelSize(R.dimen.dp_16), resources.getDimensionPixelSize(R.dimen.dp_5),
-                resources.getDimensionPixelSize(R.dimen.dp_5), resources.getDimensionPixelSize(R.dimen.dp_5))
+        bannerSeeAll.setMargin(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5), resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5),
+                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16), resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5))
+        bannerIndicator.setMargin(resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16), resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5),
+                resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5), resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_5))
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             if (::cardBannerView.isInitialized) {
@@ -84,7 +84,7 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
     }
 
     override fun buildView() {
-        bannerSeeAll.setTextColor(ContextCompat.getColor(context, R.color.medium_green))
+        bannerSeeAll.setTextColor(ContextCompat.getColor(context, com.tokopedia.design.R.color.medium_green))
         bannerSeeAll.typeface = Typeface.DEFAULT
         super.buildView()
         banner_root.visibility = View.VISIBLE
@@ -93,10 +93,10 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
         if (bannerRecyclerView.itemDecorationCount == 0) {
             bannerRecyclerView.addItemDecoration(
                     TravelHomepageBannerViewDecorator(
-                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_2),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_16),
-                            context.resources.getDimensionPixelSize(R.dimen.dp_2))
+                            context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_2),
+                            context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                            context.resources.getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_2))
             )
         }
 
@@ -153,7 +153,7 @@ class TravelHomepageBannerViewDynamicBackground : BannerView {
         }
     }
 
-    override fun getBannerAdapter(): BannerPagerAdapter {
+    override fun getBannerAdapter(): BannerViewPagerAdapter {
         return TravelHomepageBannerPagerAdapter(promoImageUrls, onPromoClickListener)
     }
 
