@@ -247,7 +247,7 @@ android {
 
     // put Dynamic Feature Modules in dynamic-feature-customerapp.cfg
     // to disable dynamic feature, use command option -Pdisable-dynamic-feature
-    dynamicFeatures = [":dynamic-features:merchant:shop_settings"]
+    dynamicFeatures = getDynamicFeatureIfEnabled(project)
 }
 
 dependencies {

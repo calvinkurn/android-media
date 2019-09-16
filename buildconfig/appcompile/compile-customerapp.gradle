@@ -1,5 +1,5 @@
 // Sort alphabetically by name
-include "dynamic-features:merchant:shop_settings"
+includeDynamicFeatureIfEnabled("customerapp")
 
 include "features:common:developer_options"
 include "features:common:nps"

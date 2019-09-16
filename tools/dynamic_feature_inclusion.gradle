@@ -32,8 +32,14 @@ ext {
             println("Dynamic feature is disabled")
         } else {
             getDynamicFeatureListByProjectName(projectName).each {
-                print("$it; ")
-                include "$it"
+                def itTrim = ""
+                if (it.startsWith('#')) {
+                    itTrim = it.replaceFirst("#", "")
+                } else {
+                    itTrim = it
+                }
+                print("$itTrim; ")
+                include "$itTrim"
             }
             println()
         }
