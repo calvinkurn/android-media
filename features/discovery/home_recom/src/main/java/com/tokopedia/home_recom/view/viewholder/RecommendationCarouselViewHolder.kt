@@ -31,6 +31,7 @@ class RecommendationCarouselViewHolder(view: View) : AbstractViewHolder<Recommen
     }
 
     private fun setupRecyclerView(dataModel: RecommendationCarouselDataModel){
+        list.clear()
         list.addAll(dataModel.products)
         recyclerView.layoutManager = LinearLayoutManager(recyclerView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = object : RecyclerView.Adapter<RecommendationCarouselItemViewHolder>() {

@@ -12,6 +12,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -154,6 +155,7 @@ import javax.inject.Inject
 
 class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter.UserActiveListener {
     private var productId: String? = null
+    private var warehouseId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
     private var trackerAttribution: String? = ""
@@ -265,6 +267,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         private const val ENABLE_VARIANT = "mainapp_discovery_enable_pdp_variant"
 
         private const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
+        private const val ARG_WAREHOUSE_ID = "ARG_WAREHOUSE_ID"
         private const val ARG_PRODUCT_KEY = "ARG_PRODUCT_KEY"
         private const val ARG_SHOP_DOMAIN = "ARG_SHOP_DOMAIN"
         private const val ARG_TRACKER_ATTRIBUTION = "ARG_TRACKER_ATTRIBUTION"
@@ -277,6 +280,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
 
         fun newInstance(productId: String? = null,
+                        warehouseId: String? = null,
                         shopDomain: String? = null,
                         productKey: String? = null,
                         isFromDeeplink: Boolean = false,
@@ -287,6 +291,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 ProductDetailFragment().also {
                     it.arguments = Bundle().apply {
                         productId?.let { pid -> putString(ARG_PRODUCT_ID, pid) }
+                        warehouseId?.let { whId -> putString(ARG_WAREHOUSE_ID, whId) }
                         productKey?.let { pkey -> putString(ARG_PRODUCT_KEY, pkey) }
                         shopDomain?.let { domain -> putString(ARG_SHOP_DOMAIN, domain) }
                         trackerAttribution?.let { attribution -> putString(ARG_TRACKER_ATTRIBUTION, attribution) }
@@ -314,6 +319,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         super.onCreate(savedInstanceState)
         arguments?.let {
             productId = it.getString(ARG_PRODUCT_ID)
+            warehouseId = it.getString(ARG_WAREHOUSE_ID)
             productKey = it.getString(ARG_PRODUCT_KEY)
             shopDomain = it.getString(ARG_SHOP_DOMAIN)
             trackerAttribution = it.getString(ARG_TRACKER_ATTRIBUTION)
@@ -392,6 +398,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
         })
+        warehouseId?.let{
+            productInfoViewModel.warehouseId = it
+        }
     }
 
     private fun hideRecommendationView() {
@@ -445,6 +454,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initializePartialView(view)
         initView()
         tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
+        tv_trade_in_promo.setOnClickListener {
+            scrollToTradeInWidget()
+        }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
         et_search.setOnClickListener { v ->
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
@@ -627,6 +639,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         })
 
         updateStickyState()
+    }
+
+    private fun scrollToTradeInWidget() {
+        activity?.run {
+            val display = windowManager.defaultDisplay
+            val size = Point()
+            display.getSize(size)
+            val screenHeight = size.y
+            nested_scroll.smoothScrollTo(0, tv_trade_in.bottom - (screenHeight / 2))
+        }
     }
 
     override fun onResume() {

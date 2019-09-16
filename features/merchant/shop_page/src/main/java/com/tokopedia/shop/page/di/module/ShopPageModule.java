@@ -86,5 +86,14 @@ public class ShopPageModule {
         );
     }
 
+    @ShopPageScope
+    @Provides
+    @Named(ShopPageConstant.SHOP_FAVORITE_QUERY)
+    public String favoriteQuery(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.gql_get_shop_favorite_status);
+    }
+
 
 }
