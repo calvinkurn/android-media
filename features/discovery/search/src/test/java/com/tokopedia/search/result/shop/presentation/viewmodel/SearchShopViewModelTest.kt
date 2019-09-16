@@ -131,6 +131,10 @@ class SearchShopViewModelTest : Spek({
             val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
+            Given("search shop API call will be successful") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+            }
+
             When("handle view is visible and added") {
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
@@ -143,6 +147,10 @@ class SearchShopViewModelTest : Spek({
         Scenario("View is not yet visible, or not yet added") {
             val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
+
+            Given("search shop API call will be successful") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+            }
 
             When("handle view not visible or not added") {
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = false)
@@ -158,6 +166,10 @@ class SearchShopViewModelTest : Spek({
         Scenario("View is visible and added more than once") {
             val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
+
+            Given("search shop API call will be successful") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+            }
 
             When("handle view is visible and added, and then not visible, then visible again") {
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
@@ -248,6 +260,7 @@ class SearchShopViewModelTest : Spek({
 
             Given("view has loaded first page and has next page") {
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+                searchMoreShopUseCase.stubExecuteOnBackground().returns(searchMoreShopModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 

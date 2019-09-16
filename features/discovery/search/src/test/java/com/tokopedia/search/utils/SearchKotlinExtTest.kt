@@ -1,7 +1,5 @@
 package com.tokopedia.search.utils
 
-import io.kotlintest.matchers.collections.shouldContain
-import io.kotlintest.matchers.collections.shouldHaveSize
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
@@ -127,3 +125,19 @@ class SearchKotlinExtTest: Spek({
         }
     }
 })
+
+private infix fun List<String>.shouldContain(expectedToContain: String) {
+    this.forEach {
+        if (it == expectedToContain) {
+            return
+        }
+    }
+
+    throw AssertionError("List does not cointain $expectedToContain")
+}
+
+private infix fun List<*>.shouldHaveSize(expectedSize: Int) {
+    if (this.size != expectedSize) {
+        throw AssertionError("List size is ${this.size}, expected size: $expectedSize")
+    }
+}
