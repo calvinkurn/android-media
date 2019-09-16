@@ -36,8 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.drawable.CountDrawable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
@@ -47,6 +46,7 @@ import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerAdapter;
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
@@ -118,7 +118,8 @@ public class SearchActivity extends BaseActivity
     private String profileTabTitle;
     private String autocompleteApplink;
 
-    @Inject SearchTracking searchTracking;
+    @Inject
+    SearchTracking searchTracking;
     @Inject UserSessionInterface userSession;
     @Inject RemoteConfig remoteConfig;
     @Inject @Named(CART_LOCAL_CACHE) LocalCacheHandler cartLocalCacheHandler;
@@ -206,7 +207,7 @@ public class SearchActivity extends BaseActivity
     }
 
     private void setSearchTextViewDrawableLeft() {
-        Drawable iconSearch = AppCompatResources.getDrawable(this, com.tokopedia.discovery.R.drawable.discovery_ic_search);
+        Drawable iconSearch = AppCompatResources.getDrawable(this, R.drawable.search_ic_search);
         searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
     }
 
@@ -393,7 +394,10 @@ public class SearchActivity extends BaseActivity
     private SearchParameter getSearchParameterFromIntentUri(Intent intent) {
         Uri uri = intent.getData();
 
-        return (uri == null) ? new SearchParameter() : new SearchParameter(uri.toString());
+        SearchParameter searchParameter = (uri == null) ? new SearchParameter() : new SearchParameter(uri.toString());
+        searchParameter.cleanUpNullValuesInMap();
+
+        return searchParameter;
     }
 
     private void performProductSearch() {

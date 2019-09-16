@@ -1,10 +1,10 @@
 package com.tokopedia.search.result.shop.presentation.mapper
 
 import com.tokopedia.discovery.common.Mapper
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.shop.presentation.model.ShopHeaderViewModel
 import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
+import com.tokopedia.search.di.scope.SearchScope
 
 import dagger.Module
 import dagger.Provides

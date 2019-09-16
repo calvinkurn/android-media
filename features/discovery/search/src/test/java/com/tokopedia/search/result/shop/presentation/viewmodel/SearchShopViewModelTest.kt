@@ -23,9 +23,6 @@ import com.tokopedia.search.result.shop.presentation.model.ShopViewModel
 import com.tokopedia.search.utils.betweenFirstAndLast
 import com.tokopedia.search.utils.secondToLast
 import com.tokopedia.user.session.UserSessionInterface
-import io.kotlintest.matchers.collections.shouldHaveSize
-import io.kotlintest.matchers.types.shouldBeInstanceOf
-import io.kotlintest.shouldBe
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import org.spekframework.spek2.Spek
@@ -529,6 +526,15 @@ private fun SearchUseCase<*>.isExecuted(executionCount: Int = 1) {
     coVerify(exactly = executionCount) { it.executeOnBackground() }
 }
 
+private inline fun <reified T> Any?.shouldBeInstanceOf() {
+    if (this !is T) {
+        val actualClassName = if (this == null) "null" else this::class.simpleName
+        val expectedClassName = T::class.simpleName
+
+        throw AssertionError("$actualClassName should be instance of $expectedClassName")
+    }
+}
+
 private fun State<List<Visitable<*>>>?.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween() {
     this?.data?.first().shouldBeInstanceOf<ShopHeaderViewModel>()
     this?.data?.last().shouldBeInstanceOf<LoadingMoreModel>()
@@ -557,6 +563,12 @@ private fun ShopViewModel.ShopItem.shouldHaveCorrectPosition(expectedPosition: I
     this.position shouldBe expectedPosition
 }
 
+private infix fun Any?.shouldBe(expectedValue: Any) {
+    if (this != expectedValue) {
+        throw AssertionError("$this should be $expectedValue")
+    }
+}
+
 private fun ShopViewModel.ShopItem.shouldHaveCorrectProductItemPosition() {
     this.productList.forEachIndexed { index, productItem ->
         productItem.position shouldBe index + 1
@@ -576,3 +588,8 @@ private fun State<List<Visitable<*>>>?.shouldOnlyHaveEmptySearchModel() {
     this?.data?.first().shouldBeInstanceOf<EmptySearchViewModel>()
 }
 
+private fun List<*>.shouldHaveSize(expectedSize: Int) {
+    if (this.size != expectedSize) {
+        throw AssertionError("Size should be $expectedSize. Actual size: ${this.size}")
+    }
+}

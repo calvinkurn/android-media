@@ -5,10 +5,10 @@ import android.support.annotation.RawRes
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.search.R
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
 import dagger.Module

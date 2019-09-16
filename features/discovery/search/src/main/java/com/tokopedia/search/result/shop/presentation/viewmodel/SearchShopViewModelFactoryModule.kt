@@ -4,9 +4,9 @@ import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.discovery.common.Mapper
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.di.module.GCMLocalCacheHandlerModule
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.common.EmptySearchCreator
 import com.tokopedia.search.result.common.EmptySearchCreatorModule
 import com.tokopedia.search.result.domain.usecase.SearchUseCase
