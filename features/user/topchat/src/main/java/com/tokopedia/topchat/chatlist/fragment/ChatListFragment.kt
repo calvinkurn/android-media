@@ -271,9 +271,6 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-        if(t is ItemChatListPojo) {
-            debug("tevClick", adapter.list.indexOf(t).toString())
-        }
     }
 
     private fun showFilterDialog() {
@@ -282,8 +279,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
             val arrayFilterString = arrayListOf(
                     it.getString(R.string.filter_chat_all),
                     it.getString(R.string.filter_chat_unread),
-                    it.getString(R.string.filter_chat_read),
-                    it.getString(R.string.filter_chat_unreplied)
+                    it.getString(R.string.filter_chat_read)
             )
 
             for ((index, title) in arrayFilterString.withIndex()) {
@@ -403,26 +399,31 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
     override fun getEmptyDataViewModel(): Visitable<*> {
         var title = ""
         var subtitle = ""
+        var image = ""
         activity?.let {
             when (sightTag) {
                 ChatListQueriesConstant.PARAM_TAB_USER -> {
                     title = it.getString(R.string.seller_empty_chat_title)
                     subtitle = it.getString(R.string.seller_empty_chat_subtitle)
+                    image = CHAT_BUYER_EMPTY
                 }
 
                 ChatListQueriesConstant.PARAM_TAB_SELLER -> {
                     title = it.getString(R.string.buyer_empty_chat_title)
                     subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
+                    image = CHAT_SELLER_EMPTY
                 }
             }
         }
 
-        return EmptyChatModel(title, subtitle)
+        return EmptyChatModel(title, subtitle, image)
     }
 
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
         private const val CHAT_TAB_TITLE = "chat_tab_title"
+        private const val CHAT_SELLER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-seller-empty.png"
+        private const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
 
         fun createFragment(title: String): ChatListFragment {
             val bundle = Bundle()

@@ -10,10 +10,14 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
+import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
@@ -30,6 +34,7 @@ class ChatItemListViewHolder(
     private val message: TextView = itemView.findViewById(R.id.message)
     private val unreadCounter: Typography = itemView.findViewById(R.id.unread_counter)
     private val time: Typography = itemView.findViewById(R.id.time)
+    private val label: Label = itemView.findViewById(R.id.user_label)
 
     override fun bind(element: ItemChatListPojo) {
         val attributes = element.attributes
@@ -53,6 +58,7 @@ class ChatItemListViewHolder(
             bindReadState(attributes.readStatus, attributes.unreads)
             bindMessageState(attributes.lastReplyMessage)
             bindTimeStamp(attributes.lastReplyTimeStr)
+            bindLabel(contact.tag)
         }
 
     }
@@ -100,6 +106,23 @@ class ChatItemListViewHolder(
         time.text = convertToRelativeDate(lastReplyTimeStr)
     }
 
+    private fun bindLabel(tag: String) {
+        when (tag) {
+            OFFICIAL_TAG -> {
+                label.text = tag
+                label.setLabelType(Label.GENERAL_LIGHT_BLUE)
+                label.show()
+            }
+            SELLER_TAG -> {
+                label.text = tag
+                label.setLabelType(Label.GENERAL_LIGHT_GREEN)
+                label.show()
+            }
+            else -> label.hide()
+        }
+
+    }
+
     private fun convertToRelativeDate(timeStamp: String): String {
         val smsTime = Calendar.getInstance()
         smsTime.timeInMillis = timeStamp.toLongOrZero()
@@ -134,6 +157,9 @@ class ChatItemListViewHolder(
         const val PAYLOAD_READ_STATE = 8796
         const val PAYLOAD_TYPING_STATE = 3207
         const val PAYLOAD_STOP_TYPING_STATE = 5431
+
+        const val SELLER_TAG = "Penjual"
+        const val OFFICIAL_TAG = "Official"
     }
 
 }

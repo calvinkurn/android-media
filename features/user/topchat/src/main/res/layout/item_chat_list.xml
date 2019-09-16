@@ -36,7 +36,7 @@
         app:layout_constraintStart_toEndOf="@+id/space"
         app:layout_constraintTop_toTopOf="@id/thumbnail"
         app:layout_constraintHorizontal_bias="0"
-        app:typographyType="heading_4"
+        app:typographyType="body_1"
         app:typographyWeight="bold"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Steven Fredian" />
@@ -62,8 +62,8 @@
         android:id="@+id/user_label"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_0"
-        android:layout_marginStart="@dimen/dp_2"
-        android:layout_marginLeft="@dimen/dp_2"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
         android:gravity="center_vertical"
         android:text="@string/title_official"
         android:visibility="gone"
@@ -96,8 +96,8 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/unread_counter"
-        android:layout_width="@dimen/dp_8"
-        android:layout_height="@dimen/dp_8"
+        android:layout_width="@dimen/dp_10"
+        android:layout_height="@dimen/dp_10"
         tools:text="1"
         android:textColor="@color/Neutral_N700_44"
         app:layout_constraintBottom_toBottomOf="@id/message"

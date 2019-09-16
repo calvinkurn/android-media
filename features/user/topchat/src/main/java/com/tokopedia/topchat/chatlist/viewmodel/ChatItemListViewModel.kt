@@ -12,7 +12,6 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_ID
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_PAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB
@@ -56,8 +55,7 @@ class ChatItemListViewModel @Inject constructor(
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,
-                PARAM_FILTER_READ,
-                PARAM_FILTER_UNREPLIED)
+                PARAM_FILTER_READ)
     }
 
     override fun getChatListMessage(page: Int, filterIndex: Int, tab: String) {
