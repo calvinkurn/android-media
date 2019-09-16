@@ -40,12 +40,20 @@ constructor(private val countryPhoneCodeDao: CountryPhoneCodeDao,
                         return@flatMap Observable.just(data)
                                 .map<List<CountryPhoneCodeTable>> { flightCountryData -> phoneCodeListMapper.mapEntitiesToTables(flightCountryData) }
                                 .map<List<Long>> { airportCountryTables -> countryPhoneCodeDao.insertAll(airportCountryTables) }
-                                .map<List<CountryPhoneCodeTable>> { result -> countryPhoneCodeDao.findAllPhoneCodes() }
+                                .map<List<CountryPhoneCodeTable>> { result -> putIndonesiaInFirstOrder() }
                     } else {
                         return@flatMap Observable.just(true)
                                 .map { countryPhoneCodeDao.findAllPhoneCodes() }
+                                .map { putIndonesiaInFirstOrder() }
                     }
                 }
+    }
+
+    private fun putIndonesiaInFirstOrder(): List<CountryPhoneCodeTable> {
+        var list = mutableListOf<CountryPhoneCodeTable>()
+        list.addAll(countryPhoneCodeDao.getCountryById(INDONESIA_COUNTRY_ID))
+        list.addAll(countryPhoneCodeDao.findAllPhoneCodes().filter { !it.countryId.equals(INDONESIA_COUNTRY_ID) })
+        return list
     }
 
     fun loadJSONFromAsset(): String? {
@@ -91,5 +99,6 @@ constructor(private val countryPhoneCodeDao: CountryPhoneCodeDao,
 
     companion object {
         val FLIGHT_SEARCH_AIRPORT_JSON = "travel_country_list.json"
+        const val INDONESIA_COUNTRY_ID = "ID"
     }
 }
