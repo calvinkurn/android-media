@@ -12,8 +12,6 @@ object ShowCaseDialogFactory {
 
     @JvmStatic
     fun createTkpdShowCase(context: Context) = ShowCaseBuilder()
-//                .setPackageName(context.packageName)
-//                .customView(R.layout.topads_dashboard_item_show_case)
                 .titleTextColorRes(com.tokopedia.topads.auto.R.color.white)
                 .spacingRes(com.tokopedia.core2.R.dimen.spacing_show_case)
                 .arrowWidth(com.tokopedia.core2.R.dimen.arrow_width_show_case)
