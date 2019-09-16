@@ -7,6 +7,7 @@ import com.tokopedia.discovery.autocomplete.presentation.presenter.AutoCompleteP
 import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 
@@ -35,9 +36,8 @@ public class DiscoveryModule {
 
     @DiscoveryScope
     @Provides
-    DiscoveryTracking provideSearchTracking(@ApplicationContext Context context,
-                                            UserSessionInterface userSessionInterface) {
-        return new DiscoveryTracking(context, userSessionInterface);
+    DiscoveryTracking provideDiscoveryTracking(UserSessionInterface userSessionInterface) {
+        return new DiscoveryTracking(userSessionInterface);
     }
 
     @DiscoveryScope
@@ -46,4 +46,8 @@ public class DiscoveryModule {
         return new PermissionCheckerHelper();
     }
 
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 }

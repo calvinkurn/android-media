@@ -43,4 +43,9 @@ public class CategoryModule {
                                                GetProductUseCase getProductUseCase) {
         return new CategoryPresenter(context, getProductUseCase);
     }
+
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 }

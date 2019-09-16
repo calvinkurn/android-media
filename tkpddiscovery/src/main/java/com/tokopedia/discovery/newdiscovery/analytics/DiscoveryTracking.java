@@ -35,7 +35,7 @@ public class DiscoveryTracking {
     private UserSessionInterface userSessionInterface;
 
     @Inject
-    public DiscoveryTracking(Context context, UserSessionInterface userSessionInterface) {
+    public DiscoveryTracking(UserSessionInterface userSessionInterface) {
         this.userSessionInterface = userSessionInterface;
     }
 
