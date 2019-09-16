@@ -661,7 +661,8 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         } else if (flightPassengerInfoValidator.validateNameIsNotAlphabetAndSpaceOnly(getFirstName())) {
             isValid = false
             til_first_name.error = getString(R.string.flight_booking_passenger_first_name_alpha_space_error)
-        } else if (flightPassengerInfoValidator.validateNameIsMoreThanMaxLength(
+        }
+        if (flightPassengerInfoValidator.validateNameIsMoreThanMaxLength(
                         getFirstName(), getLastName())) {
             isValid = false
             til_first_name.error = getString(R.string.flight_booking_passenger_first_last_name_max_error)
@@ -678,14 +679,16 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         } else if (flightPassengerInfoValidator.validateNameIsNotAlphabetAndSpaceOnly(getLastName())) {
             isValid = false
             til_last_name.error = getString(R.string.flight_booking_passenger_last_name_alpha_space_error)
-        } else if (flightPassengerInfoValidator.validateTitleIsEmpty(getPassengerTitle())) {
+        }
+        if (flightPassengerInfoValidator.validateTitleIsEmpty(getPassengerTitle())) {
             isValid = false
             showMessageErrorInSnackBar(R.string.flight_bookingpassenger_title_error)
-        } else if ((isChildPassenger() || isInfantPassenger()) && !flightPassengerInfoValidator.validateBirthdateNotEmpty(getPassengerBirthDate())) {
+        }
+        if ((isChildPassenger() || isInfantPassenger()) && !flightPassengerInfoValidator.validateBirthdateNotEmpty(getPassengerBirthDate())) {
             isValid = false
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_empty_error)
         } else if (isAdultPassenger() && !flightPassengerInfoValidator.validateBirthdateNotEmpty(
-                        getPassengerBirthDate()) && (isMandatoryDoB() || isDomestic)) {
+                        getPassengerBirthDate()) && (isMandatoryDoB() || !isDomestic)) {
             isValid = false
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_empty_error)
         } else if (isAdultPassenger() && flightPassengerInfoValidator.validateBirthdateNotEmpty(
@@ -706,13 +709,15 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                         getPassengerBirthDate(), twoYearsAgo)) {
             isValid = false
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years)
-        } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(getPassportNumber())) {
+        }
+        if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(getPassportNumber())) {
             isValid = false
             til_passport_no.error = getString(R.string.flight_booking_passport_number_empty_error)
         } else if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberAlphaNumeric(getPassportNumber())) {
             isValid = false
             til_passport_no.error = getString(R.string.flight_booking_passport_number_alphanumeric_error)
-        } else if (isNeedPassport && passengerModel.getPassportExpiredDate() == null) {
+        }
+        if (isNeedPassport && passengerModel.getPassportExpiredDate() == null) {
             isValid = false
             til_passport_expiration_date.error = getString(R.string.flight_booking_passport_expired_date_empty_error)
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
@@ -726,10 +731,12 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             til_passport_expiration_date.error = getString(
                     R.string.flight_passenger_passport_expired_date_more_than_20_year_error,
                     FlightDateUtil.dateToString(twentyYearsFromToday, FlightDateUtil.DEFAULT_VIEW_FORMAT))
-        } else if (isNeedPassport && passengerModel.getPassportNationality() == null) {
+        }
+        if (isNeedPassport && passengerModel.getPassportNationality() == null) {
             isValid = false
             til_nationality.error = getString(R.string.flight_booking_passport_nationality_empty_error)
-        } else if (isNeedPassport && passengerModel.getPassportIssuerCountry() == null) {
+        }
+        if (isNeedPassport && passengerModel.getPassportIssuerCountry() == null) {
             isValid = false
             til_passport_issuer_country.error = getString(R.string.flight_booking_passport_issuer_country_empty_error)
         }

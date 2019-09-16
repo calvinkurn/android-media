@@ -50,7 +50,7 @@
                 android:layout_weight="1"
                 android:hint="@string/flight_booking_passenger_first_name_hint">
 
-                <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
+                <android.support.v7.widget.AppCompatAutoCompleteTextView
                     android:id="@+id/et_first_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
