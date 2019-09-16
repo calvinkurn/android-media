@@ -92,4 +92,48 @@ public class ProductViewModel implements Parcelable {
     public int getTotalItem() {
         return getProductList().size() + getAdsModel().getData().size();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(this.productList);
+        dest.writeByte(this.hasCatalog ? (byte) 1 : (byte) 0);
+        dest.writeString(this.query);
+        dest.writeString(this.shareUrl);
+        dest.writeString(this.additionalParams);
+        dest.writeInt(this.totalData);
+        dest.writeInt(this.totalItem);
+        dest.writeParcelable(this.adsModel, flags);
+        dest.writeParcelable(this.cpmModel, flags);
+        dest.writeParcelable(this.searchParameter, flags);
+    }
+
+    protected ProductViewModel(Parcel in) {
+        this.productList = in.createTypedArrayList(ProductItem.CREATOR);
+        this.hasCatalog = in.readByte() != 0;
+        this.query = in.readString();
+        this.shareUrl = in.readString();
+        this.additionalParams = in.readString();
+        this.totalData = in.readInt();
+        this.totalItem = in.readInt();
+        this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
+        this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
+        this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
+    }
+
+    public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {
+        @Override
+        public ProductViewModel createFromParcel(Parcel source) {
+            return new ProductViewModel(source);
+        }
+
+        @Override
+        public ProductViewModel[] newArray(int size) {
+            return new ProductViewModel[size];
+        }
+    };
 }

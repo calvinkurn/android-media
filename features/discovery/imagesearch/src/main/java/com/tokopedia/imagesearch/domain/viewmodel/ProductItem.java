@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder;
 

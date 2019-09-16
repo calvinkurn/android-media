@@ -1,5 +1,6 @@
 package com.tokopedia.imagesearch.data.subscriber;
 
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.imagesearch.domain.model.SearchResultModel;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
@@ -44,7 +45,6 @@ public class DefaultImageSearchSubscriber extends Subscriber<SearchResultModel> 
         model.setSearchParameter(imageSearchProductParameter);
 
         if (model.getProductList() == null || model.getProductList().size() == 0) {
-            view.onHandleImageSearchResponseError();
             return;
         }
 

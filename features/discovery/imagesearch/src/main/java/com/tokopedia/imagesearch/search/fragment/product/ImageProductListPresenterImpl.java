@@ -1,11 +1,13 @@
 package com.tokopedia.imagesearch.search.fragment.product;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
 import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
+import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -29,31 +31,28 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     private static final int ITEM_COUNT_PER_PAGE = 12;
     private static final long LOAD_MORE_DELAY_MS = 1000;
-    @Inject
-    ProductWishlistUrlUseCase wishlistUrlUseCase;
-    @Inject
-    GetProductUseCase getProductUseCase;
+
     @Inject
     AddWishListUseCase addWishlistActionUseCase;
     @Inject
     RemoveWishListUseCase removeWishlistActionUseCase;
-    private WishListActionListener wishListActionListener;
-    private Context context;
-    private List<Visitable> dataList = new ArrayList<>();
 
-    public ImageProductListPresenterImpl(Context context) {
-        this.context = context;
-        ImageSearchComponent component = DaggerSearchComponent.builder()
-                .appComponent(getComponent(context))
-                .build();
-        component.inject(this);
-    }
+    private WishListActionListener wishListActionListener;
+    private List<Visitable> dataList = new ArrayList<>();
 
     @Override
     public void attachView(ImageProductListFragmentView viewListener,
                            WishListActionListener wishlistActionListener) {
         super.attachView(viewListener);
+        initInjector(viewListener);
         this.wishListActionListener = wishlistActionListener;
+    }
+
+    private void initInjector(ImageProductListFragmentView viewListener) {
+        ImageSearchComponent component = DaggerImageSearchComponent.builder()
+                .appComponent(viewListener.getBaseAppComponent())
+                .build();
+        component.inject(this);
     }
 
     @Override
@@ -104,18 +103,13 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
     public void handleWishlistButtonClicked(ProductItem productItem) {
         if (getView().isUserHasLogin()) {
             getView().disableWishlistButton(productItem.getProductID());
-            if (productItem.isTopAds()) {
-                com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
-                params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL,
-                        productItem.getProductWishlistUrl());
-                wishlistUrlUseCase.execute(params, getWishlistSubscriber(productItem));
+
+            if (productItem.isWishlisted()) {
+                removeWishlist(productItem.getProductID(), getView().getUserId());
             } else {
-                if (productItem.isWishlisted()) {
-                    removeWishlist(productItem.getProductID(), getView().getUserId());
-                } else {
-                    addWishlist(productItem.getProductID(), getView().getUserId());
-                }
+                addWishlist(productItem.getProductID(), getView().getUserId());
             }
+
         } else {
             launchLoginActivity(productItem.getProductID());
         }
@@ -131,8 +125,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    wishListActionListener.onErrorRemoveWishlist(context.getString(
-                            R.string.default_request_error_unknown), productItem.getProductID());
+                    wishListActionListener.onErrorRemoveWishlist("", productItem.getProductID());
                 }
             }
 
@@ -142,8 +135,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
                     if (result) {
                         wishListActionListener.onSuccessAddWishlist(productItem.getProductID());
                     } else
-                        wishListActionListener.onErrorRemoveWishlist(context.getString(
-                                R.string.default_request_error_unknown), productItem.getProductID());
+                        wishListActionListener.onErrorRemoveWishlist("", productItem.getProductID());
                 }
             }
         };

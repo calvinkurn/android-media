@@ -4,41 +4,34 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Base64;
 
-import com.tokopedia.abstraction.common.data.model.request.GraphqlRequest;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.data.mapper.ImageProductMapper;
 import com.tokopedia.imagesearch.domain.model.SearchResultModel;
-import com.tokopedia.imagesearch.network.apiservice.mojito.apis.MojitoApi;
 import com.tokopedia.imagesearch.network.response.ImageSearchProductResponse;
 import com.tokopedia.imagesearch.search.exception.ImageNotSupportedException;
-import com.tokopedia.kotlin.util.NullCheckerKt;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
-import com.tokopedia.user.session.UserSession;
-import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by sachinbansal on 1/10/18.
  */
 
-public class GetImageSearchUseCase<T> extends UseCase<SearchResultModel> {
+public class GetImageSearchUseCase extends UseCase<SearchResultModel> {
 
 
     private static final String IMAGE_CONTENT = "image";

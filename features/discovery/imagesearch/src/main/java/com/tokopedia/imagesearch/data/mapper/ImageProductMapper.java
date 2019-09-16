@@ -2,12 +2,11 @@ package com.tokopedia.imagesearch.data.mapper;
 
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imagesearch.domain.model.BadgeModel;
 import com.tokopedia.imagesearch.domain.model.LabelModel;
 import com.tokopedia.imagesearch.domain.model.ProductModel;
 import com.tokopedia.imagesearch.domain.model.SearchResultModel;
-import com.tokopedia.imagesearch.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.imagesearch.network.response.ImageSearchProductResponse;
 import com.tokopedia.imagesearch.network.response.SearchProductResponse;
 
@@ -20,20 +19,12 @@ import rx.functions.Func1;
  * Created by sachinbansal on 5/29/18.
  */
 
-public class ImageProductMapper implements Func1<GraphqlResponse<ImageSearchProductResponse>, SearchResultModel> {
+public class ImageProductMapper implements Func1<GraphqlResponse, SearchResultModel> {
 
     @Override
-    public SearchResultModel call(GraphqlResponse<ImageSearchProductResponse> response) {
-        if (response != null) {
-            try {
-                ImageSearchProductResponse searchProductResponse = response.getData();
-                return mappingPojoIntoDomain(searchProductResponse.getSearchProductResponse());
-            } catch (Exception e) {
-                throw new RuntimeHttpErrorException(430);
-            }
-        } else {
-            throw new RuntimeHttpErrorException(432);
-        }
+    public SearchResultModel call(GraphqlResponse response) {
+        ImageSearchProductResponse searchProductResponse = response.getData(ImageSearchProductResponse.class);
+        return mappingPojoIntoDomain(searchProductResponse.getSearchProductResponse());
     }
 
     public SearchResultModel mappingPojoIntoDomain(SearchProductResponse searchProductResponse) {

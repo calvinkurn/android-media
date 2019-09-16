@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -42,4 +42,6 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.trackingOptimizer)
+    implementation rootProject.ext.networkDependencies.glide
 }

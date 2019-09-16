@@ -1,12 +1,12 @@
 package com.tokopedia.imagesearch.di.component;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.discovery.imagesearch.search.fragment.ImageSearchProductListFragment;
-import com.tokopedia.discovery.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
 import com.tokopedia.imagesearch.di.module.ImageSearchModule;
 import com.tokopedia.imagesearch.di.scope.ImageSearchScope;
 import com.tokopedia.imagesearch.search.ImageSearchActivity;
 import com.tokopedia.imagesearch.search.ImageSearchPresenter;
+import com.tokopedia.imagesearch.search.fragment.ImageSearchProductListFragment;
+import com.tokopedia.imagesearch.search.fragment.product.ImageProductListPresenterImpl;
 
 import dagger.Component;
 

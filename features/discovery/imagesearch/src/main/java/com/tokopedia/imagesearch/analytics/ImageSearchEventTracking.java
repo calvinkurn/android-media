@@ -8,6 +8,7 @@ public interface ImageSearchEventTracking {
         String SEARCH = "clickSearch";
         String SEARCH_RESULT = "clickSearchResult";
         String PRODUCT_CLICK = "productClick";
+        String PRODUCT_VIEW = "productView";
     }
 
     interface Category {
@@ -33,6 +34,7 @@ public interface ImageSearchEventTracking {
         String NO_SEARCH_RESULT_WITH_TAB = "no search result - tab: %s";
         String SEARCH_IMAGE_PICKER_CLICK_CAMERA = "click image search by camera";
         String SEARCH_IMAGE_PICKER_CLICK_GALLERY = "click image search by gallery";
+        String CLICK_WISHLIST = "click - wishlist";
     }
 
     interface MOENGAGE {

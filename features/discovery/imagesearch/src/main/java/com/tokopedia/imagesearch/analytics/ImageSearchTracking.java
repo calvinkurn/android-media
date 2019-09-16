@@ -7,10 +7,15 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static com.tokopedia.abstraction.common.utils.view.DateFormatUtils.DEFAULT_LOCALE;
+import static com.tokopedia.imagesearch.analytics.ImageSearchTrackingConstant.USER_ID;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -144,5 +149,42 @@ public class ImageSearchTracking {
                 EVENT_ACTION_CLICK_NEW_SEARCH,
                 String.format("tab: %s", screenName)
         );
+    }
+
+    public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword, String userId) {
+        sendGeneralEventWithUserId(
+                ImageSearchEventTracking.Event.PRODUCT_VIEW,
+                ImageSearchEventTracking.Category.SEARCH_RESULT.toLowerCase(),
+                ImageSearchEventTracking.Action.CLICK_WISHLIST,
+                generateWishlistClickEventLabel(isWishlisted, keyword),
+                userId
+        );
+    }
+
+    private static void sendGeneralEventWithUserId(String event, String category, String action, String label, String userId) {
+        Map<String, Object> eventTrackingMap = generateEventTrackingWithUserId(event, category, action, label, userId);
+
+        sendGeneralEvent(eventTrackingMap);
+    }
+
+    private static Map<String, Object> generateEventTrackingWithUserId(String event, String category, String action, String label, String userId) {
+        Map<String, Object> eventTracking = new HashMap<>();
+
+        eventTracking.put(EVENT, event);
+        eventTracking.put(EVENT_CATEGORY, category);
+        eventTracking.put(EVENT_ACTION, action);
+        eventTracking.put(EVENT_LABEL, label);
+        eventTracking.put(USER_ID, userId);
+
+        return eventTracking;
+    }
+
+    private static void sendGeneralEvent(Map<String, Object> eventTrackingMap) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(eventTrackingMap);
+    }
+
+    private static String generateWishlistClickEventLabel(boolean isWishlisted, String keyword) {
+        String action = isWishlisted ? "add" : "remove";
+        return action + " - " + keyword + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
 }

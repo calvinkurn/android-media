@@ -17,7 +17,6 @@ public interface ProductListener {
     void onProductImpressed(ProductItem item, int adapterPosition);
 
     void onEmptyButtonClicked();
-    void onBannerAdsClicked(String appLink);
     boolean isUserHasLogin();
     String getUserId();
 }

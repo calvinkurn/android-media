@@ -15,8 +15,6 @@ public class ImageSearchContract {
 
         void onHandleImageResponseSearch(ProductViewModel productViewModel);
 
-        void onHandleImageSearchResponseError();
-
         void onHandleInvalidImageSearchResponse();
 
         void showImageNotSupportedError();

@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.domain.viewmodel.BadgeItem;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
+import com.tokopedia.imagesearch.helper.BadgeHelper;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.ProductListener;
 import com.tokopedia.topads.sdk.view.ImpressedImageView;
 
@@ -148,9 +150,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         if (productItem.getRating() != 0) {
             ratingReviewContainer.setVisibility(View.VISIBLE);
             rating.setImageResource(
-                    RatingView.getRatingDrawable((productItem.isTopAds())
-                            ? getStarCount(productItem.getRating())
-                            : Math.round(productItem.getRating())
+                    getRatingDrawable(Math.round(productItem.getRating())
                     ));
             reviewCount.setText("(" + productItem.getCountReview() + ")");
         } else {
@@ -162,10 +162,6 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             newLabel.setVisibility(View.GONE);
         }
         renderBadges(productItem.getBadgesList());
-    }
-
-    private int getStarCount(int rating) {
-        return Math.round(rating / 20f);
     }
 
     private boolean isBadgesExist(ProductItem productItem) {
@@ -186,13 +182,31 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         badgesContainer.removeAllViews();
         for (BadgeItem badgeItem : badgesList) {
             if (badgeItem.isShown()) {
-                LuckyShopImage.loadImage(context, badgeItem.getImageUrl(), badgesContainer);
+                BadgeHelper.loadShopBadgesIcon(badgeItem.getImageUrl(), badgesContainer, context);
             }
         }
     }
 
     public void setImageProduct(ProductItem productItem) {
-        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
+        ImageHandler.loadImageThumbs(context, productImage, productItem.getImageUrl());
     }
 
+    private static int getRatingDrawable(int param) {
+        switch (param) {
+            case 0:
+                return R.drawable.ic_star_none;
+            case 1:
+                return R.drawable.ic_star_one;
+            case 2:
+                return R.drawable.ic_star_two;
+            case 3:
+                return R.drawable.ic_star_three;
+            case 4:
+                return R.drawable.ic_star_four;
+            case 5:
+                return R.drawable.ic_star_five;
+            default:
+                return R.drawable.ic_star_none;
+        }
+    }
 }

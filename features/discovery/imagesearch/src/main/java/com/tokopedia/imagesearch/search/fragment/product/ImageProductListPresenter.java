@@ -1,5 +1,10 @@
 package com.tokopedia.imagesearch.search.fragment.product;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+
 import java.util.List;
 
 /**

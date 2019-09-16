@@ -20,8 +20,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -30,7 +35,10 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagesearch.R;
 import com.tokopedia.imagesearch.analytics.ImageSearchEventTracking;
+import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
+import com.tokopedia.imagesearch.search.fragment.ImageSearchProductListFragment;
+import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.RedirectionListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -48,6 +56,8 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
+import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
@@ -56,6 +66,7 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
 
 public class ImageSearchActivity extends BaseActivity
         implements ImageSearchContract.View,
+        RedirectionListener,
         PermissionCheckerHelper.PermissionCheckListener {
 
     private static final int REQUEST_CODE_IMAGE = 2390;
@@ -69,11 +80,7 @@ public class ImageSearchActivity extends BaseActivity
 
     public MenuItem searchItem;
 
-    protected TkpdProgressDialog tkpdProgressDialog;
-
     protected View root;
-
-    protected SearchParameter searchParameter;
 
 
     private String imagePath = "";
@@ -84,6 +91,8 @@ public class ImageSearchActivity extends BaseActivity
 
     @Inject
     PermissionCheckerHelper permissionCheckerHelper;
+
+    private String lastQuery;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,15 +122,12 @@ public class ImageSearchActivity extends BaseActivity
     protected void initView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         container = (FrameLayout) findViewById(R.id.container);
-        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
-        searchView = (DiscoverySearchView) findViewById(R.id.search);
         loadingView = findViewById(R.id.progressBar);
         root = findViewById(R.id.root);
     }
 
     protected void prepareView() {
         initToolbar();
-        initSearchView();
         showLoadingView(false);
     }
 
@@ -142,7 +148,7 @@ public class ImageSearchActivity extends BaseActivity
             getSupportActionBar().setHomeButtonEnabled(true);
         }
 
-        toolbar.setOnClickListener(v -> searchView.showSearch(false, true));
+        toolbar.setOnClickListener(v -> moveToAutoCompletePage());
     }
 
     protected void setToolbarTitle(String query) {
@@ -151,22 +157,14 @@ public class ImageSearchActivity extends BaseActivity
         }
     }
 
-    private void initSearchView() {
-        searchView.setActivity(this);
-        searchView.setOnQueryTextListener(this);
-        searchView.setOnSearchViewListener(this);
-        searchView.setOnImageSearchClickListener(this);
-    }
-
-    protected void setLastQuerySearchView(String lastQuerySearchView) {
-        searchView.setLastQuery(lastQuerySearchView);
+    protected void setLastQuery(String lastQuery) {
+        this.lastQuery = lastQuery;
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
         searchItem = menu.findItem(R.id.action_search);
-        searchView.setMenuItem(searchItem);
         return true;
     }
 
@@ -182,30 +180,21 @@ public class ImageSearchActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (searchView.isSearchOpen()) {
-            if (searchView.isFinishOnClose()) {
-                finish();
-            } else {
-                searchView.closeSearch();
-            }
-        } else {
-            finish();
-        }
-    }
-
     private void initImageSearch() {
         initInjector();
         searchPresenter.attachView(this);
     }
 
     private void initInjector() {
-        SearchComponent searchComponent = DaggerSearchComponent.builder()
-                .appComponent(getApplicationComponent())
+        ImageSearchComponent imageSearchComponent = DaggerImageSearchComponent.builder()
+                .baseAppComponent(getBaseAppComponent())
                 .build();
 
-        searchComponent.inject(this);
+        imageSearchComponent.inject(this);
+    }
+
+    public BaseAppComponent getBaseAppComponent() {
+        return ((BaseMainApplication)getApplication()).getBaseAppComponent();
     }
 
     private void checkPermissionToContinue() {
@@ -321,7 +310,6 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     private void processImageUri(String imagePath) {
-        searchView.hideShowCaseDialog(true);
         sendImageSearchFromGalleryGTM();
         onImagePickedSuccess(imagePath);
     }
@@ -394,6 +382,15 @@ public class ImageSearchActivity extends BaseActivity
 
         if (requestCode == REQUEST_CODE_IMAGE) {
             handleResultFromImagePicker(resultCode, data);
+        } else if (requestCode == AUTO_COMPLETE_ACTIVITY_REQUEST_CODE) {
+            handleResultFromAutoCompleteActivity(resultCode);
+        }
+    }
+
+    private void handleResultFromAutoCompleteActivity(int resultCode) {
+        if (resultCode == AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY) {
+            finish();
+            overridePendingTransition(0, 0);
         }
     }
 
@@ -435,14 +432,10 @@ public class ImageSearchActivity extends BaseActivity
         } else {
             errorHandlingImagePicker();
         }
-
-        if (searchView != null) {
-            searchView.clearFocus();
-        }
     }
 
     private void errorHandlingImagePicker() {
-        Toast.makeText(this, getString(com.tokopedia.core2.R.string.error_gallery_valid), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.error_gallery_valid), Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -542,11 +535,11 @@ public class ImageSearchActivity extends BaseActivity
 
     private void showImageSearchResult(ProductViewModel productViewModel) {
         if (productViewModel != null) {
-            setLastQuerySearchView(productViewModel.getQuery());
+            setLastQuery(productViewModel.getQuery());
             loadSection(productViewModel);
             setToolbarTitle(getString(R.string.image_search_title));
         } else {
-            searchView.showSearch(true, false);
+            moveToAutoCompletePage();
         }
     }
 
@@ -579,56 +572,11 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     @Override
-    public void showErrorNetwork(String message) {
-        showLoadingView(false);
-
-        if (isFromCamera) {
-            sendCameraImageSearchResultGTM(NO_RESPONSE);
-        } else {
-            sendGalleryImageSearchResultGTM(NO_RESPONSE);
-        }
-
-        if (TextUtils.isEmpty(getImagePath())) {
-            NetworkErrorHelper.showSnackbar(this, message);
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(
-                    this,
-                    message,
-                    () -> onImagePickedSuccess(getImagePath())
-            ).showRetrySnackbar();
-        }
-    }
-
-    @Override
-    public void showTimeoutErrorNetwork(String message) {
-        showLoadingView(false);
-
-        if (TextUtils.isEmpty(getImagePath())) {
-            NetworkErrorHelper.showSnackbar(this, message);
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(
-                    this,
-                    message,
-                    () -> onImagePickedSuccess(getImagePath())
-            ).showRetrySnackbar();
-        }
-    }
-
-    @Override
     public void showImageNotSupportedError() {
         showLoadingView(false);
 
         Toast.makeText(this, getResources().getString(R.string.image_not_supported), Toast.LENGTH_LONG).show();
         finish();
-    }
-
-    protected void showLoadingView(boolean visible) {
-        loadingView.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void onHandleImageSearchResponseError() {
-
     }
 
     @Override
@@ -658,5 +606,44 @@ public class ImageSearchActivity extends BaseActivity
         }
 
         super.onDestroy();
+    }
+
+    @Override
+    public void moveToAutoCompletePage() {
+        if (!TextUtils.isEmpty(lastQuery)) {
+            startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + lastQuery);
+        } else {
+            startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+        }
+    }
+
+    private void startActivityWithApplink(String applink, String... parameter) {
+        Intent intent = RouteManager.getIntent(this, applink, parameter);
+        int startActivityForResultRequestCode = getStartActivityForResultRequestCode(applink);
+
+        startActivityForResult(intent, startActivityForResultRequestCode);
+    }
+
+    private int getStartActivityForResultRequestCode(String applink) {
+        if(isApplinkToAutoCompleteActivity(applink)) {
+            return AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
+        }
+
+        return -1;
+    }
+
+    private boolean isApplinkToAutoCompleteActivity(String applink) {
+        Uri uri = Uri.parse(applink);
+        String applinkTarget = constructApplinkTarget(uri);
+
+        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+    }
+
+    private String constructApplinkTarget(@NonNull Uri uri) {
+        String scheme = uri.getScheme();
+        String host = uri.getHost();
+        String path = uri.getEncodedPath();
+
+        return scheme + "://" + host + path;
     }
 }

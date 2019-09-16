@@ -2,6 +2,7 @@ package com.tokopedia.imagesearch.search.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -10,14 +11,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.imagesearch.di.component.DaggerImageSearchComponent;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.common.manager.SimilarSearchManager;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.imagesearch.R;
+import com.tokopedia.imagesearch.analytics.ImageSearchTracking;
+import com.tokopedia.imagesearch.di.component.ImageSearchComponent;
+import com.tokopedia.imagesearch.domain.viewmodel.ProductItem;
 import com.tokopedia.imagesearch.domain.viewmodel.ProductViewModel;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListAdapter;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListFragmentView;
 import com.tokopedia.imagesearch.search.fragment.product.ImageProductListPresenter;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.decoration.ProductItemDecoration;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.ProductListener;
+import com.tokopedia.imagesearch.search.fragment.product.adapter.listener.RedirectionListener;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactory;
 import com.tokopedia.imagesearch.search.fragment.product.adapter.typefactory.ImageProductListTypeFactoryImpl;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
@@ -32,6 +49,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.adapter.TopAdsRecyclerAdapter;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
@@ -39,6 +57,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WIHSLIST_STATUS_IS_WISHLIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.Wishlist.WISHLIST_STATUS_UPDATED_POSITION;
 
 /**
  * Created by sachinbansal on 4/12/18.
@@ -69,6 +92,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private ImageProductListTypeFactory imageProductListTypeFactory;
     private SearchParameter searchParameter;
     private GridLayoutManager gridLayoutManager;
+    private RedirectionListener redirectionListener;
 
     public int spanCount;
     private TrackingQueue trackingQueue;
@@ -95,6 +119,14 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         trackingQueue = new TrackingQueue(getContext());
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof RedirectionListener) {
+            this.redirectionListener = (RedirectionListener) context;
+        }
+    }
+
     private void loadDataFromSavedState(Bundle savedInstanceState) {
         productViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_LIST);
         setSearchParameter(savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
@@ -117,10 +149,18 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     protected void initInjector() {
-        SearchComponent component = DaggerSearchComponent.builder()
-                .appComponent(getComponent(AppComponent.class))
+        ImageSearchComponent component = DaggerImageSearchComponent.builder()
+                .baseAppComponent(getComponent(BaseAppComponent.class))
                 .build();
         component.inject(this);
+    }
+
+    @Nullable
+    @Override
+    public BaseAppComponent getBaseAppComponent() {
+        if(getActivity() == null || getActivity().getApplication() == null) return null;
+
+        return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
     }
 
     public String getScreenNameId() {
@@ -148,7 +188,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void initTopAdsConfig() {
         topAdsConfig = new Config.Builder()
-                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setSessionId(userSession.getDeviceId())
                 .setUserId(userSession.getUserId())
                 .setEndpoint(Endpoint.PRODUCT)
                 .build();
@@ -164,7 +204,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     private void setupAdapter() {
         imageProductListTypeFactory = new ImageProductListTypeFactoryImpl(this, topAdsConfig, getQueryKey());
-        adapter = new ImageProductListAdapter(getActivity(), this, imageProductListTypeFactory);
+        adapter = new ImageProductListAdapter(imageProductListTypeFactory);
         topAdsRecyclerAdapter = new TopAdsRecyclerAdapter(getActivity(), adapter);
         topAdsRecyclerAdapter.setConfig(topAdsConfig);
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
@@ -191,7 +231,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
             setHeaderTopAds(true);
         }
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
-        adapter.setTotalData(productViewModel.getTotalData());
     }
 
     private List<Visitable> initMappingProduct() {
@@ -229,9 +268,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         return new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if (adapter.isEmptyItem(position) ||
-                        adapter.isHeaderBanner(position) ||
-                        topAdsRecyclerAdapter.isLoading(position) ||
+                if (topAdsRecyclerAdapter.isLoading(position) ||
                         topAdsRecyclerAdapter.isTopAdsViewHolder(position)) {
                     return spanCount;
                 } else {
@@ -247,27 +284,11 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         if (requestCode == REQUEST_CODE_GOTO_PRODUCT_DETAIL
                 && data != null
                 && data.getExtras() != null
-                && data.getExtras().getInt(ProductDetailRouter
-                .WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
-            int position = data.getExtras().getInt(ProductDetailRouter
-                    .WISHLIST_STATUS_UPDATED_POSITION, -1);
-            boolean isWishlist = data.getExtras().getBoolean(ProductDetailRouter
-                    .WIHSLIST_STATUS_IS_WISHLIST, false);
+                && data.getExtras().getInt(WISHLIST_STATUS_UPDATED_POSITION, -1) != -1) {
+            int position = data.getExtras().getInt(WISHLIST_STATUS_UPDATED_POSITION, -1);
+            boolean isWishlist = data.getExtras().getBoolean(WIHSLIST_STATUS_IS_WISHLIST, false);
 
-            String productId = data.getExtras().getString(EXTRA_PRODUCT_ID);
-
-            if (null == productId ||
-                    "".equals(productId)) {
-                updateWishlistFromPDP(position, isWishlist);
-            } else {
-                updateWishlistFromPDP(productId, position, isWishlist);
-            }
-        }
-    }
-
-    private void updateWishlistFromPDP(String productId, int position, boolean isWishlist) {
-        if (adapter != null && adapter.isProductItem(position)) {
-            adapter.updateWishlistStatus(productId, isWishlist);
+            updateWishlistFromPDP(position, isWishlist);
         }
     }
 
@@ -281,6 +302,19 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         setSpanCount(calcColumnSize(getResources().getConfiguration().orientation));
     }
 
+    public static int calcColumnSize(int orientation) {
+        int defaultColumnNumber = 1;
+        switch (orientation) {
+            case Configuration.ORIENTATION_PORTRAIT:
+                defaultColumnNumber = PORTRAIT_COLUMN_MAIN;
+                break;
+            case Configuration.ORIENTATION_LANDSCAPE:
+                defaultColumnNumber = LANDSCAPE_COLUMN_MAIN;
+                break;
+        }
+        return defaultColumnNumber;
+    }
+
     private void setSpanCount(int spanCount) {
         this.spanCount = spanCount;
     }
@@ -291,8 +325,9 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void launchLoginActivity(Bundle extras) {
-        Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
-                (getActivity());
+        if (getActivity() == null) return;
+
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
         intent.putExtras(extras);
         startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
@@ -310,7 +345,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void initTopAdsParams() {
         TopAdsParams adsParams = new TopAdsParams();
-        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
 
         if (canGetDepartmentIdFromSearchParameter()) {
@@ -321,31 +356,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     private boolean canGetDepartmentIdFromSearchParameter() {
         String departmentId = getSearchParameter().get(SearchApiConst.SC);
         return !departmentId.isEmpty() && !departmentId.equals("0");
-    }
-
-    @Override
-    public void incrementStart() {
-        adapter.incrementStart();
-    }
-
-    @Override
-    public boolean isEvenPage() {
-        return adapter.isEvenPage();
-    }
-
-    @Override
-    public void storeTotalData(int totalData) {
-        adapter.setTotalData(totalData);
-    }
-
-    @Override
-    public int getStartFrom() {
-        return adapter.getStartFrom();
-    }
-
-    @Override
-    public void setTopAdsEndlessListener() {
-        topAdsRecyclerAdapter.setEndlessScrollListener();
     }
 
     @Override
@@ -363,7 +373,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     public void appendProductList(List<Visitable> list) {
         sendImageTrackingData(list);
         topAdsRecyclerAdapter.hideLoading();
-        adapter.appendItems(list);
+        adapter.addMoreData(list);
     }
 
     private void sendImageTrackingData(List<Visitable> list) {
@@ -404,7 +414,6 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void setEmptyProduct() {
         topAdsRecyclerAdapter.shouldLoadAds(false);
-        adapter.showEmpty(productViewModel.getQuery());
     }
 
     @Override
@@ -441,23 +450,18 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onEmptyButtonClicked() {
         ImageSearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
-        showSearchInputView();
-    }
-
-    @Override
-    public List<Option> getSelectedFilterAsOptionList() {
-        return null;
+        redirectionListener.moveToAutoCompletePage();
     }
 
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
     }
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),true, getQueryKey());
+        ImageSearchTracking.eventSearchResultProductWishlistClick(true, getQueryKey(), userSession.getUserId());
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
@@ -466,12 +470,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onErrorRemoveWishlist(String errorMessage, String productId) {
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
     }
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        UnifyTracking.eventSearchResultProductWishlistClick(getActivity(),false, getQueryKey());
+        ImageSearchTracking.eventSearchResultProductWishlistClick(false, getQueryKey(), userSession.getUserId());
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
@@ -479,13 +483,21 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        Intent intent = getProductIntent(product.getId());
-        startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+        moveToProductDetailPage(position, product.getId());
+    }
+
+    private void moveToProductDetailPage(int adapterPosition, String productId) {
+        Intent intent = getProductIntent(productId);
+
+        if(intent != null) {
+            intent.putExtra(WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
+            startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+        }
     }
 
     private Intent getProductIntent(String productId){
         if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
+            return RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
         } else {
             return null;
         }
@@ -494,8 +506,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
-        Intent intent = ((DiscoveryRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
-        startActivity(intent);
+        RouteManager.route(getActivity(), ApplinkConst.SHOP, shop.getId());
     }
 
     @Override
@@ -505,26 +516,12 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
 
     @Override
     public void onItemClicked(ProductItem item, int adapterPosition) {
-        // tracking?
-        //data.setTrackerListName(String.format(ImageSearchEventTracking.imageClick, item.getPosition()));
-        Intent intent = getProductIntent(item.getProductID());
-        intent.putExtra(ProductDetailRouter.WISHLIST_STATUS_UPDATED_POSITION, adapterPosition);
         sendItemClickTrackingEvent(item);
-        startActivityForResult(intent, REQUEST_CODE_GOTO_PRODUCT_DETAIL);
+        moveToProductDetailPage(adapterPosition, item.getProductID());
     }
 
     @Override
     public void onProductImpressed(ProductItem item, int adapterPosition) {
-
-    }
-
-    @Override
-    public void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword) {
-
-    }
-
-    @Override
-    public void onGlobalNavWidgetClickSeeAll(String applink, String url) {
 
     }
 
@@ -535,59 +532,9 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         presenter.handleWishlistButtonClicked(productItem);
     }
 
-    @Override
-    public void onSuggestionClicked(String suggestedQuery) {
-
-    }
-
-    @Override
-    public void onBannerAdsClicked(String appLink) {
-
-    }
-
-    @Override
-    public void onSearchGuideClicked(String queryParams) {
-
-    }
-
-    @Override
-    public void onRelatedSearchClicked(String queryParams, String keyword) {
-
-    }
-
-    @Override
-    public boolean isQuickFilterSelected(Option option) {
-        return false;
-    }
-
-    @Override
-    public void onQuickFilterSelected(Option option) {
-
-    }
-
-    @Override
-    public void onSelectedFilterRemoved(String uniqueId) {
-
-    }
-
     private void sendItemClickTrackingEvent(ProductItem item) {
         ImageSearchTracking.trackEventClickImageSearchResultProduct(
                 item.getProductAsObjectDataLayerForImageSearchClick()
         );
-    }
-
-    @Override
-    public void onChangeList() {
-
-    }
-
-    @Override
-    public void onChangeDoubleGrid() {
-
-    }
-
-    @Override
-    public void onChangeSingleGrid() {
-
     }
 }
