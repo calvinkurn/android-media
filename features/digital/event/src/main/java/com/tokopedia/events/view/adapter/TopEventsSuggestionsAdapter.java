@@ -361,10 +361,6 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                 detailsIntent.putExtra(EventDetailsActivity.FROM, EventDetailsActivity.FROM_HOME_OR_SEARCH);
                 detailsIntent.putExtra("homedata", categoryItems.get(index));
                 mContext.startActivity(detailsIntent);
-//                eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK,
-//                        highLightText
-//                                + " - " + categoryItems.get(getAdapterPosition()).getTitle().toLowerCase()
-//                                + " - " + getAdapterPosition());
                 eventsAnalytics.sendEventSuggestionClickEvent(EventsAnalytics.EVENT_PRODUCT_CLICK, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_PRODUCT_CLICK_RESULT, categoryItems.get(getIndex()), getIndex());
             } else if (v.getId() == R.id.tv_add_to_wishlist) {
                 mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());

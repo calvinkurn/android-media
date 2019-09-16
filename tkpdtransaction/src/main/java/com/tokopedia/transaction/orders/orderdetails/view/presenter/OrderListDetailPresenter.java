@@ -560,16 +560,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     }
 
     public void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType) {
-        String paymentStatus = "", paymentMethod = "";
-        if (details != null && details.status() != null && !TextUtils.isEmpty(details.status().statusText())) {
-            paymentStatus = details.status().statusText();
-        }
-        if (details != null && details.getPayMethods() != null && details.getPayMethods().size() > 0 && !TextUtils.isEmpty(details.getPayMethods().get(0).getValue())) {
-            paymentMethod = details.getPayMethods().get(0).getValue();
-        }
-//        if ("true".equalsIgnoreCase(this.fromPayment)) {
+        if ("true".equalsIgnoreCase(this.fromPayment)) {
+            String paymentStatus = "", paymentMethod = "";
+            if (details != null && details.status() != null && !TextUtils.isEmpty(details.status().statusText())) {
+                paymentStatus = details.status().statusText();
+            }
+            if (details != null && details.getPayMethods() != null && details.getPayMethods().size() > 0 && !TextUtils.isEmpty(details.getPayMethods().get(0).getValue())) {
+                paymentMethod = details.getPayMethods().get(0).getValue();
+            }
             orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
-//        }
+        }
     }
 
     public void setDownloadableFlag(boolean isdownloadable) {
