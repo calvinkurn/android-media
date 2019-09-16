@@ -21,7 +21,8 @@ class MultipleOptionAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
                 R.layout.pm_cancellation_multiple_option_question_checkbox_layout,
-                parent
+                parent,
+                false
         )
         return ViewHolder(view)
     }
