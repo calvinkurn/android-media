@@ -122,7 +122,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                             imageView.setImageDrawable(circularBitmapDrawable);
                         }
                     });
-            if (position == 0 && primaryImageStringRes != -1) {
+            if (position == 0 && primaryImageStringRes != -1 && primaryImageStringRes != 0) {
                 tvCounterPrimary.setText(primaryImageStringRes);
                 tvCounterPrimary.setVisibility(View.VISIBLE);
                 tvCounter.setVisibility(View.GONE);
