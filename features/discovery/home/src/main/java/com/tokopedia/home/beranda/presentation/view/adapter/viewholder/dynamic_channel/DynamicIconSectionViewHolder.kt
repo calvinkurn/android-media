@@ -134,9 +134,7 @@ class DynamicIconSectionViewHolder(val view: View,
                                   private val position: Int) : ViewHintListener {
 
         override fun onViewHint() {
-            listener.putEEToIris(
-                    HomePageTracking.getEnhanceImpressionDynamicIconHomePage(homeIconItem, position)
-            )
+            //don't delete, for future use for this viewholder impression
         }
     }
 }

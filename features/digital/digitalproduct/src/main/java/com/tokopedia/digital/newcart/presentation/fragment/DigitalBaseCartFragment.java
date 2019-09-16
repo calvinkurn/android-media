@@ -34,7 +34,6 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.domain.model.CheckoutDigitalData;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartCheckoutHolderView;
 import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetailHolderView;
@@ -74,7 +73,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     protected DigitalCartCheckoutHolderView checkoutHolderView;
     protected InputPriceHolderView inputPriceHolderView;
     protected LinearLayout inputPriceContainer;
-    private boolean isAlreadyShowPostPaidPopUp;
     private boolean traceStop;
     private PerformanceMonitoring performanceMonitoring;
     private static final String DIGITAL_CHECKOUT_TRACE = "dg_checkout";
@@ -474,21 +472,12 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     }
 
     @Override
-    public boolean isAlreadyShowPostPaid() {
-        return isAlreadyShowPostPaidPopUp;
-    }
-
-    @Override
     public void showPostPaidDialog(String title,
                                    String content,
-                                   String confirmButtonTitle,
-                                   String userId) {
-        isAlreadyShowPostPaidPopUp = true;
+                                   String confirmButtonTitle) {
         DigitalPostPaidDialog dialog = new DigitalPostPaidDialog(
                 getActivity(),
-                Dialog.Type.RETORIC,
-                DigitalPostPaidLocalCache.newInstance(getActivity()),
-                userId
+                Dialog.Type.RETORIC
         );
         dialog.setTitle(title);
         dialog.setDesc(MethodChecker.fromHtml(content));
