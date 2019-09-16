@@ -11,7 +11,9 @@ import com.tokopedia.home_recom.view.viewholder.TitleViewHolder
  */
 class TitleDataModel (
         val title: String,
-        val appLinkSeeMore: String
+        val pageName: String,
+        val seeMoreAppLink: String,
+        val listener: TitleListener
 ) : HomeRecommendationDataModel {
 
     companion object {
@@ -19,4 +21,8 @@ class TitleDataModel (
     }
 
     override fun type(typeFactory: HomeRecommendationTypeFactory): Int = typeFactory.type(this)
+}
+
+interface TitleListener{
+    fun onClickSeeMore(pageName: String, seeMoreAppLink: String)
 }

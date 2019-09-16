@@ -1,4 +1,6 @@
 // Sort alphabetically by name
+includeDynamicFeatureIfEnabled("customerapp")
+
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
@@ -49,12 +51,6 @@ include "features:discovery:wishlist_common"
 include "features:discovery:search"
 
 include "features:fintech:mitra_toppers"
-
-include "dynamic-features:digital:digital_topup"
-include "dynamic-features:merchant:shop_settings"
-include "dynamic-features:merchant:shop_open"
-include "dynamic-features:travel:hotel_travel"
-include "dynamic-features:user:profilecompletion"
 
 include "features:fintech:home_credit"
 include "features:digital:instant_debit_bca"

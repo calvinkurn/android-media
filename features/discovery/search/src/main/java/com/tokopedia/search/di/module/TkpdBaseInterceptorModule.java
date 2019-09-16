@@ -1,6 +1,6 @@
 package com.tokopedia.search.di.module;
 
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
 
 import dagger.Module;
