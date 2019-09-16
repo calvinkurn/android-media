@@ -127,9 +127,17 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                                                     private val listener: HomeCategoryListener) : ViewHintListener {
 
         override fun onViewHint() {
-            listener.putEEToIris(
-                    HomePageTracking.getBannerTrackingData(bannerSlidesModel)
-            )
+            val overlayBannerSlides = arrayListOf<BannerSlidesModel>()
+            bannerSlidesModel.forEach{
+                if (it.type == "overlay_banner") {
+                    overlayBannerSlides.add(it)
+                }
+            }
+            if (overlayBannerSlides.isNotEmpty()) {
+                listener.putEEToTrackingQueue(HomePageTracking.getBannerTrackingData(
+                        overlayBannerSlides
+                ))
+            }
         }
     }
 

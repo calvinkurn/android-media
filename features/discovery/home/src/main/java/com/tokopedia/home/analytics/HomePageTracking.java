@@ -151,6 +151,8 @@ public class HomePageTracking {
     public static final String EVENT_ACTION_LEGO_BANNER_IMPRESSION = "lego banner impression";
     public static final String EVENT_ACTION_IMPRESSION_ON_PRODUCT_DYNAMIC_CHANNEL_MIX = "impression on product dynamic channel mix";
     public static final String EVENT_ACTION_IMPRESSION_ON_BANNER_DYNAMIC_CHANNEL_MIX = "impression on banner dynamic channel mix";
+    public static final String VALUE_NAME_PROMO_OVERLAY = "/ - p1 - promo overlay";
+    public static final String ACTION_OVERLAY_SLIDER_BANNER_IMPRESSION = "overlay slider banner impression";
 
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
@@ -1394,6 +1396,42 @@ public class HomePageTracking {
                         FIELD_POSITION, String.valueOf(position + 1)
                 )
         );
+        return list;
+    }
+
+    public static Map<String, Object> getBannerOverlayPersoImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
+        List<Object> listBanner = convertSliderBannerImpressionDataLayer(bannerOverlaySlides);
+        return DataLayer.mapOf(
+                EVENT, PROMO_VIEW,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, ACTION_OVERLAY_SLIDER_BANNER_IMPRESSION,
+                EVENT_LABEL, LABEL_EMPTY,
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        listBanner
+                                )
+                        )
+                )
+        );
+    }
+
+    private static List<Object> convertSliderBannerImpressionDataLayer(List<BannerSlidesModel> bannerSlidesModels) {
+        List<Object> list = new ArrayList<>();
+        if (bannerSlidesModels != null) {
+            for (int i = 0; i < bannerSlidesModels.size(); i++) {
+                BannerSlidesModel bannerSlidesModel = bannerSlidesModels.get(i);
+                list.add(
+                        DataLayer.mapOf(
+                                FIELD_ID, bannerSlidesModel.getId(),
+                                FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
+                                FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
+                                FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
+                                FIELD_POSITION, i
+                        )
+                );
+            }
+        }
         return list;
     }
 }
