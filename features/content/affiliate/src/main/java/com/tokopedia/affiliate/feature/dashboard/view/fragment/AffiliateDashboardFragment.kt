@@ -24,11 +24,13 @@ import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboar
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboardPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.ShareableByMeProfileViewModel
+import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
 import com.tokopedia.calendar.UnifyCalendar
+import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
@@ -37,6 +39,7 @@ import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.EmptyState
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -57,6 +60,12 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     @Inject
     lateinit var presenter: AffiliateDashboardPresenter
+
+    @Inject
+    lateinit var affiliatePrefs: AffiliatePreference
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private lateinit var llDashboard: LinearLayout
     private lateinit var tvTotalSaldo: TextView
@@ -108,6 +117,32 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var holidayList: List<Legend>
 
     private lateinit var profileHeader: ShareableByMeProfileViewModel
+
+    private val coachMarkIncome: CoachMark by lazy {
+        with(CoachMarkBuilder()) {
+            allowNextButton(false)
+            allowPreviousButton(false)
+        }.build()
+    }
+
+    private val coachMarkIncomeItem: CoachMarkItem by lazy {
+        CoachMarkItem(ivAfIncomeInfo, getString(R.string.af_info), getString(R.string.af_income_tooltip))
+    }
+
+    private val coachMarkFirstTimeUser: CoachMark by lazy {
+        CoachMarkBuilder()
+                .allowNextButton(false)
+                .build()
+    }
+
+    private val coachMarkFirstTimeUserItem: CoachMarkItem by lazy {
+        val tabView: View? = try {
+            val tabListView: ViewGroup = tlCuratedProducts.getChildAt(0) as ViewGroup
+            tabListView.getChildAt(tabListView.childCount - 1)
+        } catch (e: Exception) { null }
+
+        CoachMarkItem(tabView, getString(R.string.curated_from_traffic), getString(R.string.curated_from_traffic_info))
+    }
 
     override fun getScreenName(): String = "Dashboard"
 
@@ -381,15 +416,15 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         vPostedViewedSeparator.visible()
         llCuratedProductHistory.visible()
         esShareNow.gone()
+
+        if (affiliatePrefs.isFirstTimeOpenDashboard(userSession.userId)) {
+            coachMarkFirstTimeUser.show(activity, "FirstTimeUser", arrayListOf(coachMarkFirstTimeUserItem))
+            affiliatePrefs.setFirstTimeOpenDashboard(userSession.userId)
+        }
     }
 
     private fun showTooltip() {
-        val coachMarkItem = CoachMarkItem(ivAfIncomeInfo, getString(R.string.af_info), getString(R.string.af_income_tooltip))
-        val coachMark = with(CoachMarkBuilder()) {
-            allowNextButton(false)
-            allowPreviousButton(false)
-        }.build()
-        coachMark.show(activity, "AffiliateIncome", arrayListOf(coachMarkItem))
+        coachMarkIncome.show(activity, "AffiliateIncome", arrayListOf(coachMarkIncomeItem))
     }
 
     private fun showChangesAppliedToaster() {
