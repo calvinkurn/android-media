@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.SimpleItemAnimator
@@ -1187,8 +1188,8 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
                     ?: 0
             adapter.clearAllElements()
             adapter.addDataViewModel(viewModels)
-            fragmentViewModel.getInsuranceRecommendationViewModel()?.let {
-                adapter.addSingleDataViewModel(it)
+            if (insuranceViewModel.cartShopsList.isNotEmpty()) {
+                adapter.addSingleDataViewModel(insuranceViewModel)
             }
             adapter.notifyDataSetChanged()
             renderActionButton(it)
@@ -1202,7 +1203,12 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
             insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
             fragmentViewModel.viewModels.add(insuranceViewModel)
             adapter.addSingleDataViewModel(insuranceViewModel)
-            adapter.notifyDataSetChanged()
+            Handler().postDelayed({
+                adapter.notifyDataSetChanged()
+            }, 200)
+
+            renderActionButton(it)
+            renderTotalPrice(it, viewModel.selectedwarehouse)
         }
     }
 

@@ -137,6 +137,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                         val rootView = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.layout_insurance_bottom_sheet, null, false)
 
                         val applicationDetailsView = rootView.findViewById<LinearLayout>(R.id.ll_application_details)
+                        applicationDetailsView.removeAllViews()
                         btnValidate = rootView.findViewById(R.id.btn_validate)
 
                         typeValues.clear()

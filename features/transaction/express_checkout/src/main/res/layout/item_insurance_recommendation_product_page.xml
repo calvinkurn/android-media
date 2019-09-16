@@ -43,9 +43,9 @@
                 android:id="@+id/insurance_image_icon"
                 android:layout_width="@dimen/dp_40"
                 android:layout_height="@dimen/dp_40"
+                android:src="@drawable/insurance_default_icon"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/insurance_tv_title"
-                app:srcCompat="@drawable/ic_modal_toko" />
+                app:layout_constraintTop_toTopOf="@+id/insurance_tv_title" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/insurance_tv_title"

@@ -84,6 +84,7 @@ class InsuranceRecommendationViewHolder(val view: View, val listener: CheckoutVa
             }
 
             val applicationDetailsView = itemView.application_detail_ll
+            applicationDetailsView.removeAllViews()
             val insuranceProductApplicationDetailsArrayList = insuranceCartDigitalProductViewModel.applicationDetails
 
             for (insuranceProductApplicationDetails in insuranceProductApplicationDetailsArrayList) {
