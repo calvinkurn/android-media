@@ -22,6 +22,7 @@ public class TradeInGTMConstants {
     public static final String ACTION_CLICK_MULAI_FUNGSI = "click mulai cek fungsi";
     public static final String ACTION_VIEW_HARGA_FINAL = "view harga final";
     public static final String ACTION_CLICK_BATAL_BUTTON = "click batal button";
+    public static final String ACTION_CLICK_KEMBALI_BUTTON = "click kembali button";
     public static final String ACTION_CLICK_SETUJU_BUTTON = "click setuju button";
     public static final String ACTION_CLICK_ICON_TNC = "click icon syarat dan ketentuan";
 

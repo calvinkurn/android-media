@@ -51,9 +51,9 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private TextView tvIndicateive;
     private TradeInHomeViewModel tradeInHomeViewModel;
     private int closeButtonText;
-    private int tncStringId;
     private boolean isShowingPermissionPopup;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
+    private String errorDialogGTMLabel = "";
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -80,7 +80,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 String cekFisik = TradeInGTMConstants.CEK_FISIK_TRADE_IN;
                 String cekFungsi = TradeInGTMConstants.CEK_FUNGSI_TRADE_IN;
                 String cekFisikResult = TradeInGTMConstants.CEK_FISIK_RESULT_TRADE_IN;
-                if(TRADEIN_TYPE == TRADEIN_MONEYIN){
+                if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
                     cekFisik = TradeInGTMConstants.CEK_FISIK_MONEY_IN;
                     cekFungsi = TradeInGTMConstants.CEK_FUNGSI_MONEY_IN;
                     cekFisikResult = TradeInGTMConstants.CEK_FISIK_RESULT_MONEY_IN;
@@ -108,6 +108,15 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
 
     @Override
     protected void initView() {
+        if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
+            closeButtonText = R.string.tradein_return;
+            mTvGoToProductDetails.setText(closeButtonText);
+            tncStringId = R.string.money_in_tnc;
+            category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
+        } else {
+            closeButtonText = R.string.go_to_product_details;
+            tncStringId = R.string.tradein_tnc;
+        }
         mTvPriceElligible = findViewById(R.id.tv_price_elligible);
         mButtonRemove = findViewById(R.id.button_remove);
         mTvModelName = findViewById(R.id.tv_model_name);
@@ -115,6 +124,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         mTvInitialPrice = findViewById(R.id.tv_initial_price);
         mTvNotUpto = findViewById(R.id.tv_not_upto);
         mTvGoToProductDetails = findViewById(R.id.tv_go_to_product_details);
+        mTvGoToProductDetails.setText(closeButtonText);
         tvIndicateive = findViewById(R.id.tv_indicative);
         mTvModelName.setText(new StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString());
     }
@@ -133,14 +143,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
-            closeButtonText = R.string.tradein_return;
-            tncStringId = R.string.money_in_tnc;
-            category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
-        } else {
-            closeButtonText = R.string.go_to_product_details;
-            tncStringId = R.string.tradein_tnc;
-        }
         tradeInHomeViewModel.getHomeResultData().observe(this, (homeResult -> {
             if (!homeResult.isSuccess()) {
                 mTvInitialPrice.setText(homeResult.getDisplayMessage());
@@ -188,15 +190,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                                     "");
 
                         });
-                        viewMoneyInPriceGTM(homeResult.getDisplayMessage());
+                        viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
                     case MONEYIN_ERROR:
                         showDialogFragment(0, getString(R.string.money_in), homeResult.getDisplayMessage(),
                                 getString(R.string.tradein_return), null);
-                        sendGeneralEvent(clickEvent,
-                                category,
-                                TradeInGTMConstants.ACTION_CLICK_BATAL_BUTTON,
-                                homeResult.getDisplayMessage());
+                        errorDialogGTMLabel = homeResult.getDisplayMessage();
                     default:
                         break;
                 }
@@ -388,6 +387,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                     TradeInGTMConstants.ACTION_CLICK_SETUJU_BUTTON,
                     TradeInGTMConstants.BERI_IZIN_PENG_HP);
         } else {
+            sendGeneralEvent(clickEvent,
+                    category,
+                    TradeInGTMConstants.ACTION_CLICK_KEMBALI_BUTTON,
+                    errorDialogGTMLabel);
             finish();
         }
     }

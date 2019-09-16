@@ -28,6 +28,7 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     public static final String TRADEIN_MONEY_IN = "money-in";
     protected String TRADEIN_TEST_TYPE = TRADEIN_EXCHANGE;
     protected int TRADEIN_TYPE = TRADEIN_OFFLINE;
+    protected int tncStringId;
     protected String clickEvent = TradeInGTMConstants.ACTION_CLICK_TRADEIN;
     protected String viewEvent = TradeInGTMConstants.ACTION_VIEW_TRADEIN;
 
@@ -47,7 +48,7 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
                     TradeInGTMConstants.ACTION_CLICK_ICON_TNC,
                     "");
 
-            showTnC(R.string.tradein_tnc);
+            showTnC(tncStringId);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -77,7 +78,6 @@ public abstract class BaseTradeInActivity extends BaseViewModelActivity {
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             clickEvent = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
             viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
-            category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
         }
     }
 
