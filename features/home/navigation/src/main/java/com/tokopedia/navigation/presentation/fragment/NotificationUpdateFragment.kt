@@ -438,7 +438,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     private fun showTextLonger(model: NotificationUpdateItemViewModel) {
-
         val bundle = Bundle()
         bundle.putString(PARAM_CONTENT_IMAGE, model.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, model.typeLink.toString())
@@ -446,9 +445,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         bundle.putString(PARAM_CONTENT_TEXT, model.body)
         bundle.putString(PARAM_CONTENT_TITLE, model.title)
 
-
         if (!::longerTextDialog.isInitialized) {
-            longerTextDialog = NotificationUpdateLongerTextFragment2.createInstance(bundle)
+            longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
         } else {
             longerTextDialog.arguments = bundle
         }
