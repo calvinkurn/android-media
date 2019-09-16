@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.changephonenumber.ChangePhoneNumberInstance;
@@ -23,7 +24,6 @@ import com.tokopedia.changephonenumber.di.warning.ChangePhoneNumberWarningCompon
 import com.tokopedia.changephonenumber.di.warning.ChangePhoneNumberWarningModule;
 import com.tokopedia.changephonenumber.di.warning.DaggerChangePhoneNumberWarningComponent;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
-import com.tokopedia.changephonenumber.view.activity.OvoWebViewActivity;
 import com.tokopedia.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
@@ -362,7 +362,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 
     @Override
     public void goToOvoWebView(String url) {
-        startActivity(OvoWebViewActivity.newInstance(getContext(), url));
+        RouteManager.route(getContext(),
+                String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
         if (getActivity() != null) {
             getActivity().finish();
         }
