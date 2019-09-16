@@ -249,7 +249,10 @@ android {
 //          rootProject.ext.dynamicFeatures.profileCompletion,
 //          rootProject.ext.dynamicFeatures.shopOpen,
 //            rootProject.ext.dynamicFeatures.settingBank,
-    ]
+//          rootProject.ext.dynamicFeatures.instantloan
+            , ":instantloan"]
+
+
 }
 
 dependencies {

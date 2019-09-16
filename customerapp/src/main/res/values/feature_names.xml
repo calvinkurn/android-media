@@ -25,4 +25,6 @@
     <string name="setting_bank_app_name">Rekening Bank</string>
     <string name="title_setting_bank">Rekening Bank</string>
     <string name="title_choose_bank">Pilih Bank</string>
+
+    <string name="instant_loan_app_name">Dana Instan</string>
 </resources>
