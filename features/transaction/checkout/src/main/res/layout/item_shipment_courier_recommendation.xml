@@ -169,13 +169,16 @@
             android:visibility="gone"
             tools:visibility="visible">
 
-            <TextView
+            <com.tokopedia.unifycomponents.ticker.Ticker
                 android:id="@+id/tv_logistic_promo_msg"
-                style="@style/TextSmallNormalBlack54"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="@dimen/dp_4"
-                tools:text="Tidak dapat ubah kurir karena promo telah diterapkan" />
+                app:tickerShapeType="loose"
+                app:tickerType="announcement"
+                app:closeButtonVisibility="gone"
+                tools:text="Tidak dapat ubah kurir karena promo telah diterapkan"
+                tools:layout_height="50dp"/>
 
             <RelativeLayout
                 android:id="@+id/tv_logistic_promo_label"

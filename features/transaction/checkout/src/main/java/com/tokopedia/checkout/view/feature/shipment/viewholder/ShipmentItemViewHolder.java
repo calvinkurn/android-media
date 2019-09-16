@@ -211,7 +211,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private RelativeLayout tvLogPromoLabel;
     private TextView tvLogPromoTitle;
     private TextView tvLogPromoDiscAmount;
-    private TextView tvLogPromoMsg;
+    private Ticker tvLogPromoMsg;
     private TextView tvLogPromoErr;
     private TextView tvSelectedPriceOnly;
 
@@ -740,7 +740,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llShippingOptionsContainer.setVisibility(View.VISIBLE);
             tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
             llCourierRecommendationStateLoading.setVisibility(View.GONE);
-            tvLogPromoMsg.setText(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
+            tvLogPromoMsg.setHtmlDescription(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
 
             if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
             shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()) {
