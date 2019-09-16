@@ -14,17 +14,9 @@ import android.view.animation.AnimationUtils;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.common.manager.SimilarSearchManager;
 
 public class SimilarSearchActivity extends BaseSimpleActivity implements SimilarSearchFragment.OnAnimationCompletelistner{
-
-    static final String PRODUCT_ID = "product_id";
-
-    public static Intent getIntent(Context context, String productID) {
-
-        Intent i = new Intent(context,SimilarSearchActivity.class);
-        i.putExtra(PRODUCT_ID,productID);
-        return i;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +36,7 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
     }
     @Override
     protected Fragment getNewFragment() {
-        return SimilarSearchFragment.newInstance(getIntent().getStringExtra(PRODUCT_ID));
+        return SimilarSearchFragment.newInstance(getIntent().getStringExtra(SimilarSearchManager.EXTRA_PRODUCT_ID));
     }
 
     protected void inflateFragment() {

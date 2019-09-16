@@ -151,11 +151,7 @@ public interface TkpdCoreRouter {
 
     Observable<TokoCashData> getTokoCashBalance();
 
-    Intent getAddEmailIntent(Context context);
-
     Intent getAddPasswordIntent(Context context);
-
-    Intent getChangeNameIntent(Context context);
 
     Intent getTopProfileIntent(Context context, String userId);
 
@@ -165,8 +161,6 @@ public interface TkpdCoreRouter {
 
     Intent getInboxMessageIntent(Context context);
 
-    String getDesktopLinkGroupChat();
-
     String getStringRemoteConfig(String key);
 
     void setStringRemoteConfigLocal(String key, String value);
@@ -174,8 +168,6 @@ public interface TkpdCoreRouter {
     Intent getInboxTalkCallingIntent(Context context);
 
     Intent getManageAdressIntent(Context context);
-
-    Intent getAutomaticResetPasswordIntent(Context context, String email);
 
     Intent getCreateResCenterActivityIntent(Context context, String orderId);
 }

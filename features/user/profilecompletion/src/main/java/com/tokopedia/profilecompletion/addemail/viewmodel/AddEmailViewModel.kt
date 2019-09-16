@@ -10,8 +10,8 @@ import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addemail.data.AddEmailPojo
 import com.tokopedia.profilecompletion.addemail.data.AddEmailResult
 import com.tokopedia.profilecompletion.addemail.data.CheckEmailPojo
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_EMAIL
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_OTP_CODE
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_EMAIL
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_OTP_CODE
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

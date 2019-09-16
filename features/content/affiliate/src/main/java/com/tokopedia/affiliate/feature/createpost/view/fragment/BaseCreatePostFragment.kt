@@ -226,7 +226,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         super.onPause()
     }
 
-    private inline val isPostEnabled: Boolean
+    protected inline val isPostEnabled: Boolean
         get() = viewModel.postId.isNotBlank() ||
                 (viewModel.completeImageList.isNotEmpty()
                 && viewModel.relatedProducts.isNotEmpty()
@@ -323,7 +323,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         activity?.finish()
     }
 
-    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm) {
+    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm, isFromTemplateToken: Boolean) {
         if (viewModel.isEditState) action_bottom.gone() else action_bottom.visible()
         viewModel.token = feedContentForm.token
         viewModel.maxImage = feedContentForm.media.maxMedia
@@ -331,6 +331,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         viewModel.allowVideo = feedContentForm.media.allowVideo
         viewModel.maxProduct = feedContentForm.maxTag
         viewModel.defaultPlaceholder = feedContentForm.defaultPlaceholder
+        if (viewModel.caption.isEmpty()) viewModel.caption = feedContentForm.caption
 
         if (feedContentForm.media.media.isNotEmpty() && viewModel.fileImageList.isEmpty()) {
             viewModel.urlImageList.clear()
@@ -730,7 +731,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun updateCaption() {
-        caption.hint = viewModel.defaultPlaceholder
+        caption.apply {
+            hint = viewModel.defaultPlaceholder
+            setText(viewModel.caption)
+        }
     }
 
     open fun updateRelatedProduct() {
