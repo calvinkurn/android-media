@@ -17,9 +17,9 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
-import com.tokopedia.common.topupbills.data.TelcoEnquiryMainInfo
+import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
 import com.tokopedia.common.topupbills.utils.AnalyticUtils.Companion.getVisibleItemsOfViewType
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
@@ -190,7 +190,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         renderEnquiryResult(data.enquiry.attributes.mainInfoList)
     }
 
-    override fun processMenuDetail(data: TelcoCatalogMenuDetail) {
+    override fun processMenuDetail(data: TopupBillsMenuDetail) {
         (activity as BaseSimpleActivity).updateTitle(data.catalog[0].label)
     }
 
@@ -348,7 +348,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun renderEnquiryResult(results: List<TelcoEnquiryMainInfo>) {
+    private fun renderEnquiryResult(results: List<TopupBillsEnquiryMainInfo>) {
         input_field_label.visibility = View.INVISIBLE
 
         context?.run {

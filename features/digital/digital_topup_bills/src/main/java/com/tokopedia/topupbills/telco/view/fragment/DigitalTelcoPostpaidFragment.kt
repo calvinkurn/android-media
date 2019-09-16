@@ -12,7 +12,7 @@ import android.widget.RelativeLayout
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
-import com.tokopedia.common.topupbills.data.TelcoRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -132,7 +132,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
 
     fun getCatalogMenuDetail() {
         catalogMenuDetailViewModel.getCatalogMenuDetailPostpaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_telco_catalog_menu_detail), this::onLoadingMenuDetail,
+                R.raw.query_menu_detail), this::onLoadingMenuDetail,
                 this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbersPostpaid(GraphqlHelper.loadRawString(resources,
                 R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
@@ -211,7 +211,7 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
             mapParam.put(KEY_CLIENT_NUMBER, postpaidClientNumberWidget.getInputNumber())
             mapParam.put(KEY_PRODUCT_ID, operatorSelected.operator.attributes.defaultProductId.toString())
 
-            enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital_telco),
+            enquiryViewModel.getEnquiry(GraphqlHelper.loadRawString(resources, R.raw.query_enquiry_digital),
                     mapParam, this::onSuccessEnquiry, this::onErrorEnquiry)
         }
     }
@@ -311,13 +311,13 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
         postpaidClientNumberWidget.clearFocusAutoComplete()
     }
 
-    override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
+    override fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
-        postpaidClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
+        postpaidClientNumberWidget.setInputNumber(topupBillsRecommendation.clientNumber)
 
         if (::operatorName.isInitialized) {
-            topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation,
-                    operatorName, telcoRecommendation.position)
+            topupAnalytics.clickEnhanceCommerceRecentTransaction(topupBillsRecommendation,
+                    operatorName, topupBillsRecommendation.position)
         }
     }
 

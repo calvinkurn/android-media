@@ -2,7 +2,7 @@ package com.tokopedia.common.topupbills.view.viewmodel
 
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetail
+import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
@@ -25,7 +25,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     : BaseViewModel(dispatcher) {
 
     val enquiryData = MutableLiveData<Result<TelcoEnquiryData>>()
-    val menuDetailData = MutableLiveData<Result<TelcoCatalogMenuDetail>>()
+    val menuDetailData = MutableLiveData<Result<TopupBillsMenuDetail>>()
 
     fun getEnquiry(rawQuery: String, mapParam: Map<String, Any>) {
         launchCatchError(block = {

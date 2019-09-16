@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 28/05/19.
  */
-class TelcoTicker(
+class TopupBillsTicker(
         @SerializedName("ID")
         @Expose
         val id: Int,

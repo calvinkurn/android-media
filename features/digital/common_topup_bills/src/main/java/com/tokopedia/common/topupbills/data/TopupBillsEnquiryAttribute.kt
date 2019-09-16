@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 27/05/19.
  */
-class TelcoEnquiryAttribute (
+class TopupBillsEnquiryAttribute (
     @SerializedName("UserID")
     @Expose
     val userId: String,
@@ -21,5 +21,5 @@ class TelcoEnquiryAttribute (
     val pricePlain: Int,
     @SerializedName("mainInfo")
     @Expose
-    val mainInfoList: List<TelcoEnquiryMainInfo>
+    val mainInfoList: List<TopupBillsEnquiryMainInfo>
 )

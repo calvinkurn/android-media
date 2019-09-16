@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 28/05/19.
  */
-class TelcoRecommendation(
+class TopupBillsRecommendation(
         @SerializedName("iconUrl")
         @Expose
         val iconUrl: String,
@@ -77,12 +77,12 @@ class TelcoRecommendation(
                 return 0
         }
 
-        companion object CREATOR : Parcelable.Creator<TelcoRecommendation> {
-                override fun createFromParcel(parcel: Parcel): TelcoRecommendation {
-                        return TelcoRecommendation(parcel)
+        companion object CREATOR : Parcelable.Creator<TopupBillsRecommendation> {
+                override fun createFromParcel(parcel: Parcel): TopupBillsRecommendation {
+                        return TopupBillsRecommendation(parcel)
                 }
 
-                override fun newArray(size: Int): Array<TelcoRecommendation?> {
+                override fun newArray(size: Int): Array<TopupBillsRecommendation?> {
                         return arrayOfNulls(size)
                 }
         }

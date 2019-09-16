@@ -112,7 +112,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
-            voucherGameViewModel.getVoucherGameBanners(GraphqlHelper.loadRawString(resources, R.raw.query_telco_catalog_menu_detail),
+            voucherGameViewModel.getVoucherGameBanners(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
                     voucherGameViewModel.createBannerParams(it))
         }
         initView()

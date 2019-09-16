@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 27/05/19.
  */
-class TelcoEnquiryMainInfo(
+class TopupBillsEnquiryMainInfo(
         @SerializedName("label")
         @Expose
         val label: String,

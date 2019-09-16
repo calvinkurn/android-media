@@ -23,7 +23,7 @@ class TopupBillsCheckoutWidget @JvmOverloads constructor(@NotNull context: Conte
     private lateinit var listener: ActionListener
 
     init {
-        val view = View.inflate(context, R.layout.view_digital_buy_telco, this)
+        val view = View.inflate(context, R.layout.view_topup_bills_checkout, this)
         totalPrice = view.findViewById(R.id.total_price)
         nextButton = view.findViewById(R.id.next_btn)
         buyLayout = view.findViewById(R.id.buy_layout)

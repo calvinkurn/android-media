@@ -1,4 +1,4 @@
-query enquiryTelco ($clientNumber: String!,
+query enquiry ($clientNumber: String!,
   $productId: String!) {
   status
   enquiry(

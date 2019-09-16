@@ -14,7 +14,7 @@ import android.widget.RelativeLayout
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
-import com.tokopedia.common.topupbills.data.TelcoRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
@@ -156,7 +156,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun getCatalogMenuDetail() {
         catalogMenuDetailViewModel.getCatalogMenuDetailPrepaid(GraphqlHelper.loadRawString(resources,
-                R.raw.query_telco_catalog_menu_detail),
+                R.raw.query_menu_detail),
                 this::onLoadingMenuDetail, this::onSuccessCatalogMenuDetail, this::onErrorCatalogMenuDetail)
         catalogMenuDetailViewModel.getFavNumbersPrepaid(GraphqlHelper.loadRawString(resources,
                 R.raw.query_fav_number_digital), this::onSuccessFavNumbers, this::onErrorFavNumbers)
@@ -369,15 +369,15 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         telcoClientNumberWidget.clearFocusAutoComplete()
     }
 
-    override fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation) {
+    override fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation) {
         inputNumberActionType = InputNumberActionType.LATEST_TRANSACTION
-        selectedProductId = telcoRecommendation.productId.toString()
-        selectedCategoryId = telcoRecommendation.categoryId
-        telcoClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
+        selectedProductId = topupBillsRecommendation.productId.toString()
+        selectedCategoryId = topupBillsRecommendation.categoryId
+        telcoClientNumberWidget.setInputNumber(topupBillsRecommendation.clientNumber)
 
         if (selectedOperatorName.isNotEmpty()) {
-            topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, selectedOperatorName,
-                    telcoRecommendation.position)
+            topupAnalytics.clickEnhanceCommerceRecentTransaction(topupBillsRecommendation, selectedOperatorName,
+                    topupBillsRecommendation.position)
         }
     }
 

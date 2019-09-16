@@ -9,5 +9,5 @@ import com.google.gson.annotations.SerializedName
 class TelcoCatalogMenuDetailData(
         @SerializedName("rechargeCatalogMenuDetail")
         @Expose
-        val catalogMenuDetailData: TelcoCatalogMenuDetail
+        val catalogMenuDetailData: TopupBillsMenuDetail
 )

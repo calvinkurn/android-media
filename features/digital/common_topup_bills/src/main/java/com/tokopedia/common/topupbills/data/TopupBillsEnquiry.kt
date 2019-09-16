@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 /**
  * Created by nabillasabbaha on 27/05/19.
  */
-class TelcoEnquiry (
+class TopupBillsEnquiry (
     @SerializedName("attributes")
     @Expose
-    val attributes: TelcoEnquiryAttribute
+    val attributes: TopupBillsEnquiryAttribute
 )
