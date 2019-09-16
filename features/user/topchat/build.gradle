@@ -16,13 +16,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'topchat'
-    groupId = 'com.tokopedia.topchat'
-    versionName = "${tkpdInboxVersion}"
-    artifactName = "topchat-release"
-}
-
 dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -34,11 +27,11 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.pushNotif)
+    implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -56,7 +49,7 @@ dependencies {
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.attachproduct)
     implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation (project(rootProject.ext.libraries.remoteConfig))
 
@@ -95,6 +88,13 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.unifyDependencies.components
+}
+
+project.ext {
+    artifactId = 'topchat'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName = "usertopchat-release"
 }
 
 apply from: '../../../publish_local.gradle'
