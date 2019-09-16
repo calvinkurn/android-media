@@ -8,6 +8,7 @@ import okhttp3.Response
 import okio.Buffer
 import java.io.EOFException
 import java.nio.charset.Charset
+import java.util.regex.*
 
 class AkamaiBotInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -30,9 +31,16 @@ class AkamaiBotInterceptor : Interceptor {
             if (isPlaintext(buffer)) {
                 charset?.let {
                     readFromBuffer(buffer, it).let {
-                        if (it.contains("login"))
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
+                        val p = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()" )
+                        val m = p.matcher(it)
+                        while (m.find()) {
+                            val mutation_name = m.group(0)
+                            if(mutation_name.contains("login")){
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "login")
+                            }
+                        }
                     }
                 }
             }
