@@ -149,10 +149,8 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.webview.SellerappWebViewActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
-import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
-import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
@@ -441,18 +439,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getAddEmailIntent(Context context) {
-        return AddEmailActivity.newInstance(context);
-    }
-
-    @Override
     public Intent getAddPasswordIntent(Context context) {
         return AddPasswordActivity.newInstance(context);
-    }
-
-    @Override
-    public Intent getChangeNameIntent(Context context) {
-        return ChangeNameActivity.newInstance(context);
     }
 
     @Override
@@ -899,17 +887,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Fragment getChannelFragment(Bundle bundle) {
-        return null;
-    }
-
-    @Override
-    public String getChannelFragmentTag() {
-        return "";
-    }
-
-
-    @Override
     public void init() {
     }
 
@@ -939,11 +916,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Interceptor getChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
-    }
-
-    @Override
-    public String getDesktopLinkGroupChat() {
-        return "";
     }
 
     @Override
@@ -1233,11 +1205,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     }
 
-    @Override
-    public Intent getAutomaticResetPasswordIntent(Context context, String email) {
-        return ForgotPasswordActivity.getAutomaticResetPasswordIntent(context, email);
-    }
-
     @NonNull
     @Override
     public Fragment getFavoritedShopFragment(@NonNull String userId) {
@@ -1402,11 +1369,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void refreshFCMTokenFromForegroundToCM() {
 
-    }
-
-    @Override
-    public com.tokopedia.iris.Iris getIris() {
-        return null;
     }
 
     public String getContactUsBaseURL() {

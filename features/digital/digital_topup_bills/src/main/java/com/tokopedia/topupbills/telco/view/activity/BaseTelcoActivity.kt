@@ -11,6 +11,14 @@ open abstract class BaseTelcoActivity : BaseSimpleActivity() {
         return R.layout.activity_digital_telco
     }
 
+    override fun getParentViewResourceID(): Int {
+        return R.id.parent_view
+    }
+
+    override fun getToolbarResourceID(): Int {
+        return R.id.toolbar
+    }
+
     override fun updateTitle(title: String?) {
         title?.run {
             toolbar_title.text = this

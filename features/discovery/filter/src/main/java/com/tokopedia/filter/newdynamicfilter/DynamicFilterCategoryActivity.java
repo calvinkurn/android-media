@@ -24,6 +24,7 @@ import java.util.List;
 import static com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity.EXTRA_EVENT_CATEGORY_PREFIX;
 import static com.tokopedia.filter.newdynamicfilter.AbstractDynamicFilterDetailActivity.EXTRA_IS_USING_TRACKING;
 
+
 /**
  * Created by henrypriyono on 8/24/17.
  */

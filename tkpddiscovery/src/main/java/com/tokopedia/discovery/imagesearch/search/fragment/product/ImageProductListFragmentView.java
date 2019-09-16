@@ -4,7 +4,7 @@ import android.os.Bundle;
 
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 
 import java.util.List;
 
