@@ -45,5 +45,3 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation rootProject.ext.networkDependencies.glide
 }
-
-apply from: '../publish_local.gradle'
