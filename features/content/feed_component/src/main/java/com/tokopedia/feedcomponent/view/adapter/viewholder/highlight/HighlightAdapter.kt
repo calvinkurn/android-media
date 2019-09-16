@@ -69,7 +69,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
                 highlightListener.onAvatarClick(item.positionInFeed, item.header.avatarApplink)
             }
             itemView.productImage.setOnClickListener {
-                highlightListener.onHighlightItemClicked(item.positionInFeed, item.applink)
+                highlightListener.onHighlightItemClicked(item.positionInFeed, item)
             }
         }
 
@@ -140,7 +140,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
 
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
 
-        fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String)
+        fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel)
     }
 
 }
