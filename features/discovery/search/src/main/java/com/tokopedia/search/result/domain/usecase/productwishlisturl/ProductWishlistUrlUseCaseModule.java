@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.domain.usecase.productwishlisturl;
 
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.di.qualifier.TopAdsQualifier;
 import com.tokopedia.search.result.network.service.TopAdsService;
 import com.tokopedia.usecase.UseCase;

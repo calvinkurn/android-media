@@ -89,7 +89,7 @@ public interface ICartListPresenter {
 
     void processGetWishlistData();
 
-    void processGetRecommendationData(int page);
+    void processGetRecommendationData(int page, List<String> allProductIds);
 
     void processAddToCart(Object productModel);
 

@@ -33,7 +33,8 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
                               String pageTitle,
                               boolean isSearchable,
                               String searchHint,
-                              boolean isUsingTracking) {
+                              boolean isUsingTracking,
+                              String trackingPrefix) {
 
         if (activity != null) {
             Intent intent = new Intent(activity, DynamicFilterLocationActivity.class);
@@ -41,6 +42,7 @@ public class DynamicFilterLocationActivity extends DynamicFilterDetailGeneralAct
             intent.putExtra(EXTRA_IS_SEARCHABLE, isSearchable);
             intent.putExtra(EXTRA_SEARCH_HINT, searchHint);
             intent.putExtra(EXTRA_IS_USING_TRACKING, isUsingTracking);
+            intent.putExtra(EXTRA_EVENT_CATEGORY_PREFIX, trackingPrefix);
             activity.startActivityForResult(intent, REQUEST_CODE);
         }
     }

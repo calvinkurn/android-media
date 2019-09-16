@@ -459,6 +459,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         shipmentAdapter.addPromoStackingVoucherData(promoStackingData);
         if (promoStackingData != null) {
+            if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
+                onPromoGlobalTrackingImpression(promoStackingData);
+            }
             cartPromoSuggestion.setVisible(false);
             shipmentAdapter.addPromoSuggestionData(cartPromoSuggestion);
         } else {
@@ -1215,7 +1218,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.setRecipientAddressModel(selectedAddress);
         shipmentAdapter.updateSelectedAddress(selectedAddress);
         courierBottomsheet = null;
-        onCartDataDisableToCheckout(null);
+        onDataDisableToCheckout(null);
         shipmentPresenter.processInitialLoadCheckoutPage(true, isOneClickShipment(), isTradeIn(), true, selectedAddress.getCornerId(), getDeviceId(), getCheckoutLeasingId());
     }
 
@@ -1800,22 +1803,22 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position) {
+    public void onPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal) {
         trackingPromoCheckoutUtil.checkoutImpressionTicker(cartPromoGlobal.getDescription());
     }
 
     @Override
-    public void onCartPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
+    public void onPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
         sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner();
     }
 
     @Override
-    public void onCartDataEnableToCheckout() {
+    public void onDataEnableToCheckout() {
         shipmentAdapter.updateCheckoutButtonData(null);
     }
 
     @Override
-    public void onCartDataDisableToCheckout(String message) {
+    public void onDataDisableToCheckout(String message) {
         shipmentAdapter.updateCheckoutButtonData(null);
     }
 
@@ -1904,7 +1907,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
             showToastError(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
-            onCartDataDisableToCheckout(null);
+            onDataDisableToCheckout(null);
             ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
             shipmentAdapter.notifyItemChanged(errorPosition);
         } else if (shipmentData == null) {
@@ -2014,7 +2017,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onSubTotalCartItemClicked(int position) {
+    public void onSubTotalItemClicked(int position) {
         sendAnalyticsOnClickSubtotal();
     }
 
