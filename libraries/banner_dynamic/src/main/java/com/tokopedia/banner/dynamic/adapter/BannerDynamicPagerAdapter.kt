@@ -1,7 +1,8 @@
-package com.tokopedia.travel.homepage.presentation.adapter
+package com.tokopedia.banner.dynamic.adapter
 
 import android.content.Context
 import android.graphics.Point
+import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,16 +12,21 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.BannerViewPagerAdapter
-import com.tokopedia.travel.homepage.R
-import kotlinx.android.synthetic.main.travel_homepage_slider_banner_design_card.view.*
+import com.tokopedia.banner.dynamic.R
 
-class TravelHomepageBannerPagerAdapter(bannerImageUrls: List<String>,
-                                       onPromoClickListener: BannerView.OnPromoClickListener) :
-        BannerViewPagerAdapter(bannerImageUrls, onPromoClickListener) {
+/**
+ * @author by furqan on 13/09/2019
+ */
+class BannerDynamicPagerAdapter(bannerImageUrls: List<String>,
+                                onPromoClickListener: BannerView.OnPromoClickListener)
+    : BannerViewPagerAdapter(bannerImageUrls, onPromoClickListener) {
+
+    private lateinit var bannerCard: CardView
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val itemView = inflater.inflate(R.layout.travel_homepage_slider_banner_design_card, parent, false)
+        val itemView = inflater.inflate(R.layout.layout_slider_banner_dynamic, parent, false)
+        bannerCard = itemView.findViewById(R.id.banner_card)
 
         val layoutParams = itemView.layoutParams
 
@@ -38,13 +44,9 @@ class TravelHomepageBannerPagerAdapter(bannerImageUrls: List<String>,
         }
 
         itemView.layoutParams = layoutParams
-        itemView.banner_card.visibility = View.VISIBLE
+        bannerCard.visibility = View.VISIBLE
 
         return BannerViewHolder(itemView)
-    }
-
-    override fun getBannerImageId(): Int {
-        return R.id.image
     }
 
     override fun onBindViewHolder(holder: BannerViewHolder, position: Int) {
@@ -66,4 +68,5 @@ class TravelHomepageBannerPagerAdapter(bannerImageUrls: List<String>,
         }
 
     }
+
 }

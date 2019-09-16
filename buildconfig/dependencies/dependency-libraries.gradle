@@ -44,6 +44,7 @@ ext {
             applink           : ":libraries:applink",
             baseAdapter       : ":libraries:base_adapter",
             baseListSeller    : ":libraries:base_list_seller",
+            bannerDynamic     : ":libraries:banner_dynamic",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             cacheApi          : ":libraries:cache_api",
             cameraview        : ":libraries:cameraview",
