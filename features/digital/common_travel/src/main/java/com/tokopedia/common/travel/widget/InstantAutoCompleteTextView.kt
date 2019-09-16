@@ -11,11 +11,11 @@ import android.widget.AutoCompleteTextView
  */
 
 class InstantAutoCompleteTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : AutoCompleteTextView(context, attrs, defStyleAttr) {
+    : AppCompatAutoCompleteTextView(context, attrs, defStyleAttr) {
     override fun enoughToFilter(): Boolean = true
 
     override fun onFocusChanged(focused: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect)
-        if (focused && filter != null) performFiltering(text, 0)
+        if (focused && filter != null) showDropDown()
     }
 }

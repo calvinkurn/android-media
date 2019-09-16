@@ -171,6 +171,7 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
 
     private fun validateData(): Boolean {
         var isValid = true
+        resetEditTextError()
         if (til_contact_name.editText.text.isNullOrBlank()) {
             til_contact_name.error = getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_error)
             isValid = false
@@ -184,6 +185,12 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
             isValid = false
         }
         return isValid
+    }
+    
+    private fun resetEditTextError() {
+        til_contact_email.error = ""
+        til_contact_name.error = ""
+        til_contact_phone_number.error = ""
     }
 
     private fun isValidEmail(contactEmail: String): Boolean {
