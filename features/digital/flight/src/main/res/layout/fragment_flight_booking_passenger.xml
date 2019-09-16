@@ -60,6 +60,7 @@
                     android:nextFocusForward="@+id/et_last_name"
                     android:inputType="textNoSuggestions|textVisiblePassword"
                     android:singleLine="true"
+                    android:background="@color/white"
                     android:textColor="@color/font_black_primary_70" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 

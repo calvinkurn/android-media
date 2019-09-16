@@ -22,6 +22,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
+                android:background="@color/white"
                 android:hint="@string/travel_contact_data_name_hint" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
