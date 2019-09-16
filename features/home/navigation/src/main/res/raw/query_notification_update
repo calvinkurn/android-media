@@ -36,6 +36,7 @@ query get_notification_update($page: Int!, $typeId: Int, $tagId: Int, $lastNotif
         url
         image_url
         price
+        price_fmt
         currency
         price_idr
         is_buyable
@@ -50,8 +51,10 @@ query get_notification_update($page: Int!, $typeId: Int, $tagId: Int, $lastNotif
         campaign {
             active
             original_price
+            original_price_fmt
             discount_percentage
             discount_price
+            discount_price_fmt
         }
         variant {
             value
