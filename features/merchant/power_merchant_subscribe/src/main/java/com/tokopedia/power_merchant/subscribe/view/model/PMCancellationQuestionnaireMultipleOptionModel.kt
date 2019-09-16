@@ -10,7 +10,7 @@ class PMCancellationQuestionnaireMultipleOptionModel(
 ) : PMCancellationQuestionnaireQuestionModel(type, questionString) {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
-            parcel.readString() ?: "" ,
+            parcel.readString() ?: "",
             parcel.createTypedArrayList(OptionModel) ?: listOf()
     )
 
@@ -34,14 +34,16 @@ class PMCancellationQuestionnaireMultipleOptionModel(
     }
 
     data class OptionModel(
-            var value: String
+            var value: String,
+            var isChecked: Boolean = false
     ) : Parcelable {
         constructor(parcel: Parcel) : this(
-                parcel.readString() ?: ""
-        )
+                parcel.readString() ?: "",
+                parcel.readByte() != 0.toByte())
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
             parcel.writeString(value)
+            parcel.writeByte(if (isChecked) 1 else 0)
         }
 
         override fun describeContents(): Int {
@@ -57,6 +59,7 @@ class PMCancellationQuestionnaireMultipleOptionModel(
                 return arrayOfNulls(size)
             }
         }
+
     }
 }
 

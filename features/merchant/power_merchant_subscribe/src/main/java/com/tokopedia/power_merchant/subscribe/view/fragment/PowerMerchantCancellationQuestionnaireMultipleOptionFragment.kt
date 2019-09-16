@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.activity.BaseStepperActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 
@@ -13,16 +14,21 @@ import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireMultipleOptionModel
 import com.tokopedia.power_merchant.subscribe.view.model.PMCancellationQuestionnaireStepperModel
 import com.tokopedia.power_merchant.subscribe.view.activity.PMCancellationQuestionnaireActivity
+import com.tokopedia.power_merchant.subscribe.view.adapter.MultipleOptionAdapter
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.*
 import kotlinx.android.synthetic.main.fragment_power_merchant_cancellation_questionnaire.view.*
 import kotlinx.android.synthetic.main.pm_cancellation_questionnaire_button_layout.view.*
 
-class PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment : BaseDaggerFragment() {
+class PowerMerchantCancellationQuestionnaireMultipleOptionFragment
+    : BaseDaggerFragment(), MultipleOptionAdapter.MultipleOptionAdapterListener {
 
     private lateinit var parentActivity: PMCancellationQuestionnaireActivity
     private var stepperModel: PMCancellationQuestionnaireStepperModel? = null
     private var modelMultipleOptionQuestionnaire: PMCancellationQuestionnaireMultipleOptionModel? = null
     private var position: Int = -1
+    private val multipleOptionAdapter by lazy {
+        MultipleOptionAdapter(this)
+    }
 
     companion object {
         private const val EXTRA_POSITION = "position"
@@ -75,35 +81,21 @@ class PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment : BaseDagge
                 parentActivity.goToPreviousPage()
             }
             tv_question.text = modelMultipleOptionQuestionnaire?.question
+            recycler_view_option.layoutManager = LinearLayoutManager(context)
+            recycler_view_option.adapter = multipleOptionAdapter
         }
     }
 
     private fun populateOption() {
         modelMultipleOptionQuestionnaire?.listOptionModel?.let { listOptionModel ->
             stepperModel?.listQuestionnaireAnswer?.let { listQuestionnaireAnswer ->
-                listOptionModel.forEachIndexed { index, option ->
-                    val checkBox = LayoutInflater.from(context).inflate(
-                            R.layout.pm_cancellation_multiple_option_question_checkbox_layout,
-                            checkbox_container,
-                            false
-                    ) as CheckBox
-                    checkBox.tag = index
-                    checkBox.text = option.value
-                    checkBox.setOnClickListener {
-                        it.apply {
-                            if ((it as CheckBox).isChecked) {
-                                listQuestionnaireAnswer[position].answers.add(listOptionModel[tag as Int].value)
-                            } else {
-                                listQuestionnaireAnswer[position].answers.remove(listOptionModel[tag as Int].value)
-                            }
-                        }
-                    }
-                    checkBox.isChecked = listQuestionnaireAnswer[position].answers.contains(listOptionModel[index].value)
-                    checkbox_container.addView(checkBox)
+                listOptionModel.forEach {
+                    it.isChecked = listQuestionnaireAnswer[position].answers.contains(it.value)
                 }
             }
+            multipleOptionAdapter.listOption = listOptionModel
+            multipleOptionAdapter.notifyDataSetChanged()
         }
-
     }
 
     private fun getArgumentData() {
@@ -114,5 +106,14 @@ class PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment : BaseDagge
         }
     }
 
+    override fun onOptionChecked(isChecked: Boolean, optionValue: String) {
+        stepperModel?.listQuestionnaireAnswer?.let {
+            if (isChecked) {
+                it[position].answers.add(optionValue)
+            } else {
+                it[position].answers.remove(optionValue)
+            }
+        }
+    }
 
 }

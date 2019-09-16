@@ -25,7 +25,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.model.*
-import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment
+import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireMultipleOptionFragment
 import com.tokopedia.power_merchant.subscribe.view.fragment.PowerMerchantCancellationQuestionnaireIntroFragment
 import com.tokopedia.power_merchant.subscribe.view.viewmodel.PMCancellationQuestionnaireViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -92,7 +92,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
                 }
 
             } else if (questionModel is PMCancellationQuestionnaireMultipleOptionModel) {
-                listFragment.add(PowerMerchantCancellationQuestionnaireMultipleCheckboxFragment.createInstance(
+                listFragment.add(PowerMerchantCancellationQuestionnaireMultipleOptionFragment.createInstance(
                         index,
                         questionModel
                 ))
