@@ -664,7 +664,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             dialog = getDialogDeleteConfirmation(1);
         }
 
-        dialog.setOnOkClickListener(view -> {
+        dialog.setOkOnClickListener(view -> {
             if (cartItemDatas.size() > 0) {
                 dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true, removeMacroInsurance);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
@@ -1743,10 +1743,10 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     @NonNull
     private UnifyDialog getInsuranceDialogDeleteConfirmation() {
         UnifyDialog dialog = new UnifyDialog(getActivity(), UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER);
-        dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
+        dialog.setTitle(getString(R.string.label_dialog_title_delete_item_macro_insurance));
         dialog.setDescription(getString(R.string.label_dialog_message_remove_cart_multiple_item_with_insurance));
-        dialog.setOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
-        dialog.setSecondary(getString(R.string.label_dialog_action_delete));
+        dialog.setOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist_macro_insurance));
+        dialog.setSecondary(getString(R.string.label_dialog_action_delete_macro_insurance));
         dialog.getAlertDialog().setCancelable(true);
         dialog.getAlertDialog().setCanceledOnTouchOutside(true);
         return dialog;
@@ -2245,9 +2245,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                         if (cartItemDataList != null && !cartItemDataList.isEmpty()) {
                             for (CartItemData cartItemData : cartItemDataList) {
                                 if (String.valueOf(insuranceCartShopItems.getProductId()).
-                                        equalsIgnoreCase(cartItemData.getOriginData().getProductId())) {
+                                        equalsIgnoreCase(cartItemData.getOriginData().getParentId())) {
                                     insuranceCartDigitalProduct.setShopId(cartItemData.getOriginData().getShopId());
-                                    insuranceCartDigitalProduct.setProductId(cartItemData.getOriginData().getProductId());
+                                    insuranceCartDigitalProduct.setProductId(cartItemData.getOriginData().getParentId());
 
                                     if (!insuranceCartDigitalProduct.isProductLevel()) {
                                         cartAdapter.addInsuranceDataList(insuranceCartShops, isRecommendation);
