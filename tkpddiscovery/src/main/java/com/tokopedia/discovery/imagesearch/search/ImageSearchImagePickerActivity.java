@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -19,7 +19,7 @@ import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RES
 
 public class ImageSearchImagePickerActivity extends ImagePickerActivity {
 
-    private SearchTracking searchTracking;
+    private DiscoveryTracking discoveryTracking;
     private boolean isFromCamera;
 
     public static final String SAVED_IS_FROM_CAMERA = "saved_is_from_camera";
@@ -40,7 +40,7 @@ public class ImageSearchImagePickerActivity extends ImagePickerActivity {
             isFromCamera = savedInstanceState.getBoolean(SAVED_IS_FROM_CAMERA, false);
         }
 
-        searchTracking = new SearchTracking(this, new UserSession(getApplicationContext()));
+        discoveryTracking = new DiscoveryTracking(this, new UserSession(getApplicationContext()));
 
         super.onCreate(savedInstanceState);
     }
@@ -66,10 +66,10 @@ public class ImageSearchImagePickerActivity extends ImagePickerActivity {
     protected void imagePickerViewPagerOnPageSelected(int position) {
         switch (imagePickerBuilder.getTabTypeDef(position)) {
             case ImagePickerTabTypeDef.TYPE_GALLERY:
-                searchTracking.eventSearchImagePickerClickGallery();
+                discoveryTracking.eventSearchImagePickerClickGallery();
                 break;
             case ImagePickerTabTypeDef.TYPE_CAMERA:
-                searchTracking.eventSearchImagePickerClickCamera();
+                discoveryTracking.eventSearchImagePickerClickCamera();
                 break;
             default:
                 break;
