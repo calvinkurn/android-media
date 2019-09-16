@@ -86,6 +86,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
+
 public class ProductListFragment
         extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView,
@@ -1075,12 +1078,13 @@ public class ProductListFragment
     public void setDefaultLayoutType(int defaultView) {
         switch (defaultView) {
             case SearchConstant.DefaultViewType.SMALL_GRID:
-                switchLayoutTypeTo(SearchConstant.ViewType.SMALL_GRID);
+                switchLayoutTypeTo(SMALL_GRID);
                 break;
             case SearchConstant.DefaultViewType.LIST:
-                switchLayoutTypeTo(SearchConstant.ViewType.LIST);
+                switchLayoutTypeTo(LIST);
                 break;
             default:
+                switchLayoutTypeTo(SMALL_GRID);
                 break;
         }
     }
