@@ -137,7 +137,6 @@ ext {
             phoneVerification       : "com.tokopedia.phoneverification:phoneverification:${tkpdPhoneVerificationVersion}",
             productManageItem       : "com.tokopedia.product:product-manage-item:${tkpdProductVersion}",
             productManageList       : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
-            productDraftDatabase    : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             profile                 : "com.tokopedia.profile:profile:${tkpdProfileVersion}",
             promoCheckout           : "com.tokopedia.promocheckout:promo_checkout:${promoCheckoutVersion}",
             promoCheckoutCommon     : "com.tokopedia.promocheckout:promo_checkout_common:${promoCheckoutVersion}",
