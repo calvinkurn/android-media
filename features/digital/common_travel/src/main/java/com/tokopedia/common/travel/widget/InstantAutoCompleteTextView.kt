@@ -4,14 +4,26 @@ import android.content.Context
 import android.graphics.Rect
 import android.support.v7.widget.AppCompatAutoCompleteTextView
 import android.util.AttributeSet
-import android.widget.AutoCompleteTextView
 
 /**
  * @author by jessica on 2019-09-16
  */
 
-class InstantAutoCompleteTextView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : AppCompatAutoCompleteTextView(context, attrs, defStyleAttr) {
+class InstantAutoCompleteTextView: AppCompatAutoCompleteTextView {
+
+    constructor(context: Context) : super(context)
+
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+
+    init {
+        setOnTouchListener { _, _ ->
+            showDropDown()
+            false
+        }
+    }
+
     override fun enoughToFilter(): Boolean = true
 
     override fun onFocusChanged(focused: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
