@@ -78,6 +78,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private var inputFieldCount = 0
     lateinit var enquiryData: List<VoucherGameEnquiryFields>
+    var inputData: MutableMap<String, String> = mutableMapOf()
     var isEnquired = false
         set(value) {
             field = value
@@ -102,6 +103,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
             voucherGameOperatorData =
                     it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: VoucherGameOperatorAttributes()
+            it.getString(EXTRA_INPUT_FIELD_1)?.let { input -> inputData[EXTRA_INPUT_FIELD_1] = input }
+            it.getString(EXTRA_INPUT_FIELD_2)?.let { input -> inputData[EXTRA_INPUT_FIELD_2] = input }
         }
     }
 
@@ -115,8 +118,9 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                         adapter.hideLoading()
 
                         setupEnquiryFields(it.data)
-                        renderProducts(it.data)
+                        checkAutoFillInput()
 
+                        renderProducts(it.data)
                         checkAutoSelectProduct()
                     }
                     is Fail -> {
@@ -141,6 +145,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        if (isEnquired) {
+            if (input_field_1.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_1, input_field_1.getInputText())
+            if (input_field_2.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_2, input_field_2.getInputText())
+        }
+        if (::selectedProduct.isInitialized) voucherGameExtraParam.productId = selectedProduct.id
         outState.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
         outState.putParcelable(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorData)
     }
@@ -247,6 +256,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                     }
                 })
             }
+        }
+    }
+
+    private fun checkAutoFillInput() {
+        if (inputFieldCount in 1..2 && ::enquiryData.isInitialized && inputData.isNotEmpty()) {
+            inputData[EXTRA_INPUT_FIELD_1]?.let { input -> input_field_1.setInputText(input) }
+            inputData[EXTRA_INPUT_FIELD_2]?.let { input -> input_field_2.setInputText(input) }
+            enquireFields()
         }
     }
 
@@ -523,6 +540,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         const val INFO_TOUCH_AREA_SIZE_PX = 20
 
         const val EXTRA_PARAM_OPERATOR_DATA = "EXTRA_PARAM_OPERATOR_DATA"
+        const val EXTRA_INPUT_FIELD_1 = "EXTRA_INPUT_FIELD_1"
+        const val EXTRA_INPUT_FIELD_2 = "EXTRA_INPUT_FIELD_2"
         const val TAG_VOUCHER_GAME_INFO = "voucherGameInfo"
 
         fun newInstance(voucherGameExtraParam: VoucherGameExtraParam,

@@ -78,6 +78,10 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
         return ac_input.text.toString()
     }
 
+    fun setInputText(input: String) {
+        ac_input.setText(input)
+    }
+
     fun setErrorMessage(message: String) {
         error_label.text = message
         error_label.visibility = View.VISIBLE
