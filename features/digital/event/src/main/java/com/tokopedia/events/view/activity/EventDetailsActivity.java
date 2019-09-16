@@ -48,6 +48,7 @@ import at.blogc.android.views.ExpandableTextView;
 public class EventDetailsActivity extends EventBaseActivity implements
         EventsDetailsContract.EventDetailsView, View.OnClickListener {
 
+    public static final String SCREEN_NAME = "digital/events/detail";
 
     private ImageView eventDetailBanner;
     private ExpandableTextView tvExpandableDescription;
@@ -147,6 +148,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
                 }
             }
         });
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
     @Override
@@ -355,7 +357,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
 
     @Override
     public String getScreenName() {
-        return eventsDetailsPresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override

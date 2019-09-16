@@ -173,6 +173,7 @@ public class EventsAnalytics {
             promotions.put(PRICE, String.valueOf(categoryItems.get(index).getSalesPrice()));
             promotions.put(CATEGORY, EVENT);
             promotions.put(VARIANT, "none");
+            promotions.put(CREATIVE, categoryItems.get(index).getDisplayName());
             promotions.put(BRAND, "none");
             promotions.put(LIST, String.format("%s - %s - %s", EVENT, index, categoryItems.get(index).getDisplayName()));
             promotions.put(POSITION, index);

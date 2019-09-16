@@ -195,7 +195,7 @@ public class EventSearchPresenter
 
     @Override
     public void searchSubmitted(String searchText) {
-        showCards = true;
+        showCards = false;
         getEventsListBySearch(searchText);
         searchTag = searchText;
         eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.CLICK_SEARCH_ICON, searchText);
@@ -214,8 +214,6 @@ public class EventSearchPresenter
 
     @Override
     public void onSearchResultClick(SearchViewModel searchViewModel, int position) {
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH_CLICK, searchTag + " - " +
-                searchViewModel.getTitle() + " - " + position);
         CategoryItemsViewModel detailsViewModel = new CategoryItemsViewModel();
         detailsViewModel.setTitle(searchViewModel.getTitle());
         detailsViewModel.setDisplayName(searchViewModel.getDisplayName());

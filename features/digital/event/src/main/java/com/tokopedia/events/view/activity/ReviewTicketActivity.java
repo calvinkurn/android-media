@@ -39,6 +39,7 @@ import javax.inject.Inject;
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
 
+    public static final String SCREEN_NAME = "digital/events/summary";
     ImageView eventImageSmall;
     TextView eventNameTv;
     View eventTimeTv;
@@ -192,6 +193,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         edForm2.setOnFocusChangeListener(this);
         edForm3.setOnFocusChangeListener(this);
         edForm4.setOnFocusChangeListener(this);
+
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
     @Override
@@ -448,7 +451,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     public String getScreenName() {
-        return eventReviewTicketPresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override

@@ -35,6 +35,7 @@ import java.util.List;
 public class EventSearchActivity extends EventBaseActivity implements
         EventSearchContract.EventSearchView, SearchInputView.Listener, View.OnClickListener {
 
+    public static final String SCREEN_NAME = "digital/events/search";
     public EventSearchPresenter eventSearchPresenter;
 
     FrameLayout mainContent;
@@ -76,6 +77,7 @@ public class EventSearchActivity extends EventBaseActivity implements
         searchInputView.setListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         eventsAnalytics = new EventsAnalytics();
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
     @Override
@@ -238,7 +240,7 @@ public class EventSearchActivity extends EventBaseActivity implements
 
     @Override
     public String getScreenName() {
-        return eventSearchPresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override
