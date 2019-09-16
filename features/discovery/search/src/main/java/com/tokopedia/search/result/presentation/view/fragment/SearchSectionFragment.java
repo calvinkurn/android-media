@@ -55,6 +55,9 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
 public abstract class SearchSectionFragment
         extends BaseDaggerFragment
@@ -251,21 +254,21 @@ public abstract class SearchSectionFragment
 
         switch (getAdapter().getCurrentLayoutType()) {
             case LIST:
-                switchLayoutTypeTo(SearchConstant.GridType.BIG_GRID);
+                switchLayoutTypeTo(BIG_GRID);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
             case SMALL_GRID:
-                switchLayoutTypeTo(SearchConstant.GridType.LIST);
+                switchLayoutTypeTo(LIST);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
             case BIG_GRID:
-                switchLayoutTypeTo(SearchConstant.GridType.SMALL_GRID);
+                switchLayoutTypeTo(SMALL_GRID);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
         }
     }
 
-    protected void switchLayoutTypeTo(SearchConstant.GridType layoutType) {
+    protected void switchLayoutTypeTo(SearchConstant.ViewType layoutType) {
         if (!getUserVisibleHint() || getAdapter() == null) {
             return;
         }

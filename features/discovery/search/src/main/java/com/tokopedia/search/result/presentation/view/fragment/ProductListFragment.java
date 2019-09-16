@@ -1075,10 +1075,10 @@ public class ProductListFragment
     public void setDefaultLayoutType(int defaultView) {
         switch (defaultView) {
             case SearchConstant.DefaultViewType.SMALL_GRID:
-                switchLayoutTypeTo(SearchConstant.GridType.SMALL_GRID);
+                switchLayoutTypeTo(SearchConstant.ViewType.SMALL_GRID);
                 break;
             case SearchConstant.DefaultViewType.LIST:
-                switchLayoutTypeTo(SearchConstant.GridType.LIST);
+                switchLayoutTypeTo(SearchConstant.ViewType.LIST);
                 break;
             default:
                 break;

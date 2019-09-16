@@ -25,7 +25,7 @@ public interface SearchConstant {
         int VIEW_PRODUCT_SMALL_GRID = 13;
     }
 
-    enum GridType {
+    enum ViewType {
         LIST, SMALL_GRID, BIG_GRID
     }
 

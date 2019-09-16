@@ -63,16 +63,16 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
         }
     }
 
-    public SearchConstant.GridType getCurrentLayoutType() {
+    public SearchConstant.ViewType getCurrentLayoutType() {
         switch (getTypeFactory().getRecyclerViewItem()) {
             case SearchConstant.RecyclerView.VIEW_LIST:
-                return SearchConstant.GridType.LIST;
+                return SearchConstant.ViewType.LIST;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
-                return SearchConstant.GridType.SMALL_GRID;
+                return SearchConstant.ViewType.SMALL_GRID;
             case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
-                return SearchConstant.GridType.BIG_GRID;
+                return SearchConstant.ViewType.BIG_GRID;
             default:
-                return SearchConstant.GridType.SMALL_GRID;
+                return SearchConstant.ViewType.SMALL_GRID;
         }
     }
 
