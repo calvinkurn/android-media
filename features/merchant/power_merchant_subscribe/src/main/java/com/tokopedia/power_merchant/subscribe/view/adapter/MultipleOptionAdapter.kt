@@ -31,6 +31,7 @@ class MultipleOptionAdapter(
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.checkboxOption.text = listOption[position].value
         holder.checkboxOption.isChecked = listOption[position].isChecked
         holder.checkboxOption.setOnClickListener {
             multipleOptionAdapterListener.onOptionChecked(
