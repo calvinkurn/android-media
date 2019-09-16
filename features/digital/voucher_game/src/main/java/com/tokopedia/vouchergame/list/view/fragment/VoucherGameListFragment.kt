@@ -21,7 +21,7 @@ import com.tokopedia.banner.Indicator
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.utils.AnalyticUtils.Companion.getVisibleItems
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
-import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_TELCO
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -69,7 +69,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         }
 
         arguments?.let {
-            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_TELCO) ?: VoucherGameExtraParam()
+            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
         }
     }
 
@@ -123,7 +123,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         if (::voucherGameExtraParam.isInitialized) {
             // Reset operatorId
             voucherGameExtraParam.operatorId = ""
-            outState.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+            outState.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
         }
     }
 
@@ -329,7 +329,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         fun newInstance(voucherGameExtraParam: VoucherGameExtraParam): Fragment {
             val fragment = VoucherGameListFragment()
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+            bundle.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
             fragment.arguments = bundle
             return fragment
         }

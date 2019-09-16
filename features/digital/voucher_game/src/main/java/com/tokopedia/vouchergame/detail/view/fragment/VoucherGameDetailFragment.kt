@@ -25,7 +25,7 @@ import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
-import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_TELCO
+import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -99,7 +99,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
 
         arguments?.let {
-            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_TELCO) ?: VoucherGameExtraParam()
+            voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
             voucherGameOperatorData =
                     it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: VoucherGameOperatorAttributes()
         }
@@ -141,7 +141,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+        outState.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
         outState.putParcelable(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorData)
     }
 
@@ -529,7 +529,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                         voucherGameOperatorAttributes: VoucherGameOperatorAttributes): Fragment {
             val fragment = VoucherGameDetailFragment()
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_PARAM_TELCO, voucherGameExtraParam)
+            bundle.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
             bundle.putParcelable(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorAttributes)
             fragment.arguments = bundle
             return fragment
