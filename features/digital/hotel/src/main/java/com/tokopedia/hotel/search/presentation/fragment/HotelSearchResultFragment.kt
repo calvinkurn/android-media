@@ -177,7 +177,7 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
 
         val searchProperties = data.properties
         bottom_action_view.visible()
-        super.renderList(searchProperties, searchProperties.size > 0)
+        super.renderList(searchProperties, searchProperties.isNotEmpty())
         generateSortMenu(data.displayInfo.sort)
         initializeFilterClick(data.displayInfo.filter)
     }
