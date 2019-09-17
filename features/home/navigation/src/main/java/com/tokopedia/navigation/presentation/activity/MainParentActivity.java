@@ -220,26 +220,11 @@ public class MainParentActivity extends BaseActivity implements
         super.onStart();
         if (presenter.isFirstTimeUser()) {
             setDefaultShakeEnable();
-            routeOnboarding();
+            Intent intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalMarketplace.ONBOARDING);
+            startActivity(intent);
+            finish();
         }
-    }
-
-    /**
-     * this is temporary fix for crash MediaPlayer,
-     *  because we already fix it 5times, and still appear on specific device
-     */
-    private void routeOnboarding() {
-        if (Build.MODEL.contains("vivo Y35")
-            || Build.MODEL.contains("vivo Y51L")) {
-            if (Build.VERSION.RELEASE.contains("5.0.2")) {
-                return;
-            }
-        }
-
-        Intent intent = RouteManager.getIntent(this,
-                ApplinkConstInternalMarketplace.ONBOARDING);
-        startActivity(intent);
-        finish();
     }
 
     private void setDefaultShakeEnable() {
