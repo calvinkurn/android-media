@@ -9,6 +9,7 @@ import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.twitter_share.TwitterAuthenticator
 import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
 
 /**
  * @author by milhamj on 9/26/18.
@@ -50,7 +51,7 @@ interface CreatePostContract {
         fun getFeedDetail(postId: String, isAffiliate: Boolean)
 
         fun fetchProductSuggestion(shopId: String,
-                                   onSuccess: (List<ShopProductItem>) -> Unit,
+                                   onSuccess: (List<ProductSuggestionItem>) -> Unit,
                                    onError: (Throwable) -> Unit)
     }
 }

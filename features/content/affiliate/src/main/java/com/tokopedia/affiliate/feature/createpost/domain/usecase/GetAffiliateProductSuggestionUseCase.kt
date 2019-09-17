@@ -2,6 +2,8 @@ package com.tokopedia.affiliate.feature.createpost.domain.usecase
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.affiliate.AffiliateProductItem
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.affiliate.AffiliateProductSuggestion
 import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductSuggestionResponse
 import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
@@ -18,38 +20,26 @@ import javax.inject.Named
 class GetAffiliateProductSuggestionUseCase @Inject constructor(
         @Named(QUERY_AFFILIATE_PRODUCT_SUGGESTION) private val query: String,
         private val graphqlUseCase: MultiRequestGraphqlUseCase)
-    : UseCase<List<ShopProductItem>>() {
-
-    var params: HashMap<String, Any> = hashMapOf()
+    : UseCase<List<AffiliateProductItem>>() {
 
     companion object {
         const val QUERY_AFFILIATE_PRODUCT_SUGGESTION = "query_af_byme_product_suggestion"
-        private const val PARAM_SHOP_ID = "shopID"
-
-        fun createRequestParams(shopId: Int) = HashMap<String, Any>().apply {
-            put(PARAM_SHOP_ID, shopId)
-        }
     }
 
-    override suspend fun executeOnBackground(): List<ShopProductItem> {
-
-        val request = GraphqlRequest(query, ShopProductSuggestionResponse::class.java, params)
+    override suspend fun executeOnBackground(): List<AffiliateProductItem> {
+        val request = GraphqlRequest(query, AffiliateProductSuggestion::class.java)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(request)
 
         val graphqlResponse: GraphqlResponse = graphqlUseCase.executeOnBackground()
 
-        val errors: MutableList<GraphqlError>? = graphqlResponse.getError(ShopProductSuggestionResponse::class.java)
+        val errors: MutableList<GraphqlError>? = graphqlResponse.getError(AffiliateProductSuggestion::class.java)
         if (!TextUtils.isEmpty(errors?.firstOrNull()?.message)) {
             throw MessageErrorException(errors?.first()?.message)
         }
 
-        val response: ShopProductSuggestionResponse = graphqlResponse.getData(ShopProductSuggestionResponse::class.java)
-        if (!TextUtils.isEmpty(response.feedContentTagItems.error)) {
-            throw MessageErrorException(response.feedContentTagItems.error)
-        } else {
-            return response.feedContentTagItems.tagItems
-        }
+        val response: AffiliateProductSuggestion = graphqlResponse.getData(AffiliateProductSuggestion::class.java)
+        return response.affiliateParticularSections.explorePageSection.firstOrNull()?.items ?: arrayListOf()
     }
 }

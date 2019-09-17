@@ -132,7 +132,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     abstract fun onRelatedAddProductClick()
 
-    abstract fun fetchProductSuggestion(onSuccess: (List<ShopProductItem>) -> Unit,
+    abstract fun fetchProductSuggestion(onSuccess: (List<ProductSuggestionItem>) -> Unit,
                                         onError: (Throwable) -> Unit)
 
     override fun initInjector() {
@@ -762,7 +762,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessGetProductSuggestion(tags: List<ShopProductItem>) {
+    private fun onSuccessGetProductSuggestion(tags: List<ProductSuggestionItem>) {
         Log.d("milhamj", tags.toString())
     }
 
