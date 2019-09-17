@@ -76,6 +76,7 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
                 isAddingProduct = false
             } catch (e: Exception) {
                 clearCache()
+                super.initVar(savedInstanceState)
             }
         }
     }
