@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -696,6 +697,27 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvLogTicker.setVariant(TickerPromoStackingCheckoutView.Variant.LOGISTIC);
             tvLogTicker.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
                     shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState()));
+            tvLogTicker.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
+                @Override
+                public void onClickUsePromo() {
+
+                }
+
+                @Override
+                public void onResetPromoDiscount() {
+                    Toast.makeText(itemView.getContext(), "To Do: Add clear promo here", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onClickDetailPromo() {
+
+                }
+
+                @Override
+                public void onDisablePromoDiscount() {
+
+                }
+            });
             boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
 
             tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
