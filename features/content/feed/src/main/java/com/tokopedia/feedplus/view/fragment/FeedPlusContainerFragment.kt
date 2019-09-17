@@ -266,14 +266,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
                 layout_grey_popup.visibility = View.VISIBLE
                 for (author in whitelistDomain.authors) {
-                    if (author.title.equals(Author.KEY_POST_TOKO, ignoreCase = true)) {
-                        fab_feed_shop.show()
-                        text_fab_shop.visibility = View.VISIBLE
-                        fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
-                    } else {
+                    if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
                         fab_feed_byme.show()
                         text_fab_byme.visibility = View.VISIBLE
+                        text_fab_byme.text = author.title
                         fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
+                    } else {
+                        fab_feed_shop.show()
+                        text_fab_shop.visibility = View.VISIBLE
+                        text_fab_shop.text = author.title
+                        fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
                     }
                 }
                 layout_grey_popup.setOnClickListener { hideAllFab(false) }
