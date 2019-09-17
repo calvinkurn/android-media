@@ -28,6 +28,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormOneClickShipe
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.ClearNotEligiblePromoSubscriber;
@@ -1752,11 +1753,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (getRecipientAddressModel() != null) {
             cornerId = getRecipientAddressModel().isCornerAddress();
         }
-
-        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentCartItemModel.getIsLeasingProduct(), shippingParam, spId, 0,
-                shopShipmentList, new GetCourierRecommendationSubscriber(
-                        getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
-                        shipmentCartItemModel, shopShipmentList, isInitialLoad));
+        String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
+        getCourierRecommendationUseCase.execute(query, counter, cornerId, shipmentCartItemModel.getIsLeasingProduct(), pslCode, spId, 0, shopShipmentList, new GetCourierRecommendationSubscriber(
+                getView(), this, shipperId, spId, itemPosition, shippingCourierConverter,
+                shipmentCartItemModel, shopShipmentList, isInitialLoad), shippingParam
+        );
     }
 
     @NonNull

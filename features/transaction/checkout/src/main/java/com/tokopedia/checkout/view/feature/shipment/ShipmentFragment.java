@@ -2247,9 +2247,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 codHistory = shipmentPresenter.getCodData().getCounterCod();
             }
             if (shipmentDetailData != null) {
+                String pslCode = RatesDataConverter.getLogisticPromoCode(shipmentCartItemModel);
                 shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
                         shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
-                        recipientAddressModel, cartPosition, codHistory, shipmentCartItemModel.getIsLeasingProduct());
+                        recipientAddressModel, cartPosition, codHistory,
+                        shipmentCartItemModel.getIsLeasingProduct(), pslCode);
                 shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
                 if (getActivity() != null) {
