@@ -16,6 +16,7 @@
 /features/discovery/productcard/        @tokopedia/minion-dave
 /features/discovery/search/             @tokopedia/minion-dave
 /features/discovery/filter/             @tokopedia/minion-dave
+/features/discovery/imagesearch/        @tokopedia/minion-dave
 /features/digital/digital_browse/       @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
