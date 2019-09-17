@@ -20,16 +20,14 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.manager.SimilarSearchManager;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -39,6 +37,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchEventTracking;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
@@ -57,7 +57,7 @@ import com.tokopedia.search.result.presentation.view.listener.SearchPerformanceM
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory;
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl;
-import com.tokopedia.search.similarsearch.SimilarSearchManager;
+import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -85,6 +85,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
 public class ProductListFragment
         extends SearchSectionFragment
@@ -300,6 +303,7 @@ public class ProductListFragment
         adsParams.getParam().put(TopAdsParams.KEY_USER_ID, userSession.getUserId());
 
         if(getSearchParameter() != null) {
+            getSearchParameter().cleanUpNullValuesInMap();
             adsParams.getParam().putAll(getSearchParameter().getSearchParameterHashMap());
         }
 
@@ -335,10 +339,7 @@ public class ProductListFragment
 
         stopSearchResultPagePerformanceMonitoring();
         addProductList(list);
-
-        if (similarSearchManager.isSimilarSearchEnable()){
-            startShowCase();
-        }
+        startShowCase();
     }
 
     private void stopSearchResultPagePerformanceMonitoring() {
@@ -537,7 +538,7 @@ public class ProductListFragment
     public void onLongClick(ProductItemViewModel item, int adapterPosition) {
         if(similarSearchManager == null || getSearchParameter() == null) return;
 
-        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item);
+        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item.getProductID());
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
@@ -752,7 +753,7 @@ public class ProductListFragment
 
     @Override
     public Map<String, String> getAdditionalParamsMap() {
-        return NetworkParamHelper.getParamMap(additionalParams);
+        return UrlParamUtils.getParamMap(additionalParams);
     }
 
     @Override
@@ -977,7 +978,7 @@ public class ProductListFragment
         if (getActivity() == null) {
             return false;
         }
-        return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
+        return !ShowCasePreference.hasShown(getActivity(), tag);
     }
 
     private ShowCaseDialog createShowCaseDialog() {
@@ -1015,13 +1016,9 @@ public class ProductListFragment
 
         if (getActivity() == null) return;
 
-        DiscoveryRouter router = (DiscoveryRouter) getActivity().getApplicationContext();
-
-        if (router != null) {
-            Intent intent = router.getLoginIntent(getActivity());
-            intent.putExtras(extras);
-            startActivityForResult(intent, REQUEST_CODE_LOGIN);
-        }
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN);
+        intent.putExtras(extras);
+        startActivityForResult(intent, REQUEST_CODE_LOGIN);
     }
 
     @Override
@@ -1074,6 +1071,21 @@ public class ProductListFragment
     private void finishActivity() {
         if(getActivity() != null) {
             getActivity().finish();
+        }
+    }
+
+    @Override
+    public void setDefaultLayoutType(int defaultView) {
+        switch (defaultView) {
+            case SearchConstant.DefaultViewType.SMALL_GRID:
+                switchLayoutTypeTo(SMALL_GRID);
+                break;
+            case SearchConstant.DefaultViewType.LIST:
+                switchLayoutTypeTo(LIST);
+                break;
+            default:
+                switchLayoutTypeTo(SMALL_GRID);
+                break;
         }
     }
 }

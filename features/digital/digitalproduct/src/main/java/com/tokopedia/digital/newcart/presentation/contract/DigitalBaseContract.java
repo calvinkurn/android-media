@@ -100,12 +100,9 @@ public interface DigitalBaseContract {
 
         void setCheckoutParameter(CheckoutDataParameter.Builder builder);
 
-        boolean isAlreadyShowPostPaid();
-
         void showPostPaidDialog(String title,
                                 String content,
-                                String confirmButtonTitle,
-                                String userId);
+                                String confirmButtonTitle);
 
         void startPerfomanceMonitoringTrace();
 
