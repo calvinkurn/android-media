@@ -210,10 +210,10 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         topAdsRecyclerAdapter.setSpanSizeLookup(onSpanSizeLookup());
         recyclerView.setAdapter(topAdsRecyclerAdapter);
         recyclerView.addItemDecoration(new ProductItemDecoration(
-                getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                getContext().getResources().getColor(R.color.white)
+                getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                getContext().getResources().getColor(com.tokopedia.design.R.color.white)
                 ));
-        recyclerView.setBackgroundColor(getContext().getResources().getColor(R.color.white));
+        recyclerView.setBackgroundColor(getContext().getResources().getColor(com.tokopedia.design.R.color.white));
         topAdsRecyclerAdapter.setLayoutManager(getGridLayoutManager());
         topAdsRecyclerAdapter.setOnLoadListener(new TopAdsRecyclerAdapter.OnLoadListener() {
             @Override
@@ -456,7 +456,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
     }
 
     @Override
@@ -470,7 +470,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     public void onErrorRemoveWishlist(String errorMessage, String productId) {
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.default_request_error_unknown));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
     }
 
     @Override

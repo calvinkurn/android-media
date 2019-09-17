@@ -120,10 +120,10 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     protected void initView() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        container = (FrameLayout) findViewById(R.id.container);
-        loadingView = findViewById(R.id.progressBar);
-        root = findViewById(R.id.root);
+        toolbar = (Toolbar) findViewById(com.tokopedia.imagepicker.R.id.toolbar);
+        container = (FrameLayout) findViewById(com.tokopedia.design.R.id.container);
+        loadingView = findViewById(com.tokopedia.abstraction.R.id.progressBar);
+        root = findViewById(com.tokopedia.topads.sdk.R.id.root);
     }
 
     protected void prepareView() {
@@ -330,7 +330,7 @@ public class ImageSearchActivity extends BaseActivity
         );
 
         ImagePickerBuilder builder = new ImagePickerBuilder(
-                getString(R.string.choose_image),
+                getString(com.tokopedia.imagepicker.R.string.choose_image),
                 createImagePickerTabTypes(),
                 GalleryType.IMAGE_ONLY,
                 ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
@@ -544,7 +544,7 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     private void loadSection(ProductViewModel productViewModel) {
-        addFragment(R.id.container, ImageSearchProductListFragment.newInstance(productViewModel));
+        addFragment(com.tokopedia.design.R.id.container, ImageSearchProductListFragment.newInstance(productViewModel));
 
         showContainer(true);
     }
