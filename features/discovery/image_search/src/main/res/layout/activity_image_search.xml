@@ -39,7 +39,7 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/tkpd_bg_color"
+        android:background="@color/image_search_bg_color"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     </FrameLayout>

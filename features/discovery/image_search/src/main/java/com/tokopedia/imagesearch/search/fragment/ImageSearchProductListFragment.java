@@ -464,7 +464,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         ImageSearchTracking.eventSearchResultProductWishlistClick(true, getQueryKey(), userSession.getUserId());
         adapter.updateWishlistStatus(productId, true);
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.image_search_msg_add_wishlist));
     }
 
     @Override
@@ -478,7 +478,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
         ImageSearchTracking.eventSearchResultProductWishlistClick(false, getQueryKey(), userSession.getUserId());
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
-        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.image_search_msg_remove_wishlist));
     }
 
     @Override

@@ -163,7 +163,7 @@ public class ImageSearchActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
+        getMenuInflater().inflate(R.menu.menu_image_search, menu);
         searchItem = menu.findItem(R.id.action_search);
         return true;
     }
@@ -435,7 +435,7 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     private void errorHandlingImagePicker() {
-        Toast.makeText(this, getString(R.string.error_gallery_valid), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.image_search_error_gallery_valid), Toast.LENGTH_LONG).show();
         finish();
     }
 
