@@ -80,7 +80,7 @@ class FollowRecommendationPresenter @Inject constructor(
         )
     }
 
-    private fun getRecommendationCardList(query: FollowRecommendationQuery): List<FollowRecommendationCardViewModel> = query.data.mapIndexed { index, data ->
+    private fun getRecommendationCardList(query: FollowRecommendationQuery): List<FollowRecommendationCardViewModel> = query.data.map { data ->
         FollowRecommendationCardViewModel(
                 header = query.meta.assets.title,
                 image1Url = if (data.media.isNotEmpty()) data.media[0].thumbnail else "",
@@ -93,8 +93,7 @@ class FollowRecommendationPresenter @Inject constructor(
                 enabledFollowText = data.header.followCta.textFalse,
                 disabledFollowText = data.header.followCta.textTrue,
                 isFollowed = data.header.followCta.isFollow,
-//                authorId = data.header.followCta.authorID
-        authorId = System.currentTimeMillis().toString()
+                authorId = data.header.followCta.authorID
         )
     }
 

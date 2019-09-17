@@ -105,12 +105,10 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
             this.layoutManager = layoutManager
             scrollListener = object: EndlessRecyclerViewScrollListener(layoutManager) {
                 override fun onLoadMore(page: Int, totalItemsCount: Int) {
-//                    if (cursor != "") {
-//                        followRecommendationAdapter.showLoading()
-//                        presenter.getFollowRecommendationList(interestIds, cursor)
-//                    }
-                    followRecommendationAdapter.showLoading()
-                    presenter.getFollowRecommendationList(interestIds, cursor)
+                    if (cursor != "") {
+                        followRecommendationAdapter.showLoading()
+                        presenter.getFollowRecommendationList(interestIds, cursor)
+                    }
                 }
             }
             addOnScrollListener(scrollListener)
