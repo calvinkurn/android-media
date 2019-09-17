@@ -35,7 +35,8 @@ ext {
             graphql               : "com.tokopedia.graphql:graphql:1.0.4",
             network               : "com.tokopedia.network:network:1.0.2",
             url                   : "com.tokopedia.url:url:1.0.1",
-            usersession           : "com.tokopedia.user.session:user_session:1.0.6"
+            usersession           : "com.tokopedia.user.session:user_session:1.0.6",
+            authentication        : "com.tokopedia.authentication:authentication:1.0.0"
     ]
 
     // Sort and categorize alphabetically by folder name

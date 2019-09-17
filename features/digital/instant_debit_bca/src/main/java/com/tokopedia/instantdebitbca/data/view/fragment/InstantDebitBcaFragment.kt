@@ -23,6 +23,7 @@ import com.tokopedia.instantdebitbca.data.view.presenter.InstantDebitBcaPresente
 import com.tokopedia.instantdebitbca.data.view.utils.DeviceUtil
 import com.tokopedia.instantdebitbca.data.view.utils.InstantDebitBcaInstance
 import com.tokopedia.network.utils.AuthUtil
+import com.tokopedia.authentication
 import com.tokopedia.user.session.UserSessionInterface
 import org.json.JSONObject
 import java.util.*
