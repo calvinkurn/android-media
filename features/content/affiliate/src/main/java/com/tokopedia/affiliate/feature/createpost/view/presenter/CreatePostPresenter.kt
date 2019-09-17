@@ -2,23 +2,25 @@ package com.tokopedia.affiliate.feature.createpost.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
-import com.tokopedia.affiliate.feature.createpost.domain.usecase.*
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetFeedForEditUseCase
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetProductSuggestionUseCase
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetShopProductSuggestionUseCase
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.feedcomponent.data.pojo.profileheader.ProfileHeaderData
-import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase.Companion.SOURCE_DETAIL
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.debugTrace
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.twitter_share.TwitterManager
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -45,7 +47,7 @@ class CreatePostPresenter @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.IO
 
-    companion object{
+    companion object {
         private const val MESSAGE_POST_NOT_FOUND = "Post tidak ditemukan"
     }
 
@@ -178,11 +180,16 @@ class CreatePostPresenter @Inject constructor(
         })
     }
 
-    override fun fetchProductSuggestion(shopId: String,
+    override fun fetchProductSuggestion(type: String,
                                         onSuccess: (List<ProductSuggestionItem>) -> Unit,
                                         onError: (Throwable) -> Unit) {
-        getProductSuggestionUseCase.params =
-                GetShopProductSuggestionUseCase.createRequestParams(shopId.toIntOrZero())
+        if (type == ProductSuggestionItem.TYPE_SHOP) {
+            getProductSuggestionUseCase.params =
+                    GetShopProductSuggestionUseCase.createRequestParams(
+                            userSession.shopId.toIntOrZero()
+                    )
+        }
+        getProductSuggestionUseCase.type = type
         getProductSuggestionUseCase.execute(onSuccess, onError)
     }
 

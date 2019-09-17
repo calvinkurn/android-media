@@ -1,8 +1,6 @@
 package com.tokopedia.affiliate.feature.createpost.domain.usecase
 
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.affiliate.AffiliateProductItem
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
-import com.tokopedia.affiliate.feature.createpost.view.viewmodel.RelatedProductItem
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
@@ -15,32 +13,36 @@ class GetProductSuggestionUseCase @Inject constructor(
 ) : UseCase<List<ProductSuggestionItem>>() {
 
     var params: HashMap<String, Any> = hashMapOf()
-    var isAffiliateType = true
+    var type: String = ""
 
     override suspend fun executeOnBackground(): List<ProductSuggestionItem> {
-        return if (isAffiliateType)  {
-            getAffiliateProductSuggestionUseCase.executeOnBackground().map {
-                ProductSuggestionItem(
-                        it.productId.toString(),
-                        it.adId.toString(),
-                        it.title,
-                        it.commissionValueDisplay,
-                        it.image,
-                        ProductSuggestionItem.TYPE_AFFILIATE
-                )
+        return when (type) {
+            ProductSuggestionItem.TYPE_AFFILIATE -> {
+                getAffiliateProductSuggestionUseCase.executeOnBackground().map {
+                    ProductSuggestionItem(
+                            it.productId.toString(),
+                            it.adId.toString(),
+                            it.title,
+                            it.commissionValueDisplay,
+                            it.image,
+                            ProductSuggestionItem.TYPE_AFFILIATE
+                    )
+                }
             }
-        } else {
-            getShopProductSuggestionUseCase.params = params
-            getShopProductSuggestionUseCase.executeOnBackground().map {
-                ProductSuggestionItem(
-                        it.id,
-                        "",
-                        it.name,
-                        it.price,
-                        it.imageUri,
-                        ProductSuggestionItem.TYPE_SHOP
-                )
+            ProductSuggestionItem.TYPE_SHOP -> {
+                getShopProductSuggestionUseCase.params = params
+                getShopProductSuggestionUseCase.executeOnBackground().map {
+                    ProductSuggestionItem(
+                            it.id,
+                            "",
+                            it.name,
+                            it.price,
+                            it.imageUri,
+                            ProductSuggestionItem.TYPE_SHOP
+                    )
+                }
             }
+            else -> throw IllegalStateException("Unsupported type: $type")
         }
     }
 

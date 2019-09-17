@@ -1,15 +1,13 @@
 package com.tokopedia.affiliate.feature.createpost.view.contract
 
 import android.content.Context
-
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
-import com.tokopedia.twitter_share.TwitterAuthenticator
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
+import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
+import com.tokopedia.twitter_share.TwitterAuthenticator
 
 /**
  * @author by milhamj on 9/26/18.
@@ -50,7 +48,7 @@ interface CreatePostContract {
 
         fun getFeedDetail(postId: String, isAffiliate: Boolean)
 
-        fun fetchProductSuggestion(shopId: String,
+        fun fetchProductSuggestion(type: String,
                                    onSuccess: (List<ProductSuggestionItem>) -> Unit,
                                    onError: (Throwable) -> Unit)
     }
