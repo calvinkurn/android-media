@@ -31,7 +31,7 @@ import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
-import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterTypeFactoryImpl
+import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactoryImpl
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.presenter.NotificationUpdatePresenter
@@ -42,13 +42,15 @@ import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateIte
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
+import com.tokopedia.navigation.widget.ChipFilterItemDivider
 import javax.inject.Inject
 
 /**
  * @author : Steven 10/04/19
  */
 class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
-        , NotificationUpdateContract.View, NotificationSectionFilterListener, NotificationUpdateItemListener {
+        , NotificationUpdateContract.View, NotificationSectionFilterListener,
+        NotificationUpdateItemListener, NotificationUpdateFilterAdapter.FilterAdapterListener {
 
     private var cursor = ""
     private var lastItem = 0
@@ -60,8 +62,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private lateinit var bottomActionView: BottomActionView
 
     private lateinit var filterRecyclerView: RecyclerView
-    val filterAdapter = NotificationUpdateFilterAdapter(NotificationUpdateFilterTypeFactoryImpl(this))
     private lateinit var longerTextDialog: BottomSheetDialogFragment
+    private val filterAdapter = NotificationUpdateFilterAdapter(
+            NotificationUpdateFilterSectionTypeFactoryImpl(),
+            this
+    )
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return NotificationUpdateTypeFactoryImpl(this)
@@ -140,8 +145,15 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             }
         })
 
+
         filterRecyclerView = view.findViewById(R.id.filter_list)
         filterRecyclerView.adapter = filterAdapter
+        filterRecyclerView.addItemDecoration(ChipFilterItemDivider(context))
+    }
+
+    override fun updateFilter(filter: HashMap<String, Int>) {
+        presenter.updateFilter(filter)
+        loadInitialData()
     }
 
     private fun onSuccessMarkAllReadNotificationUpdate(): () -> Unit {
@@ -315,10 +327,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit {
         return {
             filterViewModel = it
-            filterAdapter.addElement(filterViewModel)
             var bottomSheetDialog = CloseableBottomSheetDialog.createInstanceRounded(activity)
             bottomSheetDialog.setCustomContentView(createFilterView(), "", false)
             this.bottomSheetDialog = bottomSheetDialog
+
+            filterAdapter.updateData(it)
         }
     }
 

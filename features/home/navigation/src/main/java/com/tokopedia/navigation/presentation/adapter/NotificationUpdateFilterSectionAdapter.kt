@@ -13,7 +13,7 @@ open class NotificationUpdateFilterSectionAdapter(
         typeFactory: NotificationUpdateFilterSectionTypeFactoryImpl)
     :BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(typeFactory) {
 
-
+//
     override fun addElement(visitables: List<Visitable<*>>) {
         var position = visitables.size-1
         this.visitables.addAll(visitables)

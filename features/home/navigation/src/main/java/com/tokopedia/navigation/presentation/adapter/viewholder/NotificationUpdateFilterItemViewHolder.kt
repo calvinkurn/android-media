@@ -19,27 +19,26 @@ import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFi
  * @author : Steven 10/04/19
  */
 class NotificationUpdateFilterItemViewHolder(itemView: View, var listener: NotificationSectionFilterListener)
-    : AbstractViewHolder<NotificationUpdateFilterItemViewModel>(itemView),
-        ItemSectionListener{
+    : AbstractViewHolder<NotificationUpdateFilterItemViewModel>(itemView) {
 
     private var selectedPosition = -1
 
-    override fun itemSectionPicked(id: Int, filterType: String) {
-        val oldPosition = selectedPosition
-        selectedPosition = if(id == selectedPosition){
-            -1
-        }else {
-            id
-        }
-        val newPosition = selectedPosition
-
-        val adapter = listFilterItemSectionRecyclerView.adapter as NotificationUpdateFilterSectionAdapter
-        adapter?.let {
-            changeSelected(oldPosition, it, false)
-            changeSelected(newPosition, it, true)
-        }
-        listener.sectionPicked(adapterPosition, newPosition)
-    }
+//    override fun itemSectionPicked(id: Int, filterType: String) {
+//        val oldPosition = selectedPosition
+//        selectedPosition = if(id == selectedPosition){
+//            -1
+//        }else {
+//            id
+//        }
+//        val newPosition = selectedPosition
+//
+//        val adapter = listFilterItemSectionRecyclerView.adapter as NotificationUpdateFilterSectionAdapter
+//        adapter?.let {
+//            changeSelected(oldPosition, it, false)
+//            changeSelected(newPosition, it, true)
+//        }
+//        listener.sectionPicked(adapterPosition, newPosition)
+//    }
 
     private fun changeSelected(position: Int, adapter: NotificationUpdateFilterSectionAdapter,
                                selected: Boolean) {
@@ -65,35 +64,35 @@ class NotificationUpdateFilterItemViewHolder(itemView: View, var listener: Notif
     }
 
     override fun bind(element: NotificationUpdateFilterItemViewModel) {
-        title.text = element.title
-        val chipsLayoutManager = ChipsLayoutManager.newBuilder(listFilterItemSectionRecyclerView.context)
-                .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                .build()
-        listFilterItemSectionRecyclerView.let {
-            val staticDimen8dp = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)
-            it.addItemDecoration(SpacingItemDecoration(staticDimen8dp))
-            it.layoutManager = chipsLayoutManager
-            val filterSectionItemAdapter =
-                    NotificationUpdateFilterSectionAdapter(
-                            NotificationUpdateFilterSectionTypeFactoryImpl(this, element.filterType))
-            it.adapter = filterSectionItemAdapter
-            filterSectionItemAdapter.addElement(element.list)
-        }
+//        title.text = element.title
+//        val chipsLayoutManager = ChipsLayoutManager.newBuilder(listFilterItemSectionRecyclerView.context)
+//                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+//                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+//                .build()
+//        listFilterItemSectionRecyclerView.let {
+//            val staticDimen8dp = itemView.context.resources.getDimensionPixelOffset(R.dimen.dp_8)
+//            it.addItemDecoration(SpacingItemDecoration(staticDimen8dp))
+//            it.layoutManager = chipsLayoutManager
+//            val filterSectionItemAdapter =
+//                    NotificationUpdateFilterSectionAdapter(
+//                            NotificationUpdateFilterSectionTypeFactoryImpl(this, element.filterType))
+//            it.adapter = filterSectionItemAdapter
+//            filterSectionItemAdapter.addElement(element.list)
+//        }
     }
 
-    override fun bind(element: NotificationUpdateFilterItemViewModel?, payloads: MutableList<Any>) {
-        super.bind(element, payloads)
-
-        if (element == null || payloads.isEmpty() || payloads[0] !is Int) {
-            return
-        }
-        selectedPosition = -1
-        bindSelectedView(payloads[0] as Int)
-    }
+//    override fun bind(element: NotificationUpdateFilterItemViewModel?, payloads: MutableList<Any>) {
+//        super.bind(element, payloads)
+//
+//        if (element == null || payloads.isEmpty() || payloads[0] !is Int) {
+//            return
+//        }
+//        selectedPosition = -1
+//        bindSelectedView(payloads[0] as Int)
+//    }
 
     private fun bindSelectedView(index: Int) {
-        listFilterItemSectionRecyclerView.adapter?.notifyItemChanged(index)
+//        listFilterItemSectionRecyclerView.adapter?.notifyItemChanged(index)
     }
 
 
@@ -107,6 +106,6 @@ class NotificationUpdateFilterItemViewHolder(itemView: View, var listener: Notif
     }
 }
 
-interface ItemSectionListener {
-    fun itemSectionPicked(id: Int, filterType: String)
-}
+//interface ItemSectionListener {
+//    fun itemSectionPicked(id: Int, filterType: String)
+//}
