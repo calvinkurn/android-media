@@ -17,6 +17,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -85,15 +86,5 @@ public class ShopPageModule {
                 R.raw.mutation_moderate_shop
         );
     }
-
-    @ShopPageScope
-    @Provides
-    @Named(ShopPageConstant.SHOP_FAVORITE_QUERY)
-    public String favoriteQuery(@ApplicationContext Context context) {
-        return GraphqlHelper.loadRawString(
-                context.getResources(),
-                R.raw.gql_get_shop_favorite_status);
-    }
-
 
 }

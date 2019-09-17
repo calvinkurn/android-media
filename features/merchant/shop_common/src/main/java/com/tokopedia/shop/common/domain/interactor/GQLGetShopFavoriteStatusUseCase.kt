@@ -9,18 +9,17 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
-class GQLGetShopInfoUseCase(private var gqlQuery: String,
-                            private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ShopInfo>() {
+class GQLGetShopFavoriteStatusUseCase(val gqlQuery: String,
+                                      private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ShopInfo>() {
 
     var params: RequestParams = RequestParams.EMPTY
-    var isFromCacheFirst: Boolean = true
 
     override suspend fun executeOnBackground(): ShopInfo {
         val gqlRequest = GraphqlRequest(gqlQuery, ShopInfo.Response::class.java, params.parameters)
         gqlUseCase.clearRequest()
         gqlUseCase.addRequest(gqlRequest)
         gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(if (isFromCacheFirst) CacheType.CACHE_FIRST else CacheType.ALWAYS_CLOUD).build())
+                .Builder(CacheType.ALWAYS_CLOUD).build())
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopInfo.Response::class.java)
