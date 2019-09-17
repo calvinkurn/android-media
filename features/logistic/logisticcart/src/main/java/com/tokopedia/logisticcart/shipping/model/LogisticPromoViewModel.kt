@@ -15,7 +15,8 @@ data class LogisticPromoViewModel(val promoCode: String,
                                   val shipperProductId: Int,
                                   val shipperDesc: String,
                                   val disableText: String,
-                                  val dialogMsg: String) : RatesViewModelType, Parcelable {
+                                  val dialogMsg: String,
+                                  val isApplied: Int) : RatesViewModelType, Parcelable {
     constructor(source: Parcel) : this(
             source.readString(),
             source.readString(),
@@ -26,7 +27,8 @@ data class LogisticPromoViewModel(val promoCode: String,
             source.readInt(),
             source.readString(),
             source.readString(),
-            source.readString()
+            source.readString(),
+            source.readInt()
     )
 
     override fun describeContents() = 0
@@ -42,6 +44,7 @@ data class LogisticPromoViewModel(val promoCode: String,
         writeString(shipperDesc)
         writeString(disableText)
         writeString(dialogMsg)
+        writeInt(isApplied)
     }
 
     companion object {
