@@ -46,5 +46,7 @@ class ProductSuggestionAdapter :
         notifyDataSetChanged()
     }
 
+    fun isEmpty(): Boolean = this.list.isEmpty()
+
     class SuggestionViewHolder(v: View): RecyclerView.ViewHolder(v)
 }

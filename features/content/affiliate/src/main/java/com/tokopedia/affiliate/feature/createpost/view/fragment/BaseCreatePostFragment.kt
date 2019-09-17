@@ -92,8 +92,12 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         DefaultCaptionsAdapter(this::onDefaultCaptionClicked)
     }
 
-    private val shareAdapter by lazy {
+    private val shareAdapter: ShareBottomSheetAdapter by lazy {
         ShareBottomSheetAdapter(::onShareButtonClicked)
+    }
+
+    private val productSuggestionAdapter: ProductSuggestionAdapter by lazy {
+        ProductSuggestionAdapter()
     }
 
     private lateinit var shareDialogView: View
@@ -282,6 +286,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     override fun showLoading() {
         action_bottom.gone()
         layout_default_caption.gone()
+        hideProductSuggestion()
         view?.showLoading()
     }
 
@@ -515,9 +520,11 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         caption.onFocusChangeListener = View.OnFocusChangeListener{ _, hasFocus ->
             if (hasFocus){
                 layout_default_caption.visible()
+                hideProductSuggestion()
                 action_bottom.gone()
             } else {
                 layout_default_caption.gone()
+                showProductSuggestion()
                 if (!viewModel.isEditState) action_bottom.visible() else action_bottom.gone()
             }
         }
@@ -762,10 +769,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetProductSuggestion(tags: List<ProductSuggestionItem>) {
-        val adapter = ProductSuggestionAdapter()
-        adapter.addAll(tags)
-        layout_product_suggestion.visible()
-        list_product_suggestion.adapter = adapter
+        productSuggestionAdapter.addAll(tags)
+        list_product_suggestion.adapter = productSuggestionAdapter
+        showProductSuggestion()
     }
 
     private fun onErrorGetProductSuggestion(t: Throwable) {
@@ -775,6 +781,21 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
         }
     }
+
+    private fun showProductSuggestion() {
+        if (shouldShowProductSuggestion()) {
+            layout_product_suggestion.visible()
+        }
+    }
+
+    private fun hideProductSuggestion() {
+        layout_product_suggestion.gone()
+    }
+
+    private fun shouldShowProductSuggestion(): Boolean {
+        return !productSuggestionAdapter.isEmpty() && viewModel.relatedProducts.isEmpty()
+    }
+
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
 
