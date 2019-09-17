@@ -152,7 +152,7 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
         dialog.setBtnOk(getString(R.string.af_leave_title))
         dialog.setBtnCancel(getString(R.string.af_continue))
         dialog.setOnOkClickListener{
-            (supportFragmentManager.findFragmentByTag("TAG_FRAGMENT") as? AffiliateCreatePostFragment)?.clearCache()
+            (fragment as? AffiliateCreatePostFragment)?.clearCache()
             dialog.dismiss()
             finish()
         }
