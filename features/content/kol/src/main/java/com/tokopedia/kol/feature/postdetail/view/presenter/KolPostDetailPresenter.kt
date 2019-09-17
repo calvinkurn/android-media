@@ -71,6 +71,7 @@ class KolPostDetailPresenter @Inject constructor(
         sendVoteUseCase.unsubscribe()
         atcUseCase.unsubscribe()
         getRelatedPostUseCase.unsubscribe()
+        getWhitelistUseCase.unsubscribe()
     }
 
     override fun getCommentFirstTime(id: Int) {
