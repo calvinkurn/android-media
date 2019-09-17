@@ -21,11 +21,11 @@ import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldAttributeModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.EgoldTieringModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.AnalyticsProductCheckoutData;
-import com.tokopedia.shipping_recommendation.domain.shipping.CodModel;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipProd;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShopShipment;
 import com.tokopedia.transactiondata.entity.response.cartlist.AutoapplyStack;
+import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
+import com.tokopedia.logisticcart.shipping.model.CodModel;
+import com.tokopedia.logisticcart.shipping.model.ShipProd;
+import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.transactiondata.entity.response.cartlist.EgoldTieringData;
 import com.tokopedia.transactiondata.entity.response.cartlist.Message;
 import com.tokopedia.transactiondata.entity.response.cartlist.TrackingDetail;
@@ -258,6 +258,11 @@ public class ShipmentMapper implements IShipmentMapper {
                         groupShopResult.setCartString(groupShop.getCartString() != null ? groupShop.getCartString() : "");
                         groupShopResult.setHasPromoList(groupShop.isHasPromoList());
                         groupShopResult.setSaveStateFlag(groupShop.isSaveStateFlag());
+
+                        if (groupShop.getVehicleLeasing() != null) {
+                            groupShopResult.setIsLeasingProduct(groupShop.getVehicleLeasing().isLeasingProduct());
+                            groupShopResult.setBookingFee(groupShop.getVehicleLeasing().getBookingFee());
+                        }
 
                         groupShopResult.setFulfillment(groupShop.isFulfillment());
                         if (groupShop.getWarehouse() != null) {

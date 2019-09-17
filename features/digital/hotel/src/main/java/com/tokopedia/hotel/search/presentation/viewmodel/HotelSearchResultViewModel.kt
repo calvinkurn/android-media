@@ -18,14 +18,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Named
 
 class HotelSearchResultViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
-        dispatcher: CoroutineDispatcher,
-        @Named("search_query")
-        private val searchQuery: String
-): BaseViewModel(dispatcher){
+        dispatcher: CoroutineDispatcher)
+    : BaseViewModel(dispatcher) {
 
     val searchParam: SearchParam = SearchParam()
     var selectedSort: Sort = Sort()
@@ -41,7 +38,7 @@ class HotelSearchResultViewModel @Inject constructor(
                         checkIn: String, checkOut: String, totalRoom: Int, totalAdult: Int) {
         if (type == TYPE_CITY)
             searchParam.location.cityID = destinationID
-        else if (type == TYPE_DISTRICT){
+        else if (type == TYPE_DISTRICT) {
             searchParam.location.districtID = destinationID
         } else {
             searchParam.location.regionID = destinationID
@@ -58,22 +55,22 @@ class HotelSearchResultViewModel @Inject constructor(
         addSort(Sort("popularity"))
     }
 
-    fun searchProperty(page: Int){
+    fun searchProperty(page: Int, searchQuery: String) {
         searchParam.page = page
         launchCatchError(block = {
             val params = mapOf(PARAM_SEARCH_PROPERTY to searchParam)
             val graphqlRequest = GraphqlRequest(searchQuery, PropertySearch.Response::class.java, params)
 
-            val response = withContext(Dispatchers.IO){ graphqlRepository.getReseponse(listOf(graphqlRequest)) }
+            val response = withContext(Dispatchers.IO) { graphqlRepository.getReseponse(listOf(graphqlRequest)) }
             liveSearchResult.value = Success(response.getSuccessData<PropertySearch.Response>().response)
-        }){
+        }) {
             liveSearchResult.value = Fail(it)
         }
     }
 
     fun addSort(sort: Sort) {
         selectedSort = sort
-        with(searchParam.sort){
+        with(searchParam.sort) {
             popularity = sort.name.toLowerCase() == "popularity"
             price = sort.name.toLowerCase() == "price"
             ranking = sort.name.toLowerCase() == "ranking"
@@ -81,14 +78,14 @@ class HotelSearchResultViewModel @Inject constructor(
             reviewScore = sort.name.toLowerCase() == "reviewscore"
 
             // to be edited
-            if (popularity||reviewScore||star) sortDir = "desc"
+            if (popularity || reviewScore || star) sortDir = "desc"
             else if (price) sortDir = "asc"
             else sortDir = "desc"
 
         }
     }
 
-    fun addFilter(filter: ParamFilter){
+    fun addFilter(filter: ParamFilter) {
         searchParam.filter = filter
         isFilter = true
     }

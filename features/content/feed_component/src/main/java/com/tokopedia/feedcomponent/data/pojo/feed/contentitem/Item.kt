@@ -17,8 +17,14 @@ data class Item (
     @Expose
     var media: MutableList<Media> = ArrayList(),
 
+    @SerializedName("footer")
+    @Expose
+    val footer: Footer = Footer(),
+
     @SerializedName("tracking")
     @Expose
     val tracking: List<Tracking> = ArrayList()
+
+
 
 )

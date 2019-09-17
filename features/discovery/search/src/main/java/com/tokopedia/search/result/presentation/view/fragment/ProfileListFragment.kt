@@ -14,17 +14,23 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID
 import com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE
-import com.tokopedia.discovery.common.data.Option
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking
+import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.search.R
+import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.ProfileListSectionContract
 import com.tokopedia.search.result.presentation.model.EmptySearchProfileViewModel
 import com.tokopedia.search.result.presentation.model.ProfileListViewModel
 import com.tokopedia.search.result.presentation.model.ProfileViewModel
 import com.tokopedia.search.result.presentation.model.TotalSearchCountViewModel
-import com.tokopedia.search.result.presentation.view.listener.*
+import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener
+import com.tokopedia.search.result.presentation.view.listener.ProfileListener
+import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProfileListTypeFactory
 import com.tokopedia.search.result.presentation.view.typefactory.ProfileListTypeFactoryImpl
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -58,7 +64,32 @@ class ProfileListFragment :
 
     var query : String = ""
 
+    var searchParameter: SearchParameter? = null
+
     var nextPage : Int = 1
+
+    var hasLoadData = false
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+
+        context?.let {
+            attachNavigationListener(it)
+            attachRedirectionListener(it)
+        }
+    }
+
+    private fun attachNavigationListener(context: Context) {
+        if (context is SearchNavigationListener) {
+            this.searchNavigationListener = context
+        }
+    }
+
+    private fun attachRedirectionListener(context: Context) {
+        if (context is RedirectionListener) {
+            this.redirectionListener = context
+        }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -69,12 +100,19 @@ class ProfileListFragment :
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if(isVisibleToUser) {
+        if(isVisibleToUser && canStartToLoadData()) {
+            hasLoadData = true
             onSwipeRefresh()
         }
         if (isVisibleToUser && view != null && ::searchNavigationListener.isInitialized) {
             searchNavigationListener.hideBottomNavigation()
         }
+    }
+
+    private fun canStartToLoadData(): Boolean {
+        return !hasLoadData
+                && isAdded
+                && ::presenter.isInitialized
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,6 +154,8 @@ class ProfileListFragment :
 
         totalProfileCount = profileListViewModel.totalSearchCount
         renderList(profileListViewModel.profileModelList, profileListViewModel.isHasNextPage)
+
+        removeSearchPageLoading()
     }
 
     override fun renderList(list: List<ProfileViewModel>, hasNextPage: Boolean) {
@@ -193,14 +233,6 @@ class ProfileListFragment :
         }
     }
 
-    fun attachNavigationListener(searchNavigationListener: SearchNavigationListener) {
-        this.searchNavigationListener = searchNavigationListener
-    }
-
-    fun attachRedirectionListener(redirectionListener: RedirectionListener) {
-        this.redirectionListener = redirectionListener
-    }
-
     override fun onFollowButtonClicked(adapterPosition: Int, profileModel: ProfileViewModel) {
         SearchTracking.eventClickFollowActionProfileResultProfileTab(
             context,
@@ -225,33 +257,28 @@ class ProfileListFragment :
     }
 
     companion object {
-        private val EXTRA_QUERY = "EXTRA_QUERY"
+        private val EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER"
         private const val SCREEN_SEARCH_PAGE_PROFILE_TAB = "Search result - Profile tab"
 
-        fun newInstance(query: String,
-                        searchhNavigationListener: SearchNavigationListener,
-                        redirectionListener: RedirectionListener): ProfileListFragment {
+        fun newInstance(searchParameter: SearchParameter): ProfileListFragment {
             val args = Bundle()
-            args.putString(EXTRA_QUERY, query)
+            args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
+
             val profileListFragment = ProfileListFragment()
             profileListFragment.arguments = args
-            profileListFragment.attachNavigationListener(searchhNavigationListener)
-            profileListFragment.attachRedirectionListener(redirectionListener)
+
             return profileListFragment
         }
     }
 
-    private fun loadDataFromArguments() {
-        query = arguments!!.getString(EXTRA_QUERY) ?: ""
-    }
-
     private fun loadDataFromSavedState(savedInstanceState: Bundle) {
-        query = savedInstanceState.getString(EXTRA_QUERY)?:""
+        searchParameter = savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER)
+        query = searchParameter?.getSearchQuery() ?: ""
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(EXTRA_QUERY, query)
+        outState.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
@@ -294,6 +321,12 @@ class ProfileListFragment :
                 NetworkErrorHelper.createSnackbarWithAction(activity) { loadData(nextPage) }.showRetrySnackbar()
             }
         }
+    }
+
+    override fun hideLoading() {
+        super.hideLoading()
+
+        removeSearchPageLoading()
     }
 
     override fun onEmptyButtonClicked() {
@@ -357,7 +390,11 @@ class ProfileListFragment :
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
-        return false
+        return isFirstActiveTab()
+    }
+
+    private fun isFirstActiveTab(): Boolean {
+        return searchParameter?.get(SearchApiConst.ACTIVE_TAB) ?: "" == SearchConstant.ActiveTab.PROFILE
     }
 
     override fun getBaseAppComponent(): BaseAppComponent {
@@ -369,5 +406,17 @@ class ProfileListFragment :
 
         val cache = LocalCacheHandler(activity!!.applicationContext, GCM_STORAGE)
         return cache.getString(GCM_ID, "")
+    }
+
+    fun backToTop() {
+        view?.let {
+            getRecyclerView(view)?.smoothScrollToPosition(0)
+        }
+    }
+
+    private fun removeSearchPageLoading() {
+        if (isFirstActiveTab()) {
+            searchNavigationListener.removeSearchPageLoading()
+        }
     }
 }

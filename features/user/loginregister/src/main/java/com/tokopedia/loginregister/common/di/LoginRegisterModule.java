@@ -17,7 +17,9 @@ import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.RiskAnalyticsInterceptor;
 import com.tokopedia.otp.common.network.WSErrorResponse;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.network.TkpdOldAuthInterceptor;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -50,7 +52,8 @@ public class LoginRegisterModule {
 
     @LoginRegisterScope
     @Provides
-    OkHttpClient provideOkHttpClient(TkpdOldAuthInterceptor tkpdAuthInterceptor,
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
+                                     TkpdOldAuthInterceptor tkpdAuthInterceptor,
                                      ChuckInterceptor chuckInterceptor,
                                      DebugInterceptor debugInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
@@ -60,6 +63,7 @@ public class LoginRegisterModule {
         builder.addInterceptor(fingerprintInterceptor);
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
+        builder.addInterceptor(new RiskAnalyticsInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor);
@@ -83,5 +87,11 @@ public class LoginRegisterModule {
     @Provides
     LoginRegisterApi provideLoginRegisterApi(@LoginRegisterScope Retrofit retrofit) {
         return retrofit.create(LoginRegisterApi.class);
+    }
+
+    @LoginRegisterScope
+    @Provides
+    PermissionCheckerHelper providePermissionCheckerHelper(){
+        return new PermissionCheckerHelper();
     }
 }

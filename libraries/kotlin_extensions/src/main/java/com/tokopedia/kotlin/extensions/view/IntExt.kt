@@ -20,3 +20,25 @@ fun Int.pxToDp(displayMetrics: DisplayMetrics): Int = (this / displayMetrics.den
 fun Int?.toZeroIfNull():Int {
     return this?:0
 }
+
+
+const val INTEGER_MILLION = 1_000_000
+const val INTEGER_THOUSAND = 1_000
+
+fun Int.toCompactAmountString(): String {
+    return when {
+        this >= INTEGER_MILLION -> toCompactAmountStringByDivider(INTEGER_MILLION, "jt")
+        this >= INTEGER_THOUSAND -> toCompactAmountStringByDivider(INTEGER_THOUSAND, "rb")
+        else -> toString()
+    }
+}
+
+fun Int.toCompactAmountStringByDivider(divider: Int, suffix: String): String {
+    val integerNum = this/divider
+    val nonIntegerNum = this%divider
+    return buildString {
+        append(integerNum)
+        if (nonIntegerNum > 0) append(",${nonIntegerNum.toString()[0]}")
+        append(suffix)
+    }
+}

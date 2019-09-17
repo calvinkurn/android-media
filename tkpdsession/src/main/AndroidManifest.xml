@@ -10,10 +10,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
 
-        <meta-data
-            android:name="android.support.VERSION"
-            android:value="26.1.0"
-            tools:replace="android:value"/>
 
         <activity
             android:name=".forgotpassword.activity.ForgotPasswordActivity"
@@ -47,12 +43,6 @@
             android:screenOrientation="portrait"/>
 
         <activity
-            android:name=".addchangeemail.view.activity.AddEmailActivity"
-            android:label="@string/title_add_email"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize"/>
-        <activity
             android:name=".addchangepassword.view.activity.AddPasswordActivity"
             android:label="@string/title_add_password"
             android:screenOrientation="portrait"
@@ -80,11 +70,6 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"/>
 
-        <activity
-            android:name=".addchangeemail.view.activity.AddEmailVerificationActivity"
-            android:label="@string/title_verify"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

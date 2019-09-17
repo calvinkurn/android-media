@@ -9,6 +9,7 @@ import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +25,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_NOTE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_ADD_PRODUCT_FROM_ZERO_PRODUCT;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_CART_BUTTON;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_DISCUSSION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_FOLLOWER_LIST;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_HOW_TO_ACTIVATE_SHOP;
@@ -43,6 +45,9 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_SORT_BY
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_TAB;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.CLICK_VIEW_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.ECOMMERCE;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_ACTION_CLICK_ON_LOGIN_STICKY_WIDGET;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.EVENT_VIEW_LOGIN_STICKY_WIDGET;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_ADD_PRODUCT_FROM_ZERO_PRODUCT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_HOW_TO_ACTIVATE_SHOP;
@@ -63,6 +68,7 @@ import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_BAR;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEARCH_RESULT;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SEE_ALL;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_INFO;
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_SELLER;
 import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOP_SECTION;
@@ -72,6 +78,7 @@ import static com.tokopedia.shop.analytic.model.ListTitleTypeDef.HIGHLIGHTED;
 
 public class ShopPageTrackingUser {
     public static final String SHOPPAGE = "/shoppage";
+
     protected final TrackingQueue trackingQueue;
 
     public ShopPageTrackingUser(
@@ -239,6 +246,15 @@ public class ShopPageTrackingUser {
                 shopPageBuyerOrSeller(isOwner),
                 joinDash(TOP_SECTION, CLICK),
                 CLICK_SHARE_BUTTON,
+                customDimensionShopPage);
+    }
+
+    public void clickCartButton(boolean isOwner,
+                                CustomDimensionShopPage customDimensionShopPage) {
+        sendEvent(CLICK_SHOP_PAGE,
+                shopPageBuyerOrSeller(isOwner),
+                joinDash(TOP_SECTION, CLICK),
+                CLICK_CART_BUTTON,
                 customDimensionShopPage);
     }
 
@@ -481,5 +497,36 @@ public class ShopPageTrackingUser {
         }else{
             return "official store shop page - brand";
         }
+    }
+
+    public void eventClickOnStickyLogin(boolean isOnSticky) {
+        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
+        if (tracker != null) {
+            if (isOnSticky) {
+                tracker.sendGeneralEvent(
+                        CLICK_SHOP_PAGE,
+                        SHOP_PAGE,
+                        EVENT_ACTION_CLICK_ON_LOGIN_STICKY_WIDGET,
+                        "click"
+                );
+            } else {
+                tracker.sendGeneralEvent(
+                        CLICK_SHOP_PAGE,
+                        SHOP_PAGE,
+                        EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN,
+                        ""
+                );
+            }
+        }
+    }
+
+    public void eventViewLoginStickyWidget() {
+        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
+        tracker.sendGeneralEvent(
+                VIEW_SHOP_PAGE,
+                SHOP_PAGE,
+                EVENT_VIEW_LOGIN_STICKY_WIDGET,
+                ""
+        );
     }
 }

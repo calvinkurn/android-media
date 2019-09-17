@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="banner_margin_top">8dp</dimen>
+    <dimen name="travel_homepage_toolbar_size">32dp</dimen>
+
+    <dimen name="toolbar_transition_range">32dp</dimen>
+    <dimen name="toolbar_padding">24dp</dimen>
+
+</resources>

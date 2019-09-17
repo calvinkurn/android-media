@@ -4,16 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
-import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
@@ -23,17 +15,10 @@ import com.tokopedia.abstraction.common.utils.toolargetool.TooLargeTool;
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams;
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
+import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
-import com.tokopedia.kotlin.util.ContainNullException;
-import com.tokopedia.kotlin.util.NullCheckerKt;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomTitleViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
-import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel;
-import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.network.entity.wishlist.WishlistPaging;
@@ -44,20 +29,33 @@ import com.tokopedia.graphql.data.ObservableFactory;
 import com.tokopedia.graphql.data.model.CacheType;
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistProductViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomTitleViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistRecomendationViewModel;
+import com.tokopedia.tkpd.home.wishlist.adapter.viewmodel.WishlistTopAdsViewModel;
+import com.tokopedia.tkpd.home.wishlist.domain.model.GqlWishListDataResponse;
 import com.tokopedia.tkpd.home.wishlist.mapper.WishlistProductMapper;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
-
 import org.parceler.Parcels;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
@@ -67,13 +65,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import kotlin.Unit;
-import rx.Observable;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
-
 
 /**
  * Created by m.normansyah on 01/12/2015.
@@ -82,6 +73,8 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WishListImpl implements WishList {
     private static final String TAG = WishListImpl.class.getSimpleName();
+    private static final int REMOVE_WISHLIST_ON_SUCCESS_DELAY = 5000;
+
     public static final String PAGE_NO = "page";
     public static final String ITEM_COUNT = "count";
     public static final String QUERY = "query";
@@ -428,7 +421,7 @@ public class WishListImpl implements WishList {
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
         dataWishlist.addAll(wishlistData.getWishlistDataList());
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList(),
-                gqlWishListDataResponse.getTopAdsModel(), query));
+                gqlWishListDataResponse.getTopAdsModel(), query, gqlWishListDataResponse.getTitle()));
         mPaging.setPagination(wishlistData.getPagination());
         wishListView.setPullEnabled(true);
         wishListView.loadDataChange();
@@ -557,7 +550,7 @@ public class WishListImpl implements WishList {
                     data.clear();
                     dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                     data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
-                            gqlWishListDataResponse.getTopAdsModel(), query));
+                            gqlWishListDataResponse.getTopAdsModel(), query, gqlWishListDataResponse.getTitle()));
                     mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
                     wishListView.loadDataChange();
                     wishListView.displayContentList(true);
@@ -615,7 +608,7 @@ public class WishListImpl implements WishList {
         }
     }
 
-    public List<Visitable> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query) {
+    public List<Visitable> convertToProductItemList(List<Wishlist> wishlists, TopAdsModel adsModel, String query, String title) {
         List<Visitable> products = new ArrayList<>();
         for (int i = 0; i < wishlists.size(); i++) {
             ProductItem product = new ProductItem();
@@ -639,21 +632,16 @@ public class WishListImpl implements WishList {
             products.add(new WishlistProductViewModel(product));
         }
         if (products.size() >= TOPADS_INDEX && adsModel != null && !adsModel.getData().isEmpty()) {
-            products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query));
+            products.add(TOPADS_INDEX, new WishlistTopAdsViewModel(adsModel, query, title));
         }
         return products;
     }
 
     private void onFinishedDeleteWishlist(final int position) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                wishListView.dismissProgressDialog();
-                data.remove(position);
-                wishListView.onSuccessDeleteWishlist(
-                        params.getString(QUERY, ""), position);
-            }
-        }, CacheDuration.onSecond(5));
+        wishListView.dismissProgressDialog();
+        data.remove(position);
+        wishListView.onSuccessDeleteWishlist(
+                params.getString(QUERY, ""), position);
     }
 
     private void setDataWishlistOnSearch(GqlWishListDataResponse gqlWishListDataResponse) {
@@ -663,7 +651,7 @@ public class WishListImpl implements WishList {
 
         dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
         data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList(),
-                gqlWishListDataResponse.getTopAdsModel(), query));
+                gqlWishListDataResponse.getTopAdsModel(), query, gqlWishListDataResponse.getTitle()));
         mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
         wishListView.setPullEnabled(true);
         wishListView.loadDataChange();

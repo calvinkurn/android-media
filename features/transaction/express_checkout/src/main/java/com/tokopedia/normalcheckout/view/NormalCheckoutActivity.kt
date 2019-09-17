@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.expresscheckout.R
 import com.tokopedia.normalcheckout.constant.ATC_AND_BUY
 import com.tokopedia.normalcheckout.constant.ProductAction
@@ -17,21 +18,9 @@ import com.tokopedia.tradein.model.TradeInParams
 
 open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener {
     companion object {
-        const val EXTRA_SHOP_ID = "shop_id"
-        const val EXTRA_PRODUCT_ID = "product_id"
-        const val EXTRA_NOTES = "notes"
-        const val EXTRA_QUANTITY = "quantity"
-        const val EXTRA_SELECTED_VARIANT_ID = "selected_variant_id"
-        const val EXTRA_PRODUCT_IMAGE = "product_image"
-        const val EXTRA_ACTION = "action"
-        const val EXTRA_SHOP_TYPE = "shop_type"
-        const val EXTRA_SHOP_NAME = "shop_name"
-        const val EXTRA_OCS = "ocs"
-        const val EXTRA_TRADE_IN_PARAMS = "trade_in_params"
-        private const val TRACKER_ATTRIBUTION = "tracker_attribution"
-        private const val TRACKER_LIST_NAME = "tracker_list_name"
+        const val EXTRA_IS_LEASING = "is_leasing"
         private var tradeInParams: TradeInParams? = null
-        private var normalCheckoutFragment : NormalCheckoutFragment? = null
+        private var normalCheckoutFragment: NormalCheckoutFragment? = null
 
         /**
          * shopID: mandatory
@@ -48,20 +37,22 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
                       trackerListName: String? = "",
                       shopType: String? = "",
                       shopName: String? = "",
-                      isOneClickShipment:Boolean): Intent {
+                      isOneClickShipment: Boolean,
+                      isLeasing: Boolean): Intent {
             return Intent(context, NormalCheckoutActivity::class.java).apply {
-                putExtra(EXTRA_SHOP_ID, shopId)
-                putExtra(EXTRA_PRODUCT_ID, productId)
-                putExtra(EXTRA_NOTES, notes)
-                putExtra(EXTRA_QUANTITY, quantity)
-                putExtra(EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
-                putExtra(EXTRA_ACTION, action)
-                putExtra(EXTRA_PRODUCT_IMAGE, placeholderProductImage)
-                putExtra(TRACKER_ATTRIBUTION, trackerAttribution)
-                putExtra(TRACKER_LIST_NAME, trackerListName)
-                putExtra(EXTRA_SHOP_TYPE, shopType)
-                putExtra(EXTRA_SHOP_NAME, shopName)
-                putExtra(EXTRA_OCS, isOneClickShipment)
+                putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, shopId)
+                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, productId)
+                putExtra(ApplinkConst.Transaction.EXTRA_NOTES, notes)
+                putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
+                putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, selectedVariantId)
+                putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
+                putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_IMAGE, placeholderProductImage)
+                putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution)
+                putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)
+                putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopType)
+                putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopName)
+                putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOneClickShipment)
+                putExtra(EXTRA_IS_LEASING, isLeasing)
             }
         }
     }
@@ -74,21 +65,26 @@ open class NormalCheckoutActivity : BaseSimpleActivity(), IAccessRequestListener
 
     override fun getNewFragment(): Fragment {
         val bundle = intent.extras
-        tradeInParams = intent.getParcelableExtra(EXTRA_TRADE_IN_PARAMS)
+        tradeInParams = intent.getParcelableExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS)
         bundle?.run {
-            normalCheckoutFragment = NormalCheckoutFragment.createInstance(getString(EXTRA_SHOP_ID),
-                getString(EXTRA_PRODUCT_ID),
-                getString(EXTRA_NOTES),
-                getInt(EXTRA_QUANTITY),
-                getString(EXTRA_SELECTED_VARIANT_ID),
-                getInt(EXTRA_ACTION),
-                getString(EXTRA_PRODUCT_IMAGE),
-                getString(TRACKER_ATTRIBUTION),
-                getString(TRACKER_LIST_NAME),
-                getString(EXTRA_SHOP_TYPE),
-                getString(EXTRA_SHOP_NAME),
-                getBoolean(EXTRA_OCS),
-                tradeInParams)
+            normalCheckoutFragment = NormalCheckoutFragment.createInstance(
+                    getString(ApplinkConst.Transaction.EXTRA_SHOP_ID),
+                    getString(ApplinkConst.Transaction.EXTRA_PRODUCT_ID),
+                    getString(ApplinkConst.Transaction.EXTRA_NOTES),
+                    getInt(ApplinkConst.Transaction.EXTRA_QUANTITY),
+                    getString(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID),
+                    getInt(ApplinkConst.Transaction.EXTRA_ACTION),
+                    getString(ApplinkConst.Transaction.EXTRA_PRODUCT_IMAGE),
+                    getString(ApplinkConst.Transaction.TRACKER_ATTRIBUTION),
+                    getString(ApplinkConst.Transaction.TRACKER_LIST_NAME),
+                    getString(ApplinkConst.Transaction.EXTRA_SHOP_TYPE),
+                    getString(ApplinkConst.Transaction.EXTRA_SHOP_NAME),
+                    getBoolean(ApplinkConst.Transaction.EXTRA_OCS),
+                    getBoolean(ApplinkConst.Transaction.EXTRA_NEED_REFRESH),
+                    getBoolean(EXTRA_IS_LEASING),
+                    getString(ApplinkConst.Transaction.EXTRA_REFERENCE),
+                    tradeInParams
+            )
             return normalCheckoutFragment!!
         }
         return Fragment()

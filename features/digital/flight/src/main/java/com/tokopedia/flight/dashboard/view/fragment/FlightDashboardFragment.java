@@ -25,9 +25,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -74,6 +74,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
 
     public static final String EXTRA_TRIP = "EXTRA_TRIP";
     public static final String EXTRA_CLASS = "EXTRA_CLASS";
+    public static final String EXTRA_AUTO_SEARCH = "EXTRA_AUTO_SEARCH";
     private static final String EXTRA_ADULT = "EXTRA_ADULT";
     private static final String EXTRA_CHILD = "EXTRA_CHILD";
     private static final String EXTRA_INFANT = "EXTRA_INFANT";
@@ -119,7 +120,9 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         return new FlightDashboardFragment();
     }
 
-    public static FlightDashboardFragment getInstance(String extrasTrip, String extrasAdultPassenger, String extrasChildPassenger, String extrasInfantPassenger, String extrasClass) {
+    public static FlightDashboardFragment getInstance(String extrasTrip, String extrasAdultPassenger,
+                                                      String extrasChildPassenger, String extrasInfantPassenger,
+                                                      String extrasClass, String extrasAutoSearch) {
         FlightDashboardFragment flightDashboardFragment = new FlightDashboardFragment();
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_TRIP, extrasTrip);
@@ -127,6 +130,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         bundle.putString(EXTRA_CHILD, extrasChildPassenger);
         bundle.putString(EXTRA_INFANT, extrasInfantPassenger);
         bundle.putString(EXTRA_CLASS, extrasClass);
+        bundle.putString(EXTRA_AUTO_SEARCH, extrasAutoSearch);
         flightDashboardFragment.setArguments(bundle);
         return flightDashboardFragment;
     }
@@ -310,7 +314,8 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 !TextUtils.isEmpty(getArguments().getString(EXTRA_ADULT, null)) &&
                 !TextUtils.isEmpty(getArguments().getString(EXTRA_CHILD, null)) &&
                 !TextUtils.isEmpty(getArguments().getString(EXTRA_INFANT, null)) &&
-                !TextUtils.isEmpty(getArguments().getString(EXTRA_CLASS, null));
+                !TextUtils.isEmpty(getArguments().getString(EXTRA_CLASS, null)) &&
+                !TextUtils.isEmpty(getArguments().getString(EXTRA_AUTO_SEARCH, null));
     }
 
     @Override
@@ -336,6 +341,11 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     @Override
     public String getClassArguments() {
         return getArguments().getString(EXTRA_CLASS);
+    }
+
+    @Override
+    public Boolean isAutoSearch() {
+        return getArguments().getString(EXTRA_AUTO_SEARCH, "0").equals("1");
     }
 
     @Override

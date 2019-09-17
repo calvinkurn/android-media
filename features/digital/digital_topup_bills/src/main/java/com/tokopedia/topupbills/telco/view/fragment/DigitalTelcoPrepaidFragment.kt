@@ -61,8 +61,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
             TelcoCustomComponentData(TelcoCustomData(mutableListOf()))
     private var selectedProductId = ""
     private var selectedCategoryId = 0
-
-    private lateinit var selectedOperatorName: String
+    private var selectedOperatorName: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -321,7 +320,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         viewPager.offscreenPageLimit = 3
         tabLayout.setupWithViewPager(viewPager)
         setTabFromProductSelected()
-        setCustomFont()
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(p0: Int) {
@@ -336,29 +334,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
                 topupAnalytics.eventClickTelcoPrepaidCategory(listProductTab[pos].title)
             }
         })
-    }
-
-    private fun setCustomFont() {
-
-        val vg = tabLayout.getChildAt(0) as ViewGroup
-        val tabsCount = vg.childCount
-
-        for (j in 0 until tabsCount) {
-            val vgTab = vg.getChildAt(j) as ViewGroup
-
-            val tabChildsCount = vgTab.childCount
-
-            for (i in 0 until tabChildsCount) {
-                val tabViewChild = vgTab.getChildAt(i)
-                if (tabViewChild is TextView) {
-                    context?.run {
-                        tabViewChild.typeface = Typeface.createFromAsset(this.assets,
-                                TAB_FONT_NUNITO_SANS)
-                    }
-
-                }
-            }
-        }
     }
 
     private fun setTabFromProductSelected() {
@@ -400,8 +375,10 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         selectedCategoryId = telcoRecommendation.categoryId
         telcoClientNumberWidget.setInputNumber(telcoRecommendation.clientNumber)
 
-        topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, selectedOperatorName,
-                telcoRecommendation.position)
+        if (selectedOperatorName.isNotEmpty()) {
+            topupAnalytics.clickEnhanceCommerceRecentTransaction(telcoRecommendation, selectedOperatorName,
+                    telcoRecommendation.position)
+        }
     }
 
     override fun setFavNumbers(data: TelcoRechargeFavNumberData) {
@@ -435,12 +412,12 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     private fun generateShowcaseDialog(): ShowCaseDialog {
         return ShowCaseBuilder()
-                .backgroundContentColorRes(R.color.black)
-                .shadowColorRes(R.color.shadow)
-                .textColorRes(R.color.grey_400)
-                .textSizeRes(R.dimen.sp_12)
-                .titleTextSizeRes(R.dimen.sp_16)
-                .finishStringRes(R.string.finish)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
+                .shadowColorRes(com.tokopedia.showcase.R.color.shadow)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
+                .textSizeRes(com.tokopedia.design.R.dimen.sp_12)
+                .titleTextSizeRes(com.tokopedia.design.R.dimen.sp_16)
+                .finishStringRes(com.tokopedia.showcase.R.string.finish)
                 .clickable(true)
                 .useArrow(true)
                 .build()
@@ -466,7 +443,6 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
         private const val CACHE_CATEGORY_ID = "cache_category_id"
 
         private const val EXTRA_PARAM = "extra_param"
-        const val TAB_FONT_NUNITO_SANS = "fonts/NunitoSans-ExtraBold.ttf"
 
         fun newInstance(telcoExtraParam: DigitalTelcoExtraParam): Fragment {
             val fragment = DigitalTelcoPrepaidFragment()

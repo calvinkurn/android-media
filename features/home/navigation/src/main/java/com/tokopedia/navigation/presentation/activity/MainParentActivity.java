@@ -87,6 +87,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+
 /**
  * Created by meta on 19/06/18.
  */
@@ -882,8 +884,8 @@ public class MainParentActivity extends BaseActivity implements
                         String shopID = userSession.getShopId();
 
                         Intent shopIntent;
-                        if (shopID.equalsIgnoreCase(DEFAULT_NO_SHOP)) {
-                            shopIntent = ((GlobalNavRouter) getApplication()).getOpenShopIntent(this);
+                        if (!userSession.hasShop()) {
+                            shopIntent = RouteManager.getIntent(getContext(), OPEN_SHOP);
                         } else {
                             shopIntent = ((GlobalNavRouter) getApplication()).getShopPageIntent(this, shopID);
                         }
@@ -962,7 +964,11 @@ public class MainParentActivity extends BaseActivity implements
         if (osMenu == null) {
             initOsMenu();
         }
-        lottieOsDrawable.setMaxProgress(OS_STATE_SELECTED); // important! to reset maxProgress
+        if (lottieOsDrawable.isAnimating()) {
+            lottieOsDrawable.setMaxProgress(OS_STATE_ANIMATED);
+        } else {
+            lottieOsDrawable.setMaxProgress(OS_STATE_SELECTED); // important! to reset maxProgress
+        }
         lottieOsDrawable.setProgress(progress);
     }
 }

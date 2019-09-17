@@ -1,12 +1,6 @@
 apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
-project.ext {
-    artifactId = 'contactus'
-    groupId = 'com.tokopedia.contactus'
-    versionName = "${tkpdContactUsVersion}"
-    artifactName = "contactus-release"
-}
 
 buildscript {
     repositories {
@@ -23,17 +17,18 @@ buildscript {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.features.inbox)
-    implementation project(rootProject.ext.libraries.url)
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.features.tkpdinbox)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.commonNetwork)
-    implementation project(rootProject.ext.libraries.graphql)
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.userSession)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation rootProject.ext.unifyDependencies.principles
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
@@ -55,3 +50,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation project(rootProject.ext.libraries.core_legacy)
 }
+
+project.ext {
+    artifactId = 'contact-us'
+    groupId = 'com.tokopedia.operational'
+    versionName = "1.0.0"
+    artifactName = "operatinalcontactus-release"
+}
+
+apply from: '../../../publish_local.gradle'

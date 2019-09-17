@@ -4,16 +4,18 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
 import kotlinx.android.synthetic.main.partial_product_recom_3.view.*
 
 class PartialRecommendationThirdView private constructor(private val view: View,
-                                                         private val userActiveListener: RecommendationProductAdapter.UserActiveListener)
-    :BaseRecommendationView(view.context){
+                                                         private val userActiveListener: RecommendationProductAdapter.UserActiveListener,
+                                                         productDetailTracking: ProductDetailTracking)
+    :BaseRecommendationView(view.context, productDetailTracking){
 
     companion object{
-        fun build(_view:View,_userActiveListener: RecommendationProductAdapter.UserActiveListener) =
-                PartialRecommendationThirdView(_view,_userActiveListener)
+        fun build(_view:View,_userActiveListener: RecommendationProductAdapter.UserActiveListener, productDetailTracking: ProductDetailTracking) =
+                PartialRecommendationThirdView(_view,_userActiveListener, productDetailTracking)
     }
 
     override fun getListener(): RecommendationProductAdapter.UserActiveListener = userActiveListener

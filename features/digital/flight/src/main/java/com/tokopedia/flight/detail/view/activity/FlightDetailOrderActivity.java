@@ -27,6 +27,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 public class FlightDetailOrderActivity extends BaseSimpleActivity implements HasComponent<FlightOrderComponent> {
 
     public static final String EXTRA_ORDER_PASS_DETAIL = "EXTRA_ORDER_PASS_DETAIL";
+    public static final String EXTRA_IS_CANCELLATION = "EXTRA_IS_CANCELLATION";
 
     public static Intent createIntent(Context context, FlightOrderDetailPassData flightOrderDetailPassData) {
         Intent intent = new Intent(context, FlightDetailOrderActivity.class);
@@ -40,7 +41,7 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
         FlightOrderDetailPassData passData = new FlightOrderDetailPassData();
         passData.setOrderId(extras.getString("id"));
 
-        if (context.getApplicationContext() instanceof AbstractionRouter){
+        if (context.getApplicationContext() instanceof AbstractionRouter) {
             UserSessionInterface userSession = new UserSession(context);
 
             if (!userSession.isLoggedIn()) {
@@ -48,6 +49,7 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
             } else {
                 Intent intent = new Intent(context, FlightDetailOrderActivity.class);
                 intent.putExtra(EXTRA_ORDER_PASS_DETAIL, passData);
+                intent.putExtra(EXTRA_IS_CANCELLATION, extras.getString("is_cancellation"));
                 return intent
                         .setData(uri.build());
             }
@@ -59,7 +61,9 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
 
     @Override
     protected Fragment getNewFragment() {
-        return FlightDetailOrderFragment.createInstance((FlightOrderDetailPassData) getIntent().getParcelableExtra(EXTRA_ORDER_PASS_DETAIL));
+        return FlightDetailOrderFragment.createInstance(
+                getIntent().getParcelableExtra(EXTRA_ORDER_PASS_DETAIL),
+                getIntent().getStringExtra(EXTRA_IS_CANCELLATION) != null && getIntent().getStringExtra(EXTRA_IS_CANCELLATION).equals("1"));
     }
 
     @Override

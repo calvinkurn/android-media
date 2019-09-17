@@ -64,6 +64,10 @@ public class FlightOrderEntityToCancellationListMapper {
                 cancellation.getDetails()));
         cancellationItem.setPassengers(transformPassenger(orderEntity.getAttributes().getFlight()
                 .getPassengers(), cancellation.getDetails()));
+        cancellationItem.setStatusStr(cancellation.getStatusStr());
+        cancellationItem.setStatusType(cancellation.getStatusType());
+        cancellationItem.setRefundInfo(cancellation.getRefundInfo());
+        cancellationItem.setRefundDetail(cancellation.getRefundDetail());
 
         return cancellationItem;
     }

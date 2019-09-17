@@ -6,7 +6,7 @@ query goalP2PThanks($transfer_id: Int!){
           amount
           source_of_fund
           transfer_date
-          source {
+          destination {
               name
               phone
           }

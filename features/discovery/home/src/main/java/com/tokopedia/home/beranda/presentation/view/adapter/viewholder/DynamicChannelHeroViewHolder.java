@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,10 +19,10 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
-import com.tokopedia.home.beranda.helper.TextViewHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * Created by henrypriyono on 31/01/18.
@@ -34,7 +33,7 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
     public static final int LAYOUT = R.layout.home_channel_hero_4_image;
     private static final String TAG = DynamicChannelHeroViewHolder.class.getSimpleName();
     private final Context context;
-    private TextView channelTitle;
+    private Typography channelTitle;
     private ImageView channelHeroImage;
     private TextView seeAllButton;
     private HomeCategoryListener listener;
@@ -71,8 +70,6 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
             String titleText = element.getChannel().getHeader().getName();
             if (!TextUtils.isEmpty(titleText)) {
                 channelTitleContainer.setVisibility(View.VISIBLE);
-                Typeface typeface = Typeface.createFromAsset(context.getAssets(), "fonts/NunitoSans-ExtraBold.ttf");
-                channelTitle.setTypeface(typeface);
                 channelTitle.setText(titleText);
             } else {
                 channelTitleContainer.setVisibility(View.GONE);
@@ -140,7 +137,12 @@ public class DynamicChannelHeroViewHolder extends AbstractViewHolder<DynamicChan
                 if (grid != null) {
                     holder.channelCaption1.setText(grid.getName());
                     ImageHandler.loadImageThumbs(holder.getContext(), holder.channelImage1, grid.getImageUrl());
-                    TextViewHelper.displayText(holder.channelBadge1, grid.getLabel());
+                    if (!TextUtils.isEmpty(grid.getLabel())) {
+                        holder.channelBadge1.setVisibility(View.VISIBLE);
+                        holder.channelBadge1.setText(grid.getLabel());
+                    } else {
+                        holder.channelBadge1.setVisibility(View.GONE);
+                    }
                     holder.channelImage1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {

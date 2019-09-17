@@ -27,7 +27,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Filter;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,8 +36,8 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AnimationUtil;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -84,10 +84,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private SearchMainFragment mSuggestionFragment;
     private RelativeLayout mSuggestionView;
     private EditTextCompat mSearchSrcTextView;
-    private ImageButton mBackBtn;
-    private ImageButton mVoiceBtn;
-    private ImageButton mImageSearchButton;
-    private ImageButton mEmptyBtn;
+    private ImageView mBackBtn;
+    private View mCancelBtn;
+    private ImageView mVoiceBtn;
+    private ImageView mImageSearchButton;
+    private ImageView mEmptyBtn;
     private LinearLayout mSearchTopBar;
     private LinearLayout mSearchContainer;
     private CharSequence mOldQueryText;
@@ -256,10 +257,11 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mSearchContainer = (LinearLayout) mSearchLayout.findViewById(R.id.search_container);
         mSearchTopBar = (LinearLayout) mSearchLayout.findViewById(R.id.search_top_bar);
         mSearchSrcTextView = (EditTextCompat) mSearchLayout.findViewById(R.id.searchTextView);
-        mBackBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_up_btn);
-        mVoiceBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_voice_btn);
-        mImageSearchButton = (ImageButton) mSearchLayout.findViewById(R.id.action_image_search_btn);
-        mEmptyBtn = (ImageButton) mSearchLayout.findViewById(R.id.action_empty_btn);
+        mBackBtn = mSearchLayout.findViewById(R.id.action_up_btn);
+        mCancelBtn = mSearchLayout.findViewById(R.id.action_cancel_button);
+        mVoiceBtn = mSearchLayout.findViewById(R.id.action_voice_btn);
+        mImageSearchButton = mSearchLayout.findViewById(R.id.action_image_search_btn);
+        mEmptyBtn = mSearchLayout.findViewById(R.id.action_empty_btn);
         mTintView = mSearchLayout.findViewById(R.id.transparent_view);
         mSuggestionView = (RelativeLayout) mSearchLayout.findViewById(R.id.search_suggestion_container);
         mSearchSrcTextView.setOnClickListener(mOnClickListener);
@@ -267,6 +269,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         mVoiceBtn.setOnClickListener(mOnClickListener);
         mEmptyBtn.setOnClickListener(mOnClickListener);
         mTintView.setOnClickListener(mOnClickListener);
+        mCancelBtn.setOnClickListener(mOnClickListener);
         mImageSearchButton.setOnClickListener(mOnClickListener);
         allowVoiceSearch = true;
 
@@ -406,7 +409,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private final OnClickListener mOnClickListener = new OnClickListener() {
 
         public void onClick(View v) {
-            if (v == mBackBtn) {
+            if (v == mBackBtn || v == mCancelBtn) {
                 if (finishOnClose && activity != null) {
                     KeyboardHandler.DropKeyboard(activity, mSearchSrcTextView);
                     activity.finish();
@@ -449,10 +452,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
         boolean hasText = !TextUtils.isEmpty(text);
         if (hasText) {
             mEmptyBtn.setVisibility(VISIBLE);
+            mCancelBtn.setVisibility(VISIBLE);
             showVoice(false);
             showImageSearch(false);
         } else {
             mEmptyBtn.setVisibility(GONE);
+            mCancelBtn.setVisibility(GONE);
             showVoice(true);
             showImageSearch(true);
         }

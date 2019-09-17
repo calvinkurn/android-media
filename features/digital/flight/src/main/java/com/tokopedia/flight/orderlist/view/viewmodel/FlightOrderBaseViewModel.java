@@ -1,5 +1,6 @@
 package com.tokopedia.flight.orderlist.view.viewmodel;
 
+import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.List;
@@ -14,6 +15,9 @@ public class FlightOrderBaseViewModel {
     protected String createTime;
     protected int status;
     protected List<FlightOrderJourney> orderJourney;
+    protected String contactUsUrl;
+    private List<CancellationEntity> cancellations;
+    private String cancellationInfo;
 
     protected String getId() {
         return id;
@@ -55,4 +59,23 @@ public class FlightOrderBaseViewModel {
         this.title = title;
     }
 
+    protected String getContactUsUrl() { return contactUsUrl; }
+
+    protected void setContactUsUrl(String contactUsUrl) { this.contactUsUrl = contactUsUrl; }
+
+    public List<CancellationEntity> getCancellations() {
+        return cancellations;
+    }
+
+    public void setCancellations(List<CancellationEntity> cancellations) {
+        this.cancellations = cancellations;
+    }
+
+    public String getCancellationInfo() {
+        return cancellationInfo;
+    }
+
+    public void setCancellationInfo(String cancellationInfo) {
+        this.cancellationInfo = cancellationInfo;
+    }
 }

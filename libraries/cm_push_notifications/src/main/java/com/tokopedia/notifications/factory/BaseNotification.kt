@@ -19,6 +19,7 @@ import android.support.annotation.RequiresApi
 import android.support.v4.app.NotificationCompat
 import android.text.TextUtils
 import com.bumptech.glide.Glide
+import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.CMConstant
@@ -33,6 +34,8 @@ import java.util.concurrent.TimeoutException
 /**
  * Created by Ashwani Tyagi on 18/10/18.
  */
+const val IMAGE_DOWNLOAD_TIME_OUT_SECOND  = 10L
+
 abstract class BaseNotification internal constructor(protected var context: Context, var baseNotificationModel: BaseNotificationModel) {
 
     private var cacheHandler: CMNotificationCacheHandler? = null
@@ -122,13 +125,13 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     internal val drawableIcon: Int
         get() = if (GlobalConfig.isSellerApp())
-            R.drawable.ic_status_bar_notif_sellerapp
+            R.mipmap.ic_statusbar_notif_seller
         else
-            R.drawable.ic_status_bar_notif_customerapp
+            R.mipmap.ic_statusbar_notif_customer
 
     private val drawableLargeIcon: Int
         get() = if (GlobalConfig.isSellerApp())
-            R.drawable.ic_big_notif_sellerapp
+            R.mipmap.ic_big_notif_seller
         else
             R.mipmap.ic_launcher
 
@@ -244,7 +247,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             Glide.with(context).load(url)
                     .asBitmap()
                     .into(imageWidth, imageHeight)
-                    .get(3, TimeUnit.SECONDS)
+                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
@@ -262,7 +265,7 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             Glide.with(context).load(url)
                     .asBitmap()
                     .into(wh, wh)
-                    .get(3, TimeUnit.SECONDS)
+                    .get(IMAGE_DOWNLOAD_TIME_OUT_SECOND, TimeUnit.SECONDS)
         } catch (e: InterruptedException) {
             BitmapFactory.decodeResource(context.resources, drawableLargeIcon)
         } catch (e: ExecutionException) {
@@ -275,12 +278,12 @@ abstract class BaseNotification internal constructor(protected var context: Cont
 
     }
 
-    internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, requestCode: Int): PendingIntent {
+    internal fun createMainPendingIntent(baseNotificationModel: BaseNotificationModel, reqCode: Int): PendingIntent {
         var intent = getBaseBroadcastIntent(context, baseNotificationModel)
         intent.action = CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK
         intent.putExtras(getBundle(baseNotificationModel))
         intent = updateIntentWithCouponCode(baseNotificationModel, intent)
-        return getPendingIntent(context, intent, requestCode)
+        return getPendingIntent(context, intent, reqCode)
     }
 
     internal fun createDismissPendingIntent(notificationId: Int, requestCode: Int): PendingIntent {
@@ -293,12 +296,13 @@ abstract class BaseNotification internal constructor(protected var context: Cont
     companion object {
         private const val CM_REQUEST_CODE = "cm_request_code"
 
-        fun getBaseBroadcastIntent(context: Context, baseNotificationModel: BaseNotificationModel):
-                Intent = Intent(context, CMBroadcastReceiver::class.java).apply {
-            putExtra(CMConstant.EXTRA_BASE_MODEL, baseNotificationModel)
-            putExtras(getBundle(baseNotificationModel))
-            putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
-            putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
+        fun getBaseBroadcastIntent(context: Context, baseNotificationModel: BaseNotificationModel): Intent {
+            val intent = Intent(context, CMBroadcastReceiver::class.java)
+            intent.putExtra(CMConstant.EXTRA_BASE_MODEL,baseNotificationModel)
+            intent.putExtra(CMConstant.EXTRA_NOTIFICATION_ID, baseNotificationModel.notificationId)
+            intent.putExtra(CMConstant.EXTRA_CAMPAIGN_ID, baseNotificationModel.campaignId)
+            intent.putExtras(getBundle(baseNotificationModel))
+            return intent
         }
 
         /**
@@ -312,7 +316,8 @@ abstract class BaseNotification internal constructor(protected var context: Cont
                 bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
             }
             baseNotificationModel.customValues?.let {
-                bundle = jsonToBundle(bundle, baseNotificationModel.videoPushModel)
+                if (it.isNotEmpty())
+                    bundle = jsonToBundle(bundle, JSONObject(it))
             }
             return bundle
         }
@@ -333,18 +338,21 @@ abstract class BaseNotification internal constructor(protected var context: Cont
             return bundle
         }
 
-        fun getPendingIntent(context: Context, intent: Intent, requestCode: Int): PendingIntent =
+        fun getPendingIntent(context: Context, intent: Intent, reqCode: Int): PendingIntent =
                 PendingIntent.getBroadcast(
                         context,
-                        requestCode,
+                        reqCode,
                         intent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
         fun updateIntentWithCouponCode(baseNotificationModel: BaseNotificationModel, intent: Intent): Intent {
-            if (baseNotificationModel.customValues != null)
-                intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE,
-                        baseNotificationModel.customValues!!.optString(CMConstant.CustomValuesKeys.COUPON_CODE))
+            baseNotificationModel.customValues?.let {
+                if (it.isNotEmpty()) {
+                    intent.putExtra(CMConstant.CouponCodeExtra.COUPON_CODE,
+                            (JSONObject(it)).optString(CMConstant.CustomValuesKeys.COUPON_CODE))
+                }
+            }
             return intent
         }
     }
