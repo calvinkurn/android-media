@@ -13,7 +13,6 @@ import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.imagesearch.network.apiservice.ImageSearchService;
 import com.tokopedia.discovery.imagesearch.search.ImageSearchPresenter;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -51,7 +50,6 @@ public class ImageSearchModule {
         return new ImageProductMapper(gson, productMapper);
     }
 
-    @SearchScope
     @Provides
     ImageSearchPresenter provideImageSearchPresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
         return new ImageSearchPresenter(context, getProductUseCase, getImageSearchUseCase);
