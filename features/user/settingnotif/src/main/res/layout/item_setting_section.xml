@@ -12,4 +12,6 @@
     android:textColor="@color/charcoal_grey_96"
     android:textSize="@dimen/sp_18"
     android:textStyle="bold"
-    tools:text="Transaksi" />
+    tools:text="Transaksi">
+
+</TextView>
