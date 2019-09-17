@@ -58,6 +58,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.OrderListwebViewActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ItemsAdapter;
@@ -533,6 +534,11 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                 presenter.permissionGrantedContinueDownload();
             }
         }, "");
+    }
+
+    @Override
+    public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
+
     }
 
     @Override
