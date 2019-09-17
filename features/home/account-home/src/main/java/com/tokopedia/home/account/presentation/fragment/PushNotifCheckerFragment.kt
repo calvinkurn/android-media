@@ -19,13 +19,12 @@ import javax.inject.Inject
 
 
 class PushNotifCheckerFragment : BaseDaggerFragment(), PushNotifCheckerContract.View {
-
     @Inject
     lateinit var presenter: PushNotifCheckerContract.Presenter
+
     private val progressBar: ProgressBar? by lazy { activity?.findViewById(R.id.progress_push_notif) as? ProgressBar }
     private val imgSuccessPushNotif: ImageView? by lazy { activity?.findViewById(R.id.img_success_push_notif_status) as? ImageView }
     private val imgErrorPushNotif: ImageView? by lazy { activity?.findViewById(R.id.img_error_push_notif_status) as? ImageView }
-
     companion object { }
 
     override fun getScreenName(): String = "Push Notification Troubleshooter"
@@ -73,6 +72,12 @@ class PushNotifCheckerFragment : BaseDaggerFragment(), PushNotifCheckerContract.
             imgSuccessPushNotif?.visibility = View.GONE
             imgErrorPushNotif?.visibility = View.VISIBLE
         }
+    }
+
+    override fun onErrorGetPushNotifChecker(err: String) {
+        hideLoading()
+        imgSuccessPushNotif?.visibility = View.GONE
+        imgErrorPushNotif?.visibility = View.VISIBLE
     }
 
     override fun showLoading() {

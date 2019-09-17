@@ -8,6 +8,7 @@ interface PushNotifCheckerContract {
 
     interface View : BaseAccountView {
         fun onSuccessGetStatusPushNotifChecker(data: NotifierSendTroubleshooter)
+        fun onErrorGetPushNotifChecker(err: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
