@@ -537,7 +537,7 @@ public class ImageSearchActivity extends BaseActivity
         if (productViewModel != null) {
             setLastQuery(productViewModel.getQuery());
             loadSection(productViewModel);
-            setToolbarTitle(getString(R.string.image_search_title));
+            setToolbarTitle(getString(R.string.title_image_search));
         } else {
             moveToAutoCompletePage();
         }
