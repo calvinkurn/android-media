@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.profilerecommendation.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.feedplus.profilerecommendation.domain.model.FollowRecommendationQuery
+import com.tokopedia.feedplus.profilerecommendation.domain.usecase.FollowAllRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecommendationContract
 import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
@@ -10,7 +11,6 @@ import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomme
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.model.FollowResponseModel
 import rx.Subscriber
-import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -18,17 +18,35 @@ import javax.inject.Inject
  */
 class FollowRecommendationPresenter @Inject constructor(
         private val getFollowRecommendationUseCase: GetFollowRecommendationUseCase,
+        private val followAllRecommendationUseCase: FollowAllRecommendationUseCase,
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase
 ) : BaseDaggerPresenter<FollowRecommendationContract.View>(), FollowRecommendationContract.Presenter {
 
-    override fun getFollowRecommendationList(idList: List<Int>, cursor: String) {
+    override fun getFollowRecommendationList(interestIds: IntArray, cursor: String) {
+        if (cursor == "") view.showLoading()
         getFollowRecommendationUseCase.apply {
-            setRequestParams(GetFollowRecommendationUseCase.getRequestParams(idList, cursor))
+            setRequestParams(GetFollowRecommendationUseCase.getRequestParams(interestIds, cursor))
             execute (onSuccess = {
                 view.onGetFollowRecommendationList(getRecommendationCardList(it.feedUserOnboardingRecommendations), it.feedUserOnboardingRecommendations.meta.nextCursor)
                 view.onGetFollowRecommendationInfo(getRecommendationInfo(it.feedUserOnboardingRecommendations))
+                view.hideLoading()
             }, onError = {
+                view.onGetError(it)
+                view.hideLoading()
+            })
+        }
+    }
 
+    override fun followAllRecommendation(interestIds: IntArray) {
+        view.showLoading()
+        followAllRecommendationUseCase.apply {
+            setRequestParams(FollowAllRecommendationUseCase.getRequestParams(interestIds))
+            execute(onSuccess = {
+                view.onSuccessFollowAllRecommendation()
+                view.hideLoading()
+            }, onError = {
+                view.onGetError(it)
+                view.hideLoading()
             })
         }
     }
@@ -48,7 +66,7 @@ class FollowRecommendationPresenter @Inject constructor(
                                 FollowRecommendationAction.UNFOLLOW -> view.onSuccessUnfollowRecommendation(id)
                             }
                         }
-                        else view.onGetError(t.errorMessage)
+                        else view.onGetError(IllegalStateException(t.errorMessage))
                     }
 
                     override fun onCompleted() {
@@ -56,7 +74,7 @@ class FollowRecommendationPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable?) {
-                        view.onGetError(e?.localizedMessage.orEmpty())
+                        e?.let(view::onGetError)
                     }
                 }
         )
@@ -64,7 +82,7 @@ class FollowRecommendationPresenter @Inject constructor(
 
     private fun getRecommendationCardList(query: FollowRecommendationQuery): List<FollowRecommendationCardViewModel> = query.data.mapIndexed { index, data ->
         FollowRecommendationCardViewModel(
-                header = if (index == 0) query.meta.assets.title else null,
+                header = query.meta.assets.title,
                 image1Url = if (data.media.isNotEmpty()) data.media[0].thumbnail else "",
                 image2Url = if (data.media.size > 1) data.media[1].thumbnail else "",
                 image3Url = if (data.media.size > 2) data.media[2].thumbnail else "",
@@ -75,7 +93,8 @@ class FollowRecommendationPresenter @Inject constructor(
                 enabledFollowText = data.header.followCta.textFalse,
                 disabledFollowText = data.header.followCta.textTrue,
                 isFollowed = data.header.followCta.isFollow,
-                authorId = data.header.followCta.authorID
+//                authorId = data.header.followCta.authorID
+        authorId = System.currentTimeMillis().toString()
         )
     }
 
@@ -88,5 +107,7 @@ class FollowRecommendationPresenter @Inject constructor(
     override fun detachView() {
         super.detachView()
         followKolPostGqlUseCase.unsubscribe()
+        followAllRecommendationUseCase.cancelJobs()
+        getFollowRecommendationUseCase.cancelJobs()
     }
 }

@@ -20,12 +20,20 @@ interface FollowRecommendationContract {
 
         fun onSuccessUnfollowRecommendation(id: String)
 
-        fun onGetError(error: String)
+        fun onSuccessFollowAllRecommendation()
+
+        fun onGetError(error: Throwable)
+
+        fun showLoading()
+
+        fun hideLoading()
     }
 
     interface Presenter {
 
-        fun getFollowRecommendationList(idList: List<Int>, cursor: String)
+        fun getFollowRecommendationList(interestIds: IntArray, cursor: String)
+
+        fun followAllRecommendation(interestIds: IntArray)
 
         fun followUnfollowRecommendation(id: String, action: FollowRecommendationAction)
     }

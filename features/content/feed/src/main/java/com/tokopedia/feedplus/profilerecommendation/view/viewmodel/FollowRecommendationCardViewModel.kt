@@ -16,4 +16,4 @@ data class FollowRecommendationCardViewModel(
         val disabledFollowText: String,
         val isFollowed: Boolean,
         val authorId: String
-)
+) : FollowRecommendationViewModel

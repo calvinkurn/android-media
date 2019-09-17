@@ -9,7 +9,11 @@ import com.tokopedia.feedplus.profilerecommendation.view.fragment.FollowRecommen
  */
 class FollowRecommendationActivity : BaseSimpleActivity() {
 
+    companion object {
+        const val EXTRA_INTEREST_IDS = FollowRecommendationFragment.EXTRA_INTEREST_IDS
+    }
+
     override fun getNewFragment(): Fragment? {
-        return FollowRecommendationFragment.newInstance()
+        return FollowRecommendationFragment.newInstance(intent?.getIntArrayExtra(EXTRA_INTEREST_IDS) ?: intArrayOf())
     }
 }

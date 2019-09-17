@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.profilerecommendation.domain.usecase.FollowAllRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowRecommendationUseCase
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -36,4 +37,10 @@ class FollowRecommendationModule {
     fun provideFollowKolPostUseCase(@ApplicationContext context: Context): FollowKolPostGqlUseCase {
         return FollowKolPostGqlUseCase(context, GraphqlUseCase())
     }
+
+    @FollowRecommendationScope
+    @Provides
+    @Named(FollowAllRecommendationUseCase.FOLLOW_ALL_RECOMMENDATION_MUTATION)
+    fun provideFollowAllRecommendationQuery(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_follow_all_recommendation)
 }

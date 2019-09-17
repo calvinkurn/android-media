@@ -20,7 +20,7 @@ class GetFollowRecommendationUseCase @Inject constructor(
         private const val PARAM_IDS = "ids"
         private const val PARAM_CURSOR = "cursor"
 
-        fun getRequestParams(interestIds: List<Int>, cursor: String): Map<String, Any?> = mapOf(
+        fun getRequestParams(interestIds: IntArray, cursor: String): Map<String, Any?> = mapOf(
                 PARAM_IDS to interestIds,
                 PARAM_CURSOR to cursor
         )
