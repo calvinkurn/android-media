@@ -264,7 +264,8 @@ public class DeepLinkChecker {
                 && !isProfile(linkSegment)
                 && !isSMCReferral(linkSegment)
                 && !isHomeRecoomendation(linkSegment)
-                && !isLeasing(linkSegment);
+                && !isLeasing(linkSegment)
+                && !isModalToko(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -332,6 +333,13 @@ public class DeepLinkChecker {
 
     private static boolean isLeasing(List<String> linkSegment){
         return (linkSegment.get(0).equals("kredit-motor"));
+    }
+
+    private static boolean isModalToko(List<String> linkSegment) {
+        if (linkSegment.size() == 2) {
+            return linkSegment.get(0).equals("fm") && linkSegment.get(1).equals("modal-toko");
+        }
+        return false;
     }
 
     private static boolean isKycTerms(List<String> linkSegment) {
