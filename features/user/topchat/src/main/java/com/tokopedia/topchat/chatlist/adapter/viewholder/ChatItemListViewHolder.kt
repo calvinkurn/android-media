@@ -90,13 +90,13 @@ class ChatItemListViewHolder(
     private fun bindReadState(readStatus: Int?, unreads: Int?) {
         when (readStatus) {
             STATE_CHAT_UNREAD -> {
-                userName.setWeight(Typography.TypographyWeight.BOLD)
+                userName.setWeight(Typography.BOLD)
                 unreadCounter.show()
 //                unreadCounter.text = unreads.toZeroIfNull().toString()
             }
 
             STATE_CHAT_READ -> {
-                userName.setWeight(Typography.TypographyWeight.REGULAR)
+                userName.setWeight(Typography.REGULAR)
                 unreadCounter.hide()
             }
         }
