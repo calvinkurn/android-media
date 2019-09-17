@@ -1355,7 +1355,7 @@ public class HomePageTracking {
                 promotion.setPromotionID(String.valueOf(model.getId()));
                 promotion.setPromotionName("/ - p1 - promo");
                 promotion.setPromotionAlias(model.getTitle().trim().replaceAll(" ", "_"));
-                promotion.setPromotionPosition(i + 1);
+                promotion.setPromotionPosition(model.getPosition());
                 promotion.setRedirectUrl(model.getRedirectUrl());
                 promotion.setPromoCode(model.getPromoCode());
 
@@ -1399,9 +1399,9 @@ public class HomePageTracking {
         return list;
     }
 
-    public static Map<String, Object> getBannerOverlayPersoImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
+    public static HashMap<String, Object> getBannerOverlayPersoImpressionDataLayer(List<BannerSlidesModel> bannerOverlaySlides) {
         List<Object> listBanner = convertSliderBannerImpressionDataLayer(bannerOverlaySlides);
-        return DataLayer.mapOf(
+        return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW,
                 EVENT_CATEGORY, CATEGORY_HOME_PAGE,
                 EVENT_ACTION, ACTION_OVERLAY_SLIDER_BANNER_IMPRESSION,
@@ -1427,7 +1427,7 @@ public class HomePageTracking {
                                 FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
                                 FIELD_CREATIVE, bannerSlidesModel.getCreativeName(),
                                 FIELD_CREATIVE_URL, bannerSlidesModel.getImageUrl(),
-                                FIELD_POSITION, i
+                                FIELD_POSITION, bannerSlidesModel.getPosition()
                         )
                 );
             }

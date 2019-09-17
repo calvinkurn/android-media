@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * @author by errysuprayogi on 11/28/17.
  */
 public class BannerSlidesModel {
-
+    public static String TYPE_BANNER_PERSO = "overlay";
     @SerializedName("id")
     private int id;
     @SerializedName("title")
@@ -48,6 +48,7 @@ public class BannerSlidesModel {
     @SerializedName("type")
     private String type;
 
+    private int position;
     private boolean impressed;
 
     public String getTopadsViewUrl() {
@@ -216,5 +217,13 @@ public class BannerSlidesModel {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

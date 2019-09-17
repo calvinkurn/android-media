@@ -25,13 +25,11 @@ import java.util.ArrayList
  */
 
 class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener) : AbstractViewHolder<BannerViewModel>(itemView), BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener, BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener {
-    private val bannerView: BannerViewDynamicBackground
-    private val context: Context
+    private val bannerView: BannerViewDynamicBackground = itemView.findViewById(R.id.banner)
+    private val context: Context = itemView.context
     private var slidesList: List<BannerSlidesModel>? = null
 
     init {
-        this.context = itemView.context
-        bannerView = itemView.findViewById(R.id.banner)
         bannerView.onPromoAllClickListener = this
         bannerView.onPromoClickListener = this
         bannerView.onPromoScrolledListener = this
@@ -125,26 +123,33 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
 
     class OnBannerImpressedListener(private val bannerSlidesModel: List<BannerSlidesModel>,
                                                     private val listener: HomeCategoryListener) : ViewHintListener {
-
         override fun onViewHint() {
             val overlayBannerSlides = arrayListOf<BannerSlidesModel>()
+            val generalBannerSlides = arrayListOf<BannerSlidesModel>()
+
             bannerSlidesModel.forEach{
-                if (it.type == "overlay_banner") {
+                if (it.type == BannerSlidesModel.TYPE_BANNER_PERSO) {
                     overlayBannerSlides.add(it)
+                } else {
+                    generalBannerSlides.add(it)
                 }
             }
             if (overlayBannerSlides.isNotEmpty()) {
-                listener.putEEToTrackingQueue(HomePageTracking.getBannerTrackingData(
+                listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
                         overlayBannerSlides
+                ))
+            }
+            if (generalBannerSlides.isNotEmpty()) {
+                listener.putEEToTrackingQueue(HomePageTracking.getBannerTrackingData(
+                        generalBannerSlides
                 ))
             }
         }
     }
 
     companion object {
-
         @LayoutRes
         val LAYOUT = R.layout.home_banner
-        val ATTRIBUTION = "attribution"
+        const val ATTRIBUTION = "attribution"
     }
 }
