@@ -220,7 +220,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     @Override
     public void onViewRecycled() {
         super.onViewRecycled();
-        if (thumbnailsImage != null) {
+        if (thumbnailsImage != null && thumbnailsImage.getContext() != null) {
             ImageHandler.clearImage(thumbnailsImage);
         }
     }
