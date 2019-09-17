@@ -32,6 +32,7 @@
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search" >Pencarian Gambar</string>
+    <string name="title_image_search_module_name" >Pencarian Gambar</string>
     <string name="image_search_app_name">imagesearch</string>
     <string name="choose_image">Pilih Gambar</string>
 </resources>
