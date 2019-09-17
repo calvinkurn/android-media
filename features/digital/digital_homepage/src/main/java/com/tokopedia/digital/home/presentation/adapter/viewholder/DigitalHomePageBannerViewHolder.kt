@@ -68,6 +68,6 @@ class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: 
     }
 
     companion object{
-        val LAYOUT =  com.tokopedia.digital.home.R.layout.layout_digital_home_banner
+        val LAYOUT =  R.layout.layout_digital_home_banner
     }
 }

@@ -21,25 +21,25 @@ import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
 import com.tokopedia.digital.home.presentation.Util.DigitalHomeTrackingUtil
-import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
-import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageTransactionViewHolder
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
+import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
 import kotlinx.android.synthetic.main.layout_digital_home.*
 import javax.inject.Inject
 
 class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, DigitalHomePageTypeFactory>(), OnItemBindListener, DigitalHomePageTransactionViewHolder.TransactionListener {
 
     @Inject
-    lateinit var trackingUtil : DigitalHomeTrackingUtil
+    lateinit var trackingUtil: DigitalHomeTrackingUtil
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
-    lateinit var viewModel : DigitalHomePageViewModel
+    lateinit var viewModel: DigitalHomePageViewModel
     private var searchBarTransitionRange = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(com.tokopedia.digital.home.R.layout.layout_digital_home, container, false)
+        val view = inflater.inflate(R.layout.layout_digital_home, container, false)
         return view
     }
 
@@ -51,7 +51,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
         }
 
-        searchBarTransitionRange = resources.getDimensionPixelSize(com.tokopedia.digital.home.R.dimen.toolbar_transition_range)
+        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.toolbar_transition_range)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,6 +67,8 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             }
         })
     }
+
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     private fun calculateToolbarView(offset: Int) {
 
@@ -91,7 +93,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
-        return com.tokopedia.abstraction.R.id.swipe_refresh_layout
+        return R.id.swipe_refresh_layout
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {
@@ -112,15 +114,17 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun loadData(page: Int) {
-        viewModel.getInitialList(swipeToRefresh?.isRefreshing?:false)
+        viewModel.getInitialList(swipeToRefresh?.isRefreshing ?: false)
     }
 
     override fun onBannerItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getBannerList(GraphqlHelper.loadRawString(resources, com.tokopedia.digital.home.R.raw.query_digital_home_banner), loadFromCloud?:true)
+        viewModel.getBannerList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner), loadFromCloud
+                ?: true)
     }
 
     override fun onCategoryItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getCategoryList(GraphqlHelper.loadRawString(resources, com.tokopedia.digital.home.R.raw.query_digital_home_category), loadFromCloud?:true)
+        viewModel.getCategoryList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category), loadFromCloud
+                ?: true)
     }
 
     override fun onPromoItemDigitalBind() {
@@ -177,7 +181,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
         RouteManager.route(activity, APPLINK_HOME_MYBILLS)
     }
 
-    companion object{
+    companion object {
         fun getInstance() = DigitalHomePageFragment()
     }
 }

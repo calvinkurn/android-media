@@ -20,7 +20,7 @@ class DigitalItemCategoryAdapter(val listSubtitle: List<DigitalHomePageCategoryM
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): DigitalItemCategoryViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(com.tokopedia.digital.home.R.layout.layout_digital_home_category_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_digital_home_category_item, parent, false)
         return DigitalItemCategoryViewHolder(view)
     }
 

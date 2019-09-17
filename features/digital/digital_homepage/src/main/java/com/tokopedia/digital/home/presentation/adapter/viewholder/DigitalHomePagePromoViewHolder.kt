@@ -22,6 +22,6 @@ class DigitalHomePagePromoViewHolder(itemView : View?, val onItemBindListener: O
     }
 
     companion object{
-        val LAYOUT = com.tokopedia.digital.home.R.layout.layout_digital_home_promo
+        val LAYOUT = R.layout.layout_digital_home_promo
     }
 }
