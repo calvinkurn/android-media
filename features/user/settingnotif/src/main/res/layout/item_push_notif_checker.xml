@@ -4,9 +4,9 @@
     android:id="@+id/btn_goto_push_notif"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp"
+    android:padding="@dimen/dp_16"
     android:text="@string/push_notification_troubleshooter"
-    android:textSize="15sp"
+    android:textSize="@dimen/sp_15"
     android:textStyle="bold"
     android:textColor="@color/charcoal_grey_96">
 </Button>
