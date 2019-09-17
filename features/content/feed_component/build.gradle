@@ -19,17 +19,10 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'feedcomponent'
-    groupId = 'com.tokopedia.feedcomponent'
-    versionName = "${tkpdFeedComponentVersion}"
-    artifactName ="feedcomponent-release"
-}
-
 dependencies {
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.linker)
@@ -58,3 +51,12 @@ dependencies {
         transitive = true
     }
 }
+
+project.ext {
+    artifactId = 'feed-component'
+    groupId = 'com.tokopedia.content'
+    versionName = "1.0.0"
+    artifactName ="contentfeedcomponent-release"
+}
+
+apply from: '../../../publish_local.gradle'

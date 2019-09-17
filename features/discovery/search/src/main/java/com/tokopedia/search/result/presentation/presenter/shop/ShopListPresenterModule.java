@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.shop;
 
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
 
 import dagger.Module;

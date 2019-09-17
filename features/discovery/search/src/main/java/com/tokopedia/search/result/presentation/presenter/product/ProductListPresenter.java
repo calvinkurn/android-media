@@ -543,6 +543,8 @@ final class ProductListPresenter
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
+        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
+        getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToShowEmptySearch(productViewModel);
@@ -624,7 +626,6 @@ final class ProductListPresenter
         }
 
         getView().setAdditionalParams(productViewModel.getAdditionalParams());
-        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().removeLoading();
         getView().setProductList(list);
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());

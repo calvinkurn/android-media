@@ -10,8 +10,9 @@ import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel
 
 /**
  * @author by nisie on 6/21/18.
+ * * For navigating to this class
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal#ADD_BANK}
  */
-
 class AddEditBankActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {

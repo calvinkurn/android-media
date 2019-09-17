@@ -57,14 +57,14 @@ class DigitalPostpaidClientNumberWidget : DigitalClientNumberWidget {
         enquiryResult.removeAllViews()
         btnEnquiry.visibility = View.VISIBLE
         titleEnquiryResult.visibility = View.GONE
-        btnEnquiry.setBackgroundResource(R.drawable.grey_button_rounded)
+        btnEnquiry.setBackgroundResource(com.tokopedia.design.R.drawable.grey_button_rounded)
         btnEnquiry.setTextColor(context.resources.getColorFromResources(context, R.color.digital_text_enquiry_non_active))
     }
 
     fun setButtonEnquiryEnable() {
         btnEnquiry.isEnabled = true
-        btnEnquiry.setBackgroundResource(R.drawable.bg_button_orange)
-        btnEnquiry.setTextColor(context.resources.getColorFromResources(context, R.color.white))
+        btnEnquiry.setBackgroundResource(com.tokopedia.design.R.drawable.bg_button_orange)
+        btnEnquiry.setTextColor(context.resources.getColorFromResources(context, com.tokopedia.design.R.color.white))
     }
 
     fun showEnquiryResultPostpaid(telcoEnquiryData: TelcoEnquiryData) {
