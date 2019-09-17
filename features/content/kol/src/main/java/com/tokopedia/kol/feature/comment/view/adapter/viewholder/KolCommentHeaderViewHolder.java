@@ -74,7 +74,7 @@ public class KolCommentHeaderViewHolder extends AbstractViewHolder<KolCommentHea
 
         String caption;
         if (badge.getVisibility() == View.VISIBLE) {
-            caption = SPACE + getCommentText(element)
+            caption = SPACE + getCommentText(element);
         } else {
             caption = getCommentText(element);
         }
