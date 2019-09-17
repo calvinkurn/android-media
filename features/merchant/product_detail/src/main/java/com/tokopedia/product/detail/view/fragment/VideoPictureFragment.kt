@@ -189,6 +189,10 @@ class VideoPictureFragment : BaseDaggerFragment() {
         super.onPause()
     }
 
+    fun pauseVideo(){
+        mExoPlayer?.playWhenReady = false
+    }
+
     override fun onStop() {
         backupState()
         if (Util.SDK_INT > 23 && mediaType == TYPE_VIDEO) {

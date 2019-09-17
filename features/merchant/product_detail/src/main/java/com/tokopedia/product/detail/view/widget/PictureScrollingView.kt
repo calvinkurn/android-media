@@ -23,7 +23,7 @@ class PictureScrollingView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var urlTemp = ""
-    lateinit var pagerAdapter:VideoPicturePagerAdapter
+    lateinit var pagerAdapter: VideoPicturePagerAdapter
 
     val position: Int
         get() = view_pager?.currentItem ?: 0
@@ -32,8 +32,8 @@ class PictureScrollingView @JvmOverloads constructor(
         instantiateView()
     }
 
-    fun stopVideo(){
-        (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imInvisible()
+    fun stopVideo() {
+        (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.pauseVideo()
     }
 
     private fun instantiateView() {
