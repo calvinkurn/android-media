@@ -23,7 +23,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import kotlinx.android.synthetic.main.activity_create_post.*
 
-class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, BaseCreatePostFragment.OnCreatePostCallBack {
+class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener {
     private var postId: String? = null
 
     companion object {

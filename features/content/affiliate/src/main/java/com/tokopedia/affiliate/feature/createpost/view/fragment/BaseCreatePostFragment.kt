@@ -80,8 +80,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         ProductAttachmentAdapter(onDeleteProduct = this::onDeleteProduct)
     }
 
-    private val invalidatePostCallBack: OnCreatePostCallBack? by lazy {
-        activity as? OnCreatePostCallBack
+    private val activityListener: CreatePostActivityListener? by lazy {
+        activity as? CreatePostActivityListener
     }
 
     private val captionsAdapter: DefaultCaptionsAdapter by lazy {
@@ -137,7 +137,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.productIdList.removeAt(idPosition)
         }
         updateMediaPreview()
-        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+        activityListener?.invalidatePostMenu(isPostEnabled)
     }
 
     companion object {
@@ -260,7 +260,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     fetchContentForm()
                 }
 
-                invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+                activityListener?.invalidatePostMenu(isPostEnabled)
             }
             REQUEST_VIDEO_PICKER -> if (resultCode == Activity.RESULT_OK) {
                 val videoList = data?.getStringArrayListExtra(VIDEOS_RESULT) ?: arrayListOf()
@@ -276,7 +276,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                     fetchContentForm()
                 }
 
-                invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+                activityListener?.invalidatePostMenu(isPostEnabled)
             }
             REQUEST_PREVIEW -> if (resultCode == Activity.RESULT_OK) {
                 val resultViewModel = data?.getParcelableExtra<CreatePostViewModel>(
@@ -356,7 +356,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateRelatedProduct()
         updateMedia()
         updateMediaPreview()
-        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+        activityListener?.invalidatePostMenu(isPostEnabled)
         updateCaption()
         updateHeader(feedContentForm.authors)
     }
@@ -711,22 +711,20 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
 
     private fun updateHeader(authors: List<Author>) {
-        if (activity is CreatePostActivityListener ) {
-            if(viewModel.isEditState){
-                (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
-                        getString(R.string.af_title_edit_post),
-                        "",
-                        ""
+        if (viewModel.isEditState) {
+            activityListener?.updateHeader(HeaderViewModel(
+                    getString(R.string.af_title_edit_post),
+                    "",
+                    ""
 
-                ))
-            } else if (authors.isNotEmpty()) {
-                (activity as CreatePostActivityListener).updateHeader(HeaderViewModel(
-                        authors.first().name,
-                        authors.first().thumbnail,
-                        authors.first().badge
+            ))
+        } else if (authors.isNotEmpty()) {
+            activityListener?.updateHeader(HeaderViewModel(
+                    authors.first().name,
+                    authors.first().thumbnail,
+                    authors.first().badge
 
-                ))
-            }
+            ))
         }
     }
 
@@ -748,10 +746,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    interface OnCreatePostCallBack{
-        fun invalidatePostMenu(isPostEnabled: Boolean)
-    }
-
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
 
     override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
@@ -759,9 +753,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     override fun changeShareHeaderText(text: String) {
-        if (activity is CreatePostActivityListener) {
-            (activity as CreatePostActivityListener).updateShareHeader(text)
-        }
+        activityListener?.updateShareHeader(text)
     }
 
     fun openShareBottomSheetDialog() {
