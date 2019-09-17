@@ -2,8 +2,8 @@ package com.tokopedia.affiliate.feature.createpost.domain.usecase
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.ShopProductSuggestionResponse
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.TagItem
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductSuggestionResponse
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.TagItem
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -13,17 +13,17 @@ import javax.inject.Inject
 import javax.inject.Named
 
 /**
- * @author by milhamj on 2019-08-29.
+ * @author by milhamj on 2019-09-17.
  */
-class GetProductSuggestionUseCase @Inject constructor(
-        @Named(QUERY_PRODUCT_SUGGESTION) private val query: String,
+class GetAffiliateProductSuggestionUseCase @Inject constructor(
+        @Named(QUERY_AFFILIATE_PRODUCT_SUGGESTION) private val query: String,
         private val graphqlUseCase: MultiRequestGraphqlUseCase)
     : UseCase<List<TagItem>>() {
 
     var params: HashMap<String, Any> = hashMapOf()
 
     companion object {
-        const val QUERY_PRODUCT_SUGGESTION = "query_af_shop_product_suggestion"
+        const val QUERY_AFFILIATE_PRODUCT_SUGGESTION = "query_af_byme_product_suggestion"
         private const val PARAM_SHOP_ID = "shopID"
 
         fun createRequestParams(shopId: Int) = HashMap<String, Any>().apply {

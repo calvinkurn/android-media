@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.affiliate.feature.createpost.TOKEN
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.TagItem
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.TagItem
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager

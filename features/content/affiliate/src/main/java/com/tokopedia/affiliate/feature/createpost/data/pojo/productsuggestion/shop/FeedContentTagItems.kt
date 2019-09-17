@@ -1,4 +1,4 @@
-package com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion
+package com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop
 
 
 import com.google.gson.annotations.Expose

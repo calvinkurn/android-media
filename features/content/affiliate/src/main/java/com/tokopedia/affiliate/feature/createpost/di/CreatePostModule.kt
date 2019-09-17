@@ -10,7 +10,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse
-import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetProductSuggestionUseCase
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetAffiliateProductSuggestionUseCase
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetShopProductSuggestionUseCase
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.presenter.CreatePostPresenter
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -117,10 +118,18 @@ class CreatePostModule(private val context: Context) {
 
     @Provides
     @CreatePostScope
-    @Named(GetProductSuggestionUseCase.QUERY_PRODUCT_SUGGESTION)
-    fun provideGetProductSuggestionQuery(@ApplicationContext context: Context): String {
+    @Named(GetShopProductSuggestionUseCase.QUERY_SHOP_PRODUCT_SUGGESTION)
+    fun provideGetProductSuggestionShopQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_af_shop_product_suggestion)
     }
+
+    @Provides
+    @CreatePostScope
+    @Named(GetAffiliateProductSuggestionUseCase.QUERY_AFFILIATE_PRODUCT_SUGGESTION)
+    fun provideGetProductSuggestionAffiliateQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_af_byme_product_suggestion)
+    }
+
 
     @Provides
     @CreatePostScope

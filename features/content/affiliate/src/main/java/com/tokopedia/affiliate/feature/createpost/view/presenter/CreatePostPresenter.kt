@@ -2,11 +2,12 @@ package com.tokopedia.affiliate.feature.createpost.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.TagItem
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.TagItem
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetAffiliateProductSuggestionUseCase
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetFeedForEditUseCase
-import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetProductSuggestionUseCase
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetShopProductSuggestionUseCase
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber
 import com.tokopedia.affiliate.feature.createpost.view.type.ShareType
@@ -37,7 +38,8 @@ class CreatePostPresenter @Inject constructor(
         private val getFeedUseCase: GetFeedForEditUseCase,
         private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
         private val twitterManager: TwitterManager,
-        private val getProductSuggestionUseCase: GetProductSuggestionUseCase
+        private val getShopProductSuggestionUseCase: GetShopProductSuggestionUseCase,
+        private val getAffiliateProductSuggestionUseCase: GetAffiliateProductSuggestionUseCase
 ) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener, CoroutineScope {
 
     private var followersCount: Int? = null
@@ -62,7 +64,8 @@ class CreatePostPresenter @Inject constructor(
         getContentFormUseCase.unsubscribe()
         getFeedUseCase.unsubscribe()
         getProfileHeaderUseCase.unsubscribe()
-        getProductSuggestionUseCase.cancelJobs()
+        getShopProductSuggestionUseCase.cancelJobs()
+        getAffiliateProductSuggestionUseCase.cancelJobs()
     }
 
     override fun fetchContentForm(idList: MutableList<String>, type: String, postId: String) {
@@ -182,9 +185,9 @@ class CreatePostPresenter @Inject constructor(
     override fun fetchProductSuggestion(shopId: String,
                                         onSuccess: (List<TagItem>) -> Unit,
                                         onError: (Throwable) -> Unit) {
-        getProductSuggestionUseCase.params =
-                GetProductSuggestionUseCase.createRequestParams(shopId.toIntOrZero())
-        getProductSuggestionUseCase.execute(onSuccess, onError)
+        getShopProductSuggestionUseCase.params =
+                GetShopProductSuggestionUseCase.createRequestParams(shopId.toIntOrZero())
+        getShopProductSuggestionUseCase.execute(onSuccess, onError)
     }
 
     private fun getFollowersCount(response: GraphqlResponse): Int {
