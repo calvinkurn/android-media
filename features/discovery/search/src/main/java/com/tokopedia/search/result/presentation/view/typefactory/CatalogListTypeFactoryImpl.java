@@ -39,11 +39,11 @@ public class CatalogListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     @Override
     public int type(CatalogViewModel viewModel) {
         switch (getRecyclerViewItem()) {
-            case SearchConstant.RecyclerView.VIEW_PRODUCT:
+            case SearchConstant.RecyclerView.VIEW_LIST:
                 return ListCatalogViewHolder.LAYOUT;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
                 return BigGridCatalogViewHolder.LAYOUT;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
             default:
                 return GridCatalogViewHolder.LAYOUT;
         }

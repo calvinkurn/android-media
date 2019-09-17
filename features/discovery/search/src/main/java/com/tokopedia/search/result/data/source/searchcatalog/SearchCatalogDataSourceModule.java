@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.data.source.searchcatalog;
 
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.di.qualifier.AceQualifier;
 import com.tokopedia.search.result.data.mapper.searchcatalog.SearchCatalogMapperModule;
 import com.tokopedia.search.result.domain.model.SearchCatalogModel;

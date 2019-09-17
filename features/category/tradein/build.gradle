@@ -25,9 +25,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
@@ -64,3 +64,12 @@ dependencies {
     implementation project(rootProject.ext.features.checkout)
     implementation project(rootProject.ext.features.logisticcart)
 }
+
+project.ext {
+    artifactId = 'tradein'
+    groupId = 'com.tokopedia.category'
+    versionName = "1.0.0"
+    artifactName = "categorytradein-release"
+}
+
+apply from: '../../../publish_local.gradle'

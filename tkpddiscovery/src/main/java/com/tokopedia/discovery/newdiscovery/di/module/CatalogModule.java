@@ -12,7 +12,6 @@ import com.tokopedia.discovery.newdiscovery.data.repository.CatalogRepository;
 import com.tokopedia.discovery.newdiscovery.data.mapper.BrowseCatalogMapper;
 import com.tokopedia.discovery.newdiscovery.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.discovery.newdiscovery.data.source.CatalogDataSource;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogLoadMoreUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetBrowseCatalogUseCase;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
