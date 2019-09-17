@@ -925,7 +925,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         search_pdp_toolbar.show()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
-        varPictureImage.isNotVisibleOnTheScreen(ImpressHolder(), object : ViewHintListener{
+        varPictureImage.isNotVisibleOnTheScreen(object : ViewHintListener{
             override fun onViewHint() {
                 varPictureImage.stopVideo()
             }

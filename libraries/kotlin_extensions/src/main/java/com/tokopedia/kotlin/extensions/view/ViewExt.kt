@@ -269,15 +269,13 @@ fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListen
     }
 }
 
-fun View.isNotVisibleOnTheScreen(holder: ImpressHolder, listener: ViewHintListener) {
-    if (!holder.isInvoke) {
-        viewTreeObserver.addOnScrollChangedListener {
-            if (!holder.isInvoke && getVisiblePercent(this@isNotVisibleOnTheScreen) == -1) {
-                listener.onViewHint()
-                holder.invoke()
-            }
+fun View.isNotVisibleOnTheScreen(listener: ViewHintListener) {
+    viewTreeObserver.addOnScrollChangedListener {
+        if (getVisiblePercent(this@isNotVisibleOnTheScreen) == -1) {
+            listener.onViewHint()
         }
     }
+
 }
 
 fun getVisiblePercent(v: View): Int {
