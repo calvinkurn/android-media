@@ -180,6 +180,15 @@
                 tools:text="Tidak dapat ubah kurir karena promo telah diterapkan"
                 tools:layout_height="50dp"/>
 
+            <com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+                android:id="@+id/ticker_promo_logistic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                tools:layout_height="50dp"
+                android:visibility="visible"/>
+
             <RelativeLayout
                 android:id="@+id/tv_logistic_promo_label"
                 android:layout_width="match_parent"
