@@ -32,59 +32,59 @@ import java.util.List;
  * Fragment that using recyclerview and has capability to show the data list,
  * handle simple pagination when onscroll to bottom, can have swiperefresh to refresh the list,
  * have capability to show loading, empty state, and error state
- *
+ * <p>
  * To use, we have to extend the fragment
  * class Fragment extends BaseListFragment<{Model}, {AdapterFactory}>
  * {Model} are the data we want to show in the list. If there are many model type, we can extend the model.
  * Generally, there are several main functions you need call on the fragment.
  * 1. loadInitialData()
- *    function to refresh the data from start (page 1).
- *    As default this function will be called onViewCreated, onSwipeRefresh, and onRetry,
- *    so most of time, no need to call this anymore.
+ * function to refresh the data from start (page 1).
+ * As default this function will be called onViewCreated, onSwipeRefresh, and onRetry,
+ * so most of time, no need to call this anymore.
  * 2. loadData(page: Int)
- *    override this function in the fragment.
- *    Add the logic to retrieve the data for that page in this function.
- *    In first time, page will be 1.
+ * override this function in the fragment.
+ * Add the logic to retrieve the data for that page in this function.
+ * In first time, page will be 1.
  * 3. renderList(data, hasNextPage) to show the list. (generally this after onSuccess get Data)
  * 4. showGetListError(Throwable) to show the error. (generally this after onError get Data)
- *
+ * <p>
  * HOW TO CUSTOMIZE
  * 1 change [[DEFAULT VIEW]]
- *   As default, the view for this fragment are vertical recyclerview.
- *   If we need to change the view, override onCreateView() function and supply the view we want.
- *    -> You also need to override getRecyclerView(View view) and getSwipeRefreshLayout(View view)
- *       if the view's is different with the default view's id.
+ * As default, the view for this fragment are vertical recyclerview.
+ * If we need to change the view, override onCreateView() function and supply the view we want.
+ * -> You also need to override getRecyclerView(View view) and getSwipeRefreshLayout(View view)
+ * if the view's is different with the default view's id.
  * 2.Add/remove [[SWIPE REFRESH]]
- *   override hasInitialSwipeRefresh() to true/false
+ * override hasInitialSwipeRefresh() to true/false
  * 3.[[LOAD INITIAL DATA CALL POINT]]
- *   default will call loadInitialData() in onViewCreated
- *   override callInitialLoadAutomatically() to false, then call loadInitialData() in place you want
+ * default will call loadInitialData() in onViewCreated
+ * override callInitialLoadAutomatically() to false, then call loadInitialData() in place you want
  * 4.enable/disable [[LOADMORE]]
- *   override isLoadMoreEnabledByDefault to true/false
- *   or
- *   call enableLoadMore or disableLoadMore programmatically.
+ * override isLoadMoreEnabledByDefault to true/false
+ * or
+ * call enableLoadMore or disableLoadMore programmatically.
  * 5.change recyclerview's [[LAYOUT_MANAGER]] to horizontal/vertical/grid
- *   override getRecyclerViewLayoutManager()
+ * override getRecyclerViewLayoutManager()
  * 6.Customize Error icon [[ERROR]] From Network
- *   override fun createAdapterInstance(): BaseListAdapter<{Model}, {AdapterFactory}> {
- *       val adapter =  super.createAdapterInstance()
- *       adapter.errorNetworkModel = ErrorNetworkModel().apply {
- *           iconDrawableRes = R.drawable.ic_error_cloud_green
- *       }
- *       return adapter
- *   }
- *   override getMessageFromThrowable(context, Throwable) to change the error message based on throwable
- *   or call
- *   super.showGetListError(MessageErrorException(getString(R.string.sorry_flash_sale_is_canceled)))
+ * override fun createAdapterInstance(): BaseListAdapter<{Model}, {AdapterFactory}> {
+ * val adapter =  super.createAdapterInstance()
+ * adapter.errorNetworkModel = ErrorNetworkModel().apply {
+ * iconDrawableRes = R.drawable.ic_error_cloud_green
+ * }
+ * return adapter
+ * }
+ * override getMessageFromThrowable(context, Throwable) to change the error message based on throwable
+ * or call
+ * super.showGetListError(MessageErrorException(getString(R.string.sorry_flash_sale_is_canceled)))
  * 7.Customize [[EMPTY STATE]]
- *   override getEmptyDataViewModel() and create new EmptyModel()
- *   To manually show fullEmptyPage in adapter: call adapter.clearAllElements() and showEmpty(). Most of time, no need to call it.
+ * override getEmptyDataViewModel() and create new EmptyModel()
+ * To manually show fullEmptyPage in adapter: call adapter.clearAllElements() and showEmpty(). Most of time, no need to call it.
  * 8.Customize [[LOADING STATE]]
- *   override getLoadingModel()
+ * override getLoadingModel()
  */
 public abstract class BaseListFragment<T extends Visitable, F extends AdapterTypeFactory> extends BaseDaggerFragment
         implements BaseListViewListener<T>, BaseListAdapter.OnAdapterInteractionListener<T>,
-        ErrorNetworkModel.OnRetryListener{
+        ErrorNetworkModel.OnRetryListener {
 
     private static final int DEFAULT_INITIAL_PAGE = 1;
     private static final int DEFAULT_MAX_ROW_FULL_PAGE = 10;
@@ -120,7 +120,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
     }
 
-    protected boolean hasInitialSwipeRefresh (){
+    protected boolean hasInitialSwipeRefresh() {
         return false;
     }
 
@@ -136,11 +136,11 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         return null;
     }
 
-    public int getSwipeRefreshLayoutResourceId(){
+    public int getSwipeRefreshLayoutResourceId() {
         return R.id.swipe_refresh_layout;
     }
 
-    public int getRecyclerViewResourceId(){
+    public int getRecyclerViewResourceId() {
         return R.id.recycler_view;
     }
 
@@ -181,7 +181,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
     }
 
-    public void onSwipeRefresh(){
+    public void onSwipeRefresh() {
         hideSnackBarRetry();
         swipeToRefresh.setRefreshing(true);
         loadInitialData();
@@ -227,7 +227,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
     }
 
-    protected EndlessRecyclerViewScrollListener createEndlessRecyclerViewListener(){
+    protected EndlessRecyclerViewScrollListener createEndlessRecyclerViewListener() {
         return new EndlessRecyclerViewScrollListener(recyclerView.getLayoutManager()) {
             @Override
             public void onLoadMore(int page, int totalItemsCount) {
@@ -237,7 +237,8 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         };
     }
 
-    @Nullable protected EndlessLayoutManagerListener getEndlessLayoutManagerListener(){
+    @Nullable
+    protected EndlessLayoutManagerListener getEndlessLayoutManagerListener() {
         return null;
     }
 
@@ -261,10 +262,10 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         hideSnackBarRetry();
     }
 
-    protected void showSwipeLoading(){
+    protected void showSwipeLoading() {
         adapter.removeErrorNetwork();
         hideSnackBarRetry();
-        if (swipeToRefresh!=null) {
+        if (swipeToRefresh != null) {
             swipeToRefresh.setRefreshing(true);
         }
     }
@@ -276,8 +277,9 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     /**
      * Function to show the list.
      * Behavior is APPEND, means if there is 10 data already and we add another 10, will become 20,
-     *   * except loadInitialData() will clear the data and reset page to 0.
-     * @param list data to show for this page
+     * * except loadInitialData() will clear the data and reset page to 0.
+     *
+     * @param list        data to show for this page
      * @param hasNextPage true if we want recyclerview to load more data at the bottom of recyclerview.
      */
     @Override
@@ -302,29 +304,29 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
 
         // load next page data if adapter data less than minimum full page data
         // when the list has next page and auto load next page is enabled
-        if (adapter.getDataSize() < getFullpageMinNumOfRows() && isAutoLoadEnabled()
-                && hasNextPage && endlessRecyclerViewScrollListener !=  null) {
+        if (adapter.getDataSize() < getMinimumScrollableNumOfItems() && isAutoLoadEnabled()
+                && hasNextPage && endlessRecyclerViewScrollListener != null) {
             endlessRecyclerViewScrollListener.loadMoreNextPage();
         }
     }
 
-    public boolean isListEmpty(){
+    public boolean isListEmpty() {
         return adapter.getItemCount() == 0;
     }
 
-    public void showEmpty(){
+    public void showEmpty() {
         // Note: add element should be the last in line.
         adapter.addElement(getEmptyDataViewModel());
     }
 
-    public void updateScrollListenerState(boolean hasNextPage){
+    public void updateScrollListenerState(boolean hasNextPage) {
         if (endlessRecyclerViewScrollListener != null) {
             endlessRecyclerViewScrollListener.updateStateAfterGetData();
             endlessRecyclerViewScrollListener.setHasNextPage(hasNextPage);
         }
     }
 
-    public void clearAllData(){
+    public void clearAllData() {
         adapter.clearAllElements();
         if (endlessRecyclerViewScrollListener != null) {
             endlessRecyclerViewScrollListener.resetState();
@@ -346,6 +348,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
      * show the default error
      * If the error happen at loadmore, snackbar will be shown
      * If error happens when data is empty, fullscreeen message will be shown instead.
+     *
      * @param throwable
      */
     @Override
@@ -362,7 +365,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
     }
 
-    protected void updateStateScrollListener(){
+    protected void updateStateScrollListener() {
         // update the load more state (paging/can loadmore)
         if (endlessRecyclerViewScrollListener != null) {
             endlessRecyclerViewScrollListener.updateStateAfterGetData();
@@ -380,13 +383,13 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     protected void onGetListErrorWithExistingData(Throwable throwable) {
-        showSnackBarRetry(throwable,v -> {
-                if (endlessRecyclerViewScrollListener != null) {
-                    endlessRecyclerViewScrollListener.loadMoreNextPage();
-                } else {
-                    loadInitialData();
-                }
-                });
+        showSnackBarRetry(throwable, v -> {
+            if (endlessRecyclerViewScrollListener != null) {
+                endlessRecyclerViewScrollListener.loadMoreNextPage();
+            } else {
+                loadInitialData();
+            }
+        });
     }
 
     @Override
@@ -405,13 +408,13 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     }
 
     /**
-     * return the minimum items to fill the whole page
+     * return the minimum items to make page scrollable
      * this number will be used as threshold to automatically load
      * next page data if it have next page and have auto load enabled
      *
      * @return int
      */
-    protected int getFullpageMinNumOfRows() {
+    protected int getMinimumScrollableNumOfItems() {
         return DEFAULT_MAX_ROW_FULL_PAGE;
     }
 
@@ -447,7 +450,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
         }
     }
 
-    protected String getMessageFromThrowable(Context context, Throwable t){
+    protected String getMessageFromThrowable(Context context, Throwable t) {
         return ErrorHandler.getErrorMessage(context, t);
     }
 
@@ -456,7 +459,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
      * Return 0 if there is no data or even still loading first page.
      * Will return 1 after rendering first page successfully
      */
-    protected int getCurrentPage(){
+    protected int getCurrentPage() {
         return endlessRecyclerViewScrollListener.getCurrentPage();
     }
 
