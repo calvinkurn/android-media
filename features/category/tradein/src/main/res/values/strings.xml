@@ -26,6 +26,7 @@
         kami membutuhkan ijin ada untuk mengakses beberapa fungsi di telepon anda</string>
     <string name="money_in_request_permission">Mulai berikan ijin</string>
     <string name="not_elligible">Mohon maaf, model HP Anda belum dapat digunakan untuk tukar tambah.</string>
+    <string name="not_elligible_money_in">Mohon maaf, model HP Anda belum dapat digunakan untuk langsung laku.</string>
     <string name="model_not_found">Tidak dapat menemukan model HP</string>
     <string name="go_to_product_details">Kembali Ke Detail Produk</string>
     <string name="tradein_return">Kembali</string>
