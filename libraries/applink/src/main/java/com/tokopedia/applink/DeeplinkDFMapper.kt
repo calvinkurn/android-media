@@ -6,14 +6,11 @@ import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import com.tokopedia.applink.ApplinkConst.HOTEL
-import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_PROFILE
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.REPORT_PRODUCT
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_SETTINGS_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
@@ -39,40 +36,44 @@ import tokopedia.applink.R
  */
 object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
-    private val SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
-    private val SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
-    private val SHOP_OPEN_CUSTOMERAPP = "shop_open"
-    private val HOTEL_TRAVEL = "hotel_travel"
-    private val DIGITAL_TOPUP = "digital_topup"
-    private val USER_PROFILE_COMPLETION = "profilecompletion"
-    private val USER_SETTING_BANK = "settingbank"
-    private val HOMEPAGE_TRAVEL = "homepage_travel"
-    private val CUSTOMER_TOPADS_DASHBOARD = "customer_topads_dashboard"
-    private val SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
-    private val CUSTOMER_TOPADS_AUTOADS = "customer_topads_autoads"
-    private val SELLER_TOPADS_AUTOADS = "seller_topads_autoads"
+    private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
+    private val DFM_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
+    private val DFM_SHOP_OPEN_CUSTOMERAPP = "shop_open"
+    private val DFM_HOTEL_TRAVEL = "hotel_travel"
+    private val DFM_DIGITAL_TOPUP = "digital_topup"
+    private val DFM_USER_PROFILE_COMPLETION = "profilecompletion"
+    private val DFM_USER_SETTING_BANK = "settingbank"
+    private val DFM_HOMEPAGE_TRAVEL = "homepage_travel"
+    private val DFM_CUSTOMER_TOPADS_DASHBOARD = "customer_topads_dashboard"
+    private val DFM_SELLER_TOPADS_DASHBOARD = "seller_topads_dashboard"
+    private val DFM_CUSTOMER_TOPADS_AUTOADS = "customer_topads_autoads"
+    private val DFM_SELLER_TOPADS_AUTOADS = "seller_topads_autoads"
+    private val DFM_CUSTOMER_REPORT_PRODUCT = "customer_report_product"
+    private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
 
 
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-//            add(DFP({ it.startsWith(HOTEL) }, HOTEL_TRAVEL, R.string.title_hotel))
-//            add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
-//            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DIGITAL_TOPUP, R.string.digital_topup_title))
-//            add(DFP({ it.startsWith(OPEN_SHOP) }, SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title))
-            add(DFP({ it.startsWith(SETTING_PROFILE) }, USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
-            add(DFP({ it.startsWith(SETTING_BANK) }, USER_SETTING_BANK, R.string.applink_setting_bank_title))
-            add(DFP({it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
-            add(DFP({it.startsWith(CUSTOMER_TOPADS_AUTOADS) }, CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
+//            add(DFP({ it.startsWith(HOTEL) }, DFM_HOTEL_TRAVEL, R.string.title_hotel))
+//            add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, DFM_HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
+//            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DFM_DIGITAL_TOPUP, R.string.digital_topup_title))
+//            add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title))
+            add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
+            add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER_SETTING_BANK, R.string.applink_setting_bank_title))
+//            add(DFP({ it.startsWith(REPORT_PRODUCT) }, DFM_CUSTOMER_REPORT_PRODUCT, R.string.applink_report_title))
+//            add(DFP({ it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
+//            add(DFP({ it.startsWith(DFM_CUSTOMER_TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
         }
     }
 
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title))
-            add(DFP({it.startsWith(TOPADS_DASHBOARD_SELLER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
-            add(DFP({it.startsWith(SELLER_TOPADS_AUTOADS) }, CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, DFM_SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title))
+//            add(DFP({ it.startsWith(TOPADS_DASHBOARD_SELLER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_SELLER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
+//            add(DFP({ it.startsWith(DFM_SELLER_TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
+//            add(DFP({ it.startsWith(REPORT_PRODUCT) }, DFM_SELLER_REPORT_PRODUCT, R.string.applink_report_title))
         }
     }
 
@@ -102,7 +103,7 @@ object DeeplinkDFMapper {
         list.forEach {
             if (it.logic(deeplink)) {
                 return getDFDeeplinkIfNotInstalled(context,
-                    deeplink, it.moduleId, context.getString(it.moduleNameResourceId))
+                        deeplink, it.moduleId, context.getString(it.moduleNameResourceId))
             }
         }
         return null
@@ -123,12 +124,12 @@ object DeeplinkDFMapper {
                     Crashlytics.logException(Exception("Install module " + moduleId));
                 }
                 return UriUtil.buildUri(
-                    DYNAMIC_FEATURE_INSTALL,
-                    moduleId,
-                    moduleName,
-                    Uri.encode(deeplink).toString(),
-                    isAuto.toString(),
-                    imageUrl)
+                        DYNAMIC_FEATURE_INSTALL,
+                        moduleId,
+                        moduleName,
+                        Uri.encode(deeplink).toString(),
+                        isAuto.toString(),
+                        imageUrl)
             }
         } ?: return null
     }
@@ -146,7 +147,7 @@ object DeeplinkDFMapper {
  * Class to hold dynamic feature pattern, used for mapping
  */
 class DFP(
-    val logic: ((deeplink: String) -> Boolean),
-    val moduleId: String,
-    val moduleNameResourceId: Int
+        val logic: ((deeplink: String) -> Boolean),
+        val moduleId: String,
+        val moduleNameResourceId: Int
 )

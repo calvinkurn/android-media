@@ -47,4 +47,8 @@
     <string name="autoads_pengaturan_iklan">Pengaturan Iklan</string>
     <string name="autoads_iklan_otomatis">Iklan Otomatis</string>
     <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
+
+    <!--Report-->
+    <string name="title_module_report">Report Module</string>
+    <string name="product_report">Laporkan Produk</string>
 </resources>
