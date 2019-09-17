@@ -925,6 +925,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         search_pdp_toolbar.show()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
+        varPictureImage.isNotVisibleOnTheScreen(ImpressHolder(), object : ViewHintListener{
+            override fun onViewHint() {
+                varPictureImage.stopVideo()
+            }
+        })
+
         initToolBarMethod = ::initToolbarLight
         fab_detail.setAnchor(R.id.view_picture_search_bar)
         nested_scroll.viewTreeObserver.addOnScrollChangedListener {

@@ -23,11 +23,17 @@ class PictureScrollingView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var urlTemp = ""
+    lateinit var pagerAdapter:VideoPicturePagerAdapter
+
     val position: Int
         get() = view_pager?.currentItem ?: 0
 
     init {
         instantiateView()
+    }
+
+    fun stopVideo(){
+        (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imInvisible()
     }
 
     private fun instantiateView() {
@@ -46,7 +52,7 @@ class PictureScrollingView @JvmOverloads constructor(
         } else
             media.toMutableList()
 
-        val pagerAdapter = VideoPicturePagerAdapter(context, mediaList, urlTemp, onPictureClickListener, fragmentManager)
+        pagerAdapter = VideoPicturePagerAdapter(context, mediaList, urlTemp, onPictureClickListener, fragmentManager)
         view_pager.adapter = pagerAdapter
 
         view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
