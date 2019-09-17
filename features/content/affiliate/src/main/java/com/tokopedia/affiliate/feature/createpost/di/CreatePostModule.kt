@@ -127,7 +127,7 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     @Named(GetAffiliateProductSuggestionUseCase.QUERY_AFFILIATE_PRODUCT_SUGGESTION)
     fun provideGetProductSuggestionAffiliateQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_af_byme_product_suggestion)
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_af_affiliate_product_suggestion)
     }
 
 

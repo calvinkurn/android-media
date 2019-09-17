@@ -4,8 +4,6 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.affiliate.AffiliateProductItem
 import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.affiliate.AffiliateProductSuggestion
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductSuggestionResponse
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -23,7 +21,7 @@ class GetAffiliateProductSuggestionUseCase @Inject constructor(
     : UseCase<List<AffiliateProductItem>>() {
 
     companion object {
-        const val QUERY_AFFILIATE_PRODUCT_SUGGESTION = "query_af_byme_product_suggestion"
+        const val QUERY_AFFILIATE_PRODUCT_SUGGESTION = "query_af_affiliate_product_suggestion"
     }
 
     override suspend fun executeOnBackground(): List<AffiliateProductItem> {

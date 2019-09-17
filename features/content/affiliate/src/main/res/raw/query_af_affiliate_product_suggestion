@@ -1,5 +1,6 @@
-affiliateParticularSections(limit: 5){
-    explore_page_section{
+{
+  affiliateParticularSections(limit: 5) {
+    explore_page_section {
       type
       title
       subtitle
@@ -23,3 +24,4 @@ affiliateParticularSections(limit: 5){
       }
     }
   }
+}
