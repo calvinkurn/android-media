@@ -445,7 +445,11 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         address.setStreet(intentModel.getAddressStreet());
                         address.setPostalCode(intentModel.getPostalCode());
                     }
-                    mActivityListener.finishAndSendResult(address);
+                    if (requestType == TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
+                        mPresenter.getAddress();
+                        mCurrentAddress = address;
+                    } else
+                        mActivityListener.finishAndSendResult(address);
                     break;
                 case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY:
                 case LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED:

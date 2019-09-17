@@ -92,11 +92,7 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
         launchCatchError(block = {
             val request = mapOf("is_default" to 1,
                     "limit" to 1,
-                    "page" to 1,
-                    "addr_ids" to "",
-                    "feature" to "",
-                    "show_corner" to false,
-                    "show_address" to true)
+                    "page" to 1)
             val queryString = GraphqlHelper.loadRawString(applicationInstance.resources, R.raw.tradein_address_corner)
             val response = repository?.getGQLData(queryString, MoneyInKeroGetAddressResponse.ResponseData::class.java, request) as MoneyInKeroGetAddressResponse.ResponseData?
             progBarVisibility.value = false
