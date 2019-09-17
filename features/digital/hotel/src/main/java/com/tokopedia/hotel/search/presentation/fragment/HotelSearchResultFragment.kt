@@ -288,4 +288,6 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
         val searchQuery = GraphqlHelper.loadRawString(resources, R.raw.gql_get_property_search)
         searchResultviewModel.searchProperty(page, searchQuery)
     }
+
+    override fun isAutoLoadEnabled(): Boolean = true
 }
