@@ -20,9 +20,10 @@ class VoucherGameListDecorator(val space: Int, val resources: Resources) : Recyc
                         space.toFloat(),
                         resources.displayMetrics
                 ).toInt()
+
                 if (childPosition in 0..2) top = offset // Top row cells, add top offset
                 bottom = offset
-                if (childPosition % 3 != 2) right = offset // Rightmost cell does not have right offset
+                right = offset
             }
         }
 

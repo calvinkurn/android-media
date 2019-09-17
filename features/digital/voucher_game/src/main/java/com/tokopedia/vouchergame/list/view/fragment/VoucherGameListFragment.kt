@@ -322,7 +322,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     companion object {
 
-        const val ITEM_DECORATOR_SIZE = 9
+        const val ITEM_DECORATOR_SIZE = 8
 
         const val REQUEST_VOUCHER_GAME_DETAIL = 300
 
