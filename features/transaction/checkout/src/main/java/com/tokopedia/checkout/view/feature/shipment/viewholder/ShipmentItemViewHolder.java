@@ -175,7 +175,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TextView tvChangeSelectedDuration;
     private TextView tvSelectedCourierRecommendation;
     private TextView tvSelectedPriceRecommendation;
-    private TextView tvChangeSelectedCourierRecommendation;
+    private TextView tvCourierSelection;
     private LinearLayout llShipmentInfoTicker;
     private TextView tvTickerInfo;
     private LinearLayout layoutWarningAndError;
@@ -326,7 +326,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tvSelectedCourierRecommendation = itemView.findViewById(R.id.tv_selected_courier_recommendation);
         tvSelectedPriceRecommendation = itemView.findViewById(R.id.tv_selected_price_recommendation);
         tvSelectedPriceOnly = itemView.findViewById(R.id.tv_selected_price_b);
-        tvChangeSelectedCourierRecommendation = itemView.findViewById(R.id.tv_button_change_courier);
+        tvCourierSelection = itemView.findViewById(R.id.tv_button_change_courier);
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
@@ -682,8 +682,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             }
         });
-        tvChangeSelectedCourierRecommendation.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
-        tvChangeSelectedCourierRecommendation.setOnClickListener(v -> {
+        tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
+        tvCourierSelection.setOnClickListener(v -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION)
                 mActionListener.onChangeShippingCourier(
                         shipmentCartItemModel.getSelectedShipmentDetailData().getShippingCourierViewModels(),
@@ -695,32 +695,34 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             llLogPromo.setVisibility(View.VISIBLE);
             tvLogTicker.setVisibility(View.VISIBLE);
             tvLogTicker.setVariant(TickerPromoStackingCheckoutView.Variant.LOGISTIC);
-            tvLogTicker.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
-                    shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState()));
-            tvLogTicker.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
-                @Override
-                public void onClickUsePromo() {
+            if (shipmentCartItemModel.isError()) {
+                tvLogTicker.disableView();
+                Toast.makeText(itemView.getContext(), "To Do: Add clear promo here", Toast.LENGTH_LONG).show();
+            } else {
+                tvLogTicker.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
+                        shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState()));
+                tvLogTicker.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
+                    @Override
+                    public void onClickUsePromo() {
 
-                }
+                    }
 
-                @Override
-                public void onResetPromoDiscount() {
-                    Toast.makeText(itemView.getContext(), "To Do: Add clear promo here", Toast.LENGTH_LONG).show();
-                }
+                    @Override
+                    public void onResetPromoDiscount() {
+                        Toast.makeText(itemView.getContext(), "To Do: Add clear promo here", Toast.LENGTH_LONG).show();
+                    }
 
-                @Override
-                public void onClickDetailPromo() {
+                    @Override
+                    public void onClickDetailPromo() {
 
-                }
+                    }
 
-                @Override
-                public void onDisablePromoDiscount() {
+                    @Override
+                    public void onDisablePromoDiscount() {
 
-                }
-            });
-            boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
-
-            tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
+                    }
+                });
+            }
             if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc()) &&
                     !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount())) {
                 String labelCouponAmount = "- Rp " + shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount();
@@ -728,10 +730,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvLogTicker.setTitle(labelCouponAmount);
             }
 
+            boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
+            tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
+
             // disable courier selection
-            tvChangeSelectedCourierRecommendation.setTextColor(
+            tvCourierSelection.setTextColor(
                     ContextCompat.getColor(context, R.color.n_700_44));
-            tvChangeSelectedCourierRecommendation.setOnClickListener(null);
+            tvCourierSelection.setOnClickListener(null);
         } else {
             llLogPromo.setVisibility(View.GONE);
             tvLogTicker.setVisibility(View.GONE);
@@ -766,7 +771,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvLogPromoMsg.setHtmlDescription(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
 
             if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
-            shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()) {
+                    shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()) {
                 OntimeDelivery otd = shipmentDetailData.getSelectedCourier().getOntimeDelivery();
                 String html = otd.getText_detail();
                 String url = otd.getUrl_detail();
@@ -1337,7 +1342,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvChangeCourier.setClickable(false);
             tvChooseDuration.setClickable(false);
             tvChangeSelectedDuration.setClickable(false);
-            tvChangeSelectedCourierRecommendation.setClickable(false);
+            tvCourierSelection.setClickable(false);
             tvChangeSelectedCourierBlackbox.setClickable(false);
             etShipperName.setClickable(false);
             etShipperName.setFocusable(false);
@@ -1360,7 +1365,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvChangeCourier.setClickable(true);
             tvChooseDuration.setClickable(true);
             tvChangeSelectedDuration.setClickable(true);
-            tvChangeSelectedCourierRecommendation.setClickable(true);
+            tvCourierSelection.setClickable(true);
             tvChangeSelectedCourierBlackbox.setClickable(true);
             etShipperName.setClickable(true);
             etShipperName.setFocusable(true);
