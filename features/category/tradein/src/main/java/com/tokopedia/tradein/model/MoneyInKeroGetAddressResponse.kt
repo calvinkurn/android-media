@@ -45,7 +45,7 @@ data class MoneyInKeroGetAddressResponse(
                     @SerializedName("district")
                     val district: Int,
                     @SerializedName("district_name")
-                    val districtName: String,
+                    val districtName: String?,
                     @SerializedName("is_active")
                     val isActive: Boolean,
                     @SerializedName("is_primary")
@@ -53,9 +53,9 @@ data class MoneyInKeroGetAddressResponse(
                     @SerializedName("is_whitelist")
                     val isWhitelist: Boolean,
                     @SerializedName("latitude")
-                    val latitude: String,
+                    val latitude: String?,
                     @SerializedName("longitude")
-                    val longitude: String,
+                    val longitude: String?,
                     @SerializedName("phone")
                     val phone: String,
                     @SerializedName("postal_code")
@@ -63,7 +63,7 @@ data class MoneyInKeroGetAddressResponse(
                     @SerializedName("province")
                     val province: Int,
                     @SerializedName("province_name")
-                    val provinceName: String,
+                    val provinceName: String?,
                     @SerializedName("receiver_name")
                     val receiverName: String,
                     @SerializedName("status")
