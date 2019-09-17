@@ -21,7 +21,7 @@
       preorder:$preorder
       trade_in:$trade_in
       vehicle_leasing:$vehicle_leasing
-      psl_code:$psl_code
+      psl_code:"$psl_code"
   }) {
   ratesv3 {
     id
