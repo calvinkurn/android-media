@@ -209,11 +209,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
     private View llLogPromo;
     private TickerPromoStackingCheckoutView tvLogTicker;
-    private RelativeLayout tvLogPromoLabel;
-    private TextView tvLogPromoTitle;
-    private TextView tvLogPromoDiscAmount;
     private Ticker tvLogPromoMsg;
-    private TextView tvLogPromoErr;
     private TextView tvSelectedPriceOnly;
 
     // order prioritas
@@ -369,11 +365,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
         llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
         tvLogTicker = itemView.findViewById(R.id.ticker_promo_logistic);
-        tvLogPromoLabel = itemView.findViewById(R.id.tv_logistic_promo_label);
-        tvLogPromoTitle = itemView.findViewById(R.id.tv_logistic_title_desc);
-        tvLogPromoDiscAmount = itemView.findViewById(R.id.tv_logistic_disc_amount);
         tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
-        tvLogPromoErr = itemView.findViewById(R.id.tv_logistic_promo_err);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -706,22 +698,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState()));
             boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
 
-
-
-            tvLogPromoErr.setVisibility(isRed ? View.VISIBLE : View.GONE);
-            tvLogPromoLabel.setVisibility(isRed ? View.GONE : View.VISIBLE);
             tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
             if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc()) &&
                     !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount())) {
                 String labelCouponAmount = "- Rp " + shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount();
                 tvLogTicker.setDesc(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount());
                 tvLogTicker.setTitle(labelCouponAmount);
+            }
 
-                tvLogPromoTitle.setText(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
-                tvLogPromoDiscAmount.setText(labelCouponAmount);
-            } else tvLogPromoLabel.setVisibility(View.GONE);
-
-
+            // disable courier selection
             tvChangeSelectedCourierRecommendation.setTextColor(
                     ContextCompat.getColor(context, R.color.n_700_44));
             tvChangeSelectedCourierRecommendation.setOnClickListener(null);
