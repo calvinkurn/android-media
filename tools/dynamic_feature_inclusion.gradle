@@ -4,7 +4,7 @@ ext {
     }
 
     getDynamicFeatureListByProjectName = { final String projectName->
-        final def filemap = new File("buildConfig/appcompile/dynamic-feature-" + projectName + ".cfg")
+        final def filemap = new File("buildconfig/appcompile/dynamic-feature-" + projectName + ".cfg")
         if (filemap.exists()) {
             return filemap.readLines().collect{it.trim()}
                     .findAll {!it.empty && !it.startsWith('#') && !it.startsWith('//')}
@@ -32,8 +32,14 @@ ext {
             println("Dynamic feature is disabled")
         } else {
             getDynamicFeatureListByProjectName(projectName).each {
-                print("$it; ")
-                include "$it"
+                def itTrim = ""
+                if (it.startsWith(':')) {
+                    itTrim = it.replaceFirst(":", "")
+                } else {
+                    itTrim = it
+                }
+                print("$itTrim; ")
+                include "$itTrim"
             }
             println()
         }
