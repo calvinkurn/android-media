@@ -25,6 +25,13 @@ public class TradeInGTMConstants {
     public static final String ACTION_CLICK_KEMBALI_BUTTON = "click kembali button";
     public static final String ACTION_CLICK_SETUJU_BUTTON = "click setuju button";
     public static final String ACTION_CLICK_ICON_TNC = "click icon syarat dan ketentuan";
+    public static final String ACTION_VIEW_CHECKOUT_PAGE = "view checkout page money in";
+    public static final String ACTION_CLICK_PILIH_KURIR = "click pilih kurir";
+    public static final String ACTION_CLICK_PILIH_WAKTU_PANGAMBILAN = "click pilih waktu pengambilan";
+    public static final String ACTION_CLICK_PILIH = "click pilih";
+    public static final String ACTION_CLICK_PILIH_PEMBAYARAN = "click pilih pembayaran";
+    public static final String ACTION_CLICK_UBAH_KURIR = "click ubah kurir button";
+    public static final String ACTION_CLICK_UBAH_WAKTU = "click ubah waktu button";
 
     public static final String VIEW_PRICE_RANGE_PAGE = "view price range page";
 
@@ -33,11 +40,14 @@ public class TradeInGTMConstants {
     public static final String ACTION = "action";
     public static final String PAGE = "page";
     public static final String VALUE = "value";
+    public static final String SUCCESS = "success";
+    public static final String FAILURE = "failure";
 
     public static final String CATEGORY_TRADEIN_START_PAGE = "trade in start page";
     public static final String CATEGORY_TRADEIN_HARGA_FINAL ="harga final trade in";
     public static final String CATEGORY_MONEYIN_HARGA_FINAL ="harga final money in";
 
     public static final String CATEGORY_MONEYIN_PRICERANGE_PAGE ="money in price range page";
+    public static final String CATEGORY_MONEYIN_COURIER_SELECTION ="courier selection money in";
 
 }

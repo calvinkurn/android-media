@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.tradein.R
+import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.model.MoneyInCourierResponse.ResponseData.RatesV4
 import com.tokopedia.tradein.model.MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress
 import com.tokopedia.tradein.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
@@ -55,6 +56,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
     }
 
     override fun initView() {
+        sendGeneralEvent(TradeInGTMConstants.ACTION_VIEW_MONEYIN,
+                TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                TradeInGTMConstants.ACTION_VIEW_CHECKOUT_PAGE,
+                "")
         if (intent.hasExtra(MONEY_IN_ORDER_VALUE)) {
             orderValue = intent.getStringExtra(MONEY_IN_ORDER_VALUE)
         }
@@ -118,6 +123,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                         val courierBtn = findViewById<Button>(R.id.courier_btn)
                         showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
                         courierBtn.setOnClickListener { v ->
+                            sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                                    TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                                    TradeInGTMConstants.ACTION_CLICK_PILIH_KURIR,
+                                    "")
                             showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
                         }
                     }
@@ -127,6 +136,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         moneyInCheckoutViewModel.getCheckoutDataLiveData().observe(this, Observer {
             when (it) {
                 is Success -> {
+                    sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                            TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                            TradeInGTMConstants.SUCCESS)
                     val paymentPassData = PaymentPassData()
                     paymentPassData.redirectUrl = it.data.redirectUrl
                     paymentPassData.transactionId = it.data.parameter.transactionId
@@ -153,6 +166,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                     }
                 }
                 is MutationCheckoutError -> {
+                    sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                            TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                            TradeInGTMConstants.ACTION_CLICK_PILIH_PEMBAYARAN,
+                            TradeInGTMConstants.FAILURE)
                     showMessageWithAction(it.errMsg, getString(R.string.retry_label)) {
                         moneyInCheckoutViewModel.makeCheckoutMutation(getMeGQlString(R.raw.gql_mutation_checkout_general), hardwareId, addrId, spId, scheduleTime.minTimeUnix, scheduleTime.maxTimeUnix)
                     }
@@ -168,6 +185,13 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                 data.services[0].products[0].features.moneyIn,
                 data.services[0].products[0].shipper.shipperProduct.description)
         courierBtn.setOnClickListener {
+            sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                    TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                    when {
+                        isCourierSet -> TradeInGTMConstants.ACTION_CLICK_UBAH_KURIR
+                        else -> TradeInGTMConstants.ACTION_CLICK_PILIH_KURIR
+                    },
+                    "")
             moneyInCourierBottomSheet.show(supportFragmentManager, "")
         }
         moneyInCourierBottomSheet.setActionListener(this)
@@ -213,6 +237,12 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         val retrievalBtn = findViewById<Button>(R.id.retrival_time_btn)
         val moneyInScheduledTimeBottomSheet = MoneyInScheduledTimeBottomSheet.newInstance(scheduleDate)
         retrievalBtn.setOnClickListener {
+            sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                    TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                    when{
+                        isTimeSet -> TradeInGTMConstants.ACTION_CLICK_UBAH_WAKTU
+                        else -> TradeInGTMConstants.ACTION_CLICK_PILIH_WAKTU_PANGAMBILAN},
+                    "")
             moneyInScheduledTimeBottomSheet.show(supportFragmentManager, "")
         }
         moneyInScheduledTimeBottomSheet.setActionListener(this)
@@ -230,6 +260,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         retrieverTimeButton.text = getString(R.string.change_time)
         retrieverTimeButton.setTextColor(MethodChecker.getColor(this, R.color.unify_N700_44))
         isTimeSet = true
+        sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
+                TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
+                TradeInGTMConstants.ACTION_CLICK_PILIH,
+                "$dateFmt - ${scheduleTime.timeFmt}")
     }
 
     private fun setAddressView(recipientAddress: KeroGetAddress.Data) {
