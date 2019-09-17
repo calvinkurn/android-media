@@ -41,7 +41,7 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
         params.productId = productid
         params.deviceId = deviceid
         params.newPrice = newprice
-        params.tradeInType = intent.getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE,1)
+        params.tradeInType = intent.getIntExtra(ApplinkConstInternalCategory.PARAM_TRADEIN_TYPE, 1)
         val variables1 = HashMap<String, Any>()
         variables1["params"] = params
         val gqlDeviceDiagInput = GraphqlUseCase()
@@ -92,14 +92,21 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
         launchCatchError(block = {
             val request = mapOf("is_default" to 1,
                     "limit" to 1,
-                    "page" to 1)
+                    "page" to 1,
+                    "show_corner" to false,
+                    "show_address" to true)
             val queryString = GraphqlHelper.loadRawString(applicationInstance.resources, R.raw.tradein_address_corner)
             val response = repository?.getGQLData(queryString, MoneyInKeroGetAddressResponse.ResponseData::class.java, request) as MoneyInKeroGetAddressResponse.ResponseData?
             progBarVisibility.value = false
             response?.let {
                 it.keroGetAddress.data?.let { listAddress ->
                     if (listAddress.isNotEmpty())
-                        addressLiveData.value = AddressResult(listAddress[0], it.keroGetAddress.token)
+                        listAddress.forEach { moneyInKero ->
+                            if (moneyInKero.isPrimary) {
+                                addressLiveData.value = AddressResult(listAddress[0], it.keroGetAddress.token)
+
+                            }
+                        }
                     else
                         addressLiveData.value = AddressResult(null, it.keroGetAddress.token)
                 }
