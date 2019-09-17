@@ -346,8 +346,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateCaption()
         updateHeader(feedContentForm.authors)
 
-        fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
-        showProductSuggestionLoading()
+        if (!viewModel.isEditState) {
+            fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
+            showProductSuggestionLoading()
+        }
     }
 
     override fun onErrorGetContentForm(message: String) {
