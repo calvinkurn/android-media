@@ -345,7 +345,6 @@ import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
 import com.tokopedia.tokocash.qrpayment.presentation.model.InfoQrTokoCash;
 import com.tokopedia.tokopoints.TokopointRouter;
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
@@ -486,7 +485,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProductDetailRouter,
         OvoPayWithQrRouter,
         OvoP2pRouter,
-        TopAdsAutoRouter,
         KYCRouter{
 
     private static final String EXTRA = "extra";
@@ -2728,42 +2726,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         UnifyTracking.eventDigitalEventTracking(this, text, failmsg);
     }
 
-    @Override
-    @NonNull
-    public Intent getTopAdsAddingPromoOptionIntent(@NonNull Context context) {
-        return new Intent();
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsGroupAdListIntent(@NonNull Context context) {
-        return new Intent();
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsGroupNewPromoIntent(@NonNull Context context) {
-        return new Intent();
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsKeywordNewChooseGroupIntent(@NonNull Context context, boolean isPositive, String groupId) {
-        return new Intent();
-    }
-
-    @Override
-    public void openTopAdsDashboardApplink(@NonNull Context context) {
-        Intent topadsIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(CustomerAppConstants.TOP_SELLER_APPLICATION_PACKAGE);
-
-        if (topadsIntent != null) {
-            goToApplinkActivity(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD);
-        } else {
-            goToCreateMerchantRedirect(context);
-        }
-    }
-
     @NotNull
     @Override
     public Intent getCartIntent(@NotNull Context context) {
@@ -2874,20 +2836,4 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return baseDaggerFragment;
     }
 
-    @Override
-    @NonNull
-    public Intent getTopAdsDashboardIntent(@NonNull Context context) {
-        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL);
-    }
-
-    @Override
-    @NonNull
-    public Intent getTopAdsAddCreditIntent(@NonNull Context context) {
-        return RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT);
-    }
-
-    @Override
-    public void goToAddProduct(@NotNull Activity activity) {
-        activity.startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
-    }
 }

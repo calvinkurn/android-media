@@ -57,6 +57,7 @@ ext {
             wishlistCommon                  : ":features:discovery:wishlist_common",
             productCard                     : ":features:discovery:productcard",
             filter                          : ":features:discovery:filter",
+            imageSearch                     : ":features:discovery:image_search",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
 
             homecredit                      : ":features:fintech:home_credit",

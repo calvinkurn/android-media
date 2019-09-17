@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
@@ -112,7 +111,6 @@ import com.tokopedia.product.manage.item.common.di.component.DaggerProductCompon
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
@@ -164,10 +162,8 @@ import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
 import com.tokopedia.topads.TopAdsComponentInstance;
-import com.tokopedia.topads.TopAdsManagementInternalRouter;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
@@ -215,7 +211,6 @@ public abstract class SellerRouterApplication extends MainApplication
         ChangePasswordRouter, WithdrawRouter,
         PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
         TopAdsManagementRouter,
-        TopAdsAutoRouter,
         BroadcastMessageRouter,
         MerchantVoucherModuleRouter,
         UnifiedOrderListRouter,
@@ -684,12 +679,6 @@ public abstract class SellerRouterApplication extends MainApplication
         return getShopComponent().getShopInfoUseCase();
     }
 
-    @Override
-    public void goToAddProduct(Activity activity) {
-        if (activity != null) {
-            activity.startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
-        }
-    }
 
     @Override
     public Intent goToOrderDetail(Context context, String orderId) {
@@ -1207,35 +1196,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Fragment getFavoritedShopFragment(@NonNull String userId) {
         return PeopleFavoritedShopFragment.createInstance(userId);
-    }
-
-    @NonNull
-    @Override
-    public Intent getTopAdsAddingPromoOptionIntent(@NonNull Context context) {
-        return TopAdsManagementInternalRouter.getTopAdsAddingPromoOptionIntent(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getTopAdsGroupAdListIntent(@NonNull Context context) {
-        return TopAdsManagementInternalRouter.getTopAdsGroupAdListIntent(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getTopAdsGroupNewPromoIntent(@NonNull Context context) {
-        return TopAdsManagementInternalRouter.getTopAdsGroupNewPromoIntent(context);
-    }
-
-    @NonNull
-    @Override
-    public Intent getTopAdsKeywordNewChooseGroupIntent(@NonNull Context context, boolean isPositive, String groupId) {
-        return TopAdsManagementInternalRouter.getTopAdsKeywordNewChooseGroupIntent(context, isPositive, groupId);
-    }
-
-    @Override
-    public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, BottomSheets.BottomSheetDismissListener listener) {
-
     }
 
     @Override

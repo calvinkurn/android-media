@@ -39,4 +39,12 @@
     <string name="title_top_ads_credit_history">Riwayat Kredit</string>
     <string name="title_top_ads_auto_topup">Tambah Kredit Otomatis</string>
     <string name="topads_menu_seller_centre">Seller Center</string>
+
+    <!--Auto Ads-->
+    <string name="title_module_auto_ads">AutoAds Module</string>
+    <string name="auto_ads_app_name">AutoTopAds</string>
+    <string name="autoads_topads">TopAds</string>
+    <string name="autoads_pengaturan_iklan">Pengaturan Iklan</string>
+    <string name="autoads_iklan_otomatis">Iklan Otomatis</string>
+    <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
 </resources>

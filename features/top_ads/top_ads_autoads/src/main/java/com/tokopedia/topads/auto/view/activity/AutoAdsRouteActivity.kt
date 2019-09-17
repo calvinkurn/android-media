@@ -12,7 +12,11 @@ import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.applink.AppUtil
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.design.component.ToasterError
 
 import com.tokopedia.topads.auto.R
@@ -85,8 +89,7 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
     }
 
     private fun autoAds() {
-//        startActivity((application as TopAdsAutoRouter).getTopAdsDashboardIntent(this@AutoAdsRouteActivity))
-        (application as TopAdsAutoRouter).openTopAdsDashboardApplink(this@AutoAdsRouteActivity)
+        openDashboard()
     }
 
     private fun noProduct() {
@@ -98,7 +101,15 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
     }
 
     private fun manualAds() {
-        (application as TopAdsAutoRouter).openTopAdsDashboardApplink(this@AutoAdsRouteActivity)
+        openDashboard()
+    }
+
+    private fun openDashboard() {
+        if (AppUtil.isSellerInstalled(this)) {
+            RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
+        } else {
+            RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
+        }
     }
 
     companion object {

@@ -72,7 +72,7 @@ class ManualAdsConfirmationSheet {
             val fragment = ManualAdsConfirmationSheet()
             fragment.dialog = BottomSheetDialog(context, R.style.AutoAdsBottomSheetDialogTheme)
             fragment.dialog!!.setContentView(R.layout.layout_confirmation_manual_ads)
-            fragment.closeButton = fragment.dialog!!.findViewById(R.id.btn_close)
+            fragment.closeButton = fragment.dialog!!.findViewById(com.tokopedia.design.R.id.btn_close)
             fragment.startAutoAdsButton = fragment.dialog!!.findViewById(R.id.btn_start_auto)
             fragment.startManualAdsButton = fragment.dialog!!.findViewById(R.id.btn_start_manual)
             fragment.setupView(context)

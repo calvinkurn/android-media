@@ -11,4 +11,5 @@
     <string name="path_topads_group_ads_list" translatable="false">/group-ads-list</string>
     <string name="path_topads_group_new_promo" translatable="false">/group-new-promo</string>
     <string name="path_topads_add_promo_option" translatable="false">/add-promo-option</string>
+    <string name="path_topads_autoads" translatable="false">/autoads</string>
 </resources>

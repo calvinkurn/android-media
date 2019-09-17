@@ -108,6 +108,9 @@ public class SearchProductModel {
         @SerializedName("autocomplete_applink")
         @Expose
         private String autocompleteApplink;
+        @SerializedName("default_view")
+        @Expose
+        private int defaultView = 0;
         @SerializedName("redirection")
         @Expose
         private Redirection redirection = new Redirection();
@@ -159,6 +162,10 @@ public class SearchProductModel {
 
         public String getAutocompleteApplink() {
             return autocompleteApplink;
+        }
+
+        public int getDefaultView() {
+            return defaultView;
         }
 
         public Redirection getRedirection() {
