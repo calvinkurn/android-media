@@ -329,12 +329,16 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
 
     @Override
     public void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse) {
-        if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid().isEmpty()) {
-            ViewRecomendItems.setVisibility(View.GONE);
-        }else{
-            recommendListTitle.setText(getContext().getText(R.string.tkpdtransaction_widget_title));
-            recommendationList.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-            recommendationList.setAdapter(new RechargeWidgetAdapter(rechargeWidgetResponse.getHomeWidget().getWidgetGrid()));
+        if (rechargeWidgetResponse.getHomeWidget() != null && rechargeWidgetResponse.getHomeWidget().getWidgetGrid() != null) {
+            if (rechargeWidgetResponse.getHomeWidget().getWidgetGrid().isEmpty()) {
+                ViewRecomendItems.setVisibility(View.GONE);
+            } else {
+                if (getContext() != null) {
+                    recommendListTitle.setText(getContext().getString(R.string.tkpdtransaction_widget_title));
+                    recommendationList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                    recommendationList.setAdapter(new RechargeWidgetAdapter(rechargeWidgetResponse.getHomeWidget().getWidgetGrid()));
+                }
+            }
         }
     }
 

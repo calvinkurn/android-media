@@ -593,7 +593,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
         graphqlRequestForRecommendation = new
                 GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
-                R.raw.query_rechrage_widget), RechargeWidgetResponse.class, variablesWidget);
+                R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
         return graphqlRequestForRecommendation;
     }
 

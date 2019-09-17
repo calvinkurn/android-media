@@ -37,7 +37,7 @@ class RechargeWidgetAdapter(private val recommendationItems: List<WidgetGridItem
         holder.renderSubtitle(item)
         holder.renderFooter(item)
 
-        if (item.applink?.isNotEmpty() == true) {
+        if (item.applink?.isNotEmpty() ?: false) {
             holder.itemView.setOnClickListener {
                 RouteManager.route(holder.itemView.context, item.applink)
                 OrderListAnalytics.eventWidgetClick(item, position)
