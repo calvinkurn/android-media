@@ -129,7 +129,7 @@ public class ShopListFragment
         adapter = new ShopListAdapter(this,
                 new ShopListTypeFactoryImpl(this, this, this));
 
-        recyclerView = rootView.findViewById(R.id.recyclerview);
+        recyclerView = rootView.findViewById(R.id.recyclerViewSearchShop);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
