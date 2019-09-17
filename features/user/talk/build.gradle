@@ -54,7 +54,7 @@ project.ext {
     artifactId = 'talk'
     groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "usertalk-release"
+    artifactName = "talk-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -29,7 +29,7 @@ project.ext {
     artifactId = 'searchbar'
     groupId = 'com.tokopedia.home'
     versionName = "1.0.0"
-    artifactName = "homesearchbar-release"
+    artifactName = "searchbar-release"
 }
 
 apply from: '../../../publish_local.gradle'

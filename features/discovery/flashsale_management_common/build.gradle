@@ -18,7 +18,7 @@ project.ext {
     artifactId = 'flashsale-management-common'
     groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
-    artifactName ="discoveryflashsalemanagementcommon-release"
+    artifactName ="flashsale_management_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

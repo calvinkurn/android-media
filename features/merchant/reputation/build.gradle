@@ -58,7 +58,7 @@ project.ext {
     artifactId = 'reputation'
     groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName ="merchantreputation-release"
+    artifactName ="reputation-release"
 }
 
 apply from: '../../../publish_local.gradle'

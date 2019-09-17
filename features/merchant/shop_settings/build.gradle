@@ -53,7 +53,7 @@ project.ext {
     artifactId = 'shop-settings'
     groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName ="merchantshopsettings-release"
+    artifactName ="shop_settings-release"
 }
 
 apply from: '../../../publish_local.gradle'

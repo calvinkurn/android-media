@@ -29,7 +29,7 @@ project.ext {
     artifactId = 'home-credit'
     groupId = 'com.tokopedia.fintech'
     versionName = "1.0.0"
-    artifactName ="fintechhomecredit-release"
+    artifactName ="home_credit-release"
 }
 
 apply from: '../../../publish_local.gradle'

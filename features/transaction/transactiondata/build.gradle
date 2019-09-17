@@ -41,7 +41,7 @@ project.ext {
     artifactId = "transaction-data"
     groupId = "com.tokopedia.transaction"
     versionName = "1.0.0"
-    artifactName = "transactiondata-release"
+    artifactName = "transaction_data-release"
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"

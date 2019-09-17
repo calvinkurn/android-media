@@ -40,7 +40,7 @@ dependencies {
 }
 
 project.ext {
-    artifactId = "logisticinputreceiptshipment"
+    artifactId = "input-receipt-shipment"
     groupId = "com.tokopedia.logistic"
     versionName = "1.0.0"
     artifactName = "logisticinputreceiptshipment-release"

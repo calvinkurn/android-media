@@ -39,7 +39,7 @@ project.ext {
     artifactId = 'common'
     groupId = 'com.tokopedia.category'
     versionName = "1.0.0"
-    artifactName = "categorycommon-release"
+    artifactName = "category_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

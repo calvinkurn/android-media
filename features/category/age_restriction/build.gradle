@@ -46,7 +46,7 @@ project.ext {
     artifactId = 'age-restriction'
     groupId = 'com.tokopedia.category'
     versionName = "1.0.0"
-    artifactName ="categoryagerestriction-release"
+    artifactName ="age_restriction-release"
 }
 
 apply from: '../../../publish_local.gradle'

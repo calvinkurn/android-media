@@ -58,7 +58,7 @@ project.ext {
     artifactId = 'deals'
     groupId = 'com.tokopedia.digital'
     versionName = "1.0.0"
-    artifactName ="digitaldeals-release"
+    artifactName ="digital_deals-release"
 }
 
 apply from: '../../../publish_local.gradle'

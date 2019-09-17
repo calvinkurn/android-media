@@ -30,7 +30,7 @@ project.ext {
     artifactId = 'shop-etalase-picker'
     groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName ="merchantshopetalasepicker-release"
+    artifactName ="shop_etalase_picker-release"
 }
 
 apply from: '../../../publish_local.gradle'

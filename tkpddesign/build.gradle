@@ -28,13 +28,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'design'
-    groupId = 'com.tokopedia.design'
-    versionName = "1.0.0"
-    artifactName ="tkpddesign-release"
-}
-
 dependencies {
     implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -48,6 +41,13 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.mockitorCore
     implementation rootProject.ext.networkDependencies.glide
     testImplementation "org.robolectric:robolectric:4.1"
+}
+
+project.ext {
+    artifactId = 'design'
+    groupId = 'com.tokopedia.design'
+    versionName = "1.0.0"
+    artifactName ="tkpddesign-release"
 }
 
 apply from: '../publish_local.gradle'

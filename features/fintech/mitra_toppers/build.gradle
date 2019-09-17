@@ -38,7 +38,7 @@ project.ext {
     artifactId = 'mitra-toppers'
     groupId = 'com.tokopedia.fintech'
     versionName = "1.0.0"
-    artifactName ="fintechmitratoppers-release"
+    artifactName ="mitra_toppers-release"
 }
 
 apply from: '../../../publish_local.gradle'

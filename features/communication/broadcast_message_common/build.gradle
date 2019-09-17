@@ -17,7 +17,7 @@ project.ext {
     artifactId = 'broadcast-message-common'
     groupId = 'com.tokopedia.communication'
     versionName = "1.0.0"
-    artifactName = "communicationbroadcastmessagecommon-release"
+    artifactName = "broadcast_message_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

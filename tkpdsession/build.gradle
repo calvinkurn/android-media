@@ -17,13 +17,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'session'
-    groupId = 'com.tokopedia.session'
-    versionName = "1.0.0"
-    artifactName ="tkpdsession-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -75,6 +68,13 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
+}
+
+project.ext {
+    artifactId = 'session'
+    groupId = 'com.tokopedia.session'
+    versionName = "1.0.0"
+    artifactName ="tkpdsession-release"
 }
 
 apply from: '../publish_local.gradle'

@@ -30,7 +30,7 @@ project.ext {
     artifactId = 'base-adapter'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "librarybaseadapter-release"
+    artifactName = "baseadapter-release"
 }
 
 apply from: '../../publish_local.gradle'

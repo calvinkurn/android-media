@@ -82,7 +82,7 @@ project.ext {
     artifactId = 'flight'
     groupId = 'com.tokopedia.travel'
     versionName = "1.0.0"
-    artifactName ="travelflight-release"
+    artifactName ="flight-release"
 }
 
 apply from: '../../../publish_local.gradle'

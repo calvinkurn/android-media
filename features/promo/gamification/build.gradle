@@ -53,6 +53,6 @@ project.ext {
     artifactId = 'gamification'
     groupId = 'com.tokopedia.promo'
     versionName = "1.0.0"
-    artifactName = "promogamification-release"
+    artifactName = "gamification-release"
 }
 apply from: '../../../publish_local.gradle'

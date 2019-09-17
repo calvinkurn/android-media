@@ -94,7 +94,7 @@ project.ext {
     artifactId = 'topchat'
     groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "usertopchat-release"
+    artifactName = "topchat-release"
 }
 
 apply from: '../../../publish_local.gradle'

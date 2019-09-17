@@ -20,14 +20,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'discovery'
-    groupId = 'com.tokopedia.discovery'
-    versionName = "1.0.0"
-    artifactName ="tkpddiscovery-release"
-}
-
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -113,6 +105,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation project(rootProject.ext.features.filter)
+}
+
+project.ext {
+    artifactId = 'discovery'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="tkpddiscovery-release"
 }
 
 apply from: '../publish_local.gradle'

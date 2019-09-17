@@ -56,7 +56,7 @@ project.ext {
     artifactId = 'pm-subscribe'
     groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName ="merchantpmsubscribe-release"
+    artifactName ="power_merchant_subscribe-release"
 }
 
 apply from: '../../../publish_local.gradle'

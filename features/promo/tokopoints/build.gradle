@@ -53,7 +53,7 @@ project.ext {
     artifactId = 'tokopoints'
     groupId = 'com.tokopedia.promo'
     versionName = "1.0.0"
-    artifactName = "promotokopoints-release"
+    artifactName = "tokopoints-release"
 }
 
 apply from: '../../../publish_local.gradle'

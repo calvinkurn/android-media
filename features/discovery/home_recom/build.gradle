@@ -65,7 +65,7 @@ project.ext {
     artifactId = 'home-recommendation'
     groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
-    artifactName ="discoveryhomerecommendation-release"
+    artifactName ="home_recom-release"
 }
 
 apply from: '../../../publish_local.gradle'

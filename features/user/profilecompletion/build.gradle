@@ -69,7 +69,7 @@ project.ext {
     artifactId = 'profile-compilation'
     groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName ="userprofilecompilation-release"
+    artifactName ="profilecompilation-release"
 }
 
 apply from: '../../../publish_local.gradle'

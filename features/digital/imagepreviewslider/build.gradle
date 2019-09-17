@@ -29,7 +29,7 @@ project.ext {
     artifactId = 'image-preview-slider'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName ="libraryimagepreviewslider-release"
+    artifactName ="image_preview_slider-release"
 }
 
 apply from: '../../../publish_local.gradle'

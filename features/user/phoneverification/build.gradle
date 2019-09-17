@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'phoneverification'
-    groupId = 'com.tokopedia.phoneverification'
-    versionName = "1.0.0"
-    artifactName ="phone_verification-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -50,7 +43,7 @@ project.ext {
     artifactId = 'phone-verification'
     groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "userphoneverification-release"
+    artifactName = "phoneverification-release"
 }
 
 apply from: '../../../publish_local.gradle'

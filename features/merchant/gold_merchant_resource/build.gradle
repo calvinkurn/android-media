@@ -13,7 +13,7 @@ project.ext {
     artifactId = 'gm-resource'
     groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName = "merchantgmresource-release"
+    artifactName = "gold_merchant_resource-release"
 }
 
 apply from: '../../../publish_local.gradle'

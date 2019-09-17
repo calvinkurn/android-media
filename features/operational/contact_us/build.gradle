@@ -55,7 +55,7 @@ project.ext {
     artifactId = 'contact-us'
     groupId = 'com.tokopedia.operational'
     versionName = "1.0.0"
-    artifactName = "operatinalcontactus-release"
+    artifactName = "contact_us-release"
 }
 
 apply from: '../../../publish_local.gradle'

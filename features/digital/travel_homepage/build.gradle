@@ -60,7 +60,7 @@ project.ext {
     artifactId = 'homepage'
     groupId = 'com.tokopedia.travel'
     versionName = "1.0.0"
-    artifactName = "travelhomepage-release"
+    artifactName = "travel_homepage-release"
 }
 
 apply from: '../../../publish_local.gradle'

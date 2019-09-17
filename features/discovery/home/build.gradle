@@ -127,7 +127,7 @@ project.ext {
     artifactId = 'home'
     groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
-    artifactName ="discoveryhome-release"
+    artifactName ="home-release"
 }
 
 apply from: '../../../publish_local.gradle'

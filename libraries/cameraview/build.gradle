@@ -31,7 +31,7 @@ project.ext {
     artifactId = 'camera-view'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName ="librarycameraview-release"
+    artifactName = "cameraview-release"
 }
 
 apply from: '../../publish_local.gradle'

@@ -68,7 +68,7 @@ project.ext {
     artifactId = 'product-manage-item'
     groupId = 'com.tokopedia.merchant'
     versionName = "1.0.0"
-    artifactName ="merchantproductmanageitem-release"
+    artifactName ="product_manage_item-release"
 }
 
 apply from: '../../../publish_local.gradle'

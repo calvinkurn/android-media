@@ -2,10 +2,10 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 project.ext {
-    artifactId = 'resource-common'
+    artifactId = 'resources-common'
     groupId = 'com.tokopedia.common'
     versionName = "1.0.0"
-    artifactName = "commonresourcecommon-release"
+    artifactName = "resources_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

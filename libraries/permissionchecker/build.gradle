@@ -9,7 +9,7 @@ project.ext {
     artifactId = 'permission-checker'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "librarypermissionchecker-release"
+    artifactName = "permissionchecker-release"
 }
 
 apply from: '../../publish_local.gradle'

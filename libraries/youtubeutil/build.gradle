@@ -27,7 +27,7 @@ project.ext {
     artifactId = 'youtube-util'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName ="libraryapplink-release"
+    artifactName = "youtubeutil-release"
 }
 
 apply from: '../../publish_local.gradle'

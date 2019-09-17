@@ -38,7 +38,7 @@ project.ext {
     artifactId = 'logout'
     groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "userlogout-release"
+    artifactName = "logout-release"
 }
 
 apply from: '../../../publish_local.gradle'

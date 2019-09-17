@@ -54,7 +54,7 @@ project.ext {
     artifactId = 'recent-view'
     groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
-    artifactName ="discoveryrecentview-release"
+    artifactName ="recentview-release"
 }
 
 apply from: '../../../publish_local.gradle'

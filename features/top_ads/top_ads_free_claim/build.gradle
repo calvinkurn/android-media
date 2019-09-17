@@ -25,7 +25,7 @@ project.ext {
     artifactId = 'free-claim'
     groupId = 'com.tokopedia.topads'
     versionName = "1.0.0"
-    artifactName = "topadsfreeclaim-release"
+    artifactName = "top_ads_free_claim-release"
 }
 
 apply from: '../../../publish_local.gradle'

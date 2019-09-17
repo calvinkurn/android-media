@@ -31,7 +31,7 @@ project.ext {
     artifactId = 'management-source-tagging'
     groupId = 'com.tokopedia.topads'
     versionName = "1.0.0"
-    artifactName = "topadsmanagementsourcetagging-release"
+    artifactName = "top_ads_management_sourcetagging-release"
 }
 
 apply from: '../../../publish_local.gradle'

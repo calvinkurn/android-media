@@ -21,7 +21,7 @@ project.ext {
     artifactId = 'colapsing-tab-layout'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "librarycolapsingtablayout-release"
+    artifactName = "colapsing_tab_layout-release"
 }
 
 apply from: '../../publish_local.gradle'

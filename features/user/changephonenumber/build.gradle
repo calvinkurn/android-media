@@ -41,7 +41,7 @@ project.ext {
     artifactId = 'change-phone-number'
     groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName ="userchangephonenumber-release"
+    artifactName ="change_phone_number-release"
 }
 
 apply from: '../../../publish_local.gradle'

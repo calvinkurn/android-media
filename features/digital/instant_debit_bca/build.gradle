@@ -40,7 +40,7 @@ project.ext {
     artifactId = 'instant-debit-bca'
     groupId = 'com.tokopedia.digital'
     versionName = "1.0.0"
-    artifactName ="digitalinstantdebitbca-release"
+    artifactName ="instant_debit_bca-release"
 }
 
 apply from: '../../../publish_local.gradle'

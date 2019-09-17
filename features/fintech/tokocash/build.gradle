@@ -54,7 +54,7 @@ project.ext {
     artifactId = 'tokocash'
     groupId = 'com.tokopedia.fintech'
     versionName = "1.0.0"
-    artifactName ="fintechtokocash-release"
+    artifactName ="tokocash-release"
 }
 
 apply from: '../../../publish_local.gradle'

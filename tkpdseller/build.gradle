@@ -13,13 +13,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'seller'
-    groupId = 'com.tokopedia.seller'
-    versionName = "1.0.0"
-    artifactName ="tkpdseller-release"
-}
-
 dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
@@ -123,6 +116,13 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.permissionchecker)
+}
+
+project.ext {
+    artifactId = 'seller'
+    groupId = 'com.tokopedia.seller'
+    versionName = "1.0.0"
+    artifactName ="tkpdseller-release"
 }
 
 apply from: '../publish_local.gradle'

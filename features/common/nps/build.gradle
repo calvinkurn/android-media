@@ -39,7 +39,7 @@ project.ext {
     artifactId = 'nps'
     groupId = 'com.tokopedia.common'
     versionName = "1.0.0"
-    artifactName = "commonnps-release"
+    artifactName = "nps-release"
 }
 
 apply from: '../../../publish_local.gradle'

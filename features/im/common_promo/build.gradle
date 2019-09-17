@@ -29,7 +29,7 @@ project.ext {
     artifactId = 'promo_common'
     groupId = 'com.tokopedia.im'
     versionName = "1.0.0"
-    artifactName = "impromocommon-release"
+    artifactName = "common_promo-release"
 }
 
 apply from: '../../../publish_local.gradle'

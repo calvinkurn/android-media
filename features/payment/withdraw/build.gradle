@@ -15,14 +15,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "withdraw"
-    groupId = "com.tokopedia.payment"
-    versionName = "1.0.0"
-    artifactName = "paymentwithdraw-release"
-}
-
-
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
@@ -68,6 +60,13 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+}
+
+project.ext {
+    artifactId = "withdraw"
+    groupId = "com.tokopedia.payment"
+    versionName = "1.0.0"
+    artifactName = "withdraw-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -39,10 +39,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'fintech-saldo-details'
+    artifactId = 'saldo-details'
     groupId = 'com.tokopedia.fintech'
     versionName = "1.0.0"
-    artifactName ="fintechsaldodetails-release"
+    artifactName ="saldo_details-release"
 }
 
 apply from: '../../../publish_local.gradle'

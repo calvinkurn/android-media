@@ -50,7 +50,7 @@ project.ext {
     artifactId = 'change-password'
     groupId = 'com.tokopedia.user'
     versionName = "1.0.0"
-    artifactName = "userchangepassword-release"
+    artifactName = "change_password-release"
 }
 
 apply from: '../../../publish_local.gradle'

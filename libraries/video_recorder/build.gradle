@@ -26,7 +26,7 @@ project.ext {
     artifactId = 'video-recorder'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "libraryvideorecorder-release"
+    artifactName = "video_recorder-release"
 }
 
 apply from: '../../publish_local.gradle'

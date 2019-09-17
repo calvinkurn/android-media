@@ -42,7 +42,7 @@ project.ext {
     artifactId = 'websocket'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "librarywebsocket-release"
+    artifactName = "websocket-release"
 }
 
 apply from: '../../publish_local.gradle'

@@ -59,7 +59,7 @@ project.ext {
     artifactId = 'browse'
     groupId = 'com.tokopedia.digital'
     versionName = "1.0.0"
-    artifactName = "digitalbrowse-release"
+    artifactName = "digital_browse-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -43,7 +43,7 @@ project.ext {
     artifactId = 'checkout'
     groupId = 'com.tokopedia.promo'
     versionName = "1.0.0"
-    artifactName ="promocheckout-release"
+    artifactName ="promo_checkout-release"
 }
 
 apply from: '../../../publish_local.gradle'
