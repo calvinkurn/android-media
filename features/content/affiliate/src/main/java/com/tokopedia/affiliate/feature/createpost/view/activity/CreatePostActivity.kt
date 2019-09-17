@@ -164,8 +164,6 @@ class CreatePostActivity : BaseSimpleActivity(), CreatePostActivityListener, Bas
     }
 
     private fun openShareBottomSheetDialog() {
-        if (fragment is BaseCreatePostFragment) {
-            (fragment as BaseCreatePostFragment).openShareBottomSheetDialog()
-        }
+        (fragment as? BaseCreatePostFragment)?.openShareBottomSheetDialog()
     }
 }
