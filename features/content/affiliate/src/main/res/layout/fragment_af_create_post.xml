@@ -134,7 +134,7 @@
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/title"
+            android:id="@+id/title_product_suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
@@ -158,9 +158,14 @@
             android:paddingEnd="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_af_product_suggestion"/>
+            tools:listitem="@layout/item_af_product_suggestion" />
 
     </LinearLayout>
+
+    <include
+        android:id="@+id/loading_product_suggestion"
+        layout="@layout/partial_shimmering_grid_list_horizontal"
+        android:visibility="gone" />
 
     <LinearLayout android:id="@+id/action_bottom"
         android:layout_width="match_parent"

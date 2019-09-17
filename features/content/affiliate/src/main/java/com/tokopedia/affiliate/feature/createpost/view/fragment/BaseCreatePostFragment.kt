@@ -347,6 +347,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateHeader(feedContentForm.authors)
 
         fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
+        showProductSuggestionLoading()
     }
 
     override fun onErrorGetContentForm(message: String) {
@@ -772,6 +773,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         productSuggestionAdapter.addAll(tags)
         list_product_suggestion.adapter = productSuggestionAdapter
         showProductSuggestion()
+        hideProductSuggestionLoading()
     }
 
     private fun onErrorGetProductSuggestion(t: Throwable) {
@@ -779,7 +781,16 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             t.debugTrace()
             val errorMessage = ErrorHandler.getErrorMessage(context, t)
             Toast.makeText(context, errorMessage, Toast.LENGTH_LONG).show()
+            hideProductSuggestionLoading()
         }
+    }
+
+    private fun showProductSuggestionLoading() {
+        loading_product_suggestion.visible()
+    }
+
+    private fun hideProductSuggestionLoading() {
+        loading_product_suggestion.gone()
     }
 
     private fun showProductSuggestion() {
