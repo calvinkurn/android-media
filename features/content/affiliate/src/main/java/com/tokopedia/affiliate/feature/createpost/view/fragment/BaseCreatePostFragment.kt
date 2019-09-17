@@ -757,6 +757,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.productIdList.removeAt(idPosition)
         }
         updateMediaPreview()
+        showProductSuggestion()
         invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
     }
 
