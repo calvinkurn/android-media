@@ -806,7 +806,9 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun shouldShowProductSuggestion(): Boolean {
-        return !productSuggestionAdapter.isEmpty() && viewModel.relatedProducts.isEmpty()
+        return !productSuggestionAdapter.isEmpty()
+                && viewModel.relatedProducts.isEmpty()
+                && !viewModel.isEditState
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
