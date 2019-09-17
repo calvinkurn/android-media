@@ -19,6 +19,7 @@ import tradein_common.TradeInUtils;
 
 public abstract class BaseTradeInActivity extends BaseViewModelActivity {
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
+    public static final int LOGIN_REQUEST = 514;
     public static final int TRADEIN_HOME_REQUEST = 22345;
     public static final int APP_SETTINGS = 9988;
     public static final int TRADEIN_OFFLINE = 0;

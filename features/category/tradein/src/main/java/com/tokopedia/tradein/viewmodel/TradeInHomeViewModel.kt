@@ -16,6 +16,7 @@ import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.*
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
+import com.tokopedia.tradein_common.Constants
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,8 +28,10 @@ import tradein_common.TradeInUtils
 import java.util.*
 import kotlin.coroutines.CoroutineContext
 
-class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseViewModel(application), CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
+class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseViewModel(application),
+        CoroutineScope, LifecycleObserver, Laku6TradeIn.TradeInListener {
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
+    val askUserLogin = MutableLiveData<Int>()
     var tradeInParams: TradeInParams
 
     init {
@@ -40,6 +43,21 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
     }
 
     var tradeInType: Int = TRADEIN_OFFLINE
+
+    override fun doOnCreate() {
+        super.doOnCreate()
+        checkLogin()
+    }
+
+    fun checkLogin() {
+        repository?.let {
+            if (!it.getUserLoginState()?.isLoggedIn)
+                askUserLogin.value = Constants.LOGIN_REQUIRED
+            else {
+                askUserLogin.value = Constants.LOGEED_IN
+            }
+        }
+    }
 
     fun processMessage(intent: Intent) {
         val result = intent.getStringExtra("test-result")

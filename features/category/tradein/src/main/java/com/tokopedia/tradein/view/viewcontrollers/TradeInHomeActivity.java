@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
@@ -51,6 +53,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     private TextView tvIndicateive;
     private TradeInHomeViewModel tradeInHomeViewModel;
     private int closeButtonText;
+    private int notElligibleText;
     private boolean isShowingPermissionPopup;
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
     private String errorDialogGTMLabel = "";
@@ -119,10 +122,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         mTvModelName.setText(new StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString());
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
+            notElligibleText = R.string.not_elligible_money_in;
             tncStringId = R.string.money_in_tnc;
             category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
         } else {
             closeButtonText = R.string.go_to_product_details;
+            notElligibleText = R.string.not_elligible;
             tncStringId = R.string.tradein_tnc;
         }
         mTvGoToProductDetails.setText(closeButtonText);
@@ -145,7 +150,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         tradeInHomeViewModel.getHomeResultData().observe(this, (homeResult -> {
             if (!homeResult.isSuccess()) {
                 mTvInitialPrice.setText(homeResult.getDisplayMessage());
-                mTvPriceElligible.setText(getString(R.string.not_elligible));
+                mTvPriceElligible.setText(getString(notElligibleText));
                 mTvPriceElligible.setVisibility(View.VISIBLE);
                 tvIndicateive.setVisibility(View.GONE);
                 mTvGoToProductDetails.setText(closeButtonText);
@@ -200,7 +205,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
                 }
             }
         }));
-        showPermissionDialog();
+        tradeInHomeViewModel.getAskUserLogin().observe(this, (userLoginStatus -> {
+            if (userLoginStatus != null && userLoginStatus == Constants.LOGIN_REQUIRED) {
+                navigateToActivityRequest(RouteManager.getIntent(this, ApplinkConst.LOGIN), LOGIN_REQUEST);
+            } else {
+                showPermissionDialog();
+            }
+        }));
     }
 
     private void sendGoToProductDetailGTM() {
@@ -373,6 +384,9 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
             }
         } else if (requestCode == APP_SETTINGS) {
             requestPermission();
+        } else if (requestCode == LOGIN_REQUEST) {
+            if (resultCode == Activity.RESULT_OK)
+                tradeInHomeViewModel.checkLogin();
         }
     }
 
