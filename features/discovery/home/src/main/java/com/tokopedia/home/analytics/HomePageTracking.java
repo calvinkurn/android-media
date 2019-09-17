@@ -1047,7 +1047,6 @@ public class HomePageTracking {
     public static HashMap<String, Object> getEnhanceImpressionSprintSaleHomePage(
             String channelId,
             DynamicHomeChannel.Grid[] grid,
-            String channelAttribution,
             int position
     ) {
         List<Object> list = convertProductEnhanceSprintSaleDataLayer(grid);
@@ -1062,8 +1061,7 @@ public class HomePageTracking {
                         "impressions", DataLayer.listOf(
                                 list.toArray(new Object[list.size()])
 
-                        )),
-                "attribution", getHomeAttribution(position + 1, "", channelAttribution)
+                        ))
         );
     }
 
