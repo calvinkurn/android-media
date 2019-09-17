@@ -300,7 +300,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
             isLoadingInitialData = false;
         }
 
-        // load next page data if adapter data less than minimum full page data
+        // load next page data if adapter data less than minimum scrollable data
         // when the list has next page and auto load next page is enabled
         if (adapter.getDataSize() < getMinimumScrollableNumOfItems() && isAutoLoadEnabled()
                 && hasNextPage && endlessRecyclerViewScrollListener !=  null) {
