@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.profile
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.di.module.FollowKolPostUseCaseModule
 import com.tokopedia.search.result.domain.usecase.searchprofile.SearchProfileUseCaseModule
 import com.tokopedia.search.result.presentation.mapper.ProfileListViewModelMapperModule

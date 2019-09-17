@@ -4,16 +4,12 @@ import android.arch.lifecycle.MutableLiveData
 import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addbod.data.AddBodData
 import com.tokopedia.profilecompletion.addbod.data.UserProfileCompletionUpdateBodData
-import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -42,7 +38,7 @@ class AddBodViewModel @Inject constructor(
 
                 setTypeClass(UserProfileCompletionUpdateBodData::class.java)
 
-                val params = mapOf(ProfileCompletionQueriesConstant.PARAM_BOD to selectedDate)
+                val params = mapOf(ProfileCompletionQueryConstant.PARAM_BOD to selectedDate)
                 setRequestParams(params)
 
                 execute(onSuccessEditBOD(),
