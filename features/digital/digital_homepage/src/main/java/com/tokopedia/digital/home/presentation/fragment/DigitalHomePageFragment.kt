@@ -39,7 +39,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     private var searchBarTransitionRange = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.layout_digital_home, container, false)
+        val view = inflater.inflate(com.tokopedia.digital.home.R.layout.layout_digital_home, container, false)
         return view
     }
 
@@ -51,7 +51,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
             viewModel = viewModelProvider.get(DigitalHomePageViewModel::class.java)
         }
 
-        searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.toolbar_transition_range)
+        searchBarTransitionRange = resources.getDimensionPixelSize(com.tokopedia.digital.home.R.dimen.toolbar_transition_range)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -91,7 +91,7 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
-        return R.id.swipe_refresh_layout
+        return com.tokopedia.abstraction.R.id.swipe_refresh_layout
     }
 
     override fun hasInitialSwipeRefresh(): Boolean {
@@ -116,11 +116,11 @@ class DigitalHomePageFragment : BaseListFragment<DigitalHomePageItemModel, Digit
     }
 
     override fun onBannerItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getBannerList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_banner), loadFromCloud?:true)
+        viewModel.getBannerList(GraphqlHelper.loadRawString(resources, com.tokopedia.digital.home.R.raw.query_digital_home_banner), loadFromCloud?:true)
     }
 
     override fun onCategoryItemDigitalBind(loadFromCloud: Boolean?) {
-        viewModel.getCategoryList(GraphqlHelper.loadRawString(resources, R.raw.query_digital_home_category), loadFromCloud?:true)
+        viewModel.getCategoryList(GraphqlHelper.loadRawString(resources, com.tokopedia.digital.home.R.raw.query_digital_home_category), loadFromCloud?:true)
     }
 
     override fun onPromoItemDigitalBind() {

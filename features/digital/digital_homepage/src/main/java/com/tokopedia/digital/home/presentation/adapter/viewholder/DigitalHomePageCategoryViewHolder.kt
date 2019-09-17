@@ -29,7 +29,7 @@ class DigitalHomePageCategoryViewHolder(itemView: View?, val onItemBindListener:
     }
 
     companion object {
-        val LAYOUT = R.layout.layout_digital_home_category
+        val LAYOUT = com.tokopedia.digital.home.R.layout.layout_digital_home_category
         val CATEGORY_SPAN_COUNT = 5
     }
 }

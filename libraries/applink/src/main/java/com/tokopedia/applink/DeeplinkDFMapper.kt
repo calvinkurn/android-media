@@ -6,8 +6,7 @@ import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import com.tokopedia.applink.ApplinkConst.HOTEL
-import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
+import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
@@ -44,6 +43,7 @@ object DeeplinkDFMapper {
     private val USER_PROFILE_COMPLETION = "profilecompletion"
     private val USER_SETTING_BANK = "settingbank"
     private val HOMEPAGE_TRAVEL = "homepage_travel"
+    private val HOMEPAGE_DIGITAL = "homepage_digital"
 
 
     private var manager: SplitInstallManager? = null
@@ -56,6 +56,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title))
 //            add(DFP({ it.startsWith(SETTING_PROFILE) }, USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
 //            add(DFP({ it.startsWith(SETTING_BANK) }, USER_SETTING_BANK, R.string.applink_setting_bank_title))
+            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
         }
     }
 

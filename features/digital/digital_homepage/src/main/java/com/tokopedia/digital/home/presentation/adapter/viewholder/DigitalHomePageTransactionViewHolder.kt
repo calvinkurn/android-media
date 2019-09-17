@@ -26,7 +26,7 @@ class DigitalHomePageTransactionViewHolder(itemView : View?, val listener : Tran
     }
 
     companion object{
-        val LAYOUT = R.layout.layout_digital_home_transaction
+        val LAYOUT = com.tokopedia.digital.home.R.layout.layout_digital_home_transaction
     }
 
     interface TransactionListener{

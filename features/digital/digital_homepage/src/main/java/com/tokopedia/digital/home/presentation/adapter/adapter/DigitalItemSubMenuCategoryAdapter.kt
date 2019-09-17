@@ -18,7 +18,7 @@ class DigitalItemSubMenuCategoryAdapter(val submenu: List<DigitalHomePageCategor
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): DigitalItemSubmenuCategoryViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_digital_home_category_item_submenu, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(com.tokopedia.digital.home.R.layout.layout_digital_home_category_item_submenu, parent, false)
         return DigitalItemSubmenuCategoryViewHolder(view)
     }
 
