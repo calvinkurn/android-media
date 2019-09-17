@@ -21,9 +21,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.debug
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.ChatListPagerAdapter
+import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
@@ -50,6 +53,9 @@ class ChatListActivity : BaseTabActivity()
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var chatListAnalytics: ChatListAnalytic
 
     lateinit var viewModelProvider: ViewModelProvider
     lateinit var webSocketViewModel: WebSocketViewModel
@@ -78,12 +84,14 @@ class ChatListActivity : BaseTabActivity()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
-        tabList.add(ChatListPagerAdapter.ChatListTab(
-                userSession.shopName,
-                "0",
-                ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER),
-                R.drawable.ic_chat_icon_shop
-        ))
+        if(userSession.shopId.toLongOrZero() > 0) {
+            tabList.add(ChatListPagerAdapter.ChatListTab(
+                    userSession.shopName,
+                    "0",
+                    ChatListFragment.createFragment(ChatListQueriesConstant.PARAM_TAB_SELLER),
+                    R.drawable.ic_chat_icon_shop
+            ))
+        }
         tabList.add(ChatListPagerAdapter.ChatListTab(
                 userSession.name,
                 "0",
@@ -179,9 +187,6 @@ class ChatListActivity : BaseTabActivity()
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tabLayout.elevation = 10f
-        }
         tabLayout.setBackgroundResource(R.color.white)
         tabLayout.tabMode = TabLayout.MODE_FIXED
 
@@ -196,8 +201,15 @@ class ChatListActivity : BaseTabActivity()
             override fun onTabSelected(tab: TabLayout.Tab) {
                 viewPager.setCurrentItem(tab.position, true)
                 setTabSelectedView(tab.customView)
+                with(chatListAnalytics) {
+                    eventClickTabChat(if(tab.position==0) SELLER_ANALYTICS_LABEL else BUYER_ANALYTICS_LABEL)
+                }
             }
         })
+
+        if(tabList.size == 1) {
+            tabLayout.hide()
+        }
     }
 
     private fun createCustomView(title: String, icon: Int, counter: String): View? {
@@ -265,6 +277,8 @@ class ChatListActivity : BaseTabActivity()
 
 
     companion object {
+        val BUYER_ANALYTICS_LABEL = "buyer"
+        val SELLER_ANALYTICS_LABEL = "seller"
         fun createIntent(context: Context) = Intent(context, ChatListActivity::class.java)
     }
 

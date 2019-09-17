@@ -26,11 +26,15 @@ import com.tokopedia.kotlin.extensions.view.showErrorToaster
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatlist.activity.ChatListActivity
 import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
+import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.listener.*
 import com.tokopedia.topchat.chatlist.model.EmptyChatModel
@@ -61,7 +65,6 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private val viewModelActivityProvider by lazy { activity?.let { ViewModelProviders.of(it, viewModelFactory) } }
     private val viewModelFragmentProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
     private val chatItemListViewModel by lazy { viewModelFragmentProvider.get(ChatItemListViewModel::class.java) }
@@ -76,6 +79,10 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
     private var itemPositionLongClicked: Int = -1
     private var filterChecked = 0
+
+
+    @Inject
+    lateinit var chatListAnalytics: ChatListAnalytic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +102,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 //                true
 //            }
             R.id.menu_chat_filter -> {
+                chatListAnalytics.eventClickFilterChat()
                 showFilterDialog()
                 true
             }
@@ -279,7 +287,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
             val arrayFilterString = arrayListOf(
                     it.getString(R.string.filter_chat_all),
                     it.getString(R.string.filter_chat_unread),
-                    it.getString(R.string.filter_chat_read)
+                    it.getString(R.string.filter_chat_unreplied)
             )
 
             for ((index, title) in arrayFilterString.withIndex()) {
@@ -291,7 +299,8 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
                 window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                 setTitle(getString(R.string.label_filter))
                 itemMenuList = itemMenus
-                setOnItemMenuClickListener { _, pos ->
+                setOnItemMenuClickListener { menus, pos ->
+                    chatListAnalytics.eventClickListFilterChat(menus.title.toLowerCase())
                     filterChecked = pos - 1
                     loadInitialData()
                     dismiss()
@@ -315,6 +324,12 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
     override fun chatItemClicked(element: ItemChatListPojo) {
         activity?.let {
+            with(chatListAnalytics) {
+                eventClickChatList(
+                        if(sightTag == PARAM_TAB_SELLER) ChatListActivity.SELLER_ANALYTICS_LABEL
+                        else ChatListActivity.BUYER_ANALYTICS_LABEL)
+            }
+
             val intent = TopChatRoomActivity.getCallingIntent(
                     activity,
                     element.msgId,
@@ -402,13 +417,13 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
         var image = ""
         activity?.let {
             when (sightTag) {
-                ChatListQueriesConstant.PARAM_TAB_USER -> {
+                PARAM_TAB_USER -> {
                     title = it.getString(R.string.seller_empty_chat_title)
                     subtitle = it.getString(R.string.seller_empty_chat_subtitle)
                     image = CHAT_BUYER_EMPTY
                 }
 
-                ChatListQueriesConstant.PARAM_TAB_SELLER -> {
+                PARAM_TAB_SELLER -> {
                     title = it.getString(R.string.buyer_empty_chat_title)
                     subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
                     image = CHAT_SELLER_EMPTY
