@@ -20,6 +20,10 @@ data class Criteria(
         @Expose
         val minStock: Int = 0,
 
+        @SerializedName("max_custom_stock")
+        @Expose
+        val maxCustomStock: Int = 0,
+
         @SerializedName("minimum_discount_percent")
         @Expose
         val minDiscount: Int = 0,

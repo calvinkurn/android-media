@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:padding="@dimen/dp_16"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/img_product_confirmation"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="@dimen/dp_72"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_title_product_confirmation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        app:layout_constraintStart_toEndOf="@+id/img_product_confirmation"
+        app:layout_constraintTop_toTopOf="@+id/img_product_confirmation"
+        app:typographyType="body_2"
+        tools:text="Asus M2 Pro" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_stock_confirmation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/txt_title_product_confirmation"
+        app:layout_constraintTop_toBottomOf="@+id/txt_title_product_confirmation"
+        app:typographyType="body_3"
+        tools:text="Stok 10"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_etalase_confirmation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_5"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/txt_title_product_confirmation"
+        app:layout_constraintTop_toBottomOf="@+id/txt_stock_confirmation"
+        app:typographyType="body_3"
+        tools:text="Smartphone"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

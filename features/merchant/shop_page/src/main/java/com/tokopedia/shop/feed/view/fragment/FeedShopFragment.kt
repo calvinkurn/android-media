@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -42,6 +43,7 @@ import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.common.util.PostMenuListener
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.createpost.view.activity.CreatePostActivity
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel
@@ -97,8 +99,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val LOGIN_FOLLOW_CODE = 1384
         private const val OPEN_CONTENT_REPORT = 1130
         private const val KOL_COMMENT_CODE = 13
+
         val PARAM_CREATE_POST_URL: String= "PARAM_CREATE_POST_URL"
         val PARAM_SHOP_ID: String= "PARAM_SHOP_ID"
+
         fun createInstance(shopId: String, createPostUrl: String): FeedShopFragment {
             val fragment = FeedShopFragment()
             val bundle = Bundle()
@@ -135,6 +139,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         hideFAB()
         arguments?.let {
             shopId = it.getString(PARAM_SHOP_ID) ?: ""
+            createPostUrl = it.getString(PARAM_CREATE_POST_URL) ?: ""
         }
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -208,6 +213,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                 }
                 LOGIN_CODE -> {
                     loadInitialData()
+                }
+                CREATE_POST -> {
+                    onSwipeRefresh()
                 }
             }
         }
@@ -554,9 +562,16 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun goToCreatePost() {
-        if (activity != null) {
+        activity?.let {
+            val intent = if (GlobalConfig.isCustomerApp()) {
+                RouteManager.getIntent(it, ApplinkConst.CONTENT_CREATE_POST)
+            } else {
+                RouteManager.getIntent(it, ApplinkConstInternalContent.SHOP_POST_PICKER).apply{
+                    putExtra(CreatePostActivity.FORM_URL, createPostUrl)
+                }
+            }
             startActivityForResult(
-                    RouteManager.getIntent(activity, ApplinkConst.CONTENT_CREATE_POST),
+                    intent,
                     CREATE_POST
             )
         }

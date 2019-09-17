@@ -30,9 +30,9 @@ public class CategoryDataToDomainMapper implements Func1<List<CategoryDataBase>,
     private static CategoryDomainModel mapDomainModel(CategoryDataBase categoryDataBase) {
         CategoryDomainModel domainModel = new CategoryDomainModel();
         domainModel.setName(categoryDataBase.getName());
-        domainModel.setId(categoryDataBase.getId());
+        domainModel.setId(categoryDataBase.getId() == null? CategoryDataBase.LEVEL_ONE_PARENT : categoryDataBase.getId());
         domainModel.setIdentifier(categoryDataBase.getIdentifier());
-        domainModel.setHasChild(categoryDataBase.isHasChild());
+        domainModel.setHasChild(categoryDataBase.getHasChild());
         return domainModel;
     }
 

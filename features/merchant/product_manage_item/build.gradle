@@ -38,14 +38,9 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.glide
     implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.categoryCommon)
-
-    kapt  rootProject.ext.dbDependencies.dbFlowProcessor
-    implementation rootProject.ext.dbDependencies.dbFlowCore
-    implementation rootProject.ext.dbDependencies.dbFlow
 
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
@@ -66,6 +61,10 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     
     implementation project(rootProject.ext.libraries.track)
+
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    kapt rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../../../publish_local.gradle'

@@ -78,7 +78,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '0.0.4'
-    unifyComponentsVersion = '0.0.5'
+    unifyComponentsVersion = '0.0.8'
     unifyCoachMarkVersion = '1.0.0'
     unifyCalendarVersion = '0.0.2'
 
@@ -158,7 +158,6 @@ ext {
 
     viewDependencies = [
             ahBottomNavigation : "com.aurelhubert:ahbottomnavigation:1.4.0",
-            recyclerMultiSelect: "com.bignerdranch.android:recyclerview-multiselect:0.2@aar",
             appIntro           : "com.github.apl-devs:appintro:v4.2.2",
             expandableTextview : "at.blogc:expandabletextview:1.0.5",
     ]
