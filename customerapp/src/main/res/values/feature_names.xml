@@ -29,4 +29,7 @@
     <!-- Dynamic feature for Travel Subhomepage-->
     <string name="travel_subhomepage_app_name">Travel &amp; Entertainment</string>
     <string name="travel_title_subhomepage">Travel &amp; Entertainment</string>
+
+    <!-- Dynamic feature for Discovery-->
+    <string name="title_image_search" >Pencarian Gambar</string>
 </resources>

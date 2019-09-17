@@ -46,7 +46,7 @@
     <string name="no_result_found">No Results Found</string>
     <string name="on_board_title" >Pencarian Gambar</string>
     <string name="on_board_desc" >Kini lebih mudah. Cukup ambil gambar dan temukan produk yang diinginkan.</string>
-    <string name="image_search_title" >Pencarian Gambar</string>
+    <string name="search_title" >Pencarian</string>
     <string name="baca_deskripsi">Baca Deskripsi</string>
     <string name="product_count">%s+ Produk</string>
     <string name="cashback_text" >cashback</string>
