@@ -28,9 +28,9 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
 
     fun toOnScrolledMode() {
         showShadow()
-        setTitleTextColor(resources.getColor(R.color.grey_800))
+        setTitleTextColor(resources.getColor(com.tokopedia.design.R.color.grey_800))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            navigationIcon?.setTint(resources.getColor(R.color.grey_800))
+            navigationIcon?.setTint(resources.getColor(com.tokopedia.design.R.color.grey_800))
         } else navigationIcon =  resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_back_grayscale_24)
 
     }
@@ -44,7 +44,7 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
                 pT = getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = resources.getDimensionPixelSize(com.tokopedia.digital.home.R.dimen.toolbar_padding)
+            val pB = resources.getDimensionPixelSize(R.dimen.toolbar_padding)
             this.background = ColorDrawable(ContextCompat.getColor(context, com.tokopedia.design.R.color.white))
             this.setPadding(pL, pT, pR, pB)
         }
@@ -59,9 +59,9 @@ class TravelHomepageToolbar @JvmOverloads constructor(context: Context, attrs: A
                 pT = getStatusBarHeight(context)
             }
             val pR = this.paddingRight
-            val pB = resources.getDimensionPixelSize(com.tokopedia.digital.home.R.dimen.toolbar_padding)
+            val pB = resources.getDimensionPixelSize(R.dimen.toolbar_padding)
 
-            this.background = ContextCompat.getDrawable(context, com.tokopedia.digital.home.R.drawable.travel_homepage_toolbar_bg_shadow_bottom)
+            this.background = ContextCompat.getDrawable(context, R.drawable.travel_homepage_toolbar_bg_shadow_bottom)
             this.setPadding(pL, pT, pR, pB)
         }
     }
