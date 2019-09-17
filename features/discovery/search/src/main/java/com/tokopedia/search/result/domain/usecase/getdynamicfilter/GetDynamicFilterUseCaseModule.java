@@ -2,8 +2,7 @@ package com.tokopedia.search.result.domain.usecase.getdynamicfilter;
 
 import com.tokopedia.discovery.common.Repository;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.search.result.data.repository.dynamicfilter.DynamicFilterRepositoryModule;
 import com.tokopedia.usecase.UseCase;
 

@@ -138,14 +138,13 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
         View parent = (View) inflatedView.getParent();
         parent.setFitsSystemWindows(true);
+        bottomSheetBehavior = BottomSheetBehavior.from(parent);
 
         inflatedView.measure(0, 0);
         int height = inflatedView.getMeasuredHeight();
 
         if (state() != BottomSheetsState.FLEXIBLE) {
             try {
-                bottomSheetBehavior = BottomSheetBehavior.from(parent);
-
                 ViewGroup.LayoutParams params = ((View) inflatedView.getParent()).getLayoutParams();
 
                 inflatedView.measure(0, 0);
@@ -212,15 +211,17 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         final BottomSheetDialog bottomSheetDialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
 
-        bottomSheetDialog.setOnShowListener(dialog -> {
-            FrameLayout bottomSheet = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+        if (state() == BottomSheetsState.FLEXIBLE) {
+            bottomSheetDialog.setOnShowListener(dialog -> {
+                FrameLayout bottomSheet = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
 
-            if (bottomSheet != null) {
-                BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
-                behavior.setSkipCollapsed(true);
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-        });
+                if (bottomSheet != null) {
+                    BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+                    behavior.setSkipCollapsed(true);
+                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            });
+        }
 
         return bottomSheetDialog;
     }

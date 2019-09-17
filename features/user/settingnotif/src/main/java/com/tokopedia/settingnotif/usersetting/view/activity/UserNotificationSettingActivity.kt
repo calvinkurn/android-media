@@ -36,16 +36,7 @@ class UserNotificationSettingActivity : BaseSimpleActivity(),
     }
 
     override fun openSettingField(settingType: SettingType) {
-        // Phase 1
-        if (settingType.isPushNotificationFieldFragment()) {
-            goToOldPushNotificationSettingPage()
-        } else {
-            goToNewSettingPage(settingType)
-        }
-    }
-
-    private fun goToOldPushNotificationSettingPage() {
-        RouteManager.route(this, ApplinkConstInternalMarketplace.USER_PUSH_NOTIFICATION_SETTING)
+        goToNewSettingPage(settingType)
     }
 
     private fun goToNewSettingPage(settingType: SettingType) {

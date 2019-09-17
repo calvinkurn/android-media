@@ -1,35 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/dp_40"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gf_redeem_from_background_btn_bg"
+    android:paddingBottom="@dimen/dp_3">
+
+<FrameLayout
     android:background="@drawable/gf_redeem_from_background"
-    android:orientation="horizontal"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingTop="@dimen/dp_10"
-    android:paddingRight="@dimen/dp_16"
-    android:paddingBottom="@dimen/dp_10">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
 
-
-    <ImageView
-        android:id="@+id/image_egg_source"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="@dimen/dp_16"
-        tools:src="@drawable/ic_hand" />
-
-
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_egg_source"
-        android:textStyle="bold"
-        android:textSize="@dimen/sp_12"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="@android:color/white"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:textColor="@color/black_54"
         tools:text="Ada 3 Lucky Egg siap dipecahkan" />
 
-</LinearLayout>
+</FrameLayout>

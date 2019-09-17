@@ -3,6 +3,7 @@ package com.tokopedia.flight.cancellation.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.flight.orderlist.data.cloud.entity.RefundDetailEntity;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 
 import java.util.List;
@@ -19,6 +20,10 @@ public class FlightCancellationDetail implements Parcelable {
     private int status;
     private List<FlightCancellationListPassengerViewModel> passengers;
     private List<FlightOrderJourney> journeys;
+    private String statusStr;
+    private String statusType;
+    private String refundInfo;
+    private RefundDetailEntity refundDetail;
 
     public FlightCancellationDetail() {
     }
@@ -31,6 +36,30 @@ public class FlightCancellationDetail implements Parcelable {
         status = in.readInt();
         passengers = in.createTypedArrayList(FlightCancellationListPassengerViewModel.CREATOR);
         journeys = in.createTypedArrayList(FlightOrderJourney.CREATOR);
+        statusStr = in.readString();
+        statusType = in.readString();
+        refundInfo = in.readString();
+        refundDetail = in.readParcelable(RefundDetailEntity.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(refundId);
+        dest.writeString(createTime);
+        dest.writeString(estimatedRefund);
+        dest.writeString(realRefund);
+        dest.writeInt(status);
+        dest.writeTypedList(passengers);
+        dest.writeTypedList(journeys);
+        dest.writeString(statusStr);
+        dest.writeString(statusType);
+        dest.writeString(refundInfo);
+        dest.writeParcelable(refundDetail, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<FlightCancellationDetail> CREATOR = new Creator<FlightCancellationDetail>() {
@@ -101,19 +130,35 @@ public class FlightCancellationDetail implements Parcelable {
         this.journeys = journeys;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getStatusStr() {
+        return statusStr;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeLong(refundId);
-        parcel.writeString(createTime);
-        parcel.writeString(estimatedRefund);
-        parcel.writeString(realRefund);
-        parcel.writeInt(status);
-        parcel.writeTypedList(passengers);
-        parcel.writeTypedList(journeys);
+    public void setStatusStr(String statusStr) {
+        this.statusStr = statusStr;
+    }
+
+    public String getStatusType() {
+        return statusType;
+    }
+
+    public void setStatusType(String statusType) {
+        this.statusType = statusType;
+    }
+
+    public String getRefundInfo() {
+        return refundInfo;
+    }
+
+    public void setRefundInfo(String refundInfo) {
+        this.refundInfo = refundInfo;
+    }
+
+    public RefundDetailEntity getRefundDetail() {
+        return refundDetail;
+    }
+
+    public void setRefundDetail(RefundDetailEntity refundDetail) {
+        this.refundDetail = refundDetail;
     }
 }

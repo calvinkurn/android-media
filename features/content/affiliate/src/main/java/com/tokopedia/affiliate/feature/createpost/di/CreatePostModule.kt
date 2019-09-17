@@ -23,6 +23,7 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
+import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videouploader.data.UploadVideoApi
@@ -119,5 +120,11 @@ class CreatePostModule(private val context: Context) {
     @Named(GetProductSuggestionUseCase.QUERY_PRODUCT_SUGGESTION)
     fun provideGetProductSuggestionQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_af_shop_product_suggestion)
+    }
+
+    @Provides
+    @CreatePostScope
+    fun provideTwitterManager(userSession: UserSessionInterface): TwitterManager {
+        return TwitterManager(userSession)
     }
 }

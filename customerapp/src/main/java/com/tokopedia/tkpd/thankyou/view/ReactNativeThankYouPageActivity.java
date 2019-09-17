@@ -122,8 +122,8 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
             if (manager != null) {
                 AppFeedbackRatingBottomSheet rating = new AppFeedbackRatingBottomSheet();
-                rating.setDismissListener(() -> closeThankyouPage());
-                rating.show(manager, "AppFeedbackRatingBottomSheet");
+                rating.setDialogDismissListener(() -> closeThankyouPage());
+                rating.showDialog(manager, this);
             }
         } else {
             closeThankyouPage();

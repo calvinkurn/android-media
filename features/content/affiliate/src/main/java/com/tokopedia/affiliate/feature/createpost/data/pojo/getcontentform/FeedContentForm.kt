@@ -20,6 +20,9 @@ data class FeedContentForm(
         val type: String = "",
         @SerializedName("defaultPlaceholder")
         val defaultPlaceholder: String = "",
+        @SerializedName("caption")
+        @Expose
+        val caption: String = "",
         @SerializedName("defaultCaptions")
         @Expose
         val defaultCaptions: List<String> = listOf()

@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="CustomVoucherView">
-        <attr name="vchCornerRadius" format="dimension" />
-        <attr name="vchScallopRadius" format="dimension" />
-        <attr name="vchScallopRelativePosition" format="float" />
         <attr name="vchElevation" format="dimension" />
-        <attr name="vchDashWidth" format="dimension" />
-        <attr name="vchDashGap" format="dimension" />
-        <attr name="vchDashColor" format="color" />
+        <attr name="vchTotalJaggedEdge" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="MerchantVoucherListWidget">

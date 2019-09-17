@@ -43,6 +43,7 @@ chipGetInboxDetail(caseID: $caseID) {
               url
               thumbnail
             }
+            allowClose
           }
         }
         messageError

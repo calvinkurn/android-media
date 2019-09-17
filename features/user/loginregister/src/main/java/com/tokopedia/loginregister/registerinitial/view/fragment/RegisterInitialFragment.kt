@@ -418,7 +418,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 dismissProgressBar()
                 it.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-                presenter.getUserInfo(false)
+                presenter.getUserInfo()
             } else if (requestCode == REQUEST_VERIFY_PHONE_TOKOCASH
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -887,11 +887,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 val subscription = it.getSystemService(Context.TELEPHONY_SUBSCRIPTION_SERVICE) as SubscriptionManager
-                for (info in subscription.activeSubscriptionInfoList) {
-                    if(!info.number.isNullOrEmpty() &&
-                            PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
-                            PartialRegisterInputUtils.isValidPhone(info.number))
-                        phoneNumbers.add(info.number)
+                if(subscription.activeSubscriptionInfoList != null && subscription.activeSubscriptionInfoCount > 0){
+                    for (info in subscription.activeSubscriptionInfoList) {
+                        if(!info.number.isNullOrEmpty() &&
+                                PartialRegisterInputUtils.getType(info.number) == PartialRegisterInputUtils.PHONE_TYPE &&
+                                PartialRegisterInputUtils.isValidPhone(info.number))
+                            phoneNumbers.add(info.number)
+                    }
                 }
             }else{
                 val telephony = it.getSystemService(AppCompatActivity.TELEPHONY_SERVICE) as TelephonyManager

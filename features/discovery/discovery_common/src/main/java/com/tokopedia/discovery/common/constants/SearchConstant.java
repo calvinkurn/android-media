@@ -4,10 +4,6 @@ public interface SearchConstant {
 
     String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
-    String EXTRA_FORCE_SWIPE_TO_SHOP = "EXTRA_FORCE_SWIPE_TO_SHOP";
-
-    String EXTRA_ACTIVE_TAB_POSITION = "EXTRA_ACTIVE_TAB_POSITION";
-
     String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
@@ -103,5 +99,24 @@ public interface SearchConstant {
 
     interface SearchProfile {
         String SEARCH_PROFILE_USE_CASE = "search_profile_use_case";
+    }
+
+    interface SearchTabPosition {
+        int TAB_FIRST_POSITION = 0;
+        int TAB_SECOND_POSITION = 1;
+        int TAB_THIRD_POSITION = 2;
+        int TAB_FORTH_POSITION = 3;
+    }
+
+    interface Cart {
+        String CART_LOCAL_CACHE_NAME = "CART";
+        String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
+    }
+
+    interface ActiveTab {
+        String PRODUCT = "product";
+        String SHOP = "shop";
+        String CATALOG = "catalog";
+        String PROFILE = "profile";
     }
 }
