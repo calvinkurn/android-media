@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
@@ -21,6 +22,7 @@ class PropertyAdapterTypeFactory(val callback: BaseEmptyViewHolder.Callback) : B
         return when (type) {
             SearchPropertyViewHolder.LAYOUT -> SearchPropertyViewHolder(parent)
             R.layout.property_search_shimmer_loading -> LoadingViewholder(parent)
+            EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
             else -> super.createViewHolder(parent, type)
         }
     }
