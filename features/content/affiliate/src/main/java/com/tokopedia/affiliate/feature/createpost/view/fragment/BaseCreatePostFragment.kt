@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.text.InputFilter
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -27,7 +26,6 @@ import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Author
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
@@ -37,6 +35,7 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostVideoP
 import com.tokopedia.affiliate.feature.createpost.view.activity.MediaPreviewActivity
 import com.tokopedia.affiliate.feature.createpost.view.adapter.DefaultCaptionsAdapter
 import com.tokopedia.affiliate.feature.createpost.view.adapter.ProductAttachmentAdapter
+import com.tokopedia.affiliate.feature.createpost.view.adapter.ProductSuggestionAdapter
 import com.tokopedia.affiliate.feature.createpost.view.adapter.ShareBottomSheetAdapter
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.listener.CreatePostActivityListener
@@ -519,7 +518,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
                 action_bottom.gone()
             } else {
                 layout_default_caption.gone()
-                if (!viewModel.isEditState)action_bottom.visible() else action_bottom.gone()
+                if (!viewModel.isEditState) action_bottom.visible() else action_bottom.gone()
             }
         }
         list_captions.adapter = captionsAdapter
@@ -763,7 +762,10 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetProductSuggestion(tags: List<ProductSuggestionItem>) {
-        Log.d("milhamj", tags.toString())
+        val adapter = ProductSuggestionAdapter()
+        adapter.addAll(tags)
+        layout_product_suggestion.visible()
+        list_product_suggestion.adapter = adapter
     }
 
     private fun onErrorGetProductSuggestion(t: Throwable) {
