@@ -88,6 +88,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private val FINISH_PINPOINT_FLAG = 8888
+    private val MINIMUM_CHARACTER = 8
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
     private var labelAlamatList: Array<String> = emptyArray()
@@ -544,6 +545,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (et_phone.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel))
+            if (field.isNotEmpty()) field += ", "
+            field += "no ponsel"
+        }
+
+        if (et_phone?.text?.length?: 0 < MINIMUM_CHARACTER) {
+            validated = false
+            setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char))
             if (field.isNotEmpty()) field += ", "
             field += "no ponsel"
         }

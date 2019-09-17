@@ -347,7 +347,6 @@ public class ShopListFragment
 
     @Override
     protected void onFirstTimeLaunch() {
-        super.onFirstTimeLaunch();
         loadShopFirstTime();
     }
 

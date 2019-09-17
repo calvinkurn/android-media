@@ -92,7 +92,7 @@
     <string name="tv_detail_address_info">Tulis Detail Alamat Anda dengan jelas</string>
     <string name="tv_detail_address_placeholder">Tulis No. Rumah, Blok, RT/RW, dll</string>
     <string name="detail_alamat">Detail Alamat</string>
-    <string name="invalid_title">Oops, lokasimu tidak dikenal</string>
+    <string name="invalid_title">Alamatmu di peta kurang lengkap</string>
     <string name="invalid_desc">Tenang, kamu tetap bisa pilih lokasi ini dengan melengkapi alamat secara manual.</string>
     <string name="out_of_indonesia_title">Lokasi di luar jangkauan</string>
     <string name="out_of_indonesia_desc">Saat ini Tokopedia hanya melayani pengiriman di Indonesia.</string>
@@ -130,6 +130,7 @@
     <string name="validate_label_alamat">Label Alamat harus diisi</string>
     <string name="validate_nama_penerima">Nama Penerima harus diisi</string>
     <string name="validate_no_ponsel">No. Ponsel harus diisi</string>
+    <string name="validate_no_ponsel_less_char">Nomor Telepon Penerima terlalu pendek, minimum 8 angka.</string>
     <string name="validate_detail_alamat">Detail Alamat harus diisi</string>
     <string name="validate_kota_kecamatan">Kota Kecamatan harus diisi</string>
     <string name="validate_kode_pos">Kode Pos harus diisi</string>

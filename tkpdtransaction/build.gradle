@@ -19,7 +19,7 @@ buildscript {
 project.ext {
     artifactId = 'transaction'
     groupId = 'com.tokopedia.transaction'
-    versionName = "2.22"
+    versionName = "1.0.0"
     artifactName = "tkpdtransaction-release"
 }
 
@@ -27,17 +27,17 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.core_legacy)
-    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.sessioncommon)
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.logisticdata)
 
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.fingerprint)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.linker)
 

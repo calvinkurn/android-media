@@ -127,9 +127,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                                                     private val listener: HomeCategoryListener) : ViewHintListener {
 
         override fun onViewHint() {
-            listener.putEEToIris(
-                    HomePageTracking.getBannerTrackingData(bannerSlidesModel)
-            )
+            //don't delete, for future use for this viewholder impression
         }
     }
 
