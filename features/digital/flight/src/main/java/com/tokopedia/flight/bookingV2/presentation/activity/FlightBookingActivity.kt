@@ -55,7 +55,7 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
         deleteAllPassengerList(false)
 
         if (!userSession.isLoggedIn) {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            startActivityForResult(RouteManager.getIntentNoFallback(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         }
     }
 
