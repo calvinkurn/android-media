@@ -50,7 +50,7 @@ public class ImageProductListPresenterImpl extends BaseDaggerPresenter<ImageProd
 
     private void initInjector(ImageProductListFragmentView viewListener) {
         ImageSearchComponent component = DaggerImageSearchComponent.builder()
-                .appComponent(viewListener.getBaseAppComponent())
+                .baseAppComponent(viewListener.getBaseAppComponent())
                 .build();
         component.inject(this);
     }
