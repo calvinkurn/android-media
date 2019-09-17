@@ -257,6 +257,11 @@ class OvoViewHolder(itemView: View, val listener: HomeCategoryListener) : Abstra
 
     private fun setTokopointHeaderData(sectionContentItem: SectionContentItem?, tokopointsTextView: TextView) {
         if (sectionContentItem != null) {
+            
+            //Initializing to default value to prevent stale data in case of onresume
+            tokopointsTextView.background = null
+            tokopointsTextView.text = null
+            
             if (sectionContentItem.tagAttributes != null && !TextUtils.isEmpty(sectionContentItem.tagAttributes.text)) {
                 if (!TextUtils.isEmpty(sectionContentItem.tagAttributes.backgroundColour) && HexValidator.validate(sectionContentItem.tagAttributes.backgroundColour)) {
                     val drawable = ContextCompat.getDrawable(itemView.context, R.drawable.bg_tokopoints_rounded)
