@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.feedplus.profilerecommendation.domain.model.FollowRecommendationQuery
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.FollowAllRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowRecommendationUseCase
+import com.tokopedia.feedplus.profilerecommendation.domain.usecase.SetOnboardingStatusUseCase
 import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecommendationContract
 import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
@@ -19,6 +20,7 @@ import javax.inject.Inject
 class FollowRecommendationPresenter @Inject constructor(
         private val getFollowRecommendationUseCase: GetFollowRecommendationUseCase,
         private val followAllRecommendationUseCase: FollowAllRecommendationUseCase,
+        private val setOnboardingStatusUseCase: SetOnboardingStatusUseCase,
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase
 ) : BaseDaggerPresenter<FollowRecommendationContract.View>(), FollowRecommendationContract.Presenter {
 
@@ -78,6 +80,19 @@ class FollowRecommendationPresenter @Inject constructor(
                     }
                 }
         )
+    }
+
+    override fun setOnboardingStatus() {
+        view.showLoading()
+        setOnboardingStatusUseCase.apply {
+            execute(onSuccess = {
+                view.onSuccessSetOnboardingStatus()
+                view.hideLoading()
+            }, onError = {
+                view.onGetError(it)
+                view.hideLoading()
+            })
+        }
     }
 
     private fun getRecommendationCardList(query: FollowRecommendationQuery): List<FollowRecommendationCardViewModel> = query.data.map { data ->

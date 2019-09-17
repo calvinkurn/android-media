@@ -153,12 +153,20 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
     }
 
     override fun onSuccessFollowAllRecommendation() {
+        presenter.setOnboardingStatus()
+    }
+
+    override fun onSuccessSetOnboardingStatus() {
         openFeed()
     }
 
     override fun onGetError(error: Throwable) {
+        onGetError(ErrorHandler.getErrorMessage(context, error))
+    }
+
+    override fun onGetError(error: String) {
         followRecommendationAdapter.hideLoading()
-        view?.let { view -> Toaster.showError(view, ErrorHandler.getErrorMessage(context, error), 2000) }
+        view?.let { view -> Toaster.showError(view, error, 2000) }
     }
 
     override fun showLoading() {
@@ -181,7 +189,7 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
     }
 
     private fun onBtnActionClicked() {
-        if (infoViewModel.minFollowed <= followRecommendationAdapter.getFollowedCount()) openFeed()
+        if (infoViewModel.minFollowed <= followRecommendationAdapter.getFollowedCount()) presenter.setOnboardingStatus()
         else followAllRecommendation()
     }
 

@@ -11,11 +11,11 @@ import javax.inject.Named
  */
 class FollowAllRecommendationUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository,
-        @Named(FOLLOW_ALL_RECOMMENDATION_MUTATION) val query: String
+        @Named(MUTATION_FOLLOW_ALL_RECOMMENDATION) val query: String
 ) : GraphqlUseCase<FollowAllRecommendationResponse>(graphqlRepository) {
 
     companion object {
-        const val FOLLOW_ALL_RECOMMENDATION_MUTATION = "follow_all_recommendation_mutation"
+        const val MUTATION_FOLLOW_ALL_RECOMMENDATION = "mutation_follow_all_recommendation"
 
         private const val PARAM_IDS = "ids"
 

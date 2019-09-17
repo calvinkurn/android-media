@@ -22,7 +22,11 @@ interface FollowRecommendationContract {
 
         fun onSuccessFollowAllRecommendation()
 
+        fun onSuccessSetOnboardingStatus()
+
         fun onGetError(error: Throwable)
+
+        fun onGetError(error: String)
 
         fun showLoading()
 
@@ -36,5 +40,7 @@ interface FollowRecommendationContract {
         fun followAllRecommendation(interestIds: IntArray)
 
         fun followUnfollowRecommendation(id: String, action: FollowRecommendationAction)
+
+        fun setOnboardingStatus()
     }
 }
