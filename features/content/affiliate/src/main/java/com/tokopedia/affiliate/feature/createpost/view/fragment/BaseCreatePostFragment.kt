@@ -27,7 +27,7 @@ import com.tokopedia.affiliate.feature.createpost.DRAFT_ID
 import com.tokopedia.affiliate.feature.createpost.TYPE_AFFILIATE
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Author
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.TagItem
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.affiliate.feature.createpost.di.CreatePostModule
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
@@ -132,7 +132,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     abstract fun onRelatedAddProductClick()
 
-    abstract fun fetchProductSuggestion(onSuccess: (List<TagItem>) -> Unit,
+    abstract fun fetchProductSuggestion(onSuccess: (List<ShopProductItem>) -> Unit,
                                         onError: (Throwable) -> Unit)
 
     override fun initInjector() {
@@ -762,7 +762,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessGetProductSuggestion(tags: List<TagItem>) {
+    private fun onSuccessGetProductSuggestion(tags: List<ShopProductItem>) {
         Log.d("milhamj", tags.toString())
     }
 

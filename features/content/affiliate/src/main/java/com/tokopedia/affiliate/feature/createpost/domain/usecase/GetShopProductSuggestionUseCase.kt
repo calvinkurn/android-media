@@ -3,7 +3,7 @@ package com.tokopedia.affiliate.feature.createpost.domain.usecase
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductSuggestionResponse
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.TagItem
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -18,7 +18,7 @@ import javax.inject.Named
 class GetShopProductSuggestionUseCase @Inject constructor(
         @Named(QUERY_SHOP_PRODUCT_SUGGESTION) private val query: String,
         private val graphqlUseCase: MultiRequestGraphqlUseCase)
-    : UseCase<List<TagItem>>() {
+    : UseCase<List<ShopProductItem>>() {
 
     var params: HashMap<String, Any> = hashMapOf()
 
@@ -31,7 +31,7 @@ class GetShopProductSuggestionUseCase @Inject constructor(
         }
     }
 
-    override suspend fun executeOnBackground(): List<TagItem> {
+    override suspend fun executeOnBackground(): List<ShopProductItem> {
 
         val request = GraphqlRequest(query, ShopProductSuggestionResponse::class.java, params)
 

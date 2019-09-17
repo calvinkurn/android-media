@@ -11,5 +11,5 @@ data class FeedContentTagItems(
 
     @SerializedName("tag_items")
     @Expose
-    val tagItems: List<TagItem> = listOf()
+    val tagItems: List<ShopProductItem> = listOf()
 )

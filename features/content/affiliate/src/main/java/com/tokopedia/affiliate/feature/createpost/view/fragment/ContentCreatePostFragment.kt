@@ -3,7 +3,7 @@ package com.tokopedia.affiliate.feature.createpost.view.fragment
 import android.content.Intent
 import android.os.Bundle
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.TagItem
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 
@@ -97,7 +97,7 @@ class ContentCreatePostFragment : BaseCreatePostFragment() {
         }
     }
 
-    override fun fetchProductSuggestion(onSuccess: (List<TagItem>) -> Unit,
+    override fun fetchProductSuggestion(onSuccess: (List<ShopProductItem>) -> Unit,
                                         onError: (Throwable) -> Unit) {
         presenter.fetchProductSuggestion(userSession.shopId, onSuccess, onError)
     }

@@ -4,7 +4,7 @@ package com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.s
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class TagItem(
+data class ShopProductItem(
         @SerializedName("id")
         @Expose
         val id: String = "",

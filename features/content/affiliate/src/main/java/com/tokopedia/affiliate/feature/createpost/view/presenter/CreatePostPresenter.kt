@@ -2,7 +2,7 @@ package com.tokopedia.affiliate.feature.createpost.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.TagItem
+import com.tokopedia.affiliate.feature.createpost.data.pojo.productsuggestion.shop.ShopProductItem
 import com.tokopedia.affiliate.feature.createpost.domain.entity.FeedDetail
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetAffiliateProductSuggestionUseCase
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase
@@ -183,7 +183,7 @@ class CreatePostPresenter @Inject constructor(
     }
 
     override fun fetchProductSuggestion(shopId: String,
-                                        onSuccess: (List<TagItem>) -> Unit,
+                                        onSuccess: (List<ShopProductItem>) -> Unit,
                                         onError: (Throwable) -> Unit) {
         getShopProductSuggestionUseCase.params =
                 GetShopProductSuggestionUseCase.createRequestParams(shopId.toIntOrZero())
