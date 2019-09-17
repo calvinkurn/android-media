@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsMenuDetail(
         @SerializedName("catalog")
         @Expose
-        val catalog: List<TopupBillsCatalog>,
+        val catalog: TopupBillsCatalog,
         @SerializedName("recommendations")
         @Expose
         val recommendations: List<TopupBillsRecommendation>,

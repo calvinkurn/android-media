@@ -200,7 +200,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        (activity as BaseSimpleActivity).updateTitle(data.catalog[0].label)
+        (activity as BaseSimpleActivity).updateTitle(data.catalog.label)
     }
 
     override fun showError(t: Throwable) {
