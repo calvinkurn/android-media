@@ -36,7 +36,6 @@ class CreatePostFabView @JvmOverloads constructor(
         }
 
         fab_feed.show()
-        isFabExpanded = true
         if (whitelist.authors.size > 1) {
             fab_feed.setOnClickListener(fabClickListener(whitelist))
         } else if (whitelist.authors.size == 1) {
