@@ -1047,7 +1047,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void onGoToLink(String link) {
         if (getActivity() != null && !TextUtils.isEmpty(link)) {
             if (RouteManager.isSupportApplink(getActivity(), link)) {
-                RouteManager.route(getActivity(), link);
+                Intent intent = RouteManager.getIntent(getActivity(), link);
+                intent.putExtras(new Bundle());
+                startActivity(intent);
             } else {
                 RouteManager.route(
                         getActivity(),
@@ -1059,7 +1061,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void goToCreateAffiliate() {
         if (getContext() != null) {
-            RouteManager.route(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
+            intent.putExtras(new Bundle());
+            startActivity(intent);
         }
     }
 
