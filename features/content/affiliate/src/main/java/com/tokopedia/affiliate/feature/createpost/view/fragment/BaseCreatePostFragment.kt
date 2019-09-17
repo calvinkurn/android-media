@@ -785,6 +785,8 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun showProductSuggestion() {
         if (shouldShowProductSuggestion()) {
             layout_product_suggestion.visible()
+        } else {
+            hideProductSuggestion()
         }
     }
 
@@ -795,7 +797,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun shouldShowProductSuggestion(): Boolean {
         return !productSuggestionAdapter.isEmpty() && viewModel.relatedProducts.isEmpty()
     }
-
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
 
