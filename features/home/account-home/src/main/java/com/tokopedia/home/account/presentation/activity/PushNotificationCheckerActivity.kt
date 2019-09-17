@@ -13,13 +13,7 @@ import com.tokopedia.home.account.presentation.fragment.PushNotifCheckerFragment
 
 class PushNotificationCheckerActivity: BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment {
-        val bundle = Bundle()
-        if (intent.extras != null) {
-            bundle.putAll(intent.extras)
-        }
-        return PushNotifCheckerFragment()
-    }
+    override fun getNewFragment(): Fragment = PushNotifCheckerFragment()
 
     companion object {
         open fun createIntent(context: Context): Intent {
