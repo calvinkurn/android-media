@@ -80,6 +80,7 @@ public class TradeInTextViewModel extends AndroidViewModel implements ITradeInPa
                 @Override
                 public void onError(Throwable e) {
                     e.printStackTrace();
+                    broadcastDefaultResponse();
                 }
 
                 @Override
@@ -98,7 +99,11 @@ public class TradeInTextViewModel extends AndroidViewModel implements ITradeInPa
                             tradeInParams.setUsedPrice(tradeInResponse.getUsedPrice());
                             tradeInParams.setRemainingPrice(tradeInResponse.getRemainingPrice());
                             tradeInParams.setUseKyc(tradeInResponse.isUseKyc() ? 1 : 0);
+                        } else {
+                            broadcastDefaultResponse();
                         }
+                    } else {
+                        broadcastDefaultResponse();
                     }
                 }
             });
@@ -115,6 +120,14 @@ public class TradeInTextViewModel extends AndroidViewModel implements ITradeInPa
                 response.setEligible(false);
                 responseData.setValue(response);
             }
+        }
+    }
+
+    private void broadcastDefaultResponse() {
+        if (activityWeakReference.get() != null) {
+            Intent intent = new Intent(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE);
+            intent.putExtra(TradeInTextView.EXTRA_ISELLIGIBLE, false);
+            LocalBroadcastManager.getInstance(activityWeakReference.get()).sendBroadcast(intent);
         }
     }
 }

@@ -54,19 +54,19 @@ abstract class BaseToolbarActivity extends BaseActivity {
         return false;
     }
 
+    protected int getToolbarResourceID(){
+        return R.id.toolbar;
+    }
+
     protected void setupLayout(Bundle savedInstanceState) {
         setContentView(getLayoutRes());
-        toolbar = (Toolbar) findViewById(getToolbarId());
+        toolbar = (Toolbar) findViewById(getToolbarResourceID());
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
             getSupportActionBar().setTitle(this.getTitle());
         }
-    }
-
-    protected int getToolbarId() {
-        return R.id.toolbar;
     }
 
     public void updateOptionMenuColorWhite(Menu menu) {

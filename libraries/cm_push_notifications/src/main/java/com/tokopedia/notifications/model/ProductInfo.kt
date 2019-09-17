@@ -28,7 +28,7 @@ data class ProductInfo(
         var productButtonMessage: String,
 
         @SerializedName("appLink")
-        var appLink: String
+        var appLink: String? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString()?.let { it } ?: "",
