@@ -97,7 +97,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private val productSuggestionAdapter: ProductSuggestionAdapter by lazy {
-        ProductSuggestionAdapter()
+        ProductSuggestionAdapter(::onSuggestionItemClicked)
     }
 
     private lateinit var shareDialogView: View
@@ -346,7 +346,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateCaption()
         updateHeader(feedContentForm.authors)
 
-        if (!viewModel.isEditState) {
+        if (shouldLoadProductSuggestion()) {
             fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
             showProductSuggestionLoading()
         }
@@ -807,10 +807,22 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         layout_product_suggestion.gone()
     }
 
+    private fun shouldLoadProductSuggestion(): Boolean {
+        return viewModel.relatedProducts.isEmpty() && !viewModel.isEditState
+    }
+
     private fun shouldShowProductSuggestion(): Boolean {
-        return !productSuggestionAdapter.isEmpty()
-                && viewModel.relatedProducts.isEmpty()
-                && !viewModel.isEditState
+        return !productSuggestionAdapter.isEmpty() && shouldLoadProductSuggestion()
+    }
+
+    private fun onSuggestionItemClicked(item: ProductSuggestionItem) {
+        if (item.productId.isNotBlank()) {
+            viewModel.productIdList.add(item.productId)
+        }
+        if (item.adId.isNotBlank()) {
+            viewModel.adIdList.add(item.adId)
+        }
+        fetchContentForm()
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE

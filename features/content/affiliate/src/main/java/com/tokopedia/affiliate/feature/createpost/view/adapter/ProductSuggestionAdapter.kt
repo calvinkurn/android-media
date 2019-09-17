@@ -14,8 +14,9 @@ import kotlinx.android.synthetic.main.item_af_product_suggestion.view.*
 /**
  * @author by milhamj on 2019-09-17.
  */
-class ProductSuggestionAdapter :
-        RecyclerView.Adapter<ProductSuggestionAdapter.SuggestionViewHolder>() {
+class ProductSuggestionAdapter(
+        private var onSuggestionItemClicked: (ProductSuggestionItem) -> Unit
+) : RecyclerView.Adapter<ProductSuggestionAdapter.SuggestionViewHolder>() {
 
     private val list: MutableList<ProductSuggestionItem> = arrayListOf()
 
@@ -27,7 +28,9 @@ class ProductSuggestionAdapter :
 
     override fun onBindViewHolder(holder: SuggestionViewHolder, position: Int) {
         val element = list[position]
-        with(holder.itemView)  {
+        with(holder.itemView) {
+            setOnClickListener { onSuggestionItemClicked(element) }
+
             image.loadImage(element.imageUrl)
             title.text = element.title
             price.text = element.price
