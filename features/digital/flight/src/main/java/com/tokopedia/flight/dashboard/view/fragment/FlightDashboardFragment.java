@@ -591,7 +591,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                 .setReturnDate(currentDashboardViewModel.getReturnDate())
                 .build();
 
-        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_FLIGHT_NEW_SEARCH_FLOW, true)) {
             startActivityForResult(FlightSearchActivity.Companion.getCallingIntent(
                     getActivity(), passDataViewModel), REQUEST_CODE_SEARCH);
         } else {
