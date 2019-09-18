@@ -14,6 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -122,10 +123,16 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
     protected void initInjector() {
         if (getAppContext() != null) {
             similarSearhComponent = DaggerSimilarSearchComponent.builder()
-                    .baseAppComponent(getComponent(BaseAppComponent.class))
+                    .baseAppComponent(getBaseAppComponent())
                     .build();
             similarSearhComponent.inject(this);
         }
+    }
+
+    private BaseAppComponent getBaseAppComponent() {
+        if(getActivity() == null || getActivity().getApplication() == null) return null;
+
+        return ((BaseMainApplication)getActivity().getApplication()).getBaseAppComponent();
     }
 
     @Override

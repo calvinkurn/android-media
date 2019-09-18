@@ -149,7 +149,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     @Override
     protected void initInjector() {
         ImageSearchComponent component = DaggerImageSearchComponent.builder()
-                .baseAppComponent(getComponent(BaseAppComponent.class))
+                .baseAppComponent(getBaseAppComponent())
                 .build();
         component.inject(this);
     }
