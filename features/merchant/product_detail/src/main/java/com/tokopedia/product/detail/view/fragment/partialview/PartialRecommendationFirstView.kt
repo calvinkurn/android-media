@@ -20,9 +20,9 @@ class PartialRecommendationFirstView private constructor(private val view: View,
                 PartialRecommendationFirstView(_view, _userActiveListener, productDetailTracking)
     }
 
-    override fun getLayoutTitle(): TextView = view.findViewById(R.id.title_recom_1)
-
     override fun getListener(): RecommendationProductAdapter.UserActiveListener = userActiveListener
+
+    override fun getLayoutTitle(): TextView = view.findViewById(R.id.title_recom_1)
 
     override fun getView(): View = view.base_recom_1
 
