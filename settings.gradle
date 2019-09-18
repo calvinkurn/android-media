@@ -1,4 +1,3 @@
-include ':instantloan'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
