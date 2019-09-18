@@ -170,6 +170,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
+            analytics.initCashShield(this)
+            analytics.sendCashShield(this)
         }
     }
 
@@ -198,7 +200,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     .build()
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         }
-        analytics.onCreate(context)
 
         phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
@@ -911,6 +912,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        analytics.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
