@@ -18,7 +18,8 @@ public class TrackAnalytics {
     }
 
     private static void sendEventToFirebase(String eventName, Map<String, Object> data, Context context) {
-        TkpdFirebaseAnalytics.logEvent(eventName, convertMapToBundle(data), context);
+        if (context != null)
+            TkpdFirebaseAnalytics.getInstance(context).logEvent(eventName, convertMapToBundle(data));
     }
 
     private static Bundle convertMapToBundle(Map<String, Object> data) {
