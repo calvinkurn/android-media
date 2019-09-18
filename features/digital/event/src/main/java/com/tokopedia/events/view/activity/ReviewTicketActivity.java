@@ -280,8 +280,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
                 editText.setHint(hintText[i]);
                 editText.setTag(regex[i]);
                 editText.setTextColor(getResources().getColor(R.color.grey_500));
-                editText.setTextSize(getResources().getDimension(R.dimen.sp_14));
-                editText.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
+                editText.setTextSize(14);
                 editText.setLayoutParams(params);
                 formsLayout.addView(editText);
                 formsList.add(editText);
