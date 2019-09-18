@@ -255,7 +255,7 @@ public class ImageSearchProductListFragment extends BaseDaggerFragment implement
     }
 
     private void bindView(View rootView) {
-        recyclerView = (RecyclerView) rootView.findViewById(R.id.recyclerview);
+        recyclerView = (RecyclerView) rootView.findViewById(R.id.image_search_recyclerview);
         gridLayoutManager = new GridLayoutManager(getActivity(), getSpanCount());
         gridLayoutManager.setSpanSizeLookup(onSpanSizeLookup());
     }

@@ -52,21 +52,21 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     public GridProductItemViewHolder(View itemView, ProductListener productListener, String searchQuery) {
         super(itemView);
         this.searchQuery = searchQuery;
-        productImage = itemView.findViewById(com.tokopedia.topads.sdk.R.id.product_image);
-        title = (TextView) itemView.findViewById(com.tokopedia.design.R.id.title);
-        price = (TextView) itemView.findViewById(com.tokopedia.topads.sdk.R.id.price);
-        location = (TextView) itemView.findViewById(com.tokopedia.topads.sdk.R.id.location);
-        badgesContainer = (LinearLayout) itemView.findViewById(com.tokopedia.topads.sdk.R.id.badges_container);
-        wishlistButton = (ImageView) itemView.findViewById(com.tokopedia.topads.sdk.R.id.wishlist_button);
-        wishlistButtonContainer = (RelativeLayout) itemView.findViewById(com.tokopedia.topads.sdk.R.id.wishlist_button_container);
-        container = itemView.findViewById(com.tokopedia.design.R.id.container);
-        rating = (ImageView) itemView.findViewById(com.tokopedia.topads.sdk.R.id.rating);
-        reviewCount = (TextView) itemView.findViewById(com.tokopedia.topads.sdk.R.id.review_count);
-        ratingReviewContainer = (LinearLayout) itemView.findViewById(com.tokopedia.topads.sdk.R.id.rating_review_container);
-        topLabel = itemView.findViewById(R.id.topLabel);
-        bottomLabel = itemView.findViewById(R.id.bottomLabel);
-        newLabel = itemView.findViewById(com.tokopedia.topads.sdk.R.id.new_label);
-        topadsIcon = itemView.findViewById(R.id.topads_icon);
+        productImage = itemView.findViewById(R.id.image_search_product_image);
+        title = (TextView) itemView.findViewById(R.id.image_search_title_text);
+        price = (TextView) itemView.findViewById(R.id.image_search_price);
+        location = (TextView) itemView.findViewById(R.id.image_search_location);
+        badgesContainer = (LinearLayout) itemView.findViewById(R.id.image_search_badges_container);
+        wishlistButton = (ImageView) itemView.findViewById(R.id.image_search_wishlist_button);
+        wishlistButtonContainer = (RelativeLayout) itemView.findViewById(R.id.image_search_wishlist_button_container);
+        container = itemView.findViewById(R.id.image_search_container);
+        rating = (ImageView) itemView.findViewById(R.id.image_search_rating);
+        reviewCount = (TextView) itemView.findViewById(R.id.image_search_review_count);
+        ratingReviewContainer = (LinearLayout) itemView.findViewById(R.id.image_search_rating_review_container);
+        topLabel = itemView.findViewById(R.id.image_search_topLabel);
+        bottomLabel = itemView.findViewById(R.id.image_search_bottomLabel);
+        newLabel = itemView.findViewById(R.id.image_search_new_label);
+        topadsIcon = itemView.findViewById(R.id.image_search_topads_icon);
         context = itemView.getContext();
         this.productListener = productListener;
     }
@@ -194,7 +194,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private static int getRatingDrawable(int param) {
         switch (param) {
             case 0:
-                return com.tokopedia.topads.sdk.R.drawable.ic_star_none;
+                return R.drawable.ic_star_none;
             case 1:
                 return R.drawable.ic_star_one;
             case 2:
@@ -206,7 +206,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             case 5:
                 return R.drawable.ic_star_five;
             default:
-                return com.tokopedia.topads.sdk.R.drawable.ic_star_none;
+                return R.drawable.ic_star_none;
         }
     }
 }
