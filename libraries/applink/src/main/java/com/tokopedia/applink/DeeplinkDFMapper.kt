@@ -56,7 +56,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title))
 //            add(DFP({ it.startsWith(SETTING_PROFILE) }, USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
 //            add(DFP({ it.startsWith(SETTING_BANK) }, USER_SETTING_BANK, R.string.applink_setting_bank_title))
-            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
+//            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
         }
     }
 
