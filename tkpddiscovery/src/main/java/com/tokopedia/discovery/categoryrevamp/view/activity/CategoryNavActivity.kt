@@ -1,5 +1,8 @@
 package com.tokopedia.discovery.categoryrevamp.view.activity
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,8 +12,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
@@ -19,12 +22,16 @@ import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Co
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
 import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
-import com.tokopedia.discovery.categoryrevamp.domain.usecase.SubCategoryV3UseCase
+import com.tokopedia.discovery.categoryrevamp.di.CategoryNavComponent
+import com.tokopedia.discovery.categoryrevamp.di.DaggerCategoryNavComponent
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
+import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
+import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
+import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
@@ -32,6 +39,8 @@ import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_category_nav.*
 import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
 import rx.Subscriber
@@ -54,14 +63,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     override fun setFilterResultCount(formattedResultCount: String?) {
         bottomSheetFilterView?.setFilterResultCount(formattedResultCount)
-    }
-
-    override fun closeFilterBottomSheet() {
-        bottomSheetFilterView?.closeView()
-    }
-
-    override fun isBottomSheetShown(): Boolean {
-        return bottomSheetFilterView?.isBottomSheetShown ?: false
     }
 
     override fun launchFilterBottomSheet() {
@@ -94,16 +95,21 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     private var departmentId: String = ""
     private var departmentName: String = ""
 
-    @Inject
-    private lateinit var subCategoryV3UseCase: SubCategoryV3UseCase
 
+    lateinit var categoryNavComponent: CategoryNavComponent
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var categoryNavViewModel: CategoryNavViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_category_nav)
         bottomSheetFilterView = findViewById(R.id.bottomSheetFilter)
         searchNavContainer = findViewById(R.id.search_nav_container)
-
+        initInjector()
         prepareView()
         handleIntent(intent)
     }
@@ -134,7 +140,12 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         return if (uri == null) SearchParameter() else SearchParameter(uri.toString())
     }
 
-
+     fun initInjector() {
+        categoryNavComponent = DaggerCategoryNavComponent.builder()
+                .baseAppComponent((applicationContext as BaseMainApplication)
+                        .baseAppComponent).build()
+         categoryNavComponent.inject(this)
+    }
     private fun initSwitchButton() {
 
         icon_sort.setOnClickListener {
@@ -187,36 +198,52 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     private fun prepareView() {
-        fetchBundle()
-        initToolbar()
-        checkIfBanned()
-        bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE)
+        this.let { observer ->
+            val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
+            categoryNavViewModel = viewModelProvider.get(CategoryNavViewModel::class.java)
+            fetchBundle()
+            initToolbar()
+            progressBar.visibility = View.VISIBLE
+            checkIfBanned()
+            bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE)
+
+        }
 
     }
 
     private fun checkIfBanned() {
-        subCategoryV3UseCase.execute(getSubCategoryParam(), object : Subscriber<Data?>() {
-            override fun onNext(t: Data?) {
-
-                if (t?.isBanned == 1) {
-                    layout_banned_screen.visibility = View.VISIBLE
-                    txt_header.text = t.bannedMessage
-                } else {
-                    layout_banned_screen.visibility = View.GONE
-                    initViewPager()
-                    loadSection()
-                    initSwitchButton()
-                    initBottomSheetListener()
+        categoryNavViewModel.mBannedCheck.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    progressBar.visibility = View.GONE
+                    if(it.data.isBanned == 1) {
+                       setEmptyView(it.data)
+                    }else {
+                        layout_banned_screen.visibility = View.GONE
+                        initViewPager()
+                        loadSection()
+                        initSwitchButton()
+                        initBottomSheetListener()
+                    }
+                }
+                is Fail -> {
+                    progressBar.visibility = View.GONE
+                    setEmptyView(null)
                 }
             }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-            }
-
         })
+        categoryNavViewModel.fetchBannedCheck(getSubCategoryParam())
+    }
+
+    private fun setEmptyView(data :Data?){
+        layout_banned_screen.visibility = View.VISIBLE
+        if(data == null) {
+            txt_header.text = "There is some error on server"
+            txt_no_data_description.text = "try again"
+        }else {
+            txt_header.text = data?.bannedMsgHeader
+            txt_no_data_description.text = data?.bannedMessage
+        }
     }
 
     private fun getSubCategoryParam(): RequestParams {
@@ -240,14 +267,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
             override fun onHide() {
                 showBottomNavigation()
                 sendBottomSheetHideEvent()
-            }
-
-            override fun isSearchShown(): Boolean {
-                return false
-            }
-
-            override fun hideKeyboard() {
-                KeyboardHandler.hideSoftKeyboard(this@CategoryNavActivity)
             }
 
             override fun getActivity(): AppCompatActivity {
@@ -325,7 +344,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
         pager.offscreenPageLimit = 3
         pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-                bottomSheetFilterView?.closeView()
+
             }
 
             override fun onPageSelected(position: Int) {
