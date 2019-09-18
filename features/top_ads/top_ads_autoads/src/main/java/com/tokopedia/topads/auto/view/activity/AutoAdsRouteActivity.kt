@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.AppUtil
@@ -21,7 +20,6 @@ import com.tokopedia.design.component.ToasterError
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
@@ -30,7 +28,6 @@ import com.tokopedia.topads.common.constant.TopAdsAddingOption
 import com.tokopedia.topads.common.data.util.ApplinkUtil
 import javax.inject.Inject
 
-@DeepLink(ApplinkConst.SellerApp.TOPADS_AUTOADS)
 class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     @Inject

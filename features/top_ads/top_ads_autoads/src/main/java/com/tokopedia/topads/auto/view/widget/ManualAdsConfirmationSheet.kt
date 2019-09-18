@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.FrameLayout
 
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.DailyBudgetActivity
 
 /**

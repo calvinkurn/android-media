@@ -16,7 +16,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
 import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet
