@@ -40,30 +40,6 @@ class ProductCardViewSmallGrid: ProductCardView {
         textViewAddToCart = inflatedView.findViewById(R.id.textViewAddToCart)
     }
 
-    override fun realignLayout() {
-        super.realignLayout()
-        setImageTopAdsBottomConstraint()
-    }
-
-    private fun setImageTopAdsBottomConstraint() {
-        imageTopAds?.doIfVisible {  imageTopAds ->
-            textViewAddToCart?.doIfVisible {  textViewAddToCart ->
-                configureImageTopAdsConstraintBasedOnTextViewAddToCart(imageTopAds, textViewAddToCart)
-            }
-        }
-    }
-
-    private fun configureImageTopAdsConstraintBasedOnTextViewAddToCart(imageTopAds: View, textViewAddToCart: View) {
-        if (textViewAddToCart.isVisible) {
-            setViewConstraint(imageTopAds.id, ConstraintSet.BOTTOM, textViewAddToCart.id, ConstraintSet.TOP, R.dimen.dp_0)
-        }
-        else {
-            constraintLayoutProductCard?.doIfVisible {
-                setViewConstraint(imageTopAds.id, ConstraintSet.BOTTOM, it.id, ConstraintSet.BOTTOM, R.dimen.dp_0)
-            }
-        }
-    }
-
     fun setImageShopVisible(isVisible: Boolean) {
         imageShop?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }

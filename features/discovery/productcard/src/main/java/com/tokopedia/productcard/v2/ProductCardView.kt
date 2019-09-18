@@ -564,12 +564,4 @@ abstract class ProductCardView: BaseCustomView {
             constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
         }
     }
-
-    protected open fun clearViewConstraint(@IdRes layoutId: Int, side: Int) {
-        constraintLayoutProductCard.applyConstraintSet { constraintSet ->
-            constraintSet.clear(layoutId, side)
-        }
-    }
-
-
 }
