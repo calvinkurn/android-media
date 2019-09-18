@@ -7,7 +7,6 @@ import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -19,8 +18,7 @@ import javax.inject.Inject
  */
 class GetPostDetailUseCase @Inject constructor(
         @ApplicationContext val context: Context,
-        private val getDynamicFeedUseCase: GetDynamicFeedUseCase,
-        private val getWhitelistUseCase: GetWhitelistUseCase) : UseCase<PostDetailViewModel>() {
+        private val getDynamicFeedUseCase: GetDynamicFeedUseCase) : UseCase<PostDetailViewModel>() {
 
     companion object {
         private const val LIMIT_3 = 3
@@ -42,7 +40,6 @@ class GetPostDetailUseCase @Inject constructor(
 
     override fun createObservable(requestParams: RequestParams): Observable<PostDetailViewModel> {
         val domain = PostDetailViewModel()
-//        Observable.zip(getPostDetail(domain, createParamDynamicFeed(requestParams)), )
         return getPostDetail(domain, createParamDynamicFeed(requestParams))
                 .flatMap { addFooter(domain) }
     }
