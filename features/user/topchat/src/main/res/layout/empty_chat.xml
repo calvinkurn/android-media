@@ -36,7 +36,8 @@
         android:paddingStart="@dimen/dp_24"
         android:paddingEnd="@dimen/dp_24"
         app:typographyType="heading_2"
-        app:typographyWeight="reguler"/>
+        app:typographyWeight="reguler"
+        android:gravity="center"/>
 
 
     <com.tokopedia.unifyprinciples.Typography

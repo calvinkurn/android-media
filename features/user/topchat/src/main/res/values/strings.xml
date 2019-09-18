@@ -128,8 +128,9 @@ yang ditemukan</string>
 
     <string name="seller_empty_chat_title">Hiks, sepi banget</string>
     <string name="seller_empty_chat_subtitle">Yuk, lengkapi tokomu dengan produk unggulan untuk menarik perhatian pembeli</string>
-    <string name="buyer_empty_chat_title">Belum ada chat</string>
-    <string name="buyer_empty_chat_subtitle">Coba ngobrol dengan teman atau penjual, yuk!</string>
+    <string name="buyer_empty_chat_title">Belum ada chat dari pembeli</string>
+    <string name="buyer_empty_chat_subtitle">Yuk bikin toko kamu lebih menarik agar pembeli jatuh hati</string>
+    <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca</string>
 
 
     <!--Delete Chat Popup-->

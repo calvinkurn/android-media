@@ -33,6 +33,7 @@ import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_USER
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
@@ -418,20 +419,26 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
         activity?.let {
             when (sightTag) {
                 PARAM_TAB_USER -> {
-                    title = it.getString(R.string.seller_empty_chat_title)
-                    subtitle = it.getString(R.string.seller_empty_chat_subtitle)
+                    title = it.getString(R.string.buyer_empty_chat_title)
+                    subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
                     image = CHAT_BUYER_EMPTY
                 }
 
                 PARAM_TAB_SELLER -> {
-                    title = it.getString(R.string.buyer_empty_chat_title)
-                    subtitle = it.getString(R.string.buyer_empty_chat_subtitle)
+                    title = it.getString(R.string.seller_empty_chat_title)
+                    subtitle = it.getString(R.string.seller_empty_chat_subtitle)
                     image = CHAT_SELLER_EMPTY
                 }
             }
+
+            if (filterChecked == arrayFilterParam.indexOf(PARAM_FILTER_UNREAD)) {
+                image = CHAT_BUYER_EMPTY
+                title = it.getString(R.string.empty_chat_read_all_title)
+                subtitle = ""
+            }
         }
 
-        return EmptyChatModel(title, subtitle, image)
+         return EmptyChatModel(title, subtitle, image)
     }
 
     companion object {
