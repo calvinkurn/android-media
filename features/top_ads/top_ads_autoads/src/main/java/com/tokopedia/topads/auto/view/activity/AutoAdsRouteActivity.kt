@@ -43,6 +43,7 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.Theme_AutoAds_Transparent)
         setContentView(R.layout.activity_auto_ads_route)
         component.inject(this)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {

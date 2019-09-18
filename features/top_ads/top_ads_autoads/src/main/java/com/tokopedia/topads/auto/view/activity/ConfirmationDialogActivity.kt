@@ -16,6 +16,7 @@ class ConfirmationDialogActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppTheme_NoActionBar_ActivityDialog)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         }
