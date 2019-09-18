@@ -23,7 +23,7 @@
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
     <LinearLayout
-        android:id="@+id/main_retry"
+        android:id="@+id/linearLayoutErrorMessageContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
@@ -33,9 +33,8 @@
         android:padding="@dimen/dp_10"
         android:visibility="gone">
 
-        <!-- Untuk onRetry satu halaman -->
         <ImageView
-            android:id="@+id/iv_icon"
+            android:id="@+id/iconErrorCloud"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -46,21 +45,12 @@
             tools:ignore="ContentDescription" />
 
         <TextView
-            android:id="@+id/message_retry"
+            android:id="@+id/textViewErrorMessage"
             style="@style/TextView.Title.BlackSecondary"
             android:layout_margin="@dimen/dp_5"
             android:gravity="center"
             android:text="@string/msg_network_error_1"
             android:textColor="@color/black"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/sub_message_retry"
-            style="@style/TextView.Micro.BlackSecondary"
-            android:layout_margin="@dimen/dp_5"
-            android:gravity="center"
-            android:text="@string/msg_network_error_2"
-            android:textColor="@color/grey_400"
             android:textStyle="bold" />
 
     </LinearLayout>

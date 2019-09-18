@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -22,8 +23,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
-import com.tokopedia.design.price.DynamicBackgroundSeekBar;
-import com.tokopedia.discovery.DiscoveryRouter;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
@@ -31,6 +31,8 @@ import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.manager.SimilarSearchManager;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -76,6 +78,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -141,7 +144,7 @@ public class ProductListFragment
         Bundle args = new Bundle();
         args.putParcelable(EXTRA_SEARCH_PARAMETER, searchParameter);
         args.putInt(EXTRA_FRAGMENT_POSITION, fragmentPosition);
-        
+
         ProductListFragment productListFragment = new ProductListFragment();
         productListFragment.setArguments(args);
 
@@ -1082,21 +1085,39 @@ public class ProductListFragment
         if (getView() == null) return;
 
         if (isFullScreenMessage) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), null);
+            showFullScreenErrorMessage(getView(), errorMessage);
         }
         else {
-            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+            showSnackbarErroMessage(errorMessage);
         }
+    }
+
+    private void showFullScreenErrorMessage(@NotNull View rootView, String errorMessage) {
+        View linearLayoutErrorMessageContainer  = rootView.findViewById(R.id.linearLayoutErrorMessageContainer);
+
+        if (linearLayoutErrorMessageContainer != null) {
+            linearLayoutErrorMessageContainer.setVisibility(View.VISIBLE);
+
+            TextView textViewErrorMessage = linearLayoutErrorMessageContainer.findViewById(R.id.textViewErrorMessage);
+
+            if (textViewErrorMessage != null) {
+                textViewErrorMessage.setText(errorMessage);
+            }
+        }
+    }
+
+    private void showSnackbarErroMessage(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
     @Override
     public void hideErrorMessage() {
         if (getView() == null) return;
 
-        View retryView  = getView().findViewById(R.id.main_retry);
+        View linearLayoutErrorMessageContainer  = getView().findViewById(R.id.linearLayoutErrorMessageContainer);
 
-        if (retryView != null) {
-            retryView.setVisibility(View.GONE);
+        if (linearLayoutErrorMessageContainer != null) {
+            linearLayoutErrorMessageContainer.setVisibility(View.GONE);
         }
     }
 }

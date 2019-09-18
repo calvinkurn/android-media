@@ -544,13 +544,12 @@ final class ProductListPresenter
 
         sendTrackingNoSearchResult(productViewModel);
         getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
-        getView().hideErrorMessage();
 
         if (productViewModel.getProductList().isEmpty()) {
-            getViewToShowErrorMessage(true, productViewModel.getErrorMessage());
+            getViewToHandleErrorMessage(true, productViewModel.getErrorMessage());
             getViewToShowEmptySearch(productViewModel);
         } else {
-            getViewToShowErrorMessage(false, productViewModel.getErrorMessage());
+            getViewToHandleErrorMessage(false, productViewModel.getErrorMessage());
             getViewToShowProductList(productViewModel);
         }
 
@@ -588,9 +587,12 @@ final class ProductListPresenter
         return productViewModel;
     }
 
-    private void getViewToShowErrorMessage(boolean isFullScreenMessage, String errorMessage) {
+    private void getViewToHandleErrorMessage(boolean isFullScreenMessage, String errorMessage) {
         if (errorMessage != null && errorMessage.length() > 0) {
             getView().showErrorMessage(isFullScreenMessage, errorMessage);
+        }
+        else {
+            getView().hideErrorMessage();
         }
     }
 
