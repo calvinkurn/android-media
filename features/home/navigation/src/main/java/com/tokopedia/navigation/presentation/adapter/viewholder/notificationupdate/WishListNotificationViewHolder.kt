@@ -29,10 +29,12 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
 
     override fun bindNotificationPayload(element: NotificationUpdateItemViewModel) {
         val product = element.getAtcProduct() ?: return
+        val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.ic_add_to_cart)
 
         with(product) {
             productName.text = name
             productPrice.text = priceFormat
+            btnCart.setImageDrawable(atcDrawable)
             productCampaign.setupCampaign(campaign)
             productVariant.setupVariant(variant)
             ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_loading_toped_new)
