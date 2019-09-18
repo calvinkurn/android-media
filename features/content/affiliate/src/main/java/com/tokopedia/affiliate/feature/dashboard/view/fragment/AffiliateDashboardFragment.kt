@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.AppBarLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.SwipeRefreshLayout
@@ -87,9 +88,10 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var vPostedViewedSeparator: View
     private lateinit var llCuratedProductHistory: LinearLayout
     private lateinit var esShareNow: EmptyState
-//    private lateinit var srlRefresh: SwipeRefreshLayout
+    private lateinit var srlRefresh: SwipeRefreshLayout
     private lateinit var ivAfIncomeInfo: ImageView
     private lateinit var bmivShare: ByMeInstastoryView
+    private lateinit var ablAfDashboard: AppBarLayout
 
     private lateinit var calendarBottomSheet: CloseableBottomSheetDialog
     private lateinit var calendarView: View
@@ -190,9 +192,10 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             vPostedViewedSeparator = findViewById(R.id.v_posted_viewed_separator)
             llCuratedProductHistory = findViewById(R.id.ll_curated_product_history)
             esShareNow = findViewById(R.id.es_share_now)
-//            srlRefresh = findViewById(R.id.srl_refresh)
+            srlRefresh = findViewById(R.id.srl_refresh)
             ivAfIncomeInfo = findViewById(R.id.iv_af_income_info)
             bmivShare = findViewById(R.id.bmiv_share)
+            ablAfDashboard = findViewById(R.id.abl_af_dashboard)
         }
     }
 
@@ -205,7 +208,6 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
                     indirectFragmentCurated
             ))
         }
-//        vpCuratedProduct.layoutParams.height = (getScreenHeight() * 0.75).toInt()
         tlCuratedProducts.setupWithViewPager(vpCuratedProduct)
         llStartDate.setOnClickListener { openCalendarPicker() }
         llEndDate.setOnClickListener { openCalendarPicker() }
@@ -213,10 +215,14 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         llCheckBalance.setOnClickListener { onCheckBalanceClicked() }
         tvSeeAll.setOnClickListener { onSeeAllProductClicked() }
 
-//        srlRefresh.setOnRefreshListener { onRefresh() }
+        srlRefresh.setOnRefreshListener { onRefresh() }
         ivAfIncomeInfo.setOnClickListener { showTooltip() }
 
         esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
+
+        ablAfDashboard.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            srlRefresh.isEnabled = (verticalOffset == 0)
+        })
     }
 
     override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel, byMeHeader: ShareableByMeProfileViewModel) {
@@ -231,7 +237,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
         if (startDate != null && endDate != null) showChangesAppliedToaster()
 
-//        srlRefresh.isRefreshing = false
+        srlRefresh.isRefreshing = false
 
         profileHeader = byMeHeader
         initByMeInstastoryView(byMeHeader)
