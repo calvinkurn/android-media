@@ -37,7 +37,7 @@ import javax.inject.Inject
  */
 
 class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, NotificationActivityContract.View,
-        NotificationUpdateFragment.NotificationUpdateListener, NotificationFragment.NotificationFragmentListener {
+        NotificationUpdateFragment.NotificationUpdateListener {
 
     @Inject
     lateinit var presenter: NotificationActivityPresenter
@@ -219,10 +219,6 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     private fun openNotificationSettingPage(): Boolean {
         RouteManager.route(this, ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING)
         return true
-    }
-
-    override fun goToUpdateTab() {
-        viewPager.currentItem = 1
     }
 
     companion object {

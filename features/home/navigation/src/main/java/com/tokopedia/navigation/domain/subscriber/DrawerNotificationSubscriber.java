@@ -41,10 +41,6 @@ public class DrawerNotificationSubscriber extends Subscriber<NotificationEntity>
             this.notificationView.renderNotification(entity.getNotifications(),
                     entity.getNotifcenterUnread(),
                     NotificationMapper.isHasShop(entity));
-            Boolean isTabUpdate = entity.getNotifications().getTabUpdate();
-            if (isTabUpdate) {
-                this.notificationView.goToUpdateTab();
-            }
         }
     }
 
