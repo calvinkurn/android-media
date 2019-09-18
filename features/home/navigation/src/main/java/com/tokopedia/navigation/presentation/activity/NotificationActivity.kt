@@ -70,6 +70,10 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         presenter.getIsTabUpdate(this)
     }
 
+    override fun goToUpdateTab() {
+        viewPager.currentItem = 1
+    }
+
     override fun onSuccessLoadNotifUpdate() {
         clearNotifCounter(INDEX_NOTIFICATION_UPDATE)
     }
