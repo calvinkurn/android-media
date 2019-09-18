@@ -47,6 +47,8 @@ import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
@@ -799,6 +801,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     private fun showProductSuggestion() {
         if (shouldShowProductSuggestion()) {
             layout_product_suggestion.visible()
+            showSuggestionCoachmark()
         } else {
             hideProductSuggestion()
         }
@@ -814,6 +817,30 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
 
     private fun shouldShowProductSuggestion(): Boolean {
         return !productSuggestionAdapter.isEmpty() && shouldLoadProductSuggestion()
+    }
+
+    private fun showSuggestionCoachmark() {
+        val tag = "${userSession.userId}_${viewModel.authorType}"
+
+        //Don't show if already shown
+        if (affiliatePref.isCoarchmarkSuggestionShown(tag)) {
+            return
+        }
+
+        val item: CoachMarkItem = if (isTypeAffiliate()) {
+            CoachMarkItem(layout_product_suggestion,
+                    getString(R.string.af_suggestion_aff_cm_title),
+                    getString(R.string.af_suggestion_aff_cm_desc))
+        } else {
+            CoachMarkItem(layout_product_suggestion,
+                    getString(R.string.af_suggestion_shop_cm_title),
+                    getString(R.string.af_suggestion_shop_cm_desc))
+        }
+        val list: ArrayList<CoachMarkItem> = arrayListOf(item)
+
+        val coachMark = CoachMark()
+        coachMark.show(activity, tag, list)
+        affiliatePref.setCoachmarkSuggestionShown(tag)
     }
 
     private fun onSuggestionItemClicked(item: ProductSuggestionItem) {
