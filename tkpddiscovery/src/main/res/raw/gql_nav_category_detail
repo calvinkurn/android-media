@@ -7,6 +7,9 @@ query CategoryDetailQuery($identifier: String, $intermediary: Boolean, $safeSear
       id
       name
       isAdult
+      isBanned
+      bannedMsg
+      appRedirection
       tree
       parent
       rootId
