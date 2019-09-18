@@ -697,7 +697,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvLogTicker.setVariant(TickerPromoStackingCheckoutView.Variant.LOGISTIC);
             if (shipmentCartItemModel.isError()) {
                 tvLogTicker.disableView();
-                Toast.makeText(itemView.getContext(), "To Do: Add clear promo here", Toast.LENGTH_LONG).show();
+                mActionListener.onCancelVoucherLogisticClicked(
+                        shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
+                        getAdapterPosition());
             } else {
                 tvLogTicker.setState(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(
                         shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState()));
@@ -709,7 +711,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
                     @Override
                     public void onResetPromoDiscount() {
-                        Toast.makeText(itemView.getContext(), "To Do: Add clear promo here", Toast.LENGTH_LONG).show();
+                        mActionListener.onCancelVoucherLogisticClicked(
+                                shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode(),
+                                getAdapterPosition());
                     }
 
                     @Override

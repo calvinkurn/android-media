@@ -1762,6 +1762,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onCancelVoucherLogisticClicked(String pslCode, int position) {
+        ArrayList<String> codes = new ArrayList<>();
+        codes.add(pslCode);
+        shipmentPresenter.cancelAutoApplyPromoStack(position, codes, false);
+        if (isToogleYearEndPromoOn()) {
+            shipmentAdapter.cancelAllCourierPromo();
+        }
+    }
+
+    @Override
     public void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position) {
         trackingPromoCheckoutUtil.checkoutImpressionTicker(cartPromoGlobal.getDescription());
     }
