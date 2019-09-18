@@ -15,13 +15,13 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_title"
-            style="@style/TextSmallMediumBlack54"
+            app:typographyType="body_2"
+            app:typographyWeight="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:text="@string/label_empty_cart_recent_view"
-            android:textSize="@dimen/sp_16" />
+            android:text="@string/label_empty_cart_recent_view" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_show_all"
