@@ -160,4 +160,7 @@
     <string name="mau_akses_semua_fitur">Mau akses semua fitur?</string>
 
     <string name="label_cart">Keranjang</string>
+
+    <string name="shop_search_product">Search Shop Product</string>
+
 </resources>
