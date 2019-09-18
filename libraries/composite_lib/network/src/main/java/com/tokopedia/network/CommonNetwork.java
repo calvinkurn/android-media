@@ -38,6 +38,8 @@ public class CommonNetwork {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
         tkpdOkHttpBuilder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
         tkpdOkHttpBuilder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
+        tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
+
 
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
