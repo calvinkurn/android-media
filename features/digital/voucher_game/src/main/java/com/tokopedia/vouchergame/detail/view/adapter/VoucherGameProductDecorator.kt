@@ -13,11 +13,7 @@ import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProdu
  */
 class VoucherGameProductDecorator(val space: Int, val resources: Resources) : RecyclerView.ItemDecoration() {
 
-    private val categoryViewHolderPosition = mutableListOf<Int>()
-
-    fun addCategoryViewIndex(index: Int) {
-        categoryViewHolderPosition.add(index)
-    }
+    private var needOffset = true
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         outRect.run {
@@ -37,12 +33,11 @@ class VoucherGameProductDecorator(val space: Int, val resources: Resources) : Re
                          * Add right offset if product item is on the left side of the screen
                          * while putting into account non-product items beforehand
                          */
-                        var isEven = childPosition % 2 == 0
-                        for (index in categoryViewHolderPosition) {
-                            if (index < childPosition) isEven = !isEven
-                            else break
+                        if (getItemViewType(childPosition - 1) != VoucherGameProductViewHolder.LAYOUT) {
+                            needOffset = true
                         }
-                        if (isEven) right = offset
+                        if (needOffset) right = offset
+                        needOffset = !needOffset
                     }
                 }
             }

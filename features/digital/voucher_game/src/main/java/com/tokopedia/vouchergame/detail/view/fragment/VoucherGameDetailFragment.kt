@@ -332,14 +332,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             val decorator = VoucherGameProductDecorator(ITEM_DECORATOR_SIZE_DP, resources)
             val trackingList = mutableListOf<VoucherGameProduct>()
 
-            for ((index, productList) in dataCollection.withIndex()) {
+            for (productList in dataCollection) {
                 // Create new instance to prevent adding copy of products
                 // to adapter data (set products to empty list)
                 if (productList.name.isNotEmpty()) {
                     val categoryItem = VoucherGameProductData.DataCollection(productList.name, listOf())
                     listData.add(categoryItem)
-                    // Add category item index for item decorator
-                    decorator.addCategoryViewIndex(index)
                 }
 
                 if (productList.products.isNotEmpty())  {
