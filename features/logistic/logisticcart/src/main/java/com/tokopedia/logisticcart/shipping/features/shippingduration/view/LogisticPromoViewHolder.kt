@@ -22,7 +22,6 @@ class LogisticPromoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView
                 listener.onLogisticPromoClicked(data)
             }
         })
-        itemView.view_logistic_voucher.
     }
 
 }
