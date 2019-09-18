@@ -55,7 +55,7 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
         deleteAllPassengerList(false)
 
         if (!userSession.isLoggedIn) {
-            RouteManager.route(this, ApplinkConst.LOGIN)
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         }
     }
 
@@ -87,11 +87,21 @@ class FlightBookingActivity : BaseFlightActivity(), HasComponent<FlightBookingCo
         )
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_CODE_LOGIN -> recreate()
+        }
+    }
+
     companion object {
         private const val EXTRA_PASS_SEARCH_DATA = "EXTRA_PASS_SEARCH_DATA"
         private const val EXTRA_FLIGHT_DEPARTURE_ID = "EXTRA_FLIGHT_DEPARTURE_ID"
         private const val EXTRA_FLIGHT_ARRIVAL_ID = "EXTRA_FLIGHT_ARRIVAL_ID"
         private const val EXTRA_PRICE = "EXTRA_PRICE"
+
+        private const val REQUEST_CODE_LOGIN = 6
 
         fun getCallingIntent(activity: Activity,
                              passDataViewModel: FlightSearchPassDataViewModel,
