@@ -1,7 +1,5 @@
 package com.tokopedia.imagesearch.data.mapper;
 
-import android.text.TextUtils;
-
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.imagesearch.domain.model.BadgeModel;
 import com.tokopedia.imagesearch.domain.model.LabelModel;
@@ -30,27 +28,11 @@ public class ImageProductMapper implements Func1<GraphqlResponse, SearchResultMo
     public SearchResultModel mappingPojoIntoDomain(SearchProductResponse searchProductResponse) {
         SearchResultModel model = new SearchResultModel();
         model.setTotalData(searchProductResponse.getHeader().getTotalData());
-        model.setTotalDataText(searchProductResponse.getHeader().getTotalDataText());
         model.setAdditionalParams(searchProductResponse.getHeader().getAdditionalParams());
-        model.setRedirectUrl(searchProductResponse.getData().getRedirection().getRedirectUrl());
 
-        if (!TextUtils.isEmpty(searchProductResponse.getData().getRedirection().getDepartmentId())) {
-            model.setDepartmentId(searchProductResponse.getData().getRedirection().getDepartmentId());
-        }
-
-        model.setHasCatalog(searchProductResponse.getData().getCatalogs().size() > 0);
         model.setProductList(mappingProduct(searchProductResponse.getData().getProducts()));
         model.setQuery(searchProductResponse.getData().getQuery());
-        model.setSource(searchProductResponse.getData().getSource());
         model.setShareUrl(searchProductResponse.getData().getShareUrl());
-
-        if (searchProductResponse.getData().getSuggestionText() != null) {
-            model.setSuggestionText(searchProductResponse.getData().getSuggestionText().getText());
-            model.setSuggestedQuery(searchProductResponse.getData().getSuggestionText().getQuery());
-        }
-        if (searchProductResponse.getData().getSuggestionsInstead() != null) {
-            model.setSuggestionCurrentKeyword(searchProductResponse.getData().getSuggestionsInstead().getCurrentKeyword());
-        }
 
         return model;
     }

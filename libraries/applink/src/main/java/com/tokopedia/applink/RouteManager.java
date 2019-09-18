@@ -251,27 +251,4 @@ public class RouteManager {
         }
         return attributionApplink;
     }
-
-    /**
-     * This function is to check if applink is already supported by manifest declaration, by checking:
-     * 1. if the target activity exists
-     * 2. target activity is not DeeplinkHandlerActivity or DeeplinkActivity
-     */
-    public static boolean isApplinkDeclaredInManifest(Context context, String deeplink) {
-        Intent intent = buildInternalImplicitIntent(context, deeplink);
-        List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, 0);
-        if (resolveInfos == null || resolveInfos.size() == 0) {
-            return false;
-        } else {
-            for (int i = resolveInfos.size() - 1; i >= 0; i--) {
-                ResolveInfo resolveInfo = resolveInfos.get(i);
-                String activityName = resolveInfo.activityInfo.name;
-                if (GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME.equals(activityName) ||
-                        GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME.equals(activityName)) {
-                    resolveInfos.remove(i);
-                }
-            }
-            return resolveInfos.size() > 0;
-        }
-    }
 }
