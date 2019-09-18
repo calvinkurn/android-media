@@ -4,12 +4,17 @@ import android.content.Context
 import android.net.Uri
 import com.google.gson.Gson
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import tokopedia.applink.R
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 
 object DeeplinkMapperDigital {
+
+    private const val TEMPLATE_VOUCHER = "voucher"
+    private val MENU_ID_TELCO = listOf(1, 2)
 
     /**
      * Cache to variable to speed up performance
@@ -32,18 +37,24 @@ object DeeplinkMapperDigital {
         return readWhitelistFromFile(context).firstOrNull { it.path.equals(path, false) }?.applink ?: ""
     }
 
-    fun getRegisteredNavigationDigital(deeplink: String): String {
+    fun getRegisteredNavigationDigital(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
-        if (!uri.getQueryParameter("template").isNullOrEmpty()) return getDigitalTemplateNavigation(deeplink)
-        if (!uri.getQueryParameter("menu_id").isNullOrEmpty()) return getDigitalMenuNavigation(deeplink)
+        if (!uri.getQueryParameter("template").isNullOrEmpty()) return getDigitalTemplateNavigation(context, deeplink)
+        if (!uri.getQueryParameter("menu_id").isNullOrEmpty()) return getDigitalMenuNavigation(context, deeplink)
         return deeplink
     }
 
-    fun getDigitalTemplateNavigation(deeplink: String): String {
+    fun getDigitalTemplateNavigation(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
         var newDeeplink = uri.getQueryParameter("template")?.let {
             when (it) {
-                "voucher" -> ApplinkConsInternalDigital.VOUCHER_GAME
+                TEMPLATE_VOUCHER -> {
+                    // TODO: Enable remote config
+//                    if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_VOUCHER_GAME_PDP))
+//                            ApplinkConsInternalDigital.VOUCHER_GAME else deeplink
+                    ApplinkConsInternalDigital.VOUCHER_GAME
+                }
                 else -> deeplink
             }
         } ?: deeplink
@@ -51,11 +62,15 @@ object DeeplinkMapperDigital {
         return newDeeplink
     }
 
-    fun getDigitalMenuNavigation(deeplink: String): String {
+    fun getDigitalMenuNavigation(context: Context, deeplink: String): String {
         val uri = Uri.parse(deeplink)
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
         var newDeeplink = uri.getQueryParameter("menu_id")?.toIntOrNull()?.let {
             when (it) {
-                in 1..2 -> ApplinkConsInternalDigital.TELCO_DIGITAL
+                in MENU_ID_TELCO -> {
+                    if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_ENABLE_DIGITAL_TELCO_PDP))
+                        ApplinkConsInternalDigital.TELCO_DIGITAL else deeplink
+                }
                 else -> deeplink
             }
         } ?: deeplink

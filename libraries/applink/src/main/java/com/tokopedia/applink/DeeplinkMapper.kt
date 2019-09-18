@@ -27,7 +27,7 @@ object DeeplinkMapper {
             return getRegisteredNavigationFromHttp(context, deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH, true)) {
             if (deeplink.startsWith(ApplinkConst.DIGITAL_PRODUCT, true)) {
-                return getRegisteredNavigationDigital(deeplink)
+                return getRegisteredNavigationDigital(context, deeplink)
             }
             return getRegisteredNavigationFromTokopedia(deeplink)
         } else if (deeplink.startsWith(DeeplinkConstant.SCHEME_SELLERAPP, true)) {
