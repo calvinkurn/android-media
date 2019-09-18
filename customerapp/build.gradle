@@ -383,6 +383,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.oms)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.libraries.imageSearch)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
