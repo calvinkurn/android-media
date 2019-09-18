@@ -190,12 +190,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
     }
 
     fun pauseVideo() {
-        mExoPlayer?.let {
-            val isVideoPlay = it.playWhenReady
-            if (!isVideoPlay) {
-                mExoPlayer?.playWhenReady = false
-            }
-        }
+        mExoPlayer?.playWhenReady = false
     }
 
     override fun onStop() {
