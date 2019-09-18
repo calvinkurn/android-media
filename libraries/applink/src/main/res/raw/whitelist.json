@@ -1,5 +1,5 @@
 {
-  "version": "1.27",
+  "version": "1.28",
   "data": [{
     "path": "pulsa",
     "applink": "tokopedia://digital/form?category_id=1&menu_id=2"
@@ -226,10 +226,6 @@
     },
     {
       "path": "kredit-mobil",
-      "applink": "tokopedia://digital/form?category_id=7"
-    },
-    {
-      "path": "kredit-motor",
       "applink": "tokopedia://digital/form?category_id=7"
     },
     {
