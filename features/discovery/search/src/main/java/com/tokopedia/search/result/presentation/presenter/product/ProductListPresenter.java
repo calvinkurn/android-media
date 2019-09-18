@@ -545,8 +545,10 @@ final class ProductListPresenter
         sendTrackingNoSearchResult(productViewModel);
 
         if (productViewModel.getProductList().isEmpty()) {
+            getViewToShowErrorMessage(true, productViewModel.getErrorMessage());
             getViewToShowEmptySearch(productViewModel);
         } else {
+            getViewToShowErrorMessage(false, productViewModel.getErrorMessage());
             getViewToShowProductList(productViewModel);
         }
 
@@ -582,6 +584,12 @@ final class ProductListPresenter
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
         return productViewModel;
+    }
+
+    private void getViewToShowErrorMessage(boolean isFullScreenMessage, String errorMessage) {
+        if (errorMessage != null && errorMessage.length() > 0) {
+            getView().showErrorMessage(isFullScreenMessage, errorMessage);
+        }
     }
 
     private void getViewToShowEmptySearch(ProductViewModel productViewModel) {

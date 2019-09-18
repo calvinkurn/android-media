@@ -1076,4 +1076,23 @@ public class ProductListFragment
             getActivity().finish();
         }
     }
+
+    @Override
+    public void showErrorMessage(boolean isFullScreenMessage, String errorMessage) {
+        if (isFullScreenMessage) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView());
+        }
+        else {
+            NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        }
+
+        if (adapter.isListEmpty()) {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), this::reloadData);
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> {
+                adapter.setStartFrom(startRow);
+                loadMoreProduct(startRow);
+            }).showRetrySnackbar();
+        }
+    }
 }
