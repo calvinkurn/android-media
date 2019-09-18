@@ -1695,7 +1695,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onRemovePromoCode(String promoCode) {
         ArrayList<String> promoCodes = new ArrayList<>();
         promoCodes.add(promoCode);
-        shipmentPresenter.cancelAutoApplyPromoStack(INDEX_PROMO_GLOBAL, promoCodes, false);
+        shipmentPresenter.cancelAutoApplyPromoStack(INDEX_PROMO_GLOBAL, promoCodes, false, "global");
     }
 
     @Override
@@ -1744,7 +1744,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
         ArrayList<String> promoCodes = new ArrayList<>();
         promoCodes.add(cartPromoGlobal.getPromoCode());
-        shipmentPresenter.cancelAutoApplyPromoStack(-1, promoCodes, false);
+        shipmentPresenter.cancelAutoApplyPromoStack(INDEX_PROMO_GLOBAL, promoCodes, false, "global");
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
         }
@@ -1755,7 +1755,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkoutAnalyticsCourierSelection.eventClickHapusPromoXOnTicker(promoMerchantCode);
         ArrayList<String> promoMerchantCodes = new ArrayList<>();
         promoMerchantCodes.add(promoMerchantCode);
-        shipmentPresenter.cancelAutoApplyPromoStack(position, promoMerchantCodes, ignoreAPIResponse);
+        shipmentPresenter.cancelAutoApplyPromoStack(position, promoMerchantCodes, ignoreAPIResponse, "merchant");
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
         }
@@ -1765,7 +1765,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCancelVoucherLogisticClicked(String pslCode, int position) {
         ArrayList<String> codes = new ArrayList<>();
         codes.add(pslCode);
-        shipmentPresenter.cancelAutoApplyPromoStack(position, codes, false);
+        shipmentPresenter.cancelAutoApplyPromoStack(position, codes, false, "logistic");
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
         }
@@ -2533,7 +2533,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onSuccessClearPromoStack(int shopIndex) {
+    public void onSuccessClearPromoStack(int shopIndex, String voucherType) {
         setBenefitSummaryInfoUiModel(null);
 
         if (shopIndex == INDEX_PROMO_GLOBAL) {
@@ -2549,8 +2549,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else {
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(shopIndex);
             if (shipmentCartItemModel != null) {
-                if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
+                if (voucherType.equals("merchant") && shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
                     shipmentCartItemModel.setVoucherOrdersItemUiModel(null);
+                    shipmentAdapter.notifyItemChanged(shopIndex);
+                } else if(voucherType.equals("logistic") && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null){
+                    shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
                     shipmentAdapter.notifyItemChanged(shopIndex);
                 }
             }
