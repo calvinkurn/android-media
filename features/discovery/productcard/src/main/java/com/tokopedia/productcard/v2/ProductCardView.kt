@@ -24,7 +24,6 @@ import com.tokopedia.productcard.R
 import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.product_card_layout.view.*
 
 /**
  * This abstract class provides a basis for Custom View Product Card.
@@ -282,7 +281,7 @@ abstract class ProductCardView: BaseCustomView {
     private fun getImageTopAdsTopConstraintView(): View? {
         return when {
             labelOffers.isNotNullAndVisible -> {
-                textViewShopLocation
+                labelOffers
             }
             labelCredibility.isNotNullAndVisible -> {
                 labelCredibility
