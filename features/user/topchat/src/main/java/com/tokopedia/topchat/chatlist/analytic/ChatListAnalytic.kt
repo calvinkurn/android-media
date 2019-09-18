@@ -39,7 +39,7 @@ class ChatListAnalytic @Inject constructor(){
 //    #CL2
     fun eventClickFilterChat() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                "",
+                Event.CLICK_INBOX_CHAT,
                 Category.CATEGORY_CHAT_DETAIL,
                 Action.ACTION_CLICK_ON_FILTER,
                 ""
@@ -58,7 +58,7 @@ class ChatListAnalytic @Inject constructor(){
 //    #CL5
     fun eventClickTabChat(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                "",
+                Event.CLICK_INBOX_CHAT,
                 Category.CATEGORY_CHAT_DETAIL,
                 Action.ACTION_CLICK_TAB_CHAT_ON_INBOX_CHAT,
                 label
