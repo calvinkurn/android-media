@@ -26,6 +26,7 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -206,7 +207,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun showError(t: Throwable) {
         toggleEnquiryLoadingBar(false)
         isEnquired = false
-        NetworkErrorHelper.createSnackbarRedWithAction(activity, t.message) { enquireFields() }.showRetrySnackbar()
+        NetworkErrorHelper.createSnackbarRedWithAction(
+                activity, ErrorHandler.getErrorMessage(context, t)) { enquireFields() }.showRetrySnackbar()
     }
 
     private fun setupEnquiryFields(data: VoucherGameDetailData) {
