@@ -1,14 +1,11 @@
 package com.tokopedia.productcard.v2
 
 import android.content.Context
-import android.support.constraint.ConstraintSet
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.productcard.R
-import com.tokopedia.productcard.utils.doIfVisible
-import com.tokopedia.productcard.utils.isVisible
 import com.tokopedia.unifyprinciples.Typography
 
 /**
