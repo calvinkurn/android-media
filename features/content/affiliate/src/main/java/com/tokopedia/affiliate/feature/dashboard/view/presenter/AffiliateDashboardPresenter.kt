@@ -45,7 +45,6 @@ class AffiliateDashboardPresenter
     }
 
     override fun loadHolidayList() {
-        view.showLoading()
         launch {
             val result = travelCalendarHolidayUseCase.execute()
             withContext(Dispatchers.Main) {
@@ -53,7 +52,6 @@ class AffiliateDashboardPresenter
                     is Success -> view.onGetHolidayList(mappingHolidayData(result.data))
                     is Fail -> view.onErrorGetHoliday(result.throwable)
                 }
-                view.hideLoading()
             }
         }
     }

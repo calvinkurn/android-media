@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.TabLayout
 import android.support.v4.view.ViewPager
 import android.support.v4.widget.SwipeRefreshLayout
@@ -35,7 +36,6 @@ import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
-import com.tokopedia.design.widget.ObservableNestedScrollView
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.kotlin.extensions.view.*
@@ -69,7 +69,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var llDashboard: LinearLayout
+    private lateinit var clDashboard: CoordinatorLayout
     private lateinit var tvTotalSaldo: TextView
     private lateinit var tvAffiliateIncome: TextView
     private lateinit var tvTotalViewed: TextView
@@ -173,7 +173,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     private fun initView(view: View) {
         view.run {
-            llDashboard = findViewById(R.id.ll_dashboard)
+            clDashboard = findViewById(R.id.cl_dashboard)
             tvTotalSaldo = findViewById(R.id.tv_total_saldo)
             tvAffiliateIncome = findViewById(R.id.tv_affiliate_income)
             tvTotalViewed = findViewById(R.id.tv_total_viewed)
@@ -245,7 +245,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     override fun onErrorCheckAffiliate(error: String) {
         NetworkErrorHelper.showEmptyState(activity,
-                llDashboard,
+                clDashboard,
                 error
         ) { presenter.checkAffiliate() }
     }
@@ -397,7 +397,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     override fun onErrorGetDashboardItem(error: String) {
         NetworkErrorHelper.showEmptyState(activity,
-                llDashboard,
+                clDashboard,
                 error
         ) { presenter.loadDashboardDetail(startDate, endDate) }
     }
@@ -407,14 +407,6 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
-    }
-
-    override fun showLoading() {
-        llDashboard.showLoadingTransparent()
-    }
-
-    override fun hideLoading() {
-        llDashboard.hideLoadingTransparent()
     }
 
     private fun showEmptyState() {
