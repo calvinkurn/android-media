@@ -164,7 +164,10 @@
     <include
         android:id="@+id/loading_product_suggestion"
         layout="@layout/partial_shimmering_grid_list_horizontal"
-        android:visibility="gone" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_16"
+        android:visibility="visible" />
 
     <LinearLayout android:id="@+id/action_bottom"
         android:layout_width="match_parent"
