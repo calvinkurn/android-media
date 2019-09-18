@@ -1,0 +1,21 @@
+query onboardingInterests($source: String) {
+  feedUserOnboardingInterests(source: $source) {
+    meta {
+      assets {
+        titleIntro
+        titleFull
+        instruction
+        buttonCta
+      }
+      isEnabled
+      minPicked
+      source
+    }
+    data {
+      id
+      name
+      image
+      isSelected
+    }
+  }
+}

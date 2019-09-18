@@ -19,7 +19,7 @@ import retrofit2.Retrofit;
  */
 
 @FeedPlusScope
-@Component(modules = {FeedPlusModule.class, FeedComponentModule.class}, dependencies = KolComponent.class)
+@Component(modules = {FeedPlusModule.class, FeedComponentModule.class, GqlRawQueryModule.class, ViewModelModule.class}, dependencies = KolComponent.class)
 public interface FeedPlusComponent {
 
     @ApplicationContext

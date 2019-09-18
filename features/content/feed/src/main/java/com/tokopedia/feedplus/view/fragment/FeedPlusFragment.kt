@@ -2,6 +2,9 @@ package com.tokopedia.feedplus.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -23,6 +26,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -104,16 +108,21 @@ import java.util.ArrayList
 import javax.inject.Inject
 
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 
 /**
  * @author by nisie on 5/15/17.
@@ -154,6 +163,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
 
     @Inject
     @get:RestrictTo(RestrictTo.Scope.TESTS)
@@ -200,17 +213,31 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (activity != null) GraphqlClient.init(activity!!)
         performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
         super.onCreate(savedInstanceState)
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            feedOnboardingPresenter = viewModelProvider.get(FeedOnboardingViewModel::class.java)
+        }
         initVar()
         retainInstance = true
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        feedOnboardingPresenter.onboardingResp.observe(this, Observer {
+            hideAdapterLoading()
+            when (it) {
+                is Success -> onSuccessGetOnboardingData(it.data)
+                is Fail -> onErrorGetFeedFirstPage(ErrorHandler.getErrorMessage(activity, it.throwable))
+            }
+        })
+    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
     }
 
     private fun initVar() {
-        val typeFactory = FeedPlusTypeFactoryImpl(this, analytics, userSession)
+        val typeFactory = FeedPlusTypeFactoryImpl(this, userSession)
         adapter = FeedPlusAdapter(typeFactory)
         adapter.setOnLoadListener { totalCount ->
             val size = adapter.getlist().size
@@ -330,7 +357,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onRefresh() {
         newFeed.visibility = View.GONE
-        presenter.refreshPage()
+        feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
     }
 
     override fun onDestroyView() {
@@ -590,6 +617,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
+    private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
+        if (!data.isEnableOnboarding) {
+            presenter.fetchFirstPage()
+        } else {
+            adapter.addItem(data)
+        }
+    }
+
     fun scrollToTop() {
         if (recyclerView != null) {
             recyclerView.scrollToPosition(0)
@@ -640,7 +675,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun loadData(isVisibleToUser: Boolean) {
         if (isVisibleToUser && isAdded && activity != null && presenter != null) {
             if (!isLoadedOnce) {
-                presenter.fetchFirstPage()
+                feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, false)
                 isLoadedOnce = !isLoadedOnce
             }
 
