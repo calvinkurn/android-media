@@ -4,19 +4,19 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.common.category.data.repository.CategoryRepositoryImpl;
 import com.tokopedia.core.common.category.data.source.CategoryDataSource;
 import com.tokopedia.core.common.category.data.source.CategoryVersionDataSource;
 import com.tokopedia.core.common.category.data.source.FetchCategoryDataSource;
 import com.tokopedia.core.common.category.data.source.cloud.api.HadesCategoryApi;
+import com.tokopedia.core.common.category.data.source.db.CategoryDB;
+import com.tokopedia.core.common.category.data.source.db.CategoryDao;
 import com.tokopedia.core.common.category.domain.CategoryRepository;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.product.manage.item.R;
 import com.tokopedia.product.manage.item.catalog.data.repository.CatalogRepositoryImpl;
 import com.tokopedia.product.manage.item.catalog.data.source.CatalogDataSource;
 import com.tokopedia.product.manage.item.catalog.domain.CatalogRepository;
@@ -36,12 +36,11 @@ import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantR
 import com.tokopedia.product.manage.item.variant.data.repository.ProductVariantRepositoryImpl;
 import com.tokopedia.product.manage.item.variant.data.source.ProductVariantDataSource;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB;
+import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao;
 import com.tokopedia.shop.common.di.ShopCommonModule;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
-
-import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -93,6 +92,12 @@ public class ProductAddModule {
 
     @ProductAddScope
     @Provides
+    CategoryDao provideCategoryDao(@ApplicationContext Context context){
+        return CategoryDB.getInstance(context).getCategoryDao();
+    }
+
+    @ProductAddScope
+    @Provides
     CategoryRepository provideCategoryRepository(CategoryVersionDataSource categoryVersionDataSource,
                                                  CategoryDataSource categoryDataSource,
                                                  FetchCategoryDataSource fetchCategoryDataSource){
@@ -109,6 +114,18 @@ public class ProductAddModule {
     @Provides
     ProductDraftRepository provideProductDraftRepository(ProductDraftDataSource productDraftDataSource, @ApplicationContext Context context){
         return new ProductDraftRepositoryImpl(productDraftDataSource, context);
+    }
+
+    @ProductAddScope
+    @Provides
+    ProductDraftDB provideProductDraftDb(@ApplicationContext Context context){
+        return ProductDraftDB.getInstance(context);
+    }
+
+    @ProductAddScope
+    @Provides
+    ProductDraftDao provideProductDraftDao(ProductDraftDB productDraftDB){
+        return productDraftDB.getProductDraftDao();
     }
 
 

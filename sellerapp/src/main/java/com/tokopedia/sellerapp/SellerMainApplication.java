@@ -17,7 +17,6 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
@@ -27,7 +26,6 @@ import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
-import com.tokopedia.core.common.category.CategoryDbFlow;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.GlobalConfig;
@@ -129,6 +127,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+        TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
 
         TrackApp.initTrackApp(this);
@@ -140,11 +139,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         PersistentCacheManager.init(this);
 
-        PersistentCacheManager.init(this);
-
         super.onCreate();
-
-        TokopediaUrl.Companion.init(this);
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
@@ -183,18 +178,14 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (IllegalStateException e) {
             FlowManager.init(new FlowConfig.Builder(getApplicationContext()).build());
         }
-        FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(ProductDraftGeneratedDatabaseHolder.class)
-                .build());
-        CategoryDbFlow.initDatabase(getApplicationContext());
     }
 
     private void initCacheApi() {
         CacheApiLoggingUtils.setLogEnabled(GlobalConfig.isAllowDebuggingTools());
         new CacheApiWhiteListUseCase(this).executeSync(
                 CacheApiWhiteListUseCase.createParams(
-                CacheApiWhiteList.getWhiteList(),
-                String.valueOf(getCurrentVersion(getApplicationContext())))
+                        CacheApiWhiteList.getWhiteList(),
+                        String.valueOf(getCurrentVersion(getApplicationContext())))
         );
     }
 

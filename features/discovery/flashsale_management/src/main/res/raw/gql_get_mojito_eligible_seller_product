@@ -40,6 +40,7 @@ query getCampaignEligibleSellerProduct($camp_id: Int!,
                     exclude_wholesale
                     min_order_min
                     min_order_max
+                    max_custom_stock
                   }
                   stock
                   product_status

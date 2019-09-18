@@ -19,4 +19,7 @@ public class ShopCommonParamApiConstant {
     public static final String VALUE_TRUE_FAVOURITE = "1";
 
     public static final String QUERY_SHOP_SCORE = "gql_query_shop_score";
+    public static final String GQL_PRODUCT_LIST = "gql_product_list";
+    public static final String GQL_UPDATE_PRODUCT = "gql_update_product";
+
 }
