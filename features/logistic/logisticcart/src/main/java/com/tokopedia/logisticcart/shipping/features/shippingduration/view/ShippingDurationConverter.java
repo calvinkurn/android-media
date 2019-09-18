@@ -42,7 +42,8 @@ public class ShippingDurationConverter {
                                                               List<ShopShipment> shopShipmentList,
                                                               int selectedSpId,
                                                               String ratesId,
-                                                              int selectedServiceId, String blackboxInfo) {
+                                                              int selectedServiceId, String blackboxInfo,
+                                                              boolean isPromoStackingApplied) {
         List<ShippingDurationViewModel> shippingDurationViewModels = new ArrayList<>();
         for (ServiceData serviceData : serviceDataList) {
             ShippingDurationViewModel shippingDurationViewModel = new ShippingDurationViewModel();

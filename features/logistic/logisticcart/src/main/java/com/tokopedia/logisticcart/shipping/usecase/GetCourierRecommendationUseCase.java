@@ -89,7 +89,8 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 shippingRecommendationData.setShippingDurationViewModels(
                                         shippingDurationConverter.convertToViewModel(
                                                 data.getRatesData().getRatesDetailData().getServices(),
-                                                shopShipments, selectedSpId, ratesId, selectedServiceId, blackboxInfo));
+                                                shopShipments, selectedSpId, ratesId, selectedServiceId,
+                                                blackboxInfo, isPromoStackingApplied(data)));
                                 shippingRecommendationData.setLogisticPromo(
                                         shippingDurationConverter.convertToPromoModel(
                                                 data.getRatesData().getRatesDetailData().getPromoStacking()));
@@ -99,6 +100,10 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                     }
                 })
                 .subscribe(subscriber);
+    }
+
+    private boolean isPromoStackingApplied(GetRatesCourierRecommendationData data) {
+        return data.getRatesData().getRatesDetailData().getPromoStacking().getIsApplied() == 1;
     }
 
     private String getQueryWithParams(String query, int codHistory, boolean isCorner,
