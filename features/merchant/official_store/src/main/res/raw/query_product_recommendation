@@ -1,0 +1,68 @@
+query productRecommendationWidget($userID: Int, $pageName: String, $pageNumber: Int, $xDevice: String, $xSource: String, $categoryIDs: String) {
+      productRecommendationWidget(userID: $userID, pageName: $pageName, pageNumber: $pageNumber, xDevice: $xDevice, xSource: $xSource, categoryIDs: $categoryIDs, os: true) {
+        meta {
+          recommendation
+          size
+          failSize
+          processTime
+          experimentVersion
+        }
+        data {
+          tID
+          source
+          title
+          foreignTitle
+          widgetUrl
+          recommendation {
+            id
+            name
+            categoryBreadcrumbs
+            url
+            appUrl
+            clickUrl
+            wishlistUrl
+            trackerImageUrl
+            imageUrl
+            price
+            priceInt
+            slashedPriceInt
+            slashedPrice
+            discountPercentage
+            shop {
+              id
+              name
+              shopImage
+              appUrl
+            }
+            departmentId
+            labels {
+              title
+              color
+            }
+            badges {
+              title
+              imageUrl
+            }
+            wholesalePrice {
+              price
+              quantityMax
+              quantityMin
+              priceString
+            }
+            rating
+            countReview
+            recommendationType
+            stock
+            isTopads
+          }
+        }
+      }
+    }`,
+    variables: {
+      userID,
+      pageName,
+      pageNumber,
+      xDevice,
+      xSource,
+      categoryIDs,
+    },
