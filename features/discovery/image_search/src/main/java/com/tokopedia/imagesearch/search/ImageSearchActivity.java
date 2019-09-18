@@ -171,7 +171,6 @@ public class ImageSearchActivity extends BaseActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            KeyboardHandler.DropKeyboard(this, findViewById(android.R.id.content));
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.image_search_action_search) {
