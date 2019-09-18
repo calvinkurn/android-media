@@ -20,7 +20,6 @@ class GetAffiliateDashboardSubscriber(
 ) : Subscriber<GraphqlResponse>() {
 
     override fun onNext(response: GraphqlResponse) {
-        mainView.hideLoading()
         val query = response.getData<DashboardQuery>(DashboardQuery::class.java)
         mainView.onSuccessGetDashboardItem(
                 mappingHeader(query.affiliateStats, query.balance),
@@ -29,11 +28,10 @@ class GetAffiliateDashboardSubscriber(
     }
 
     override fun onCompleted() {
-
+        mainView.hideLoading()
     }
 
     override fun onError(e: Throwable?) {
-        mainView.hideLoading()
         mainView.onErrorGetDashboardItem(ErrorHandler.getErrorMessage(mainView.ctx, e))
     }
 

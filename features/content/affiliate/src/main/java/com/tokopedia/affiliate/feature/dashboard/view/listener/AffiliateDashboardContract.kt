@@ -17,6 +17,10 @@ interface AffiliateDashboardContract {
 
         val ctx: Context?
 
+        fun showLoading()
+
+        fun hideLoading()
+
         fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel, byMeHeader: ShareableByMeProfileViewModel)
 
         fun onErrorCheckAffiliate(error: String)

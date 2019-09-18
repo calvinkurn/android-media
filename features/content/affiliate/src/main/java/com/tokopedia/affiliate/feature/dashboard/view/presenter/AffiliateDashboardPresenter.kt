@@ -37,6 +37,7 @@ class AffiliateDashboardPresenter
     }
 
     override fun loadDashboardDetail(startDate: Date?, endDate: Date?) {
+        view.showLoading()
         getAffiliateDashboardUseCase.run {
             clearRequest()
             addRequest(getRequest(startDate, endDate))

@@ -226,6 +226,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel, byMeHeader: ShareableByMeProfileViewModel) {
+        srlRefresh.visible()
+
         tvTotalSaldo.text = MethodChecker.fromHtml(header.totalSaldoAktif)
         tvAffiliateIncome.text = MethodChecker.fromHtml(header.saldoString)
         tvTotalViewed.text = MethodChecker.fromHtml(header.seenCount)
@@ -244,8 +246,9 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     override fun onErrorCheckAffiliate(error: String) {
+        srlRefresh.gone()
         NetworkErrorHelper.showEmptyState(activity,
-                clDashboard,
+                view,
                 error
         ) { presenter.checkAffiliate() }
     }
@@ -270,6 +273,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     private fun onRefresh() {
+        srlRefresh.gone()
         presenter.checkAffiliate()
         onDateChanged()
     }
@@ -396,10 +400,19 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     override fun onErrorGetDashboardItem(error: String) {
+        srlRefresh.gone()
         NetworkErrorHelper.showEmptyState(activity,
-                clDashboard,
+                view,
                 error
         ) { presenter.loadDashboardDetail(startDate, endDate) }
+    }
+
+    override fun showLoading() {
+        view?.showLoading()
+    }
+
+    override fun hideLoading() {
+        view?.hideLoading()
     }
 
     private fun closePage() = activity?.finish()

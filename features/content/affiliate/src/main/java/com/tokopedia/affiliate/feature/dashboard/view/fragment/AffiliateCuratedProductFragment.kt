@@ -105,8 +105,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         initView(view)
+        super.onViewCreated(view, savedInstanceState)
         setupView(view)
     }
 
@@ -119,7 +119,15 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     private fun setupView(view: View) {
-        if (type == null) cvSort.visible() else cvSort.gone()
+        if (type == null) {
+            cvSort.visible()
+            getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    if (dy > 0) cvSort.gone()
+                    else cvSort.visible()
+                }
+            })
+        } else cvSort.gone()
         cvSort.setOnClickListener { showSortBottomSheet() }
 
         esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
@@ -187,10 +195,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     override fun showEmpty() {
-        view?.let {
-            svEmptyState.visible()
-            getRecyclerView(view).gone()
-        }
+        svEmptyState.visible()
+        getRecyclerView(view).gone()
     }
 
     fun setListener(listener: CuratedProductListener) {
@@ -242,6 +248,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     private fun resetState() {
         cursor = ""
         adapter.clearAllElements()
+        svEmptyState.gone()
+        getRecyclerView(view).visible()
     }
 
     private fun shouldShareProfile() {
