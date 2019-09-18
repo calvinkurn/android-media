@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CuratedProductSortViewModel
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel
+import java.util.*
 
 /**
  * Created by jegul on 2019-09-04.
@@ -30,10 +31,10 @@ interface AffiliateCuratedProductContract {
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun loadProductBoughtByType(type: Int?, cursor: String, sort: Int)
+        fun loadCuratedProductByType(type: Int?, cursor: String, sort: Int?, startDate: Date? = null, endDate: Date? = null)
 
         fun loadSortOptions()
 
-        fun reloadSortOptions(sortList: List<CuratedProductSortViewModel>, selectedId: Int)
+        fun reloadSortOptions(sortList: List<CuratedProductSortViewModel>, selectedId: Int?)
     }
 }

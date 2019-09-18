@@ -13,7 +13,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CuratedProductSo
 class CuratedProductSortTypeFactoryImpl(private val listener: OnClickListener) : BaseAdapterTypeFactory(), CuratedProductSortTypeFactory {
 
     interface OnClickListener {
-        fun onSortClicked(sortId: Int)
+        fun onSortClicked(sortId: Int?)
     }
 
     override fun type(curatedProductSortViewModel: CuratedProductSortViewModel): Int {

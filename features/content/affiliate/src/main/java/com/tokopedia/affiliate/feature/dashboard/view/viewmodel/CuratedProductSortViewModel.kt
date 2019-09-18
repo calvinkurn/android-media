@@ -9,7 +9,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.CuratedPro
 data class CuratedProductSortViewModel(
         val id: Int,
         val text: String,
-        var isChecked: Boolean
+        val isChecked: Boolean
 ) : Visitable<CuratedProductSortTypeFactory> {
 
     override fun type(typeFactory: CuratedProductSortTypeFactory): Int {

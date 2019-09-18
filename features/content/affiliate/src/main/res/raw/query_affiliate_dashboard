@@ -1,5 +1,5 @@
-query GetDashboard($userID:Int!) {
-  affiliateStats{
+query GetDashboard($userID:Int!, $startDate: String, $endDate: String) {
+  affiliateStats(startDate: $startDate, endDate: $endDate){
     totalCommission
     productClick
     profileView

@@ -1,5 +1,5 @@
-query GetCuratedProductList($type: Int, $cursor: String, $sort: Int) {
-  affiliatedProduct(type: $type, cursor:$cursor, sortBy: $sort) {
+query GetCuratedProductList($type: Int, $cursor: String, $sort: Int, $startDate: String, $endDate: String) {
+  affiliatedProduct(type: $type, cursor:$cursor, sortBy: $sort, startDate: $startDate, endDate: $endDate) {
     products {
       id
       image

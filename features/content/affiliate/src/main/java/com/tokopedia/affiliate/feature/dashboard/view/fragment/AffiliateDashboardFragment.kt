@@ -378,8 +378,14 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     private fun onDateChanged() {
         presenter.loadDashboardDetail(startDate, endDate)
-        directFragmentCurated.loadData(1)
-        indirectFragmentCurated.loadData(1)
+        directFragmentCurated.apply {
+            startDate = this@AffiliateDashboardFragment.startDate
+            endDate = this@AffiliateDashboardFragment.endDate
+        }.run { loadData(1) }
+        indirectFragmentCurated.apply {
+            startDate = this@AffiliateDashboardFragment.startDate
+            endDate = this@AffiliateDashboardFragment.endDate
+        }.run { loadData(1) }
     }
 
     override fun onErrorGetDashboardItem(error: String) {

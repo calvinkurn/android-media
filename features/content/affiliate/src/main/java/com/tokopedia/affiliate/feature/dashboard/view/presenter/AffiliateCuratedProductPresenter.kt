@@ -9,6 +9,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetCuratedProdu
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CuratedProductSortViewModel
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import rx.Subscriber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -20,11 +21,11 @@ class AffiliateCuratedProductPresenter
         private val getCuratedProductSortUseCase: GetCuratedProductSortUseCase
 ) : BaseDaggerPresenter<AffiliateCuratedProductContract.View>(), AffiliateCuratedProductContract.Presenter {
 
-    override fun loadProductBoughtByType(type: Int?, cursor: String, sort: Int) {
+    override fun loadCuratedProductByType(type: Int?, cursor: String, sort: Int?, startDate: Date?, endDate: Date?) {
         if (cursor.isEmpty()) view.showLoading()
         getCuratedProductListUseCase.run {
             clearRequest()
-            addRequest(getRequest(type, cursor, sort))
+            addRequest(getRequest(type, cursor, sort, startDate, endDate))
             execute(GetCuratedProductListSubscriber(type, view))
         }
     }
@@ -50,7 +51,7 @@ class AffiliateCuratedProductPresenter
         }
     }
 
-    override fun reloadSortOptions(sortList: List<CuratedProductSortViewModel>, selectedId: Int) {
+    override fun reloadSortOptions(sortList: List<CuratedProductSortViewModel>, selectedId: Int?) {
         view.onGetSortOptions(getSortList(sortList, selectedId))
     }
 
@@ -65,12 +66,12 @@ class AffiliateCuratedProductPresenter
             CuratedProductSortViewModel(
                     option.sortVal,
                     option.text,
-                    option.sortVal == 1
+                    false
             )
         }
     }
 
-    private fun getSortList(existingSortList: List<CuratedProductSortViewModel>, selectedId: Int): List<CuratedProductSortViewModel> {
+    private fun getSortList(existingSortList: List<CuratedProductSortViewModel>, selectedId: Int?): List<CuratedProductSortViewModel> {
         return existingSortList.map {
             it.copy(isChecked = it.id == selectedId)
         }

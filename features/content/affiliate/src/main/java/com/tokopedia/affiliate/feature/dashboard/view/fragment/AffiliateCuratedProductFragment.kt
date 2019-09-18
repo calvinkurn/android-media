@@ -30,6 +30,7 @@ import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.EmptyState
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -58,9 +59,12 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     private var cursor: String = ""
 
+    var startDate: Date? = null
+    var endDate: Date? = null
+
     private val type: Int? by lazy { if (arguments?.containsKey(EXTRA_TYPE) == true) arguments?.getInt(EXTRA_TYPE) else null }
 
-    private var currentSort: Int = 1
+    private var currentSort: Int? = null
 
     private lateinit var cvSort: CardView
 
@@ -117,7 +121,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     }
 
-    override fun getScreenName(): String = "Product Bought"
+    override fun getScreenName(): String = "Curated Product List"
 
     override fun initInjector() {
         val affiliateComponent = DaggerAffiliateComponent.builder()
@@ -130,7 +134,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     override fun loadData(page: Int) {
         if (page == 1) resetState()
-        presenter.loadProductBoughtByType(type, cursor, currentSort)
+        presenter.loadCuratedProductByType(type, cursor, currentSort, startDate, endDate)
     }
 
     override fun onErrorGetDashboardItem(error: String) {
@@ -170,7 +174,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         sortAdapter.setElements(sortList)
     }
 
-    override fun onSortClicked(sortId: Int) {
+    override fun onSortClicked(sortId: Int?) {
         presenter.reloadSortOptions(sortAdapter.list as List<CuratedProductSortViewModel>, sortId)
     }
 
