@@ -16,7 +16,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
+import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.data.CategorySectionItem
+import com.tokopedia.discovery.categoryrevamp.data.bannedCategory.Data
+import com.tokopedia.discovery.categoryrevamp.domain.usecase.SubCategoryV3UseCase
 import com.tokopedia.discovery.categoryrevamp.view.fragments.BaseCategorySectionFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
@@ -28,7 +31,11 @@ import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
 import com.tokopedia.filter.widget.BottomSheetFilterView
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.usecase.RequestParams
 import kotlinx.android.synthetic.main.activity_category_nav.*
+import kotlinx.android.synthetic.main.layout_nav_banned_layout.*
+import rx.Subscriber
+import javax.inject.Inject
 
 
 class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSheetListener {
@@ -86,6 +93,9 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     private var departmentId: String = ""
     private var departmentName: String = ""
+
+    @Inject
+    private lateinit var subCategoryV3UseCase: SubCategoryV3UseCase
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -179,13 +189,42 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     private fun prepareView() {
         fetchBundle()
         initToolbar()
-        initViewPager()
-        loadSection()
-        initSwitchButton()
-        initBottomSheetListener()
-
+        checkIfBanned()
         bottomSheetFilterView?.initFilterBottomSheet(FilterEventTracking.Category.PREFIX_CATEGORY_PAGE)
 
+    }
+
+    private fun checkIfBanned() {
+        subCategoryV3UseCase.execute(getSubCategoryParam(), object : Subscriber<Data?>() {
+            override fun onNext(t: Data?) {
+
+                if (t?.isBanned == 1) {
+                    layout_banned_screen.visibility = View.VISIBLE
+                    txt_header.text = t.bannedMessage
+                } else {
+                    layout_banned_screen.visibility = View.GONE
+                    initViewPager()
+                    loadSection()
+                    initSwitchButton()
+                    initBottomSheetListener()
+                }
+            }
+
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable?) {
+            }
+
+        })
+    }
+
+    private fun getSubCategoryParam(): RequestParams {
+        val subCategoryMap = RequestParams()
+        subCategoryMap.putString(CategoryNavConstants.IDENTIFIER, departmentId)
+        subCategoryMap.putBoolean(CategoryNavConstants.INTERMEDIARY, false)
+        subCategoryMap.putBoolean(CategoryNavConstants.SAFESEARCH, false)
+        return subCategoryMap
     }
 
     private fun initBottomSheetListener() {
