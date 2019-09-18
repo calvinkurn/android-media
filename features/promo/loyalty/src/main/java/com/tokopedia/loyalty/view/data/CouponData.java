@@ -172,7 +172,7 @@ public class CouponData implements Parcelable {
 
 
     public static final class Builder {
-        private Long id;
+        private long id;
         private int promoId;
         private String code;
         private String expired;
@@ -187,7 +187,7 @@ public class CouponData implements Parcelable {
         public Builder() {
         }
 
-        public Builder id(Long val) {
+        public Builder id(long val) {
             id = val;
             return this;
         }
