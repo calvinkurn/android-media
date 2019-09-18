@@ -771,7 +771,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tvLogPromoMsg.setHtmlDescription(shipmentDetailData.getSelectedCourier().getLogPromoMsg());
 
             if (shipmentDetailData.getSelectedCourier().getOntimeDelivery() != null &&
-                    shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()) {
+                    shipmentDetailData.getSelectedCourier().getOntimeDelivery().getAvailable()
+                    && shipmentCartItemModel.getVoucherLogisticItemUiModel() == null) {
                 OntimeDelivery otd = shipmentDetailData.getSelectedCourier().getOntimeDelivery();
                 String html = otd.getText_detail();
                 String url = otd.getUrl_detail();
