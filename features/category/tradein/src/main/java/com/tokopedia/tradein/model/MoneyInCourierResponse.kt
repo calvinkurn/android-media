@@ -1,9 +1,9 @@
 package com.tokopedia.tradein.model
 
 
+import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
 
 data class MoneyInCourierResponse(
     @SerializedName("data")
@@ -85,7 +85,6 @@ data class MoneyInCourierResponse(
                             @SerializedName("money_in")
                             val moneyIn: MoneyIn 
                         ) {
-                            @Parcelize
                             data class MoneyIn(
                                 @SerializedName("shipper_name")
                                 val shipperName: String,
@@ -93,7 +92,32 @@ data class MoneyInCourierResponse(
                                 val textPrice: String,
                                 @SerializedName("value_price")
                                 val valuePrice: Int 
-                            ) : Parcelable
+                            ) : Parcelable {
+                                constructor(parcel: Parcel) : this(
+                                        parcel.readString()?:"",
+                                        parcel.readString()?:"",
+                                        parcel.readInt())
+
+                                override fun writeToParcel(parcel: Parcel, flags: Int) {
+                                    parcel.writeString(shipperName)
+                                    parcel.writeString(textPrice)
+                                    parcel.writeInt(valuePrice)
+                                }
+
+                                override fun describeContents(): Int {
+                                    return 0
+                                }
+
+                                companion object CREATOR : Parcelable.Creator<MoneyIn> {
+                                    override fun createFromParcel(parcel: Parcel): MoneyIn {
+                                        return MoneyIn(parcel)
+                                    }
+
+                                    override fun newArray(size: Int): Array<MoneyIn?> {
+                                        return arrayOfNulls(size)
+                                    }
+                                }
+                            }
                         }
 
                         data class Error(

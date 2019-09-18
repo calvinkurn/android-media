@@ -1,10 +1,10 @@
 package com.tokopedia.tradein.model
 
 
+import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.logisticaddaddress.domain.model.Token
-import kotlinx.android.parcel.Parcelize
 
 data class MoneyInKeroGetAddressResponse(
         @SerializedName("data")
@@ -26,7 +26,6 @@ data class MoneyInKeroGetAddressResponse(
                 @SerializedName("token")
                 val token: Token
         ) {
-            @Parcelize
             data class Data(
                     @SerializedName("addr_id")
                     val addrId: Int,
@@ -68,7 +67,66 @@ data class MoneyInKeroGetAddressResponse(
                     val receiverName: String,
                     @SerializedName("status")
                     val status: Int
-            ) : Parcelable
+            ) : Parcelable {
+                constructor(parcel: Parcel) : this(
+                        parcel.readInt(),
+                        parcel.readString()?:"",
+                        parcel.readString()?:"",
+                        parcel.readString()?:"",
+                        parcel.readInt(),
+                        parcel.readString()?:"",
+                        parcel.readString()?:"",
+                        parcel.readInt(),
+                        parcel.readString(),
+                        parcel.readByte() != 0.toByte(),
+                        parcel.readByte() != 0.toByte(),
+                        parcel.readByte() != 0.toByte(),
+                        parcel.readString(),
+                        parcel.readString(),
+                        parcel.readString()?:"",
+                        parcel.readString()?:"",
+                        parcel.readInt(),
+                        parcel.readString(),
+                        parcel.readString()?:"",
+                        parcel.readInt())
+
+                override fun writeToParcel(parcel: Parcel, flags: Int) {
+                    parcel.writeInt(addrId)
+                    parcel.writeString(addrName)
+                    parcel.writeString(address1)
+                    parcel.writeString(address2)
+                    parcel.writeInt(city)
+                    parcel.writeString(cityName)
+                    parcel.writeString(country)
+                    parcel.writeInt(district)
+                    parcel.writeString(districtName)
+                    parcel.writeByte(if (isActive) 1 else 0)
+                    parcel.writeByte(if (isPrimary) 1 else 0)
+                    parcel.writeByte(if (isWhitelist) 1 else 0)
+                    parcel.writeString(latitude)
+                    parcel.writeString(longitude)
+                    parcel.writeString(phone)
+                    parcel.writeString(postalCode)
+                    parcel.writeInt(province)
+                    parcel.writeString(provinceName)
+                    parcel.writeString(receiverName)
+                    parcel.writeInt(status)
+                }
+
+                override fun describeContents(): Int {
+                    return 0
+                }
+
+                companion object CREATOR : Parcelable.Creator<Data> {
+                    override fun createFromParcel(parcel: Parcel): Data {
+                        return Data(parcel)
+                    }
+
+                    override fun newArray(size: Int): Array<Data?> {
+                        return arrayOfNulls(size)
+                    }
+                }
+            }
         }
     }
 }
