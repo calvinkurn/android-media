@@ -1,9 +1,5 @@
-package com.tokopedia.discovery.similarsearch.view;
+package com.tokopedia.similarsearch.view;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,7 +12,7 @@ import android.view.animation.AnimationUtils;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
-import com.tokopedia.discovery.R;
+import com.tokopedia.similarsearch.R;
 
 import java.util.List;
 
@@ -36,12 +32,20 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.act;
+        return R.layout.activity_similar_search;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return SimilarSearchFragment.newInstance(getIntent().getStringExtra(SimilarSearchManager.EXTRA_PRODUCT_ID));
+        Uri uri = getIntent().getData();
+        if (uri != null) {
+            List<String> paths = UriUtil.destructureUri(ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, uri);
+            if (!paths.isEmpty()) {
+                String productId = paths.get(0);
+                return SimilarSearchFragment.newInstance(productId);
+            }
+        }
+        return null;
     }
 
     protected void inflateFragment() {
