@@ -1079,20 +1079,24 @@ public class ProductListFragment
 
     @Override
     public void showErrorMessage(boolean isFullScreenMessage, String errorMessage) {
+        if (getView() == null) return;
+
         if (isFullScreenMessage) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView());
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), null);
         }
         else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
         }
+    }
 
-        if (adapter.isListEmpty()) {
-            NetworkErrorHelper.showEmptyState(getActivity(), getView(), this::reloadData);
-        } else {
-            NetworkErrorHelper.createSnackbarWithAction(getActivity(), () -> {
-                adapter.setStartFrom(startRow);
-                loadMoreProduct(startRow);
-            }).showRetrySnackbar();
+    @Override
+    public void hideErrorMessage() {
+        if (getView() == null) return;
+
+        View retryView  = getView().findViewById(R.id.main_retry);
+
+        if (retryView != null) {
+            retryView.setVisibility(View.GONE);
         }
     }
 }
