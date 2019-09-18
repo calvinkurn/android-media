@@ -136,10 +136,6 @@
 
                                 <include layout="@layout/tp_layout_section_ticker_new" />
 
-                                <View
-                                    android:layout_width="match_parent"
-                                    android:layout_height="@dimen/dp_8"
-                                    android:background="@color/tp_ticker_background_color" />
                             </LinearLayout>
                         </RelativeLayout>
 
