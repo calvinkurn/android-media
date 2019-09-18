@@ -154,7 +154,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         if (getView() == null || getView().getAppContext() == null)
             return;
         getView().showProcessGetData();
-        if(page!=0){
+        if (page != 0) {
             getView().displayLoadMore(true);
         }
         GraphqlRequest graphqlRequest;
@@ -192,7 +192,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                if (getView() != null && getView().getAppContext()!=null) {
+                if (getView() != null && getView().getAppContext() != null) {
                     CommonUtils.dumper("error =" + e.toString());
                     getView().removeProgressBarView();
                     getView().displayLoadMore(false);
@@ -232,7 +232,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {
         List<QuickFilterItem> quickFilterItems = new ArrayList<>();
-        int selctedIndex = 0;
+        int selectedIndex = 0;
         boolean isAnyItemSelected = false;
         for (FilterStatus entry : filterItems) {
             CustomViewRoundedQuickFilterItem finishFilter = new CustomViewRoundedQuickFilterItem();
@@ -242,13 +242,17 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
             if (getView().getSelectedFilter().equalsIgnoreCase(entry.getFilterLabel())) {
                 isAnyItemSelected = true;
                 finishFilter.setSelected(true);
-                selctedIndex = filterItems.indexOf(entry);
+                selectedIndex = filterItems.indexOf(entry);
             } else {
                 finishFilter.setSelected(false);
             }
             quickFilterItems.add(finishFilter);
         }
-        getView().renderOrderStatus(quickFilterItems, selctedIndex);
+        //If there is no selected Filter then we will select the first filter item by default
+        if (selectedIndex == 0 && !isAnyItemSelected) {
+            quickFilterItems.get(selectedIndex).setSelected(true);
+        }
+        getView().renderOrderStatus(quickFilterItems, selectedIndex);
     }
 
     @Override
@@ -370,7 +374,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         });
     }
 
-    public void processAddToCart(Object productModel){
+    public void processAddToCart(Object productModel) {
         getView().displayLoadMore(true);
 
         int productId = 0;
@@ -414,7 +418,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
                     @Override
                     public void onNext(AddToCartDataModel addToCartDataModel) {
-                        if(getView()!=null) {
+                        if (getView() != null) {
                             getView().displayLoadMore(false);
                             if (addToCartDataModel.getStatus().equalsIgnoreCase(AddToCartDataModel.STATUS_OK) && addToCartDataModel.getData().getSuccess() == 1) {
                                 getView().triggerSendEnhancedEcommerceAddToCartSuccess(addToCartDataModel, productModel);
@@ -432,9 +436,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                 });
     }
 
-    public void addWishlist(RecommendationItem model, WishListResponseListener wishListResponseListener){
+    public void addWishlist(RecommendationItem model, WishListResponseListener wishListResponseListener) {
         getView().displayLoadMore(true);
-        if(model.isTopAds()){
+        if (model.isTopAds()) {
             RequestParams params = RequestParams.create();
             params.putString(TopAdsWishlishedUseCase.WISHSLIST_URL, model.getWishlistUrl());
             topAdsWishlishedUseCase.execute(params, new Subscriber<WishlistModel>() {
@@ -454,7 +458,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
                 @Override
                 public void onNext(WishlistModel wishlistModel) {
-                    if(getView()!=null) {
+                    if (getView() != null) {
                         getView().displayLoadMore(false);
                         if (wishlistModel.getData() != null) {
                             wishListResponseListener.onWhishListSuccessResponse(true);
@@ -475,7 +479,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
                 @Override
                 public void onSuccessAddWishlist(String productId) {
-                    if(getView()!=null) {
+                    if (getView() != null) {
                         getView().displayLoadMore(false);
                         wishListResponseListener.onWhishListSuccessResponse(true);
                         getView().showSuccessMessage(getView().getString(R.string.msg_success_add_wishlist));
@@ -495,7 +499,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
         }
     }
 
-    public void removeWishlist(RecommendationItem model, WishListResponseListener wishListResponseListener){
+    public void removeWishlist(RecommendationItem model, WishListResponseListener wishListResponseListener) {
         getView().displayLoadMore(true);
         removeWishListUseCase.createObservable(String.valueOf(model.getProductId()), userSessionInterface.getUserId(), new WishListActionListener() {
             @Override
@@ -518,7 +522,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onSuccessRemoveWishlist(String productId) {
-                if(getView()!=null) {
+                if (getView() != null) {
                     getView().displayLoadMore(false);
                     getView().showSuccessMessage(getView().getString(R.string.msg_success_remove_wishlist));
                     wishListResponseListener.onWhishListSuccessResponse(false);
