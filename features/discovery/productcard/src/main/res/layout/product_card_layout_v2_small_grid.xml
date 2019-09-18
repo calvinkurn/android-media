@@ -313,7 +313,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:scaleType="fitXY"
             android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/textViewAddToCart"
+            app:layout_constraintTop_toTopOf="@id/labelOffers"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_v2_ic_topads"
             tools:visibility="visible" />
