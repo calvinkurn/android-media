@@ -193,7 +193,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
         mExoPlayer?.addListener(object : Player.EventListener {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 // If player already pause, just ignore this
-                if (!playWhenReady && playbackState != Player.STATE_ENDED) {
+                if (!playWhenReady && playbackState != Player.STATE_READY) {
                     mExoPlayer?.playWhenReady = false
                 }
             }
