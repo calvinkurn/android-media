@@ -48,8 +48,4 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
         }
     }
 
-    override fun getComponent(): PromoCheckoutListComponent {
-        return PromoCheckoutListComponentInstance.getPromoCheckoutListComponent(application)
-    }
-
 }
