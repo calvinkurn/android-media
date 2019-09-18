@@ -20,6 +20,7 @@ import javax.crypto.spec.SecretKeySpec
 
 class AuthHelper {
     companion object {
+        @JvmStatic
         fun getDefaultHeaderMap(
                 path: String,
                 strParam: String,
@@ -57,6 +58,7 @@ class AuthHelper {
             return headerMap
         }
 
+        @JvmStatic
         fun getDefaultHeaderMapOld(
                 path: String,
                 strParam: String,
@@ -95,6 +97,7 @@ class AuthHelper {
             return headerMap
         }
 
+        @JvmStatic
         fun generateHeaders(
                 path: String,
                 strParam: String,
@@ -117,19 +120,18 @@ class AuthHelper {
             return finalHeader
         }
 
+        @JvmStatic
         fun generateHeadersAccount(authKey: String): MutableMap<String, String> {
             val clientID = "7ea919182ff"
             val clientSecret = "b36cbf904d14bbf90e7f25431595a364"
             val encodeString = "${clientID}:${clientSecret}"
-
-            val asBase64 = Base64.encodeToString(encodeString.toByteArray(), Base64.NO_WRAP)
 
             val finalHeader = HashMap<String, String>()
             finalHeader[AuthConstant.HEADER_CONTENT_TYPE] = AuthConstant.CONTENT_TYPE
             finalHeader[AuthConstant.HEADER_CACHE_CONTROL] = "no-cache"
 
             if (authKey.isEmpty()) {
-                finalHeader[AuthConstant.HEADER_AUTHORIZATION] = "Basic ${asBase64}"
+                finalHeader[AuthConstant.HEADER_AUTHORIZATION] = "Basic ${AuthHelperJava.base64Encoder(encodeString, Base64.NO_WRAP)}"
             } else {
                 finalHeader[AuthConstant.HEADER_AUTHORIZATION] = authKey
             }
@@ -142,6 +144,7 @@ class AuthHelper {
             return finalHeader
         }
 
+        @JvmStatic
         fun generateHeadersWithPath(
                 path: String,
                 strParam: String,
@@ -168,6 +171,7 @@ class AuthHelper {
             return finalHeader
         }
 
+        @JvmStatic
         fun generateParamsNetwork(
                 userId: String,
                 deviceId: String,
@@ -184,6 +188,7 @@ class AuthHelper {
             return params
         }
 
+        @JvmStatic
         fun getHeaderRequestReactNative(context: Context): String {
             val session = UserSession(context)
 
@@ -206,6 +211,7 @@ class AuthHelper {
             return Gson().toJson(header)
         }
 
+        @JvmStatic
         fun getAuthHeaderReact(
                 context: Context,
                 path: String,
@@ -240,13 +246,14 @@ class AuthHelper {
                 val json = fingerprintModel.getFingerprintHash()
 
                 headers[AuthConstant.KEY_FINGERPRINT_HASH] = AuthHelperJava.md5("${json}+${session.userId}")
-                        AuthHelperJava.md5(json + "+" + session.userId)
+                AuthHelperJava.md5(json + "+" + session.userId)
                 headers[AuthConstant.KEY_FINGERPRINT_DATA] = json
             }
 
             return headers
         }
 
+        @JvmStatic
         fun calculateRFC2104HMAC(authString: String, authKey: String): String {
             try {
                 val signingKey = SecretKeySpec(authKey.toByteArray(), AuthConstant.MAC_ALGORITHM)
@@ -254,7 +261,7 @@ class AuthHelper {
                 mac.init(signingKey)
                 val rawHmac = mac.doFinal(authString.toByteArray())
 
-                return Base64.encodeToString(rawHmac, Base64.DEFAULT)
+                return AuthHelperJava.base64Encoder(rawHmac, Base64.DEFAULT)
             } catch (e: NoSuchAlgorithmException) {
                 e.printStackTrace()
 
@@ -266,16 +273,19 @@ class AuthHelper {
             }
         }
 
+        @JvmStatic
         fun generateContentMd5(s: String): String {
             return AuthHelperJava.md5(s)
         }
 
+        @JvmStatic
         fun generateDate(dateFormat: String): String {
             val simpleDateFormat = SimpleDateFormat(dateFormat, Locale.ENGLISH)
 
             return simpleDateFormat.format(Date())
         }
 
+        @JvmStatic
         fun getUserAgent(): String {
             return "TkpdConsumer/${GlobalConfig.VERSION_NAME} (Android ${Build.VERSION.RELEASE};)"
         }

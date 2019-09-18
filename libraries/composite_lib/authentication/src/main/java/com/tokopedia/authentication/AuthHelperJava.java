@@ -1,5 +1,6 @@
 package com.tokopedia.authentication;
 
+import android.util.Base64;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -22,5 +23,13 @@ public class AuthHelperJava {
 
             return "";
         }
+    }
+
+    public static String base64Encoder(byte[] inputBytes, int flags) {
+        return Base64.encodeToString(inputBytes, flags);
+    }
+
+    public static String base64Encoder(String inputString, int flags) {
+        return base64Encoder(inputString.getBytes(), flags);
     }
 }
