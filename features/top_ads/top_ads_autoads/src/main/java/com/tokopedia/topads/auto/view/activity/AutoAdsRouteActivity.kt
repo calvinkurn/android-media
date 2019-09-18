@@ -21,7 +21,6 @@ import com.tokopedia.design.component.ToasterError
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.base.AutoAdsBaseActivity
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.factory.TopAdsInfoViewModelFactory
 import com.tokopedia.topads.auto.view.fragment.DailyBudgetFragment
 import com.tokopedia.topads.auto.view.viewmodel.TopAdsInfoViewModel
