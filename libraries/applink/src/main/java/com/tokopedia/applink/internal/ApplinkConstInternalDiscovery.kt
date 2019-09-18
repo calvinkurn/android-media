@@ -26,5 +26,5 @@ object ApplinkConstInternalDiscovery {
     val IMAGE_SEARCH_RESULT = "$INTERNAL_DISCOVERY/image-search-result"
 
     @JvmField
-    val SIMILAR_SEARCH_RESULT = "$INTERNAL_DISCOVERY/similar-search-result/{product_id}"
+    val SIMILAR_SEARCH_RESULT = "$INTERNAL_DISCOVERY/similar-search-result/{product_id}/"
 }
