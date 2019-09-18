@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 
 public class CouponData implements Parcelable {
-    private Long id;
+    private long id;
     private int promoId;
     private String code;
     private String expired;
@@ -33,11 +33,11 @@ public class CouponData implements Parcelable {
         setImageUrlMobile(builder.imageUrlMobile);
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 

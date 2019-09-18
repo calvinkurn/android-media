@@ -11,7 +11,7 @@ public class Coupon {
 
     @SerializedName("id")
     @Expose
-    private Long id;
+    private long id;
     @SerializedName("promo_id")
     @Expose
     private int promoId;
@@ -40,7 +40,7 @@ public class Coupon {
     @Expose
     private String imageUrlMobile;
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
