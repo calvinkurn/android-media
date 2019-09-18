@@ -27,7 +27,7 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.features.tkpdcore)
