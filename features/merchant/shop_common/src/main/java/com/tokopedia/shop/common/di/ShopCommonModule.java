@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.shop.common.R;
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant;
@@ -20,6 +21,7 @@ import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
 import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase;
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
@@ -151,5 +153,18 @@ public class ShopCommonModule {
     @Named(ShopCommonParamApiConstant.QUERY_SHOP_SCORE)
     public String provideQueryShopScore(@ApplicationContext Context context) {
         return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_query_shop_score);
+    }
+
+    @Provides
+    @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL)
+    public String provideGqlQueryFavoriteStatus(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_favorite);
+    }
+
+    @Provides
+    public GQLGetShopFavoriteStatusUseCase provideFavorite(MultiRequestGraphqlUseCase graphqlUseCase,
+                                                           @Named(GQLQueryNamedConstant.FAVORITE_STATUS_GQL)
+                                                                   String gqlQuery) {
+        return new GQLGetShopFavoriteStatusUseCase(gqlQuery, graphqlUseCase);
     }
 }
