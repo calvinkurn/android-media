@@ -122,6 +122,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
         ClashBottomSheetFragment.ActionListener {
 
+
     public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
 
     private static final int HAS_ELEVATION = 8;
