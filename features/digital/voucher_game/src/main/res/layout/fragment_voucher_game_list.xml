@@ -34,28 +34,28 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_8">
+                android:orientation="vertical">
 
                 <com.tokopedia.banner.Banner
                     android:id="@+id/promo_banner"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_4"
-                    android:layout_marginRight="@dimen/dp_8"/>
+                    android:layout_marginTop="@dimen/dp_4" />
 
                 <include layout="@layout/item_voucher_game_banner_shimmering"
                     android:id="@+id/promo_banner_shimmering"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginLeft="@dimen/dp_16"
                     android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_8"
                     android:clipToPadding="false" />
 
             </LinearLayout>
