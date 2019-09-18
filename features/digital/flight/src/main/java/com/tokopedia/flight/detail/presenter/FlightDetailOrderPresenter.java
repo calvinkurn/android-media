@@ -12,7 +12,6 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.cancellation.constant.FlightCancellationStatus;
 import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
@@ -23,7 +22,6 @@ import com.tokopedia.flight.common.util.FlightAmenityType;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 import com.tokopedia.flight.common.util.FlightStatusOrderType;
-import com.tokopedia.flight.orderlist.data.cloud.entity.CancellationEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.ManualTransferEntity;
 import com.tokopedia.flight.orderlist.data.cloud.entity.PaymentInfoEntity;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrderUseCase;
@@ -36,11 +34,9 @@ import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -166,8 +162,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 generateStatus(flightOrder.getStatus(), flightOrder.getStatusString());
                 renderPaymentInfo(flightOrder);
 
+                if (flightOrder.getCancellationInfo() != null && flightOrder.getCancellationInfo().length() > 0) {
+                    getView().showCancellationStatus(flightOrder.getCancellationInfo());
+                }
+
                 if (flightOrder.getCancellations() != null && flightOrder.getCancellations().size() > 0) {
-                    countCancellationStatus(flightOrder.getCancellations());
                     getView().showCancellationContainer();
                 } else {
                     getView().hideCancellationContainer();
@@ -184,6 +183,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 } else {
                     getView().hideLihatEticket();
                 }
+
+                getView().checkIfShouldGoToCancellation();
             }
         };
     }
@@ -515,6 +516,9 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             flightDetailPassenger.setPassengerType(flightOrderPassengerViewModel.getType());
             flightDetailPassenger.setInfoPassengerList(transformToSimpleModelPassenger(flightOrderPassengerViewModel.getAmenities()));
             flightDetailPassenger.setPassengerStatus(flightOrderPassengerViewModel.getStatus());
+            flightDetailPassenger.setPassengerCancellationStr(flightOrderPassengerViewModel.getCancellationStatusStr());
+            flightDetailPassenger.setSecondPassengerStatus(flightOrderPassengerViewModel.getSecondStatus());
+            flightDetailPassenger.setSecondPassengerCancellationStr(flightOrderPassengerViewModel.getSecondCancellationStatusStr());
             flightDetailPassengers.add(flightDetailPassenger);
         }
         return flightDetailPassengers;
@@ -553,21 +557,6 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
                 return getView().getString(R.string.flight_meal_detail_order, departureId, arrivalId);
             default:
                 return "";
-        }
-    }
-
-    private void countCancellationStatus(List<CancellationEntity> cancellationEntityList) {
-        int numberOfProgress = 0;
-        for (CancellationEntity item : cancellationEntityList) {
-            if (item.getStatus() == FlightCancellationStatus.PENDING || item.getStatus() == FlightCancellationStatus.REQUESTED) {
-                numberOfProgress++;
-            }
-        }
-
-        if (numberOfProgress > 0) {
-            getView().showCancellationStatusInProgress(numberOfProgress);
-        } else {
-            getView().showCancellationStatus();
         }
     }
 

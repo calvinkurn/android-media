@@ -31,4 +31,31 @@ public class OrderAnalyticsOrderTracking extends TransactionAnalytics {
                 EventAction.CLICK_BUTTON_LIVE_TRACKING);
     }
 
+    public void eventViewLabelTungguRetry(String countDownDuration, String orderId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_SOM,
+                EventCategory.TRACK_SOM,
+                EventAction.VIEW_TUNGGU_CARI_DRIVER,
+                countDownDuration + " - " + orderId
+        );
+    }
+
+    public void eventViewButtonCariDriver(String orderId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_SOM,
+                EventCategory.TRACK_SOM,
+                EventAction.VIEW_BUTTON_CARI_DRIVER,
+                orderId
+        );
+    }
+
+    public void eventClickButtonCariDriver(String orderId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_SOM,
+                EventCategory.TRACK_SOM,
+                EventAction.CLICK_BUTTON_CARI_DRIVER,
+                orderId
+        );
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.navigation.presentation.view.listener
 
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
+import com.tokopedia.navigation.domain.pojo.ProductData
 
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
 
@@ -12,4 +13,6 @@ interface NotificationUpdateItemListener {
     fun itemClicked(viewModel: NotificationUpdateItemViewModel, adapterPosition: Int)
 
     fun getAnalytic(): NotificationUpdateAnalytics
+
+    fun addProductToCart(product: ProductData)
 }

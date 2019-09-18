@@ -41,6 +41,8 @@ class ProductRecomNotificationViewHolder(itemView: View, listener: NotificationU
 
     override fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
         itemView.setOnClickListener {
+            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            element.isRead = true
             RouteManager.route(
                     itemView.context,
                     ApplinkConstInternalMarketplace.HOME_RECOMMENDATION,

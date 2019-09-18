@@ -93,6 +93,9 @@ data class ProductData(
         @SerializedName("price")
         val price: String = "0",
         @Expose
+        @SerializedName("price_fmt")
+        val priceFormat: String = "0",
+        @Expose
         @SerializedName("currency")
         val currency: String = "",
         @Expose
@@ -115,16 +118,16 @@ data class ProductData(
         val countReview: String = "0",
         @Expose
         @SerializedName("labels")
-        val labels: List<Label>,
+        val labels: List<Label> = emptyList(),
         @Expose
         @SerializedName("campaign")
-        val campaign: Campaign,
+        val campaign: Campaign?,
         @Expose
         @SerializedName("variant")
-        val variant: List<Variant>,
+        val variant: List<Variant> = emptyList(),
         @Expose
         @SerializedName("shop")
-        val shop: Shop
+        val shop: Shop?
 )
 
 data class Label (
@@ -138,13 +141,17 @@ data class Label (
 
 data class Campaign(
         @SerializedName("active")
-        val active: Boolean,
+        val active: Boolean = false,
         @SerializedName("original_price")
-        val originalPrice: Int,
+        val originalPrice: Int = 0,
+        @SerializedName("original_price_fmt")
+        val originalPriceFormat: String = "",
         @SerializedName("discount_percentage")
-        val discountPercentage: Int,
+        val discountPercentage: Int = 0,
         @SerializedName("discount_price")
-        val discountPrice: Int
+        val discountPrice: Int = 0,
+        @SerializedName("discount_price_fmt")
+        val discountPriceFormat: String = ""
 )
 
 data class Variant (
@@ -161,20 +168,20 @@ data class Variant (
 
 data class Shop(
         @SerializedName("id")
-        val id: Int,
+        val id: Int = 0,
         @SerializedName("name")
-        val name: String,
+        val name: String = "",
         @SerializedName("location")
-        val location: String,
+        val location: String = "",
         @SerializedName("badges")
-        val badges: List<ShopBadge>
+        val badges: List<ShopBadge> = emptyList()
 )
 
 data class ShopBadge(
         @SerializedName("title")
-        val title: String,
+        val title: String = "",
         @SerializedName("image_url")
-        val imageUrl: String
+        val imageUrl: String = ""
 )
 
 data class DataNotification(

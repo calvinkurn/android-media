@@ -14,7 +14,17 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 }
+
+project.ext {
+    artifactId = 'product-detail-common'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName = "merchantproductdetailcommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

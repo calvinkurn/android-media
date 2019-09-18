@@ -174,9 +174,9 @@ class NotificationUpdateAnalytics @Inject constructor() {
                                     "category", "",
                                     "variant", "",
                                     "quantity", "1",
-                                    "shop_id", product.shop.id,
+                                    "shop_id", product.shop?.id,
                                     "shop_type", "",
-                                    "shop_name", product.shop.name,
+                                    "shop_name", product.shop?.name,
                                     "category_id", "",
                                     "dimension45", ""
                                 )

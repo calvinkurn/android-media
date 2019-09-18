@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 /**
  * Created by nabillasabbaha on 3/28/18.
  */
@@ -35,6 +37,12 @@ public class TokenHomeEntity implements Parcelable {
     @SerializedName("tokenSourceMessage")
     @Expose
     private String[] tokenSourceMessage;
+    @SerializedName("homeActionButton")
+    @Expose
+    private List<HomeActionButton> homeActionButton = null;
+    @SerializedName("homeSmallButton")
+    @Expose
+    private HomeSmallButton homeSmallButton;
 
     protected TokenHomeEntity(Parcel in) {
         buttonApplink = in.readString();
@@ -83,6 +91,14 @@ public class TokenHomeEntity implements Parcelable {
 
     public void setTokenSourceMessage(String[] tokenSourceMessage) {
         this.tokenSourceMessage = tokenSourceMessage;
+    }
+
+    public List<HomeActionButton> getHomeActionButton() {
+        return homeActionButton;
+    }
+
+    public HomeSmallButton getHomeSmallButton() {
+        return homeSmallButton;
     }
 
     @Override

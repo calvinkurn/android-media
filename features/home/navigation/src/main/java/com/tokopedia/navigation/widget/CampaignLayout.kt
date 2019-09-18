@@ -8,6 +8,9 @@ import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.domain.pojo.Campaign
+import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
+
+
 
 class CampaignLayout @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -22,15 +25,17 @@ class CampaignLayout @JvmOverloads constructor(
         campaignContainer = findViewById(R.id.ll_campaign)
         campaignPrice = findViewById(R.id.tv_campaign)
         campaignDiscount = findViewById(R.id.tv_discount)
+        campaignPrice.paintFlags = campaignPrice.paintFlags or STRIKE_THRU_TEXT_FLAG
     }
 
-    fun setupCampaign(campaign: Campaign) {
+    fun setupCampaign(campaign: Campaign?) {
+        if (campaign == null) return
         if (campaign.discountPercentage == 0) {
             hide()
             return
         }
 
-        campaignPrice.text = campaign.originalPrice.toString()
+        campaignPrice.text = campaign.originalPriceFormat
         campaignDiscount.text = "${campaign.discountPercentage}%"
     }
 }

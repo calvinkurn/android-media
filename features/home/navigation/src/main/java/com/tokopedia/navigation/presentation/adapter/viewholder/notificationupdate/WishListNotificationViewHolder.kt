@@ -33,48 +33,46 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
 
         with(product) {
             productName.text = name
-            productPrice.text = price
+            productPrice.text = priceFormat
             productCampaign.setupCampaign(campaign)
             productVariant.setupVariant(variant)
             ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_loading_toped_new)
         }
 
-        assignClickListenerAtc(product)
-        assignProductClickListener(product)
+        assignClickListenerAtc(element)
+        assignProductClickListener(element)
     }
 
-    private fun assignClickListenerAtc(product: ProductData) {
-        val intent = getProductAtcIntent(product)
+    private fun assignClickListenerAtc(element: NotificationUpdateItemViewModel) {
+        val product = element.getAtcProduct() ?: return
         btnCart.setOnClickListener {
             listener.getAnalytic().trackAtcOnClick(product)
-            itemView.context.startActivity(intent)
+            listener.addProductToCart(product)
+            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            element.isRead = true
         }
     }
 
-    private fun assignProductClickListener(product: ProductData) {
-        productContainer.setOnClickListener {
+    override fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
+        val product = element.getAtcProduct() ?: return
+        container.setOnClickListener(getItemClickListener(product, element))
+    }
+
+    private fun assignProductClickListener(element: NotificationUpdateItemViewModel) {
+        val product = element.getAtcProduct() ?: return
+        productContainer.setOnClickListener(getItemClickListener(product, element))
+    }
+
+    private fun getItemClickListener(product: ProductData, element: NotificationUpdateItemViewModel): View.OnClickListener {
+        return View.OnClickListener {
+            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            element.isRead = true
             listener.getAnalytic().trackAtcToPdpClick(product)
             RouteManager.route(
                     itemView.context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     product.productId
             )
-        }
-    }
-
-    private fun getProductAtcIntent(product: ProductData): Intent {
-        val atcAndBuyAction = "1"
-        val quantity = 1
-        val needRefresh = true
-        return RouteManager.getIntent(itemView.context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, product.shop.id)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product.productId)
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
-            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, product.productId)
-            putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, product.shop.name)
-            putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
-            putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needRefresh)
         }
     }
 
