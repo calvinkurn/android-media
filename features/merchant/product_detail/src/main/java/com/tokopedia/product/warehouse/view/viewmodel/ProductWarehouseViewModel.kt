@@ -8,7 +8,7 @@ import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.network.utils.AuthUtil
+import com.tokopedia.network.utils.zAuthUtil
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRODUCT_ETALASE_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRODUCT_ETALASE_NAME
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PARAM_PRODUCT_ID

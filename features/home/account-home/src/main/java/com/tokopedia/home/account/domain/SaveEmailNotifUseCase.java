@@ -9,7 +9,7 @@ import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.SettingEditResponse;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;

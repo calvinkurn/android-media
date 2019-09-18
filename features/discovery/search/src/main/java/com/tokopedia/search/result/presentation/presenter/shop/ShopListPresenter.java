@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.Mapper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.search.result.domain.model.SearchShopModel;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
 import com.tokopedia.search.result.presentation.model.ShopHeaderViewModel;

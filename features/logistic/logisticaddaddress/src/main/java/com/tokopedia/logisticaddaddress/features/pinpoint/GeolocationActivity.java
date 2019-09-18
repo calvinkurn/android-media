@@ -24,7 +24,7 @@ import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.user.session.UserSession;

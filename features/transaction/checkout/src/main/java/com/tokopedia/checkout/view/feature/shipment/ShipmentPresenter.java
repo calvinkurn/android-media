@@ -58,7 +58,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCa
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.promocheckout.common.data.entity.request.CheckPromoParam;
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode;

@@ -1,7 +1,7 @@
 package com.tokopedia.tkpd.network;
 
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

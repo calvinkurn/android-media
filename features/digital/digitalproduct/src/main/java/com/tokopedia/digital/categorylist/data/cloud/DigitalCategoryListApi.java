@@ -1,7 +1,7 @@
 package com.tokopedia.digital.categorylist.data.cloud;
 
 import com.tokopedia.digital.common.constant.DigitalUrl;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 
 import retrofit2.Response;
 import retrofit2.http.GET;

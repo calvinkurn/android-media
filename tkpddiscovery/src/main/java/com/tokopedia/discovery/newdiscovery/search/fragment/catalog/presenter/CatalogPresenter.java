@@ -79,7 +79,7 @@ public class CatalogPresenter extends BrowseSectionFragmentPresenterImpl<Catalog
 
     private HashMap<String, String> generateParamsNetwork(RequestParams requestParams) {
         return new HashMap<>(
-                com.tokopedia.network.utils.AuthUtil.generateParamsNetwork(userSession.getUserId(),
+                com.tokopedia.network.utils.zAuthUtil.generateParamsNetwork(userSession.getUserId(),
                         userSession.getDeviceId(),
                         requestParams.getParamsAllValueInString()));
     }

@@ -12,7 +12,7 @@ import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 import com.tokopedia.common.network.util.RestConstant;
 import com.tokopedia.home.account.constant.SettingConstant;
 import com.tokopedia.home.account.data.model.AppNotificationSettingModel;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 

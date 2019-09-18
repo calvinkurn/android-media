@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.usecase.RequestParams;

@@ -82,7 +82,7 @@ import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.network.constant.TkpdBaseURL;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.showcase.ShowCaseBuilder;

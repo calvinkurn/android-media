@@ -17,7 +17,7 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.tkpdreactnative.react.di.DaggerReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.di.ReactNativeNetworkComponent;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkRepository;

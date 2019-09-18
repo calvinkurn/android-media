@@ -1,6 +1,6 @@
 package com.tokopedia.phoneverification.data.source;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.phoneverification.data.PhoneVerificationApi;
 import com.tokopedia.phoneverification.data.model.ChangePhoneNumberViewModel;

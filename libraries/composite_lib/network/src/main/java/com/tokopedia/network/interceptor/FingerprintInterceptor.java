@@ -2,7 +2,7 @@ package com.tokopedia.network.interceptor;
 
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.io.IOException;

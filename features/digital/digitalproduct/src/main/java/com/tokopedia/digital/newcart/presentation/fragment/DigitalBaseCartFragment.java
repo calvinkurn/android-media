@@ -41,7 +41,7 @@ import com.tokopedia.digital.newcart.presentation.compoundview.DigitalCartDetail
 import com.tokopedia.digital.newcart.presentation.compoundview.InputPriceHolderView;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalBaseContract;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase;
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity;
 import com.tokopedia.payment.activity.TopPayActivity;

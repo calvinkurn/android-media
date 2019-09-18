@@ -2,7 +2,7 @@ package com.tokopedia.logisticinputreceiptshipment.view.confirmshipment;
 
 import android.content.Context;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.transaction.common.data.order.ListCourierViewModel;
 import com.tokopedia.transaction.common.data.order.OrderDetailData;

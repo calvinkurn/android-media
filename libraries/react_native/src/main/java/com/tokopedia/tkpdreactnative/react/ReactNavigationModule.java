@@ -21,7 +21,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;

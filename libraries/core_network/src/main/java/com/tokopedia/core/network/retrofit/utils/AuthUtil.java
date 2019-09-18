@@ -25,8 +25,8 @@ import java.util.Map;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
-import static com.tokopedia.network.utils.AuthUtil.HEADER_USER_AGENT;
-import static com.tokopedia.network.utils.AuthUtil.getUserAgent;
+import static com.tokopedia.network.utils.zAuthUtil.HEADER_USER_AGENT;
+import static com.tokopedia.network.utils.zAuthUtil.getUserAgent;
 
 /**
  * @author Angga.Prasetiyo on 25/11/2015.

@@ -7,7 +7,7 @@ import com.tokopedia.logisticaddaddress.data.AddressRepository;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSessionInterface;
 

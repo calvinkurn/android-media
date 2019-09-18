@@ -10,7 +10,7 @@ import com.bca.xco.widget.XCOEnum
 import com.tokopedia.instantdebitbca.data.domain.NotifyDebitRegisterBcaUseCase
 import com.tokopedia.instantdebitbca.data.view.activity.BcaEditLimitActivity
 import com.tokopedia.instantdebitbca.data.view.activity.InstantDebitBcaActivity
-import com.tokopedia.network.utils.AuthUtil
+import com.tokopedia.network.utils.zAuthUtil
 
 import java.util.HashMap
 import javax.inject.Inject

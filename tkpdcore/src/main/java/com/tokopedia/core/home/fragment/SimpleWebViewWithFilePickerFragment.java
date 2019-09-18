@@ -34,7 +34,7 @@ import com.tokopedia.core.util.TkpdWebView;
 import com.tokopedia.core2.R;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.UnsupportedEncodingException;

@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.presenter.catalog;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.search.result.domain.model.SearchCatalogModel;
 import com.tokopedia.search.result.presentation.CatalogListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.CatalogViewModelMapper;

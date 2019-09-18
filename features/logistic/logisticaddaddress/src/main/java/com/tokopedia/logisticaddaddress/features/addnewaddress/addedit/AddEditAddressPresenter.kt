@@ -17,7 +17,7 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.Auto
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.network.utils.AuthUtil
+import com.tokopedia.network.utils.zAuthUtil
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface

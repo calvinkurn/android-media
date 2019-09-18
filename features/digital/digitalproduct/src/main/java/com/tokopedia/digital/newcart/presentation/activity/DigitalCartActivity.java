@@ -21,7 +21,7 @@ import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDealsFragm
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartDefaultFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.DigitalCartMyBillsFragment;
 import com.tokopedia.digital.newcart.presentation.fragment.listener.DigitalDealNatigationListener;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 public class DigitalCartActivity extends BaseSimpleActivity implements HasComponent<DigitalCartComponent>,

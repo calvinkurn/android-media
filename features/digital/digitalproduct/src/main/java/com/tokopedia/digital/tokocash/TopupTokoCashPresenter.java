@@ -6,7 +6,7 @@ import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.product.view.model.ProductDigitalData;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;

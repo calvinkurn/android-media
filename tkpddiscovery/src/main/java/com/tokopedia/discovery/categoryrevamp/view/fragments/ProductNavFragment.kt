@@ -45,7 +45,7 @@ import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.network.utils.AuthUtil
+import com.tokopedia.network.utils.zAuthUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success

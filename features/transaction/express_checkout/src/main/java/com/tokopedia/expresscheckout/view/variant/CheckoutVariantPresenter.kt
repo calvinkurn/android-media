@@ -17,7 +17,7 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.ProductChild
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.usecase.GetCourierRecommendationUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
-import com.tokopedia.network.utils.AuthUtil
+import com.tokopedia.network.utils.zAuthUtil
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.transaction.common.sharedata.EditAddressParam
 import com.tokopedia.transactiondata.entity.request.*

@@ -9,7 +9,7 @@ import com.tokopedia.challenges.data.model.IndiTokenModel;
 import com.tokopedia.challenges.data.model.IndiUserModel;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.network.converter.StringResponseConverter;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;

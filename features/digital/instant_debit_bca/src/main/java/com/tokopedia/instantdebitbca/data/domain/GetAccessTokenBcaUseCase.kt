@@ -11,7 +11,7 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.instantdebitbca.R
 import com.tokopedia.instantdebitbca.data.data.ResponseAccessTokenBca
 import com.tokopedia.instantdebitbca.data.view.model.TokenInstantDebitBca
-import com.tokopedia.network.utils.AuthUtil
+import com.tokopedia.network.utils.zAuthUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 

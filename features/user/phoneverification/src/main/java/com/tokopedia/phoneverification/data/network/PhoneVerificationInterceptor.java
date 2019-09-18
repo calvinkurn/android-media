@@ -7,7 +7,7 @@ import android.support.v4.util.ArrayMap;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.Map;

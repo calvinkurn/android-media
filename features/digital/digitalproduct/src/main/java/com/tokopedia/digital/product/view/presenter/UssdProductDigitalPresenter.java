@@ -9,7 +9,7 @@ import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.digital.product.view.listener.IUssdDigitalView;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 
 /**
  * Created by ashwanityagi on 19/07/17.

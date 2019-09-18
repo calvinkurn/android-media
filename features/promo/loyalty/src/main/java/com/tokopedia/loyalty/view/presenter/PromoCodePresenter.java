@@ -17,7 +17,7 @@ import com.tokopedia.loyalty.view.interactor.IPromoCodeInteractor;
 import com.tokopedia.loyalty.view.view.IPromoCodeView;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.network.exception.ResponseErrorException;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;

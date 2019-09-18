@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.refreshtoken.AccessTokenRefresh;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.network.utils.CommonUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;

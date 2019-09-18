@@ -8,7 +8,7 @@ import com.tokopedia.loyalty.domain.entity.response.TokoPointErrorResponse;
 import com.tokopedia.loyalty.exception.TokoPointResponseErrorException;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;

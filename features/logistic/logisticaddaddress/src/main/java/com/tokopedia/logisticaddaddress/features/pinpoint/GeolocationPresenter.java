@@ -38,7 +38,7 @@ import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationP
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.viewmodel.PredictionResult;
 import com.tokopedia.logisticdata.data.entity.geolocation.coordinate.viewmodel.CoordinateViewModel;
 import com.tokopedia.logisticdata.data.utils.GeoLocationUtils;
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSession;
 

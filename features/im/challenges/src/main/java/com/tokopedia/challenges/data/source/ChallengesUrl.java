@@ -1,6 +1,6 @@
 package com.tokopedia.challenges.data.source;
 
-import com.tokopedia.network.utils.AuthUtil;
+import com.tokopedia.network.utils.zAuthUtil;
 
 public class ChallengesUrl {
     //Base Url
