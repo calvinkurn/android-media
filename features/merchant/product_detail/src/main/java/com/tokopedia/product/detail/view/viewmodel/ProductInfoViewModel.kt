@@ -560,7 +560,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
 
     fun isShopOwner(shopId: Int): Boolean = userSessionInterface.shopId.toIntOrNull() == shopId
 
-    fun isUserSessionActive(): Boolean = userSessionInterface.userId.isNotEmpty()
+    fun isUserSessionActive(): Boolean = userSessionInterface.isLoggedIn
 
     override fun clear() {
         super.clear()
