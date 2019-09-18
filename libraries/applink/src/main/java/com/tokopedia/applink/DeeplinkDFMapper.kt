@@ -102,11 +102,11 @@ object DeeplinkDFMapper {
 //                        deeplink, MODULE_USER_SETTING_BANK,
 //                        context.getString(R.string.applink_setting_bank_title))
 //                }
-//                deeplink.startsWith(ApplinkConstInternalGlobal.INSTANT_LOAN) -> {
-//                    getDFDeeplinkIfNotInstalled(context,
-//                        deeplink, MODULE_USER_SETTING_BANK,
-//                        context.getString(R.string.applink_instant_loan_title))
-//                }
+                deeplink.startsWith(ApplinkConstInternalGlobal.INSTANT_LOAN) -> {
+                    getDFDeeplinkIfNotInstalled(context,
+                        deeplink, MODULE_FINTECH_INSTANT_LOAN,
+                        context.getString(R.string.applink_instant_loan_title))
+                }
                 else -> null
             }
         }
