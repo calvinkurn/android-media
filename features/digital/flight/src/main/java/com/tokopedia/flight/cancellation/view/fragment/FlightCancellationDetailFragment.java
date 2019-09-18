@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -47,6 +48,7 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
 
     public static final String EXTRA_CANCELLATION_DETAIL_PASS_DATA = "EXTRA_CANCELLATION_DETAIL_PASS_DATA";
     private static final float JOURNEY_TITLE_FONT_SIZE = 16;
+    private static final int NOTES_MAX_LINES = 5;
 
     @Inject
     FlightCancellationDetailPresenter presenter;
@@ -58,7 +60,9 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     private AppCompatTextView txtCancellationStatus;
     private TextView txtCancellationDate;
     private Ticker tickerRefundInfo;
+    private LinearLayout containerBottomInfo;
     private RecyclerView rvBottomTopInfo, rvBottomMiddleInfo, rvBottomBottomInfo, rvBottomNotes;
+    private View bottomFirstSeparator, bottomSecondSeparator;
 
     private FlightDetailOrderAdapter flightDetailOrderAdapter;
     private FlightCancellationDetailPassengerAdapter flightCancellationDetailPassengerAdapter;
@@ -86,10 +90,13 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
         txtCancellationStatus = view.findViewById(R.id.cancellation_status);
         txtCancellationDate = view.findViewById(R.id.cancellation_date);
         tickerRefundInfo = view.findViewById(R.id.ticker_refund_info);
+        containerBottomInfo = view.findViewById(R.id.container_bottom_info);
         rvBottomTopInfo = view.findViewById(R.id.rv_bottom_top_info);
         rvBottomMiddleInfo = view.findViewById(R.id.rv_bottom_middle_info);
         rvBottomBottomInfo = view.findViewById(R.id.rv_bottom_bottom_info);
         rvBottomNotes = view.findViewById(R.id.rv_bottom_notes);
+        bottomFirstSeparator = view.findViewById(R.id.bottom_first_separator);
+        bottomSecondSeparator = view.findViewById(R.id.bottom_second_separator);
 
         FlightDetailOrderTypeFactory flightDetailOrderTypeFactory = new FlightDetailOrderTypeFactory(this, JOURNEY_TITLE_FONT_SIZE);
         flightDetailOrderAdapter = new FlightDetailOrderAdapter(flightDetailOrderTypeFactory);
@@ -167,34 +174,55 @@ public class FlightCancellationDetailFragment extends BaseDaggerFragment
     }
 
     private void renderBottomInfo(RefundDetailEntity refundDetail) {
-        // top info
-        FlightCancellationRefundBottomAdapter refundTopAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL);
-        refundTopAdapter.addData(generateSimpleViewModel(refundDetail.getTopInfo()));
-        rvBottomTopInfo.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvBottomTopInfo.setAdapter(refundTopAdapter);
+        if (refundDetail.getTopInfo().size() > 0 || refundDetail.getMiddleInfo().size() > 0 || refundDetail.getBottomInfo().size() > 0 || refundDetail.getNote().size() > 0) {
+            // top info
+            if (refundDetail.getTopInfo().size() > 0) {
+                FlightCancellationRefundBottomAdapter refundTopAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_NORMAL);
+                refundTopAdapter.addData(generateSimpleViewModel(refundDetail.getTopInfo()));
+                rvBottomTopInfo.setLayoutManager(new LinearLayoutManager(getContext()));
+                rvBottomTopInfo.setAdapter(refundTopAdapter);
+            } else {
+                rvBottomTopInfo.setVisibility(View.GONE);
+                bottomFirstSeparator.setVisibility(View.GONE);
+            }
 
-        // middle info
-        FlightCancellationRefundDetailMiddleAdapter refundMiddleAdapter = new FlightCancellationRefundDetailMiddleAdapter(refundDetail.getMiddleInfo());
-        rvBottomMiddleInfo.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvBottomMiddleInfo.setAdapter(refundMiddleAdapter);
+            // middle info
+            if (refundDetail.getMiddleInfo().size() > 0) {
+                FlightCancellationRefundDetailMiddleAdapter refundMiddleAdapter = new FlightCancellationRefundDetailMiddleAdapter(refundDetail.getMiddleInfo());
+                rvBottomMiddleInfo.setLayoutManager(new LinearLayoutManager(getContext()));
+                rvBottomMiddleInfo.setAdapter(refundMiddleAdapter);
+            } else {
+                rvBottomMiddleInfo.setVisibility(View.GONE);
+                bottomSecondSeparator.setVisibility(View.GONE);
+            }
 
-        // bottom info
-        FlightCancellationRefundBottomAdapter refundBottomAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_RED);
-        refundBottomAdapter.addData(generateSimpleViewModel(refundDetail.getBottomInfo()));
-        rvBottomBottomInfo.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvBottomBottomInfo.setAdapter(refundBottomAdapter);
+            // bottom info
+            if (refundDetail.getBottomInfo().size() > 0) {
+                FlightCancellationRefundBottomAdapter refundBottomAdapter = new FlightCancellationRefundBottomAdapter(FlightCancellationRefundBottomAdapter.TYPE_RED);
+                refundBottomAdapter.addData(generateSimpleViewModel(refundDetail.getBottomInfo()));
+                rvBottomBottomInfo.setLayoutManager(new LinearLayoutManager(getContext()));
+                rvBottomBottomInfo.setAdapter(refundBottomAdapter);
+            } else {
+                rvBottomBottomInfo.setVisibility(View.GONE);
+            }
 
-        // notes
-        FlightSimpleAdapter refundNotesAdapter = new FlightSimpleAdapter();
-        refundNotesAdapter.setArrowVisible(false);
-        refundNotesAdapter.setClickable(false);
-        refundNotesAdapter.setTitleBold(false);
-        refundNotesAdapter.setTitleOnly(true);
-        refundNotesAdapter.setViewModels(generateSimpleViewModel(refundDetail.getNote()));
-        rvBottomNotes.setLayoutManager(new LinearLayoutManager(getContext()));
-        rvBottomNotes.setAdapter(refundNotesAdapter);
-
-        if (refundDetail.getNote().size() == 0) rvBottomNotes.setVisibility(View.GONE);
+            // notes
+            if (refundDetail.getNote().size() > 0) {
+                FlightSimpleAdapter refundNotesAdapter = new FlightSimpleAdapter();
+                refundNotesAdapter.setArrowVisible(false);
+                refundNotesAdapter.setClickable(false);
+                refundNotesAdapter.setTitleBold(false);
+                refundNotesAdapter.setTitleOnly(true);
+                refundNotesAdapter.setTitleMaxLines(NOTES_MAX_LINES);
+                refundNotesAdapter.setViewModels(generateSimpleViewModel(refundDetail.getNote()));
+                rvBottomNotes.setLayoutManager(new LinearLayoutManager(getContext()));
+                rvBottomNotes.setAdapter(refundNotesAdapter);
+            } else {
+                rvBottomNotes.setVisibility(View.GONE);
+            }
+        } else {
+            containerBottomInfo.setVisibility(View.GONE);
+        }
     }
 
     private List<SimpleViewModel> generateSimpleViewModel(List<KeyValueEntity> items) {

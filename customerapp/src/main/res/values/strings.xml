@@ -154,5 +154,6 @@
     <!-- Home Recommendation Extras -->
     <string name="home_recommendation_extra_product_id">PRODUCT_ID</string>
     <string name="home_recommendation_extra_ref">REF</string>
+    <string name="title_homepage_digital">Digital</string>
     <string name="title_instantloan">Dana Instan</string>
 </resources>

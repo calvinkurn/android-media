@@ -7,11 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeBannerFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedLoadingMoreViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeFeedViewHolder
-import com.tokopedia.home.beranda.presentation.view.viewmodel.BannerFeedViewModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeBannerFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeFeedLoadingMoreViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 
 /**
  * Created by Lukas on 2019-07-16

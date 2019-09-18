@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -15,19 +15,12 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "${artifactIdTransactionData}"
-    groupId = "${groupIdTransaction}"
-    versionName = "${transactionGroupVersion}"
-    artifactName = "${artifactIdTransactionData}-release"
-}
-
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
@@ -43,6 +36,12 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+project.ext {
+    artifactId = "transaction-data"
+    groupId = "com.tokopedia.transaction"
+    versionName = "1.0.0"
+    artifactName = "transactiondata-release"
+}
+
 apply from: "$rootProject.projectDir/publish_local.gradle"
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'

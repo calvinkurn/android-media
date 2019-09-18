@@ -238,7 +238,6 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
         selectedLoanCategoryData = GqlLendingCategoryData(0, "", "", "", false)
 
         loanPeriodValueTV.text = getString(R.string.il_loan_period_value_label)
-        loanPeriodLabelTV.text = getString(R.string.il_loan_period_type_label)
     }
 
     override fun setFilterDataForOnlineLoan(gqlFilterData: GqlFilterData) {

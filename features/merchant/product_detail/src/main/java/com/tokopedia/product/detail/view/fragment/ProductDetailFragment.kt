@@ -12,6 +12,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.Rect
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -71,7 +72,6 @@ import com.tokopedia.normalcheckout.view.NormalCheckoutActivity
 import com.tokopedia.normalcheckout.view.NormalCheckoutFragment
 import com.tokopedia.product.detail.ProductDetailRouter
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.ProductDetailCommonConstant.URL_APPLY_LEASING
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.Category
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -114,9 +114,7 @@ import com.tokopedia.referral.ReferralAction
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.shop.common.graphql.data.shopinfo.BBInfo
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
@@ -456,6 +454,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         initializePartialView(view)
         initView()
         tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(activity, R.drawable.tradein_white), null, null, null)
+        tv_trade_in_promo.setOnClickListener {
+            scrollToTradeInWidget()
+        }
         refreshLayout = view.findViewById(R.id.swipeRefresh)
         et_search.setOnClickListener { v ->
             RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
@@ -470,7 +471,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     tv_available_at?.visible()
                 }
             }
-            trackTradeIn(it)
+            trackProductView(it)
         }
         context?.let {
             LocalBroadcastManager.getInstance(context!!).registerReceiver(tradeInBroadcastReceiver, IntentFilter(TradeInTextView.ACTION_TRADEIN_ELLIGIBLE))
@@ -638,6 +639,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         })
 
         updateStickyState()
+    }
+
+    private fun scrollToTradeInWidget() {
+        activity?.run {
+            val display = windowManager.defaultDisplay
+            val size = Point()
+            display.getSize(size)
+            val screenHeight = size.y
+            nested_scroll.smoothScrollTo(0, tv_trade_in.bottom - (screenHeight / 2))
+        }
     }
 
     override fun onResume() {
@@ -1406,7 +1417,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     productInfo?.category?.detail?.firstOrNull()?.id ?: "")
 
             if (delegateTradeInTracking) {
-                trackTradeIn(tradeInParams.isEligible == 1)
+                trackProductView(tradeInParams.isEligible == 1)
                 delegateTradeInTracking = false
             }
 
@@ -2188,7 +2199,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    private fun trackTradeIn(isElligible: Boolean) {
+    private fun trackProductView(isElligible: Boolean) {
         if (productInfo != null && shopInfo != null) {
             productDetailTracking.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
                     isElligible, tradeInParams?.usedPrice > 0, productInfoViewModel.multiOrigin.isFulfillment)
