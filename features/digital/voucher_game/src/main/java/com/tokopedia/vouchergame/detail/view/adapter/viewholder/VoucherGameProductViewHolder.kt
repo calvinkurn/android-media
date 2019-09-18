@@ -16,15 +16,19 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
 
     override fun bind(product: VoucherGameProduct) {
         with(itemView) {
-            title_product.text = product.attributes.desc
-            product_promo_price.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
-            if (product.attributes.promo == null) {
-                product_promo_price.visibility = View.INVISIBLE
-                product_price.text = product.attributes.price
-            } else {
-                product_promo_label.text = product.attributes.productLabels.joinToString(",", limit = 2)
-                product_promo_price.text = product.attributes.price
-                product_price.text = product.attributes.promo.newPrice
+            with(product.attributes) {
+                title_product.text = desc
+                product_promo_price.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
+                if (promo == null) {
+                    product_promo_price.visibility = View.INVISIBLE
+                    product_price.text = price
+                } else {
+                    product_promo_price.text = price
+                    product_price.text = promo.newPrice
+                }
+                if (productLabels.isNotEmpty())
+                    product_promo_label.visibility = View.VISIBLE
+                    product_promo_label.text = productLabels.joinToString(",", limit = 2)
             }
 
             // Show selected item
