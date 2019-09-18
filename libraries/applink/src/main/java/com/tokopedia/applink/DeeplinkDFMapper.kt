@@ -41,6 +41,8 @@ object DeeplinkDFMapper {
     private val MODULE_DIGITAL_TOPUP = "digital_topup"
     private val MODULE_USER_PROFILE_COMPLETION = "profilecompletion"
     private val MODULE_USER_SETTING_BANK = "settingbank"
+    private var MODULE_FINTECH_INSTANT_LOAN = "instantloan"
+
 
 
     private var manager: SplitInstallManager? = null
@@ -99,6 +101,11 @@ object DeeplinkDFMapper {
 //                    getDFDeeplinkIfNotInstalled(context,
 //                        deeplink, MODULE_USER_SETTING_BANK,
 //                        context.getString(R.string.applink_setting_bank_title))
+//                }
+//                deeplink.startsWith(ApplinkConstInternalGlobal.INSTANT_LOAN) -> {
+//                    getDFDeeplinkIfNotInstalled(context,
+//                        deeplink, MODULE_USER_SETTING_BANK,
+//                        context.getString(R.string.applink_instant_loan_title))
 //                }
                 else -> null
             }
