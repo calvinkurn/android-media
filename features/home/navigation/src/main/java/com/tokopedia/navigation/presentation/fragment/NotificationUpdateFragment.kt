@@ -2,7 +2,6 @@ package com.tokopedia.navigation.presentation.fragment
 
 import android.animation.LayoutTransition
 import android.content.Context
-import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialogFragment
@@ -100,7 +99,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             bottomActionView.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         }
 
-        bottomActionView.setButton2OnClickListener {
+        bottomActionView.setButton1OnClickListener {
             analytics.trackMarkAllAsRead(markAllReadCounter.toString())
             presenter.markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate())
         }
@@ -110,9 +109,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (dy < 0) { // going up
-                    if (adapter.dataSize > 0) {
-                        bottomActionView.show()
-                    }
+                    notifyBottomActionView()
                 } else if (dy > 0) { // going down
                     bottomActionView.hide()
                 }
@@ -157,9 +154,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun notifyBottomActionView() {
         bottomActionView?.let {
             if (markAllReadCounter == 0L) {
-                it.hideBav2()
+                it.hide()
             } else {
-                it.showBav2()
+                it.show()
             }
         }
     }
