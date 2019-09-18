@@ -144,8 +144,9 @@ public class ReactNativeNetworkModule {
     @Provides
     @ReactNativeNetworkScope
     UnifyReactNetworkWsV4AuthDataSource provideUnifyReactNetworkWsV4AuthDataSource(Retrofit.Builder retrofitBuilder,
-                                                                               @ApplicationContext Context context) {
-        return new UnifyReactNetworkWsV4AuthDataSource(retrofitBuilder, context);
+                                                                               @ApplicationContext Context context,
+                                                                                   UserSessionInterface userSessionInterface) {
+        return new UnifyReactNetworkWsV4AuthDataSource(retrofitBuilder, userSessionInterface);
     }
 
     @Provides
@@ -172,9 +173,14 @@ public class ReactNativeNetworkModule {
 
     @Provides
     @ReactNativeNetworkScope
-    ReactNetworkRepository provideReactNetworkRepository(@ApplicationContext Context context, ReactNetworkAuthFactory reactNetworkAuthFactory,
+    ReactNetworkRepository provideReactNetworkRepository(ReactNetworkAuthFactory reactNetworkAuthFactory,
                                                          ReactNetworkFactory reactNetworkFactory,
-                                                         ReactNetworkDefaultAuthFactory reactNetworkDefaultAuthFactory) {
-        return new ReactNetworkRepositoryImpl(context, reactNetworkAuthFactory, reactNetworkFactory, reactNetworkDefaultAuthFactory);
+                                                         ReactNetworkDefaultAuthFactory reactNetworkDefaultAuthFactory,
+                                                         UserSessionInterface userSessionInterface) {
+        return new ReactNetworkRepositoryImpl(
+                reactNetworkAuthFactory,
+                reactNetworkFactory,
+                reactNetworkDefaultAuthFactory,
+                userSessionInterface);
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.tkpdreactnative.react.domain;
 
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.tkpdreactnative.react.UnknownMethodException;
 
 import rx.Observable;

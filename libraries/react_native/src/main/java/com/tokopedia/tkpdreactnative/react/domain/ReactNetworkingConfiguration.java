@@ -1,6 +1,7 @@
 package com.tokopedia.tkpdreactnative.react.domain;
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+
+import com.tokopedia.network.utils.TKPDMapParam;
 
 import java.util.HashMap;
 import java.util.Map;

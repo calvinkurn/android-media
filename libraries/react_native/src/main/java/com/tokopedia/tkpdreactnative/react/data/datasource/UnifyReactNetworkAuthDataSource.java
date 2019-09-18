@@ -3,8 +3,8 @@ package com.tokopedia.tkpdreactnative.react.data.datasource;
 import android.net.Uri;
 
 import com.tokopedia.core.base.common.service.CommonService;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.core.OkHttpFactory;
+import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 import com.tokopedia.tkpdreactnative.react.domain.ReactNetworkingConfiguration;
 
