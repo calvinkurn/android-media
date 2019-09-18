@@ -59,8 +59,8 @@
                 android:lines="1"
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingRight="@dimen/dp_8"
-                app:typographyType="body_3"
-                app:typographyWeight="reguler"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
                 tools:text="Baju Santay Pink with Renda yang bikin kamu nyaman menjalani hari-hari" />
         </LinearLayout>
 
@@ -77,6 +77,7 @@
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:visibility="gone"
+            app:srcCompat="@drawable/ic_af_byme_square"
             tools:ignore="ContentDescription"
             tools:src="@tools:sample/avatars"
             tools:visibility="visible" />
