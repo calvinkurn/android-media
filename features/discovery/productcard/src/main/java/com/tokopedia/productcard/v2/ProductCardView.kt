@@ -249,11 +249,11 @@ abstract class ProductCardView: BaseCustomView {
 
     protected open fun configureImageTopAdsConstraintBasedOnTextLocation(imageTopAds: View, textViewShopLocation: View) {
         if(isTextLocationIsAtBottomOfCard()) {
-            setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
+//            setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
             setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
         }
         else {
-            clearViewConstraint(imageTopAds.id, ConstraintSet.TOP)
+//            clearViewConstraint(imageTopAds.id, ConstraintSet.TOP)
 
             imageProduct?.doIfVisible { constraintLayoutProductCard ->
                 setViewConstraint(textViewShopLocation.id, ConstraintSet.END, constraintLayoutProductCard.id, ConstraintSet.END, R.dimen.dp_8)
