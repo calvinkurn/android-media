@@ -1,13 +1,12 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate
 
-import android.content.Intent
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintLayout
+import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.navigation.R
@@ -47,9 +46,16 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
         val product = element.getAtcProduct() ?: return
         btnCart.setOnClickListener {
             listener.getAnalytic().trackAtcOnClick(product)
-            listener.addProductToCart(product)
+            listener.addProductToCart(product, onSuccessAddToCart())
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
+        }
+    }
+
+    private fun onSuccessAddToCart(): () -> Unit {
+        return {
+            val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.ic_add_to_cart_check_grey)
+            btnCart.setImageDrawable(checkDrawable)
         }
     }
 

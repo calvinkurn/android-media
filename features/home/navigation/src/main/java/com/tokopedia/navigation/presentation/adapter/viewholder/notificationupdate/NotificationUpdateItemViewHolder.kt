@@ -34,14 +34,21 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
     protected val body: TextView = itemView.findViewById(R.id.body)
 
     override fun bind(element: NotificationUpdateItemViewModel) {
-        bindBackgroundColor(element)
+        bindNotificationBackgroundColor(element)
         bindNotificationHeader(element)
         bindNotificationContent(element)
         bindNotificationPayload(element)
         bindOnNotificationClick(element)
     }
 
-    protected open fun bindBackgroundColor(element: NotificationUpdateItemViewModel) {
+    override fun bind(element: NotificationUpdateItemViewModel?, payloads: MutableList<Any>) {
+        if (element == null || payloads.isEmpty()) return
+        when (payloads[0]) {
+            PAYLOAD_CHANGE_BACKGROUND -> bindNotificationBackgroundColor(element)
+        }
+    }
+
+    protected open fun bindNotificationBackgroundColor(element: NotificationUpdateItemViewModel) {
         val color: Int = if (element.isRead) {
             MethodChecker.getColor(container.context, R.color.white)
         } else {
@@ -111,4 +118,7 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
         return MethodChecker.getColor(itemView.context, colorId)
     }
 
+    companion object {
+        val PAYLOAD_CHANGE_BACKGROUND = "payload_change_background"
+    }
 }

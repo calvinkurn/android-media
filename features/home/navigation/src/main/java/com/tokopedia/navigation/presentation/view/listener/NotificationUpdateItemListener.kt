@@ -14,5 +14,5 @@ interface NotificationUpdateItemListener {
 
     fun getAnalytic(): NotificationUpdateAnalytics
 
-    fun addProductToCart(product: ProductData)
+    fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit)
 }

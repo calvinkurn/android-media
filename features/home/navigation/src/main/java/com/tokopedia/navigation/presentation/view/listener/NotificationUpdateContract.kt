@@ -25,6 +25,6 @@ interface NotificationUpdateContract {
         fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit)
         fun resetFilter()
         fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit)
-        fun addProductToCart(product: ProductData)
+        fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit)
     }
 }

@@ -84,9 +84,9 @@ class NotificationUpdatePresenter @Inject constructor(
         getNotificationTotalUnreadUseCase.execute(GetNotificationTotalUnreadSubscriber(onSuccessGetTotalUnreadCounter))
     }
 
-    override fun addProductToCart(product: ProductData) {
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
         val requestParams = getCartRequestParams(product)
-        val atcSubscriber = getAtcSubscriber()
+        val atcSubscriber = getAtcSubscriber(onSuccessAddToCart)
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -94,7 +94,7 @@ class NotificationUpdatePresenter @Inject constructor(
                 .subscribe(atcSubscriber)
     }
 
-    private fun getAtcSubscriber(): Subscriber<AddToCartDataModel> {
+    private fun getAtcSubscriber(onSuccessAddToCart: () -> Unit): Subscriber<AddToCartDataModel> {
         return object : Subscriber<AddToCartDataModel>() {
             override fun onNext(data: AddToCartDataModel) {
                 val isAtcSuccess = data.status.equals(AddToCartDataModel.STATUS_OK, true)
@@ -102,6 +102,7 @@ class NotificationUpdatePresenter @Inject constructor(
                 if (isAtcSuccess) {
                     val message = data.data.message[0]
                     view.showMessageAtcSuccess(message)
+                    onSuccessAddToCart()
                 } else {
                     val errorException = MessageErrorException(data.errorMessage[0])
                     onError(errorException)

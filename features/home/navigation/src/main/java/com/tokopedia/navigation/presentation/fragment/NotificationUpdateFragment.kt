@@ -36,6 +36,7 @@ import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterTypeFactoryImpl
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateTypeFactoryImpl
+import com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate.NotificationUpdateItemViewHolder
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
 import com.tokopedia.navigation.presentation.presenter.NotificationUpdatePresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
@@ -337,7 +338,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun itemClicked(viewModel: NotificationUpdateItemViewModel, adapterPosition: Int) {
-        adapter.notifyItemChanged(adapterPosition)
+        adapter.notifyItemChanged(adapterPosition, NotificationUpdateItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
         analytics.trackClickNotifList(viewModel.templateKey)
         presenter.markReadNotif(viewModel.notificationId)
         val needToResetCounter = !viewModel.isRead
@@ -408,8 +409,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         return analytics
     }
 
-    override fun addProductToCart(product: ProductData) {
-        presenter.addProductToCart(product)
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
+        presenter.addProductToCart(product, onSuccessAddToCart)
     }
 
     override fun showMessageAtcError(e: Throwable?) {
