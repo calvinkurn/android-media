@@ -12,9 +12,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.track.TrackApp
 import com.tokopedia.tradein.R
-import com.tokopedia.tradein.TradeInGTMConstants
 import com.tokopedia.tradein.model.*
 import com.tokopedia.tradein_common.viewmodel.BaseViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -100,15 +98,16 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseVi
             progBarVisibility.value = false
             response?.let {
                 it.keroGetAddress.data?.let { listAddress ->
-                    if (listAddress.isNotEmpty())
+                    var addressData: MoneyInKeroGetAddressResponse.ResponseData.KeroGetAddress.Data? = null
+                    if (listAddress.isNotEmpty()) {
                         listAddress.forEach { moneyInKero ->
                             if (moneyInKero.isPrimary) {
-                                addressLiveData.value = AddressResult(listAddress[0], it.keroGetAddress.token)
-
+                                addressData = moneyInKero
+                                return@forEach
                             }
                         }
-                    else
-                        addressLiveData.value = AddressResult(null, it.keroGetAddress.token)
+                    }
+                    addressLiveData.value = AddressResult(addressData, it.keroGetAddress.token)
                 }
             }
         }, onError = {

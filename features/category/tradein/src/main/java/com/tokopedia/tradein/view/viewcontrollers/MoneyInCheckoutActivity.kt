@@ -18,6 +18,7 @@ import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActiv
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.save_address.SaveAddressDataModel
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.payment.activity.TopPayActivity
 import com.tokopedia.tradein.R
@@ -70,7 +71,15 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             setAddressView(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_DEFAULT_ADDRESS))
         }
         if (intent.hasExtra(MONEY_IN_NEW_ADDRESS)) {
-            setAddressView(intent.getParcelableExtra<KeroGetAddress.Data>(MONEY_IN_NEW_ADDRESS))
+            val saveAddressViewModel: SaveAddressDataModel = intent.getParcelableExtra(MONEY_IN_NEW_ADDRESS)
+            saveAddressViewModel.apply {
+                val keroGetAddress = KeroGetAddress.Data(id, title, address1, address2, cityId,
+                        "", "", districtId, selectedDistrict, true,
+                        true, true, latitude, longitude, phone, postalCode,
+                        provinceId, "", receiverName, 1)
+                setAddressView(keroGetAddress)
+            }
+
         }
         moneyInCheckoutViewModel.getPickupScheduleOption(getMeGQlString(R.raw.gql_get_pickup_schedule_option))
         setObservers()
@@ -117,9 +126,9 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
             when (it) {
                 is Success -> {
                     resetRateAndTime()
-                    if(it.data.error?.message.isNullOrEmpty())
+                    if (it.data.error?.message.isNullOrEmpty())
                         setCourierRatesBottomSheet(it.data)
-                    else{
+                    else {
                         val courierBtn = findViewById<Button>(R.id.courier_btn)
                         showMessageWithAction(it.data.error?.message, getString(R.string.title_ok)) {}
                         courierBtn.setOnClickListener { v ->
@@ -239,9 +248,10 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         retrievalBtn.setOnClickListener {
             sendGeneralEvent(TradeInGTMConstants.ACTION_CLICK_MONEYIN,
                     TradeInGTMConstants.CATEGORY_MONEYIN_COURIER_SELECTION,
-                    when{
+                    when {
                         isTimeSet -> TradeInGTMConstants.ACTION_CLICK_UBAH_WAKTU
-                        else -> TradeInGTMConstants.ACTION_CLICK_PILIH_WAKTU_PANGAMBILAN},
+                        else -> TradeInGTMConstants.ACTION_CLICK_PILIH_WAKTU_PANGAMBILAN
+                    },
                     "")
             moneyInScheduledTimeBottomSheet.show(supportFragmentManager, "")
         }
@@ -324,8 +334,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
                                 addressModel.addressName,
                                 addressModel.addressName,
                                 addressModel.cityId.toInt(),
-                                addressModel.cityName?:"",
-                                addressModel.countryName?:"",
+                                addressModel.cityName ?: "",
+                                addressModel.countryName ?: "",
                                 addressModel.destinationDistrictId.toInt(),
                                 addressModel.destinationDistrictName,
                                 addressModel.isSelected,
