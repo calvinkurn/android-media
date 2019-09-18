@@ -15,8 +15,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.groupchat.R;
-import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
 import com.tokopedia.groupchat.chatroom.view.adapter.chatroom.ChannelPartnerAdapter;
 import com.tokopedia.groupchat.chatroom.view.listener.ChannelInfoFragmentListener;
@@ -141,9 +142,9 @@ public class ChannelInfoFragment extends BaseDaggerFragment
         analytics.eventActionClickOfficialPartner(
                 String.format("%s - %s", channelInfoViewModel.getChannelId(), channelPartnerChildViewModel.getPartnerUrl()));
 
-        GroupChatModuleRouter router = ((GroupChatModuleRouter) getActivity().getApplicationContext());
-        router.openRedirectUrl(getActivity(), ((GroupChatContract.View) getActivity())
-                .generateAttributeApplink(channelPartnerChildViewModel.getPartnerUrl(),
+        RouteManager.route(getActivity(), ApplinkConst.WEBVIEW,
+                ((GroupChatContract.View) getActivity()).generateAttributeApplink(
+                        channelPartnerChildViewModel.getPartnerUrl(),
                         GroupChatAnalytics.ATTRIBUTE_PARTNER_LOGO));
     }
 

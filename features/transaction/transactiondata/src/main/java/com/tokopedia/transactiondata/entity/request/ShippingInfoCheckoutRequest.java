@@ -27,6 +27,9 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
     @SerializedName("ut")
     @Expose
     public String ut;
+    @SerializedName("rates_feature")
+    @Expose
+    public RatesFeature ratesFeature;
 
     public String analyticsDataShippingCourierPrice;
 
@@ -40,6 +43,7 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
         checksum = builder.checksum;
         ut = builder.ut;
         analyticsDataShippingCourierPrice = builder.analyticsDataShippingCourierPrice;
+        ratesFeature = builder.ratesFeature;
     }
 
     public static final class Builder {
@@ -49,6 +53,7 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
         private String checksum;
         private String ut;
         private String analyticsDataShippingCourierPrice;
+        private RatesFeature ratesFeature;
 
         public Builder() {
         }
@@ -83,6 +88,11 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
             return this;
         }
 
+        public Builder ratesFeature(RatesFeature val) {
+            ratesFeature = val;
+            return this;
+        }
+
         public ShippingInfoCheckoutRequest build() {
             return new ShippingInfoCheckoutRequest(this);
         }
@@ -100,6 +110,7 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
         dest.writeString(this.ratesId);
         dest.writeString(this.checksum);
         dest.writeString(this.ut);
+        dest.writeParcelable(this.ratesFeature, flags);
         dest.writeString(this.analyticsDataShippingCourierPrice);
     }
 
@@ -109,6 +120,7 @@ public class ShippingInfoCheckoutRequest implements Parcelable {
         this.ratesId = in.readString();
         this.checksum = in.readString();
         this.ut = in.readString();
+        this.ratesFeature = in.readParcelable(RatesFeature.class.getClassLoader());
         this.analyticsDataShippingCourierPrice = in.readString();
     }
 

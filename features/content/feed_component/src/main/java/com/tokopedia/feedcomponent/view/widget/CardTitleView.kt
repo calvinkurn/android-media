@@ -41,7 +41,7 @@ class CardTitleView : BaseCustomView {
         View.inflate(context, R.layout.partial_card_title, this)
     }
 
-    fun bind(title: Title, template: TemplateTitle) {
+    fun bind(title: Title, template: TemplateTitle, adapterPosition: Int) {
         titleLayout.shouldShowWithAction(shouldShowTitle(title, template)) {
             text.shouldShowWithAction(template.text) {
                 text.text = title.text
@@ -55,7 +55,7 @@ class CardTitleView : BaseCustomView {
             cta.shouldShowWithAction(template.ctaLink) {
                 cta.text = title.ctaLink.text
                 cta.setOnClickListener {
-                    listener?.onTitleCtaClick(title.ctaLink.appLink)
+                    listener?.onTitleCtaClick(title.ctaLink.appLink, adapterPosition)
                 }
             }
         }
@@ -77,6 +77,6 @@ class CardTitleView : BaseCustomView {
 
         fun onActionRedirect(redirectUrl: String)
 
-        fun onTitleCtaClick(redirectUrl: String)
+        fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int)
     }
 }

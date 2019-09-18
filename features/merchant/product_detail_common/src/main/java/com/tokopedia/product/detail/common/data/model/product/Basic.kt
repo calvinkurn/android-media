@@ -10,6 +10,10 @@ import com.tokopedia.product.detail.common.data.model.constant.ProductStatusType
 import com.tokopedia.product.detail.common.data.model.constant.WeightTypeDef
 
 data class Basic(
+        @SerializedName("isLeasing")
+        @Expose
+        val isLeasing: Boolean = false,
+
         @SerializedName("alias")
         @Expose
         val alias: String = "",

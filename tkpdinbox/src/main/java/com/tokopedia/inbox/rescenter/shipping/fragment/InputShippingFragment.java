@@ -19,10 +19,10 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.ResCenterAttachment;
+import com.tokopedia.core.database.repository.ResCenterAttachmentRepository;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -79,7 +79,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     private AttachmentAdapter attachmentAdapter;
     private InputShippingParamsGetModel paramsModel;
     private UploadImageShippingResCenterDialog uploadImageDialog;
-    private ArrayList<AttachmentResCenterVersion2DB> attachmentData;
+    private ArrayList<ResCenterAttachment> attachmentData;
     private ResolutionShippingComponent daggerShippingComponent;
 
     private boolean isConfirmButtonEnabled = false;
@@ -125,12 +125,12 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
     }
 
     @Override
-    public ArrayList<AttachmentResCenterVersion2DB> getAttachmentData() {
+    public ArrayList<ResCenterAttachment> getAttachmentData() {
         return attachmentData;
     }
 
     @Override
-    public void setAttachmentData(ArrayList<AttachmentResCenterVersion2DB> attachmentData) {
+    public void setAttachmentData(ArrayList<ResCenterAttachment> attachmentData) {
         this.attachmentData = attachmentData;
     }
 
@@ -191,7 +191,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     protected void initialPresenter() {
-        presenter = new InputShippingFragmentImpl(this);
+        presenter = new InputShippingFragmentImpl(getActivity().getApplication(), this);
     }
 
     @Override
@@ -444,7 +444,7 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
         if (requestCode == REQUEST_CODE_IMAGE_RESI && resultCode == Activity.RESULT_OK && data!= null) {
             uploadImageDialog.processImageDataFromGallery(data, new BaseUploadImageDialog.UploadImageDialogListener() {
                 @Override
-                public void onSuccess(List<AttachmentResCenterVersion2DB> data) {
+                public void onSuccess(List<ResCenterAttachment> data) {
                     attachmentData.clear();
                     attachmentData.addAll(data);
                     attachmentAdapter.notifyDataSetChanged();
@@ -481,10 +481,12 @@ public class InputShippingFragment extends BasePresenterFragment<InputShippingFr
 
     @Override
     public void onClickOpenAttachment(View view, final int position) {
+        ResCenterAttachmentRepository resCenterRepository = new ResCenterAttachmentRepository(getActivity().getApplication());
+
         uploadImageDialog.showRemoveDialog(new UploadImageShippingResCenterDialog.onRemoveAttachmentListener() {
             @Override
             public void onRemoveClickListener() {
-                attachmentData.get(position).delete();
+                resCenterRepository.deleteAttachment(attachmentData.get(position));
                 attachmentData.remove(position);
                 attachmentAdapter.notifyItemRemoved(position);
             }

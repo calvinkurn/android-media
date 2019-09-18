@@ -3,8 +3,8 @@ package com.tokopedia.home.beranda.helper;
 import android.text.TextUtils;
 
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SpotlightItemViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightItemViewModel;
 
 /**
  * Created by henrypriyono on 09/02/18.

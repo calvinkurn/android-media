@@ -3,9 +3,8 @@ package com.tokopedia.search.result.presentation.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.discovery.common.data.DataValue;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
-import com.tokopedia.search.result.domain.model.SearchProductModel;
+import com.tokopedia.filter.common.data.DataValue;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
@@ -33,6 +32,7 @@ public class ProductViewModel implements Parcelable {
     private CpmModel cpmModel;
     private RelatedSearchViewModel relatedSearchModel;
     private GlobalNavViewModel globalNavViewModel;
+    private int defaultView;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -181,6 +181,14 @@ public class ProductViewModel implements Parcelable {
         this.globalNavViewModel = globalNavViewModel;
     }
 
+    public int getDefaultView() {
+        return defaultView;
+    }
+
+    public void setDefaultView(int defaultView) {
+        this.defaultView = defaultView;
+    }
+
     public int getTotalItem() {
         return getProductList().size() + getAdsModel().getData().size();
     }
@@ -211,6 +219,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.cpmModel, flags);
         dest.writeParcelable(this.relatedSearchModel, flags);
         dest.writeParcelable(this.globalNavViewModel, flags);
+        dest.writeInt(this.defaultView);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -233,6 +242,7 @@ public class ProductViewModel implements Parcelable {
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());
         this.relatedSearchModel = in.readParcelable(RelatedSearchViewModel.class.getClassLoader());
         this.globalNavViewModel = in.readParcelable(GlobalNavViewModel.class.getClassLoader());
+        this.defaultView = in.readInt();
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

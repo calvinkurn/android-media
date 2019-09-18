@@ -19,17 +19,27 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
+import com.tokopedia.digital_deals.view.adapter.TrendingDealsAdapter;
+import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
+import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
+import com.tokopedia.digital_deals.view.contractor.TrendingDealsContract;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.utils.TrendingDealsCallBacks;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.library.baseadapter.AdapterCallback;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import javax.inject.Inject;
+
 import static android.app.Activity.RESULT_OK;
 
-public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCategoryAdapter.INavigateToActivityRequest {
+public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCategoryAdapter.INavigateToActivityRequest, TrendingDealsAdapter.INavigateToActivityRequest{
 
     private TrendingDealsCallBacks trendingDealsCallBacks;
     private Toolbar toolbar;
@@ -50,11 +60,10 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
         setHasOptionsMenu(false);
         setViewIds(view);
 
-        if (trendingDealsCallBacks.getTrendingDeals() != null) {
-            DealsCategoryAdapter adapter = new DealsCategoryAdapter(trendingDealsCallBacks.getTrendingDeals(), DealsCategoryAdapter.HOME_PAGE, this, false);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            recyclerView.setAdapter(adapter);
-        }
+        TrendingDealsAdapter trendingDealsAdapter = new TrendingDealsAdapter(getContext(), mAdapterCallbacks, this, trendingDealsCallBacks.getTrendingDealsUrl(), trendingDealsCallBacks.getToolBarTitle(), false, true, trendingDealsCallBacks.getHomePosition());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(trendingDealsAdapter);
+        trendingDealsAdapter.startDataLoading();
         return view;
     }
 
@@ -80,7 +89,7 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
 
     @Override
     protected void initInjector() {
-
+        getComponent(DealsComponent.class).inject(this);
     }
 
     @Override
@@ -115,5 +124,51 @@ public class TrendingDealsFragment extends BaseDaggerFragment implements DealsCa
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    AdapterCallback mAdapterCallbacks = new AdapterCallback() {
+        @Override
+        public void onRetryPageLoad(int pageNumber) {
+
+        }
+
+        @Override
+        public void onEmptyList(Object rawObject) {
+        }
+
+        @Override
+        public void onStartFirstPageLoad() {
+        }
+
+        @Override
+        public void onFinishFirstPageLoad(int itemCount, @Nullable Object rawObject) {
+        }
+
+        @Override
+        public void onStartPageLoad(int pageNumber) {
+
+        }
+
+        @Override
+        public void onFinishPageLoad(int itemCount, int pageNumber, @Nullable Object rawObject) {
+
+        }
+
+        @Override
+        public void onError(int pageNumber) {
+        }
+    };
+
+    @Override
+    public void onDestroy() {
+        try {
+            if (recyclerView.getAdapter() != null) {
+                ((TrendingDealsAdapter) recyclerView.getAdapter()).unsubscribeUseCase();
+            }
+        } catch (Exception e) {
+
+        }
+        super.onDestroy();
     }
 }
