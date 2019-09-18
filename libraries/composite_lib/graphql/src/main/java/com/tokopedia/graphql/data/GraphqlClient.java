@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
+import com.example.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.graphql.FingerprintManager;
 import com.tokopedia.graphql.data.db.GraphqlDatabase;
@@ -37,7 +38,7 @@ public class GraphqlClient {
 
             TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
             tkpdOkHttpBuilder.addInterceptor(new RiskAnalyticsInterceptor(context));
-            tkpdOkHttpBuilder.addInterceptor(new AkamaiBotInterceptor());
+            tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
 
             sRetrofit = CommonNetwork.createRetrofit(
                     GraphqlUrl.BASE_URL,
