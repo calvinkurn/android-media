@@ -9,7 +9,7 @@ command -v tinypng >/dev/null 2>&1 || {
     #exit 1;
 }
 
-arrKey=("6q4OXCyMdyCExeU4U0DZDeuhCisONRY2" "dW4fjqSqZB6YJ6H8lxQ52LplN4nHLX3C" "nqBXh3XCfpS3JDTcPQjkq4JDw9nNYdNn" "pBLdfsdkq7Ms08mC2H6tR4DRMzYGZ9S5" "1ZTHf25qYmmwqMlwGNHT3VNCkchhWd32")
+arrKey=("dW4fjqSqZB6YJ6H8lxQ52LplN4nHLX3C" "nqBXh3XCfpS3JDTcPQjkq4JDw9nNYdNn" "pBLdfsdkq7Ms08mC2H6tR4DRMzYGZ9S5" "1ZTHf25qYmmwqMlwGNHT3VNCkchhWd32" "6q4OXCyMdyCExeU4U0DZDeuhCisONRY2")
 keyArrSize=${#arrKey[@]}
 keyIndex=0
 
