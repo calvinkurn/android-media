@@ -59,7 +59,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         badgesContainer = (LinearLayout) itemView.findViewById(R.id.image_search_badges_container);
         wishlistButton = (ImageView) itemView.findViewById(R.id.image_search_wishlist_button);
         wishlistButtonContainer = (RelativeLayout) itemView.findViewById(R.id.image_search_wishlist_button_container);
-        container = itemView.findViewById(R.id.image_search_container);
+        container = itemView.findViewById(R.id.image_search_product_item_container);
         rating = (ImageView) itemView.findViewById(R.id.image_search_rating);
         reviewCount = (TextView) itemView.findViewById(R.id.image_search_review_count);
         ratingReviewContainer = (LinearLayout) itemView.findViewById(R.id.image_search_rating_review_container);

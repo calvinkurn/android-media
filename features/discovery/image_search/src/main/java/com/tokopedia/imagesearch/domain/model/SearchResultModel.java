@@ -8,35 +8,11 @@ import java.util.List;
 
 public class SearchResultModel {
 
-    private String redirectUrl;
-    private boolean hasCatalog;
     private List<ProductModel> productList;
     private int totalData;
-    private String totalDataText;
     private String query;
-    private String source;
     private String shareUrl;
-    private String suggestionText;
-    private String suggestionCurrentKeyword;
-    private String suggestedQuery;
-    private String departmentId="";
     private String additionalParams;
-
-    public String getRedirectUrl() {
-        return redirectUrl;
-    }
-
-    public void setRedirectUrl(String redirectUrl) {
-        this.redirectUrl = redirectUrl;
-    }
-
-    public void setHasCatalog(boolean hasCatalog) {
-        this.hasCatalog = hasCatalog;
-    }
-
-    public boolean isHasCatalog() {
-        return hasCatalog;
-    }
 
     public void setProductList(List<ProductModel> productList) {
         this.productList = productList;
@@ -54,14 +30,6 @@ public class SearchResultModel {
         return totalData;
     }
 
-    public String getTotalDataText() {
-        return totalDataText;
-    }
-
-    public void setTotalDataText(String totalDataText) {
-        this.totalDataText = totalDataText;
-    }
-
     public String getQuery() {
         return query;
     }
@@ -70,52 +38,12 @@ public class SearchResultModel {
         this.query = query;
     }
 
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
     public String getShareUrl() {
         return shareUrl;
     }
 
     public void setShareUrl(String shareUrl) {
         this.shareUrl = shareUrl;
-    }
-
-    public String getSuggestionText() {
-        return suggestionText;
-    }
-
-    public void setSuggestionText(String suggestionText) {
-        this.suggestionText = suggestionText;
-    }
-
-    public String getSuggestionCurrentKeyword() {
-        return suggestionCurrentKeyword;
-    }
-
-    public void setSuggestionCurrentKeyword(String suggestionCurrentKeyword) {
-        this.suggestionCurrentKeyword = suggestionCurrentKeyword;
-    }
-
-    public String getSuggestedQuery() {
-        return suggestedQuery;
-    }
-
-    public void setSuggestedQuery(String suggestedQuery) {
-        this.suggestedQuery = suggestedQuery;
-    }
-
-    public String getDepartmentId() {
-        return departmentId;
-    }
-
-    public void setDepartmentId(String departmentId) {
-        this.departmentId = departmentId;
     }
 
     public String getAdditionalParams() {
