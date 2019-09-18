@@ -288,7 +288,7 @@ fun getVisiblePercent(v: View): Int {
             -1
         }
     }
-    return 10
+    return -1
 }
 
 private fun viewIsVisible(view: View?): Boolean {
