@@ -588,18 +588,18 @@ class RegisterAnalytics @Inject constructor() {
         ))
     }
 
-    private fun getCashShield(context: Context): CashShield {
-        if(cashShield == null) {
-            cashShield = CashShield(context)
-        }
+//    private fun getCashShield(context: Context): CashShield {
+//        if(cashShield == null) {
+//            cashShield = CashShield(context)
+//        }
+//
+//        return cashShield!!
+//    }
 
-        return cashShield!!
-    }
-
-    fun onDestroy() {
+//    fun onDestroy() {
 //        cashShield?.cancel()
 //        cashShield = null
-    }
+//    }
 
     fun trackClickPhoneNumberSuggestion(){
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
