@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.createpost.view.adapter
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.createpost.SuggestionClickListener
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
@@ -10,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.item_af_product_suggestion.view.*
 
 /**
@@ -58,12 +60,31 @@ class ProductSuggestionAdapter(
                 price.text = element.price
 
                 if (element.type == ProductSuggestionItem.TYPE_AFFILIATE) {
-                    bymeLogo.visible()
+                    setAffiliateStyle(itemView)
                 } else {
-                    bymeLogo.gone()
+                    setDefaultStyle(itemView)
                 }
             }
         }
 
+        private fun setAffiliateStyle(itemView: View) {
+            with(itemView) {
+                bymeLogo.visible()
+                title.text = context.getString(R.string.af_get_commission)
+                title.setWeight(Typography.REGULAR)
+                title.setTextColor(MethodChecker.getColor(context, R.color.clr_ae31353b))
+                price.setTextColor(MethodChecker.getColor(context, R.color.af_commission_blue))
+            }
+        }
+
+        private fun setDefaultStyle(itemView: View) {
+            with(itemView) {
+                bymeLogo.gone()
+                title.setWeight(Typography.BOLD)
+                title.setTextColor(MethodChecker.getColor(context, R.color.clr_f531353b))
+                price.setTextColor(MethodChecker.getColor(context, R.color.Yellow_Y500))
+            }
+
+        }
     }
 }
