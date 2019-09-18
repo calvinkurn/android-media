@@ -71,6 +71,7 @@ public class HomePageTracking {
     private static final String ACTION_CLICK_SEE_ALL_PRODUCT_SPRINT_BACKGROUND = "sprint sale with backgroud click view all";
     private static final String ACTION_CLICK_SEE_ALL_DYNAMIC_CHANNEL = "curated list click view all";
     private static final String ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL = "lego banner click view all";
+    private static final String ACTION_CLICK_SEE_ALL_DC_BANNER_CHANNEL = "lego banner gif click view all";
     private static final String ACTION_CLICK_SEE_ALL_LEGO_THREE_IMAGE_BANNER_CHANNEL = "lego banner 3 image click view all";
     private static final String ACTION_CLICK_OPEN_SHOP = "jual ini itu buka toko";
     private static final String ACTION_CLICK_EDIT_SHOP = "jual ini itu click ubah";
@@ -340,6 +341,18 @@ public class HomePageTracking {
         map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
         map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_LEGO_BANNER_CHANNEL);
         map.put(EVENT_LABEL, applink);
+        map.put(CHANNEL_ID, channelId);
+        getTracker(context).sendGeneralEvent(map);
+    }
+
+    public static void eventClickSeeAllGifDCBannerChannel(Context context,
+                                                         String headerName,
+                                                         String channelId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put(EVENT, EVENT_CLICK_HOME_PAGE);
+        map.put(EVENT_CATEGORY, CATEGORY_HOME_PAGE);
+        map.put(EVENT_ACTION, ACTION_CLICK_SEE_ALL_DC_BANNER_CHANNEL);
+        map.put(EVENT_LABEL, headerName);
         map.put(CHANNEL_ID, channelId);
         getTracker(context).sendGeneralEvent(map);
     }
@@ -974,6 +987,15 @@ public class HomePageTracking {
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
                     bannerChannel.getEnhanceImpressionBannerChannelMix()
+                    );
+        }
+    }
+
+    public static void eventEnhanceImpressionBannerGif(Context context, DynamicHomeChannel.Channels bannerChannel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    bannerChannel.getEnhanceImpressionGIFBanner()
                     );
         }
     }
