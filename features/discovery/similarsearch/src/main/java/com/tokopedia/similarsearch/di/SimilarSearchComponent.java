@@ -6,9 +6,6 @@ import com.tokopedia.similarsearch.view.SimilarSearchFragment;
 
 import dagger.Component;
 
-/**
- * Created by sandeepgoyal on 15/12/17.
- */
 @SimilarSearchModuleScope
 @Component(modules = {SimilarSearchModule.class, }, dependencies = {BaseAppComponent.class})
 public interface SimilarSearchComponent {
