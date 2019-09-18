@@ -87,13 +87,19 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                 }
             }
         })
-        voucherGameViewModel.voucherGameBanners.observe(this, Observer {
+        voucherGameViewModel.voucherGameMenuDetail.observe(this, Observer {
             it.run {
                 togglePromoBanner(true)
                 when(it) {
                     is Success -> {
-                        if (it.data.isEmpty()) promo_banner.visibility = View.GONE
-                        else renderBanners(it.data)
+                        with (it.data) {
+                            if (catalog.label.isNotEmpty())  (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
+
+                            if (banners.isEmpty()) promo_banner.visibility = View.GONE
+                            else {
+                                renderBanners(banners)
+                            }
+                        }
                     }
                     is Fail -> {
                         promo_banner.visibility = View.GONE
@@ -112,8 +118,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
-            voucherGameViewModel.getVoucherGameBanners(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
-                    voucherGameViewModel.createBannerParams(it))
+            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
+                    voucherGameViewModel.createMenuDetailParams(it))
         }
         initView()
     }
@@ -165,7 +171,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     private fun renderOperators(data: VoucherGameListData) {
-        (activity as BaseVoucherGameActivity).updateTitle(data.text)
+        searchInputView.setSearchHint(data.text)
 
         if (data.operators.isEmpty()) {
             adapter.clearAllElements()
