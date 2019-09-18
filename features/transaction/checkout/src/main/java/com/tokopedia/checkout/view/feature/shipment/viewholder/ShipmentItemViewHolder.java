@@ -726,7 +726,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc()) &&
                     !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount())) {
                 String labelCouponAmount = "- Rp " + shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount();
-                tvLogTicker.setDesc(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount());
+                tvLogTicker.setDesc(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
                 tvLogTicker.setTitle(labelCouponAmount);
             }
 
