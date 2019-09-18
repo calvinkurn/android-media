@@ -723,7 +723,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     }
                 });
             }
-            tvLogTicker.setDesc(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
+            tvLogTicker.setTitle(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
 
             boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
             tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
