@@ -158,7 +158,7 @@ abstract class ProductCardView: BaseCustomView {
         setLocationMarginLeft()
         setReviewCountMarginLeft()
         setLabelOffersConstraint()
-        setImageTopAdsConstraint()
+        setTextViewLocationConstraintEnd()
     }
 
     protected open fun setProductNameMarginTop() {
@@ -239,24 +239,21 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    protected open fun setImageTopAdsConstraint() {
-        imageTopAds?.doIfVisible { imageTopAds ->
-            textViewShopLocation?.doIfVisible { textViewShopLocation ->
-                configureImageTopAdsConstraintBasedOnTextLocation(imageTopAds, textViewShopLocation)
+    protected open fun setTextViewLocationConstraintEnd() {
+        textViewShopLocation?.doIfVisible { textViewShopLocation ->
+            imageTopAds?.doIfVisible { imageTopAds ->
+                configureTextViewLocationConstraintBasedOnPosition(imageTopAds, textViewShopLocation)
             }
         }
     }
 
-    protected open fun configureImageTopAdsConstraintBasedOnTextLocation(imageTopAds: View, textViewShopLocation: View) {
+    protected open fun configureTextViewLocationConstraintBasedOnPosition(imageTopAds: View, textViewShopLocation: View) {
         if(isTextLocationIsAtBottomOfCard()) {
-//            setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
             setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
         }
         else {
-//            clearViewConstraint(imageTopAds.id, ConstraintSet.TOP)
-
-            imageProduct?.doIfVisible { constraintLayoutProductCard ->
-                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, constraintLayoutProductCard.id, ConstraintSet.END, R.dimen.dp_8)
+            imageProduct?.doIfVisible { imageProduct ->
+                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageProduct.id, ConstraintSet.END, R.dimen.dp_8)
             }
         }
     }
