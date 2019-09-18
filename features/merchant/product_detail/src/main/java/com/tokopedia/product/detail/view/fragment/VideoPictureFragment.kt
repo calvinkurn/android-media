@@ -190,14 +190,13 @@ class VideoPictureFragment : BaseDaggerFragment() {
     }
 
     fun pauseVideo() {
-        mExoPlayer?.addListener(object : Player.EventListener {
-            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-                // If player already pause, just ignore this
-                if (!playWhenReady && playbackState != Player.STATE_READY) {
-                    mExoPlayer?.playWhenReady = false
-                }
+        mExoPlayer?.let {
+            val isVideoPlay = it.playWhenReady
+            val isVideoPlayState = it.playbackState
+            if (!isVideoPlay && isVideoPlayState != Player.STATE_READY) {
+                mExoPlayer?.playWhenReady = false
             }
-        })
+        }
     }
 
     override fun onStop() {
