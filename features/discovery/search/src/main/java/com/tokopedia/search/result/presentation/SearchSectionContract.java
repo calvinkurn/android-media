@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ public interface SearchSectionContract {
 
         HashMap<String, String> getSelectedFilter();
 
-        void setSelectedFilter(HashMap<String, String> selectedFilter);
+        void refreshFilterController(HashMap<String, String> selectedFilter);
 
         void showRefreshLayout();
 

@@ -43,6 +43,7 @@ public class ShopPageTrackingConstant {
     //label
     public static final String CLICK_TAB = "click tab";
     public static final String CLICK_SHARE_BUTTON = "click share button";
+    public static final String CLICK_CART_BUTTON = "click cart button";
     public static final String CLICK_REQUEST_OPEN_SHOP = "click request open shop";
     public static final String IMPRESSION_OF_REQUEST_OPEN_SHOP = "impression of request open shop";
     public static final String SEARCH_RESULT = "search result";

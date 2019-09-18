@@ -55,9 +55,6 @@ import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.design.text.watcher.CurrencyTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.design.utils.StringUtils;
-import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivity;
-import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
-import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -732,17 +729,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void goToAddBank() {
-        Intent intent = new Intent(getActivity(), AddEditBankActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtras(bundle);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.ADD_BANK);
         startActivityForResult(intent, BANK_INTENT);
     }
 
     @Override
     public void goToSettingBank() {
-        Intent intent = new Intent(getActivity(), SettingBankActivity.class);
-        Bundle bundle = new Bundle();
-        intent.putExtras(bundle);
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.SETTING_BANK);
         startActivityForResult(intent, BANK_SETTING_INTENT);
     }
 
@@ -774,19 +767,28 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         switch (requestCode) {
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-                    BankAccount bankAccount = new BankAccount();
-                    bankAccount.setBankAccountId(parcelable.getAccountId());
-                    bankAccount.setBankAccountName(parcelable.getAccountName());
-                    bankAccount.setBankAccountNumber(parcelable.getAccountNumber());
-                    bankAccount.setBankId(parcelable.getBankId());
-                    bankAccount.setBankName(parcelable.getBankName());
+                    if(data!= null && data.getExtras()!= null){
+                        String accountId = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_ID,"");
+                        String accountName = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NAME,"");
+                        String accountNumber = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_ACCOUNT_NO,"");
+                        String bankId = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_BANK_ID,"");
+                        String bankName = data.getExtras().getString(ApplinkConstInternalGlobal.PARAM_BANK_NAME,"");
 
-                    bankAdapter.addItem(bankAccount);
-                    bankAdapter.changeItemSelected(listBank.size() - 2);
-                    itemSelected();
-                    snackBarInfo.setText(R.string.success_add_bank);
-                    snackBarInfo.show();
+                        BankAccount bankAccount = new BankAccount();
+                        bankAccount.setBankAccountId(accountId);
+                        bankAccount.setBankAccountName(accountName);
+                        bankAccount.setBankAccountNumber(accountNumber);
+                        bankAccount.setBankId(bankId);
+                        bankAccount.setBankName(bankName);
+
+                        bankAdapter.addItem(bankAccount);
+                        bankAdapter.changeItemSelected(listBank.size() - 2);
+                        itemSelected();
+                        snackBarInfo.setText(R.string.success_add_bank);
+                        snackBarInfo.show();
+                    }else{
+                        presenter.refreshBankList();
+                    }
                 }
                 break;
             case BANK_SETTING_INTENT:

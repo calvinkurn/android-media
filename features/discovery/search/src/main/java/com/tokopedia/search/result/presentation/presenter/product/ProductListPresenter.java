@@ -2,7 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
@@ -543,6 +543,8 @@ final class ProductListPresenter
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
+        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
+        getView().setDefaultLayoutType(productViewModel.getDefaultView());
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToShowEmptySearch(productViewModel);
@@ -624,7 +626,6 @@ final class ProductListPresenter
         }
 
         getView().setAdditionalParams(productViewModel.getAdditionalParams());
-        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().removeLoading();
         getView().setProductList(list);
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());

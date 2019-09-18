@@ -4,10 +4,12 @@ package com.tokopedia.core;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.URLUtil;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.DownloadResultReceiver;
@@ -30,6 +32,8 @@ import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
+
+import timber.log.Timber;
 
 
 /**
@@ -87,6 +91,12 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
     @Override
     protected void onResume() {
         super.onResume();
+        boolean status = GCMHandler.isPlayServicesAvailable(this);
+        if(!status){
+            Timber.w("P3Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+                    + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
+                    + " | "+Build.TAGS);
+        }
         moveToHome();
     }
 
@@ -168,14 +178,17 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                                 linkerDefferedDeeplinkData.getPromoCode() : "");
                         String deeplink = linkerDefferedDeeplinkData.getDeeplink();
                         if (!TextUtils.isEmpty(deeplink)) {
-                            Uri uri;
-                            if (deeplink.startsWith(Constants.Schemes.APPLINKS + "://")) {
-                                uri = Uri.parse(deeplink);
+                            // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
+                            // because we need tracking UTM for those notification applink
+                            Intent intent = new Intent();
+                            if (URLUtil.isNetworkUrl(deeplink)) {
+                                intent.setClassName(SplashScreen.this.getPackageName(),
+                                        com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                             } else {
-                                uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+                                intent.setClassName(SplashScreen.this.getPackageName(),
+                                        com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }
-                            Intent intent = new Intent(Intent.ACTION_VIEW);
-                            intent.setData(uri);
+                            intent.setData(Uri.parse(deeplink));
                             startActivity(intent);
                             finish();
                         }

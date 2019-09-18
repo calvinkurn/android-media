@@ -1,0 +1,36 @@
+plugins { id 'base' }
+
+repositories {
+    jcenter()
+}
+task createClasspathManifest {
+    def outputDir = file("$buildDir/$name")
+
+    inputs.files sourceSets.main.runtimeClasspath
+    outputs.dir outputDir
+
+    doLast {
+        outputDir.mkdirs()
+        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
+    }
+}
+
+// Add the classpath file to the test runtime classpath
+dependencies {
+    testRuntimeOnly files(createClasspathManifest)
+}
+dependencies {
+    compile "commons-io:commons-io:2.5"
+    compile "commons-codec:commons-codec:1.9"
+    testImplementation gradleTestKit()
+    testImplementation 'junit:junit:4.12'
+    testImplementation('org.spockframework:spock-core:1.1-groovy-2.4') {
+        exclude module: 'groovy-all'
+    }
+
+}
+
+
+
+
+

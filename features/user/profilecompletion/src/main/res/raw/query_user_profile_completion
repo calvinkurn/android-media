@@ -5,6 +5,7 @@ query userProfileCompletion(){
     gender,
     email,
   	msisdn,
-    isMsisdnVerified
+    isMsisdnVerified,
+    isEmailDone
   }
 }

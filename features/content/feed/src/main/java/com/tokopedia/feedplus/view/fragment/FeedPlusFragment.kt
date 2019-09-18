@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.support.annotation.RestrictTo
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -17,9 +16,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import android.widget.FrameLayout
-import android.widget.TextView
 import android.widget.Toast
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -29,7 +25,6 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -95,7 +90,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
-import com.tokopedia.kolcommon.data.pojo.Author
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -109,8 +103,9 @@ import java.util.ArrayList
 
 import javax.inject.Inject
 
-import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.kol.common.util.createBottomMenu
@@ -118,6 +113,7 @@ import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * @author by nisie on 5/15/17.
@@ -171,10 +167,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     internal lateinit var postTagAnalytics: PostTagAnalytics
 
     @Inject
-    internal lateinit var userSession: UserSessionInterface
+    internal lateinit var feedAnalytics: FeedAnalyticTracker
 
-    val isMainViewVisible: Boolean
-        get() = userVisibleHint
+    @Inject
+    internal lateinit var userSession: UserSessionInterface
 
     private val userIdInt: Int
         get() {
@@ -619,6 +615,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
         unRegisterNewFeedReceiver()
+        feedAnalytics.sendPendingAnalytics()
     }
 
     private fun registerNewFeedReceiver() {
@@ -1136,7 +1133,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                              id: String, type: String,
                                              isFollow: Boolean) {
         if (type == FollowCta.AUTHOR_USER) {
-            val userIdInt = userIdInt
+            val userIdInt = id.toIntOrZero()
 
             if (isFollow) {
                 onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
@@ -1204,7 +1201,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 
@@ -1218,7 +1215,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                      isFollow: Boolean) {
         if (getUserSession().isLoggedIn) {
             if (type == FollowCta.AUTHOR_USER) {
-                val userIdInt = userIdInt
+                val userIdInt = id.toIntOrZero()
 
                 if (isFollow) {
                     onUnfollowKolClicked(positionInFeed, userIdInt)
@@ -1350,7 +1347,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 
@@ -1398,6 +1395,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             }
         }
+    }
+
+    override fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel) {
+        feedAnalytics.eventTimelineClickHashtag(
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType,
+                hashtagText
+        )
+    }
+
+    override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
+        feedAnalytics.eventTimelineClickReadMore(
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType
+        )
     }
 
     override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,

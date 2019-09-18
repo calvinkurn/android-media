@@ -15,9 +15,8 @@ import android.preference.PreferenceManager;
 import android.webkit.URLUtil;
 
 import com.bumptech.glide.Glide;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.applink.RouteManager;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.R;
@@ -58,17 +57,19 @@ public abstract class BaseNotificationFactory {
     }
 
     protected int getDrawableIcon() {
-        if (GlobalConfig.isSellerApp())
-            return R.drawable.ic_status_bar_notif_sellerapp;
-        else
-            return R.drawable.ic_status_bar_notif_customerapp;
+        if (GlobalConfig.isSellerApp()) {
+            return R.mipmap.ic_statusbar_notif_seller;
+        } else {
+            return R.mipmap.ic_statusbar_notif_customer;
+        }
     }
 
     protected int getDrawableLargeIcon() {
-        if (GlobalConfig.isSellerApp())
-            return R.drawable.ic_big_notif_sellerapp;
-        else
+        if (GlobalConfig.isSellerApp()) {
+            return R.mipmap.ic_big_notif_seller;
+        } else {
             return R.mipmap.ic_launcher;
+        }
     }
 
     protected Bitmap getBitmapLargeIcon() {
@@ -81,7 +82,7 @@ public abstract class BaseNotificationFactory {
                     .asBitmap()
                     .into(getImageWidth(), getImageHeight())
                     .get(3, TimeUnit.SECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e ) {
+        } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());
         }
     }
@@ -100,11 +101,9 @@ public abstract class BaseNotificationFactory {
         // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
         // because we need tracking UTM for those notification applink
         if (URLUtil.isNetworkUrl(appLinks)) {
-            intent.setClassName(context.getPackageName(),
-                    com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
+            intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
         } else {
-            intent.setClassName(context.getPackageName(),
-                    com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
+            intent.setClassName(context.getPackageName(), GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
         }
         intent.setData(Uri.parse(appLinks));
         Bundle bundle = new Bundle();

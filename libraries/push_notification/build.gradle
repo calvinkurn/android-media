@@ -26,17 +26,10 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'push_notification'
-    groupId = 'com.tokopedia.pushnotif'
-    versionName = "${tkpdPushNotifVersion}"
-    artifactName ="push_notification-release"
-}
-
 dependencies {
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
@@ -53,6 +46,13 @@ dependencies {
 
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
+}
+
+project.ext {
+    artifactId = 'push-notification'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="librarypushnotification-release"
 }
 
 apply from: '../../publish_local.gradle'

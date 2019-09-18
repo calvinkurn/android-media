@@ -21,9 +21,13 @@ class AddAddressSubscriber(val view: AddEditAddressListener,
             AddNewAddressAnalytics.eventClickButtonSimpanNegativeSuccess()
         }
 
-        val addAddressResponseUiModel = mapper.map(t)
-        saveAddressDataModel.id = addAddressResponseUiModel.data.addressId
-        view.onSuccessAddAddress(saveAddressDataModel)
+        val response = mapper.map(t)
+        if (response.data.isSuccess == 1) {
+            saveAddressDataModel.id = response.data.addressId
+            view.onSuccessAddAddress(saveAddressDataModel)
+        } else {
+            view.showError(Throwable())
+        }
     }
 
     override fun onCompleted() {
