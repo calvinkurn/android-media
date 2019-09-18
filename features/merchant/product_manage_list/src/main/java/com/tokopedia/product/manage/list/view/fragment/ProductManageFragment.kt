@@ -5,11 +5,8 @@ import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
@@ -21,9 +18,12 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
+import com.google.android.material.appbar.AppBarLayout
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
@@ -34,6 +34,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.abstraction.common.utils.view.MethodChecker.getColor
 import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -41,7 +42,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.core.router.productdetail.PdpRouter
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.ToasterError
@@ -106,6 +106,7 @@ import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
 import javax.inject.Inject
@@ -536,7 +537,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     goToPDP(productId)
                     dialog.dismiss()
                 }
-                val backgroundColor = ContextCompat.getColor(context, R.color.tkpd_main_green)
+                val backgroundColor = getColor(context, R.color.tkpd_main_green)
 
                 val spanText = SpannableString(getString(R.string.popup_tips_trick_clickable))
                 spanText.setSpan(StyleSpan(Typeface.BOLD),
@@ -748,13 +749,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun onPromoTopAdsClicked(productManageViewModel: ProductManageViewModel) {
-        activity?.let {
-            (it.application as PdpRouter).goToCreateTopadsPromo(it,
-                    productManageViewModel.itemId, userSession.userId,
-                    if (GlobalConfig.isSellerApp())
-                        TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
-                    else
-                        TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT)
+        context?.let {
+            val uri = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, productManageViewModel.itemId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, userSession.userId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                            if (GlobalConfig.isSellerApp())
+                                TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
+                            else
+                                TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT).build().toString()
+
+            RouteManager.route(it, uri)
         }
     }
 
@@ -857,9 +862,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
 
         val productManageEditPriceDialogFragment = ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant, isOfficialStore)
-        productManageEditPriceDialogFragment.setListenerDialogEditPrice { productId, price, currencyId, currencyText -> productManagePresenter.editPrice(productId, price, currencyId, currencyText) }
+        productManageEditPriceDialogFragment.setListenerDialogEditPrice(object : ProductManageEditPriceDialogFragment.ListenerDialogEditPrice {
+            override fun onSubmitEditPrice(productId: String, price: String, currencyId: String, currencyText: String) {
+                productManagePresenter.editPrice(productId, price, currencyId.toString(), currencyText)
+            }
+        })
         activity?.let {
-            productManageEditPriceDialogFragment.show(it.fragmentManager, "")
+            productManageEditPriceDialogFragment.show(fragmentManager, "")
         }
     }
 

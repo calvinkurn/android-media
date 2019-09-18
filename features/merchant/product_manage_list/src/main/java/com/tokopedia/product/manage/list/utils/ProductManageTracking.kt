@@ -48,6 +48,10 @@ object ProductManageTracking {
         eventProductManage(CLICK_OVERFLOW_MENU, label)
     }
 
+    fun eventProductManageOverflowMenu(context: Context, label: String) {
+        eventProductManage(CLICK_OVERFLOW_MENU, label)
+    }
+
 
     fun trackingFilter(productManageFilterModel: ProductManageFilterModel, context: Context?) {
         val filters = ArrayList<String>()
