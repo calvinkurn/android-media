@@ -29,6 +29,10 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity(), HasComponent<
         )
     }
 
+    override fun getComponent(): PromoCheckoutListComponent {
+        return PromoCheckoutListComponentInstance.getPromoCheckoutListComponent(application)
+    }
+
     companion object {
         fun newInstance(activity: Context, isCouponActive: Boolean, promoCode: String, isOneClickShipment: Boolean, pageTracking: Int,
                         promo: Promo): Intent {

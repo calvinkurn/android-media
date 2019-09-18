@@ -62,6 +62,8 @@ object DeeplinkMapper {
             deeplink.equals(ApplinkConst.SETTING_PROFILE, false) -> return ApplinkConstInternalGlobal.SETTING_PROFILE
             deeplink.equals(ApplinkConst.DISCOVERY_SEARCH, false) -> return ApplinkConstInternalDiscovery.SEARCH_RESULT
             deeplink.equals(ApplinkConst.SETTING_NOTIFICATION, false) -> return ApplinkConstInternalMarketplace.USER_NOTIFICATION_SETTING
+            deeplink.equals(ApplinkConst.KYC, false) -> return ApplinkConstInternalGlobal.USER_IDENTIFICATION_INFO
+            deeplink.equals(ApplinkConst.SETTING_BANK, false) -> return ApplinkConstInternalGlobal.SETTING_BANK
             deeplink.equals(ApplinkConst.CART, false) -> return ApplinkConstInternalMarketplace.CART
             deeplink.contains(ApplinkConst.CHECKOUT) -> {
                 return deeplink.replace(ApplinkConst.CHECKOUT, ApplinkConstInternalMarketplace.CHECKOUT)
@@ -81,6 +83,7 @@ object DeeplinkMapper {
         return when (deeplink) {
             ApplinkConst.SellerApp.PRODUCT_ADD -> return ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> return ApplinkConstInternalGlobal.SETTING_PROFILE
+            ApplinkConst.SETTING_BANK -> return ApplinkConstInternalGlobal.SETTING_BANK
             else -> ""
         }
     }

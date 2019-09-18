@@ -15,10 +15,10 @@ interface PromoActionListener {
 
     fun onCartPromoCancelVoucherPromoGlobalClicked(cartPromoGlobal: PromoStackingData, position: Int)
 
-    fun onCartPromoGlobalTrackingCancelled(cartPromoGlobal: PromoStackingData, position: Int)
+    fun onPromoGlobalTrackingCancelled(cartPromoGlobal: PromoStackingData, position: Int)
 
     fun onClickDetailPromoGlobal(dataGlobal: PromoStackingData, position: Int)
 
-    fun onCartPromoGlobalTrackingImpression(cartPromoGlobal: PromoStackingData, position: Int)
+    fun onPromoGlobalTrackingImpression(cartPromoGlobal: PromoStackingData)
 
 }

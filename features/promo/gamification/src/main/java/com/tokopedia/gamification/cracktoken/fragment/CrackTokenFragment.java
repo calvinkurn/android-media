@@ -246,7 +246,8 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             tooltipText.setText(spannableString);
         } else {
-            tooltipHandler.removeCallbacksAndMessages(null);
+            if(tooltipHandler != null)
+                tooltipHandler.removeCallbacksAndMessages(null);
             crackLayoutTooltip.setVisibility(View.GONE);
         }
     }

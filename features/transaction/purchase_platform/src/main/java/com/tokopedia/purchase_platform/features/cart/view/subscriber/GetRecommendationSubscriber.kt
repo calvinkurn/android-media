@@ -28,7 +28,7 @@ class GetRecommendationSubscriber(private val view: ICartListView?,
         if (view != null) {
             view.hideItemLoading()
             if (recommendationModels[0].recommendationItemList.isNotEmpty()) {
-                view.renderRecommendation(recommendationModels[0].recommendationItemList)
+                view.renderRecommendation(recommendationModels[0])
             }
             view.setHasTriedToLoadRecommendation()
             view.stopAllCartPerformanceTrace()

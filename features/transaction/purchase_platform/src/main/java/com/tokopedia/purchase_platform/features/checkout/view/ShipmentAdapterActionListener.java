@@ -20,11 +20,11 @@ public interface ShipmentAdapterActionListener {
 
     void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse);
 
-    void onCartDataEnableToCheckout();
+    void onDataEnableToCheckout();
 
     void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel);
 
-    void onCartDataDisableToCheckout(String message);
+    void onDataDisableToCheckout(String message);
 
     void onCheckoutValidationResult(boolean result, Object shipmentData, int position, int requestCode);
 
@@ -61,7 +61,7 @@ public interface ShipmentAdapterActionListener {
 
     void onNeedUpdateViewItem(int position);
 
-    void onSubTotalCartItemClicked(int position);
+    void onSubTotalItemClicked(int position);
 
     void onInsuranceTncClicked();
 

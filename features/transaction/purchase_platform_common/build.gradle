@@ -15,9 +15,18 @@ buildscript {
     }
 }
 dependencies {
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.playServicesDependencies.analytics
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+project.ext {
+    artifactId = 'purchase-platform-common'
+    groupId = 'com.tokopedia.purchase_platform'
+    versionName = "1.0.0"
+    artifactName = "purchaseplatformcommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

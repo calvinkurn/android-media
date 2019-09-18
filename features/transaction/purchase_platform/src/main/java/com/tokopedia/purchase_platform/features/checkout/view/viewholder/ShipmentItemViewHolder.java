@@ -1070,23 +1070,23 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (charSequence.length() == 0 && fromTextWatcher) {
             textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_empty));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
-            mActionListener.onCartDataDisableToCheckout(null);
+            mActionListener.onDataDisableToCheckout(null);
         } else if (etShipperPhone.getText().length() != 0 && !matcher.matches()) {
             textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_invalid));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
-            mActionListener.onCartDataDisableToCheckout(null);
+            mActionListener.onDataDisableToCheckout(null);
         } else if (etShipperPhone.getText().length() != 0 && etShipperPhone.getText().length() < DROPSHIPPER_MIN_PHONE_LENGTH) {
             textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_min_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
-            mActionListener.onCartDataDisableToCheckout(null);
+            mActionListener.onDataDisableToCheckout(null);
         } else if (etShipperPhone.getText().length() != 0 && etShipperPhone.getText().length() > DROPSHIPPER_MAX_PHONE_LENGTH) {
             textInputLayoutShipperPhone.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_phone_max_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(false);
-            mActionListener.onCartDataDisableToCheckout(null);
+            mActionListener.onDataDisableToCheckout(null);
         } else {
             textInputLayoutShipperPhone.setErrorEnabled(false);
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhoneValid(true);
-            mActionListener.onCartDataEnableToCheckout();
+            mActionListener.onDataEnableToCheckout();
         }
     }
 
@@ -1094,19 +1094,19 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (charSequence.length() == 0 && fromTextWatcher) {
             textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_empty));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(false);
-            mActionListener.onCartDataDisableToCheckout(null);
+            mActionListener.onDataDisableToCheckout(null);
         } else if (etShipperName.getText().length() != 0 && etShipperName.getText().length() < DROPSHIPPER_MIN_NAME_LENGTH) {
             textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_min_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(false);
-            mActionListener.onCartDataDisableToCheckout(null);
+            mActionListener.onDataDisableToCheckout(null);
         } else if (etShipperName.getText().length() != 0 && etShipperName.getText().length() > DROPSHIPPER_MAX_NAME_LENGTH) {
             textInputLayoutShipperName.setError(textInputLayoutShipperName.getContext().getString(R.string.message_error_dropshipper_name_max_length));
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(false);
-            mActionListener.onCartDataDisableToCheckout(null);
+            mActionListener.onDataDisableToCheckout(null);
         } else {
             textInputLayoutShipperName.setErrorEnabled(false);
             shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperNameValid(true);
-            mActionListener.onCartDataEnableToCheckout();
+            mActionListener.onDataEnableToCheckout();
         }
     }
 
@@ -1434,7 +1434,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                     shipmentCartItemModel.setStateDetailSubtotalViewExpanded(!shipmentCartItemModel.isStateDetailSubtotalViewExpanded());
                     mActionListener.onNeedUpdateViewItem(getAdapterPosition());
-                    mActionListener.onSubTotalCartItemClicked(getAdapterPosition());
+                    mActionListener.onSubTotalItemClicked(getAdapterPosition());
                 }
             }
         };
