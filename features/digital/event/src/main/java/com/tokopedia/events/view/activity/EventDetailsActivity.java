@@ -42,6 +42,7 @@ import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import at.blogc.android.views.ExpandableTextView;
 
@@ -89,6 +90,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
     public static final int FROM_DEEPLINK = 2;
 
     private EventsAnalytics eventsAnalytics;
+    private UserSession userSession;
     private static final int CODE = 1001;
 
 
@@ -129,7 +131,7 @@ public class EventDetailsActivity extends EventBaseActivity implements
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
 
         eventsAnalytics = new EventsAnalytics();
-
+        userSession = new UserSession(this);
         AppBarLayout appBarLayout = findViewById(R.id.appbarlayout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -319,6 +321,10 @@ public class EventDetailsActivity extends EventBaseActivity implements
         eventPrice.setText("Rp " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
         eventsAnalytics.sendProductLoadEvent(EventsAnalytics.VIEW_PRODUCT, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_VIEW_PRODUCT, data);
         eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PRODUCT_DETAIL_IMPRESSION, data.getTitle());
+        if (userSession.isLoggedIn()) {
+            eventsDetailsPresenter.sendNsqEvent(userSession.getUserId(), data);
+            eventsDetailsPresenter.sendNsqTravelEvent(userSession.getUserId(), data);
+        }
     }
 
     @Override

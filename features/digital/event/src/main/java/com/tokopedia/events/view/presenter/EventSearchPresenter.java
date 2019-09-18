@@ -12,11 +12,15 @@ import com.google.gson.JsonObject;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
+import com.tokopedia.events.domain.model.NsqMessage;
+import com.tokopedia.events.domain.model.NsqServiceModel;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
+import com.tokopedia.events.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFilterActivity;
@@ -30,8 +34,10 @@ import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 import rx.Subscriber;
@@ -53,6 +59,7 @@ public class EventSearchPresenter
     private GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase;
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
+    private PostNsqEventUseCase postNsqEventUseCase;
     private ArrayList<CategoryItemsViewModel> mTopEvents;
     private ArrayList<Integer> likedEvents;
     private SearchDomainModel mSearchData;
@@ -74,10 +81,11 @@ public class EventSearchPresenter
     private EventsAnalytics eventsAnalytics;
 
     public EventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
-                                GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
+                                GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, PostNsqEventUseCase postNsqEventUseCase, EventsAnalytics eventsAnalytics) {
         this.getSearchEventsListRequestUseCase = getSearchEventsListRequestUseCase;
         this.getSearchNextUseCase = searchNextUseCase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
+        this.postNsqEventUseCase = postNsqEventUseCase;
         adapterCallbacks = new ArrayList<>();
         this.eventsAnalytics = eventsAnalytics;
     }
@@ -354,5 +362,32 @@ public class EventSearchPresenter
         } else {
             mView.setTopEvents(mTopEvents);
         }
+    }
+
+    public void sendNSQEvent(String userId, String action, String customMessage) {
+        NsqServiceModel nsqServiceModel = new NsqServiceModel();
+        nsqServiceModel.setService(Utils.NSQ_SERVICE);
+        NsqMessage nsqMessage = new NsqMessage();
+        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
+        nsqMessage.setAction(action);
+        nsqMessage.setMessage(customMessage);
+        nsqServiceModel.setMessage(nsqMessage);
+        postNsqEventUseCase.setRequestModel(nsqServiceModel);
+        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper(e);
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+            }
+        });
     }
 }

@@ -45,7 +45,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     public static final String CONTENT_TYPE = "application/pdf";
     public static final String KEY_QRCODE = "qrcode";
     private static final int DEALS_CATEGORY_ID = 35;
-    private static final int EVENTS_CATEGORY_ID = 32;
+    private static final int EVENTS_CATEGORY_ID_1 = 32;
+    private static final int EVENTS_CATEGORY_ID_2 = 23;
     private boolean isShortLayout;
     private List<Items> itemsList;
     private Context context;
@@ -130,7 +131,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 return ITEM_DEALS_SHORT;
             else
                 return ITEM_DEALS;
-        } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID) {
+        } else if (itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_1 || itemsList.get(position).getCategoryID() == EVENTS_CATEGORY_ID_2) {
             return ITEM_EVENTS;
         } else {
             return ITEM_DEFAULT;

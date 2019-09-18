@@ -94,7 +94,7 @@ public class EventsAnalytics {
 
     public void eventDigitalEventTracking(String action, String label) {
         Log.d("EVENTSGA", action + " - " + label);
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_DIGITAL_EVENT, DIGITAL_EVENT, action, label));
+//        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(EVENT_DIGITAL_EVENT, DIGITAL_EVENT, action, label));
     }
 
     public void sendScreenNameEvent(String screenName) {

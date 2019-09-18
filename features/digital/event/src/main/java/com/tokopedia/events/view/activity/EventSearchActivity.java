@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -25,6 +26,7 @@ import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -53,6 +55,7 @@ public class EventSearchActivity extends EventBaseActivity implements
     LinearLayoutManager layoutManager;
 
     private EventsAnalytics eventsAnalytics;
+    private UserSession userSession;
 
     @Override
     void initPresenter() {
@@ -77,6 +80,7 @@ public class EventSearchActivity extends EventBaseActivity implements
         searchInputView.setListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         eventsAnalytics = new EventsAnalytics();
+        userSession = new UserSession(this);
         eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
@@ -103,10 +107,17 @@ public class EventSearchActivity extends EventBaseActivity implements
 
     @Override
     public void onSearchSubmitted(String text) {
+        String customMessage = "NOTHING";
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null)
             imm.hideSoftInputFromWindow(getRootView().getWindowToken(), 0);
         eventSearchPresenter.searchSubmitted(text);
+        if (userSession.isLoggedIn()) {
+            if (!TextUtils.isEmpty(text)) {
+                customMessage = text;
+            }
+            eventSearchPresenter.sendNSQEvent(userSession.getUserId(), "search", customMessage);
+        }
     }
 
     @Override

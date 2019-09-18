@@ -58,6 +58,9 @@ public class Utils {
     private List<CategoryItemsViewModel> topEvents;
     private HashSet<Integer> likedEventSet;
     private HashSet<Integer> unLikedEventSet;
+    public static final String NSQ_SERVICE = "Recommendation_For_You";
+    public static final String NSQ_USE_CASE = "23";
+
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)

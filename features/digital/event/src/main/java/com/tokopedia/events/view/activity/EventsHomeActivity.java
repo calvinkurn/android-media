@@ -46,6 +46,7 @@ import com.tokopedia.events.view.utils.IFragmentLifecycleCallback;
 import com.tokopedia.events.view.utils.ShadowTransformer;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +88,7 @@ public class EventsHomeActivity extends EventBaseActivity
     private final static String TOP = "top";
 
     private EventsAnalytics eventsAnalytics;
+    private UserSession userSession;
 
 
     public final static String EXTRA_SECTION = "extra_section";
@@ -129,6 +131,7 @@ public class EventsHomeActivity extends EventBaseActivity
         if (defaultSection == null || defaultSection.length() <= 1)
             defaultSection = TOP;
         eventsAnalytics = new EventsAnalytics();
+        userSession = new UserSession(this);
         addToCalendar.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_event_calendar_green), null,
                 null, null);
         searchView.setCompoundDrawablesWithIntrinsicBounds(getResources().getDrawable(R.drawable.ic_search_icon),
@@ -147,7 +150,9 @@ public class EventsHomeActivity extends EventBaseActivity
 
         setLightToolbarStyle();
         eventsAnalytics.sendScreenNameEvent(getScreenName());
-
+        if (userSession.isLoggedIn()) {
+            eventHomePresenter.sendNSQEvent(userSession.getUserId(), "home-page");
+        }
     }
 
     @Override
@@ -351,6 +356,9 @@ public class EventsHomeActivity extends EventBaseActivity
         tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                if (userSession.isLoggedIn()) {
+                    eventHomePresenter.sendNSQEvent(userSession.getUserId(), "category-page");
+                }
                 eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CATEGORY_CLICK, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_CATEGORY_CLICK, String.format("%s - %d", tab.getText(), tab.getPosition()));
                 try {
                     View customeView = tab.getCustomView();
