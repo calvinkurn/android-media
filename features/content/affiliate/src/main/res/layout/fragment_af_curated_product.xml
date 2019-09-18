@@ -7,19 +7,25 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <com.tokopedia.unifycomponents.EmptyState
-        android:id="@+id/es_share_now"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/sv_empty_state"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:unifyEmptyStateCTAFullWidth="true"
-        app:unifyEmptyStateDescription="@string/af_curated_empty_subtitle"
-        app:unifyEmptyStateImageDrawable="@drawable/ic_tokopedia_share_post"
-        app:unifyEmptyStateOrientation="vertical"
-        app:unifyEmptyStatePrimaryCTAText="@string/af_share_now"
-        app:unifyEmptyStateTitle="@string/af_curated_empty_title"
-        app:unifyEmptyStateType="page"
+        android:layout_height="match_parent"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible">
+
+        <com.tokopedia.unifycomponents.EmptyState
+            android:id="@+id/es_share_now"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:unifyEmptyStateCTAFullWidth="true"
+            app:unifyEmptyStateDescription="@string/af_curated_empty_subtitle"
+            app:unifyEmptyStateImageDrawable="@drawable/ic_tokopedia_share_post"
+            app:unifyEmptyStateOrientation="vertical"
+            app:unifyEmptyStatePrimaryCTAText="@string/af_share_now"
+            app:unifyEmptyStateTitle="@string/af_curated_empty_title"
+            app:unifyEmptyStateType="page"/>
+    </android.support.v4.widget.NestedScrollView>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"

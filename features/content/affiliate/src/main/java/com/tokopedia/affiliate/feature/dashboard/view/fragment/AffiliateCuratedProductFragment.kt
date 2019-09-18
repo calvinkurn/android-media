@@ -2,6 +2,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.widget.NestedScrollView
 import android.support.v7.widget.AppCompatImageView
 import android.support.v7.widget.CardView
 import android.support.v7.widget.LinearLayoutManager
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -67,6 +69,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     private var currentSort: Int? = null
 
     private lateinit var cvSort: CardView
+    private lateinit var svEmptyState: NestedScrollView
+    private lateinit var esShareNow: EmptyState
 
     private lateinit var sortDialog: CloseableBottomSheetDialog
     private lateinit var sortDialogView: View
@@ -109,12 +113,16 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     private fun initView(view: View) {
         view.run {
             cvSort = findViewById(R.id.cv_sort)
+            svEmptyState = findViewById(R.id.sv_empty_state)
+            esShareNow = findViewById(R.id.es_share_now)
         }
     }
 
     private fun setupView(view: View) {
         if (type == null) cvSort.visible() else cvSort.gone()
         cvSort.setOnClickListener { showSortBottomSheet() }
+
+        esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
     }
 
     override fun onItemClicked(t: DashboardItemViewModel?) {
@@ -180,12 +188,8 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     override fun showEmpty() {
         view?.let {
-            val emptyStateView = it.findViewById<EmptyState>(R.id.es_share_now)
-            emptyStateView.visible()
+            svEmptyState.visible()
             getRecyclerView(view).gone()
-            emptyStateView.setPrimaryCTAClickListener {
-                shouldShareProfile()
-            }
         }
     }
 

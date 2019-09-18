@@ -34,6 +34,7 @@ import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.design.widget.ObservableNestedScrollView
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
 import com.tokopedia.kotlin.extensions.view.*
@@ -86,7 +87,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var vPostedViewedSeparator: View
     private lateinit var llCuratedProductHistory: LinearLayout
     private lateinit var esShareNow: EmptyState
-    private lateinit var srlRefresh: SwipeRefreshLayout
+//    private lateinit var srlRefresh: SwipeRefreshLayout
     private lateinit var ivAfIncomeInfo: ImageView
     private lateinit var bmivShare: ByMeInstastoryView
 
@@ -189,7 +190,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             vPostedViewedSeparator = findViewById(R.id.v_posted_viewed_separator)
             llCuratedProductHistory = findViewById(R.id.ll_curated_product_history)
             esShareNow = findViewById(R.id.es_share_now)
-            srlRefresh = findViewById(R.id.srl_refresh)
+//            srlRefresh = findViewById(R.id.srl_refresh)
             ivAfIncomeInfo = findViewById(R.id.iv_af_income_info)
             bmivShare = findViewById(R.id.bmiv_share)
         }
@@ -204,7 +205,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
                     indirectFragmentCurated
             ))
         }
-        vpCuratedProduct.layoutParams.height = (getScreenHeight() * 0.75).toInt()
+//        vpCuratedProduct.layoutParams.height = (getScreenHeight() * 0.75).toInt()
         tlCuratedProducts.setupWithViewPager(vpCuratedProduct)
         llStartDate.setOnClickListener { openCalendarPicker() }
         llEndDate.setOnClickListener { openCalendarPicker() }
@@ -212,7 +213,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         llCheckBalance.setOnClickListener { onCheckBalanceClicked() }
         tvSeeAll.setOnClickListener { onSeeAllProductClicked() }
 
-        srlRefresh.setOnRefreshListener { onRefresh() }
+//        srlRefresh.setOnRefreshListener { onRefresh() }
         ivAfIncomeInfo.setOnClickListener { showTooltip() }
 
         esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
@@ -230,7 +231,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
         if (startDate != null && endDate != null) showChangesAppliedToaster()
 
-        srlRefresh.isRefreshing = false
+//        srlRefresh.isRefreshing = false
 
         profileHeader = byMeHeader
         initByMeInstastoryView(byMeHeader)
