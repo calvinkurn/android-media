@@ -212,6 +212,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .result.data.firstOrNull()?.let { p2Shop.nearestWarehouse = it }
                 }
             } catch (t: Throwable) {
+                t.debugTrace()
             }
             p2Shop
         }
@@ -387,6 +388,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     productInfoP2.productSpecificationResponse = productSpesification
                 }
             } catch (t: Throwable) {
+                t.debugTrace()
             }
             productInfoP2
         }
@@ -434,6 +436,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                             .getCartType.data.cartType
                 }
             } catch (t: Throwable) {
+                t.debugTrace()
             }
 
             p2Login
@@ -490,7 +493,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
             }
 
         } catch (t: Throwable) {
-            t.printStackTrace()
+            t.debugTrace()
         }
         productInfoP3
     }
@@ -599,6 +602,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     .getSuccessData<RecomendationEntity>().productRecommendationWidget?.data
                     ?: emptyList()))
         } catch (t: Throwable) {
+            t.debugTrace()
             Loaded(Fail(t))
         }
     }
