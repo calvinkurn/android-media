@@ -156,7 +156,7 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
         presenter.setOnboardingStatus()
     }
 
-    override fun onSuccessSetOnboardingStatus() {
+    override fun onFinishSetOnboardingStatus() {
         openFeed()
     }
 

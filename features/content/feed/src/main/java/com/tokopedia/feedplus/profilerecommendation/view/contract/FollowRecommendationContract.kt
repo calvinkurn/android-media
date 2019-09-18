@@ -22,7 +22,7 @@ interface FollowRecommendationContract {
 
         fun onSuccessFollowAllRecommendation()
 
-        fun onSuccessSetOnboardingStatus()
+        fun onFinishSetOnboardingStatus()
 
         fun onGetError(error: Throwable)
 

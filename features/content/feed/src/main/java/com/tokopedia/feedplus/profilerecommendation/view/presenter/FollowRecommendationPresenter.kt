@@ -86,10 +86,10 @@ class FollowRecommendationPresenter @Inject constructor(
         view.showLoading()
         setOnboardingStatusUseCase.apply {
             execute(onSuccess = {
-                view.onSuccessSetOnboardingStatus()
+                view.onFinishSetOnboardingStatus()
                 view.hideLoading()
             }, onError = {
-                view.onGetError(it)
+                view.onFinishSetOnboardingStatus()
                 view.hideLoading()
             })
         }

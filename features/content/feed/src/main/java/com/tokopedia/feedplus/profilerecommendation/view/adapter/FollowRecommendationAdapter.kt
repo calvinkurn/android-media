@@ -39,6 +39,9 @@ class FollowRecommendationAdapter(
 
     private val itemList: MutableList<FollowRecommendationViewModel> = list.toMutableList()
 
+    private val cardList: List<FollowRecommendationCardViewModel>
+        get() = itemList.filterIsInstance(FollowRecommendationCardViewModel::class.java)
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             TYPE_CARD -> {
@@ -82,7 +85,7 @@ class FollowRecommendationAdapter(
     }
 
     fun addItems(list: List<FollowRecommendationCardViewModel>) {
-        updateItems(list)
+        updateItems(cardList + list)
         itemList.addAll(list)
     }
 
@@ -106,10 +109,10 @@ class FollowRecommendationAdapter(
         }
     }
 
-    fun getFollowedCount(): Int = itemList.filterIsInstance(FollowRecommendationCardViewModel::class.java).count(FollowRecommendationCardViewModel::isFollowed)
+    fun getFollowedCount(): Int = cardList.count(FollowRecommendationCardViewModel::isFollowed)
 
     fun updateFollowState(id: String, action: FollowRecommendationAction) {
-        val itemIndex = itemList.filterIsInstance(FollowRecommendationCardViewModel::class.java).indexOfFirst { it.authorId == id }
+        val itemIndex = cardList.indexOfFirst { it.authorId == id }
         itemList[itemIndex] = (itemList[itemIndex] as FollowRecommendationCardViewModel).copy(
                 isFollowed = action == FollowRecommendationAction.FOLLOW
         )
