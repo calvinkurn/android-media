@@ -51,4 +51,5 @@
     <!--Report-->
     <string name="title_module_report">Report Module</string>
     <string name="product_report">Laporkan Produk</string>
+    <string name="detail_report">Detail Laporan</string>
 </resources>
