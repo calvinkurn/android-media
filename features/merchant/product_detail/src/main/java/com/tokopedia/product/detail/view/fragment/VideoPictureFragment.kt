@@ -189,8 +189,15 @@ class VideoPictureFragment : BaseDaggerFragment() {
         super.onPause()
     }
 
-    fun pauseVideo(){
-        mExoPlayer?.playWhenReady = false
+    fun pauseVideo() {
+        mExoPlayer?.addListener(object : Player.EventListener {
+            override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+                // If player already pause, just ignore this
+                if (!playWhenReady && playbackState == Player.STATE_ENDED) {
+                    mExoPlayer?.playWhenReady = false
+                }
+            }
+        })
     }
 
     override fun onStop() {
