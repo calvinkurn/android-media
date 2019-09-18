@@ -51,7 +51,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     private NotificationFragmentListener listener = null;
 
     public interface NotificationFragmentListener {
-        void goToUpdateTab();
+//        void goToUpdateTab();
     }
 
     @Override
@@ -162,7 +162,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     @Override
     public void goToUpdateTab() {
         if (listener != null) {
-            listener.goToUpdateTab();
+//            listener.goToUpdateTab();
         }
     }
 

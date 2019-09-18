@@ -67,6 +67,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         var initialIndexPage = getParamInt(Intent.EXTRA_TITLE, intent.extras, null, INDEX_NOTIFICATION_ACTIVITY)
         initTabLayout(initialIndexPage)
         presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
+        presenter.getIsTabUpdate(this)
     }
 
     override fun onSuccessLoadNotifUpdate() {
@@ -125,7 +126,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     }
 
     private fun clearNotifCounter(position: Int) {
-        if(position == INDEX_NOTIFICATION_UPDATE) {
+        if (position == INDEX_NOTIFICATION_UPDATE) {
             presenter.clearNotifCounter()
             resetCounterNotificationUpdate()
         }
@@ -138,7 +139,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     }
 
     private fun sendAnalytics(position: Int) {
-        if(position == INDEX_NOTIFICATION_UPDATE) {
+        if (position == INDEX_NOTIFICATION_UPDATE) {
             analytics.trackClickNewestInfo()
         }
     }
