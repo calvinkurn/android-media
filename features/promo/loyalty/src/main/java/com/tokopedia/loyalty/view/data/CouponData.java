@@ -8,7 +8,7 @@ import android.os.Parcelable;
  */
 
 public class CouponData implements Parcelable {
-    private int id;
+    private long id;
     private int promoId;
     private String code;
     private String expired;
@@ -33,11 +33,11 @@ public class CouponData implements Parcelable {
         setImageUrlMobile(builder.imageUrlMobile);
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -128,7 +128,7 @@ public class CouponData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(this.id);
+        dest.writeLong(this.id);
         dest.writeInt(this.promoId);
         dest.writeString(this.code);
         dest.writeString(this.expired);
@@ -145,7 +145,7 @@ public class CouponData implements Parcelable {
     }
 
     protected CouponData(Parcel in) {
-        this.id = in.readInt();
+        this.id = in.readLong();
         this.promoId = in.readInt();
         this.code = in.readString();
         this.expired = in.readString();
@@ -172,7 +172,7 @@ public class CouponData implements Parcelable {
 
 
     public static final class Builder {
-        private int id;
+        private long id;
         private int promoId;
         private String code;
         private String expired;
@@ -187,7 +187,7 @@ public class CouponData implements Parcelable {
         public Builder() {
         }
 
-        public Builder id(int val) {
+        public Builder id(long val) {
             id = val;
             return this;
         }
