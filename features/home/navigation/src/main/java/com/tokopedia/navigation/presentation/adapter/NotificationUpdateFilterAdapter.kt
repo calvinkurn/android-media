@@ -35,6 +35,7 @@ class NotificationUpdateFilterAdapter(
 
     interface FilterAdapterListener {
         fun updateFilter(filter: HashMap<String, Int>)
+        fun sentFilterAnalytic(analyticData: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
@@ -80,7 +81,32 @@ class NotificationUpdateFilterAdapter(
             }
         }
 
+        val analyticData = getLabelFilterName()
         listener.updateFilter(filterTypeId)
+        listener.sentFilterAnalytic(analyticData)
+    }
+
+    private fun getLabelFilterName(): String {
+        var typeName = ""
+        var tagName = ""
+        for (filter in data) {
+            val filterType = filter.filterType
+            if (!filterTypeId.containsKey(filterType)) continue
+
+            val filterPosition = filterTypePosition[filterType] ?: continue
+
+            if (visitables.size <= filterPosition) continue
+
+            val data = visitables[filterPosition]
+            if (data !is NotificationUpdateFilterSectionItemViewModel) continue
+
+            when (filterType) {
+                NotificationUpdateFilterItemViewModel.FilterType.TYPE_ID.type -> typeName = data.text
+                NotificationUpdateFilterItemViewModel.FilterType.TAG_ID.type -> tagName = data.text
+            }
+        }
+
+        return String.format("%s - %s", typeName, tagName)
     }
 
     private fun mapFilterData(data: ArrayList<NotificationUpdateFilterItemViewModel>) {

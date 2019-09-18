@@ -140,6 +140,10 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         loadInitialData()
     }
 
+    override fun sentFilterAnalytic(analyticData: String) {
+        analytics.trackClickFilterRequest(analyticData)
+    }
+
     private fun onSuccessMarkAllReadNotificationUpdate(): () -> Unit {
         return {
             (adapter as NotificationUpdateAdapter).markAllAsRead()
