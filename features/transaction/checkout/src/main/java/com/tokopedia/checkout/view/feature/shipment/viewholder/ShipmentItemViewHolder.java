@@ -723,19 +723,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     }
                 });
             }
-            if (!TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc()) &&
-                    !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount())) {
-                String labelCouponAmount = "- Rp " + shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponAmount();
-                tvLogTicker.setDesc(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCouponDesc());
-                tvLogTicker.setTitle(labelCouponAmount);
-            }
+            tvLogTicker.setDesc(shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getText());
 
             boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
             tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
 
             // disable courier selection
-            tvCourierSelection.setTextColor(
-                    ContextCompat.getColor(context, R.color.n_700_44));
+            tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.n_700_44));
             tvCourierSelection.setOnClickListener(null);
         } else {
             llLogPromo.setVisibility(View.GONE);
