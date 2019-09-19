@@ -14,6 +14,7 @@ import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
@@ -281,6 +282,14 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
             override fun getActivity(): AppCompatActivity {
                 return this@CategoryNavActivity
+            }
+
+            override fun isSearchShown(): Boolean {
+                return false
+            }
+
+            override fun hideKeyboard() {
+                KeyboardHandler.hideSoftKeyboard(this@CategoryNavActivity)
             }
         })
     }
