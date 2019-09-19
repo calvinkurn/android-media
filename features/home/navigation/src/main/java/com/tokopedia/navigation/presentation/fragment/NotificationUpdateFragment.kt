@@ -245,7 +245,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
             updateMarkAllReadCounter()
             notifyBottomActionView()
         }
-        showTextLonger(viewModel)
     }
 
     private fun updateMarkAllReadCounter() {
@@ -321,7 +320,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    private fun showTextLonger(model: NotificationUpdateItemViewModel) {
+    override fun showTextLonger(model: NotificationUpdateItemViewModel) {
         val bundle = Bundle()
         bundle.putString(PARAM_CONTENT_IMAGE, model.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, model.typeLink.toString())

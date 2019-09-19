@@ -75,7 +75,11 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
         container.setOnClickListener {
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
-//            RouteManager.route(itemView.context, element.appLink)
+            if (element.body.length > 110) {
+                listener.showTextLonger(element)
+            } else {
+                RouteManager.route(itemView.context, element.appLink)
+            }
         }
     }
 
@@ -120,5 +124,6 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
 
     companion object {
         val PAYLOAD_CHANGE_BACKGROUND = "payload_change_background"
+        val MAX_CONTENT_LENGTH = 110
     }
 }

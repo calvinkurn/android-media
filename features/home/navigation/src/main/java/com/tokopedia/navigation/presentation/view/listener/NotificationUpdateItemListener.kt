@@ -15,4 +15,6 @@ interface NotificationUpdateItemListener {
     fun getAnalytic(): NotificationUpdateAnalytics
 
     fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit)
+
+    fun showTextLonger(element: NotificationUpdateItemViewModel)
 }
