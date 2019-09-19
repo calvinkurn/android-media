@@ -120,10 +120,10 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     protected void initView() {
-        toolbar = (Toolbar) findViewById(com.tokopedia.imagepicker.R.id.toolbar);
-        container = (FrameLayout) findViewById(com.tokopedia.design.R.id.container);
-        loadingView = findViewById(com.tokopedia.abstraction.R.id.progressBar);
-        root = findViewById(com.tokopedia.topads.sdk.R.id.root);
+        toolbar = (Toolbar) findViewById(R.id.image_search_toolbar);
+        container = (FrameLayout) findViewById(R.id.image_search_container);
+        loadingView = findViewById(R.id.image_search_progressBar);
+        root = findViewById(R.id.image_search_root);
     }
 
     protected void prepareView() {
@@ -164,17 +164,16 @@ public class ImageSearchActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_image_search, menu);
-        searchItem = menu.findItem(R.id.action_search);
+        searchItem = menu.findItem(R.id.image_search_action_search);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            KeyboardHandler.DropKeyboard(this, findViewById(android.R.id.content));
             onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.action_search) {
+        } else if (item.getItemId() == R.id.image_search_action_search) {
             return false;
         }
         return super.onOptionsItemSelected(item);
@@ -544,7 +543,7 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     private void loadSection(ProductViewModel productViewModel) {
-        addFragment(com.tokopedia.design.R.id.container, ImageSearchProductListFragment.newInstance(productViewModel));
+        addFragment(R.id.image_search_container, ImageSearchProductListFragment.newInstance(productViewModel));
 
         showContainer(true);
     }
