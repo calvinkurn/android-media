@@ -344,7 +344,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateCaption()
         updateHeader(feedContentForm.authors)
 
-        getProductSuggestion()
+        fetchAndRenderProductSuggestion()
     }
 
     override fun onErrorGetContentForm(message: String) {
@@ -785,17 +785,17 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateMediaPreview()
         activityListener?.invalidatePostMenu(isPostEnabled)
 
-        if (productSuggestionAdapter.isEmpty()) {
-            getProductSuggestion()
-        } else {
-            showProductSuggestion()
-        }
+        fetchAndRenderProductSuggestion()
     }
 
-    private fun getProductSuggestion() {
+    private fun fetchAndRenderProductSuggestion() {
         if (shouldLoadProductSuggestion()) {
-            fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
-            showProductSuggestionLoading()
+            if (productSuggestionAdapter.isEmpty()) {
+                fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
+                showProductSuggestionLoading()
+            } else {
+                showProductSuggestion()
+            }
         }
     }
 
