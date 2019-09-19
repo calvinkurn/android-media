@@ -12,9 +12,7 @@ buildscript {
         classpath rootProject.ext.miscDependencies.hansel
     }
 }
-androidExtensions {
-    experimental = true
-}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation rootProject.ext.miscDependencies.viewModel
