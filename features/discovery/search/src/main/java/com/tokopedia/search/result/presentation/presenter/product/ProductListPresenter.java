@@ -543,7 +543,6 @@ final class ProductListPresenter
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
-        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
 
         if (productViewModel.getProductList().isEmpty()) {
             getViewToHandleErrorMessage(true, productViewModel.getErrorMessage());
