@@ -227,7 +227,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             hideAdapterLoading()
             when (it) {
                 is Success -> onSuccessGetOnboardingData(it.data)
-                is Fail -> onErrorGetFeedFirstPage(ErrorHandler.getErrorMessage(activity, it.throwable))
+                is Fail -> presenter.fetchFirstPage()
             }
         })
     }
