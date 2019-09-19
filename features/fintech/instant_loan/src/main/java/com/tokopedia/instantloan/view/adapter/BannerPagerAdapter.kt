@@ -29,7 +29,7 @@ class BannerPagerAdapter(private val context: Context, val bannerEntities: Array
     }
 
     override fun instantiateItem(view: ViewGroup, position: Int): Any {
-        val banner = mInflater.inflate(R.layout.item_pager_banner, view, false) as ImageView
+        val banner = mInflater.inflate(com.tokopedia.instantloan.R.layout.item_pager_banner, view, false) as ImageView
         ImageHandler.LoadImage(banner, bannerEntityList[position].bannerImageUrl)
         view.addView(banner)
 
