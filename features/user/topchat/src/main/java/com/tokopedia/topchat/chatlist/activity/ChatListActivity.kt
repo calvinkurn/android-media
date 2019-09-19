@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.graphics.drawable.DrawableCompat
@@ -22,7 +21,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.ChatListPagerAdapter
@@ -31,7 +29,7 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.di.ChatListComponent
 import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
-import com.tokopedia.topchat.chatlist.listener.ChatListWebSocketContract
+import com.tokopedia.topchat.chatlist.listener.ChatListContract
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
@@ -43,7 +41,7 @@ import javax.inject.Inject
 
 class ChatListActivity : BaseTabActivity()
         , HasComponent<ChatListComponent>
-        , ChatListWebSocketContract.Activity{
+        , ChatListContract.Activity{
 
     private lateinit var fragmentAdapter: ChatListPagerAdapter
     private val tabList = ArrayList<ChatListPagerAdapter.ChatListTab>()
@@ -129,7 +127,7 @@ class ChatListActivity : BaseTabActivity()
                         is Success -> {
                             tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
                             tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
-                            initTabLayout()
+                            setNotificationCounterOnTab()
                         }
                     }
                 }
@@ -138,6 +136,10 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun initData() {
+        loadNotificationCounter()
+    }
+
+    override fun loadNotificationCounter() {
         chatNotifCounterViewModel.queryGetNotifCounter()
     }
 
@@ -211,6 +213,17 @@ class ChatListActivity : BaseTabActivity()
             tabLayout.hide()
         }
     }
+
+    private fun setNotificationCounterOnTab() {
+        for (i in 0 until tabLayout.tabCount) {
+            val title = tabList[i].title
+            val counter = tabList[i].counter
+            val tab = tabLayout.getTabAt(i)
+            val titleView = tab?.customView?.findViewById<TextView>(R.id.title)
+            titleView?.text = setTitleTab(title,counter)
+        }
+    }
+
 
     private fun createCustomView(title: String, icon: Int, counter: String): View? {
         val customView = LayoutInflater.from(this).inflate(R.layout.item_chat_tab, null)

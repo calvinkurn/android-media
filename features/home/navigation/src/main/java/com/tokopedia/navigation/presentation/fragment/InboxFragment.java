@@ -36,6 +36,9 @@ import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.Category;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -81,6 +84,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
     private List<Visitable> visitables;
+    private RemoteConfig remoteConfig;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -90,6 +94,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         trackingQueue = new TrackingQueue(getContext());
+        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
@@ -232,7 +237,12 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private void getCallingIntent(int position) {
         switch (position) {
             case CHAT_MENU:
-                RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
+                boolean isChatUsingOld = remoteConfig.getBoolean(RemoteConfigKey.TOPCHAT_OLD);
+                if(isChatUsingOld) {
+                    RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_OLD);
+                } else {
+                    RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
+                }
                 break;
             case DISCUSSION_MENU:
                 if (getActivity() != null

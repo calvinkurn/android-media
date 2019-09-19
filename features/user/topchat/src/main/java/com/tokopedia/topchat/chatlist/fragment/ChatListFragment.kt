@@ -31,7 +31,6 @@ import com.tokopedia.topchat.chatlist.adapter.ChatListAdapter
 import com.tokopedia.topchat.chatlist.adapter.typefactory.ChatListTypeFactoryImpl
 import com.tokopedia.topchat.chatlist.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB_SELLER
@@ -46,7 +45,6 @@ import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
-import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.usecase.coroutines.Fail
@@ -59,9 +57,7 @@ import javax.inject.Inject
  */
 class ChatListFragment: BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
-        ChatListContract.View,
         ChatListItemListener,
-        ChatListWebSocketContract.Fragment,
         LifecycleOwner {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -391,7 +387,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
 
     protected fun onViewCreatedFirstSight(view: View?) {
         debug("stevensight", "$sightTag onViewCreatedFirstSight")
-        (activity as ChatListWebSocketContract.Activity).notifyViewCreated()
+        (activity as ChatListContract.Activity).notifyViewCreated()
         loadInitialData()
     }
 
@@ -439,6 +435,13 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
         }
 
          return EmptyChatModel(title, subtitle, image)
+    }
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        if (activity is ChatListContract.Activity) {
+            (activity as ChatListContract.Activity).loadNotificationCounter()
+        }
     }
 
     companion object {
