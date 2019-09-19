@@ -29,6 +29,10 @@ query voucherGameProductDetail($menuID: Int!, $operator: String!){
               new_price
             }
             product_labels
+            detail
+            detail_compact
+            detail_url
+            detail_url_text
           }
         }
       }

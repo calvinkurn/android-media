@@ -5,8 +5,10 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.vouchergame.R
+import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductViewHolder
 
 class VoucherGameDetailAdapter(val context: Context,
                                val resources: Resources,
@@ -14,6 +16,15 @@ class VoucherGameDetailAdapter(val context: Context,
                                interactionListener: OnAdapterInteractionListener<Visitable<*>>,
                                private val loaderListener: LoaderListener):
         BaseListAdapter<Visitable<*>, VoucherGameDetailAdapterFactory>(adapterFactory, interactionListener) {
+
+    var hasMoreDetails = false
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
+        if (holder is VoucherGameProductViewHolder) {
+            holder.hasMoreDetails = hasMoreDetails
+        }
+        super.onBindViewHolder(holder, position)
+    }
 
     fun renderList(data: List<Visitable<*>>) {
         clearAllElements()

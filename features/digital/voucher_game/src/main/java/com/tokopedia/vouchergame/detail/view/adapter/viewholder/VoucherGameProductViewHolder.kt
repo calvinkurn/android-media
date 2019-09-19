@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.item_voucher_game_detail.view.*
 
 class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener) : AbstractViewHolder<VoucherGameProduct>(view) {
 
+    var hasMoreDetails = false
+
     override fun bind(product: VoucherGameProduct) {
         with(itemView) {
             with(product.attributes) {
@@ -26,9 +28,18 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
                     product_promo_price.text = price
                     product_price.text = promo.newPrice
                 }
+
                 if (productLabels.isNotEmpty())
                     product_promo_label.visibility = View.VISIBLE
                     product_promo_label.text = productLabels.joinToString(",", limit = 2)
+
+                if (detail.isNotEmpty()) {
+                    product_detail.visibility = View.VISIBLE
+                    if (detailCompat.isNotEmpty()) product_detail.text = detailCompat
+                    product_detail.setOnClickListener { listener.onDetailClicked(product) }
+                } else {
+                    product_detail.visibility = if (hasMoreDetails) View.INVISIBLE else View.GONE
+                }
             }
 
             // Show selected item
@@ -48,6 +59,7 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
 
     interface OnClickListener {
         fun onItemClicked(product: VoucherGameProduct, position: Int)
+        fun onDetailClicked(product: VoucherGameProduct)
     }
 
 }

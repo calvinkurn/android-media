@@ -34,7 +34,19 @@ class VoucherGameProduct(
                 val promo: Promo? = Promo(),
                 @SerializedName("product_labels")
                 @Expose
-                val productLabels: List<String> = listOf()
+                val productLabels: List<String> = listOf(),
+                @SerializedName("detail")
+                @Expose
+                val detail: String = "",
+                @SerializedName("detail_compat")
+                @Expose
+                val detailCompat: String = "",
+                @SerializedName("detail_url")
+                @Expose
+                val detailUrl: String = "",
+                @SerializedName("detail_url_text")
+                @Expose
+                val detailUrlText: String = ""
         )
 
         class Promo(

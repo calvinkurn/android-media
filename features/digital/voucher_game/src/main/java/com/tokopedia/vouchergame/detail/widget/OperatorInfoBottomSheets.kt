@@ -7,11 +7,12 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.vouchergame.R
+import kotlinx.android.synthetic.main.bottom_sheets_voucher_game_operator.*
 
 /**
  * @author by resakemal on 22/08/19
  */
-class VoucherGameBottomSheets: BottomSheets() {
+class OperatorInfoBottomSheets: BottomSheets() {
 
     private lateinit var imageContainer: CardView
     private lateinit var imageView: ImageView
@@ -23,7 +24,7 @@ class VoucherGameBottomSheets: BottomSheets() {
     var description: String = ""
 
     override fun getLayoutResourceId(): Int {
-        return R.layout.bottom_sheets_voucher_game
+        return R.layout.bottom_sheets_voucher_game_operator
     }
 
     override fun initView(view: View) {
@@ -40,9 +41,15 @@ class VoucherGameBottomSheets: BottomSheets() {
             imageContainer.visibility = View.VISIBLE
             ImageHandler.LoadImage(imageView, imageUrl)
         }
-        infoTitle.text = title
+        if (title.isEmpty()) {
+            infoTitle.visibility = View.GONE
+        } else {
+            infoTitle.text = title
+        }
         infoDescription.text = description
     }
 
     override fun title(): String = ""
+
+    override fun state(): BottomSheetsState { return BottomSheetsState.FLEXIBLE }
 }

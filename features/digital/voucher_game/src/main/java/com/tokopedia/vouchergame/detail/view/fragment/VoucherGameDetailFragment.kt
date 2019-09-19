@@ -42,7 +42,8 @@ import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapterFac
 import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameProductDecorator
 import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProductViewHolder
 import com.tokopedia.vouchergame.detail.view.viewmodel.VoucherGameDetailViewModel
-import com.tokopedia.vouchergame.detail.widget.VoucherGameBottomSheets
+import com.tokopedia.vouchergame.detail.widget.OperatorInfoBottomSheets
+import com.tokopedia.vouchergame.detail.widget.ProductDetailBottomSheets
 import com.tokopedia.vouchergame.detail.widget.VoucherGameEnquiryResultWidget
 import com.tokopedia.vouchergame.detail.widget.VoucherGameInputFieldWidget
 import com.tokopedia.vouchergame.list.view.model.VoucherGameOperatorAttributes
@@ -334,6 +335,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             val decorator = VoucherGameProductDecorator(ITEM_DECORATOR_SIZE_DP, resources)
             val trackingList = mutableListOf<VoucherGameProduct>()
 
+            var hasMoreDetails = false
             for (productList in dataCollection) {
                 // Create new instance to prevent adding copy of products
                 // to adapter data (set products to empty list)
@@ -345,8 +347,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                 if (productList.products.isNotEmpty())  {
                     listData.addAll(productList.products)
                     trackingList.addAll(productList.products)
+                    if (!hasMoreDetails && productList.products.filter { it.attributes.detail.isNotEmpty() }.isNotEmpty()) {
+                        hasMoreDetails = true
+                    }
                 }
             }
+            adapter.hasMoreDetails = hasMoreDetails
             recycler_view.addItemDecoration(decorator)
 
             productTrackingList = trackingList.mapIndexed { index, item ->
@@ -409,11 +415,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private fun showProductInfo(title: String = "", desc: String, imageUrl: String = "") {
         activity?.let {
-            val voucherGameBottomSheets = VoucherGameBottomSheets()
-            voucherGameBottomSheets.title = title
-            voucherGameBottomSheets.description = desc
-            voucherGameBottomSheets.imageUrl = imageUrl
-            voucherGameBottomSheets.show(it.supportFragmentManager, TAG_VOUCHER_GAME_INFO)
+            val operatorInfoBottomSheets = OperatorInfoBottomSheets()
+            operatorInfoBottomSheets.title = title
+            operatorInfoBottomSheets.description = desc
+            operatorInfoBottomSheets.imageUrl = imageUrl
+            operatorInfoBottomSheets.show(it.supportFragmentManager, TAG_VOUCHER_GAME_INFO)
         }
     }
 
@@ -442,6 +448,19 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                     product.attributes.desc, productIndex, productTrackingList[productIndex])
         }
         selectProduct(product, position)
+    }
+
+    override fun onDetailClicked(product: VoucherGameProduct) {
+        activity?.let {
+            val productDetailBottomSheets = ProductDetailBottomSheets()
+            with(product.attributes) {
+                productDetailBottomSheets.title = desc
+                productDetailBottomSheets.description = detail
+                productDetailBottomSheets.urlLabel = detailUrlText
+                productDetailBottomSheets.url = detailUrl
+            }
+            productDetailBottomSheets.show(it.supportFragmentManager, TAG_VOUCHER_GAME_INFO)
+        }
     }
 
     private fun checkAutoSelectProduct() {
