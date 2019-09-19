@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
 import com.tokopedia.profilecompletion.settingprofile.data.UserProfileRoleData
 import kotlinx.coroutines.CoroutineDispatcher
@@ -29,7 +29,7 @@ class ProfileRoleViewModel @Inject constructor(
         get() = mutableUserProfileRole
 
     fun getUserProfileRole(){
-        val rawQuery = rawQueries[ProfileCompletionQueriesConstant.QUERY_PROFILE_ROLE]
+        val rawQuery = rawQueries[ProfileCompletionQueryConstant.QUERY_PROFILE_ROLE]
         if(!rawQuery.isNullOrEmpty()){
             userProfileRoleUseCase.run {
                 setGraphqlQuery(rawQuery)

@@ -9,3 +9,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
+
+project.ext {
+    artifactId = 'cpm'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarypm-release"
+}
+
+apply from: '../../publish_local.gradle'

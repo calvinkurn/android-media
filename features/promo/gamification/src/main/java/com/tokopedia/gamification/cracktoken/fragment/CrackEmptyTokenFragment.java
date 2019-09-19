@@ -30,6 +30,7 @@ import com.tokopedia.gamification.cracktoken.compoundview.WidgetRewardCrackResul
 import com.tokopedia.gamification.cracktoken.contract.CrackEmptyTokenContract;
 import com.tokopedia.gamification.cracktoken.presenter.CrackEmptyTokenPresenter;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
+import com.tokopedia.gamification.data.entity.HomeSmallButton;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
@@ -37,6 +38,7 @@ import com.tokopedia.gamification.di.GamificationComponentInstance;
 import javax.inject.Inject;
 
 import static android.view.Gravity.CENTER_HORIZONTAL;
+
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
@@ -61,6 +63,8 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
     private WidgetRewardCrackResult widgetRewards;
     @Inject
     CrackEmptyTokenPresenter crackEmptyTokenPresenter;
+    private FrameLayout dailyPrizeLayout;
+    private ImageView ivDailyPrize;
 
 
     public static Fragment newInstance(TokenDataEntity tokenData) {
@@ -83,6 +87,8 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         toolbarTitle.setText(getString(R.string.toko_points_title));
         widgetRewards = rootView.findViewById(R.id.widget_rewards);
+        dailyPrizeLayout = rootView.findViewById(R.id.fl_daily_prize);
+        ivDailyPrize = rootView.findViewById(R.id.empty_daily_prize);
         setUpToolBar();
         return rootView;
     }
@@ -108,10 +114,18 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
         if (tokenData == null)
             return;
 
-        if (!TextUtils.isEmpty(tokenData.getHome().getEmptyState().getTitle())){
+        HomeSmallButton homeSmallButton = tokenData.getHome().getHomeSmallButton();
+        if (homeSmallButton != null && !TextUtils.isEmpty(homeSmallButton.getImageURL())) {
+            dailyPrizeLayout.setVisibility(View.VISIBLE);
+            ImageHandler.loadImageAndCache(ivDailyPrize, homeSmallButton.getImageURL());
+            ivDailyPrize.setOnClickListener(v -> {
+                ApplinkUtil.navigateToAssociatedPage(getActivity(), homeSmallButton.getAppLink(), homeSmallButton.getUrl(), CrackTokenActivity.class);
+            });
+        }
+        if (!TextUtils.isEmpty(tokenData.getHome().getEmptyState().getTitle())) {
             title.setVisibility(View.VISIBLE);
             title.setText(tokenData.getHome().getEmptyState().getTitle());
-        }else{
+        } else {
             title.setVisibility(View.GONE);
         }
 
@@ -140,11 +154,11 @@ public class CrackEmptyTokenFragment extends BaseDaggerFragment implements Crack
             @Override
             public void onClick(View view) {
                 TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                                    GamificationEventTracking.Event.CLICK_LUCKY_EGG,
-                                    GamificationEventTracking.Category.EMPTY_PAGE,
-                                    GamificationEventTracking.Action.CLICK,
-                                    getMoreTokenBtn.getText().toString()
-                            ));
+                        GamificationEventTracking.Event.CLICK_LUCKY_EGG,
+                        GamificationEventTracking.Category.EMPTY_PAGE,
+                        GamificationEventTracking.Action.CLICK,
+                        getMoreTokenBtn.getText().toString()
+                ));
 
                 ApplinkUtil.navigateToAssociatedPage(getActivity(),
                         tokenData.getHome().getEmptyState().getButtonApplink(),
