@@ -758,7 +758,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         }
         updateMediaPreview()
         showProductSuggestion()
-        invalidatePostCallBack?.invalidatePostMenu(isPostEnabled)
+        activityListener?.invalidatePostMenu(isPostEnabled)
     }
 
     open fun updateRelatedProduct() {
