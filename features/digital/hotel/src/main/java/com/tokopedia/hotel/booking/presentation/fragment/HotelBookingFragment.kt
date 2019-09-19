@@ -18,6 +18,7 @@ import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -26,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.model.TravelContactData
+import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.design.text.watcher.AfterTextWatcher
@@ -63,6 +65,8 @@ class HotelBookingFragment : HotelBaseFragment() {
     var hotelBookingPageModel = HotelBookingPageModel()
 
     lateinit var progressDialog: ProgressDialog
+
+    lateinit var travelContactArrayAdapter: TravelContactArrayAdapter
 
     var roomRequestMaxCharCount = ROOM_REQUEST_DEFAULT_MAX_CHAR_COUNT
 
@@ -117,6 +121,10 @@ class HotelBookingFragment : HotelBaseFragment() {
                 }
             }
         })
+
+        bookingViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
+            contactList?.let{ travelContactArrayAdapter.updateItem(it.toMutableList()) }
+        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -133,6 +141,7 @@ class HotelBookingFragment : HotelBaseFragment() {
         showLoadingBar()
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
+        bookingViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -168,6 +177,11 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupImportantNotes(hotelCart.property)
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
+
+        context?.let {
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(), this)
+            (til_guest.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
+        }
     }
 
     private fun initProgressDialog() {

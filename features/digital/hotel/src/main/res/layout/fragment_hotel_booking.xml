@@ -331,7 +331,7 @@
                         app:errorEnabled="true"
                         app:helperEnabled="true">
 
-                        <android.support.v7.widget.AppCompatAutoCompleteTextView
+                        <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
                             android:id="@+id/tv_guest_input"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
