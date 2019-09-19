@@ -18,31 +18,31 @@ import javax.inject.Named
  * Created by jegul on 2019-09-11.
  */
 @Module
-class FollowRecommendationModule {
+class FollowRecomModule {
 
-    @FollowRecommendationScope
+    @FollowRecomScope
     @Provides
     fun provideGraphqlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
-    @FollowRecommendationScope
+    @FollowRecomScope
     @Provides
     @Named(GetFollowRecommendationUseCase.QUERY_FOLLOW_RECOMMENDATION)
     fun provideFollowRecommendationQuery(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_follow_recommendation)
 
-    @FollowRecommendationScope
+    @FollowRecomScope
     @Provides
     fun provideFollowKolPostUseCase(@ApplicationContext context: Context): FollowKolPostGqlUseCase {
         return FollowKolPostGqlUseCase(context, GraphqlUseCase())
     }
 
-    @FollowRecommendationScope
+    @FollowRecomScope
     @Provides
     @Named(FollowAllRecommendationUseCase.MUTATION_FOLLOW_ALL_RECOMMENDATION)
     fun provideFollowAllRecommendationMutation(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.mutation_follow_all_recommendation)
 
-    @FollowRecommendationScope
+    @FollowRecomScope
     @Provides
     @Named(SetOnboardingStatusUseCase.MUTATION_SET_ONBOARDING_STATUS)
     fun provideSetOnboardingStatusMutation(@ApplicationContext context: Context): String =

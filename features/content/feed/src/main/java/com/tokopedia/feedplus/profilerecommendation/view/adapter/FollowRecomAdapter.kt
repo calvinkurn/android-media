@@ -12,18 +12,19 @@ import android.widget.TextView
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
-import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
-import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationLoadMoreViewModel
-import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationViewModel
+import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecomAction
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardThumbnailViewModel
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardViewModel
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomLoadMoreViewModel
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomViewModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlin.math.max
 
 /**
  * Created by jegul on 2019-09-11.
  */
-class FollowRecommendationAdapter(
-        list: List<FollowRecommendationViewModel>,
+class FollowRecomAdapter(
+        list: List<FollowRecomViewModel>,
         private val listener: ActionListener)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -32,10 +33,10 @@ class FollowRecommendationAdapter(
         const val TYPE_LOADING = 2
     }
 
-    private val itemList: MutableList<FollowRecommendationViewModel> = list.toMutableList()
+    private val itemList: MutableList<FollowRecomViewModel> = list.toMutableList()
 
-    private val cardList: List<FollowRecommendationCardViewModel>
-        get() = itemList.filterIsInstance(FollowRecommendationCardViewModel::class.java)
+    private val cardList: List<FollowRecomCardViewModel>
+        get() = itemList.filterIsInstance(FollowRecomCardViewModel::class.java)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -58,15 +59,15 @@ class FollowRecommendationAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val item = itemList[position]
         when {
-            holder is FollowRecommendationCardViewHolder && item is FollowRecommendationCardViewModel -> holder.bind(item, position)
-            holder is FollowRecommendationLoadMoreViewHolder && item is FollowRecommendationLoadMoreViewModel -> holder.bind(item)
+            holder is FollowRecommendationCardViewHolder && item is FollowRecomCardViewModel -> holder.bind(item, position)
+            holder is FollowRecommendationLoadMoreViewHolder && item is FollowRecomLoadMoreViewModel -> holder.bind(item)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (itemList[position]) {
-            is FollowRecommendationCardViewModel -> TYPE_CARD
-            is FollowRecommendationLoadMoreViewModel -> TYPE_LOADING
+            is FollowRecomCardViewModel -> TYPE_CARD
+            is FollowRecomLoadMoreViewModel -> TYPE_LOADING
             else -> -1
         }
     }
@@ -79,24 +80,20 @@ class FollowRecommendationAdapter(
         }
     }
 
-    fun addItems(list: List<FollowRecommendationCardViewModel>) {
+    fun addItems(list: List<FollowRecomCardViewModel>) {
         updateItems(cardList + list)
         itemList.addAll(list)
     }
 
-    fun clearItems() {
-        itemList.clear()
-    }
-
     fun showLoading() {
-        itemList.add(FollowRecommendationLoadMoreViewModel)
+        itemList.add(FollowRecomLoadMoreViewModel)
         notifyItemInserted(itemList.lastIndex)
     }
 
     fun hideLoading() {
         if (itemList.size <= 0) return
         for (index in max(itemList.size-1, 0) downTo 0) {
-            if (itemList[index] is FollowRecommendationLoadMoreViewModel) {
+            if (itemList[index] is FollowRecomLoadMoreViewModel) {
                 itemList.removeAt(index)
                 notifyItemRemoved(index)
                 return
@@ -104,20 +101,20 @@ class FollowRecommendationAdapter(
         }
     }
 
-    fun getFollowedCount(): Int = cardList.count(FollowRecommendationCardViewModel::isFollowed)
+    fun getFollowedCount(): Int = cardList.count(FollowRecomCardViewModel::isFollowed)
 
-    fun updateFollowState(id: String, action: FollowRecommendationAction) {
+    fun updateFollowState(id: String, action: FollowRecomAction) {
         val itemIndex = cardList.indexOfFirst { it.authorId == id }
-        itemList[itemIndex] = (itemList[itemIndex] as FollowRecommendationCardViewModel).copy(
-                isFollowed = action == FollowRecommendationAction.FOLLOW
+        itemList[itemIndex] = (itemList[itemIndex] as FollowRecomCardViewModel).copy(
+                isFollowed = action == FollowRecomAction.FOLLOW
         )
         notifyItemChanged(itemIndex)
         listener.onFollowStateChanged(getFollowedCount())
     }
 
-    fun getItemByAuthorId(authorId: String): FollowRecommendationCardViewModel? = cardList.firstOrNull { it.authorId == authorId }
+    fun getItemByAuthorId(authorId: String): FollowRecomCardViewModel? = cardList.firstOrNull { it.authorId == authorId }
 
-    private fun updateItems(newList: List<FollowRecommendationCardViewModel>) {
+    private fun updateItems(newList: List<FollowRecomCardViewModel>) {
         val callback = FollowRecommendationDiffUtilCallback(itemList, newList)
         val result = DiffUtil.calculateDiff(callback)
         result.dispatchUpdatesTo(this)
@@ -126,7 +123,7 @@ class FollowRecommendationAdapter(
     inner class FollowRecommendationLoadMoreViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         private val progressBar = itemView.findViewById<ProgressBar>(R.id.progressBar)
 
-        fun bind(element: FollowRecommendationLoadMoreViewModel) {
+        fun bind(element: FollowRecomLoadMoreViewModel) {
 
         }
 
@@ -146,7 +143,7 @@ class FollowRecommendationAdapter(
         private val ivBadge = itemView.findViewById<ImageView>(R.id.iv_badge)
         private val tvHeader = itemView.findViewById<TextView>(R.id.tv_header)
 
-        fun bind(element: FollowRecommendationCardViewModel, position: Int) {
+        fun bind(element: FollowRecomCardViewModel, position: Int) {
             initView(element, position)
             initViewListener(element)
         }
@@ -156,12 +153,22 @@ class FollowRecommendationAdapter(
             ivImage2.clearImage()
             ivImage3.clearImage()
             ivProfile.clearImage()
+            resetListener()
         }
 
-        private fun initView(element: FollowRecommendationCardViewModel, position: Int) {
-            loadImageOrDefault(ivImage1, element.image1Url)
-            loadImageOrDefault(ivImage2, element.image2Url)
-            loadImageOrDefault(ivImage3, element.image3Url)
+        private fun initView(element: FollowRecomCardViewModel, position: Int) {
+            element.thumbnailList.take(3).forEachIndexed { index, model ->
+                val imageView = when (index) {
+                    0 -> ivImage1
+                    1 -> ivImage2
+                    else -> ivImage3
+                }
+                loadImageOrDefault(
+                        imageView,
+                        model.url
+                )
+                imageView.setOnClickListener { listener.onThumbnailClicked(model) }
+            }
             tvName.text = element.title
             tvDescription.text = element.description
             tvHeader.text = element.header
@@ -180,12 +187,12 @@ class FollowRecommendationAdapter(
             setButtonFollow(element.isFollowed)
         }
 
-        private fun initViewListener(element: FollowRecommendationCardViewModel) {
+        private fun initViewListener(element: FollowRecomCardViewModel) {
             btnFollow.setOnClickListener {
                 listener.onFollowButtonClicked(
                         element.authorId,
                         element.isFollowed,
-                        if (element.isFollowed) FollowRecommendationAction.UNFOLLOW else FollowRecommendationAction.FOLLOW
+                        if (element.isFollowed) FollowRecomAction.UNFOLLOW else FollowRecomAction.FOLLOW
                 )
             }
 
@@ -196,6 +203,12 @@ class FollowRecommendationAdapter(
             tvName.setOnClickListener {
                 listener.onNameOrAvatarClicked(element)
             }
+        }
+
+        private fun resetListener() {
+            ivImage1.setOnClickListener {  }
+            ivImage2.setOnClickListener {  }
+            ivImage3.setOnClickListener {  }
         }
 
         private fun setBadge(badgeUrl: String) {
@@ -234,15 +247,15 @@ class FollowRecommendationAdapter(
     }
 
     inner class FollowRecommendationDiffUtilCallback(
-            private val oldList: List<FollowRecommendationViewModel>,
-            private val newList: List<FollowRecommendationViewModel>
+            private val oldList: List<FollowRecomViewModel>,
+            private val newList: List<FollowRecomViewModel>
     ) : DiffUtil.Callback() {
 
         override fun areItemsTheSame(oldPos: Int, newPos: Int): Boolean {
             val oldItem = oldList[oldPos]
             val newItem = newList[newPos]
-            return if (oldItem is FollowRecommendationCardViewModel && newItem is FollowRecommendationCardViewModel) oldItem.authorId == newItem.authorId
-            else oldItem is FollowRecommendationLoadMoreViewModel && newItem is FollowRecommendationLoadMoreViewModel
+            return if (oldItem is FollowRecomCardViewModel && newItem is FollowRecomCardViewModel) oldItem.authorId == newItem.authorId
+            else oldItem is FollowRecomLoadMoreViewModel && newItem is FollowRecomLoadMoreViewModel
         }
 
         override fun getOldListSize(): Int {
@@ -259,8 +272,9 @@ class FollowRecommendationAdapter(
     }
 
     interface ActionListener {
-        fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecommendationAction)
+        fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecomAction)
         fun onFollowStateChanged(followCount: Int)
-        fun onNameOrAvatarClicked(model: FollowRecommendationCardViewModel)
+        fun onNameOrAvatarClicked(model: FollowRecomCardViewModel)
+        fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel)
     }
 }

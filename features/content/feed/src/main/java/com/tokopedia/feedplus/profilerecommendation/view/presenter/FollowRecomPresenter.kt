@@ -2,14 +2,16 @@ package com.tokopedia.feedplus.profilerecommendation.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.feedplus.profilerecommendation.data.AuthorType
+import com.tokopedia.feedplus.profilerecommendation.domain.model.FollowRecommendationMedia
 import com.tokopedia.feedplus.profilerecommendation.domain.model.FollowRecommendationQuery
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.FollowAllRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.SetOnboardingStatusUseCase
-import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecommendationContract
-import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
-import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
-import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationInfoViewModel
+import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecomContract
+import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecomAction
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardThumbnailViewModel
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardViewModel
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomInfoViewModel
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.model.FollowResponseModel
 import rx.Subscriber
@@ -18,12 +20,12 @@ import javax.inject.Inject
 /**
  * Created by jegul on 2019-09-11.
  */
-class FollowRecommendationPresenter @Inject constructor(
+class FollowRecomPresenter @Inject constructor(
         private val getFollowRecommendationUseCase: GetFollowRecommendationUseCase,
         private val followAllRecommendationUseCase: FollowAllRecommendationUseCase,
         private val setOnboardingStatusUseCase: SetOnboardingStatusUseCase,
         private val followKolPostGqlUseCase: FollowKolPostGqlUseCase
-) : BaseDaggerPresenter<FollowRecommendationContract.View>(), FollowRecommendationContract.Presenter {
+) : BaseDaggerPresenter<FollowRecomContract.View>(), FollowRecomContract.Presenter {
 
     override fun getFollowRecommendationList(interestIds: IntArray, cursor: String) {
         if (cursor == "") view.showLoading()
@@ -54,19 +56,19 @@ class FollowRecommendationPresenter @Inject constructor(
         }
     }
 
-    override fun followUnfollowRecommendation(id: String, action: FollowRecommendationAction) {
+    override fun followUnfollowRecommendation(id: String, action: FollowRecomAction) {
         followKolPostGqlUseCase.execute(
                 FollowKolPostGqlUseCase.createRequestParams(id.toInt(),
                         when (action) {
-                            FollowRecommendationAction.FOLLOW -> FollowKolPostGqlUseCase.PARAM_FOLLOW
-                            FollowRecommendationAction.UNFOLLOW -> FollowKolPostGqlUseCase.PARAM_UNFOLLOW
+                            FollowRecomAction.FOLLOW -> FollowKolPostGqlUseCase.PARAM_FOLLOW
+                            FollowRecomAction.UNFOLLOW -> FollowKolPostGqlUseCase.PARAM_UNFOLLOW
                         }),
                 object : Subscriber<FollowResponseModel>() {
                     override fun onNext(t: FollowResponseModel) {
                         if (t.errorMessage.isNullOrEmpty() && t.isSuccess) {
                             when (action) {
-                                FollowRecommendationAction.FOLLOW -> view.onSuccessFollowRecommendation(id)
-                                FollowRecommendationAction.UNFOLLOW -> view.onSuccessUnfollowRecommendation(id)
+                                FollowRecomAction.FOLLOW -> view.onSuccessFollowRecommendation(id)
+                                FollowRecomAction.UNFOLLOW -> view.onSuccessUnfollowRecommendation(id)
                             }
                         }
                         else view.onGetError(IllegalStateException(t.errorMessage))
@@ -96,12 +98,17 @@ class FollowRecommendationPresenter @Inject constructor(
         }
     }
 
-    private fun getRecommendationCardList(query: FollowRecommendationQuery): List<FollowRecommendationCardViewModel> = query.data.map { data ->
-        FollowRecommendationCardViewModel(
+    override fun detachView() {
+        super.detachView()
+        followKolPostGqlUseCase.unsubscribe()
+        followAllRecommendationUseCase.cancelJobs()
+        getFollowRecommendationUseCase.cancelJobs()
+    }
+
+    private fun getRecommendationCardList(query: FollowRecommendationQuery): List<FollowRecomCardViewModel> = query.data.map { data ->
+        FollowRecomCardViewModel(
                 header = query.meta.assets.title,
-                image1Url = if (data.media.isNotEmpty()) data.media[0].thumbnail else "",
-                image2Url = if (data.media.size > 1) data.media[1].thumbnail else "",
-                image3Url = if (data.media.size > 2) data.media[2].thumbnail else "",
+                thumbnailList = data.media.map(::getRecommendationCardThumbnail),
                 avatar = data.header.avatar,
                 badgeUrl = data.header.avatarBadgeImage,
                 title = data.header.avatarTitle,
@@ -114,16 +121,14 @@ class FollowRecommendationPresenter @Inject constructor(
         )
     }
 
-    private fun getRecommendationInfo(query: FollowRecommendationQuery): FollowRecommendationInfoViewModel = FollowRecommendationInfoViewModel(
+    private fun getRecommendationCardThumbnail(media: FollowRecommendationMedia): FollowRecomCardThumbnailViewModel = FollowRecomCardThumbnailViewModel(
+            id = media.id,
+            url = media.thumbnail
+    )
+
+    private fun getRecommendationInfo(query: FollowRecommendationQuery): FollowRecomInfoViewModel = FollowRecomInfoViewModel(
             minFollowed = query.meta.minFollowed,
             instructionText = query.meta.assets.instruction,
             buttonCTA = query.meta.assets.buttonCta
     )
-
-    override fun detachView() {
-        super.detachView()
-        followKolPostGqlUseCase.unsubscribe()
-        followAllRecommendationUseCase.cancelJobs()
-        getFollowRecommendationUseCase.cancelJobs()
-    }
 }

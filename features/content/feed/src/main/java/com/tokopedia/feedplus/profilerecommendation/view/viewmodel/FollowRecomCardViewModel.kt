@@ -3,11 +3,9 @@ package com.tokopedia.feedplus.profilerecommendation.view.viewmodel
 /**
  * Created by jegul on 2019-09-13.
  */
-data class FollowRecommendationCardViewModel(
+data class FollowRecomCardViewModel(
         val header: String?,
-        val image1Url: String,
-        val image2Url: String,
-        val image3Url: String,
+        val thumbnailList: List<FollowRecomCardThumbnailViewModel>,
         val avatar: String,
         val title: String,
         val description: String,
@@ -17,4 +15,4 @@ data class FollowRecommendationCardViewModel(
         val isFollowed: Boolean,
         val followInstruction: String,
         val authorId: String
-) : FollowRecommendationViewModel
+) : FollowRecomViewModel

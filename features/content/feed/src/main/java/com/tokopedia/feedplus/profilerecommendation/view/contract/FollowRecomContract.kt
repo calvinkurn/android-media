@@ -1,20 +1,20 @@
 package com.tokopedia.feedplus.profilerecommendation.view.contract
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
-import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
-import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationInfoViewModel
+import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecomAction
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomCardViewModel
+import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecomInfoViewModel
 
 /**
  * Created by jegul on 2019-09-11.
  */
-interface FollowRecommendationContract {
+interface FollowRecomContract {
 
     interface View : CustomerView {
 
-        fun onGetFollowRecommendationList(recomList: List<FollowRecommendationCardViewModel>, cursor: String)
+        fun onGetFollowRecommendationList(recomList: List<FollowRecomCardViewModel>, cursor: String)
 
-        fun onGetFollowRecommendationInfo(infoViewModel: FollowRecommendationInfoViewModel)
+        fun onGetFollowRecommendationInfo(infoViewModel: FollowRecomInfoViewModel)
 
         fun onSuccessFollowRecommendation(id: String)
 
@@ -39,7 +39,7 @@ interface FollowRecommendationContract {
 
         fun followAllRecommendation(interestIds: IntArray)
 
-        fun followUnfollowRecommendation(id: String, action: FollowRecommendationAction)
+        fun followUnfollowRecommendation(id: String, action: FollowRecomAction)
 
         fun setOnboardingStatus()
     }

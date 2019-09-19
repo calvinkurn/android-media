@@ -7,14 +7,14 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
+import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecomAction
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by jegul on 2019-09-19.
  */
-class DialogOnboardingRecommendationFollowView : LinearLayout {
+class DialogOnboardingRecomFollowView : LinearLayout {
 
     constructor(context: Context) : super(context)
 
@@ -75,7 +75,7 @@ class DialogOnboardingRecommendationFollowView : LinearLayout {
             setOnClickListener {
                 listener?.onFollowButtonClicked(
                         authorId,
-                        if (isFollowed) FollowRecommendationAction.UNFOLLOW else FollowRecommendationAction.FOLLOW
+                        if (isFollowed) FollowRecomAction.UNFOLLOW else FollowRecomAction.FOLLOW
                 )
             }
         }
@@ -83,6 +83,6 @@ class DialogOnboardingRecommendationFollowView : LinearLayout {
 
     interface ActionListener {
         fun onCloseButtonClicked()
-        fun onFollowButtonClicked(authorId: String, action: FollowRecommendationAction)
+        fun onFollowButtonClicked(authorId: String, action: FollowRecomAction)
     }
 }

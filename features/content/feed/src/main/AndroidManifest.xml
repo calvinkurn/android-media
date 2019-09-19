@@ -8,7 +8,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name=".profilerecommendation.view.activity.FollowRecommendationActivity"
+            android:name=".profilerecommendation.view.activity.FollowRecomActivity"
             android:screenOrientation="portrait"
             android:label="@string/recommendation_for_you"
             android:theme="@style/Theme.White"/>
