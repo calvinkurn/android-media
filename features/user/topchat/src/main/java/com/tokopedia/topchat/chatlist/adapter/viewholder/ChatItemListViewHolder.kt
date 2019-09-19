@@ -92,7 +92,6 @@ class ChatItemListViewHolder(
             STATE_CHAT_UNREAD -> {
                 userName.setWeight(Typography.BOLD)
                 unreadCounter.show()
-//                unreadCounter.text = unreads.toZeroIfNull().toString()
             }
 
             STATE_CHAT_READ -> {

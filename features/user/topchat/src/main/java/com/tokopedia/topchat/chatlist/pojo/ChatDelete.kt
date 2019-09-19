@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ChatDeleteStatus(
-        @Expose @SerializedName("chatMoveToTrash") var chatMoveToTrash: ChatDeleteList? = null
+        @Expose @SerializedName("chatMoveToTrash") var chatMoveToTrash: ChatDeleteList = ChatDeleteList(listOf())
 )
 
 data class ChatDeleteList(

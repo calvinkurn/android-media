@@ -43,7 +43,6 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    @Named("retrofit")
     fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
             throw IllegalStateException("Application must implement "

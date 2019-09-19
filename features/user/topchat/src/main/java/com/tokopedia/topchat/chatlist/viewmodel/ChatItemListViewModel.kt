@@ -95,8 +95,8 @@ class ChatItemListViewModel @Inject constructor(
                     repository.getReseponse(listOf(request))
                 }.getSuccessData<ChatDeleteStatus>()
 
-                data.chatMoveToTrash?.let {
-                    _deleteChat.value = Success(it.list.first())
+                if(data.chatMoveToTrash.list.isNotEmpty()) {
+                    _deleteChat.value = Success(data.chatMoveToTrash.list.first())
                 }
             }) {
                 _deleteChat.value = Fail(it)
