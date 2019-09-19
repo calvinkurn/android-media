@@ -348,10 +348,7 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         updateCaption()
         updateHeader(feedContentForm.authors)
 
-        if (shouldLoadProductSuggestion()) {
-            fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
-            showProductSuggestionLoading()
-        }
+        getProductSuggestion()
     }
 
     override fun onErrorGetContentForm(message: String) {
@@ -370,6 +367,39 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             it.finish()
             affiliateAnalytics.onJatahRekomendasiHabisDialogShow()
         }
+    }
+
+    override fun onAuthenticateTwitter(authenticator: TwitterAuthenticator) {
+        context?.let(authenticator::startAuthenticate)
+    }
+
+    open fun updateRelatedProduct() {
+        adapter.updateProduct(viewModel.relatedProducts)
+        if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState){
+            product_attachment.gone()
+            label_title_product_attachment.gone()
+        } else {
+            product_attachment.visible()
+            label_title_product_attachment.visible()
+        }
+    }
+
+    override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
+        shareAdapter.setItems(typeList)
+    }
+
+    override fun changeShareHeaderText(text: String) {
+        activityListener?.updateShareHeader(text)
+    }
+
+    fun openShareBottomSheetDialog() {
+        presenter.invalidateShareOptions()
+        if (!::shareDialogView.isInitialized) shareDialogView = createBottomSheetView()
+        shareDialogView.apply {
+            shareList.adapter = shareAdapter
+            shareBtn.isEnabled = isPostEnabled
+        }
+        shareDialog.show()
     }
 
     protected open fun initVar(savedInstanceState: Bundle?) {
@@ -757,18 +787,19 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             viewModel.productIdList.removeAt(idPosition)
         }
         updateMediaPreview()
-        showProductSuggestion()
         activityListener?.invalidatePostMenu(isPostEnabled)
+
+        if (productSuggestionAdapter.isEmpty()) {
+            getProductSuggestion()
+        } else {
+            showProductSuggestion()
+        }
     }
 
-    open fun updateRelatedProduct() {
-        adapter.updateProduct(viewModel.relatedProducts)
-        if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState){
-            product_attachment.gone()
-            label_title_product_attachment.gone()
-        } else {
-            product_attachment.visible()
-            label_title_product_attachment.visible()
+    private fun getProductSuggestion() {
+        if (shouldLoadProductSuggestion()) {
+            fetchProductSuggestion(::onSuccessGetProductSuggestion, ::onErrorGetProductSuggestion)
+            showProductSuggestionLoading()
         }
     }
 
@@ -852,28 +883,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
     }
 
     private fun isTypeAffiliate(): Boolean = viewModel.authorType == TYPE_AFFILIATE
-
-    override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
-        shareAdapter.setItems(typeList)
-    }
-
-    override fun changeShareHeaderText(text: String) {
-        activityListener?.updateShareHeader(text)
-    }
-
-    fun openShareBottomSheetDialog() {
-        presenter.invalidateShareOptions()
-        if (!::shareDialogView.isInitialized) shareDialogView = createBottomSheetView()
-        shareDialogView.apply {
-            shareList.adapter = shareAdapter
-            shareBtn.isEnabled = isPostEnabled
-        }
-        shareDialog.show()
-    }
-
-    override fun onAuthenticateTwitter(authenticator: TwitterAuthenticator) {
-        context?.let(authenticator::startAuthenticate)
-    }
 
     private fun onShareButtonClicked(type: ShareType, isChecked: Boolean) {
         presenter.onShareButtonClicked(type, isChecked)
