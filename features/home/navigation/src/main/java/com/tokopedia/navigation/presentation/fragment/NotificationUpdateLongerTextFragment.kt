@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.image.RoundedCornerImageView
 import com.tokopedia.kotlin.extensions.view.hide
@@ -29,6 +30,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     lateinit var contentTextView: Typography
     lateinit var contentTitleView: Typography
     lateinit var ctaButton: UnifyButton
+    lateinit var closeButton: ImageView
 
     private var contentImageUrl = ""
     private var contentImageViewType = ""
@@ -47,6 +49,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             contentTextView = findViewById(R.id.content_text)
             contentTitleView = findViewById(R.id.content_title)
             ctaButton = findViewById(R.id.cta_button)
+            closeButton = findViewById(R.id.iv_close)
         }
     }
 
@@ -95,6 +98,10 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             contentImageView.show()
         } else {
             contentImageView.hide()
+        }
+
+        closeButton.setOnClickListener {
+            dismiss()
         }
     }
 
