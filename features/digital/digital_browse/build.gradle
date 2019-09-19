@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'digital_browse'
-    groupId = 'com.tokopedia.digital_browse'
-    versionName = "2.22"
-    artifactName = "tkpddigitalbrowse-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -23,8 +16,8 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
@@ -60,6 +53,13 @@ dependencies {
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation project(rootProject.ext.features.navigationCommon)
+}
+
+project.ext {
+    artifactId = 'browse'
+    groupId = 'com.tokopedia.digital'
+    versionName = "1.0.0"
+    artifactName = "digitalbrowse-release"
 }
 
 apply from: '../../../publish_local.gradle'

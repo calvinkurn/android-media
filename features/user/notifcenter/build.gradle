@@ -17,19 +17,12 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'notifcenter'
-    groupId = 'com.tokopedia.notifcenter'
-    versionName = "${tkpdNotifCenterVersion}"
-    artifactName = "notifcenter-release"
-}
-
 dependencies {
     
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.applink)
@@ -54,3 +47,12 @@ dependencies {
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'notification-center'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName = "usernotification-release"
+}
+
+apply from: '../../../publish_local.gradle'

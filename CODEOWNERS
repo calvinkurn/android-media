@@ -16,6 +16,7 @@
 /features/discovery/productcard/        @tokopedia/minion-dave
 /features/discovery/search/             @tokopedia/minion-dave
 /features/discovery/filter/             @tokopedia/minion-dave
+/features/discovery/image_search/       @tokopedia/minion-dave
 /features/digital/digital_browse/       @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
@@ -95,7 +96,6 @@
 /features/user/loginregister/                   @tokopedia/minion-kevin
 /features/user/sessioncommon/                   @tokopedia/minion-kevin
 /features/user/loginphone/                      @tokopedia/minion-kevin
-/features/user/bankdb/                          @tokopedia/minion-kevin
 /features/user/notifcenter/                     @tokopedia/minion-kevin
 /features/user/attachproduct/                   @tokopedia/minion-kevin
 /features/user/talk/                            @tokopedia/minion-kevin

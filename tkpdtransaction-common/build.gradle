@@ -14,8 +14,8 @@ buildscript {
 
 dependencies {
 
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -30,5 +30,14 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
 }
+
+project.ext {
+    artifactId = 'common'
+    groupId = 'com.tokopedia.transaction'
+    versionName = "1.0.0"
+    artifactName ="transactioncommon-release"
+}
+
+apply from: '../publish_local.gradle'

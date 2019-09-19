@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
@@ -309,27 +309,6 @@ public class ProductItem extends ImpressHolder implements Parcelable, Visitable<
     @Override
     public int type(ProductListTypeFactory typeFactory) {
         return typeFactory.type(this);
-    }
-
-    public Object getProductAsObjectDataLayerForImageSearchImpression() {
-        return DataLayer.mapOf(
-                "name", getProductName(),
-                "id", getProductID(),
-                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "category", getCategoryBreadcrumb(),
-                "list", SearchTracking.ACTION_IMAGE_SEARCH,
-                "position", Integer.toString(getPosition())
-        );
-    }
-
-    public Object getProductAsObjectDataLayerForImageSearchClick() {
-        return DataLayer.mapOf(
-                "name", getProductName(),
-                "id", getProductID(),
-                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "category", "",
-                "position", Integer.toString(getPosition())
-        );
     }
 
     public void setProductWishlistUrl(String productWishlistUrl) {

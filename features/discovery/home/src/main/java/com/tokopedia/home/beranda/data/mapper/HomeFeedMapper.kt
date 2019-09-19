@@ -6,9 +6,9 @@ import com.tokopedia.home.beranda.domain.gql.feed.Banner
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.Product
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory
-import com.tokopedia.home.beranda.presentation.view.viewmodel.BannerFeedViewModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedListModel
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerFeedViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedListModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 import rx.functions.Func1
 import java.util.*
 

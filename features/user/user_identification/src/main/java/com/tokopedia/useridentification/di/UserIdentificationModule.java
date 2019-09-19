@@ -14,6 +14,7 @@ import com.tokopedia.imageuploader.utils.ImageUploaderUtils;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.user_identification_common.usecase.GetApprovalStatusUseCase;
+import com.tokopedia.user_identification_common.usecase.GetUserProjectInfoUseCase;
 import com.tokopedia.useridentification.domain.usecase.RegisterIdentificationUseCase;
 import com.tokopedia.useridentification.domain.usecase.UploadIdentificationUseCase;
 import com.tokopedia.useridentification.util.AppSchedulerProvider;
@@ -36,8 +37,8 @@ public class UserIdentificationModule {
 
     @UserIdentificationScope
     @Provides
-    UserIdentificationInfo.Presenter provideUserIdentificationInfoPresenter(GetApprovalStatusUseCase getApprovalStatusUseCase) {
-        return new UserIdentificationInfoPresenter(getApprovalStatusUseCase);
+    UserIdentificationInfo.Presenter provideUserIdentificationInfoPresenter(GetUserProjectInfoUseCase getUserProjectInfoUseCase, GetApprovalStatusUseCase getApprovalStatusUseCase) {
+        return new UserIdentificationInfoPresenter(getUserProjectInfoUseCase, getApprovalStatusUseCase);
     }
 
     @UserIdentificationScope

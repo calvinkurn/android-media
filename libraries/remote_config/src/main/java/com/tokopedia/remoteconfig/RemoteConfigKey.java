@@ -89,7 +89,6 @@ public class RemoteConfigKey {
     public static final String CHECKOUT_TEMPLATE_SETTING_TOGGLE = "android_customer_enable_express_checkout_template_setting";
 
     public static final String APP_ENABLE_SALDO_SPLIT = "app_enable_saldo_split";
-    public static final String SHOP_ETALASE_TOGGLE = "android_shop_etalase_toggle";
 
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
@@ -133,6 +132,7 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_ADD_NEW_ADDRESS_KEY = "android_customer_enable_add_new_address";
     public static final String ENABLE_GTM_REFRESH = "android_enable_gtm_refresh";
+    public static final String ENABLE_GTM_V5 = "android_enable_gtm_v5";
     public static final String APP_CHANGE_PARAMETER_ROW = "mainapp_change_parameter_row";
 
     public static final String MAINAPP_ENABLE_DIGITAL_TELCO_PDP = "android_customer_enable_telco_pdp";
@@ -157,4 +157,5 @@ public class RemoteConfigKey {
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
 
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
+    public static final String ENABLE_CART_ICON_IN_SHOP = "android_customer_enable_cart_icon_in_shop";
 }

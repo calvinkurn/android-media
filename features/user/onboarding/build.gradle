@@ -20,10 +20,10 @@ buildscript {
 dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
 
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -39,3 +39,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation 'io.reactivex:rxkotlin:0.60.0'
 }
+
+project.ext {
+    artifactId = 'onboarding'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName ="useronboarding-release"
+}
+
+apply from: '../../../publish_local.gradle'
