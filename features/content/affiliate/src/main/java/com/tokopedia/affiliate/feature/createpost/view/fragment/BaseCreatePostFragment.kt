@@ -129,10 +129,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         private const val CHAR_LENGTH_TO_SHOW = 1900
     }
 
-    interface OnCreatePostCallBack{
-        fun invalidatePostMenu(isPostEnabled: Boolean)
-    }
-
     abstract fun fetchContentForm()
 
     abstract fun onRelatedAddProductClick()
