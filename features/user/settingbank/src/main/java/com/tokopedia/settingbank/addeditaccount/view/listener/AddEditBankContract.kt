@@ -49,8 +49,5 @@ interface AddEditBankContract {
 
         fun validateBank(bankFormModel: BankFormModel)
 
-        fun getCotpIntent(context: Context?): Intent
-
-
     }
 }

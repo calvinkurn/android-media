@@ -15,19 +15,20 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "${artifactIdTransactionAnalytics}"
-    groupId = "${groupIdTransaction}"
-    versionName = "${transactionGroupVersion}"
-    artifactName = "${artifactIdTransactionAnalytics}-release"
-}
-
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+project.ext {
+    artifactId = "atc-common"
+    groupId = "com.tokopedia.transaction"
+    versionName = "1.0.0"
+    artifactName = "transactionatccommon-release"
+}
+
 apply from: "$rootProject.projectDir/publish_local.gradle"

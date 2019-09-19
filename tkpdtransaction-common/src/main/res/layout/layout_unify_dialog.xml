@@ -134,6 +134,7 @@
             app:layout_constraintStart_toEndOf="@+id/dialog_btn_secondary"/>
 
         <Button android:id="@+id/dialog_btn_secondary_long"
+            style="?android:attr/borderlessButtonStyle"
             android:layout_width="0dp"
             android:layout_height="@dimen/dp_40"
             android:background="@color/white"

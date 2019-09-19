@@ -21,7 +21,7 @@ interface CreatePostContract {
 
         fun hideLoading()
 
-        fun onSuccessGetContentForm(feedContentForm: FeedContentForm)
+        fun onSuccessGetContentForm(feedContentForm: FeedContentForm, isFromTemplateToken: Boolean)
 
         fun onErrorGetContentForm(message: String)
 
@@ -44,6 +44,8 @@ interface CreatePostContract {
         fun onShareButtonClicked(type: ShareType, isChecked: Boolean)
 
         fun fetchContentForm(idList: MutableList<String>, type: String, postId: String)
+
+        fun fetchContentFormByToken(token: String, type: String)
 
         fun getFeedDetail(postId: String, isAffiliate: Boolean)
     }

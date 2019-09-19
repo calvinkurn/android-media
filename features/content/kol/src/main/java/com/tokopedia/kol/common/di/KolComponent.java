@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.video.view.fragment.MediaPreviewFragment;
@@ -24,7 +25,7 @@ import retrofit2.Retrofit;
  */
 
 @KolScope
-@Component(modules = {KolModule.class, KolViewModelModule.class}, dependencies = BaseAppComponent.class)
+@Component(modules = {KolModule.class, KolViewModelModule.class, FeedComponentModule.class}, dependencies = BaseAppComponent.class)
 public interface KolComponent {
     KolApi kolApi();
 

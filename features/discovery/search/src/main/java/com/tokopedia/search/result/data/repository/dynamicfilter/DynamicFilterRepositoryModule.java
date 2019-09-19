@@ -2,7 +2,7 @@ package com.tokopedia.search.result.data.repository.dynamicfilter;
 
 import com.tokopedia.discovery.common.Repository;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.search.result.data.source.dynamicfilter.DynamicFilterDataSource;
 import com.tokopedia.search.result.data.source.dynamicfilter.DynamicFilterDataSourceModule;

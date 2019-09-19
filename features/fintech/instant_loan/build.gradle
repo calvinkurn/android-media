@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'instant-loan'
-    groupId = 'com.tokopedia.instantloan'
-    versionName = "2.23"
-    artifactName ="instant-loan-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -23,8 +16,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
@@ -33,7 +26,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
 
-    implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.features.tkpdseller)
 
     implementation rootProject.ext.networkDependencies.glide
 
@@ -64,6 +57,13 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
         exclude group: "com.android.support"
     }
+}
+
+project.ext {
+    artifactId = 'instant-loan'
+    groupId = 'com.tokopedia.fintech'
+    versionName = "1.0.0"
+    artifactName ="fintechinstantloan-release"
 }
 
 apply from: '../../../publish_local.gradle'

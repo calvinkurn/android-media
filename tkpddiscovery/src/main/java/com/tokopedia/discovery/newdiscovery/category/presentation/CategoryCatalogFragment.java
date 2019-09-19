@@ -26,9 +26,9 @@ import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
-import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
+import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
+import com.tokopedia.discovery.newdiscovery.di.component.DaggerDiscoveryComponent;
+import com.tokopedia.discovery.newdiscovery.di.component.DiscoveryComponent;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionGeneralAdapter;
@@ -38,7 +38,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.fact
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogFragmentContract;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.presenter.CatalogPresenter;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
@@ -144,7 +144,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     protected void initInjector() {
-        SearchComponent component = DaggerSearchComponent.builder()
+        DiscoveryComponent component = DaggerDiscoveryComponent.builder()
                 .appComponent(getComponent(AppComponent.class))
                 .build();
         component.inject(this);
@@ -246,7 +246,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public void setOnCatalogClicked(String catalogID, String catalogName) {
-        SearchTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
+        DiscoveryTracking.eventSearchResultCatalogClick(getActivity(), query, catalogName);
         Intent intent = DetailProductRouter.getCatalogDetailActivity(getActivity(), catalogID);
         startActivityForResult(intent, REQUEST_CODE_GOTO_CATALOG_DETAIL);
     }
@@ -275,7 +275,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
 
     @Override
     public void onEmptyButtonClicked() {
-        SearchTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
+        DiscoveryTracking.eventUserClickNewSearchOnEmptySearch(getContext(), getScreenName());
         showSearchInputView();
     }
 
@@ -394,7 +394,7 @@ public class CategoryCatalogFragment extends BrowseSectionFragment implements
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
             catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getString(R.string.catalog_tab_title).toLowerCase());
-            SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
+            DiscoveryTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
 
