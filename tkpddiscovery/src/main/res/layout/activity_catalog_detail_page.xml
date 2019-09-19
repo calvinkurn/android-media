@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
 
     <FrameLayout
@@ -104,7 +105,7 @@
                         android:layout_marginLeft="@dimen/dp_6"
                         android:layout_marginRight="@dimen/dp_6"
                         android:background="@android:color/transparent"
-                        android:padding="@dimen/dp_10"
+                        android:padding="@dimen/dp_8"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
@@ -114,10 +115,8 @@
                         android:id="@+id/img_share_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_6"
-                        android:layout_marginRight="@dimen/dp_6"
                         android:background="@android:color/transparent"
-                        android:padding="@dimen/dp_10"
+                        android:padding="@dimen/dp_8"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintRight_toLeftOf="@+id/img_display_button"
                         app:layout_constraintTop_toTopOf="parent"

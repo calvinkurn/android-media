@@ -102,7 +102,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
 
         @JvmStatic
-        fun newInstance(catalogId: String, catalogName: String, departmentid: String, departmentName: String): Fragment {
+        fun newInstance(catalogId: String, catalogName: String, departmentid: String?, departmentName: String?): Fragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
@@ -149,7 +149,6 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             val viewModelProvider = ViewModelProviders.of(observer, viewModelFactory)
             viewModel = viewModelProvider.get(CatalogDetailProductListingViewModel::class.java)
             fetchProductData(getProductListParamMap(getPage()))
-//            viewModel.fetchSubCategoriesList(getSubCategoryParam())
             viewModel.fetchQuickFilters(getQuickFilterParams())
         }
     }

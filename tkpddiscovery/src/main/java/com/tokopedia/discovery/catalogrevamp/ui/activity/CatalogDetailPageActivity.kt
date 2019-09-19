@@ -7,8 +7,10 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.view.View
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.core.analytics.AppScreen
 import com.tokopedia.core.network.NetworkErrorHelper
 import com.tokopedia.core.share.DefaultShare
@@ -45,6 +47,16 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
     private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var catalogName: String =""
 
+    object DeeplinkIntents {
+        @JvmStatic
+        @DeepLink(ApplinkConst.DISCOVERY_CATALOG)
+        fun defaultIntent(context: Context, bundle: Bundle): Intent {
+            val intent = createIntent(context, bundle.getString(EXTRA_CATALOG_ID))
+            return intent
+                    .putExtras(bundle)
+        }
+    }
+
     companion object {
         private const val STATE_GRID = 1
         private const val STATE_LIST = 2
@@ -52,7 +64,12 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         private const val EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
         private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
-
+        @JvmStatic
+        fun createIntent(context: Context, catalogId: String?): Intent {
+            val intent = Intent(context, CatalogDetailPageActivity::class.java)
+            intent.putExtra(EXTRA_CATALOG_ID, catalogId)
+            return intent
+        }
         @JvmStatic
         fun isCatalogRevampEnabled(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
@@ -71,9 +88,8 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         return fragment
     }
 
-    private fun getNewCatalogDetailListingFragment(catalogName: String): Fragment {
-        val departmentId: String = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_ID)
-        val departmentName: String = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_NAME)
+    private fun getNewCatalogDetailListingFragment(catalogName: String, departmentId: String): Fragment {
+        val departmentName: String? = intent.getStringExtra(EXTRA_CATEGORY_DEPARTMENT_NAME)
         return CatalogDetailProductListingFragment.newInstance(catalogId, catalogName, departmentId, departmentName)
     }
 
@@ -172,12 +188,12 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         }
     }
 
-    override fun deliverCatalogShareData(shareData: LinkerData, catalogName: String) {
+    override fun deliverCatalogShareData(shareData: LinkerData, catalogName: String, departmentId:String) {
         this.shareData = shareData
         this.catalogName = catalogName
         title_toolbar.text = catalogName
 
-        catalogDetailListingFragment = getNewCatalogDetailListingFragment(catalogName)
+        catalogDetailListingFragment = getNewCatalogDetailListingFragment(catalogName, departmentId)
         supportFragmentManager.beginTransaction()
                 .add(R.id.frame_layout, catalogDetailListingFragment)
                 .commit()

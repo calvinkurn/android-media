@@ -71,13 +71,13 @@ class CatalogSpecsAndDetailFragment : Fragment() {
             linear_layout.addView(headerView)
             for(row in specs.row){
                 val doubleTextView = DoubleTextView(activity, LinearLayout.HORIZONTAL)
-                doubleTextView.setTopText(row.key)
+                doubleTextView.setTopText(MethodChecker.fromHtml(row.key).toString())
                 doubleTextView.setTopTextSize(14.0f)
                 doubleTextView.setTopTextColor(MethodChecker.getColor(context, R.color.unify_N700_44))
                 doubleTextView.setBottomTextSize(14.0f)
                 doubleTextView.setBottomTextColor(MethodChecker.getColor(context, R.color.grey_796))
                 doubleTextView.setBottomTextStyle("")
-                doubleTextView.setBottomText(row.value.joinToString(",\n"))
+                doubleTextView.setBottomText(MethodChecker.fromHtml(row.value.joinToString(",\n")).toString())
                 linear_layout.addView(doubleTextView)
             }
             val lineView = View(context)
@@ -93,7 +93,9 @@ class CatalogSpecsAndDetailFragment : Fragment() {
 
     private fun setDescriptionView(description: String?) {
         val headerView = TextView(context)
-        headerView.text = description
+        val params = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+        headerView.layoutParams = params
+        headerView.text = MethodChecker.fromHtml(description).toString()
         headerView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14.0f)
         headerView.setTextColor(MethodChecker.getColor(context,R.color.grey_796))
         linear_layout.addView(headerView)

@@ -109,7 +109,7 @@ class CatalogDetailPageFragment : Fragment(),
             val catalogSpecsAndDetailView = CatalogSpecsAndDetailBottomSheet.newInstance(catalog.description, catalog.specification)
             catalogSpecsAndDetailView.show(childFragmentManager, "")
         }
-        listener?.deliverCatalogShareData(generateCatalogShareData(catalog.url, catalogId), catalog.name)
+        listener?.deliverCatalogShareData(generateCatalogShareData(catalog.url, catalogId), catalog.name, catalog.departmentId)
     }
 
     private fun setBanner(catalogImage: ArrayList<Catalog.CatalogImage>) {
@@ -183,6 +183,6 @@ class CatalogDetailPageFragment : Fragment(),
     }
 
     interface Listener {
-        fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String)
+        fun deliverCatalogShareData(shareData: LinkerData, catalogHeading: String, departmentId:String)
     }
 }
