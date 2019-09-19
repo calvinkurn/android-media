@@ -6,7 +6,6 @@ import android.view.animation.AnimationUtils
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.CommissionDetailItemViewModel
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.gone

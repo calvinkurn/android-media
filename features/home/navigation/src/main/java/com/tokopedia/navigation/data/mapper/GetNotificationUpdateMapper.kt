@@ -27,7 +27,10 @@ class GetNotificationUpdateMapper @Inject constructor(){
                     isRead = convertReadStatus(notificationUpdateItem.readStatus),
                     appLink = notificationUpdateItem.dataNotification.appLink,
                     label = notificationUpdateItem.typeOfUser,
-                    hasShop = item.userInfo.hasShop()
+                    hasShop = item.userInfo.hasShop(),
+                    typeLink = notificationUpdateItem.typeLink,
+                    totalProduct = notificationUpdateItem.totalProducts,
+                    products = notificationUpdateItem.productData
             )
             list.add(datum)
         }

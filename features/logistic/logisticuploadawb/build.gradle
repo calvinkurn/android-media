@@ -16,15 +16,8 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "${artifactIdLogisticUploadAwb}"
-    groupId = "${groupIdLogistic}"
-    versionName = "${logisticGroupVersion}"
-    artifactName = "${artifactIdLogisticUploadAwb}-release"
-}
-
 dependencies {
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.applink)
 
@@ -34,3 +27,12 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+project.ext {
+    artifactId = "upload-awb"
+    groupId = "com.tokopedia.logistic"
+    versionName = "1.0.0"
+    artifactName = "logisticuploadawb-release"
+}
+
+apply from: '../../../publish_local.gradle'

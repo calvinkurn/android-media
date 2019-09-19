@@ -49,9 +49,9 @@
         android:id="@+id/text_loan_period"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         android:text="@string/il_loan_period"
         android:textColor="@color/black_54"
-        android:layout_marginTop="@dimen/dp_16"
         android:textSize="@dimen/sp_12"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/widget_add_remove"
@@ -68,6 +68,18 @@
         app:layout_constraintStart_toStartOf="@+id/text_loan_period"
         app:layout_constraintTop_toBottomOf="@+id/text_loan_period" />
 
+    <TextView
+        android:id="@+id/text_loan_value"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/il_loan_value"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="@+id/spinner_value_nominal"
+        app:layout_constraintTop_toBottomOf="@+id/widget_add_remove"
+        tools:layout_editor_absoluteX="0dp" />
+
     <include
         android:id="@+id/spinner_value_nominal"
         layout="@layout/il_spinner_layout"
@@ -80,6 +92,30 @@
         app:layout_constraintStart_toEndOf="@+id/spinner_label_nominal"
         app:layout_constraintTop_toBottomOf="@+id/text_loan_period" />
 
+
+    <TextView
+        android:id="@+id/text_loan_category"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/il_margin_large"
+        android:text="@string/il_loan_category"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_12"
+        app:layout_constraintStart_toStartOf="@+id/spinner_loan_category"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_label_nominal"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <include
+        android:id="@+id/spinner_loan_category"
+        layout="@layout/il_spinner_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_loan_category"
+        tools:visibility="visible" />
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="50dp"
@@ -87,7 +123,7 @@
         app:cardBackgroundColor="@color/orange_red"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_value_nominal">
+        app:layout_constraintTop_toBottomOf="@+id/spinner_loan_category">
 
         <TextView
             android:id="@+id/button_search_pinjaman"

@@ -115,6 +115,9 @@ public class DeveloperOptionActivity extends BaseActivity {
         remoteConfigPrefix = findViewById(R.id.remote_config_prefix);
         remoteConfigStartButton = findViewById(R.id.remote_config_start);
 
+        TextView deviceId = findViewById(R.id.device_id);
+        deviceId.setText(String.format("DEVICE ID: %s", GlobalConfig.DEVICE_ID));
+
         toggleReactDeveloperMode = findViewById(R.id.toggle_reactnative_mode);
         toggleReactEnableDeveloperOptions = findViewById(R.id.toggle_reactnative_dev_options);
         toggleReactEnableDeveloperOptions.setChecked(true);

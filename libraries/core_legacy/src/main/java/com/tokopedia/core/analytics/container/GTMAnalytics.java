@@ -14,6 +14,8 @@ import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analytics.debugger.GtmLogger;
+import com.tokopedia.analytics.debugger.TetraDebugger;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -54,12 +56,14 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
     private final Iris iris;
+    private final TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
 
     // have status that describe pending.
 
     public GTMAnalytics(Context context) {
         super(context);
+        tetraDebugger = TetraDebugger.Companion.instance(context);
         iris = IrisAnalytics.Companion.getInstance(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
@@ -172,13 +176,14 @@ public class GTMAnalytics extends ContextAnalytics {
         pushGeneral(map);
     }
 
-    private static void log(Context context, String eventName, Bundle bundle) {
+    private void log(Context context, String eventName, Bundle bundle) {
         log(context, eventName, bundleToMap(bundle));
     }
 
-    private static void log(Context context, String eventName, Map<String, Object> values) {
+    private void log(Context context, String eventName, Map<String, Object> values) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         GtmLogger.getInstance(context).save(name, values);
+        tetraDebugger.send(values);
     }
 
     private static Map<String, Object> bundleToMap(Bundle extras) {
@@ -238,7 +243,7 @@ public class GTMAnalytics extends ContextAnalytics {
     }
 
     /**
-     * look identical with {@link #eventCheckout(Checkout, String)}
+     * look identical with {@link #eventCheckout(Checkout)}
      * @param checkout
      * @return
      */
@@ -362,6 +367,10 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String ADDTOCART = "addtocart";
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
+        // always allow sending gtm v5 in debug mode, and use remote config value in production
+        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
+            return;
+
         // replace list
         if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
                 && !TextUtils.isEmpty(bundle.getString("list"))) {
@@ -389,6 +398,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushGeneralGtmV5(Map<String, Object> params){
         sendGeneralEvent(params);
+        
+        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
+            return;
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
@@ -432,7 +444,7 @@ public class GTMAnalytics extends ContextAnalytics {
         logEvent("openScreen", bundle, context);
     }
 
-    public static void logEvent(String eventName, Bundle bundle,Context context){
+    public void logEvent(String eventName, Bundle bundle,Context context){
         try {
             FirebaseAnalytics.getInstance(context).logEvent(eventName, bundle);
             log(context, eventName, bundle);
@@ -463,6 +475,7 @@ public class GTMAnalytics extends ContextAnalytics {
                     Map<String, Object> maps = new HashMap<>();
                     maps.put("user_id", uid);
                     getTagManager().getDataLayer().push(maps);
+                    tetraDebugger.setUserId(userId);
                     return true;
                 })
                 .subscribe(getDefaultSubscriber());

@@ -15,24 +15,25 @@ import rx.Subscriber
 import java.util.HashMap
 import kotlin.collections.ArrayList
 
-class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
+class PromoCheckoutListPresenter(val graphqlUseCase: GraphqlUseCase) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
 
-    override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources) {
+    override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources, hasLastSeen: Boolean) {
         val variables = HashMap<String, Any>()
         variables.put(INPUT_GQL, generateInputList(page, serviceId, categoryId))
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_list), DataPromoCheckoutList::class.java, variables, false)
-        getListCouponUseCase.clearRequest()
-        getListCouponUseCase.addRequest(graphqlRequest)
-        getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
-
+                if (hasLastSeen) getListLastSeen(listOf(categoryId), resources)
             }
 
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
                     view.showGetListError(e)
                 }
+                if (hasLastSeen) getListLastSeen(listOf(categoryId), resources)
             }
 
             override fun onNext(objects: GraphqlResponse) {
@@ -56,12 +57,14 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
         return input
     }
 
-    override fun getListLastSeen(resources: Resources) {
+    override fun getListLastSeen(categoryIDs: List<Int>, resources: Resources) {
+        val variables = HashMap<String, Any>()
+        variables.put(CATEGORY_IDS, categoryIDs)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.promo_checkout_last_seen), PromoCheckoutLastSeenModel.Response::class.java, null, false)
-        getListCouponUseCase.clearRequest()
-        getListCouponUseCase.addRequest(graphqlRequest)
-        getListCouponUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+                R.raw.promo_checkout_last_seen), PromoCheckoutLastSeenModel.Response::class.java, variables, false)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
             }
@@ -73,22 +76,22 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
             }
 
             override fun onNext(objects: GraphqlResponse) {
-                val dataDetailCheckoutPromo = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
-                view.renderListLastSeen(dataDetailCheckoutPromo.promoModels)
+                val lastSeenPromoData = objects.getData<PromoCheckoutLastSeenModel.Response>(PromoCheckoutLastSeenModel.Response::class.java)
+                view.renderListLastSeen(lastSeenPromoData.promoModels)
             }
         })
     }
 
     override fun detachView() {
-        getListCouponUseCase.unsubscribe()
+        graphqlUseCase.unsubscribe()
         super.detachView()
     }
 
     companion object {
         private val INPUT_GQL = "input"
-        private val MENU_ID = "menuID"
         private val SERVICE_ID = "serviceID"
         private val CATEGORY_ID = "categoryID"
+        private val CATEGORY_IDS = "categoryIDs"
         private val CATEGORY_ID_COUPON = "categoryIDCoupon"
         private val PAGE = "page"
         private val LIMIT = "limit"

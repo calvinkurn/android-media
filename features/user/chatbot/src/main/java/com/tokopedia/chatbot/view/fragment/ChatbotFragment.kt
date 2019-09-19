@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,20 +28,20 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
 import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.SendableViewModel
+import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.chat_common.view.adapter.viewholder.factory.ChatMenuFactory
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
+import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
-import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
-import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
@@ -72,7 +71,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.IllegalStateException
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
 import javax.inject.Inject
@@ -569,6 +567,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onClickLeaveQueue() {
         presenter.OnClickLeaveQueue()
+    }
+
+    override fun updateToolbar(profileName: String?, profileImage: String?) {
+        if (activity is ChatbotActivity){
+            (activity as ChatbotActivity).upadateToolbar(profileName,profileImage)
+        }
     }
 
     override fun onBackPressed() {

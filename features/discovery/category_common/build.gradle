@@ -24,7 +24,7 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.coreNetwork)
 
     implementation rootProject.ext.miscDependencies.dagger
@@ -34,3 +34,12 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 }
+
+project.ext {
+    artifactId = 'common'
+    groupId = 'com.tokopedia.category'
+    versionName = "1.0.0"
+    artifactName = "categorycommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

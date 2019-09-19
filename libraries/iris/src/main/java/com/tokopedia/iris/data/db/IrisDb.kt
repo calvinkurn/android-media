@@ -4,7 +4,7 @@ import android.arch.persistence.room.Database
 import android.arch.persistence.room.Room
 import android.arch.persistence.room.RoomDatabase
 import android.content.Context
-import com.tokopedia.iris.DATABASE_NAME
+import com.tokopedia.iris.util.DATABASE_NAME
 import com.tokopedia.iris.data.db.dao.TrackingDao
 import com.tokopedia.iris.data.db.table.Tracking
 

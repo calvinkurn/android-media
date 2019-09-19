@@ -33,6 +33,7 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
+import com.tokopedia.tokopoints.view.adapter.CouponCatalogInfoPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
@@ -49,6 +50,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -654,7 +656,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 giftSectionMainLayout.setVisibility(View.VISIBLE);
                 bottomSeparator.setVisibility(View.VISIBLE);
                 giftButton.setText(R.string.tp_label_send);
-                giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr()));
+                giftButton.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr(),data.getImageUrlMobile()));
             }
         } else {
             giftSectionMainLayout.setVisibility(View.GONE);
@@ -677,9 +679,22 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aLong ->
-                        mPresenter.fetchLatestStatus(Arrays.asList(data.getId()))
-                );
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        mPresenter.fetchLatestStatus(Arrays.asList(data.getId()));
+                    }
+                });
 
         //Coupon impression ga
         AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -723,12 +738,17 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     @Override
-    public void gotoSendGiftPage(int id, String title, String pointStr) {
+    public void gotoSendGiftPage(int id, String title, String pointStr, String banner) {
         Bundle bundle = new Bundle();
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
-        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
+        bundle.putString(CommonConstant.EXTRA_COUPON_BANNER, banner);
+
+        SendGiftFragment sendGiftFragment = new SendGiftFragment();
+        sendGiftFragment.setArguments(bundle);
+        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
+
     }
 
     @Override
