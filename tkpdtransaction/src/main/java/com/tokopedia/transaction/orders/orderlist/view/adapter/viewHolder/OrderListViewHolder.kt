@@ -82,7 +82,9 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         element.setViewData()
         element.setActionButtonData()
         element.setDotMenuVisibility()
-        ImageHandler.loadImageThumbs(itemView.context, imgShopAvatar, element.order.items()[0].imageUrl())
+        if (element.order.items().size > 0) {
+            ImageHandler.loadImageThumbs(itemView.context, imgShopAvatar, element.order.items()[0].imageUrl())
+        }
         setClickListeners(element.order)
 
     }
