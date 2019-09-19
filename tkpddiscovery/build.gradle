@@ -8,11 +8,6 @@ apply plugin: 'io.hansel.preprocessor.module'
 repositories {
     maven { url 'https://hansel.io/maven' }
 }
-
-androidExtensions {
-    experimental = true
-}
-
 buildscript {
     repositories {
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
@@ -119,7 +114,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-    implementation project(rootProject.ext.features.transaction)
+    implementation project(rootProject.ext.features.tkpdtransaction)
 }
 
 apply from: '../publish_local.gradle'

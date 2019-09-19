@@ -27,6 +27,7 @@ class CatalogDetailPageAnalytics {
         private const val KEY_EVENT_ACTION = "eventAction"
         private const val KEY_EVENT_LABEL = "eventLabel"
         private const val PRODUCT_VIEW = "productView"
+        private const val PRODUCT_CLICK = "productClick"
         private const val KEY_ECOMMERCE = "ecommerce"
 
         //1
@@ -65,7 +66,7 @@ class CatalogDetailPageAnalytics {
                     KEY_EVENT, PRODUCT_VIEW,
                     KEY_EVENT_CATEGORY, CATALOG_PAGE,
                     KEY_EVENT_ACTION, if (isTopAds) "impression product - topads" else "product list impression",
-                    KEY_EVENT_LABEL, "catalog product list",
+                    KEY_EVENT_LABEL, if (isTopAds) "" else "catalog product list",
                     KEY_ECOMMERCE, DataLayer.mapOf(
                     "currencyCode", "IDR",
                     "impressions", DataLayer.listOf(DataLayer.mapOf(
@@ -92,7 +93,7 @@ class CatalogDetailPageAnalytics {
                                   isTopAds: Boolean) {
             val tracker = TrackApp.getInstance().gtm
             val map = DataLayer.mapOf(
-                    KEY_EVENT, PRODUCT_VIEW,
+                    KEY_EVENT, PRODUCT_CLICK,
                     KEY_EVENT_CATEGORY, CATALOG_PAGE,
                     KEY_EVENT_ACTION, if (isTopAds) "click product - topads" else "click product list",
                     KEY_EVENT_LABEL, "catalog product list",
