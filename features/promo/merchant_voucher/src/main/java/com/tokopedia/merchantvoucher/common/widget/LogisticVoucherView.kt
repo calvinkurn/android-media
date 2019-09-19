@@ -61,6 +61,8 @@ class LogisticVoucherView : CustomVoucherView {
                 R.drawable.ic_loading_image
         )
         btnUseVoucher.isEnabled = !isApplied
+        btnUseVoucher.text = if (isApplied) context.getString(R.string.applied) else
+            context.getString(R.string.use_promo)
     }
 
     fun setUseButtonClickListener(listener: View.OnClickListener) {
