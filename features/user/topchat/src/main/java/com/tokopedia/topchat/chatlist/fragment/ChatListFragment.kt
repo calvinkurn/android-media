@@ -115,7 +115,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        debug("stevensight", "$sightTag onViewCreated")
+        debug(TAG, "$sightTag onViewCreated")
         mViewCreated = true;
         tryViewCreatedFirstSight()
         super.onViewCreated(view, savedInstanceState)
@@ -385,19 +385,19 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
         onUserVisibleChanged(isVisibleToUser)
     }
 
-    protected fun onViewCreatedFirstSight(view: View?) {
-        debug("stevensight", "$sightTag onViewCreatedFirstSight")
+    private fun onViewCreatedFirstSight(view: View?) {
+        debug(TAG, "$sightTag onViewCreatedFirstSight")
         (activity as ChatListContract.Activity).notifyViewCreated()
         loadInitialData()
     }
 
-    protected fun onUserFirstSight() {
-        debug("stevensight", "$sightTag onUserFirstSight")
+    private fun onUserFirstSight() {
+        debug(TAG, "$sightTag onUserFirstSight")
     }
 
 
-    protected fun onUserVisibleChanged(visible: Boolean) {
-        debug("stevensight", "$sightTag onUserVisibleChanged $visible")
+    private fun onUserVisibleChanged(visible: Boolean) {
+        debug(TAG, "$sightTag onUserVisibleChanged $visible")
     }
 
     override fun callInitialLoadAutomatically(): Boolean {
@@ -449,6 +449,7 @@ class ChatListFragment: BaseListFragment<Visitable<*>,
         private const val CHAT_TAB_TITLE = "chat_tab_title"
         private const val CHAT_SELLER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-seller-empty.png"
         private const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
+        const val TAG = "ChatListFragment"
 
         fun createFragment(title: String): ChatListFragment {
             val bundle = Bundle()

@@ -52,11 +52,11 @@ class WebSocketViewModel
                                      .addInterceptor(fingerprintInterceptor) }
             easyWS = client.easyWebSocket(webSocketUrl, userSession.accessToken)
 
-            debug("tevWS"," Open: ${easyWS?.response}")
+            debug(TAG," Open: ${easyWS?.response}")
 
             easyWS?.let {
                 for (response in it.textChannel) {
-                    debug("tevWS"," Response: $response")
+                    debug(TAG," Response: $response")
                     when(response.getCode()) {
                         EVENT_TOPCHAT_REPLY_MESSAGE -> _itemChat.postValue(Success(mapToIncomingChat(response)))
                         EVENT_TOPCHAT_TYPING -> _itemChat.postValue(Success(mapToIncomingTypeState(response, true)))
@@ -107,7 +107,11 @@ class WebSocketViewModel
     override fun onCleared() {
         super.onCleared()
         easyWS?.webSocket?.close(1000, "Bye!")
-        debug("tevWS"," OnCleared")
+        debug(TAG," OnCleared")
+    }
+
+    companion object {
+        const val TAG = "WebSocketViewModel"
     }
 
 }

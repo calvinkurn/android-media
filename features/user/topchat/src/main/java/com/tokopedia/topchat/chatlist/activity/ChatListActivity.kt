@@ -145,14 +145,14 @@ class ChatListActivity : BaseTabActivity()
 
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
-        debug("stevenObserver", incomingChatWebSocketModel.toString())
+        debug(TAG, incomingChatWebSocketModel.toString())
         val fragment: ChatListFragment = determineFragmentByTag(incomingChatWebSocketModel.contact?.tag)
         fragment.processIncomingMessage(incomingChatWebSocketModel)
     }
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
-        debug("stevenObserver", incomingTypingWebSocketModel.toString())
+        debug(TAG, incomingTypingWebSocketModel.toString())
         val fragment: ChatListFragment = determineFragmentByTag(incomingTypingWebSocketModel.contact?.tag)
         fragment.processIncomingMessage(incomingTypingWebSocketModel)
     }
@@ -290,8 +290,9 @@ class ChatListActivity : BaseTabActivity()
 
 
     companion object {
-        val BUYER_ANALYTICS_LABEL = "buyer"
-        val SELLER_ANALYTICS_LABEL = "seller"
+        const val BUYER_ANALYTICS_LABEL = "buyer"
+        const val SELLER_ANALYTICS_LABEL = "seller"
+        const val TAG = "ChatListActivity"
         fun createIntent(context: Context) = Intent(context, ChatListActivity::class.java)
     }
 

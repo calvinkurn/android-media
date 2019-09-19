@@ -9,7 +9,6 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okio.ByteString
 import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 import kotlin.coroutines.suspendCoroutine
 
 /**
@@ -20,7 +19,7 @@ class EasyWS(val webSocket: WebSocket, val response: Response) {
 }
 
 suspend fun OkHttpClient.easyWebSocket(url: String, accessToken: String) = suspendCoroutine<EasyWS> {
-    var TAG = "coroutineWebSocket"
+    val TAG = "coroutineWebSocket"
     var easyWs: EasyWS? = null
     newWebSocket(
             Request.Builder().url(url)
@@ -30,9 +29,10 @@ suspend fun OkHttpClient.easyWebSocket(url: String, accessToken: String) = suspe
                     .build(),
             object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
-                    // println("onOpen: $response")
                     easyWs = EasyWS(webSocket, response)
-                    it.resume(easyWs!!)
+                    easyWs?.let{ws ->
+                        it.resume(ws)
+                    }
                     debug(TAG," Open")
                 }
 
@@ -50,8 +50,7 @@ suspend fun OkHttpClient.easyWebSocket(url: String, accessToken: String) = suspe
                     runBlocking {
                         debug(TAG, " Message $text")
                         val data = GsonBuilder().create().fromJson(text, WebSocketResponse::class.java)
-                        easyWs!!.textChannel.send(data)
-
+                        easyWs?.textChannel?.send(data)
                     }
                 }
 
@@ -60,9 +59,8 @@ suspend fun OkHttpClient.easyWebSocket(url: String, accessToken: String) = suspe
                 }
 
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String?) {
-                    // println("onClosed: $code $reason")
                     debug(TAG," Closed $reason")
-                    easyWs!!.textChannel.close()
+                    easyWs?.textChannel?.close()
                 }
             }
     )
