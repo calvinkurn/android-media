@@ -40,6 +40,7 @@ object DeeplinkDFMapper {
     private val SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val IMAGE_SEARCH = "image_search"
+    private val SIMILAR_SEARCH = "similarsearch"
     private val SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val HOTEL_TRAVEL = "hotel_travel"
     private val DIGITAL_TOPUP = "digital_topup"
@@ -57,7 +58,8 @@ object DeeplinkDFMapper {
 //            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DIGITAL_TOPUP, R.string.digital_topup_title))
 //            add(DFP({ it.startsWith(OPEN_SHOP) }, SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
             add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title))
-//            add(DFP({ it.startsWith(ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT) }, IMAGE_SEARCH, R.string.title_image_search))
+            add(DFP({ it.startsWith(ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT) }, IMAGE_SEARCH, R.string.title_image_search))
+            add(DFP({ it.startsWith(ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT) }, SIMILAR_SEARCH, R.string.title_similar_search))
 //            add(DFP({ it.startsWith(SETTING_PROFILE) }, USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
 //            add(DFP({ it.startsWith(SETTING_BANK) }, USER_SETTING_BANK, R.string.applink_setting_bank_title))
 //            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
