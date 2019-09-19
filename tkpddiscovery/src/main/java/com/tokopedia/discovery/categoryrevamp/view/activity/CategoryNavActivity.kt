@@ -248,7 +248,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     private fun getSubCategoryParam(): RequestParams {
         val subCategoryMap = RequestParams()
-        subCategoryMap.putString(CategoryNavConstants.IDENTIFIER, departmentId)
+        subCategoryMap.putString(CategoryNavConstants.IDENTIFIER, "24")
         subCategoryMap.putBoolean(CategoryNavConstants.INTERMEDIARY, false)
         subCategoryMap.putBoolean(CategoryNavConstants.SAFESEARCH, false)
         return subCategoryMap

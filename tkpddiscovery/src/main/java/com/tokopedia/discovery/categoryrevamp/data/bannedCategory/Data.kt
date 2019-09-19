@@ -4,6 +4,12 @@ import com.google.gson.annotations.SerializedName
 
 class Data {
 
+    @SerializedName("id")
+    var id: Int? = null
+
+    @SerializedName("name")
+    var name: String? = null
+
     @SerializedName("bannedMsg")
     var bannedMessage: String? = null
 
