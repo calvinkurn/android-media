@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 data class Meta(
         @SerializedName("followers")
         @Expose
-        var followers: Int = 0,
+        var followers: String = "",
 
         @SerializedName("content")
         @Expose
