@@ -138,6 +138,7 @@ class HotelBookingFragment : HotelBaseFragment() {
                     ?: HotelBookingPageModel()
         }
         initProgressDialog()
+        initGuestInfoEditText()
         showLoadingBar()
 
         bookingViewModel.getCartData(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_get_cart), hotelBookingPageModel.cartId)
@@ -177,7 +178,9 @@ class HotelBookingFragment : HotelBaseFragment() {
         setupImportantNotes(hotelCart.property)
 
         booking_button.setOnClickListener { onBookingButtonClicked() }
+    }
 
+    fun initGuestInfoEditText() {
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv,
                     arrayListOf(), object: TravelContactArrayAdapter.ContactArrayListener {
