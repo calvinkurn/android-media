@@ -7,10 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.session.R;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 
 /**
@@ -21,6 +23,7 @@ public class ProfileCompletionFinishedFragment extends BaseDaggerFragment {
 
     public static final String TAG = "finished";
     private View finish;
+    private UserSessionInterface userSession;
 
 
     public static ProfileCompletionFinishedFragment createInstance() {
@@ -44,12 +47,17 @@ public class ProfileCompletionFinishedFragment extends BaseDaggerFragment {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = ((SessionRouter) getActivity().getApplicationContext())
-                        .getTopProfileIntent(getActivity(),
-                                SessionHandler.getLoginID(getActivity()));
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                getActivity().startActivity(intent);
-                getActivity().finish();
+
+                if (getContext() != null) {
+                    userSession = new UserSession(getContext());
+                    Intent intent = RouteManager.getIntent(
+                            getContext(),
+                            ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID,
+                                    userSession.getUserId()));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    getActivity().startActivity(intent);
+                    getActivity().finish();
+                }
             }
         });
     }

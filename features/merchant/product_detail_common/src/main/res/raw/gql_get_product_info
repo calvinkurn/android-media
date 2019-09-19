@@ -21,7 +21,9 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             isKreasiLokal
             isMustInsurance
             isEligibleCOD
+            needPrescription
             catalogID
+            isLeasing
         }
         brand {
             brandID
@@ -38,6 +40,7 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             id
             name
             title
+            isAdult
             breadcrumbURL
             detail {
                 id

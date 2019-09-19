@@ -31,19 +31,20 @@ public interface RegisterEmailContract {
 
         void onErrorRegister(String errorMessage);
 
-        void onSuccessRegister(RegisterEmailPojo registerEmailPojo, String name, String email, String phone);
+        void onSuccessRegister(RegisterEmailPojo registerEmailPojo, String name, String email);
 
         void showInfo();
 
         void onForbidden();
 
         Context getContext();
+
+        void onBackPressed();
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void onRegisterClicked(String email, String name, String password, String
-                confirmPassword, String phone, int isAutoVerify);
+        void onRegisterClicked(String email, String name, String password, String confirmPassword, int isAutoVerify);
 
-        boolean isCanRegister(String name, String email, String password, String phone);
+        boolean isCanRegister(String name, String email, String password);
     }
 }

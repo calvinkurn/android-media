@@ -1,14 +1,15 @@
 package com.tokopedia.product.detail.di
 
-import android.content.ComponentCallbacks
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.product.detail.R
+import com.tokopedia.transaction.common.usecase.SubmitHelpTicketUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import javax.inject.Named
 
 @ProductDetailScope
 @Module
@@ -174,4 +175,38 @@ class GqlRawQueryModule {
     @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_PP)
     fun provideProductPurchaseProtection(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_pp)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_RECOMMEN_PRODUCT)
+    fun proviceRecommendationProduct(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.query_recommendation_widget)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_SHOP_FEATURE)
+    fun provideProductShopFeature(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_shop_feature)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.MUTATION_AFFILIATE_TRACKING)
+    fun provideAffiliataTracking(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_af_tracking)
+
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_PRODUCT_CATALOG)
+    fun provideProductCategory(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_catalog)
+  
+    @ProductDetailScope
+    @Provides
+    @Named(SubmitHelpTicketUseCase.QUERY_NAME)
+    fun provideSubmitHelpTicket(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, com.tokopedia.transaction.common.R.raw.submit_help_ticket)
 }

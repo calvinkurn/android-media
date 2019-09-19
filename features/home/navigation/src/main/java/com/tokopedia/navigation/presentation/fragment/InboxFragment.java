@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -21,12 +22,11 @@ import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.analytics.InboxGtmTracker;
 import com.tokopedia.navigation.domain.model.Inbox;
-import com.tokopedia.navigation.domain.model.Recomendation;
+import com.tokopedia.navigation.domain.model.Recommendation;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapter;
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener;
 import com.tokopedia.navigation.presentation.adapter.InboxAdapterTypeFactory;
 import com.tokopedia.navigation.presentation.adapter.RecomItemDecoration;
-import com.tokopedia.navigation.presentation.adapter.viewholder.RecomendationViewHolder;
 import com.tokopedia.navigation.presentation.base.BaseTestableParentFragment;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
@@ -34,7 +34,12 @@ import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.presenter.InboxPresenter;
 import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.navigation_common.model.NotificationsModel;
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.domain.model.Category;
+import com.tokopedia.topads.sdk.domain.model.Product;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;
@@ -43,14 +48,15 @@ import java.util.List;
 import javax.inject.Inject;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created by meta on 19/06/18.
  */
 public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
-        InboxView, InboxAdapterListener {
+        InboxView, InboxAdapterListener, RecommendationListener {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -58,6 +64,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public static final int HELP_MENU = 3;
     public static final int DEFAULT_SPAN_COUNT = 2;
     public static final int SINGLE_SPAN_COUNT = 1;
+    private static final String PDP_EXTRA_UPDATED_POSITION = "wishlistUpdatedPosition";
+    private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
+    private static final int REQUEST_FROM_PDP = 138;
 
     @Inject
     InboxPresenter presenter;
@@ -68,9 +77,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
     private View emptyLayout;
-    private GridLayoutManager layoutManager;
+    private StaggeredGridLayoutManager layoutManager;
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
+    private List<Visitable> visitables;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -91,6 +101,21 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_FROM_PDP && data != null) {
+            boolean wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
+                    false);
+            int position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1);
+            if(adapter.getList().get(position) instanceof  Recommendation){
+                Recommendation recommendation = (Recommendation) adapter.getList().get(position);
+                recommendation.getRecommendationItem().setWishlist(wishlistStatusFromPdp);
+                adapter.notifyItemChanged(position);
+            }
+        }
+    }
+
+    @Override
     public int resLayout() {
         return R.layout.fragment_inbox;
     }
@@ -101,7 +126,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         presenter.setView(this);
 
         List<Visitable> dataInbox = getData();
-        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this);
+        InboxAdapterTypeFactory typeFactory = new InboxAdapterTypeFactory(this, this);
         adapter = new InboxAdapter(typeFactory, dataInbox);
 
         emptyLayout = view.findViewById(R.id.empty_layout);
@@ -110,7 +135,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new RecomItemDecoration(getResources()
                 .getDimensionPixelSize(R.dimen.dp_8)));
-        layoutManager = new GridLayoutManager(getContext(), DEFAULT_SPAN_COUNT);
+        layoutManager = new StaggeredGridLayoutManager(DEFAULT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
         endlessRecyclerViewScrollListener = getEndlessRecyclerViewScrollListener();
         recyclerView.setLayoutManager(layoutManager);
         swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
@@ -129,15 +154,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
-        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if (adapter.getItemViewType(position) == RecomendationViewHolder.Companion.getLAYOUT()) {
-                    return SINGLE_SPAN_COUNT;
-                }
-                return DEFAULT_SPAN_COUNT;
-            }
-        });
         presenter.getFirstRecomData();
     }
 
@@ -157,20 +173,42 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             Inbox inbox = (Inbox) item;
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
-        } else if (item instanceof Recomendation) {
-            Recomendation r = (Recomendation) item;
-            getActivity().startActivity(getProductIntent(String.valueOf(r.getProductId())));
-            if(!r.isTopAds()){
-                InboxGtmTracker.getInstance().eventInboxProductClick(trackingQueue, r, position);
-            }
         }
     }
 
-    private Intent getProductIntent(String productId) {
-        if (getContext() != null) {
-            return RouteManager.getIntent(getContext(),ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId);
-        } else {
-            return null;
+    @Override
+    public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
+        if(presenter.isLoggedIn()){
+            if(isAddWishlist){
+                presenter.addWishlist(item, callback);
+            } else {
+                presenter.removeWishlist(item, callback);
+            }
+        }else{
+            RouteManager.route(getContext(), ApplinkConst.LOGIN);
+        }
+    }
+
+    @Override
+    public void onProductClick(@NotNull RecommendationItem item, @org.jetbrains.annotations.Nullable String layoutType, @NotNull int... position) {
+        if (item.isTopAds()) {
+            new ImpresionTask().execute(item.getClickUrl());
+            onClickTopAds(item);
+        }else {
+            onClickOrganic(item);
+        }
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalMarketplace.PRODUCT_DETAIL, String.valueOf(item.getProductId()));
+        if(position.length >= 1) intent.putExtra(PDP_EXTRA_UPDATED_POSITION, position[0]);
+        startActivityForResult(intent, REQUEST_FROM_PDP);
+    }
+
+    @Override
+    public void onProductImpression(@NotNull RecommendationItem item) {
+        if(item.isTopAds()){
+            new ImpresionTask().execute(item.getTrackerImageUrl());
+            onImpressionTopAds(item);
+        }else {
+            onImpressionOrganic(item);
         }
     }
 
@@ -282,6 +320,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onRenderRecomInbox(List<Visitable> list) {
+        this.visitables = list;
         adapter.addElement(list);
     }
 
@@ -303,5 +342,29 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void setPresenter(GlobalNavComponent presenter) {
+    }
+
+    @Override
+    public int getStartProductPosition() {
+        //product start after inbox data (like chat, diskusi, etc) + 1 recom title
+        return (getData().size()-1)+1;
+    }
+
+    private void onImpressionTopAds(RecommendationItem item) {
+        new ImpresionTask().execute(item.getTrackerImageUrl());
+        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
+    }
+
+    private void onImpressionOrganic(RecommendationItem item) {
+        InboxGtmTracker.getInstance().addInboxProductViewImpressions(item, item.getPosition(), item.isTopAds());
+    }
+
+    private void onClickTopAds(RecommendationItem item) {
+        new ImpresionTask().execute(item.getClickUrl());
+        InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
+    }
+
+    private void onClickOrganic(RecommendationItem item) {
+        InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 }

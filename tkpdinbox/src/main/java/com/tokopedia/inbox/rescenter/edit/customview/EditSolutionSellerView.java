@@ -4,37 +4,30 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.tokopedia.core2.R;
-import com.tokopedia.core2.R2;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.inbox.rescenter.edit.customadapter.SolutionSpinnerAdapter;
 import com.tokopedia.inbox.rescenter.edit.listener.SellerEditResCenterListener;
 import com.tokopedia.inbox.rescenter.edit.model.passdata.EditResCenterFormData;
 
-import butterknife.BindView;
-import butterknife.OnItemSelected;
 
 /**
  * Created on 8/29/16.
  */
 public class EditSolutionSellerView extends BaseView<EditResCenterFormData, SellerEditResCenterListener> {
 
-    @BindView(R2.id.view_refund)
-    View viewRefund;
-    @BindView(R2.id.refund_box_prompt)
-    TextInputLayout refundPrompt;
-    @BindView(R2.id.spinner_solution)
-    Spinner solutionSpinner;
-    @BindView(R2.id.refund_box)
-    EditText refundBox;
-    @BindView(R2.id.view_message)
-    View viewMessage;
-    @BindView(R2.id.message_box)
-    EditText messageBox;
+    private View viewRefund;
+    private TextInputLayout refundPrompt;
+    private Spinner solutionSpinner;
+    private EditText refundBox;
+    private View viewMessage;
+    private EditText messageBox;
 
     public EditSolutionSellerView(Context context) {
         super(context);
@@ -81,7 +74,6 @@ public class EditSolutionSellerView extends BaseView<EditResCenterFormData, Sell
         refundPrompt.setHint(null);
     }
 
-    @OnItemSelected(R2.id.spinner_solution)
     public void onSolutionSelected() {
         resetRefundBox();
         if (solutionSpinner.getSelectedItemPosition() != 0) {
@@ -121,5 +113,34 @@ public class EditSolutionSellerView extends BaseView<EditResCenterFormData, Sell
 
     public EditText getMessageBox() {
         return messageBox;
+    }
+
+    @Override
+    protected void initView(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(getLayoutView(), this, true);
+        settingUpVariables(view);
+        solutionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                onSolutionSelected();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+    }
+
+    private void settingUpVariables(View view) {
+        viewRefund = view.findViewById(R.id.view_refund);
+        refundPrompt = view.findViewById(R.id.refund_box_prompt);
+        solutionSpinner = view.findViewById(R.id.spinner_solution);
+        refundBox = view.findViewById(R.id.refund_box);
+        viewMessage = view.findViewById(R.id.view_message);
+        messageBox = view.findViewById(R.id.message_box);
     }
 }

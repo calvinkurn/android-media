@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,13 +83,21 @@ class ShopEtalaseFragment : BaseListFragment<ShopEtalaseViewModel, ShopEtalaseAd
     }
 
     override fun renderList(list: List<ShopEtalaseViewModel>, isHasNext: Boolean) {
+        var selectedIndex = DEFAULT_INDEX_SELECTION
+        var i = 0
         if (selectedEtalaseId?.isNotEmpty() == true) {
-            list.find { selectedEtalaseId!!.equals(it.etalaseId, true) }
-                    ?.isSelected = true
+            while (i < list.size){
+                if ( selectedEtalaseId!!.equals(list[i].etalaseId,true)){
+                    list[i].isSelected = true
+                    selectedIndex = i
+                }
+                i++
+            }
         } else {
             list[DEFAULT_INDEX_SELECTION].isSelected = true
         }
         super.renderList(list, isHasNext)
+        (getRecyclerView(view).layoutManager as LinearLayoutManager).scrollToPositionWithOffset(selectedIndex, 0)
     }
 
     override fun initInjector() {

@@ -1,14 +1,10 @@
 package com.tokopedia.shop.open.analytic
 
-import android.content.Context
-
 import com.tokopedia.seller.SellerModuleRouter
+import com.tokopedia.shop.open.analytic.ShopOpenTrackingConstant.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
-
-import java.util.HashMap
-
-import com.tokopedia.shop.open.analytic.ShopOpenTrackingConstant.*
+import java.util.*
 
 /**
  * Created by zulfikarrahman on 1/8/18.
@@ -203,4 +199,58 @@ class ShopOpenTracking(private val sellerModuleRouter: SellerModuleRouter, priva
         eventTracking[USER_ID] = if (userSession.isLoggedIn) userSession.userId else "0"
         TrackApp.getInstance().gtm.sendGeneralEvent(eventTracking)
     }
+
+    fun eventTncClick(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                EVENT_CLICK_OPEN_SHOP,
+                CATEGORY_CLICK_OPEN_SHOP,
+                ACTION_TNC,
+                "")
+    }
+
+    fun eventPrivacyPolicyClick(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                EVENT_CLICK_OPEN_SHOP,
+                CATEGORY_CLICK_OPEN_SHOP,
+                ACTION_PRIVACY_POLICY,
+                "")
+    }
+
+    fun eventOpenShopSuccessClick(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                EVENT_CLICK_OPEN_SHOP,
+                CATEGORY_CLICK_OPEN_SHOP,
+                ACTION_OPEN_SHOP_SUCCESS,
+                "")
+    }
+
+    fun eventButtonAddProduct(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                EVENT_CLICK_OPEN_SHOP,
+                CATEGORY_CLICK_OPEN_SHOP_SUCCESS,
+                ACTION_ADD_PRODUCT_CLICK,
+                "")
+    }
+
+    fun eventButtonAddProductLater(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                EVENT_CLICK_OPEN_SHOP,
+                CATEGORY_CLICK_OPEN_SHOP_SUCCESS,
+                ACTION_ADD_LATER_CLICK,
+                "")
+    }
+
+    fun eventLinkClick(){
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                EVENT_CLICK_OPEN_SHOP,
+                CATEGORY_CLICK_OPEN_SHOP_SUCCESS,
+                ACTION_LINK,
+                "")
+    }
+
+    fun eventShopCreatedSuccessfully(dataMap:Map<String, Any>){
+        TrackApp.getInstance().appsFlyer.sendTrackEvent(ShopOpenTrackingConstant.EVENT_SHOP_CREATED, dataMap)
+    }
+
+
 }

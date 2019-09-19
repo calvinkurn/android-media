@@ -1,27 +1,17 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel;
 
-import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.tokopedia.core.base.adapter.Visitable;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionTypeFactory;
 
-/**
- * Created by henrypriyono on 10/31/17.
- */
-
-public class EmptySearchModel implements Visitable<SearchSectionTypeFactory> {
+public class EmptySearchModel implements Visitable<BrowseSectionTypeFactory> {
 
     @DrawableRes
     private int imageRes;
     private String title;
     private String content;
     private String buttonText;
-    private FilterFlagSelectedModel filterFlagSelectedModel;
 
     public int getImageRes() {
         return imageRes;
@@ -55,16 +45,8 @@ public class EmptySearchModel implements Visitable<SearchSectionTypeFactory> {
         this.buttonText = buttonText;
     }
 
-    public FilterFlagSelectedModel getFilterFlagSelectedModel() {
-        return filterFlagSelectedModel;
-    }
-
-    public void setFilterFlagSelectedModel(FilterFlagSelectedModel filterFlagSelectedModel) {
-        this.filterFlagSelectedModel = filterFlagSelectedModel;
-    }
-
     @Override
-    public int type(SearchSectionTypeFactory typeFactory) {
+    public int type(BrowseSectionTypeFactory typeFactory) {
         return typeFactory.type(this);
     }
 }

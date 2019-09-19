@@ -34,7 +34,7 @@ import kotlinx.android.synthetic.main.partial_header_rate_estimation.*
 
 import javax.inject.Inject
 
-class RatesEstimationDetailFragment : BaseDaggerFragment(){
+class RatesEstimationDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -67,7 +67,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.rateEstResp.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccesLoadRateEstimaion(it.data)
                 is Fail -> onErrorLoadRateEstimaion(it.throwable)
             }
@@ -100,7 +100,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
 
     private fun getCostEstimation() {
         setViewState(VIEW_LOADING)
-        val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight/1000)
+        val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight / 1000)
         viewModel.getCostEstimation(weightInKg, shopDomain, origin)
     }
 
@@ -138,12 +138,12 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(){
         val spannableString = SpannableString(title)
         spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, userSession.name.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         shipping_receiver_name.text = spannableString
-        if(address.phone.isNotEmpty()) {
+        if (address.phone.isNotEmpty()) {
             shipping_receiver_phone.visibility = View.VISIBLE
             shipping_receiver_phone.text = address.phone
         }
         shipping_receiver_address.text = MethodChecker.fromHtml("${address.address}, ${address.districtName}, ${address.provinceName}")
-        if (ratesEstimationModel.isBlackbox){
+        if (ratesEstimationModel.isBlackbox) {
             (activity as? BaseSimpleActivity)?.updateTitle(getString(R.string.product_detail_courier))
             if (recycler_view.itemDecorationCount > 0)
                 recycler_view.removeItemDecorationAt(recycler_view.itemDecorationCount - 1)

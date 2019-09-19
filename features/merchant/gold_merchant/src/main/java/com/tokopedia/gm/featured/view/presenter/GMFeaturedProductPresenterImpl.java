@@ -1,7 +1,7 @@
 package com.tokopedia.gm.featured.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.gm.common.domain.interactor.DeleteFeatureProductListCacheUseCase;
+import com.tokopedia.gm.featured.domain.interactor.DeleteFeatureProductListCacheUseCase;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductSubmitUseCase;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;

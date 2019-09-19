@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.SslErrorHandler;
+import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -34,32 +35,40 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
 import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.payment.BuildConfig;
 import com.tokopedia.payment.R;
 import com.tokopedia.payment.fingerprint.di.DaggerFingerprintComponent;
 import com.tokopedia.payment.fingerprint.di.FingerprintModule;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
 import com.tokopedia.payment.fingerprint.view.FingerPrintDialogPayment;
 import com.tokopedia.payment.fingerprint.view.FingerprintDialogRegister;
-import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.presenter.TopPayContract;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
 import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -104,6 +113,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;
     private CommonWebViewClient webChromeWebviewClient;
+    private RemoteConfig remoteConfig;
 
     private String mJsHciCallbackFuncName;
 
@@ -203,6 +213,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private void initVar() {
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
         webChromeWebviewClient = new CommonWebViewClient(this, progressBar);
     }
 
@@ -422,19 +433,19 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
             } else if (url.contains(HCI_CAMERA_KTP)) {
                 view.stopLoading();
                 mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_KTP), HCI_CAMERA_REQUEST_CODE);
+                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_KTP_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                 return true;
             } else if (url.contains(HCI_CAMERA_SELFIE)) {
                 view.stopLoading();
                 mJsHciCallbackFuncName = Uri.parse(url).getLastPathSegment();
-                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_SELFIE), HCI_CAMERA_REQUEST_CODE);
+                startActivityForResult(RouteManager.getIntent(TopPayActivity.this, ApplinkConst.HOME_CREDIT_SELFIE_WITH_TYPE), HCI_CAMERA_REQUEST_CODE);
                 return true;
             } else {
                 if (ApplinkConst.PAYMENT_BACK_TO_DEFAULT.equalsIgnoreCase(url)) {
                     if (isEndThanksPage()) callbackPaymentSucceed();
                     else callbackPaymentCanceled();
                     return true;
-                } else if (RouteManager.isSupportApplink(TopPayActivity.this, url)) {
+                } else if (RouteManager.isSupportApplink(TopPayActivity.this, url) && !URLUtil.isNetworkUrl(url)) {
                     //  RouteManager.route(TopPayActivity.this, url);
                     Intent intent = RouteManager.getIntent(TopPayActivity.this, url);
                     intent.setData(Uri.parse(url));
@@ -484,6 +495,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         @Override
         public void onPageFinished(WebView view, String url) {
             timeout = false;
+            presenter.clearTimeoutSubscription();
             if (progressBar != null) progressBar.setVisibility(View.GONE);
         }
 
@@ -509,6 +521,15 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         @Override
         public void onPageStarted(final WebView view, String url, Bitmap favicon) {
             //  Log.d(TAG, "start url = " + url);
+            if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_TOPPAY_TIMEOUT, true)) {
+                timerObservable(view);
+            } else {
+                timerThread(view);
+            }
+            if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        }
+
+        private void timerThread(WebView view) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
@@ -527,7 +548,32 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                     }
                 }
             }).start();
-            if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        }
+
+        private void timerObservable(WebView view) {
+            presenter.addTimeoutSubscription(
+                    Observable.timer(FORCE_TIMEOUT, TimeUnit.MILLISECONDS)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Subscriber<Long>() {
+                                @Override
+                                public void onCompleted() {
+
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    e.printStackTrace();
+                                }
+
+                                @Override
+                                public void onNext(Long aLong) {
+                                    if (!isUnsubscribed()) {
+                                        showErrorTimeout(view);
+                                    }
+                                }
+                            })
+            );
         }
 
         private void showErrorTimeout(WebView view) {

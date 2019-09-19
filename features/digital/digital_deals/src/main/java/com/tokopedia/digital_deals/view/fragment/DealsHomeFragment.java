@@ -7,10 +7,12 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
@@ -32,29 +34,32 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.coachmark.CoachMark;
+import com.tokopedia.coachmark.CoachMarkBuilder;
+import com.tokopedia.coachmark.CoachMarkContentPosition;
+import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.digital_deals.DealsModuleRouter;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
+import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
-import com.tokopedia.digital_deals.view.activity.DealsBaseActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.adapter.DealsBrandAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryAdapter;
 import com.tokopedia.digital_deals.view.adapter.DealsCategoryItemAdapter;
-import com.tokopedia.digital_deals.view.adapter.DealsLocationAdapter;
 import com.tokopedia.digital_deals.view.adapter.PromoAdapter;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
@@ -66,23 +71,26 @@ import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, DealsLocationAdapter.ActionListener, CloseableBottomSheetDialog.OnCancelListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet, PopupMenu.OnMenuItemClickListener {
+public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, CloseableBottomSheetDialog.OnCancelListener, PopupMenu.OnMenuItemClickListener {
 
+    private final long SHOW_CASE_DELAY = 400;
+    private final String SCREEN_NAME = "/digital/deals/homepage";
+    private static final String HOME_FRAGMENT = "DealsHomeFragment";
+    private static final String LOCATION_UPDATE = "isLocationUpdated";
 
     private Menu mMenu;
     @Inject
@@ -104,10 +112,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private AppBarLayout appBarLayout;
     private NestedScrollView nestedScrollView;
     private LinearLayout curatedDealsLayout;
+    private LinearLayout toolbarNameLayout;
+    private TextView topDealsHeading;
     private final boolean IS_SHORT_LAYOUT = false;
     OpenTrendingDeals openTrendingDeals;
 
-    private ConstraintLayout clSearch;
     private TextView tvLocationName;
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
@@ -121,9 +130,15 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private CloseableBottomSheetDialog selectLocationFragment;
     private RecyclerView rvSearchResults;
     public static boolean isLocationUpdated = false;
+    private CategoryItem categoryItem;
+    private boolean isFirstTime = false;
+    private TextView promoheading;
 
-    public static Fragment createInstance() {
-        Fragment fragment = new DealsHomeFragment();
+    public static DealsHomeFragment createInstance(boolean isLocationUpdated) {
+        DealsHomeFragment fragment = new DealsHomeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(LOCATION_UPDATE, isLocationUpdated);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -131,6 +146,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            isLocationUpdated = getArguments().getBoolean(LOCATION_UPDATE);
+        }
     }
 
     @Override
@@ -150,23 +168,48 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         super.onStart();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null && !tvLocationName.getText().equals(location.getName())) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            });
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
         }
+        mPresenter.sendScreenNameEvent(getScreenName());
     }
 
     private void checkLocationStatus() {
 
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
 
-        if (location != null) {
+        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
+            mPresenter.getLocations();
+        } else if (location != null){
             tvLocationName.setText(location.getName());
             mPresenter.getDealsList(true);
-
-        } else {
-            mPresenter.getLocations(true);
+            mPresenter.getBrandsHome();
         }
+    }
 
+    private void startShowCase() {
+        ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
+        coachItems.add(new CoachMarkItem(toolbarNameLayout, getString(R.string.coachicon_title_location), getString(R.string.coachicon_description_location)));
+        coachItems.add(new CoachMarkItem(searchInputView, getString(R.string.coachicon_title_searchbar), getString(R.string.coachicon_description_searchbar)));
+        coachItems.add(new CoachMarkItem(promoheading, getString(R.string.coachicon_title_promo), getString(R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, R.color.white, nestedScrollView));
+        CoachMark coachMark = new CoachMarkBuilder().build();
+        coachMark.setShowCaseStepListener(new CoachMark.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int prev, int next, @NotNull CoachMarkItem coachMarkItem) {
+                if (next == 2) {
+                    nestedScrollView.smoothScrollTo(0, curatedDealsLayout.getBottom());
+                }
+                return false;
+            }
+        });
+        if (!Utils.hasShown(getActivity(), DealsHomeFragment.class.getName())) {
+            coachMark.show(getActivity(), "SampleCoachMark", coachItems);
+            Utils.setShown(getActivity(), DealsHomeFragment.class.getName(), true);
+        }
     }
 
     @Override
@@ -178,8 +221,13 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     private void setUpVariables(View view) {
         shimmerLayout = view.findViewById(R.id.shimmer_layout);
+        ((TextView)shimmerLayout.findViewById(R.id.location_arrow_down_tv)).setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.location_arrow_down), null);
         toolbar = view.findViewById(R.id.deals_toolbar);
+        toolbarNameLayout = view.findViewById(R.id.toolbar_home_layout);
         toolbarTitle = view.findViewById(R.id.toolbar_title);
+        toolbarTitle.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (getActivity(), R.drawable.location_arrow_down), null);
         backArrow = view.findViewById(R.id.backArraw);
         overFlowIcon = view.findViewById(R.id.overFlow_icon);
         catItems = view.findViewById(R.id.category_items);
@@ -188,15 +236,18 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         mainContent = view.findViewById(R.id.main_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
         searchInputView = view.findViewById(R.id.search_input_view);
+        searchInputView.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (getActivity(), R.drawable.ic_search_deal), null, null , null);
         tvLocationName = view.findViewById(R.id.tv_location_name);
         clBrands = view.findViewById(R.id.cl_brands);
         clPromos = view.findViewById(R.id.cl_promos);
         rvPromos = view.findViewById(R.id.rv_trending_promos);
         noContent = view.findViewById(R.id.no_content);
-        clSearch = view.findViewById(R.id.cl_search_view);
         tvSeeAllBrands = view.findViewById(R.id.tv_see_all_brands);
         tvSeeAllTrendingDeals = view.findViewById(R.id.tv_see_all_deals);
         curatedDealsLayout = view.findViewById(R.id.curated_deals);
+        promoheading = view.findViewById(R.id.tv_promos);
+        topDealsHeading = view.findViewById(R.id.tv_popular);
         tvSeeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
         tvLocationName.setOnClickListener(this);
@@ -338,9 +389,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void renderCategoryList(List<CategoryItem> categoryList) {
+    public void renderCategoryList(List<CategoryItem> categoryList, List<CategoriesModel> categoriesModels) {
+        startShowCase();
         if (categoryList != null) {
-            applyFilterOnCategories(categoryList);
             catItems.removeAllViews();
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             params.weight = 0.5f;
@@ -365,7 +416,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                         categoriesModel.setCategoryUrl(categoryList.get(position1).getCategoryUrl());
                         categoriesModel.setCategoryId(categoryList.get(position1).getCategoryId());
                         categoriesModel.setPosition(position1);
-                        openCategoryDetail(categoriesModel);
+                        openCategoryDetail(categoriesModel, categoriesModels);
                     }
                 });
                 view.setLayoutParams(params);
@@ -382,19 +433,9 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startDealsCategoryFragment(categoryList);
+                    startDealsCategoryFragment(categoryList, categoriesModels);
                 }
             });
-        }
-    }
-
-    public void applyFilterOnCategories(List<CategoryItem> categoryRespons) {
-        Map<Integer, Integer> sortOrder = new HashMap<>();
-        for (CategoryItem categoryItem : categoryRespons) {
-            sortOrder.put(categoryItem.getCategoryId(), categoryItem.getPriority());
-            if (sortOrder.size() == categoryRespons.size()) {
-                Collections.sort(categoryRespons, new CategoryItemComparator(sortOrder));
-            }
         }
     }
 
@@ -404,50 +445,31 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         return mPresenter.onOptionMenuClick(id);
     }
 
-    private class CategoryItemComparator implements Comparator<CategoryItem> {
-        private Map<Integer, Integer> sortOrder;
-
-        public CategoryItemComparator(Map<Integer, Integer> sortOrder) {
-            this.sortOrder = sortOrder;
-        }
-
-        @Override
-        public int compare(CategoryItem i1, CategoryItem i2) {
-            Integer id1 = sortOrder.get(i1.getCategoryId());
-            if (id1 == null) {
-                throw new IllegalArgumentException("Bad id encountered: " +
-                        i1.getCategoryId());
-            }
-            Integer id2 = sortOrder.get(i2.getCategoryId());
-            if (id2 == null) {
-                throw new IllegalArgumentException("Bad id encountered: " +
-                        i2.getCategoryId());
-            }
-            return id2.compareTo(id1);
-        }
-    }
-
     @Override
     public void renderTopDeals(CategoryItem categoryItem) {
         if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
+            this.categoryItem = categoryItem;
+            topDealsHeading.setText(categoryItem.getTitle());
             trendingDeals.setVisibility(View.VISIBLE);
+            noContent.setVisibility(View.GONE);
+            categoryAdapter.clearList();
+            categoryAdapter.setDealsHomeLayout(true);
+            categoryAdapter.setDealType(DealsAnalytics.TRENDING_DEALS);
+            rvTrendingDeals.setAdapter(categoryAdapter);
+            categoryAdapter.addAll(categoryItem.getItems(), true);
+            rvTrendingDeals.setVisibility(View.VISIBLE);
             if (categoryItem.getItems().size() >= 9) {
                 tvSeeAllTrendingDeals.setVisibility(View.VISIBLE);
                 tvSeeAllTrendingDeals.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (!TextUtils.isEmpty(categoryItem.getCategoryUrl())) {
-                            mPresenter.getAllTrendingDeals(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals));
+                            mPresenter.sendSeeAllTrendingDealsEvent();
+                            openTrendingDeals.replaceFragment(categoryItem.getCategoryUrl(), getContext().getResources().getString(R.string.trending_deals), 0);
                         }
                     }
                 });
             }
-            noContent.setVisibility(View.GONE);
-            categoryAdapter.clearList();
-            categoryAdapter.setDealsHomeLayout(true);
-            rvTrendingDeals.setAdapter(categoryAdapter);
-            categoryAdapter.addAll(categoryItem.getItems(), true);
-            rvTrendingDeals.setVisibility(View.VISIBLE);
             categoryAdapter.notifyDataSetChanged();
         } else {
             mPresenter.sendEventView(DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,
@@ -490,7 +512,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             curatedDealsLayout.setVisibility(View.VISIBLE);
             curatedDealsLayout.removeAllViews();
             boolean isItemsAvailable = false;
-            for (CategoryItem categoryItem : categoryItems) {
+            for (int i=0; i<categoryItems.size(); i++) {
+                CategoryItem categoryItem = categoryItems.get(i);
                 if (categoryItem.getItems() != null && categoryItem.getItems().size() > 0) {
                     isItemsAvailable = true;
                     DealsCategoryAdapter.INavigateToActivityRequest listener = new DealsCategoryAdapter.INavigateToActivityRequest() {
@@ -499,7 +522,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                             startActivityForResult(intent, requestCode);
                         }
                     };
-                    CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, listener, openTrendingDeals, "", mPresenter);
+                    CuratedDealsView curatedDealsView = new CuratedDealsView(getActivity(), categoryItem, listener, openTrendingDeals, "", mPresenter, i);
                     curatedDealsLayout.addView(curatedDealsView);
                 }
             }
@@ -509,11 +532,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         } else {
             curatedDealsLayout.setVisibility(View.GONE);
         }
-    }
-
-    @Override
-    public void renderAllTrendingDeals(List<ProductItem> items, String title) {
-        openTrendingDeals.replaceFragment(items, 0, title);
     }
 
     @Override
@@ -541,7 +559,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     @Override
     public void showViews() {
         baseMainContent.setVisibility(View.VISIBLE);
-        clSearch.setVisibility(View.VISIBLE);
+        searchInputView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -558,7 +576,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public RequestParams getParams() {
         RequestParams requestParams = RequestParams.create();
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        requestParams.putInt(DealsHomePresenter.TAG, location.getId());
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
+        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+        }
         return requestParams;
     }
 
@@ -567,7 +590,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
+        if (location.getLocType() != null && !TextUtils.isEmpty(location.getLocType().getName())) {
+            requestParams.putString(Utils.LOCATION_TYPE, location.getLocType().getName());
+        }
         return requestParams;
     }
 
@@ -645,7 +673,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     protected String getScreenName() {
-        return null;
+        return SCREEN_NAME;
     }
 
 
@@ -672,40 +700,15 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
+    public void startLocationFragment() {
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location == null) {
-            if (getActivity() != null)
-                getActivity().finish();
-        } else {
-            if (locationUpdated) {
-                isLocationUpdated = locationUpdated;
-                selectLocationFragment.setCanceledOnTouchOutside(true);
-                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-                mPresenter.getDealsList(true);
-                tvLocationName.setText(location.getName());
-            }
-            if (selectLocationFragment != null) {
-                selectLocationFragment.dismiss();
-            }
-        }
+        Fragment fragment = SelectLocationBottomSheet.createInstance(tvLocationName.getText().toString(), location);
+        getChildFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up)
+                .add(R.id.main_content, fragment).addToBackStack(HOME_FRAGMENT).commit();
     }
 
     @Override
-    public void startLocationFragment(List<Location> locationList, boolean isForFirstime) {
-        Utils.getSingletonInstance().updateLocation(getContext(), locationList.get(0));
-        if (isForFirstime) {
-            mPresenter.getDealsList(false);
-        }
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(getContext(), isForFirstime, locationList, this, tvLocationName.getText().toString(), this), "", false);
-        selectLocationFragment.show();
-        if (isForFirstime) {
-            selectLocationFragment.setCanceledOnTouchOutside(false);
-        }
-    }
-
-    @Override
-    public void startDealsCategoryFragment(List<CategoryItem> categoryItems) {
+    public void startDealsCategoryFragment(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels) {
         View categoryView = getLayoutInflater().inflate(R.layout.deals_category_bottomsheet_layout, null);
         RecyclerView recyclerView = categoryView.findViewById(R.id.rv_category_items);
         ImageView crossIcon = categoryView.findViewById(R.id.cross_icon_bottomsheet);
@@ -715,7 +718,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 dealsCategoryBottomSheet.dismiss();
             }
         });
-        DealsCategoryItemAdapter adapter = new DealsCategoryItemAdapter(categoryItems, this);
+        DealsCategoryItemAdapter adapter = new DealsCategoryItemAdapter(categoryItems, categoriesModels, this);
         recyclerView.setAdapter(adapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 5,
                 GridLayoutManager.VERTICAL, false);
@@ -726,14 +729,30 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
-    public void openCategoryDetail(CategoriesModel categoriesModel) {
+    public String getSearchInputText() {
+        return searchInputView.getText().toString();
+    }
+
+    @Override
+    public void updateInitialLocation(List<Location> locations) {
+        Utils.getSingletonInstance().updateLocation(getContext(), locations.get(0));
+        tvLocationName.setText(locations.get(0).getName());
+        mPresenter.getDealsList(true);
+        mPresenter.getBrandsHome();
+    }
+
+    @Override
+    public void openCategoryDetail(CategoriesModel categoriesModel, List<CategoriesModel> categoriesModels) {
         if (dealsCategoryBottomSheet != null) {
             dealsCategoryBottomSheet.dismiss();
         }
+        mPresenter.sendCategoryClickEvent(categoriesModel.getName(), categoriesModel.getPosition());
         Intent detailsIntent = new Intent(getActivity(), CategoryDetailActivity.class);
         detailsIntent.putExtra(CategoryDetailActivity.CATEGORIES_DATA, categoriesModel);
         detailsIntent.putExtra(CategoryDetailActivity.CATEGORY_NAME, categoriesModel.getTitle());
         detailsIntent.putExtra(CategoryDetailActivity.FROM_HOME, true);
+        detailsIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
+        detailsIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_CATEGOTRY_LIST, (ArrayList<? extends Parcelable>) this.categoryItem.getItems());
         getActivity().startActivity(detailsIntent);
     }
 
@@ -743,14 +762,19 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         selectLocationFragment.dismiss();
     }
 
-    @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
+    public void refreshHomePage(boolean isLocationUpdated) {
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null && isLocationUpdated && !tvLocationName.getText().equals(location.getName())) {
+            tvLocationName.setText(location.getName());
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", getContext().getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, getContext().getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            });
+            mPresenter.getDealsList(true);
+            mPresenter.getBrandsHome();
         }
     }
 
+
     public interface OpenTrendingDeals {
-        void replaceFragment(List<ProductItem> trendingDeals, int flag, String title);
+        void replaceFragment(String url, String title, int position);
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.cartsingleshipment;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentData;
+import com.tokopedia.logisticcart.shipping.model.ShipmentData;
 
 /**
  * @author Aghny A. Putra on 25/01/18
@@ -17,6 +17,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private double totalWeight;
     private double shippingFee;
     private double insuranceFee;
+    private double priorityFee;
     private int totalPurchaseProtectionItem;
     private double purchaseProtectionFee;
     private double additionalFee;
@@ -28,6 +29,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private int totalPromoStackAmount;
     private String totalPromoStackAmountStr;
     private int TotalDiscWithoutCashback;
+    private int bookingFee;
 
     public int getTotalItem() {
         return totalItem;
@@ -113,6 +115,14 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         return totalPurchaseProtectionItem;
     }
 
+    public double getPriorityFee() {
+        return priorityFee;
+    }
+
+    public void setPriorityFee(double priorityFee) {
+        this.priorityFee = priorityFee;
+    }
+
     public void setTotalPurchaseProtectionItem(int totalPurchaseProtectionItem) {
         this.totalPurchaseProtectionItem = totalPurchaseProtectionItem;
     }
@@ -165,6 +175,10 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.totalPromoStackAmountStr = totalPromoStackAmountStr;
     }
 
+    public int getBookingFee() { return bookingFee; }
+
+    public void setBookingFee(int bookingFee) { this.bookingFee = bookingFee; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -178,6 +192,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeDouble(this.totalWeight);
         dest.writeDouble(this.shippingFee);
         dest.writeDouble(this.insuranceFee);
+        dest.writeDouble(this.priorityFee);
         dest.writeDouble(this.promoPrice);
         dest.writeString(this.promoMessage);
         dest.writeDouble(this.additionalFee);
@@ -185,6 +200,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeDouble(this.emasPrice);
         dest.writeDouble(this.tradeInPrice);
         dest.writeInt(this.totalPromoStackAmount);
+        dest.writeInt(this.bookingFee);
     }
 
     public ShipmentCostModel() {
@@ -197,6 +213,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.totalWeight = in.readDouble();
         this.shippingFee = in.readDouble();
         this.insuranceFee = in.readDouble();
+        this.priorityFee = in.readDouble();
         this.promoPrice = in.readDouble();
         this.promoMessage = in.readString();
         this.additionalFee = in.readDouble();
@@ -204,6 +221,7 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.emasPrice = in.readDouble();
         this.tradeInPrice = in.readDouble();
         this.totalPromoStackAmount = in.readInt();
+        this.bookingFee = in.readInt();
     }
 
     public static final Creator<ShipmentCostModel> CREATOR = new Creator<ShipmentCostModel>() {

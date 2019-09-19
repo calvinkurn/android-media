@@ -10,8 +10,10 @@ import com.tokopedia.design.base.BaseToaster;
 
 /**
  * @author okasurya on 1/30/18.
+ *
+ * this class deprecated please use `com.tokopedia.unifycomponents.Toaster`
  */
-
+@Deprecated
 public class ToasterNormal extends BaseToaster {
 
     public static Snackbar make(View view,

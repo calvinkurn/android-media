@@ -1,29 +1,26 @@
 package com.tokopedia.kotlin.extensions.view
 
+import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Context
 import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Build
 import android.support.annotation.DimenRes
 import android.support.annotation.StringRes
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.widget.LinearLayout
-import com.tokopedia.kotlin.extensions.R
-import android.app.Activity
-import android.app.ProgressDialog
-import android.view.ViewGroup
-import android.widget.TextView
 import android.view.*
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.kotlin.extensions.R
 import com.tokopedia.kotlin.model.ImpressHolder
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
+import android.graphics.Bitmap
+import android.graphics.Canvas
+
 
 /**
  * @author by milhamj on 30/11/18.
@@ -198,7 +195,66 @@ fun View.getDimens(@DimenRes id: Int): Int {
     return this.context.resources.getDimension(id).toInt()
 }
 
+
+fun ImageView.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
+    addOnImpressionListener(holder, object : ViewHintListener{
+        override fun onViewHint() {
+            onView.invoke()
+        }
+    })
+}
+
 fun ImageView.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
+    if (!holder.isInvoke) {
+        viewTreeObserver.addOnScrollChangedListener(
+                object : ViewTreeObserver.OnScrollChangedListener {
+                    override fun onScrollChanged() {
+                        if (!holder.isInvoke && viewIsVisible(this@addOnImpressionListener)) {
+                            listener.onViewHint()
+                            holder.invoke()
+                            viewTreeObserver.removeOnScrollChangedListener(this)
+                        }
+                    }
+                })
+    }
+}
+
+fun View.toBitmap(desiredWidth: Int? = null, desiredHeight: Int? = null): Bitmap {
+    val specSize = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    measure(specSize, specSize)
+
+    val width = desiredWidth ?: measuredWidth
+    val height = desiredHeight ?: measuredHeight
+
+    return createBitmap(width, height)
+}
+
+fun View.toSquareBitmap(desiredSize: Int? = null): Bitmap {
+    val specSize = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+    measure(specSize, specSize)
+
+    val size = desiredSize ?: if (measuredHeight > measuredWidth) measuredWidth else measuredHeight
+
+    return createBitmap(size, size)
+}
+
+private fun View.createBitmap(width: Int, height: Int): Bitmap {
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val c = Canvas(bitmap)
+    layout(0, 0, width, height)
+    draw(c)
+    return bitmap
+}
+
+fun View.addOnImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
+    addOnImpressionListener(holder, object : ViewHintListener{
+        override fun onViewHint() {
+            onView.invoke()
+        }
+    })
+}
+
+fun View.addOnImpressionListener(holder: ImpressHolder, listener: ViewHintListener) {
     if (!holder.isInvoke) {
         viewTreeObserver.addOnScrollChangedListener(
                 object : ViewTreeObserver.OnScrollChangedListener {
@@ -236,11 +292,11 @@ private fun viewIsVisible(view: View?): Boolean {
 }
 
 
-private fun getScreenWidth(): Int {
+fun getScreenWidth(): Int {
     return Resources.getSystem().displayMetrics.widthPixels
 }
 
-private fun getScreenHeight(): Int {
+fun getScreenHeight(): Int {
     return Resources.getSystem().displayMetrics.heightPixels
 }
 

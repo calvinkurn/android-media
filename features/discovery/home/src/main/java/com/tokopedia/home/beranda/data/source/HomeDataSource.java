@@ -4,12 +4,12 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
-import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
+import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.home.beranda.domain.model.HomeData;
 import com.tokopedia.home.constant.ConstantKey;
@@ -31,6 +31,7 @@ import rx.functions.Func1;
 
 public class HomeDataSource {
     public static final long ONE_YEAR = TimeUnit.DAYS.toSeconds(365);
+    private HomeAceApi homeAceApi;
     private HomeDataApi homeDataApi;
     private HomeMapper homeMapper;
     private Context context;
@@ -38,18 +39,20 @@ public class HomeDataSource {
     private Gson gson;
 
     public HomeDataSource(HomeDataApi homeDataApi,
+                          HomeAceApi homeAceApi,
                           HomeMapper homeMapper,
                           Context context,
                           CacheManager cacheManager,
                           Gson gson) {
         this.homeDataApi = homeDataApi;
+        this.homeAceApi = homeAceApi;
         this.homeMapper = homeMapper;
         this.context = context;
         this.cacheManager = cacheManager;
         this.gson = gson;
     }
 
-    public Observable<List<TrackedVisitable>> getCache() {
+    public Observable<List<HomeVisitable>> getCache() {
         return Observable.just(true).map(new Func1<Boolean, Response<GraphqlResponse<HomeData>>>() {
             @Override
             public Response<GraphqlResponse<HomeData>> call(Boolean aBoolean) {
@@ -66,11 +69,15 @@ public class HomeDataSource {
         }).map(homeMapper);
     }
 
-    public Observable<List<TrackedVisitable>> getHomeData() {
+    public Observable<List<HomeVisitable>> getHomeData() {
         return homeDataApi.getHomeData(getRequestPayload())
                 .debounce(200, TimeUnit.MILLISECONDS)
                 .map(saveToCache())
                 .map(homeMapper);
+    }
+
+    public Observable<Response<String>> sendGeolocationInfo() {
+        return homeAceApi.sendGeolocationInfo();
     }
 
     private Func1<Response<GraphqlResponse<HomeData>>, Response<GraphqlResponse<HomeData>>> saveToCache() {

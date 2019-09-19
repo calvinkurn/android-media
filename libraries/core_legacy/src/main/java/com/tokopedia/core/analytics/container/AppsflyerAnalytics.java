@@ -3,6 +3,7 @@ package com.tokopedia.core.analytics.container;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -19,18 +20,18 @@ import com.tokopedia.core.TkpdCoreRouter;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.utils.RouterUtils;
-import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.AFAdsIDCallback;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import rx.Observable;
-import rx.Subscriber;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.appsflyer.AFInAppEventParameterName.CUSTOMER_USER_ID;
@@ -44,6 +45,9 @@ public class AppsflyerAnalytics extends ContextAnalytics {
     public static final String GCM_PROJECT_NUMBER = "692092518182";
 
     private static String deferredDeeplinkPath = "";
+
+    public static final String ADVERTISINGID = "ADVERTISINGID";
+    public static final String KEY_ADVERTISINGID = "KEY_ADVERTISINGID";
 
     public AppsflyerAnalytics(Context context) {
         super(context);
@@ -103,7 +107,7 @@ public class AppsflyerAnalytics extends ContextAnalytics {
             initAppsFlyer(bundle.getString(AppEventTracking.AF.APPSFLYER_KEY), userID, conversionListener);
 
             // suddenly hit appflyer init.
-            if(getContext() instanceof TkpdCoreRouter){
+            if (getContext() instanceof TkpdCoreRouter) {
                 TkpdCoreRouter context = (TkpdCoreRouter) getContext().getApplicationContext();
                 context.onAppsFlyerInit();
             }
@@ -169,6 +173,13 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         setUserID(userID);
         AppsFlyerLib.getInstance().setDebugLog(BuildConfig.DEBUG);
         AppsFlyerLib.getInstance().setGCMProjectNumber(GCM_PROJECT_NUMBER);
+        if(com.tokopedia.config.GlobalConfig.IS_PREINSTALL) {
+            AppsFlyerLib.getInstance().setPreinstallAttribution(
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_NAME,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_DESC,
+                    com.tokopedia.config.GlobalConfig.PREINSTALL_SITE
+            );
+        }
         AppsFlyerLib.getInstance().startTracking(getContext(), key);
     }
 
@@ -182,21 +193,83 @@ public class AppsflyerAnalytics extends ContextAnalytics {
         sendTrackEvent(eventName, data);
     }
 
+    @Override
+    public void sendTrackEvent(String eventName, Map<String, Object> eventValue) {
+        AppsFlyerLib.getInstance().trackEvent(getContext(), eventName, eventValue);
+    }
+
     public void sendDeeplinkData(Activity activity) {
         AppsFlyerLib.getInstance().sendDeepLinkData(activity);
     }
 
     public void getAdsID(final AFAdsIDCallback callback) {
-            AdvertisingIdClient.Info adInfo = null;
-            try {
-                adInfo = AdvertisingIdClient.getAdvertisingIdInfo(getContext());
-                callback.onGetAFAdsID(adInfo.getId());
-                CommonUtils.dumper(TAG + " appsflyer succeded init ads ID " + adInfo.getId() + " " + adInfo.isLimitAdTrackingEnabled());
-            } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
-                e.printStackTrace();
+        SharedPreferences sharedPrefs = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE);
+
+        String adsId = sharedPrefs.getString(KEY_ADVERTISINGID, "");
+        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+            callback.onGetAFAdsID(adsId);
+            return;
+        }
+
+        Observable.fromCallable(() -> {
+            AdvertisingIdClient.Info adInfo;
+            adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+            return adInfo.getId();
+        }).doOnNext(s -> {
+            if (!TextUtils.isEmpty(s)) {
+                sharedPrefs.edit().putString(KEY_ADVERTISINGID, s).apply();
+            }
+        }).observeOn(AndroidSchedulers.mainThread()).subscribeOn(Schedulers.io())
+        .subscribe(new Observer<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
                 callback.onErrorAFAdsID();
             }
+
+            @Override
+            public void onNext(String s) {
+                if (TextUtils.isEmpty(s)) {
+                    callback.onErrorAFAdsID();
+                } else {
+                    callback.onGetAFAdsID(s);
+                }
+            }
+        });
     }
+
+    @Deprecated
+    @Override
+    public String getGoogleAdId() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE);
+
+        String adsId = sharedPrefs.getString(KEY_ADVERTISINGID, "");
+        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
+            return adsId;
+        }
+
+        return (Observable.just("").subscribeOn(Schedulers.newThread())
+                .map(string -> {
+                    AdvertisingIdClient.Info adInfo = null;
+                    try {
+                        adInfo = AdvertisingIdClient.getAdvertisingIdInfo(context);
+                    } catch (IOException | GooglePlayServicesNotAvailableException | GooglePlayServicesRepairableException e) {
+                        e.printStackTrace();
+                    }
+                    return adInfo.getId();
+                }).onErrorReturn(throwable -> "")
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(adID -> {
+                    if (!TextUtils.isEmpty(adID)) {
+                        sharedPrefs.edit().putString(KEY_ADVERTISINGID, adID).apply();
+                    }
+                })).toBlocking().single();
+    }
+
 
     public String getAdsIdDirect() {
 

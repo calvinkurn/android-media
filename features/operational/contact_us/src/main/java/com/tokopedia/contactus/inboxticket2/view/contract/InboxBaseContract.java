@@ -60,5 +60,7 @@ public interface InboxBaseContract {
         void reAttachView();
 
         void clickCloseSearch();
+
+        void refreshLayout();
     }
 }

@@ -1,11 +1,12 @@
 package com.tokopedia.affiliate.feature.createpost.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.affiliate.feature.createpost.TOKEN
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -32,6 +33,7 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
     companion object {
         private const val AF_CREATE_POST_CACHE = "af_create_post_cache"
         private const val AF_ADD_PRODUCT = "af_add_product_%s"
+        private const val REQUEST_ATTACH_AFFILIATE_PRODUCT = 12
 
         fun createInstance(bundle: Bundle): AffiliateCreatePostFragment {
             val fragment = AffiliateCreatePostFragment()
@@ -48,7 +50,9 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
     }
 
     override fun fetchContentForm() {
-        presenter.fetchContentForm(viewModel.adIdList, viewModel.authorType)
+        val token = arguments?.getString(TOKEN)
+        if (token != null) presenter.fetchContentFormByToken(token, viewModel.authorType)
+        else presenter.fetchContentForm(viewModel.adIdList, viewModel.authorType, viewModel.postId)
     }
 
     override fun onRelatedAddProductClick() {
@@ -69,5 +73,27 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
             initProductIds()
             isAddingProduct = false
         }
+    }
+
+    override fun updateRelatedProduct() {
+        super.updateRelatedProduct()
+        if (adapter.itemCount > 0) {
+            productAttachmentLayoutManager.scrollToPosition(adapter.itemCount - 1)
+        }
+    }
+
+    override fun onSuccessGetContentForm(feedContentForm: FeedContentForm, isFromTemplateToken: Boolean) {
+        if (isFromTemplateToken) {
+            val currentIdList = viewModel.adIdList.toList()
+            viewModel.adIdList.clear()
+            viewModel.adIdList.addAll(
+                    currentIdList.union(feedContentForm.relatedItems.map { it.id })
+            )
+        }
+        super.onSuccessGetContentForm(feedContentForm, isFromTemplateToken)
+    }
+
+    fun clearCache() {
+        localCacheHandler.clearCache()
     }
 }

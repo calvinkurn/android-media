@@ -3,11 +3,15 @@ package com.tokopedia.groupchat.room.view.viewstate
 import android.content.Context
 import android.support.v4.app.FragmentManager
 import android.support.v7.widget.Toolbar
+import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
+import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 
 /**
  * @author : Steven 13/02/19
@@ -15,8 +19,7 @@ import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewMod
 interface PlayViewState {
 
     fun onSuccessGetInfoFirstTime(it: ChannelInfoViewModel, childFragmentManager: FragmentManager)
-
-    fun loadImageChannelBanner(context: Context, bannerUrl: String?, blurredBannerUrl: String?)
+    fun onSuccessGetInfo(it: ChannelInfoViewModel)
     fun setToolbarData(title: String?, bannerUrl: String?, totalView: String?, blurredBannerUrl: String?)
     fun getToolbar(): Toolbar?
     fun onBackPressed() : Boolean
@@ -24,7 +27,7 @@ interface PlayViewState {
     fun onTotalViewChanged(channelId: String, totalView: String)
     fun onAdsUpdated(it: AdsViewModel)
     fun onPinnedMessageUpdated(it: PinnedMessageViewModel)
-    fun onVideoUpdated(it: VideoViewModel, childFragmentManager: FragmentManager)
+    fun onVideoHorizontalUpdated(it: VideoViewModel)
     fun onChannelFrozen(channelId: String)
     fun banUser(userId: String)
     fun onChannelDeleted()
@@ -39,17 +42,16 @@ interface PlayViewState {
     fun getChannelInfo(): ChannelInfoViewModel?
     fun onDynamicButtonUpdated(it: DynamicButtonsViewModel)
     fun onErrorGetDynamicButtons()
-    fun onInfoMenuClicked()
     fun onReceiveGamificationNotif(model: GroupChatPointsViewModel)
     fun onBackgroundUpdated(it: BackgroundViewModel)
     fun getDurationWatchVideo(): String?
     fun onErrorGetInfo(it: String)
     fun onReceiveOverlayMessageFromWebsocket(it: ChannelInfoViewModel)
     fun onReceiveCloseOverlayMessageFromWebsocket()
-    fun onShowOverlayCTAFromDynamicButton(it: DynamicButtonsViewModel.Button)
-    fun onShowOverlayWebviewFromDynamicButton(it: DynamicButtonsViewModel.Button)
+    fun onShowOverlayCTAFromDynamicButton(it: DynamicButton)
+    fun onShowOverlayWebviewFromDynamicButton(it: DynamicButton)
     fun setBottomView()
-    fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentViewModel)
+    fun onStickyComponentUpdated(stickyComponentViewModel: StickyComponentsViewModel)
     fun onErrorGetStickyComponent()
     fun errorViewShown(): Boolean
     fun autoAddSprintSale()
@@ -57,4 +59,12 @@ interface PlayViewState {
     fun onShowOverlayFromVoteComponent(voteUrl: String)
     fun autoPlayVideo()
     fun onNoInternetConnection()
+    fun onInteractiveButtonClicked(anchorView: LottieAnimationView)
+    fun onInteractiveButtonViewed(anchorView: LottieAnimationView)
+    fun onOverflowMenuClicked()
+    fun onVideoVerticalUpdated(it: VideoStreamViewModel)
+    fun onErrorVideoVertical()
+    fun verticalVideoShown(): Boolean
+    fun dismissAllBottomSheet()
+    fun isChannelActive(): Boolean
 }

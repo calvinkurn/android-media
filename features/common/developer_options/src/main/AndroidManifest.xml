@@ -7,6 +7,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/Base.Theme"
             android:label="@string/react_native_logger_title" />
+        <activity
+            android:name=".presentation.activity.DeveloperOptionActivity"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="stateHidden"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".remote_config.RemoteConfigFragmentActivity"
+            android:label="@string/remote_config_title"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
     </application>
 
 </manifest>

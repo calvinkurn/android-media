@@ -12,7 +12,6 @@ import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.rxjava.RxUtils;
-import com.tokopedia.core.service.constant.DownloadServiceConstant;
 import com.tokopedia.session.R;
 import com.tokopedia.session.forgotpassword.interactor.ForgotPasswordRetrofitInteractor;
 import com.tokopedia.session.forgotpassword.listener.ForgotPasswordFragmentView;

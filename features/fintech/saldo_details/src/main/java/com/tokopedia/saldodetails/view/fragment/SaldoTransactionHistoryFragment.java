@@ -38,6 +38,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.saldodetails.view.fragment.SaldoDepositFragment.IS_SELLER_ENABLED;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implements
         SaldoHistoryContract.View, EmptyResultViewHolder.Callback {
@@ -119,8 +120,11 @@ public class SaldoTransactionHistoryFragment extends BaseDaggerFragment implemen
         startDateLayout = view.findViewById(R.id.start_date_layout);
         endDateLayout = view.findViewById(R.id.end_date_layout);
         startDateTV = view.findViewById(R.id.start_date_tv);
+        startDateTV.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_calendar_grey), null, null , null);
         endDateTV = view.findViewById(R.id.end_date_tv);
-
+        endDateTV.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (context, R.drawable.ic_calendar_grey), null, null , null);
 
         depositHistoryViewPager = view.findViewById(R.id.transaction_history_view_pager);
         depositHistoryTabLayout = view.findViewById(R.id.transaction_history_tab_layout);

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- This resources is deprecated. Please use colors at unify_principles -->
 <resources>
 
     <color name="tkpd_main_green">#42b549</color>
@@ -74,6 +75,7 @@
     <color name="snackbar_border_normal">#87d58b</color>
 
     <color name="bg_button_border_outline">#E0E0E0</color>
+    <color name="bg_button_green_border_outline">#03AC0E</color>
     <color name="white_two">#e0e0e0</color>
     <color name="gray_background">#fff2f3f4</color>
 
@@ -126,5 +128,13 @@
     <color name="clr_f531353b">#f531353b</color>
     <color name="clr_ae31353b">#ae31353b</color>
     <color name="clr_80000000">#80000000</color>
+    <color name="clr_e6000000">#e6000000</color>
+    <color name="clr_99000000">#99000000</color>
+    <color name="clr_dee0e2">#dee0e2</color>
+    <color name="clr_8c949b">#8c949b</color>
+    <color name="clr_73bd00">#73bd00</color>
+    <color name="clr_eef0f3">#eef0f3</color>
+    <color name="clr_194c2a86">#194c2a86</color>
+    <color name="bg_saldolock_ticker">#fffae6</color>
 
 </resources>

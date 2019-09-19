@@ -26,5 +26,6 @@ class FlightOrder(
         val cancellations: List<CancellationEntity>,
         val insurances: List<FlightInsurance>,
         val cancelledPassengerCount: Int,
-        val contactUsUrl: String
+        val contactUsUrl: String,
+        val cancellationInfo: String
 )

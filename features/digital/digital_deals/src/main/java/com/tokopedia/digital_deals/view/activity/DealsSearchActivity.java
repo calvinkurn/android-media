@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,7 +17,6 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,15 +36,18 @@ import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
 import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealsSearchPresenter;
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +55,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class DealsSearchActivity extends DealsBaseActivity implements
-        DealsSearchContract.View, SearchInputView.Listener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsLocationAdapter.ActionListener, SelectLocationBottomSheet.CloseSelectLocationBottomSheet {
+        DealsSearchContract.View, SearchInputView.Listener, SearchInputView.FocusChangeListener, android.view.View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, SelectLocationBottomSheet.SelectedLocationListener {
 
     private final boolean IS_SHORT_LAYOUT = true;
+    public static final String EXTRA_LIST = "list";
+    private static final String SEARCH_PAGE = "DealsSearchActivity";
+    public static final String SCREEN_NAME = "/digital/deals/search";
 
     private CoordinatorLayout mainContent;
     private ScrollView noContent;
@@ -62,7 +69,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private ConstraintLayout clLocation;
     private AppBarLayout appBarBrands;
     private TextView dealsHeading;
-    private TextView brandsHeading;
+    private TextView brandsHeading, brandCount;
     private View divider;
     private LinearLayoutManager layoutManager;
     private SearchInputView searchInputView;
@@ -70,7 +77,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private ImageView back;
     private TextView tvCityName;
     private List<Brand> brands = new ArrayList<>();
-    private boolean firstTimeRefresh = true;
+    List<CategoriesModel> categoryList = new ArrayList<>();
+    private String categoryId;
 
     @Inject
     public DealsSearchPresenter mPresenter;
@@ -81,8 +89,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private String searchText;
     private int adapterPosition = -1;
     private boolean forceRefresh;
-    CloseableBottomSheetDialog selectLocationFragment;
     private AppBarLayout appBarToolbar;
+    private boolean isLocationUpdated;
 
     @Override
     public int getLayoutRes() {
@@ -95,9 +103,24 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         initInjector();
         setUpVariables();
         searchInputView.setListener(this);
+        searchInputView.setFocusChangeListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        categoryList = getIntent().getParcelableArrayListExtra(EXTRA_LIST);
         mPresenter.attachView(this);
         mPresenter.initialize();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
+            tvCityName.setText(location.getName());
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            });
+            mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+        }
+        dealsAnalytics.sendScreenNameEvent(SCREEN_NAME);
     }
 
     private void setUpVariables() {
@@ -109,22 +132,24 @@ public class DealsSearchActivity extends DealsBaseActivity implements
         mainContent = findViewById(R.id.main_content);
         dealsHeading = findViewById(R.id.tv_topevents);
         brandsHeading = findViewById(R.id.brand_list);
+        brandCount = findViewById(R.id.num_of_brands);
         back = findViewById(R.id.imageViewBack);
         divider = findViewById(R.id.divider);
         noContent = findViewById(R.id.no_content);
         brandLayout = findViewById(R.id.brand_layout);
         tvCityName = findViewById(R.id.tv_location);
+        tvCityName.setCompoundDrawablesWithIntrinsicBounds(null, null, MethodChecker.getDrawable
+                (this, R.drawable.location_arrow_down), null);
         clLocation = findViewById(R.id.cl_location);
         back.setOnClickListener(this);
         tvCityName.setOnClickListener(this);
         searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
-        searchInputView.setSearchImageView(getResources().getDrawable(R.drawable.ic_search_deal));
+        searchInputView.setSearchImageView(MethodChecker.getDrawable(this, R.drawable.ic_search_deal));
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvDeals.setLayoutManager(layoutManager);
         dealsCategoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.SEARCH_PAGE, this, !IS_SHORT_LAYOUT);
         rvDeals.setAdapter(dealsCategoryAdapter);
-        searchInputView.getSearchTextView().requestFocus();
         appBarBrands.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -139,6 +164,17 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                         appBarToolbar.setElevation(getResources().getDimension(R.dimen.dp_0));
                     }
                 }
+            }
+        });
+
+        brandCount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent brandIntent = new Intent(DealsSearchActivity.this, AllBrandsActivity.class);
+                brandIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoryList);
+                brandIntent.putExtra(AllBrandsActivity.SEARCH_TEXT, searchInputView.getSearchText());
+                brandIntent.putExtra("cat_id", categoryId);
+                navigateToActivityRequest(brandIntent, DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY);
             }
         });
     }
@@ -175,16 +211,17 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void startLocationFragment(List<Location> locationList, boolean isForFirstTime) {
-        selectLocationFragment = CloseableBottomSheetDialog.createInstanceRounded(getActivity());
-        selectLocationFragment.setCustomContentView(new SelectLocationBottomSheet(DealsSearchActivity.this, isForFirstTime, locationList, this, tvCityName.getText().toString(), this), "", false);
-        selectLocationFragment.show();
+        Location location = Utils.getSingletonInstance().getLocation(this);
+        Fragment fragment = SelectLocationBottomSheet.createInstance(tvCityName.getText().toString(), location);
+        getSupportFragmentManager().beginTransaction().setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up)
+                .add(R.id.main_content, fragment).addToBackStack(SEARCH_PAGE).commit();
     }
 
     @Override
     public void renderFromSearchResults() {
-            Location location = Utils.getSingletonInstance().getLocation(getActivity());
-            rvDeals.addOnScrollListener(rvOnScrollListener);
-            tvCityName.setText(location.getName());
+        Location location = Utils.getSingletonInstance().getLocation(getActivity());
+        rvDeals.addOnScrollListener(rvOnScrollListener);
+        tvCityName.setText(location.getName());
     }
 
     private SpannableString getHeaderFormattedText(String searchText, int count) {
@@ -209,7 +246,19 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public RequestParams getParams() {
-        return RequestParams.EMPTY;
+        RequestParams requestParams = RequestParams.create();
+        if (!TextUtils.isEmpty(searchInputView.getSearchText())) {
+            requestParams.putString(Utils.BRAND_QUERY_TAGS, searchInputView.getSearchText());
+        }
+        Location location = Utils.getSingletonInstance().getLocation(this);
+        if (!TextUtils.isEmpty(location.getCoordinates())) {
+            requestParams.putString(Utils.LOCATION_COORDINATES, location.getCoordinates());
+        }
+        requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND_AND_PRODUCT);
+        if (!TextUtils.isEmpty(categoryId)) {
+            requestParams.putString(Utils.QUERY_PARAM_CHILD_CATEGORY_ID, categoryId);
+        }
+        return requestParams;
     }
 
     @Override
@@ -226,6 +275,8 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             dealsHeading.setVisibility(View.VISIBLE);
             rvDeals.clearOnScrollListeners();
             dealsCategoryAdapter.clearList();
+            dealsCategoryAdapter.setSearchText(searchText);
+            dealsCategoryAdapter.setFromSearchResult(true);
             dealsCategoryAdapter.addAll(productItems, false);
             dealsCategoryAdapter.setTopDealsLayout(true);
             if (productItems.size() > 0) {
@@ -242,7 +293,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             rvDeals.setVisibility(View.VISIBLE);
 
             noContent.setVisibility(View.GONE);
-
         } else if (this.brands != null && this.brands.size() > 0 && productItems != null && productItems.size() == 0) {
             rvDeals.setVisibility(View.GONE);
             dealsHeading.setVisibility(View.GONE);
@@ -260,20 +310,27 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public void setSuggestedBrands(List<Brand> brandList) {
+    public void setSuggestedBrands(List<Brand> brandList, int count) {
         if (brandList != null && brandList.size() > 0) {
             this.brands = brandList;
-           brandLayout.setVisibility(View.VISIBLE);
+            brandLayout.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.VISIBLE);
+            if (count > 4) {
+                brandCount.setVisibility(View.VISIBLE);
+                brandCount.setText(String.format(getResources().getString(R.string.brand_count_text), searchInputView.getSearchText(), count));
+            } else {
+                brandCount.setVisibility(View.GONE);
+            }
             noBrandsFound.setVisibility(View.GONE);
             LinearLayout.LayoutParams params1 = (LinearLayout.LayoutParams) dealsHeading.getLayoutParams();
             params1.setMargins(getResources().getDimensionPixelOffset(R.dimen.dp_16), getResources().getDimensionPixelOffset(R.dimen.dp_12), 0, 0);
             dealsHeading.setLayoutParams(params1);
             brandLayout.removeAllViews();
             View view;
-            int itemCount = Utils.getScreenWidth()/ (int)(getResources().getDimension(R.dimen.dp_66) + getResources().getDimension(R.dimen.dp_8));//Divide by item width including margin
+            int itemCount = Utils.getScreenWidth() / (int) (getResources().getDimension(R.dimen.dp_66) + getResources().getDimension(R.dimen.dp_8));//Divide by item width including margin
             int maxBrands = Math.min(brandList.size(), itemCount);
 
+            dealsAnalytics.sendBrandsSuggestionImpressionEvent(brandList, searchText);
             ImageView imageViewBrandItem;
             TextView brandName;
             for (int index = 0; index < maxBrands; index++) {
@@ -290,6 +347,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dealsAnalytics.sendBrandsSuggestionClickEvent(brandList.get(position1), position1, searchText, DealsAnalytics.CLICK_BRANDS_SEARCH);
                         Intent detailsIntent = new Intent(DealsSearchActivity.this, BrandDetailsActivity.class);
                         detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, brandList.get(position1));
                         startActivity(detailsIntent);
@@ -300,6 +358,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             this.brands.clear();
             brandLayout.removeAllViews();
             brandsHeading.setVisibility(View.GONE);
+            brandCount.setVisibility(View.GONE);
             noBrandsFound.setVisibility(View.GONE);
         }
     }
@@ -316,11 +375,12 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             dealsCategoryAdapter.clearList();
             dealsCategoryAdapter.addAll(items, false);
             dealsCategoryAdapter.setTopDealsLayout(true);
-            rvDeals.addOnScrollListener(rvOnScrollListener);
+            dealsCategoryAdapter.setFromSearchResult(false);
             dealsCategoryAdapter.notifyDataSetChanged();
             rvDeals.setVisibility(View.VISIBLE);
             brandsHeading.setVisibility(View.GONE);
             brandLayout.setVisibility(View.GONE);
+            brandCount.setVisibility(View.GONE);
             dealsHeading.setVisibility(View.VISIBLE);
         }
     }
@@ -447,26 +507,18 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     @Override
-    public void onLocationItemSelected(boolean locationUpdated) {
+    public void onLocationItemUpdated(boolean isLocationUpdated) {
+        this.isLocationUpdated = isLocationUpdated;
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
-        if (location == null) {
-            finish();
-        } else {
+        if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
             tvCityName.setText(location.getName());
-            if (selectLocationFragment != null) {
-                selectLocationFragment.dismiss();
-            }
-            if (locationUpdated) {
-                Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
-            }
-                mPresenter.getDealsListBySearch(searchInputView.getSearchText());
+            Toaster.Companion.showNormalWithAction(mainContent, String.format("%s %s", this.getResources().getString(R.string.location_deals_changed_toast), location.getName()), Snackbar.LENGTH_SHORT, this.getResources().getString(R.string.location_deals_changed_toast_oke), v1 -> {
+            });
+            mPresenter.getDealsListBySearch(searchInputView.getSearchText());
         }
     }
 
     @Override
-    public void closeBottomsheet() {
-        if (selectLocationFragment != null) {
-            selectLocationFragment.dismiss();
-        }
+    public void onFocusChanged(boolean hasFocus) {
     }
 }

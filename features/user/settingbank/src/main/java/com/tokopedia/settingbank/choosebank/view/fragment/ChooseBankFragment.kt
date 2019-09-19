@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -14,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.settingbank.R
 import com.tokopedia.settingbank.addeditaccount.view.listener.ChooseBankContract
-import com.tokopedia.settingbank.choosebank.di.ChooseBankDependencyInjector
 import com.tokopedia.settingbank.choosebank.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.choosebank.view.adapter.BankAdapter
 import com.tokopedia.settingbank.choosebank.view.adapter.BankTypeFactoryImpl
@@ -22,7 +22,9 @@ import com.tokopedia.settingbank.choosebank.view.listener.BankListener
 import com.tokopedia.settingbank.choosebank.view.presenter.ChooseBankPresenter
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankViewModel
 import com.tokopedia.settingbank.banklist.analytics.SettingBankAnalytics
+import com.tokopedia.settingbank.choosebank.di.DaggerChooseBankComponent
 import kotlinx.android.synthetic.main.fragment_choose_bank.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 6/22/18.
@@ -33,6 +35,8 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
 
     lateinit var adapter: BankAdapter
     lateinit var linearLayoutManager: LinearLayoutManager
+
+    @Inject
     lateinit var presenter: ChooseBankPresenter
 
     var query = ""
@@ -43,8 +47,14 @@ class ChooseBankFragment : ChooseBankContract.View, BankListener, SearchInputVie
     }
 
     override fun initInjector() {
-        presenter = ChooseBankDependencyInjector.Companion.inject(activity!!.applicationContext)
-        presenter.attachView(this)
+        if (activity != null && (activity as Activity).application != null) {
+            val addChooseBankComponent = DaggerChooseBankComponent.builder().baseAppComponent(
+                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                    .build()
+
+            addChooseBankComponent.inject(this)
+            presenter.attachView(this)
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

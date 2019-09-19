@@ -32,19 +32,11 @@ public interface TkpdCoreRouter {
 
     void goToManageProduct(Context context);
 
-    void goToEtalaseList(Context context);
-
     void goToDraftProductList(Context context);
 
     void clearEtalaseCache();
 
-    Intent goToEditProduct(Context context, boolean isEdit, String productId);
-
     void resetAddProductCache(Context context);
-
-    void goToWallet(Context context, String url);
-
-    void goToMerchantRedirect(Context context);
 
     void actionAppLink(Context context, String linkUrl);
 
@@ -98,17 +90,11 @@ public interface TkpdCoreRouter {
 
     void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle);
 
-    void goToAddProduct(Activity activity);
-
     boolean isInMyShop(Context context, String shopId);
-
-    Intent getForgotPasswordIntent(Context context, String email);
 
     void invalidateCategoryMenuData();
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
-
-    Intent getIntentCreateShop(Context context);
 
     Intent getSplashScreenIntent(Context context);
 
@@ -139,13 +125,7 @@ public interface TkpdCoreRouter {
 
     Intent getInboxReputationIntent(Context context);
 
-    Intent getResolutionCenterIntent(Context context);
-
-    Intent getResolutionCenterIntentBuyer(Context context);
-
     Intent getResolutionCenterIntentSeller(Context context);
-
-    String applink(Activity activity, String deeplink);
 
     Intent getKolFollowingPageIntent(Context context, int userId);
 
@@ -171,11 +151,7 @@ public interface TkpdCoreRouter {
 
     Observable<TokoCashData> getTokoCashBalance();
 
-    Intent getAddEmailIntent(Context context);
-
     Intent getAddPasswordIntent(Context context);
-
-    Intent getChangeNameIntent(Context context);
 
     Intent getTopProfileIntent(Context context, String userId);
 
@@ -185,18 +161,13 @@ public interface TkpdCoreRouter {
 
     Intent getInboxMessageIntent(Context context);
 
-    String getDesktopLinkGroupChat();
-
     String getStringRemoteConfig(String key);
 
     void setStringRemoteConfigLocal(String key, String value);
-    Intent getSettingBankIntent(Context context);
 
     Intent getInboxTalkCallingIntent(Context context);
 
-    Intent getAutomaticResetPasswordIntent(Context context, String email);
+    Intent getManageAdressIntent(Context context);
 
     Intent getCreateResCenterActivityIntent(Context context, String orderId);
-
-    Intent getCreateResCenterActivityIntent(Context context, String orderId, int troubleId, int solutionId);
 }

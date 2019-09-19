@@ -20,8 +20,6 @@ public interface GlobalNavRouter {
 
     Fragment getCartFragment(Bundle bundle);
 
-    Fragment getEmptyCartFragment(String autoApplyMessage, String state, String titleDesc, String promoCode);
-
     Fragment getOfficialStoreFragment(Bundle bundle);
 
     Intent getInboxTalkCallingIntent(Context context);
@@ -29,8 +27,6 @@ public interface GlobalNavRouter {
     Intent getInboxTicketCallingIntent(Context context);
 
     ApplicationUpdate getAppUpdate(Context context);
-
-    Intent getOnBoardingIntent(Activity activity);
 
     int getCartCount(Context context);
 
@@ -40,11 +36,9 @@ public interface GlobalNavRouter {
 
     Intent getShopPageIntent(Context context, String shopID);
 
-    Intent getOpenShopIntent(Context context);
-
     Intent getHomeIntent(Context context);
 
-    Intent gotoSearchPage(Context context);
+    Intent gotoSearchAutoCompletePage(Context context);
 
     Intent instanceIntentDigitalCategoryList();
 
@@ -54,5 +48,5 @@ public interface GlobalNavRouter {
 
     void sendOpenHomeEvent();
 
-    Intent getOldOfficialStore(Context context);
+    void setCategoryAbTestingConfig();
 }

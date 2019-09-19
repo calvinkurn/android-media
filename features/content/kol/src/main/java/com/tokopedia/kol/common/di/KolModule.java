@@ -2,26 +2,39 @@ package com.tokopedia.kol.common.di;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.kol.KolRouter;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker;
+import com.tokopedia.feedcomponent.di.FeedComponentModule;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kol.R;
 import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.kol.common.util.KolConstant;
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract;
 import com.tokopedia.kol.feature.video.view.presenter.VideoDetailPresenter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.domain.interactor.GetProductIsWishlistedUseCase;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -31,7 +44,7 @@ import retrofit2.Retrofit;
  * @author by milhamj on 06/02/18.
  */
 
-@Module
+@Module(includes = {FeedComponentModule.class})
 public class KolModule {
     private static final int NET_READ_TIMEOUT = 60;
     private static final int NET_WRITE_TIMEOUT = 60;
@@ -46,7 +59,7 @@ public class KolModule {
 
     @KolScope
     @Provides
-    public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
@@ -102,10 +115,53 @@ public class KolModule {
     @Provides
     @KolChuckQualifier
     public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        if (context instanceof KolRouter) {
-            return ((KolRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + KolRouter.class.getSimpleName());
+        return new ChuckInterceptor(context);
     }
 
+    @KolScope
+    @Provides
+    public CoroutineDispatcher provideDispatcher(){
+        return Dispatchers.getMain();
+    }
+
+    @KolScope
+    @Provides
+    public AddWishListUseCase provideAddWishListUseCase(@ApplicationContext Context context){
+        return new AddWishListUseCase(context);
+    }
+
+    @KolScope
+    @Provides
+    public RemoveWishListUseCase provideRemoveWishListUseCase(@ApplicationContext Context context){
+        return new RemoveWishListUseCase(context);
+    }
+
+    @KolScope
+    @Provides
+    @Named(KolConstant.KEY_QUERY_IS_WISHLISTED)
+    public String getQueryProductIsWishlisted(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_get_is_wishlisted);
+    }
+
+    @KolScope
+    @Provides
+    @Named(KolConstant.KEY_QUERY_ATC)
+    public String getQueryATCCommon(@ApplicationContext Context context){
+        return GraphqlHelper.loadRawString(context.getResources(), R.raw.mutation_add_to_cart);
+    }
+
+    @KolScope
+    @Provides
+    public GetProductIsWishlistedUseCase provideGetProductIsWishlistedUseCase(@Named(KolConstant.KEY_QUERY_IS_WISHLISTED)
+                                                                              String rawQuery,
+                                                                              GraphqlUseCase gqlUseCase){
+        return new GetProductIsWishlistedUseCase(rawQuery, gqlUseCase);
+    }
+
+    @KolScope
+    @Provides
+    public FeedAnalyticTracker providesFeedAnalyticTracker(TrackingQueue trackingQueue,
+                                                           UserSessionInterface userSessionInterface)  {
+        return new FeedAnalyticTracker(trackingQueue, userSessionInterface);
+    }
 }

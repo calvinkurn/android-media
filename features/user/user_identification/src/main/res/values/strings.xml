@@ -14,9 +14,16 @@
     <string name="kyc_verified_title">Dokumen Telah Terverifikasi!</string>
     <string name="kyc_verified_text">Data yang Anda berikan telah tersimpan dan terlindungi dengan aman di dalam sistem Tokopedia.</string>
     <string name="kyc_verified_button">Info Selengkapnya</string>
+    
+    <string name="kyc_blacklist_button">Kembali</string>
+    <string name="kyc_blacklist_text">KTP anda tidak memenuhi syarat dan ketentuan untuk melakukan verifikasi.</string>
 
     <string name="ktp_title">Foto Bagian Depan KTP</string>
-    <string name="ktp_subtitle">Gunakan KTP asli, bukan hasil fotokopi. Pastikan seluruh bagian KTP tidak terpotong dan informasi di dalamnya terbaca jelas.</string>
+    <string
+        name="ktp_subtitle"><![CDATA[<b>Perhatikan panduan berikut agar verifikasi berhasil:</b>]]> </string>
+    <string name="ktp_body"><![CDATA[• Gunakan foto asli, bukan fotokopi KTP.<br>
+        • Pastikan foto KTP tidak terpotong dan berada dalam bingkai.<br>
+        • Pastikan foto KTP dalam kondisi terang dan jelas.]]></string>
     <string name="ktp_button">Ambil Foto KTP</string>
 
     <string name="face_title">Foto Diri Bersama KTP</string>

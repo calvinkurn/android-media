@@ -11,8 +11,8 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.loginphone.R;
+import com.tokopedia.loginphone.choosetokocashaccount.data.UserDetail;
 import com.tokopedia.loginphone.choosetokocashaccount.view.listener.ChooseTokocashAccountContract;
-import com.tokopedia.sessioncommon.data.loginphone.UserDetail;
 
 import java.util.List;
 
@@ -63,7 +63,7 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ImageHandler.LoadImage(holder.avatar, list.get(position).getImage());
-        holder.name.setText(MethodChecker.fromHtml(list.get(position).getName()));
+        holder.name.setText(MethodChecker.fromHtml(list.get(position).getFullname()));
         holder.email.setText(list.get(position).getEmail());
     }
 
@@ -72,4 +72,9 @@ public class TokocashAccountAdapter extends RecyclerView.Adapter<TokocashAccount
         return list.size();
     }
 
+    public void setList(List<UserDetail> list) {
+        this.list.clear();
+        this.list.addAll(list);
+        this.notifyDataSetChanged();
+    }
 }

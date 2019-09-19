@@ -1,12 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener;
 
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.discovery.newdiscovery.base.EmptyStateListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GlobalNavViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
-
-/**
- * Created by henrypriyono on 10/18/17.
- */
+import com.tokopedia.filter.common.data.Option;
 
 public interface ProductListener extends EmptyStateListener {
     void onItemClicked(ProductItem item, int adapterPosition);
@@ -17,13 +14,17 @@ public interface ProductListener extends EmptyStateListener {
 
     void onSuggestionClicked(String suggestedQuery);
 
-    void onSearchGuideClicked(String keyword);
+    void onSearchGuideClicked(String queryParams);
 
-    void onRelatedSearchClicked(String keyword);
+    void onRelatedSearchClicked(String queryParams, String keyword);
 
     void onQuickFilterSelected(Option option);
 
     boolean isQuickFilterSelected(Option option);
 
     void onProductImpressed(ProductItem item, int adapterPosition);
+
+    void onGlobalNavWidgetClicked(GlobalNavViewModel.Item item, String keyword);
+
+    void onGlobalNavWidgetClickSeeAll(String applink, String url);
 }

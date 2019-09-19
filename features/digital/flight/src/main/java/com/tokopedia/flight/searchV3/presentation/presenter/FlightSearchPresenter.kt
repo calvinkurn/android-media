@@ -46,6 +46,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     private var maxCall: Int = 0
     private var callCounter: Int = 0
 
+    private var lastPosition = 0
+
     override fun initialize(needDeleteData: Boolean) {
 
         if (needDeleteData) {
@@ -69,9 +71,15 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    view.hideHorizontalProgress()
-                })
+                .subscribe(object: Subscriber<Long>() {
+                    override fun onNext(t: Long?) {
+                        view.hideHorizontalProgress()
+                    }
+
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable?) {}
+                }))
     }
 
     override fun resetCounterCall() {
@@ -161,15 +169,16 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
     override fun fetchCombineData(passDataViewModel: FlightSearchPassDataViewModel) {
         val flightPassengerViewModel = passDataViewModel.flightPassengerViewModel
 
+
         val departureAirport = if (passDataViewModel.departureAirport.airportCode != null &&
-                passDataViewModel.departureAirport.airportCode != "") {
+                passDataViewModel.departureAirport.airportCode.isNotEmpty()) {
             passDataViewModel.departureAirport.airportCode
         } else {
             passDataViewModel.departureAirport.cityCode
         }
 
         val arrivalAirport = if (passDataViewModel.arrivalAirport.airportCode != null &&
-                passDataViewModel.departureAirport.airportCode != "") {
+                passDataViewModel.arrivalAirport.airportCode.isNotEmpty()) {
             passDataViewModel.arrivalAirport.airportCode
         } else {
             passDataViewModel.arrivalAirport.cityCode
@@ -227,9 +236,16 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        fetchSearchDataCloud(passDataViewModel, airportCombineModel)
-                    }
+                    .subscribe (object: Subscriber<Long>() {
+                        override fun onNext(t: Long?) {
+                            fetchSearchDataCloud(passDataViewModel, airportCombineModel)
+                        }
+
+                        override fun onCompleted() {}
+
+                        override fun onError(e: Throwable?) {}
+
+                    })
             addSubscription(subscription)
             return
         }
@@ -288,7 +304,7 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         )
     }
 
-    override fun fetchSortAndFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean) {
+    override fun fetchSortAndFilter(flightSortOption: Int, flightFilterModel: FlightFilterModel, needRefresh: Boolean, fromCombo: Boolean) {
         flightSortAndFilterUseCase.execute(
                 flightSortAndFilterUseCase.createRequestParams(flightSortOption, flightFilterModel),
                 object : Subscriber<List<FlightJourneyViewModel>>() {
@@ -303,19 +319,22 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                         }
                     }
 
-                    override fun onNext(flightJourneyViewModelList: List<FlightJourneyViewModel>?) {
-                        if (!needRefresh || flightJourneyViewModelList!!.isNotEmpty()) {
+                    override fun onNext(flightJourneyViewModelList: List<FlightJourneyViewModel>) {
+                        if (!needRefresh || flightJourneyViewModelList.isNotEmpty()) {
                             view.clearAdapterData()
                         }
 
-                        view.renderSearchList(flightJourneyViewModelList!!, needRefresh)
+                        view.renderSearchList(flightJourneyViewModelList, needRefresh)
+                        view.stopTrace()
 
                         if (view.isDoneLoadData()) {
                             view.addBottomPaddingForSortAndFilterActionButton()
                             view.addToolbarElevation()
                             view.hideHorizontalProgress()
-                            view.stopTrace()
                         }
+
+                        if (lastPosition != flightJourneyViewModelList.size || fromCombo) onProductViewImpression(flightJourneyViewModelList)
+                        lastPosition = flightJourneyViewModelList.size
                     }
                 }
         )
@@ -376,6 +395,10 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
                     }
                 }
         )
+    }
+
+    private fun onProductViewImpression(listJourneyViewModel: List<FlightJourneyViewModel>) {
+        flightAnalytics.eventProductViewEnchanceEcommerce(view.getSearchPassData(), listJourneyViewModel)
     }
 
     override fun unsubscribeAll() {

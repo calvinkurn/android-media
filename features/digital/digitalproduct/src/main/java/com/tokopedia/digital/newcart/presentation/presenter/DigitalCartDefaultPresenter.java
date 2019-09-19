@@ -4,9 +4,9 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
 import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.digital.common.analytic.DigitalAnalytics;
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType;
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache;
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor;
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase;
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartDefaultContract;
@@ -24,7 +24,7 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                                        UserSession userSession,
                                        DigitalCheckoutUseCase digitalCheckoutUseCase,
                                        DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase,
-                                       DigitalPostPaidLocalCache digitalPostPaidLocalCache) {
+                                       RechargePushEventRecommendationUseCase rechargePushEventRecommendationUseCase) {
         super(digitalAddToCartUseCase,
                 digitalAnalytics,
                 digitalModuleRouter,
@@ -32,7 +32,7 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
-                digitalPostPaidLocalCache);
+                rechargePushEventRecommendationUseCase);
     }
 
     @Override
@@ -49,6 +49,7 @@ public class DigitalCartDefaultPresenter extends DigitalBaseCartPresenter<Digita
                 getView().showCartView();
                 getView().hideFullPageLoading();
                 renderBaseCart(cartDigitalInfoData);
+                renderPostPaidPopUp(cartDigitalInfoData);
                 break;
         }
     }

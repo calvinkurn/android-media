@@ -68,6 +68,9 @@ data class Status(
         @SerializedName("timestamp")
         val timestamp: Long = 0,
         @Expose
+        @SerializedName("timestampStr")
+        val timestampStr: String = "",
+        @Expose
         @SerializedName("isOnline")
         val isOnline: Boolean = false
 )
@@ -135,7 +138,7 @@ data class Reply(
 data class Attachment(
         @Expose
         @SerializedName("id")
-        val id: Int = 0,
+        val id: String = "",
         @Expose
         @SerializedName("type")
         val type: Int = 0,

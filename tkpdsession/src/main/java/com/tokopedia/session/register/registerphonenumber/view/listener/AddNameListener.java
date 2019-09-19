@@ -38,7 +38,7 @@ public interface AddNameListener {
     interface Presenter extends CustomerPresenter<AddNameListener.View> {
         void initView();
 
-        void registerPhoneNumberAndName(String name);
+        void registerPhoneNumberAndName(String name, String uuid, String phoneNumber);
 
         void addName(String name);
     }

@@ -38,8 +38,6 @@ public class BrowseProductRouter {
             = "com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity";
     private static final String BROWSE_HOTLIST_ACTIVITY
             = "com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity";
-    private static final String BROWSE_SEARCH_ACTIVITY
-            = "com.tokopedia.discovery.newdiscovery.search.SearchActivity";
 
     public enum GridType {
         GRID_1, GRID_2, GRID_3
@@ -60,10 +58,6 @@ public class BrowseProductRouter {
         bundle.putString(BrowseProductRouter.EXTRAS_HOTLIST_URL, url);
         intent.putExtras(bundle);
         return intent;
-    }
-
-    public static Intent getSearchProductIntent(Context context) {
-        return RouterUtils.getActivityIntent(context, BROWSE_SEARCH_ACTIVITY);
     }
 
     public static Intent getBrowseProductIntent(Context context, String alias) {

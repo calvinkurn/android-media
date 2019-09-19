@@ -11,8 +11,6 @@ import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.list.R;
@@ -26,9 +24,11 @@ import com.tokopedia.track.TrackApp;
 
 import javax.inject.Inject;
 
+
 public class ProductManageSellerFragment extends ProductManageFragment implements ProductDraftListCountView {
 
     private BroadcastReceiver draftBroadCastReceiver;
+    final static String URL_TIPS_TRICK = "https://seller.tokopedia.com/edu/cara-cepat-dapat-transaksi/";
 
     @Inject
     ProductDraftListCountPresenter productDraftListCountPresenter;
@@ -154,4 +154,8 @@ public class ProductManageSellerFragment extends ProductManageFragment implement
         tvDraftProductInfo.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onErrorGetPopUp(Throwable e) {
+        onSuccessGetPopUp(false, null);
+    }
 }

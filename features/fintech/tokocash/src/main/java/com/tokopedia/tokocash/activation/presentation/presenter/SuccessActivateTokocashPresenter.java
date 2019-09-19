@@ -3,11 +3,11 @@ package com.tokopedia.tokocash.activation.presentation.presenter;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.tokocash.CacheUtil;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.activation.domain.GetRefreshWalletTokenUseCase;
 import com.tokopedia.tokocash.activation.presentation.contract.SuccessActivateTokocashContract;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 
 import javax.inject.Inject;
 
@@ -21,20 +21,17 @@ public class SuccessActivateTokocashPresenter extends BaseDaggerPresenter<Succes
 
     private GetRefreshWalletTokenUseCase getRefreshWalletTokenUseCase;
     private WalletUserSession walletUserSession;
-    private CacheManager cacheManager;
 
     @Inject
     public SuccessActivateTokocashPresenter(GetRefreshWalletTokenUseCase getRefreshWalletTokenUseCase,
-                                            WalletUserSession walletUserSession,
-                                            CacheManager cacheManager) {
+                                            WalletUserSession walletUserSession) {
         this.getRefreshWalletTokenUseCase = getRefreshWalletTokenUseCase;
         this.walletUserSession = walletUserSession;
-        this.cacheManager = cacheManager;
     }
 
     @Override
     public void deleteCacheBalanceTokoCash() {
-        cacheManager.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
+        PersistentCacheManager.instance.delete(CacheUtil.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     @Override

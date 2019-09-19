@@ -43,7 +43,7 @@
             android:layout_marginTop="@dimen/dp_4" />
 
         <include
-            android:id="@+id/event_location"
+            android:id="@+id/event_location_detail"
             layout="@layout/image_textview_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

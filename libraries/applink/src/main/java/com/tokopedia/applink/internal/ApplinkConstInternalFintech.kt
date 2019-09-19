@@ -1,6 +1,6 @@
 package com.tokopedia.applink.internal
 
-import com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_SCHEME
+import com.tokopedia.applink.constant.DeeplinkConstant
 
 /**
  * This class is used to store deeplink "tokopedia-android-internal://marketplace".
@@ -8,6 +8,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternal.INTERNAL_SCHEME
 object ApplinkConstInternalFintech {
 
     const val HOST_FINTECH = "fintech"
-    val INTERNAL_FINTECH = "${INTERNAL_SCHEME}://${HOST_FINTECH}"
+    val INTERNAL_FINTECH = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_FINTECH}"
 
 }

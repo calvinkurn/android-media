@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/dp_40">
+
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/img1"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        app:corners="16"
+        app:layout_constraintEnd_toStartOf="@+id/img2"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:id="@+id/img2"
+        android:layout_width="@dimen/dp_60"
+        android:layout_height="@dimen/dp_60"
+        app:corners="16"
+        app:layout_constraintLeft_toRightOf="@+id/img1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/txt1"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/sp_12"
+        android:textSize="@dimen/dp_12"
+        app:corners="16"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/txt2"
+        app:layout_constraintTop_toBottomOf="@+id/img1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/txt2"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/sp_12"
+        android:textSize="@dimen/dp_12"
+
+        app:corners="16"
+        app:layout_constraintLeft_toRightOf="@+id/txt1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/img2" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/txt11"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/sp_12"
+        android:textSize="@dimen/dp_12"
+        app:corners="16"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/txt2"
+        app:layout_constraintTop_toBottomOf="@+id/txt1" />
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/txt22"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/sp_12"
+        android:textSize="@dimen/dp_12"
+
+        app:corners="16"
+        app:layout_constraintLeft_toRightOf="@+id/txt1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt2" />
+
+
+</android.support.constraint.ConstraintLayout>

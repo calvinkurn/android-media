@@ -17,6 +17,9 @@ public class CartDataListResponse {
     @SerializedName("errors")
     @Expose
     private List<String> errors = new ArrayList<>();
+    @SerializedName("tickers")
+    @Expose
+    private List<TickerData> tickers = new ArrayList<>();
     @SerializedName("is_coupon_active")
     @Expose
     private int isCouponActive;
@@ -53,6 +56,9 @@ public class CartDataListResponse {
     @SerializedName("autoapply_stack")
     @Expose
     private AutoapplyStack autoapplyStack = new AutoapplyStack();
+    @SerializedName("global_checkbox_state")
+    @Expose
+    private boolean globalCheckboxState;
 
     public GlobalCouponAttr getGlobalCouponAttr() {
         return globalCouponAttr;
@@ -72,6 +78,10 @@ public class CartDataListResponse {
 
     public List<String> getErrors() {
         return errors;
+    }
+
+    public List<TickerData> getTickers() {
+        return tickers;
     }
 
     public int getMaxQuantity() {
@@ -104,5 +114,9 @@ public class CartDataListResponse {
 
     public Donation getDonation() {
         return donation;
+    }
+
+    public boolean isGlobalCheckboxState() {
+        return globalCheckboxState;
     }
 }

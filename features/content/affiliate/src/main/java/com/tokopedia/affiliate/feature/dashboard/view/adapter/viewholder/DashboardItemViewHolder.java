@@ -1,6 +1,7 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
     private FrameLayout layoutStatus;
     private TextView tvStatus, tvName, tvCommission, tvBuyCount, tvClickCount, tvProductCommission;
     private LinearLayout layoutActive, layoutInactive;
+    private CardView cardView;
 
     public DashboardItemViewHolder(View itemView, DashboardContract.View mainView) {
         super(itemView);
@@ -42,6 +44,7 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
         tvProductCommission = (TextView) itemView.findViewById(R.id.tv_product_commission);
         layoutActive = (LinearLayout) itemView.findViewById(R.id.layout_active);
         layoutInactive = (LinearLayout) itemView.findViewById(R.id.layout_inactive);
+        cardView = (CardView) itemView.findViewById(R.id.card_view);
     }
 
     @Override
@@ -79,5 +82,8 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
                         R.color.font_black_secondary_54
                 )
         );
+        cardView.setOnClickListener(v -> {
+            mainView.onItemClicked(element);
+        });
     }
 }

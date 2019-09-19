@@ -1,6 +1,8 @@
 package com.tokopedia.transaction.orders.orderdetails.view.presenter;
 
-import android.content.res.Resources;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -11,28 +13,35 @@ import com.google.gson.reflect.TypeToken;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kotlin.util.DownloadHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.opportunity.data.pojo.CancelReplacementPojo;
+import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.Flags;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
+import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.OrderDetails;
 import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
+import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
+import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.purchase.detail.model.buyagain.ResponseBuyAgain;
+import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
@@ -40,6 +49,8 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -68,6 +79,15 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     OrderListDetailContract.ActionInterface view;
     String orderCategory;
     OrderDetails orderDetails;
+    @Inject
+    OrderListAnalytics orderListAnalytics;
+    String fromPayment = null;
+    String orderId;
+    RequestCancelInfo requestCancelInfo;
+
+    private String Insurance_File_Name = "Invoice";
+    public String pdfUri = " ";
+    private boolean isdownloadable = false;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -80,6 +100,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             return;
 
         this.orderCategory = orderCategory;
+        this.fromPayment = fromPayment;
+        this.orderId = orderId;
         getView().showProgressBar();
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
@@ -173,6 +195,13 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                                         view.setActionButton(position, actionButtonList);
                                     }
                             }
+                        } else {
+                            if (response != null) {
+                                ActionButtonList data = response.getData(ActionButtonList.class);
+                                actionButtonList = data.getActionButtonList();
+                                if (actionButtonList != null && actionButtonList.size() > 0)
+                                getView().setActionButtons(actionButtonList);
+                            }
                         }
                     }
                 });
@@ -184,10 +213,9 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public static final String SHOP_ID = "shop_id";
 
 
-    private JsonArray generateInputQueryBuyAgain(OrderDetails data) {
-        List<Items> orderDetailItemData = data.getItems();
+    private JsonArray generateInputQueryBuyAgain(List<Items> items) {
         JsonArray jsonArray = new JsonArray();
-        for (Items item : orderDetailItemData) {
+        for (Items item : items) {
             JsonObject passenger = new JsonObject();
 
             int productId = 0;
@@ -197,7 +225,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             try {
                 productId = item.getId();
                 quantity = item.getQuantity();
-                shopId = data.getShopInfo().getShopId();
+                shopId = orderDetails.getShopInfo().getShopId();
                 notes = item.getDescription();
             } catch (Exception e) {
                 Log.e("error parse", e.getMessage());
@@ -216,16 +244,21 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return actionButtonList;
     }
 
+    @Override
+    public void onBuyAgainAllItems() {
+        onBuyAgainItems(orderDetails.getItems());
+    }
+
     private GraphqlUseCase buyAgainUseCase;
 
     @Override
-    public void onBuyAgain(Resources resources) {
+    public void onBuyAgainItems(List<Items> items) {
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
+        variables.put(PARAM, generateInputQueryBuyAgain(items));
 
-        variables.put(PARAM, generateInputQueryBuyAgain(orderDetails));
         GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(resources,
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.buy_again), ResponseBuyAgain.class, variables, false);
 
         buyAgainUseCase = new GraphqlUseCase();
@@ -252,14 +285,39 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     getView().hideProgressBar();
                     ResponseBuyAgain responseBuyAgain = objects.getData(ResponseBuyAgain.class);
                     if (responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1) {
-                        getView().showSucessMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
+                        getView().showSuccessMessageWithAction(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     } else {
                         getView().showErrorMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
+                    orderListAnalytics.sendBuyAgainEvent(items, orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1);
                 }
 
             }
         });
+    }
+
+    @Override
+    public void assignInvoiceDataTo(Intent intent) {
+        if (orderDetails == null) return;
+        String id = orderDetails.getInvoiceId();
+        String invoiceCode = orderDetails.getInvoiceCode();
+        String productName = orderDetails.getProductName();
+        String date = orderDetails.getBoughtDate();
+        String imageUrl = orderDetails.getProductImageUrl();
+        String invoiceUrl = orderDetails.getInvoiceUrl();
+        String statusId = orderDetails.getStatusId();
+        String status = orderDetails.getStatusInfo();
+        String totalPriceAmount = orderDetails.getTotalPriceAmount();
+
+        intent.putExtra(ApplinkConst.Chat.INVOICE_ID, id);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_CODE, invoiceCode);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TITLE, productName);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, date);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL, imageUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_URL, invoiceUrl);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, statusId);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS, status);
+        intent.putExtra(ApplinkConst.Chat.INVOICE_TOTAL_AMOUNT, totalPriceAmount);
     }
 
     private void setDetailsData(OrderDetails details) {
@@ -310,6 +368,24 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             getView().setAdditionalInfo(additionalInfo);
         }
+
+        if (details.getAdditionalTickerInfos() != null
+                && details.getAdditionalTickerInfos().size() > 0) {
+            String url = null;
+            for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
+                if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
+                    String formattedTitle = formatTitleHtml(
+                            tickerInfo.getNotes(),
+                            tickerInfo.getUrlDetail(),
+                            tickerInfo.getUrlText()
+                    );
+                    tickerInfo.setNotes(formattedTitle);
+                    url = tickerInfo.getUrlDetail();
+                }
+            }
+            getView().setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
+        }
+
         for (PayMethod payMethod : details.getPayMethods()) {
             if (!TextUtils.isEmpty(payMethod.getValue()))
                 getView().setPayMethodInfo(payMethod);
@@ -319,7 +395,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setPricing(pricing);
         }
         getView().setPaymentData(details.paymentData());
-//        getView().setContactUs(details.contactUs());
+        getView().setContactUs(details.contactUs(),details.getHelpLink());
 
         if (!(orderCategory.equalsIgnoreCase(OrderListContants.BELANJA) || orderCategory.equalsIgnoreCase(OrderListContants.MARKETPLACE))) {
             if (details.actionButtons().size() == 2) {
@@ -345,10 +421,12 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             getView().setActionButtons(details.actionButtons());
         }
         getView().setMainViewVisible(View.VISIBLE);
+        this.requestCancelInfo = details.getRequestCancelInfo();
     }
 
 
-    public void updateOrderCancelReason(String cancelReason, String orderId, int cancelOrReplacement, String url) {
+    public void updateOrderCancelReason(String cancelReason, String orderId,
+                                        int cancelOrReplacement, String url) {
         if (getView() == null || getView().getAppContext() == null)
             return;
 
@@ -470,4 +548,65 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         }
         super.detachView();
     }
+
+    public void onClick(String uri) {
+        pdfUri = uri;
+        if (isdownloadable(uri)) {
+            getView().askPermission();
+        } else {
+            if (getView() != null && getView().getAppContext() != null && getView().getAppContext().getApplicationContext() != null && getView().getActivity() != null) {
+                ((UnifiedOrderListRouter) getView().getAppContext().getApplicationContext()).actionOpenGeneralWebView((Activity) getView().getActivity(), uri);
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    public void permissionGrantedContinueDownload() {
+        DownloadHelper downloadHelper = new DownloadHelper(getView().getAppContext(), pdfUri, Insurance_File_Name, () -> {
+            // download success call back
+
+        });
+        downloadHelper.downloadFile(this::isdownloadable);
+    }
+    private Boolean isdownloadable(String uri ) {
+        Pattern pattern = Pattern.compile("^.+\\.([pP][dD][fF])$");
+        Matcher matcher = pattern.matcher(uri);
+        return (matcher.find() || this.isdownloadable);
+    }
+
+    public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
+        if ("true".equalsIgnoreCase(this.fromPayment)) {
+            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId);
+        }
+    }
+
+    public void setDownloadableFlag(boolean isdownloadable) {
+        this.isdownloadable = isdownloadable;
+    }
+
+    public void setDownloadableFileName(String fileName) {
+        if (!TextUtils.isEmpty(fileName)) {
+            Insurance_File_Name = fileName;
+        }
+    }
+
+    public String getCancelTime() {
+        return requestCancelInfo.getRequestCancelNote();
+    }
+
+    public boolean shouldShowTimeForCancellation(){
+        return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
+                && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
+    }
+
+    public boolean isValidUrl(String invoiceUrl) {
+        Pattern pattern = Pattern.compile("^(https|HTTPS):\\/\\/");
+        Matcher matcher = pattern.matcher(invoiceUrl);
+        return matcher.find();
+    }
+
+    private String formatTitleHtml(String desc, String urlText, String url) {
+        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
+    }
+
 }

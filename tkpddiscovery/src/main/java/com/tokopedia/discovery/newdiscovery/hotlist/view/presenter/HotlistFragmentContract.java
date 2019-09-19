@@ -1,11 +1,10 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.presenter;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistQueryModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
-import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentView;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentPresenter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragmentView;
 import com.tokopedia.discovery.newdiscovery.util.HotlistParameter;
 
 import java.util.List;
@@ -16,7 +15,7 @@ import java.util.Map;
  */
 
 public interface HotlistFragmentContract {
-    interface View extends SearchSectionFragmentView {
+    interface View extends BrowseSectionFragmentView {
 
         void renderErrorView(String message);
 
@@ -83,7 +82,7 @@ public interface HotlistFragmentContract {
         String getString(int resId);
     }
 
-    interface Presenter extends SearchSectionFragmentPresenter<View> {
+    interface Presenter extends BrowseSectionFragmentPresenter<View> {
 
         void requestDataForTheFirstTime(HotlistParameter parameter);
 

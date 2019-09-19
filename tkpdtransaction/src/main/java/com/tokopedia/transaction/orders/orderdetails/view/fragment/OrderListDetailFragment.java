@@ -31,6 +31,7 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.common.view.DoubleTextView;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ContactUs;
 import com.tokopedia.transaction.orders.orderdetails.data.Detail;
 import com.tokopedia.transaction.orders.orderdetails.data.DriverDetails;
@@ -182,7 +183,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     @Override
     public void setInvoice(final Invoice invoice) {
         invoiceView.setText(invoice.invoiceRefNum());
-        if (invoice.invoiceUrl().equals("")) {
+        if(!presenter.isValidUrl(invoice.invoiceUrl())){
             lihat.setVisibility(View.GONE);
         }
         lihat.setOnClickListener(view -> {
@@ -227,6 +228,11 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         doubleTextView.setTopText(additionalInfo.label());
         doubleTextView.setBottomText(additionalInfo.value());
         additionalInfoLayout.addView(doubleTextView);
+    }
+
+    @Override
+    public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
+
     }
 
     @Override
@@ -297,12 +303,22 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
+    public void showSuccessMessageWithAction(String message) {
+
+    }
+
+    @Override
     public void showErrorMessage (String message) {
 
     }
 
     @Override
     public void clearDynamicViews() {
+
+    }
+
+    @Override
+    public void askPermission() {
 
     }
 
@@ -319,7 +335,7 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
     }
 
     @Override
-    public void setContactUs(final ContactUs contactUs) {
+    public void setContactUs(final ContactUs contactUs, String helpLink) {
         String text = Html.fromHtml(contactUs.helpText()).toString();
         SpannableString spannableString = new SpannableString(text);
         int startIndexOfLink = text.indexOf("disini");
@@ -344,7 +360,6 @@ public class OrderListDetailFragment extends BaseDaggerFragment implements Order
         }, startIndexOfLink, startIndexOfLink + "disini".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         helpLabel.setHighlightColor(Color.TRANSPARENT);
         helpLabel.setMovementMethod(LinkMovementMethod.getInstance());
-
         helpLabel.setText(spannableString, TextView.BufferType.SPANNABLE);
     }
 

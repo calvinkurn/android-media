@@ -25,11 +25,10 @@
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.Title.Green"
+            android:id="@+id/ic_flight_insurance_protection_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableEnd="@drawable/ic_flight_insurance_protection"
             android:drawablePadding="@dimen/dp_4"
-            android:drawableRight="@drawable/ic_flight_insurance_protection"
             android:text="@string/flight_detail_order_protection_label"
             android:textSize="@dimen/sp_18" />
     </LinearLayout>

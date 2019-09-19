@@ -7,14 +7,11 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.checkout.domain.mapper.ICartMapper;
 import com.tokopedia.checkout.domain.mapper.IShipmentMapper;
 import com.tokopedia.checkout.domain.mapper.IVoucherCouponMapper;
-import com.tokopedia.checkout.domain.usecase.AddToCartOneClickShipmentUseCase;
-import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.DeleteCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
-import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
@@ -40,16 +37,6 @@ import dagger.Provides;
  */
 @Module(includes = {PromoCheckoutModule.class})
 public class CartUseCaseModule {
-
-    @Provides
-    AddToCartUseCase addToCartUseCase(ICartRepository cartRepository, Gson gson) {
-        return new AddToCartUseCase(cartRepository, gson);
-    }
-
-    @Provides
-    AddToCartOneClickShipmentUseCase addToCartOneClickShipmentUseCase(ICartRepository cartRepository, Gson gson) {
-        return new AddToCartOneClickShipmentUseCase(cartRepository, gson);
-    }
 
     @Provides
     CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase(ICartRepository cartRepository,
@@ -86,18 +73,13 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    DeleteCartUseCase deleteCartUseCase(ICartRepository cartRepository, ICartMapper mapper) {
-        return new DeleteCartUseCase(cartRepository, mapper);
-    }
-
-    @Provides
     DeleteCartUpdateCartUseCase deleteCartUpdateCartUseCase(ICartRepository cartRepository, ICartMapper mapper) {
         return new DeleteCartUpdateCartUseCase(cartRepository, mapper);
     }
 
     @Provides
-    DeleteCartGetCartListUseCase deleteCartGetCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper, ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
-        return new DeleteCartGetCartListUseCase(context, cartRepository, mapper, clearCacheAutoApplyStackUseCase);
+    DeleteCartListUseCase deleteCartGetCartListUseCase(ICartRepository cartRepository, ICartMapper mapper, ClearCacheAutoApplyStackUseCase clearCacheAutoApplyStackUseCase) {
+        return new DeleteCartListUseCase(cartRepository, mapper, clearCacheAutoApplyStackUseCase);
     }
 
     @Provides

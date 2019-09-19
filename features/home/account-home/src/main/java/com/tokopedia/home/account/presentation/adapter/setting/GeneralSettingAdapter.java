@@ -1,7 +1,14 @@
 package com.tokopedia.home.account.presentation.adapter.setting;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +19,17 @@ import com.tokopedia.design.label.LabelView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
+import com.tokopedia.home.account.presentation.widget.TagRoundedSpan;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int TYPE_GENERAL = 0;
     private static final int TYPE_SWITCH = 1;
+
+    private static final int POSITION_UNDEFINED = -1;
 
     private List<SettingItemViewModel> settingItems;
     private OnSettingItemClicked listener;
@@ -34,6 +46,26 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public void setSwitchSettingListener(SwitchSettingListener switchSettingListener) {
         this.switchSettingListener = switchSettingListener;
+    }
+
+    public void updateSettingItem(int settingId) {
+        int position = findSwitchPosition(settingId);
+        if (position != POSITION_UNDEFINED) {
+            SettingItemViewModel settingItemViewModel =
+                    settingItems.get(position);
+            if (settingItemViewModel instanceof SwitchSettingItemViewModel) {
+                notifyItemChanged(position);
+            }
+        }
+    }
+
+    private int findSwitchPosition(int settingId) {
+        for (int i = 0; i<settingItems.size() ; i++) {
+            if (settingId == settingItems.get(i).getId()) {
+                return i;
+            }
+        }
+        return POSITION_UNDEFINED;
     }
 
     @Override
@@ -87,7 +119,8 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         public void bind(SettingItemViewModel item){
-            labelView.setTitle(item.getTitle());
+            SpannableString title = generateSpannableTitle(item);
+            labelView.setTitle(title);
             labelView.setSubTitle(item.getSubtitle());
             labelView.setImageResource(item.getIconResource());
 
@@ -99,15 +132,85 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
             labelView.showRightArrow(item.isHideArrow());
         }
+
+        private SpannableString generateSpannableTitle(SettingItemViewModel item) {
+            String indicatorNew = " BARU";
+            String title = item.getTitle();
+            String notificationTitle = itemView
+                    .getContext()
+                    .getResources()
+                    .getString(R.string.title_notification_setting);
+
+            if (title.equals(notificationTitle) && !hasBeenOneMonth(title)) {
+                int startPosition = title.length() + 1;
+                int endPosition = startPosition + indicatorNew.length() - 1;
+                title += indicatorNew;
+
+                SpannableString spannable = new SpannableString(title);
+                TagRoundedSpan newTag = new TagRoundedSpan(
+                        itemView.getContext(),
+                        4,
+                        R.color.Red_R400,
+                        R.color.white
+                );
+
+                spannable.setSpan(
+                        new RelativeSizeSpan(0.57f),
+                        startPosition,
+                        endPosition,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                spannable.setSpan(
+                        new StyleSpan(Typeface.BOLD),
+                        startPosition,
+                        endPosition,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                spannable.setSpan(
+                        newTag,
+                        startPosition,
+                        endPosition,
+                        Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                return spannable;
+            } else {
+                return new SpannableString(title);
+            }
+        }
+
+        private boolean hasBeenOneMonth(String title) {
+            String key = title + ".NewTag";
+            String prefKey = this.getClass().getName() + ".pref";
+            int dayOffset = 30;
+            long now = new Date().getTime();
+
+            SharedPreferences preferences = itemView.getContext().getSharedPreferences(prefKey, Context.MODE_PRIVATE);
+
+            if (!preferences.contains(key)) {
+                preferences.edit().putLong(key, now).apply();
+                return false;
+            }
+
+            long firstTimeSeenDate = preferences.getLong(key, -1);
+            long duration = Math.abs(firstTimeSeenDate - now);
+            long dayPassed = TimeUnit.DAYS.convert(duration, TimeUnit.MILLISECONDS);
+
+            return dayPassed >= dayOffset;
+        }
     }
 
     class SwitchSettingViewHolder extends RecyclerView.ViewHolder{
         private TextView titleTextView;
         private TextView summaryextView;
         private Switch aSwitch;
+        private View view;
 
         public SwitchSettingViewHolder(View itemView) {
             super(itemView);
+            view = itemView;
             titleTextView = itemView.findViewById(R.id.title);
             summaryextView = itemView.findViewById(R.id.subtitle);
             aSwitch = itemView.findViewById(R.id.switchWidget);
@@ -122,7 +225,18 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         public void bind(SwitchSettingItemViewModel item){
             titleTextView.setText(item.getTitle());
             summaryextView.setText(item.getSubtitle());
-            aSwitch.setChecked(switchSettingListener != null && switchSettingListener.isSwitchSelected(item.getId()));
+
+            boolean switchState = switchSettingListener.isSwitchSelected(item.getId());
+            aSwitch.setChecked(switchSettingListener != null && switchState);
+
+            if (item.isUseOnClick()) {
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        switchSettingListener.onClicked(item.getId(), switchState);
+                    }
+                });
+            }
         }
     }
 
@@ -133,5 +247,6 @@ public class GeneralSettingAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     public interface SwitchSettingListener{
         boolean isSwitchSelected(int settingId);
         void onChangeChecked(int settingId, boolean value);
+        void onClicked(int settingId, boolean currentValue);
     }
 }

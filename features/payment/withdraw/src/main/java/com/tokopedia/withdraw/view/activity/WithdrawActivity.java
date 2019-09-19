@@ -26,6 +26,10 @@ import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
 
 import javax.inject.Inject;
 
+/**
+ * For navigating to this class
+ * @see com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+ */
 public class WithdrawActivity extends BaseSimpleActivity {
 
 

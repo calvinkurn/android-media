@@ -1,12 +1,15 @@
 package com.tokopedia.sellerapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.SellerRouter;
@@ -18,14 +21,38 @@ import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 
 import org.json.JSONObject;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
+
 /**
  * Created by normansyahputa on 11/29/16.
  */
 
 public class SplashScreenActivity extends SplashScreen {
 
+    private boolean isApkTempered;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        isApkTempered = false;
+        try {
+            getResources().getDrawable(R.drawable.launch_screen);
+        } catch (Exception e) {
+            isApkTempered = true;
+            setTheme(R.style.Theme_Tokopedia3_PlainGreen);
+        }
+        super.onCreate(savedInstanceState);
+        if (isApkTempered) {
+            startActivity(new Intent(this, FallbackActivity.class));
+            finish();
+        }
+    }
+
     @Override
     public void finishSplashScreen() {
+        if (isApkTempered) {
+            return;
+        }
+
         if (SessionHandler.isUserHasShop(this)) {
             if (getIntent().hasExtra(Constants.EXTRA_APPLINK)) {
                 String applinkUrl = getIntent().getStringExtra(Constants.EXTRA_APPLINK);
@@ -56,7 +83,8 @@ public class SplashScreenActivity extends SplashScreen {
 
     @NonNull
     public static Intent moveToCreateShop(Context context) {
-        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        Intent intent = RouteManager.getIntent(context, OPEN_SHOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         return intent;
     }

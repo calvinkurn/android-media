@@ -1,15 +1,20 @@
 package com.tokopedia.saldodetails.commom.analytics;
 
+import com.tokopedia.url.TokopediaUrl;
+
 import java.util.concurrent.TimeUnit;
 
 public class SaldoDetailsConstants {
 
+    private static final String WEB_DOMAIN_URL = TokopediaUrl.getInstance().getWEB();
+
     public static final String SALDO_HELP_URL = "https://www.tokopedia.com/help/article/a-1709?refid=st-1005";
+    public static final String SALDOLOCK_PAYNOW_URL = WEB_DOMAIN_URL + "fm/modal-toko/dashboard/pembayaran";
+
     public static long cacheDuration = TimeUnit.HOURS.toSeconds(1);
 
     interface Event {
         String EVENT_CLICK_FINTECH_MICROSITE = "clickFintechMicrosite";
-        String EVENT_VIEW_FINTECH_MICROSITE = "viewFintechMicrosite";
     }
 
     interface Category {

@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -57,17 +58,27 @@ import java.util.TimeZone;
 public class Utils {
     private static Utils singleInstance;
     private static Location location;
+    public static String LOCATION_OBJECT = "loc_obj";
+    public static String LOCATION_NAME_PARAM = "location_name";
+    public static String LOCATION_ID_PARAM = "id";
+    public static String LOCATION_TYPE = "location_type";
+    public static String LOCATION_CITY_ID = "city_id";
+    public static String LOCATION_COORDINATES = "coordinates";
     public static String BRAND_QUERY_PARAM_TREE = "tree";
+    public static String BRAND_QUERY_TAGS = "tags";
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
+    public static String BRAND_QUERY_PARAM_BRAND_AND_PRODUCT = "brand_product";
     public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
     public static String QUERY_PARAM_CITY_ID = "cities";
-    public static String LOCATION_NAME = "jakarta";
+    public static String LOCATION_NAME = "Jakarta";
     public static int LOCATION_ID = 318;
+    public static int MAX_ITEMS_FOR_GA = 5;
     public static final String NEXT_URL = "nexturl";
     private static final float MAX_RADIUS = 25.0f;
     private static final float MIN_RADIUS = 0.0f;
     public static Locale locale = new Locale("in", "ID");
     private static final String RUPIAH_FORMAT = "Rp %s";
+    private static final String SHOWCASE_PREFERENCES = "show_case_pref";
     private SparseIntArray likedEventMap;
     private SparseIntArray unLikedEventMap;
 
@@ -379,6 +390,19 @@ public class Utils {
         }
 
         return newUri.build();
+    }
+
+    public static boolean hasShown(Context context, String tag){
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SHOWCASE_PREFERENCES,
+                Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(tag, false);
+    }
+
+    public static void setShown(Context context, String tag, boolean hasShown){
+        SharedPreferences.Editor sharedPreferencesEditor = context.getSharedPreferences(SHOWCASE_PREFERENCES,
+                Context.MODE_PRIVATE).edit();
+        sharedPreferencesEditor.putBoolean (tag, hasShown);
+        sharedPreferencesEditor.apply();
     }
 
 }

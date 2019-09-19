@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherStatusTypeDef
@@ -78,7 +77,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
     interface ActionListener {
         fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel, type: String)
-        fun onSuccessCheckPromoFirstStep(promoData: ResponseGetPromoStackUiModel)
+        fun onSuccessCheckPromoMerchantFirstStep(promoData: ResponseGetPromoStackUiModel, promoCode: String)
     }
 
     companion object {
@@ -100,6 +99,10 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
 
             return fragment
         }
+    }
+
+    override fun state(): BottomSheetsState {
+        return BottomSheetsState.FLEXIBLE
     }
 
     override fun initView(view: View) {
@@ -220,7 +223,6 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     override fun onMerchantVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
         context?.let {
             merchantVoucherViewModel.run {
-                this.status = MerchantVoucherStatusTypeDef.TYPE_RUN_OUT
                 val intent = MerchantVoucherDetailActivity.createIntent(it, voucherId,
                         this, shopId.toString())
                 startActivityForResult(intent, MerchantVoucherListFragment.REQUEST_CODE_MERCHANT_DETAIL)
@@ -315,7 +317,7 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
         }
         hideKeyboard()
         dismiss()
-        actionListener.onSuccessCheckPromoFirstStep(model)
+        actionListener.onSuccessCheckPromoMerchantFirstStep(model, promoCode)
     }
 
     override fun onClashCheckPromoFirstStep(model: ClashingInfoDetailUiModel, type: String) {
@@ -327,12 +329,11 @@ open class MerchantVoucherListBottomSheetFragment : BottomSheets(), MerchantVouc
     override fun configView(parentView: View?) {
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
-        parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener{ onCloseButtonClick() }
     }
 
     private fun hideKeyboard() {
         val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        (inputMethodManager as InputMethodManager).hideSoftInputFromWindow(view?.windowToken, 0);
+        (inputMethodManager as InputMethodManager?)?.hideSoftInputFromWindow(view?.windowToken, 0);
     }
 
 }

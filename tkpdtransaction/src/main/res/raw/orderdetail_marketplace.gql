@@ -9,6 +9,12 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       backgroundColor
       fontSize
     }
+    requestCancelInfo{
+      requestCancelNote
+      requestCancelMinTime
+      isRequestedCancel
+      isRequestCancelAvail
+    }
     flag {
       isOrderCOD
       isOrderNow
@@ -34,6 +40,7 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
       name
       phone
     }
+    helpLink
     invoice {
       invoiceRefNum
       invoiceUrl
@@ -189,9 +196,15 @@ query ORDERDETAIL($orderCategory: OrderCategory, $orderId: String) {
     additionalInfo {
       label
       value
-      label
+      imageUrl
       textColor
       backgroundColor
+    }
+    additionalTickerInfo {
+      title
+      notes
+      urlDetail
+      urlText
     }
   }
 }

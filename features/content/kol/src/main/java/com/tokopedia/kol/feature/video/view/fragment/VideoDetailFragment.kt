@@ -19,6 +19,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.*
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateBody
@@ -27,7 +29,6 @@ import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
-import com.tokopedia.kol.KolRouter
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
@@ -59,7 +60,6 @@ class VideoDetailFragment:
 
     lateinit var dynamicPostViewModel: DynamicPostViewModel
     lateinit var videoViewModel: VideoViewModel
-    lateinit var kolRouter: KolRouter
 
     private var id: String = ""
     companion object {
@@ -211,10 +211,6 @@ class VideoDetailFragment:
         } else {
             initData()
         }
-
-        if (activity!!.applicationContext is KolRouter) {
-            kolRouter = activity?.applicationContext as KolRouter
-        }
     }
 
     private fun initData() {
@@ -346,14 +342,8 @@ class VideoDetailFragment:
                 shareText.show()
                 shareText.text = footer.share.text
                 shareIcon.setOnClickListener {
-                    kolRouter.shareFeed(
-                            activity!!,
-                            id,
-                            dynamicPostViewModel.footer.share.url,
-                            dynamicPostViewModel.footer.share.title,
-                            dynamicPostViewModel.footer.share.imageUrl,
-                            dynamicPostViewModel.footer.share.description
-                    )
+                    doShare(String.format("%s %s", dynamicPostViewModel.footer.share.description, dynamicPostViewModel.footer.share.url)
+                            , dynamicPostViewModel.footer.share.title)
                 }
             } else {
                 shareIcon.hide()
@@ -361,6 +351,15 @@ class VideoDetailFragment:
             }
         }
 
+    }
+
+    private fun doShare(body: String, title: String) {
+        val sharingIntent = Intent(android.content.Intent.ACTION_SEND)
+        sharingIntent.type = "text/plain"
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, body)
+        startActivity(
+                Intent.createChooser(sharingIntent, title)
+        )
     }
 
     private fun bindLike(like: Like) {
@@ -407,7 +406,7 @@ class VideoDetailFragment:
     }
 
     private fun goToLogin() {
-        startActivityForResult(kolRouter.getLoginIntent(context), LOGIN_CODE)
+        startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN), LOGIN_CODE)
     }
 
     private fun showError(message: String, listener: View.OnClickListener?) {

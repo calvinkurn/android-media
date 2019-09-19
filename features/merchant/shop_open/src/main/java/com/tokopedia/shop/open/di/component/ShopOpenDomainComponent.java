@@ -16,11 +16,10 @@ import com.tokopedia.shop.open.data.repository.ShopOpenRepository;
 import com.tokopedia.shop.open.data.source.cloud.api.TomeApi;
 import com.tokopedia.shop.open.di.module.ShopOpenDomainModule;
 import com.tokopedia.shop.open.di.scope.ShopOpenDomainScope;
+import com.tokopedia.shop.open.view.fragment.ShopOpenCreateReadyFragment;
 import com.tokopedia.shop.open.view.fragment.ShopOpenCreateSuccessFragment;
 import com.tokopedia.shop.open.view.fragment.ShopOpenReserveDomainFragment;
-import com.tokopedia.shop.open.view.fragment.ShopOpenMandatoryLocationFragment;
 import com.tokopedia.shop.open.view.fragment.ShopOpenMandatoryLogisticFragment;
-import com.tokopedia.shop.open.view.fragment.ShopOpenReserveDomainSuccessFragment;
 import com.tokopedia.shop.open.view.fragment.ShopOpenRoutingFragment;
 import com.tokopedia.shop.open.di.module.ShopSettingInfoModule;
 import com.tokopedia.shop.open.view.presenter.ShopOpenInfoPresenter;
@@ -40,13 +39,11 @@ public interface ShopOpenDomainComponent {
 
     void inject(ShopOpenReserveDomainFragment shopOpenDomainFragment);
 
-    void inject(ShopOpenMandatoryLocationFragment shopOpenMandatoryLocationFragment);
-
     void inject(ShopOpenMandatoryLogisticFragment shopOpenMandatoryLogisticFragment);
 
     void inject(ShopOpenCreateSuccessFragment shopOpenCreateSuccessFragment);
 
-    void inject(ShopOpenReserveDomainSuccessFragment shopOpenReserveDomainSuccessFragment);
+    void inject(ShopOpenCreateReadyFragment shopOpenCreateReadyFragment);
 
     ThreadExecutor getThreadExecutor();
 

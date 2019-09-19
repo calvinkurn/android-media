@@ -70,6 +70,7 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                 .doOnNext(this::saveLocallyVccUserStatus)
                 .doOnNext(this::savePhoneVerified)
                 .doOnNext(this::saveIsAffiliateStatus)
+                .doOnNext(this::saveDebitInstantData)
                 .map(mapper);
     }
 
@@ -137,6 +138,12 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     private void saveIsAffiliateStatus(AccountModel accountModel) {
         if (accountModel != null) {
             userSession.setIsAffiliateStatus(accountModel.isAffiliate());
+        }
+    }
+
+    private void saveDebitInstantData(AccountModel accountModel) {
+        if (accountModel.getDebitInstant() != null) {
+            walletPref.saveDebitInstantUrl(accountModel.getDebitInstant().getData().getRedirectUrl());
         }
     }
 }

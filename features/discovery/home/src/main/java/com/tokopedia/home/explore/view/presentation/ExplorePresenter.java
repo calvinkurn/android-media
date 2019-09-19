@@ -95,7 +95,7 @@ public class ExplorePresenter extends BaseDaggerPresenter<ExploreContract.View> 
             @Override
             public void onError(Throwable e) {
                 if (isViewAttached()) {
-                    getView().showNetworkError(ErrorHandler.getErrorMessage(getView().getContext(),
+                    getView().showNetworkError(ErrorHandler.getErrorMessage(getView().getViewContext(),
                             e));
                     onCompleted();
                 }

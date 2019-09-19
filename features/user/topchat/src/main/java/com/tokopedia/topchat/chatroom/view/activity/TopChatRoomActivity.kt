@@ -37,20 +37,20 @@ class TopChatRoomActivity : BaseChatToolbarActivity() {
          * To create intent with header already initialized.
          */
         @JvmStatic
-        fun getCallingIntent(context: Context, messageId: String, name: String,
-                             label: String, senderId: String, role: String, mode: Int,
-                             keyword: String, image: String): Intent {
+        fun getCallingIntent(context: Context?, messageId: String?, name: String?,
+                             label: String?, senderId: String?, role: String?, mode: Int,
+                             keyword: String?, image: String?): Intent {
             val intent = Intent(context, TopChatRoomActivity::class.java)
             intent.putExtra(ApplinkConst.Chat.MESSAGE_ID, messageId)
             intent.putExtra(ApplinkConst.Chat.OPPONENT_ID, senderId)
             val model = ChatRoomHeaderViewModel()
-            model.name = name
-            model.label = label
-            model.senderId = senderId
-            model.role = role
+            model.name = name ?: ""
+            model.label = label ?: ""
+            model.senderId = senderId ?: ""
+            model.role = role ?: ""
             model.mode = mode
-            model.keyword = keyword
-            model.image = image
+            model.keyword = keyword ?: ""
+            model.image = image ?: ""
             intent.putExtra(ApplinkConst.Chat.PARAM_HEADER, model)
             return intent
         }

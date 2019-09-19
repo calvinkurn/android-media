@@ -1,7 +1,8 @@
-query ContentForm($relatedID: [String], $type: String) {
-  feed_content_form(relatedID: $relatedID, type: $type) {
+query ContentForm($relatedID: [String], $type: String, $id: String, $token: String) {
+  feed_content_form(relatedID: $relatedID, type: $type, ID: $id, token: $token) {
     token
     type
+    defaultPlaceholder
     authors {
       type
       id
@@ -28,6 +29,8 @@ query ContentForm($relatedID: [String], $type: String) {
       title
     }
     maxTag
+    defaultCaptions
+    caption
     error
   }
 }

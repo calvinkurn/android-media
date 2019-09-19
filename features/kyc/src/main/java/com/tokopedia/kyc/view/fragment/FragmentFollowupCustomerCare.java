@@ -9,8 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.kyc.Constants;
 import com.tokopedia.kyc.KYCRouter;
 import com.tokopedia.kyc.R;
@@ -22,7 +25,7 @@ import com.tokopedia.kyc.view.interfaces.ActivityListener;
 public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
         View.OnClickListener{
     private ActivityListener activityListener;
-    private ImageView callAction;
+    private TextView callAction;
     private ImageView emailAction;
     private Button backToApp;
     public static String TAG = "cc_follow_up";
@@ -62,6 +65,7 @@ public class FragmentFollowupCustomerCare extends BaseDaggerFragment implements
 
     private void executeBackToApp(){
         getActivity().finish();
+        PersistentCacheManager.instance.put("reload_webview", 1);
         AnalyticsUtil.sendEvent(getContext(),
                 AnalyticsUtil.EventName.CLICK_OVO,
                 AnalyticsUtil.EventCategory.OVO_KYC,

@@ -37,7 +37,7 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/font_medium</item>
-        <item name="textColorError">@color/text_error</item>
+        <item name="colorError">@color/text_error</item>
     </style>
 
     <style name="Setting.ImageView">
@@ -104,7 +104,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="textColorError">@color/text_error</item>
+        <item name="colorError">@color/text_error</item>
     </style>
 
     <style name="AppTheme.Button.BukaToko" parent="Widget.AppCompat.Button.Colored">

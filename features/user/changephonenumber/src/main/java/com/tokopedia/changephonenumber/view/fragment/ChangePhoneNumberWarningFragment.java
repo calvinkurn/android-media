@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +14,16 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.changephonenumber.ChangePhoneNumberInstance;
-import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
 import com.tokopedia.changephonenumber.R;
 import com.tokopedia.changephonenumber.analytics.ChangePhoneNumberAnalytics;
 import com.tokopedia.changephonenumber.di.warning.ChangePhoneNumberWarningComponent;
 import com.tokopedia.changephonenumber.di.warning.ChangePhoneNumberWarningModule;
 import com.tokopedia.changephonenumber.di.warning.DaggerChangePhoneNumberWarningComponent;
 import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberInputActivity;
-import com.tokopedia.changephonenumber.view.activity.OvoWebViewActivity;
 import com.tokopedia.changephonenumber.view.adapter.WarningListAdapter;
 import com.tokopedia.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
 import com.tokopedia.changephonenumber.view.viewmodel.WarningViewModel;
@@ -133,17 +133,19 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean isSeller = userSession.hasShop() || userSession.isAffiliate();
-                Intent intent = ((ChangePhoneNumberRouter) getActivity().getApplicationContext())
-                        .getWithdrawIntent(getActivity(), isSeller);
-                Bundle bundle = new Bundle();
-                bundle.putString(BUNDLE_TOTAL_BALANCE,
-                        viewModel.getTokopediaBalance());
-                bundle.putString(BUNDLE_TOTAL_BALANCE_INT,
-                        viewModel.getTokopediaBalance().replaceAll("[^\\d]", ""));
-                intent.putExtras(bundle);
-                changePhoneNumberAnalytics.getEventWarningPageClickOnWithdraw();
-                startActivityForResult(intent, REQUEST_WITHDRAW_TOKOPEDIA_BALANCE);
+                if (getActivity() != null) {
+                    boolean isSeller = userSession.hasShop() || userSession.isAffiliate();
+                    Intent intent = RouteManager.getIntent(getActivity(),
+                            ApplinkConstInternalGlobal.WITHDRAW);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BUNDLE_TOTAL_BALANCE,
+                            viewModel.getTokopediaBalance());
+                    bundle.putString(BUNDLE_TOTAL_BALANCE_INT,
+                            viewModel.getTokopediaBalance().replaceAll("[^\\d]", ""));
+                    intent.putExtras(bundle);
+                    changePhoneNumberAnalytics.getEventWarningPageClickOnWithdraw();
+                    startActivityForResult(intent, REQUEST_WITHDRAW_TOKOPEDIA_BALANCE);
+                }
             }
         });
     }
@@ -360,7 +362,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
 
     @Override
     public void goToOvoWebView(String url) {
-        startActivity(OvoWebViewActivity.newInstance(getContext(), url));
+        RouteManager.route(getContext(),
+                String.format("%s?url=%s", ApplinkConst.WEBVIEW, url));
         if (getActivity() != null) {
             getActivity().finish();
         }

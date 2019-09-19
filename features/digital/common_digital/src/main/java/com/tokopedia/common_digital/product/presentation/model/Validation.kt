@@ -6,35 +6,27 @@ import android.os.Parcelable
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-class Validation : Parcelable {
+class Validation(
+        var regex: String? = null,
+        var error: String? = null
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readString()) {
+    }
 
-    var regex: String? = null
-    var error: String? = null
-
-    constructor(regex: String, error: String) {
-        this.regex = regex
-        this.error = error
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(regex)
+        parcel.writeString(error)
     }
 
     override fun describeContents(): Int {
         return 0
     }
 
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeString(this.regex)
-        dest.writeString(this.error)
-    }
-
-    constructor() {}
-
-    protected constructor(`in`: Parcel) {
-        this.regex = `in`.readString()
-        this.error = `in`.readString()
-    }
-
     companion object CREATOR : Parcelable.Creator<Validation> {
-        override fun createFromParcel(source: Parcel): Validation {
-            return Validation(source)
+        override fun createFromParcel(parcel: Parcel): Validation {
+            return Validation(parcel)
         }
 
         override fun newArray(size: Int): Array<Validation?> {

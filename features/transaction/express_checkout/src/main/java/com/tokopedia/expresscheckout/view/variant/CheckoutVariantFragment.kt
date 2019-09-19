@@ -44,21 +44,19 @@ import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewMod
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
 import com.tokopedia.expresscheckout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
 import com.tokopedia.imagepreview.ImagePreviewActivity
-import com.tokopedia.logisticcommon.LogisticCommonConstant
+import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.payment.activity.TopPayActivity
-import com.tokopedia.payment.model.PaymentPassData
-import com.tokopedia.shipping_recommendation.domain.shipping.*
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheet
-import com.tokopedia.shipping_recommendation.shippingcourier.view.ShippingCourierBottomsheetListener
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheet
-import com.tokopedia.shipping_recommendation.shippingduration.view.ShippingDurationBottomsheetListener
-import com.tokopedia.transaction.common.sharedata.AddToCartRequest
-import com.tokopedia.transaction.common.sharedata.AddToCartResult
+import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet
+import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.transaction.common.sharedata.ShipmentFormRequest
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics
 import com.tokopedia.transactionanalytics.ExpressCheckoutAnalyticsTracker
@@ -628,10 +626,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         activity?.finish()
     }
 
-    override fun getAddToCartObservable(addToCartRequest: AddToCartRequest): Observable<AddToCartResult> {
-        return router.addToCartProduct(addToCartRequest, true)
-    }
-
     override fun getCheckoutObservable(checkoutRequest: CheckoutRequest): Observable<CheckoutData> {
         return router.checkoutProduct(checkoutRequest, true, true)
     }
@@ -926,9 +920,9 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            recipientAddressModel: RecipientAddressModel,
                                            cartPosition: Int,
                                            selectedServiceId: Int,
-                                           selectedServiceName: String,
+                                           serviceData: ServiceData,
                                            flagNeedToSetPinpoint: Boolean,
-                                           hasCourierPromo: Boolean,
+                                           isDurationClick: Boolean,
                                            isClearPromo: Boolean) {
         if (shippingCourierViewModels != null) {
             val summaryViewModel = fragmentViewModel.getSummaryViewModel()
@@ -957,10 +951,6 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     override fun onShippingDurationButtonCloseClicked() {
         shippingDurationBottomsheet.dismiss()
-    }
-
-    override fun onShippingDurationButtonShowCaseDoneClicked() {
-
     }
 
     override fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {
@@ -1059,7 +1049,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }))
     }
 
-    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, selectedServiceId: Int, selectedServiceName: String, flagNeedToSetPinpoint: Boolean, promoCode: String) {
+    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, selectedServiceId: Int, serviceData: ServiceData, flagNeedToSetPinpoint: Boolean, promoCode: String) {
         // Haven't discussed yet
     }
 

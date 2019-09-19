@@ -4,10 +4,12 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.topads.common.data.api.TopAdsManagementApi;
 import com.tokopedia.topads.dashboard.data.source.cloud.apiservice.api.TopAdsOldManagementApi;
 import com.tokopedia.topads.dashboard.di.qualifier.TopAdsManagementQualifier;
 import com.tokopedia.topads.dashboard.di.scope.TopAdsManagementScope;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
@@ -55,6 +57,8 @@ import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewShopPresente
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsDetailNewShopPresenterImpl;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGetProductDetailPresenter;
 import com.tokopedia.topads.dashboard.view.presenter.TopAdsGetProductDetailPresenterImpl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import dagger.Module;
 import dagger.Provides;
@@ -74,11 +78,12 @@ public class TopAdsCreatePromoModule {
                                                            TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
                                                            TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                            TopAdsProductListUseCase topAdsProductListUseCase,
-                                                           TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                                           TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+                                                           TopAdsMinimumBidUseCase minimumBidUseCase,
+                                                           TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                                           UserSessionInterface sessionInterface) {
         return new TopAdsDetailNewGroupPresenterImpl(topAdsCreateNewGroupUseCase, topAdsGetDetailGroupUseCase,
                 topAdsSaveDetailGroupUseCase, topAdsCreateDetailProductListUseCase, topAdsProductListUseCase,
-                topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
+                minimumBidUseCase, topAdsGetSourceTaggingUseCase, sessionInterface);
     }
 
     @TopAdsManagementScope
@@ -94,10 +99,11 @@ public class TopAdsCreatePromoModule {
                                                                         TopAdsCreateDetailProductListUseCase topAdsCreateDetailProductListUseCase,
                                                                         TopAdsProductListUseCase topAdsProductListUseCase,
                                                                         TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                                                        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
+                                                                        TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                                                        TopAdsMinimumBidUseCase minimumBidUseCase, UserSessionInterface sessionInterface) {
         return new TopAdsDetailNewProductPresenterImpl(topAdsGetDetailProductUseCase, topAdsSaveDetailProductUseCase,
                 topAdsCreateDetailProductListUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase,
-                topAdsGetSourceTaggingUseCase);
+                topAdsGetSourceTaggingUseCase, minimumBidUseCase, sessionInterface);
     }
 
     @TopAdsManagementScope
@@ -118,20 +124,23 @@ public class TopAdsCreatePromoModule {
                                                                              TopAdsSaveDetailProductUseCase topAdsSaveDetailProductUseCase,
                                                                              TopAdsProductListUseCase topAdsProductListUseCase,
                                                                              TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase){
+                                                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                                                             TopAdsMinimumBidUseCase topAdsMinimumBidUseCase,
+                                                                             UserSessionInterface sessionInterface){
         return new TopAdsDetailEditProductPresenterImpl(topAdsGetDetailProductUseCase,
-                topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
+                topAdsSaveDetailProductUseCase, topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase,
+                topAdsMinimumBidUseCase, sessionInterface);
     }
 
     @TopAdsManagementScope
     @Provides
     TopAdsDetailEditGroupPresenter provideTopadsDetailEditGroupPresenter(TopAdsGetDetailGroupUseCase topAdsGetDetailGroupUseCase,
-                                                                           TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
-                                                                           TopAdsProductListUseCase topAdsProductListUseCase,
-                                                                         TopAdsGetSuggestionUseCase topAdsGetSuggestionUseCase,
-                                                                         TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase){
+                                                                         TopAdsSaveDetailGroupUseCase topAdsSaveDetailGroupUseCase,
+                                                                         TopAdsProductListUseCase topAdsProductListUseCase,
+                                                                         TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                                                         TopAdsMinimumBidUseCase minimumBidUseCase, UserSessionInterface sessionInterface){
         return new TopAdsDetailEditGroupPresenterImpl(topAdsGetDetailGroupUseCase, topAdsSaveDetailGroupUseCase,
-                topAdsProductListUseCase, topAdsGetSuggestionUseCase, topAdsGetSourceTaggingUseCase);
+                topAdsProductListUseCase, minimumBidUseCase, topAdsGetSourceTaggingUseCase, sessionInterface);
     }
 
     @TopAdsManagementScope
@@ -215,6 +224,18 @@ public class TopAdsCreatePromoModule {
     @Provides
     public TopAdsSourceTaggingRepository provideTopAdsSourceTaggingRepository(TopAdsSourceTaggingDataSource dataSource){
         return new TopAdsSourceTaggingRepositoryImpl(dataSource);
+    }
+
+    @TopAdsManagementScope
+    @Provides
+    public TopAdsMinimumBidUseCase minimumBidUseCase(GraphqlUseCase graphqlUseCase, @ApplicationContext Context context){
+        return new TopAdsMinimumBidUseCase(graphqlUseCase, context);
+    }
+
+    @TopAdsManagementScope
+    @Provides
+    public GraphqlUseCase graphqlUseCase(){
+        return new GraphqlUseCase();
     }
 
 }

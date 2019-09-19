@@ -14,8 +14,10 @@ import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.di.DaggerOrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderlist.common.OrderListContants;
-import com.tokopedia.transaction.purchase.detail.fragment.CancelSearchFragment;
-import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderBuyerRequest;
+import com.tokopedia.transaction.common.fragment.CancelSearchFragment;
+import com.tokopedia.transaction.common.fragment.RejectOrderBuyerRequest;
+
+import java.util.Map;
 
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.ACTION_BUTTON_URL;
 import static com.tokopedia.transaction.orders.orderdetails.view.fragment.MarketPlaceDetailFragment.CANCEL_BUYER_REQUEST;
@@ -77,7 +79,7 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     protected Fragment getSimpleFragment() {
         if (getIntent() != null) {
             if (getIntent().getIntExtra(CANCEL_ORDER_FRAGMENT, 1) == 1) {
-                return RejectOrderBuyerRequest.createFragment(getIntent().getStringExtra(KEY_ORDER_ID));
+                return RejectOrderBuyerRequest.createFragment(getIntent().getStringExtra(KEY_ORDER_ID),RejectOrderBuyerRequest.NEW_CANCELLATION_FLOW);
             } else {
                 return CancelSearchFragment.createFragment(getIntent().getStringExtra(KEY_ORDER_ID));
             }
@@ -87,10 +89,10 @@ public class RequestCancelActivity extends BaseSimpleActivity implements HasComp
     }
 
     @Override
-    public void rejectOrderBuyerRequest(TKPDMapParam<String, String> rejectParam) {
+    public void rejectOrderBuyerRequest(Map<String, String> rejectParam) {
         Intent intent = new Intent();
         intent.putExtra(OrderListContants.REASON,rejectParam.get(OrderListContants.REASON));
-        intent.putExtra(OrderListContants.REASON_CODE, 1);
+        intent.putExtra(OrderListContants.REASON_CODE, rejectParam.get(OrderListContants.REASON_CODE));
         intent.putExtra(ACTION_BUTTON_URL, getIntent().getStringExtra(ACTION_BUTTON_URL));
         setResult(REJECT_BUYER_REQUEST,intent);
         finish();

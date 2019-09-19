@@ -29,11 +29,15 @@ import com.tokopedia.home.account.data.model.AccountSettingConfig;
 import com.tokopedia.home.account.di.component.AccountSettingComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountSettingComponent;
 import com.tokopedia.home.account.presentation.AccountSetting;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
 import static com.tokopedia.home.account.AccountConstants.Analytics.KYC;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
@@ -50,6 +54,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private View personalDataMenu;
     private View addressMenu;
     private View passwordMenu;
+    private View pinMenu;
     private View kycSeparator;
     private View kycMenu;
     private View sampaiMenu;
@@ -79,6 +84,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         personalDataMenu = view.findViewById(R.id.label_view_identity);
         addressMenu = view.findViewById(R.id.label_view_address);
         passwordMenu = view.findViewById(R.id.label_view_password);
+        pinMenu = view.findViewById(R.id.label_view_pin);
         kycMenu = view.findViewById(R.id.label_view_kyc);
         sampaiMenu = view.findViewById(R.id.label_view_sampai);
         sampaiSeparator = view.findViewById(R.id.separator_sampai);
@@ -139,7 +145,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     @Override
-    public void showErroNoConnection() {
+    public void showErrorNoConnection() {
         hideLoading();
         showError(getString(R.string.error_no_internet_connection));
     }
@@ -152,6 +158,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_ADDRESS_ID));
         passwordMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_PASS_ID));
+        pinMenu.setOnClickListener(view1 ->
+                onItemClicked(SettingConstant.SETTING_PIN));
         kycMenu.setOnClickListener(view1 ->
                 onItemClicked(SettingConstant.SETTING_ACCOUNT_KYC_ID));
         sampaiMenu.setOnClickListener(view1 ->
@@ -182,6 +190,12 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                     } else {
                         intentToAddPassword();
                     }
+                    break;
+                case SettingConstant.SETTING_PIN:
+                    accountAnalytics.eventClickPinSetting();
+                    String PIN_ADDRESS = String.format("%s%s", TokopediaUrl.getInstance().getMOBILEWEB(),"user/pin");
+                    RouteManager.route(getActivity(),
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, PIN_ADDRESS));
                     break;
                 case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                     accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
@@ -228,8 +242,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         if (userSession.hasShop()) {
             goToKyc();
         } else if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivity(((AccountHomeRouter) getContext().getApplicationContext()).
-                    getIntentCreateShop(getContext()));
+            startActivity(RouteManager.getIntent(getContext(), OPEN_SHOP));
         }
     }
 

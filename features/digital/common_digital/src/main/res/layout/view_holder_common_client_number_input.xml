@@ -110,7 +110,6 @@
 
             <Button
                 android:id="@+id/btn_contact_picker"
-                android:background="@drawable/ic_digital_client_number_contact"
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
                 android:layout_marginEnd="4dp"

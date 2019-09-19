@@ -1,0 +1,21 @@
+{
+  kero_places_get_district(placeid: "#placeId")
+  {
+    data {
+      title
+      formatted_address
+      district_id
+      city_id
+      province_id
+      district_name
+      postal_code
+			latitude
+      longitude
+      full_data {
+        long_name
+        short_name
+        types
+      }
+    }
+  }
+}

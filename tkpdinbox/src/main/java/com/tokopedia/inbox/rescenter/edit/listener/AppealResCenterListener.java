@@ -2,7 +2,7 @@ package com.tokopedia.inbox.rescenter.edit.listener;
 
 import android.content.Context;
 
-import com.tokopedia.core.database.model.AttachmentResCenterVersion2DB;
+import com.tokopedia.core.database.model.ResCenterAttachment;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.DetailResCenterData;
 import com.tokopedia.inbox.rescenter.edit.customview.AppealAttachmentView;
@@ -59,5 +59,5 @@ public interface AppealResCenterListener {
 
     AppealAttachmentView getAttachmenSectionView();
 
-    List<AttachmentResCenterVersion2DB> getAttachmentData();
+    List<ResCenterAttachment> getAttachmentData();
 }

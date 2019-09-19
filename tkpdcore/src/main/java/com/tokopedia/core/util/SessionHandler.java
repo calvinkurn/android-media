@@ -14,37 +14,19 @@ import android.webkit.WebViewClient;
 
 import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core2.R;
-import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.common.dbManager.FeedDbManager;
-import com.tokopedia.core.base.common.dbManager.RecentProductDbManager;
-import com.tokopedia.core.base.common.dbManager.TopAdsDbManager;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.database.manager.ProductDetailCacheManager;
-import com.tokopedia.core.database.manager.ProductOtherCacheManager;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.message.interactor.CacheInteractorImpl;
-import com.tokopedia.core.prototype.InboxCache;
-import com.tokopedia.core.prototype.ManageProductCache;
-import com.tokopedia.core.prototype.PembelianCache;
-import com.tokopedia.core.prototype.PenjualanCache;
-import com.tokopedia.core.prototype.ProductCache;
-import com.tokopedia.core.prototype.ShopCache;
-import com.tokopedia.core.prototype.ShopSettingCache;
 import com.tokopedia.core.session.DialogLogoutFragment;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
 import com.tokopedia.linker.LinkerConstants;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.model.UserData;
-import com.tokopedia.linker.requests.LinkerGenericRequest;
-import com.tokopedia.user.session.UserSession;
 import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
 
 @Deprecated
 /**
@@ -131,21 +113,9 @@ public class SessionHandler {
     public static void clearUserData(Context context) {
 
         logoutInstagram(context);
-        InboxCache.ClearCache(context);
-        PenjualanCache.ClearCache(context);
-        PembelianCache.ClearCache(context);
-        ShopSettingCache.ClearCache(context);
-        ProductCache.ClearCache(context);
-        ShopCache.ClearCache(context);
-        ManageProductCache.ClearCache(context);
-        CacheInteractorImpl messageCacheInteractor = new CacheInteractorImpl();
-        messageCacheInteractor.deleteCache();
-        new ProductDetailCacheManager().deleteAll();
-        new ProductOtherCacheManager().deleteAll();
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor editor = sharedPrefs.edit();
         editor.putString(LOGIN_ID, null);
-        editor.putString(FULL_NAME, null);
         editor.putString(SHOP_DOMAIN, null);
         editor.putString(SHOP_ID, null);
         editor.putString(SHOP_NAME, null);
@@ -180,18 +150,16 @@ public class SessionHandler {
         logoutInstagram(context);
         try {
             MethodChecker.removeAllCookies(context);
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         LocalCacheHandler.clearCache(context, DrawerHelper.DRAWER_CACHE);
 
-
-        clearFeedCache();
         AppWidgetUtil.sendBroadcastToAppWidget(context);
 
         deleteCacheBalanceTokoCash();
 
-        LocalCacheHandler.clearCache(context,TkpdCache.REFERRAL);
+        LocalCacheHandler.clearCache(context, TkpdCache.REFERRAL);
         deleteCacheTokoPoint();
         deleteCacheExploreData();
     }
@@ -207,12 +175,11 @@ public class SessionHandler {
     }
 
     private static void deleteCacheBalanceTokoCash() {
-        GlobalCacheManager cacheBalanceTokoCash = new GlobalCacheManager();
-        cacheBalanceTokoCash.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
+        PersistentCacheManager.instance.delete(TkpdCache.Key.KEY_TOKOCASH_BALANCE_CACHE);
     }
 
     private static void logoutInstagram(Context context) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context,  INSTAGRAM_CACHE_KEY);
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, INSTAGRAM_CACHE_KEY);
         localCacheHandler.clearCache(INSTAGRAM_CACHE_KEY);
         if (isV4Login(context) && context instanceof AppCompatActivity) {
             ((AppCompatActivity) context).setContentView(R.layout.activity_webview_general);
@@ -315,27 +282,26 @@ public class SessionHandler {
 
     /**
      * Use shop info use case to get gold merchant status
+     *
      * @param context
      * @return
      */
     @Deprecated
     public static boolean isGoldMerchant(Context context) {
-        Boolean isGoldMerchant = false;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
-        int isGM = sharedPrefs.getInt(IS_GOLD_MERCHANT, -1);
-        isGoldMerchant = (isGM != (-1) && isGM != 0);
-        return isGoldMerchant;
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPrefs.getBoolean(IS_GOLD_MERCHANT, false);
     }
 
     /**
      * Use shop info use case to get gold merchant status
+     *
      * @param context
      * @param goldMerchant
      */
     public static void setGoldMerchant(Context context, int goldMerchant) {
-        SharedPreferences sharedPrefs = context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor edit = sharedPrefs.edit();
-        edit.putInt(IS_GOLD_MERCHANT, goldMerchant);
+        edit.putBoolean(IS_GOLD_MERCHANT, goldMerchant != -1 && goldMerchant != 0);
         edit.apply();
     }
 
@@ -484,12 +450,6 @@ public class SessionHandler {
                 .getString(UUID_KEY, DEFAULT_UUID_VALUE);
     }
 
-    private static void clearFeedCache() {
-        new FeedDbManager().delete();
-        new RecentProductDbManager().delete();
-        new TopAdsDbManager().delete();
-    }
-
     public static String getAccessToken(Context context) {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPrefs.getString(ACCESS_TOKEN, "").trim();
@@ -603,7 +563,7 @@ public class SessionHandler {
             if (((AppCompatActivity) context).getFragmentManager().findFragmentByTag(DialogLogoutFragment.FRAGMENT_TAG) == null) {
                 DialogLogoutFragment dialogLogoutFragment = new DialogLogoutFragment();
                 dialogLogoutFragment.show(((AppCompatActivity) context).getFragmentManager(), DialogLogoutFragment.FRAGMENT_TAG);
-                if(!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier("");
+                if (!GlobalConfig.DEBUG) Crashlytics.setUserIdentifier("");
             }
         }
 
@@ -619,7 +579,7 @@ public class SessionHandler {
     }
 
     public void forceLogout() {
-        if(context != null) {
+        if (context != null) {
             PasswordGenerator.clearTokenStorage(context);
             TrackApp.getInstance().getMoEngage().logoutEvent();
         }
@@ -650,9 +610,13 @@ public class SessionHandler {
     }
 
     public void setGoldMerchant(int goldMerchant) {
-        SharedPreferences sharedPrefs = this.context.getSharedPreferences(SHOP_DOMAIN, Context.MODE_PRIVATE);
+        setGoldMerchant(goldMerchant != -1 && goldMerchant != 0);
+    }
+
+    public void setGoldMerchant(boolean isGoldMerchant) {
+        SharedPreferences sharedPrefs = this.context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         Editor edit = sharedPrefs.edit();
-        edit.putInt(IS_GOLD_MERCHANT, goldMerchant);
+        edit.putBoolean(IS_GOLD_MERCHANT, isGoldMerchant);
         edit.apply();
     }
 
@@ -751,7 +715,7 @@ public class SessionHandler {
     }
 
     public String getTempLoginSession() {
-       return getTempLoginSession(context);
+        return getTempLoginSession(context);
     }
 
     public String getProfilePicture() {

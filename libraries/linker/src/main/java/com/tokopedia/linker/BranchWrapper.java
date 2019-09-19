@@ -27,6 +27,7 @@ import io.branch.referral.util.LinkProperties;
 public class BranchWrapper implements WrapperInterface {
 
     private String deferredDeeplinkPath;
+    private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.link/playblog";
 
     @Override
     public void init(Context context) {
@@ -137,6 +138,23 @@ public class BranchWrapper implements WrapperInterface {
                             context, ((LinkerCommerceData) linkerGenericRequest.getDataObj()).getUserData());
                 }
                 break;
+            case LinkerConstants.EVENT_ITEM_VIEW:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                linkerGenericRequest.getDataObj() instanceof LinkerData){
+                    BranchHelper.sendItemViewEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
+                }
+                break;
+            case LinkerConstants.EVENT_ADD_TO_CART:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                    BranchHelper.sendAddToCartEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
+                }
+                break;
+            case LinkerConstants.EVENT_ADD_TO_WHISHLIST:
+                if(linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof LinkerData){
+                    BranchHelper.sendAddToWishListEvent(context, (LinkerData) linkerGenericRequest.getDataObj());
+                }
         }
     }
 
@@ -210,8 +228,7 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.GROUPCHAT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.GROUPCHAT, data.getId());
             if (context.getApplicationContext() instanceof LinkerRouter) {
-                desktopUrl = ((LinkerRouter) context.getApplicationContext())
-                        .getDesktopLinkGroupChat();
+                desktopUrl = DESKTOP_GROUPCHAT_URL;
                 linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);

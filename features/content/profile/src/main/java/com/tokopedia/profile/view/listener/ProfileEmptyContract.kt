@@ -3,9 +3,7 @@ package com.tokopedia.profile.view.listener
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
 import com.tokopedia.profile.ProfileModuleRouter
-import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.user.session.UserSession
 
 /**
@@ -22,7 +20,7 @@ interface ProfileEmptyContract {
 
         fun goToFollowing()
 
-        fun followUnfollowUser(userId: Int, follow: Boolean)
+        fun goToFollower()
     }
     interface Presenter : CustomerPresenter<View> {
         fun getProfileHeader(userId: Int)

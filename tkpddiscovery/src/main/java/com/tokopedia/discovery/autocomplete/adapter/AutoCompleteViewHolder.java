@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.autocomplete.viewmodel.AutoCompleteSearch;
 import com.tokopedia.discovery.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
 
@@ -69,7 +69,7 @@ public class AutoCompleteViewHolder extends AbstractViewHolder<AutoCompleteSearc
                         tabName
                 );
 
-                listener.onItemSearchClicked(element.getApplink());
+                listener.onItemClicked(element.getApplink(), element.getUrl());
             }
         });
 

@@ -15,5 +15,9 @@ data class Template(
         val cardbanner: Cardbanner = Cardbanner(),
         @SerializedName("cardrecom")
         @Expose
-        val cardrecom: Cardrecom = Cardrecom()
+        val cardrecom: Cardrecom = Cardrecom(),
+        @SerializedName("cardhighlight")
+        @Expose
+        val cardhighlight: CardHighlight = CardHighlight()
+
 )

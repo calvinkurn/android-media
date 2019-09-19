@@ -30,8 +30,7 @@
                 app:titleTextAppearance="@style/EventToolbarTextStyle" />
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+        <android.support.design.widget.CoordinatorLayout
             android:id="@+id/activity_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -79,7 +78,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <include layout="@layout/timings_location_card" />
+                        <include android:id="@+id/event_detail_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            layout="@layout/timings_location_card" />
                     </FrameLayout>
 
                     <View

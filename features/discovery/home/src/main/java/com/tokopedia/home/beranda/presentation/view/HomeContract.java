@@ -7,14 +7,16 @@ import android.support.annotation.StringRes;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.home.beranda.data.model.KeywordSearchData;
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData;
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData;
+import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import java.util.List;
@@ -35,7 +37,9 @@ public interface HomeContract {
 
         void hideLoading();
 
-        void setItems(List<Visitable> items);
+        void setItems(List<Visitable> items, HeaderViewModel headerViewModel, int repositoryFlag);
+
+        void setHint(SearchPlaceholder searchPlaceholder);
 
         void updateHeaderItem(HeaderViewModel headerViewModel);
 
@@ -57,7 +61,7 @@ public interface HomeContract {
 
         void updateListOnResume(List<Visitable> visitables);
 
-        void addImpressionToTrackingQueue(List<TrackedVisitable> visitables);
+        void addImpressionToTrackingQueue(List<HomeVisitable> visitables);
 
         void showRecomendationButton();
 
@@ -78,6 +82,10 @@ public interface HomeContract {
         void onTabFeedLoadSuccess(List<FeedTabModel> feedTabModelList);
 
         void onHomeDataLoadSuccess();
+
+        void detectAndSendLocation();
+
+        boolean hasGeolocationPermission();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -116,6 +124,8 @@ public interface HomeContract {
         void onBannerClicked(BannerSlidesModel slidesModel);
 
         void updateHeaderTokoPointData(TokopointsDrawerHomeData tokopointsDrawerHomeData);
+
+        void updateKeywordSearch(KeywordSearchData keywordSearchData);
 
         void getFeedTabData();
     }

@@ -15,16 +15,21 @@ import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase
 import com.tokopedia.affiliate.feature.createpost.view.util.SubmitPostNotificationManager
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel
-import com.tokopedia.affiliate.feature.createpost.view.viewmodel.MediaType
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS
+import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.cachemanager.PersistentCacheManager
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.debugTrace
+import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.*
 import rx.Subscriber
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -39,6 +44,9 @@ class SubmitPostService : JobIntentService() {
     lateinit var userSession: UserSessionInterface
 
     private var notificationManager: SubmitPostNotificationManager? = null
+
+    @Inject
+    lateinit var twitterManager: TwitterManager
 
     companion object {
         private const val JOB_ID = 13131313
@@ -58,55 +66,26 @@ class SubmitPostService : JobIntentService() {
 
     override fun onHandleWork(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return
-        val cacheManager = PersistentCacheManager(baseContext, id)
+        val cacheManager = SaveInstanceCacheManager(baseContext, id)
         val viewModel: CreatePostViewModel = cacheManager.get(
                 CreatePostViewModel.TAG,
                 CreatePostViewModel::class.java
         ) ?: return
         val notifId = Random().nextInt()
-        notificationManager = getNotificationManager(id,
-                viewModel.authorType,
-                viewModel.completeImageList.firstOrNull()?.path?:"",
-                notifId,
-                viewModel.completeImageList.size)
+        notificationManager = getNotificationManager(notifId, viewModel)
         submitPostUseCase.notificationManager = notificationManager
 
-        if (isUploadVideo(viewModel)) {
-            submitPostUseCase.execute(
-                    SubmitPostUseCase.createRequestParamsVideo(
-                            viewModel.authorType,
-                            viewModel.token,
-                            if (isTypeAffiliate(viewModel.authorType)) userSession.userId
-                            else userSession.shopId,
-                            viewModel.caption,
-                            viewModel.fileImageList.first().path,
-                            if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-                            else viewModel.productIdList
-                    ),
-                    getSubscriber()
-            )
-        } else {
-
-            submitPostUseCase.execute(
-                    SubmitPostUseCase.createRequestParams(
-                            viewModel.authorType,
-                            viewModel.token,
-                            if (isTypeAffiliate(viewModel.authorType)) userSession.userId
-                            else userSession.shopId,
-                            viewModel.caption,
-                            viewModel.completeImageList.map { it.path?: "" },
-                            if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-                            else viewModel.productIdList
-                    ),
-                    getSubscriber()
-            )
-        }
-    }
-
-    private fun isUploadVideo(viewModel: CreatePostViewModel): Boolean {
-        return viewModel.fileImageList.isNotEmpty()
-                && viewModel.fileImageList.first().type == MediaType.VIDEO 
-                && viewModel.fileImageList.first().path.isNotBlank()
+        submitPostUseCase.execute(SubmitPostUseCase.createRequestParams(
+                viewModel.authorType,
+                viewModel.token,
+                if (isTypeAffiliate(viewModel.authorType)) userSession.userId
+                else userSession.shopId,
+                viewModel.caption,
+                (if (viewModel.fileImageList.isEmpty()) viewModel.urlImageList
+                else viewModel.fileImageList).map { it.path to it.type },
+                if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+                else viewModel.productIdList
+        ), getSubscriber())
     }
 
     private fun initInjector() {
@@ -118,8 +97,10 @@ class SubmitPostService : JobIntentService() {
 
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
 
-    private fun getNotificationManager(draftId: String, authorType: String, firstImage: String,
-                                       notifId: Int, maxCount: Int): SubmitPostNotificationManager {
+    private fun getNotificationManager(notifId: Int, viewModel: CreatePostViewModel): SubmitPostNotificationManager {
+        val authorType = viewModel.authorType
+        val firstImage = viewModel.completeImageList.firstOrNull()?.path ?: ""
+        val maxCount = viewModel.completeImageList.size
 
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return object : SubmitPostNotificationManager(notifId, maxCount, firstImage, manager,
@@ -138,9 +119,9 @@ class SubmitPostService : JobIntentService() {
 
             override fun getFailedIntent(errorMessage: String): PendingIntent {
                 val message = if (errorMessage.contains(context.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short), false))
-                    errorMessage
-                else
                     context.getString(R.string.af_error_create_post)
+                else
+                    errorMessage
 
 
                 val applink = if (authorType == TYPE_AFFILIATE) {
@@ -149,9 +130,12 @@ class SubmitPostService : JobIntentService() {
                     ApplinkConst.CONTENT_DRAFT_POST
                 }
 
+                val cacheManager = SaveInstanceCacheManager(context, true)
+                cacheManager.put(CreatePostViewModel.TAG, viewModel, TimeUnit.DAYS.toMillis(7))
+
                 val intent = RouteManager.getIntent(
                         context,
-                        applink.replace(DRAFT_ID_PARAM, draftId)
+                        applink.replace(DRAFT_ID_PARAM, cacheManager.id ?: "0")
                                 .plus("?$CREATE_POST_ERROR_MSG=$message")
                 )
 
@@ -176,6 +160,7 @@ class SubmitPostService : JobIntentService() {
                 }
                 notificationManager?.onSuccessPost()
                 sendBroadcast()
+                postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
             }
 
             override fun onCompleted() {
@@ -194,5 +179,15 @@ class SubmitPostService : JobIntentService() {
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             }
         }
+    }
+
+    private fun postContentToOtherService(content: Content) {
+        if (twitterManager.shouldPostToTwitter) postToTwitter(content)
+    }
+
+    private fun postToTwitter(content: Content) {
+        GlobalScope.launchCatchError(Dispatchers.IO, block = {
+            twitterManager.postTweet(content.description)
+        }) { it.debugTrace() }
     }
 }

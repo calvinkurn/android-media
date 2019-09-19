@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
@@ -25,7 +26,7 @@ public class DealsContract {
 
         void navigateToActivity(Intent intent);
 
-        void renderCategoryList(List<CategoryItem> categoryList);
+        void renderCategoryList(List<CategoryItem> categoryList, List<CategoriesModel> categoriesModels);
 
         void renderTopDeals(CategoryItem topDeals);
 
@@ -34,8 +35,6 @@ public class DealsContract {
         void renderBrandList(List<Brand> brandList);
 
         void renderCuratedDealsList(List<CategoryItem> categoryItems);
-
-        void renderAllTrendingDeals(List<ProductItem> items, String title);
 
         void addDealsToCards(CategoryItem categoryItemsViewModels);
 
@@ -67,10 +66,13 @@ public class DealsContract {
 
         int getRequestCode();
 
-        void startLocationFragment(List<Location> locationList, boolean isTopLocations);
+        void startLocationFragment();
 
-        void startDealsCategoryFragment(List<CategoryItem> categoryItems);
+        void startDealsCategoryFragment(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels);
 
+        String getSearchInputText();
+
+        void updateInitialLocation(List<Location> locations);
     }
 
     public interface Presenter extends CustomerPresenter<View> {

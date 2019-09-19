@@ -18,6 +18,8 @@ import com.tokopedia.topads.common.view.adapter.TopAdsListAdapterTypeFactory;
 public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visitable<TopAdsListAdapterTypeFactory<GroupAd>> {
 
     public static final int TYPE = 19294123;
+    @Expose(serialize = false, deserialize = false)
+    private boolean isAutoAds;
     @SerializedName("group_id")
     @Expose
     private long id;
@@ -87,6 +89,9 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
     @SerializedName("group_name")
     @Expose
     private String name;
+    @SerializedName("product_image_uri")
+    @Expose
+    private String productImageUrl;
     @SerializedName("group_moderated")
     @Expose
     private int adModerated;
@@ -102,6 +107,28 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
     @SerializedName("negative_count")
     @Expose
     private int negativeCount;
+    @SerializedName("stat_total_gross_profit")
+    @Expose
+    private String statTotalGrossProfit;
+    @SerializedName("stat_total_sold")
+    @Expose
+    private String statTotalSold;
+
+    public String getStatTotalGrossProfit() {
+        return statTotalGrossProfit;
+    }
+
+    public void setStatTotalGrossProfit(String statTotalGrossProfit) {
+        this.statTotalGrossProfit = statTotalGrossProfit;
+    }
+
+    public String getStatTotalSold() {
+        return statTotalSold;
+    }
+
+    public void setStatTotalSold(String statTotalSold) {
+        this.statTotalSold = statTotalSold;
+    }
 
     private String keywordTotal;
 
@@ -117,6 +144,15 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
 
     public GroupAd() {
 
+    }
+
+    @Override
+    public boolean isAutoAds() {
+        return isAutoAds;
+    }
+
+    public void setAutoAds(boolean autoAds) {
+        isAutoAds = autoAds;
     }
 
     public int getPositiveCount() {
@@ -257,6 +293,15 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         return name;
     }
 
+    @Override
+    public String getProductImageUrl() {
+        return productImageUrl;
+    }
+
+    public void setProductImageUrl(String productImageUrl) {
+        this.productImageUrl = productImageUrl;
+    }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -335,13 +380,17 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         dest.writeString(this.labelPerClick);
         dest.writeString(this.labelOf);
         dest.writeString(this.name);
+        dest.writeString(this.productImageUrl);
         dest.writeInt(this.adModerated);
         dest.writeString(this.adModeratedReason);
         dest.writeInt(this.totalItem);
         dest.writeInt(this.positiveCount);
         dest.writeInt(this.negativeCount);
         dest.writeString(this.keywordTotal);
+        dest.writeString(this.statTotalGrossProfit);
+        dest.writeString(this.statTotalSold);
         dest.writeParcelable(this.datum, flags);
+        dest.writeByte((byte) (isAutoAds ? 1 : 0));
     }
 
     protected GroupAd(Parcel in) {
@@ -368,13 +417,17 @@ public class GroupAd extends StateTypeBasedModel implements Ad, Parcelable, Visi
         this.labelPerClick = in.readString();
         this.labelOf = in.readString();
         this.name = in.readString();
+        this.productImageUrl = in.readString();
         this.adModerated = in.readInt();
         this.adModeratedReason = in.readString();
         this.totalItem = in.readInt();
         this.positiveCount = in.readInt();
         this.negativeCount = in.readInt();
         this.keywordTotal = in.readString();
+        this.statTotalGrossProfit = in.readString();
+        this.statTotalSold = in.readString();
         this.datum = in.readParcelable(GetSuggestionResponse.Datum.class.getClassLoader());
+        this.isAutoAds = in.readByte() != 0;
     }
 
     public static final Creator<GroupAd> CREATOR = new Creator<GroupAd>() {

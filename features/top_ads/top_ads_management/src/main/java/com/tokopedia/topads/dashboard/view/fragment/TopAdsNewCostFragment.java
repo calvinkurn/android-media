@@ -24,6 +24,7 @@ import com.tokopedia.seller.common.widget.PrefixEditText;
 import com.tokopedia.topads.R;
 import com.tokopedia.topads.dashboard.constant.TopAdsSuggestionBidInteractionTypeDef;
 import com.tokopedia.topads.dashboard.data.model.response.GetSuggestionResponse;
+import com.tokopedia.topads.dashboard.domain.model.MinimumBidDomain;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
 import com.tokopedia.topads.dashboard.view.model.TopAdsDetailAdViewModel;
 
@@ -49,9 +50,9 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     private RadioGroup budgetRadioGroup;
     private RadioButton budgetLifeTimeRadioButton;
     private RadioButton budgetPerDayRadioButton;
-    private TextInputLayout budgetPerDayInputLayout;
+    protected TextInputLayout budgetPerDayInputLayout;
     private View containerBudgetPerDay;
-    private PrefixEditText budgetPerDayEditText;
+    protected PrefixEditText budgetPerDayEditText;
     protected long suggestionBidValue;
     protected String defaultSuggestionBidButtonStatus;
 
@@ -109,33 +110,6 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     @Override
     protected void setViewListener() {
         super.setViewListener();
-        maxPriceEditText.addTextChangedListener(new CurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
-
-            @Override
-            public void onNumberChanged(double number) {
-                super.onNumberChanged(number);
-                checkMaxPrice(number);
-                onPriceChanged(number);
-            }
-        });
-        budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
-
-            @Override
-            public void onNumberChanged(double number) {
-                super.onNumberChanged(number);
-                String clickBudgetString = CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getTextWithoutPrefix());
-                float clickBudget = 0;
-                if (!TextUtils.isEmpty(clickBudgetString)) {
-                    clickBudget = Float.parseFloat(clickBudgetString);
-                }
-                String errorMessage = ViewUtils.getDailyBudgetError(getActivity(), clickBudget, number);
-                if (!TextUtils.isEmpty(errorMessage)) {
-                    budgetPerDayInputLayout.setError(errorMessage);
-                } else {
-                    budgetPerDayInputLayout.setError(null);
-                }
-            }
-        });
         budgetPerDayEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean hasFocus) {
@@ -184,25 +158,50 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     }
 
-    protected void setSuggestionBidText(@Nullable GetSuggestionResponse data) {
+    protected void setSuggestionBidText(@Nullable MinimumBidDomain.TopadsBidInfo.Data data) {
         if (data == null) {
             return;
         }
-        setSuggestionBidText(data.getData().get(0).getMedian(), data.getData().get(0).getMedianFmt());
+        maxPriceEditText.addTextChangedListener(new CurrencyIdrTextWatcher(maxPriceEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+
+            @Override
+            public void onNumberChanged(double number) {
+                super.onNumberChanged(number);
+                checkMaxPrice(number, data.getMultiplier(), data.getMaxBid(), data.getMinBid());
+                onPriceChanged(number);
+                budgetPerDayEditText.setText(String.format("%.0f", (number * data.getMultiplier())));
+            }
+        });
+        budgetPerDayEditText.addTextChangedListener(new CurrencyIdrTextWatcher(budgetPerDayEditText, getString(R.string.top_ads_detail_edit_default_currency_value)) {
+
+            @Override
+            public void onNumberChanged(double number) {
+                super.onNumberChanged(number);
+                String errorMessage = ViewUtils.getDailyBudgetError(getActivity(), data.getMinDailyBudget(),
+                        Double.parseDouble(CurrencyFormatHelper.RemoveNonNumeric(maxPriceEditText.getTextWithoutPrefix())),
+                        data.getMultiplier(), number);
+                if (!TextUtils.isEmpty(errorMessage)) {
+                    budgetPerDayInputLayout.setError(errorMessage);
+                } else {
+                    budgetPerDayInputLayout.setError(null);
+                }
+            }
+        });
+        setSuggestionBidText(data.getSuggestionBid(), data.getSuggestionBidFmt());
         if (TextUtils.isEmpty(maxPriceEditText.getTextWithoutPrefix())) {
-            maxPriceEditText.setText(String.valueOf(data.getData().get(0).getMedian()));
-            budgetPerDayEditText.setText(String.valueOf(data.getData().get(0).getMedian()*10));
+            maxPriceEditText.setText(String.valueOf(data.getSuggestionBid()));
+            budgetPerDayEditText.setText(String.valueOf(data.getMinBid() * data.getMultiplier()));
         }
     }
 
-    protected void setSuggestionBidText(long suggestionBidValue, @Nullable String suggestionBidText){
+    protected void setSuggestionBidText(long suggestionBidValue, @Nullable String suggestionBidText) {
         this.suggestionBidValue = suggestionBidValue;
         titleSuggestionBid.setText(MethodChecker.fromHtml(getString(R.string.label_top_ads_max_price_description) + " <b>" + suggestionBidText + "</b> "));
         titleSuggestionBidUse.setVisibility(View.VISIBLE);
     }
 
-    private void checkMaxPrice(double number) {
-        String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number);
+    private void checkMaxPrice(double number, double multiply, double maxBid, double minBid) {
+        String errorMessage = ViewUtils.getClickBudgetError(getActivity(), number, multiply, maxBid, minBid);
         if (!TextUtils.isEmpty(errorMessage)) {
             maxPriceInputLayout.setError(errorMessage);
         } else {
@@ -212,7 +211,7 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
 
     private void showBudgetPerDay(boolean show) {
         containerBudgetPerDay.setVisibility(show ? View.VISIBLE : View.GONE);
-        if (show){
+        if (show) {
             containerBudgetPerDay.getParent().requestChildFocus(containerBudgetPerDay, containerBudgetPerDay);
         }
         if (!show && !budgetLifeTimeRadioButton.isChecked()) {
@@ -256,10 +255,10 @@ public abstract class TopAdsNewCostFragment<T extends StepperModel, V extends To
     protected void loadAd(V detailAd) {
         if (detailAd != null) {
             this.detailAd = detailAd;
-            maxPriceEditText.setText(String.valueOf(detailAd.getPriceBid()));
+            maxPriceEditText.setText(String.format("%.0f", detailAd.getPriceBid()));
             if (detailAd.getPriceDaily() > 0) {
                 showBudgetPerDay(true);
-                budgetPerDayEditText.setText(String.valueOf(detailAd.getPriceDaily()));
+                budgetPerDayEditText.setText(String.format("%.0f", detailAd.getPriceDaily()));
             } else {
                 showBudgetPerDay(false);
             }

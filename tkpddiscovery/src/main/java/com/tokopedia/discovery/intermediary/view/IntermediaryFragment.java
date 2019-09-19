@@ -35,12 +35,10 @@ import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -52,11 +50,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.intermediary.CategoryHadesModel;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
 import com.tokopedia.core.util.NonScrollLinearLayoutManager;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
@@ -76,10 +72,10 @@ import com.tokopedia.discovery.intermediary.view.adapter.CurationAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.HotListItemAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryBrandsAdapter;
 import com.tokopedia.discovery.intermediary.view.adapter.IntermediaryCategoryAdapter;
+import com.tokopedia.discovery.intermediary.view.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
-import com.tokopedia.tkpdpdp.customview.YoutubeWebViewThumbnail;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -104,10 +100,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static com.tokopedia.core.home.presenter.HotList.CATALOG_KEY;
-import static com.tokopedia.core.home.presenter.HotList.HOT_KEY;
-import static com.tokopedia.core.home.presenter.HotList.SEARCH;
-import static com.tokopedia.core.home.presenter.HotList.TOPPICKS_KEY;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.DEFAULT_KEY_EP;
 import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_INTERMEDIARY_VALUE;
 
@@ -120,6 +112,11 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         IntermediaryCategoryAdapter.CategoryListener, IntermediaryBrandsAdapter.BrandListener,
         BannerPagerAdapter.OnPromoClickListener, HotListItemAdapter.HotlistItemListener,
         WishListActionListener {
+
+    private static final String HOT_KEY = "hot";
+    private static final String CATALOG_KEY = "catalog";
+    private static final String TOPPICKS_KEY = "toppicks";
+    private static final String SEARCH = "search";
 
     public static final String TAG = "INTERMEDIARY_FRAGMENT";
     private static final long SLIDE_DELAY = 8000;
@@ -1045,7 +1042,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                 bundle.putString(BrowseProductRouter.DEPARTMENT_ID, departmentId);
                 bundle.putString(BrowseProductRouter.EXTRAS_SEARCH_TERM, searchQuery);
 
-                Intent intent = BrowseProductRouter.getSearchProductIntent(getContext());
+                Intent intent = RouteManager.getIntent(getContext(), constructSearchApplink(searchQuery, departmentId));
                 intent.putExtras(bundle);
 
                 startActivity(intent);
@@ -1076,6 +1073,17 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
 
                 )));
 
+    }
+
+    private static String constructSearchApplink(String query, String departmentId) {
+        String applink = TextUtils.isEmpty(query) ?
+                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConst.DISCOVERY_SEARCH;
+
+        return applink
+                + "?"
+                + "q=" + query
+                + "&sc=" + departmentId;
     }
 
     public void eventHotlistIntermediary(String parentCat, String label) {

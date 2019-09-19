@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.otaliastudios.cameraview.Facing;
+import com.tokopedia.cameraview.Facing;
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator;
 import com.tokopedia.abstraction.Actions.interfaces.ActionDataProvider;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -22,6 +22,7 @@ import com.tokopedia.homecredit.R;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 public class FragmentCardIdCamera extends HomeCreditKTPFragment{
     private ActionCreator actionCreator;
@@ -42,21 +43,22 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
         String imagePath = imgFile.getAbsolutePath();
         boolean toBeFlipped = false;
         hideLoading();
-        cameraView.stop();//always call this method if you do not want awkward issues
+        cameraView.close();//always call this method if you do not want awkward issues
         getActivity().getSupportFragmentManager().popBackStack();
-        if(!TextUtils.isEmpty(imagePath) && actionCreator != null){
-            if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()){
-                toBeFlipped = true;
-            }
-            ArrayList<String> keysList = (ArrayList<String>) actionDataProvider.getData(1, null);
-            HashMap<String , Object> dataMap = new HashMap<>();
-            dataMap.put(keysList.get(0), imagePath);
-            dataMap.put(keysList.get(1), toBeFlipped);
+        if(actionCreator != null) {
+            if (!TextUtils.isEmpty(imagePath)) {
+                if (cameraView.getFacing().ordinal() == Facing.FRONT.ordinal()) {
+                    toBeFlipped = true;
+                }
+                ArrayList<String> keysList = (ArrayList<String>) actionDataProvider.getData(1, null);
+                HashMap<String, Object> dataMap = new HashMap<>();
+                dataMap.put(keysList.get(0), imagePath);
+                dataMap.put(keysList.get(1), toBeFlipped);
 
-            actionCreator.actionSuccess(1, dataMap);
-        }
-        else {
-            actionCreator.actionError(1,101);
+                actionCreator.actionSuccess(1, dataMap);
+            } else {
+                actionCreator.actionError(1, 101);
+            }
         }
     }
 
@@ -71,12 +73,14 @@ public class FragmentCardIdCamera extends HomeCreditKTPFragment{
         super.onCreate(savedInstanceState);
         actionCreator = (ActionCreator) getArguments().getSerializable(ACTION_CREATOR_ARG);
         actionDataProvider = (ActionDataProvider) getArguments().getSerializable(ACTION_KEYS_PROVIDER_ARG);
+        getArguments().clear();
     }
 
     @Override
     public void onDestroy() {
         hideLoading();
-        cameraView.stop();
+        cameraView.close();
         super.onDestroy();
     }
+
 }

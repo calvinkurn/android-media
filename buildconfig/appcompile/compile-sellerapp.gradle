@@ -1,4 +1,10 @@
 // Sort alphabetically by name
+includeDynamicFeatureIfEnabled("sellerapp")
+
+include "features:category:tradein_common"
+include "features:category:tradein"
+
+include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
 
@@ -15,12 +21,15 @@ include "features:content:profile"
 include "features:digital:common_digital"
 include "features:digital:digitalproduct"
 
+include "features:discovery:discovery_common"
 include "features:discovery:category_common"
 include "features:discovery:flashsale_management"
 //include "features:discovery:flashsale_management_no_op"
 include 'features:discovery:flashsale_management_common'
-include "features:discovery:wishlist_common"
+include 'features:discovery:productcard'
+include 'features:discovery:recommendation_widget_common'
 include "features:discovery:topadssdk"
+include "features:discovery:wishlist_common"
 
 include "features:fintech:mitra_toppers"
 include "features:fintech:saldo_details"
@@ -29,15 +38,11 @@ include "features:fintech:saldo_details"
 include "features:im:common_promo"
 include "features:im:referral"
 
-include "features:logistic:district_recommendation"
-include "features:logistic:logisticdata"
-include "features:logistic:logisticanalytics"
-include "features:logistic:logisticgeolocation"
-//include "features:logistic:logisticgeolocation_no_op"
+include "features:logistic:logisticaddaddress"
+include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticinputreceiptshipment"
 //include "features:logistic:logisticinputreceiptshipment_no_op"
 include "features:logistic:logisticdata"
-include "features:logistic:logisticcommon"
 include "features:logistic:logisticuploadawb"
 //include "features:logistic:logisticuploadawb_no_op"
 include "features:logistic:shipping_recommendation"
@@ -49,12 +54,14 @@ include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
 include "features:merchant:gold_merchant_subscribe"
 //include "features:merchant:gold_merchant_subscribe_no_op"
+include "features:merchant:power_merchant_subscribe"
 include "features:merchant:product_draft_database"
 include "features:merchant:product_detail"
 include "features:merchant:product_detail_common"
 include "features:merchant:product_manage_item"
 include "features:merchant:product_manage_list"
 include "features:merchant:product_share"
+include "features:merchant:report"
 include "features:merchant:reputation_common"
 include "features:merchant:reputation"
 include "features:merchant:shop_common"
@@ -63,13 +70,13 @@ include "features:merchant:shop_page"
 include "features:merchant:shop_open"
 //include "features:merchant:shop_open_no_op"
 include "features:merchant:shop_settings"
-//include "features:merchant:shop_settings_no_op" // toggle for no_op
 include "features:merchant:shop_etalase_picker"
 //include "features:merchant:shop_etalase_picker_no_op"
 
 include "features:operational:contact_us"
 //include "features:operational:contact_us_no_op"
 
+include "features:payment:common_payment"
 include "features:payment:payment"
 //include "features:payment:payment_no_op"
 include "features:payment:withdraw"
@@ -87,11 +94,13 @@ include "features:promo:promo_checkout_common"
 include "features:top_ads:top_ads_dashboard"
 //include "features:top_ads:top_ads_dashboard_no_op"
 include "features:top_ads:top_ads_management"
+include "features:top_ads:top_ads_autoads"
 //include "features:top_ads:top_ads_management_no_op"
 include "features:top_ads:top_ads_free_claim"
 include "features:top_ads:top_ads_management_common"
 include "features:top_ads:top_ads_management_sourcetagging"
 
+include "features:transaction:atc_common"
 include "features:transaction:express_checkout"
 //include "features:transaction:express_checkout_no_op"
 include "features:transaction:express_checkout_common"
@@ -100,7 +109,6 @@ include "features:transaction:transactiondata"
 include "features:transaction:express_checkout_common"
 
 include "features:user:attachproduct"
-include "features:user:bankdb"
 include "features:user:chat_common"
 include "features:user:chatbot"
 //include "features:user:chatbot_no_op"
@@ -123,14 +131,18 @@ include "features:user:updateinactivephone"
 include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
+include "features:user:vote"
 
-include 'logisticanalytics'
+include "features:category:basemvvm"
+include "features:category:tradein"
+include "features:category:tradein_common"
+include "features:fintech:merchant_lending_widget"
+
 include 'tkpdloyalty'
 include 'tkpdcore'
 include 'tkpdinbox'
 include 'tkpdtransaction'
 include 'tkpdsession'
-include 'tkpdpdp'
 include 'tkpddesign'
 include 'tkpdseller'
 include 'tkpdabstraction'

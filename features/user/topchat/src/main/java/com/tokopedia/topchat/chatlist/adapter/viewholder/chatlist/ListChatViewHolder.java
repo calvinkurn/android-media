@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -24,6 +25,7 @@ import com.tokopedia.topchat.common.util.ChatTimeConverter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by stevenfredian on 10/25/17.
@@ -58,6 +60,10 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item_topchat;
 
+    public static final String PAYLOAD_SHOW_TYPING = "payload_show_typing";
+    public static final String PAYLOAD_REMOVE_TYPING = "payload_remove_typing";
+
+
     public ListChatViewHolder(View itemView, InboxChatContract.View viewListener, InboxChatPresenter presenter) {
         super(itemView);
 
@@ -80,23 +86,9 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     public void bind(ChatListViewModel element) {
 
         if (element.isTyping()) {
-            userName.setText(element.getName());
-            message.setText("sedang mengetik...");
-            message.setTypeface(null, Typeface.ITALIC);
-            message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.medium_green));
+            showTypingView(element);
         } else {
-            if (element.getSpanMode() == ChatListViewModel.SPANNED_MESSAGE) {
-                message.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
-                userName.setText(element.getName());
-            } else if (element.getSpanMode() == ChatListViewModel.SPANNED_CONTACT) {
-                userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
-                message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
-            } else {
-                message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
-                userName.setText(element.getName());
-            }
-            message.setTypeface(null, Typeface.NORMAL);
-            message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.black_54));
+            showNotTypingView(element);
         }
 
         if (element.isHaveTitle()) {
@@ -134,6 +126,42 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
         avatar.setOnLongClickListener(onLongClickListener(element));
     }
 
+    @Override
+    public void bind(ChatListViewModel element, @NonNull List<Object> payloads) {
+        if (payloads.isEmpty()) {
+            bind(element);
+            return;
+        }
+
+        Object payload = payloads.get(0);
+        if (payload == PAYLOAD_SHOW_TYPING) {
+            showTypingView(element);
+        } else if (payload == PAYLOAD_REMOVE_TYPING) {
+            showNotTypingView(element);
+        }
+    }
+
+    private void showTypingView(ChatListViewModel element) {
+        userName.setText(element.getName());
+        message.setText(R.string.is_typing);
+        message.setTypeface(null, Typeface.ITALIC);
+        message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.medium_green));
+    }
+
+    private void showNotTypingView(ChatListViewModel element) {
+        if (element.getSpanMode() == ChatListViewModel.SPANNED_MESSAGE) {
+            message.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
+            userName.setText(element.getName());
+        } else if (element.getSpanMode() == ChatListViewModel.SPANNED_CONTACT) {
+            userName.setText(highlight(message.getContext(), element.getSpan(), viewListener.getKeyword()));
+            message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
+        } else {
+            message.setText(MethodChecker.fromHtml(element.getMessage().trim()));
+            userName.setText(element.getName());
+        }
+        message.setTypeface(null, Typeface.NORMAL);
+        message.setTextColor(MethodChecker.getColor(message.getContext(), R.color.black_54));
+    }
 
     private SpannableString highlight(Context context, Spanned span, String keyword) {
 

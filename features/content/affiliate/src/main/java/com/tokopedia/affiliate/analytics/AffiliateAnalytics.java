@@ -424,6 +424,18 @@ public class AffiliateAnalytics {
         );
     }
 
+    public void onAfterClickContentDetail(String contentId) {
+        getAnalyticTracker().sendEnhanceEcommerceEvent(
+                setDefaultDataWithUserId(
+                        AffiliateEventTracking.Screen.BYME_CONTENT_DETAIL,
+                        AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                        AffiliateEventTracking.Category.BYME_AFFILIATE_CDP_EXTERNAL,
+                        AffiliateEventTracking.Action.CLICK_AFFILIATE_CDP_EXTERNAL,
+                        contentId
+                )
+        );
+    }
+
     public void onAfterClickSaldo() {
         getAnalyticTracker().sendEnhanceEcommerceEvent(
                 setDefaultDataWithUserId(
@@ -446,5 +458,26 @@ public class AffiliateAnalytics {
                         ""
                 )
         );
+    }
+
+    public void onAutoCompleteClicked(String keyword) {
+        getAnalyticTracker().sendGeneralEvent(AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                AffiliateEventTracking.Category.BYME_EXPLORE,
+                AffiliateEventTracking.Action.CLICK_SEARCH_SUGGESTION,
+                keyword);
+    }
+
+    public void trackProductImpressionNonEE(String productId) {
+        getAnalyticTracker().sendGeneralEvent(AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                AffiliateEventTracking.Category.BYME_EXPLORE,
+                AffiliateEventTracking.Action.IMPRESSION_PRODUCT,
+                AffiliateEventTracking.EventLabel.SEARCH_RESULT_PRODUCT_ID+productId);
+    }
+
+    public void onProductSearchClicked(String productId) {
+        getAnalyticTracker().sendGeneralEvent(AffiliateEventTracking.Event.AFFILIATE_CLICK,
+                AffiliateEventTracking.Category.BYME_EXPLORE,
+                AffiliateEventTracking.Action.CLICK_PRODUCT,
+                AffiliateEventTracking.EventLabel.SEARCH_RESULT_PRODUCT_ID+productId);
     }
 }

@@ -24,6 +24,7 @@ chipGetInboxDetail(caseID: $caseID) {
                 thumbnail
               }
               note
+              rating
             }
             number
             subject
@@ -42,6 +43,7 @@ chipGetInboxDetail(caseID: $caseID) {
               url
               thumbnail
             }
+            allowClose
           }
         }
         messageError

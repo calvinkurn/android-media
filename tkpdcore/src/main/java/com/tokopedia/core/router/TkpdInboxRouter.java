@@ -48,17 +48,11 @@ public interface TkpdInboxRouter {
 
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
-    Fragment getChannelFragment(Bundle bundle);
-
-    String getChannelFragmentTag();
-
     Intent getLoginIntent(Context context);
 
     void actionNavigateByApplinksUrl(Activity activity, String url, Bundle bundle);
 
     Intent getTopProfileIntent(Context context, String userId);
-
-    void startAddProduct(Activity activity, String shopId);
 
     Intent getHelpUsIntent(Context context);
 

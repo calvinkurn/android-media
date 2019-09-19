@@ -86,7 +86,7 @@ public class BannerWebView extends TkpdCoreWebViewActivity implements
 
 
     public void openShop(String url) {
-        Fragment fragment = FragmentShopPreview.createInstanceForDeeplink(DeepLinkChecker.getLinkSegment(url).get(0), url);
+        Fragment fragment = FragmentShopPreview.createInstanceForDeeplink(Uri.parse(url).getPathSegments().get(0), url);
         getFragmentManager().beginTransaction().replace(R.id.container, fragment).commit();
     }
 

@@ -2,139 +2,171 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pre_confirmation_parent_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@drawable/bg_tp_custom_dialog"
     android:padding="@dimen/tp_padding_medium">
 
-    <TextView
-        android:id="@+id/text_header"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="@string/tp_label_send_coupon_as_gift"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/tp_text_size_medium"
-        app:layout_constraintEnd_toEndOf="parent"
+    <ImageView
+        android:id="@+id/iv_cancel_preconfirmation"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="@dimen/dp_16"
+        android:tint="@color/tp_cancel_image_tint_color"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/img_gift"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_header"
-        app:srcCompat="@drawable/ic_tp_gift" />
-
-    <TextView
-        android:id="@+id/text_point_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/tp_margin_medium"
-        android:layout_marginStart="@dimen/tp_margin_medium"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/tp_text_size_small"
-        app:layout_constraintStart_toEndOf="@+id/img_gift"
-        app:layout_constraintTop_toTopOf="@+id/img_gift" />
-
-    <TextView
-        android:id="@+id/text_point_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_2"
-        android:textColor="@color/medium_green"
-        android:textSize="@dimen/tp_text_size_regular"
-        app:layout_constraintStart_toStartOf="@+id/text_point_label"
-        app:layout_constraintTop_toBottomOf="@+id/text_point_label" />
-
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/img_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_24"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_point_value"
-        app:srcCompat="@drawable/ic_tp_contact" />
-
-    <TextView
-        android:id="@+id/text_for"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/tp_margin_medium"
-        android:layout_marginStart="@dimen/tp_margin_medium"
-        android:text="@string/tp_label_for"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/tp_text_size_xsmall"
-        android:visibility="visible"
-        app:layout_constraintStart_toEndOf="@+id/img_user"
-        app:layout_constraintTop_toTopOf="@+id/img_user" />
-
-    <TextView
-        android:id="@+id/text_for_value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/tp_text_size_regular"
-        app:layout_constraintStart_toStartOf="@+id/text_for"
-        app:layout_constraintTop_toBottomOf="@+id/text_for" />
-
-    <TextView
-        android:id="@+id/text_notes_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/tp_margin_medium"
-        android:layout_marginStart="@dimen/tp_margin_medium"
-        android:layout_marginTop="@dimen/dp_8"
-        android:text="@string/tp_label_message"
-        android:textColor="@color/black_54"
-        android:textSize="@dimen/tp_text_size_xsmall"
-        android:visibility="visible"
-        app:layout_constraintStart_toEndOf="@+id/img_user"
-        app:layout_constraintTop_toBottomOf="@+id/text_for_value" />
-
-    <TextView
-        android:id="@+id/text_notes_value"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_4"
-        android:textColor="@color/black_70"
-        android:textSize="@dimen/tp_text_size_regular"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/text_for"
-        app:layout_constraintTop_toBottomOf="@+id/text_notes_label" />
-
-    <Button
-        android:id="@+id/button_send_now"
-        android:layout_width="0dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/dp_32"
-        android:layout_weight="1"
-        android:background="@drawable/bg_button_green"
-        android:gravity="center"
-        android:text="@string/tp_label_send_now"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/tp_text_size_small"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_notes_value" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_action_x" />
 
     <ProgressBar
         android:id="@+id/progress_send_now"
         style="?android:attr/progressBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/button_send_now"
         app:layout_constraintLeft_toLeftOf="@+id/button_send_now"
         app:layout_constraintRight_toRightOf="@+id/button_send_now"
         app:layout_constraintTop_toTopOf="@+id/button_send_now" />
+
+    <TextView
+        android:id="@+id/message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="italic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pesan"
+        tools:text="Happy Birthday! Wish you all the best!" />
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardview_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="@dimen/dp_8"
+        app:cardUseCompatPadding="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/iv_cancel_preconfirmation">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_banner"
+                android:layout_width="@dimen/dp_0"
+                android:layout_height="@dimen/dp_0"
+                app:layout_constraintDimensionRatio="H,3:1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tv_title_banner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:lineSpacingExtra="@dimen/sp_4"
+                android:text="@string/tp_coupon_name"
+                android:textColor="@color/clr_f531353b"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/iv_banner"
+                app:typographyType="heading_5" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_13"
+                android:drawableLeft="@drawable/ic_points"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="@dimen/sp_4"
+                android:textColor="@color/tp_btn_preconfirm_orange_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title_banner"
+                app:typographyType="heading_5"
+                tools:text="10.000 Points" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:text="sergiomendes@gmail.com"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_for"
+        app:typographyType="body_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/pesan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_32"
+        android:layout_marginTop="@dimen/dp_8"
+        android:lineSpacingExtra="@dimen/sp_6"
+        android:text="@string/tp_pesan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/email"
+        app:typographyType="body_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_header"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:text="@string/tp_label_send_coupon_as_gift"
+        android:textColor="@color/black_70"
+        app:layout_constraintBottom_toBottomOf="@id/iv_cancel_preconfirmation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/iv_cancel_preconfirmation"
+        app:layout_constraintTop_toTopOf="@id/iv_cancel_preconfirmation"
+        app:typographyType="heading_3" />
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/button_send_now"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_40"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/dp_32"
+        android:layout_weight="1"
+        android:background="@drawable/bg_rounded_orange"
+        android:gravity="center"
+        android:text="@string/tp_label_send_now"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/message"
+        app:typographyType="heading_4" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_for"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_27"
+        android:drawableLeft="@drawable/ic_chat"
+        android:drawablePadding="@dimen/dp_8"
+        android:text="@string/tp_label_for"
+        android:textColor="@color/tp_gift_fail_text_grey_color"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardview_container"
+        app:srcCompat="@drawable/ic_chat"
+        app:typographyType="body_3" />
 
 </android.support.constraint.ConstraintLayout>

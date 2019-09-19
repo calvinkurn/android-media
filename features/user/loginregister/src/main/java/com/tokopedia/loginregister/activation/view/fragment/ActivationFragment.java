@@ -27,6 +27,9 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.widget.PinEditText;
 import com.tokopedia.loginregister.R;
@@ -35,6 +38,7 @@ import com.tokopedia.loginregister.activation.view.activity.ActivationActivity;
 import com.tokopedia.loginregister.activation.view.activity.ChangeEmailActivity;
 import com.tokopedia.loginregister.activation.view.listener.ActivationContract;
 import com.tokopedia.loginregister.activation.view.presenter.ActivationPresenter;
+import com.tokopedia.loginregister.common.analytics.RegisterAnalytics;
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl;
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics;
@@ -66,6 +70,7 @@ public class ActivationFragment extends BaseDaggerFragment
 
     private String email = "";
     private String password = "";
+    private String source = "";
 
     @Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -73,6 +78,9 @@ public class ActivationFragment extends BaseDaggerFragment
 
     @Inject
     LoginRegisterAnalytics analytics;
+
+    @Inject
+    RegisterAnalytics registerAnalytics;
 
     @Inject
     ActivationPresenter presenter;
@@ -97,7 +105,7 @@ public class ActivationFragment extends BaseDaggerFragment
 
     @Override
     protected String getScreenName() {
-        return LoginRegisterAnalytics.SCREEN_ACCOUNT_ACTIVATION;
+        return LoginRegisterAnalytics.Companion.getSCREEN_ACCOUNT_ACTIVATION();
     }
 
     @Override
@@ -113,8 +121,14 @@ public class ActivationFragment extends BaseDaggerFragment
 
         if (savedInstanceState != null) {
             password = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
-        } else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null) {
+        } else if (getArguments()!= null && getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null) {
             password = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
+        }
+
+        if (savedInstanceState != null) {
+            source = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "");
+        } else if (getArguments()!= null && getArguments().getString(ApplinkConstInternalGlobal.PARAM_SOURCE) != null) {
+            source = getArguments().getString(ApplinkConstInternalGlobal.PARAM_SOURCE, "");
         }
 
     }
@@ -198,11 +212,11 @@ public class ActivationFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         activateButton.setOnClickListener(v -> {
-            analytics.eventClickActivateEmail();
+            registerAnalytics.trackClickActivationButton();
             presenter.activateAccount(email, verifyCode.getText().toString());
         });
         footer.setOnClickListener(v -> {
-            analytics.eventClickResendActivationEmail();
+            registerAnalytics.trackClickResendButton();
             showChangeEmailDialog(email);
         });
 
@@ -259,10 +273,18 @@ public class ActivationFragment extends BaseDaggerFragment
             new AlertDialog.Builder(getActivity())
                     .setTitle(R.string.resend_activation_email)
                     .setMessage(MethodChecker.fromHtml(dialogMessage))
-                    .setPositiveButton(android.R.string.yes, (dialog, which) -> presenter.resendActivation(
-                            email
-                    ))
-                    .setNegativeButton(R.string.button_change_email, (dialog, which) -> goToChangeEmail(email))
+                    .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                        registerAnalytics.trackClickOkResendButton();
+                        presenter.resendActivation(
+                                email
+                        );
+                    })
+                    .setNegativeButton(R.string.button_change_email, (dialog, which) -> {
+                        registerAnalytics.trackClickChangeEmail();
+                        registerAnalytics.trackFailedClickResendButton(
+                                getActivity().getString(R.string.change_email_error_condition));
+                        goToChangeEmail(email);
+                    })
                     .show();
         }
     }
@@ -285,6 +307,8 @@ public class ActivationFragment extends BaseDaggerFragment
     @Override
     public void onErrorResendActivation(String errorMessage) {
         finishLoadingProgress();
+        registerAnalytics.trackFailedClickOkResendButton(errorMessage);
+        registerAnalytics.trackFailedClickResendButton(errorMessage);
         if (errorMessage.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
         } else {
@@ -295,6 +319,8 @@ public class ActivationFragment extends BaseDaggerFragment
     @Override
     public void onSuccessResendActivation() {
         if (getActivity() != null) {
+            registerAnalytics.trackSuccessClickOkResendButton();
+            registerAnalytics.trackSuccessClickResendButton();
             KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
             removeErrorOtp();
             finishLoadingProgress();
@@ -305,6 +331,7 @@ public class ActivationFragment extends BaseDaggerFragment
     @Override
     public void onErrorActivateWithUnicode(String errorMessage) {
         if (getActivity() != null) {
+            registerAnalytics.trackFailedClickActivationButton(errorMessage);
             verifyCode.setError(true);
             KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
             finishLoadingProgress();
@@ -321,10 +348,12 @@ public class ActivationFragment extends BaseDaggerFragment
 
     @Override
     public void onSuccessActivateWithUnicode(TokenViewModel pojo) {
-        Intent autoLoginIntent = LoginActivity.getAutomaticLogin(
+        registerAnalytics.trackSuccessClickActivationButton();
+        Intent autoLoginIntent = LoginActivity.DeepLinkIntents.getAutomaticLogin(
                 getActivity(),
                 email,
-                password);
+                password,
+                source);
         startActivityForResult(
                 autoLoginIntent,
                 REQUEST_AUTO_LOGIN
@@ -351,6 +380,7 @@ public class ActivationFragment extends BaseDaggerFragment
             finishLoadingProgress();
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
+            RouteManager.route(getContext(), ApplinkConst.DISCOVERY_NEW_USER);
         } else if (requestCode == REQUEST_AUTO_LOGIN) {
             finishLoadingProgress();
         }
@@ -361,6 +391,7 @@ public class ActivationFragment extends BaseDaggerFragment
     public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, email);
         outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_PW, password);
+        outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source);
         super.onSaveInstanceState(outState);
     }
 

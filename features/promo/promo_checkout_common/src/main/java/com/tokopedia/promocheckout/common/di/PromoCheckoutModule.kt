@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.promocheckout.common.domain.CancelPromoUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoCodeUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeFinalUseCase
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
+import com.tokopedia.promocheckout.common.domain.*
+import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
+import com.tokopedia.promocheckout.common.domain.flight.FlightCheckVoucherUseCase
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
@@ -41,6 +41,24 @@ class PromoCheckoutModule {
     @Provides
     fun provideCheckPromoStackingCodeFinalUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeFinalUseCase {
         return CheckPromoStackingCodeFinalUseCase(context)
+    }
+
+    @PromoCheckoutQualifier
+    @Provides
+    fun provideCheckVoucherDigitalUseCase(@ApplicationContext context: Context): DigitalCheckVoucherUseCase {
+        return DigitalCheckVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @PromoCheckoutQualifier
+    @Provides
+    fun provideCheckVoucherFlightUseCase(@ApplicationContext context: Context): FlightCheckVoucherUseCase {
+        return FlightCheckVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @PromoCheckoutQualifier
+    @Provides
+    fun provideCancelVoucherDigitalUseCase(@ApplicationContext context: Context): FlightCancelVoucherUseCase {
+        return FlightCancelVoucherUseCase(context, GraphqlUseCase())
     }
 
     @PromoCheckoutQualifier

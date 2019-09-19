@@ -16,11 +16,10 @@ import com.tokopedia.discovery.newdiscovery.category.domain.usecase.GetCategoryH
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.helper.CategoryModelHelper;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
-import com.tokopedia.user.session.UserSession;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
@@ -66,7 +65,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
             SearchParameter searchParameter = generateSearchParameter(categoryHeaderModel.getDepartementId());
 
             getProductUseCase.execute(
-                    GetProductUseCase.createInitializeSearchParam(searchParameter, false),
+                    GetProductUseCase.createInitializeSearchParam(searchParameter),
                     new CategoryProductSubscriber(categoryHeaderModel)
             );
         }
@@ -117,7 +116,7 @@ public class CategoryPresenter extends DiscoveryPresenter<CategoryContract.View,
             if (isViewAttached()) {
                 SearchParameter searchParameter = generateSearchParameter(categoryHeaderModel.getDepartementId());
 
-                RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false);
+                RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter);
                 if (filterParam != null && filterParam.size() > 0) {
                     requestParams.putAll(filterParam);
                 }

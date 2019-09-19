@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dp_8"
                     android:layout_marginRight="@dimen/dp_8"
-                    android:src="@drawable/ic_tips_bulb" />
+                    app:srcCompat="@drawable/ic_tips_bulb" />
 
                 <TextView
                     android:id="@+id/tv_insurance_long_info"

@@ -62,7 +62,7 @@
     <string name="flight_dashboard_at_least_one_adult_error">Harus ada penumpang dewasa</string>
     <string name="flight_dashboard_fligh_class_is_empty">Jenis Kelas penerbangan tidak boleh kosong</string>
     <string name="flight_label_refundable_info">Refundable</string>
-    <string name="flight_label_non_refundable_info">Non-Refundable</string>
+    <string name="flight_label_non_refundable_info">Non-refundable</string>
     <string name="departure_0000_to_0600">00:00 – 06:00</string>
     <string name="departure_0600_to_1200">06:00 – 12:00</string>
     <string name="departure_1200_to_1800">12:00 – 18:00</string>
@@ -72,7 +72,7 @@
     <string name="two_transit">2 Transit</string>
     <string name="more_than_2_transit">Lebih dari 2 transit</string>
     <string name="refundable">Refundable</string>
-    <string name="non_refundable">Non-Refundable</string>
+    <string name="non_refundable">Non-refundable</string>
     <string name="partial_refundable">Partial Refundable</string>
     <string name="flight_search_filter_label">Filter</string>
     <string name="flight_search_sort_label">Urutkan</string>
@@ -409,20 +409,10 @@
     <string name="flight_cancellation_list_id" formatted="false">Cancellation ID: %s</string>
     <string name="flight_cancellation_list_created_time" formatted="false">Tanggal Pembatalan: %s</string>
     <string name="flight_cancellation_cancelled_passegner_detail">Detail Penumpang yang Dibatalkan</string>
-    <string name="flight_cancellation_detail_refund_information_label">Informasi Refund</string>
+    <string name="flight_cancellation_detail_refund_information_label">Detail Refund</string>
     <string name="flight_cancellation_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_estimate_refund_label">Estimasi Refund</string>
-    <string name="flight_cancellation_passenger_status" formatted="false">Pembatalan tiket %s</string>
-    <string name="flight_cancellation_ticket_status_in_progress" formatted="false">Terdapat %d proses pembatalan tiket.</string>
-    <string name="flight_cancellation_ticket_status">Terdapat pembatalan pada tiket ini.</string>
     <string name="flight_label_cancellation_date">Tanggal Pembatalan</string>
-    <string name="flight_cancellation_status_success">Pembatalan Berhasil</string>
-    <string name="flight_cancellation_status_failed">Pembatalan Gagal</string>
-    <string name="flight_cancellation_status_on_progress">Pembatalan Sedang Diproses</string>
-    <string name="flight_cancellation_list_status_requested">DALAM PENGAJUAN</string>
-    <string name="flight_cancellation_list_status_pending">MENUNGGU PERSETUJUAN</string>
-    <string name="flight_cancellation_list_status_refunded">BERHASIL</string>
-    <string name="flight_cancellation_list_status_aborted">GAGAL</string>
     <string name="flight_cancellation_journey_title" formatted="false">Penerbangan %d - %s</string>
     <string name="flight_cancellation_review_dialog_description">Apakah anda yakin ingin membatalkan pesanan?</string>
     <string name="flight_cancellation_review_journey_number">Penerbangan %d</string>
@@ -483,4 +473,5 @@
     <string name="flight_search_choose_departure_flight">Pilih Penerbangan Pergi</string>
     <string name="flight_search_choose_return_flight">Pilih Penerbangan Pulang</string>
     <string name="flight_terminal_info">Terminal %s*</string>
+    <string name="flight_airport_less_than_three_keyword_error">Lengkapi nama kota atau bandara yang kamu cari</string>
 </resources>

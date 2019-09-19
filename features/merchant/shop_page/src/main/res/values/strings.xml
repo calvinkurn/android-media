@@ -36,6 +36,7 @@
     <!-- Shop Info -->
     <string name="shop_info_title">Shop Info</string>
     <string name="shop_info_title_tab_product">Produk</string>
+    <string name="shop_info_title_tab_home">Home</string>
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
@@ -108,6 +109,12 @@
     <string name="dashboard_x_points">%1$s poin</string>
     <string name="total_point_format">(%1$s)</string>
 
+    <string name="moderate_shop_error">Oops… Request moderasi gagal</string>
+    <string name="moderate_shop_success">Request moderasi toko berhasil</string>
+    <string name="moderate_shop_title">Permintaan untuk membuka moderasi toko</string>
+    <string name="moderate_shop_option_1">Saya sudah mematuhi syarat &amp; ketentuan yang ditetapkan oleh Tokopedia.</string>
+    <string name="moderate_shop_option_2">Saya sudah memperbaiki konten yang ada di toko saya.</string>
+
     <string name="reputation_value_not_appear">Belum ada Nilai Reputasi</string>
     <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_page_speed_shop_not_available">Belum Tersedia</string>
@@ -144,4 +151,13 @@
     <string name="tablayout_new_text">Baru</string>
     <string name="x_product">%1$s Produk</string>
 
+    <string name="string_btn_whitelist">Buat Post</string>
+    <string name="empty_feed_title">Tingkatkan Penjualanmu</string>
+    <string name="empty_feed_subtitle">Yuk, post promo dan update dari Tokomu \nsupaya makin banyak yang belanja!</string>
+    <string name="empty_feed_btn">Post Sekarang</string>
+    
+    <string name="masuk_yuk">Masuk yuk</string>
+    <string name="mau_akses_semua_fitur">Mau akses semua fitur?</string>
+
+    <string name="label_cart">Keranjang</string>
 </resources>

@@ -101,9 +101,11 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
     private class SaveDraftSubscriber extends Subscriber<Long> {
 
         boolean isUploading;
+
         SaveDraftSubscriber(boolean isUploading) {
             this.isUploading = isUploading;
         }
+
         @Override
         public void onCompleted() {
 
@@ -133,7 +135,7 @@ public class ProductAddPresenterImpl<T extends ProductAddView> extends BaseDagge
                 isUploading);
     }
 
-    private long getProductDraftId(){
+    private long getProductDraftId() {
         return getView().getProductDraftId();
     }
 

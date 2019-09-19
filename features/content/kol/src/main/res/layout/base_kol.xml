@@ -124,7 +124,7 @@
             android:layout_gravity="center"
             android:layout_marginEnd="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
-            android:src="@drawable/ic_menu_dots"
+            app:srcCompat="@drawable/ic_menu_dots"
             android:visibility="gone"
             tools:visibility="visible"
             tools:ignore="ContentDescription" />

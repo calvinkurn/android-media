@@ -9,22 +9,6 @@
             android:label="@string/top_ads_title_dashboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Green" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"
-                    android:host="ta.tokopedia.com"
-                    android:pathPrefix="/v2/manage/headline"/>
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="https"
-                    android:host="ta.tokopedia.com"
-                    android:pathPrefix="/v2/manage/keyword/insight"/>
-            </intent-filter>
         </activity>
         <activity
             android:name=".view.activity.TopAdsAddCreditActivity"

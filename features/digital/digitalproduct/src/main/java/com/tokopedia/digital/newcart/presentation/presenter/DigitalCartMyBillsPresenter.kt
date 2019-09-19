@@ -6,9 +6,9 @@ import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUs
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.CheckoutDataParameter
 import com.tokopedia.digital.common.analytic.DigitalAnalytics
+import com.tokopedia.digital.common.domain.interactor.RechargePushEventRecommendationUseCase
 import com.tokopedia.digital.common.router.DigitalModuleRouter
 import com.tokopedia.digital.newcart.constants.DigitalCartCrossSellingType
-import com.tokopedia.digital.newcart.data.cache.DigitalPostPaidLocalCache
 import com.tokopedia.digital.newcart.domain.interactor.ICartDigitalInteractor
 import com.tokopedia.digital.newcart.domain.usecase.DigitalCheckoutUseCase
 import com.tokopedia.digital.newcart.presentation.contract.DigitalCartMyBillsContract
@@ -22,7 +22,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                                                       val userSession: UserSession?,
                                                       digitalCheckoutUseCase: DigitalCheckoutUseCase?,
                                                       digitalInstantCheckoutUseCase: DigitalInstantCheckoutUseCase?,
-                                                      digitalPostPaidLocalCache: DigitalPostPaidLocalCache?) :
+                                                      rechargePushEventRecommendationUseCase: RechargePushEventRecommendationUseCase?) :
         DigitalBaseCartPresenter<DigitalCartMyBillsContract.View>(digitalAddToCartUseCase,
                 digitalAnalytics,
                 digitalModuleRouter,
@@ -30,7 +30,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
                 userSession,
                 digitalCheckoutUseCase,
                 digitalInstantCheckoutUseCase,
-                digitalPostPaidLocalCache), DigitalCartMyBillsContract.Presenter {
+                rechargePushEventRecommendationUseCase), DigitalCartMyBillsContract.Presenter {
     override fun onSubcriptionCheckedListener(checked: Boolean) {
 
         if (checked) {
@@ -43,6 +43,7 @@ class DigitalCartMyBillsPresenter @Inject constructor(digitalAddToCartUseCase: D
     override fun onMyBillsViewCreated() {
         view.setCheckoutParameter(buildCheckoutData(view.cartInfoData, userSession?.accessToken))
         renderBaseCart(view.cartInfoData)
+        renderPostPaidPopUp(view.cartInfoData)
         view.renderCategoryInfo(view.cartInfoData.attributes!!.categoryName)
         if (view.cartInfoData.crossSellingConfig != null) {
             view.updateCheckoutButtonText(view.cartInfoData.crossSellingConfig!!.checkoutButtonText)

@@ -7,8 +7,7 @@ import android.os.Parcelable
  * @author anggaprasetiyo on 2/24/17.
  */
 
-class DigitalCheckoutPassData : Parcelable {
-
+class DigitalCheckoutPassData() : Parcelable {
 
     var action: String? = null
     var categoryId: String? = null
@@ -25,7 +24,7 @@ class DigitalCheckoutPassData : Parcelable {
     var voucherCodeCopied: String? = null
     var source: Int = 0
 
-    private constructor(builder: Builder) {
+    private constructor(builder: Builder): this() {
         action = builder.action
         categoryId = builder.categoryId
         clientNumber = builder.clientNumber
@@ -42,7 +41,7 @@ class DigitalCheckoutPassData : Parcelable {
         source = builder.source
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         action = `in`.readString()
         categoryId = `in`.readString()
         clientNumber = `in`.readString()
@@ -58,8 +57,6 @@ class DigitalCheckoutPassData : Parcelable {
         voucherCodeCopied = `in`.readString()
         source = `in`.readInt()
     }
-
-    constructor() {}
 
     override fun describeContents(): Int {
         return 0

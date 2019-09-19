@@ -1,0 +1,20 @@
+#!/bin/sh
+# to use, copy this file into your .git/hooks folder in your git repo
+# make sure to add execute permissions using: chmod +x .git/hooks/pre-commit
+command -v tinypng >/dev/null 2>&1 || {
+    echo "Installing tinypng-cli"
+    npm install -g tinypng-cli
+    echo "Please install manually if any error occurs, you can refer to below link"
+    echo "\t Site: \033[1m\033[4mhttps://www.npmjs.com/package/tinypng-cli\033[0m"
+    #exit 1;
+}
+
+for file in $(git diff --diff-filter=d --staged --name-only | grep ".png\|.jpg\|.jpeg")
+do
+  echo "Crushing $file"
+  tinypng $file -k 6q4OXCyMdyCExeU4U0DZDeuhCisONRY2
+  git add $file;
+  #mv -f ${file%.jpg}.new $file
+done
+
+#git diff --diff-filter=ACM --name-only HEAD | grep ".png\|.jpg" | xargs tinypng -k JeyuQt7BvAPMu9TQNy8C2uSMVqY3Qcsf

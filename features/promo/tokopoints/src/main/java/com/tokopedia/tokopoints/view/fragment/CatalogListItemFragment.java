@@ -21,12 +21,13 @@ import android.widget.ViewFlipper;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.library.baseadapter.AdapterCallback;
+import com.tokopedia.library.baseadapter.BaseItem;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
-import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
@@ -46,7 +47,7 @@ import javax.inject.Inject;
 import static com.tokopedia.tokopoints.view.util.CommonConstant.ARGS_CATEGORY_ID;
 import static com.tokopedia.tokopoints.view.util.CommonConstant.ARGS_SORT_TYPE;
 
-public class CatalogListItemFragment extends BaseDaggerFragment implements CatalogListItemContract.View, View.OnClickListener {
+public class CatalogListItemFragment extends BaseDaggerFragment implements CatalogListItemContract.View, View.OnClickListener, AdapterCallback {
 
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
@@ -63,9 +64,12 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         @Override
         public void run() {
             List<Integer> items = new ArrayList<>();
-            for (CatalogsValueEntity each : mAdapter.getItems()) {
-                if (each.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
-                    items.add(each.getId());
+            for (BaseItem each : mAdapter.getItems()) {
+                if (each instanceof CatalogsValueEntity) {
+                    CatalogsValueEntity entity = (CatalogsValueEntity) each;
+                    if (entity.getCatalogType() == CommonConstant.CATALOG_TYPE_FLASH_SALE) {
+                        items.add(entity.getId());
+                    }
                 }
             }
 
@@ -76,6 +80,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
     @Inject
     public CatalogListItemPresenter mPresenter;
     private SwipeToRefresh mSwipeToRefresh;
+    private boolean showFirstTimeLoader = true;
 
     public static Fragment newInstance(int categoryId, int subCategoryId, boolean isPointsAvailable) {
         Fragment fragment = new CatalogListItemFragment();
@@ -96,10 +101,10 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         fetchRemoteConfig();
         View rootView = inflater.inflate(R.layout.tp_fragment_catalog_tabs_item, container, false);
         mRecyclerViewCatalog = rootView.findViewById(R.id.list_catalog_item);
-        mSwipeToRefresh =rootView.findViewById(R.id.swipe_refresh_layout);
-        if(getPointsAvailability()) {           // set padding of recycler view according to membershipdata availability
+        mSwipeToRefresh = rootView.findViewById(R.id.swipe_refresh_layout);
+        if (getPointsAvailability()) {           // set padding of recycler view according to membershipdata availability
             mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_membership_and_egg));
-        }else{
+        } else {
             mRecyclerViewCatalog.setPadding(0, 0, 0, getResources().getDimensionPixelSize(R.dimen.tp_margin_bottom_egg));
         }
         mContainer = rootView.findViewById(R.id.container);
@@ -173,22 +178,6 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
             onEmptyCatalog();
             return;
         }
-
-        hideLoader();
-        if (mAdapter != null) {
-            mAdapter.updateItems(items);
-            mAdapter.notifyDataSetChanged();
-        } else {
-            mAdapter = new CatalogListAdapter(mPresenter, items);
-            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
-                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
-                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14)));
-            mRecyclerViewCatalog.setAdapter(mAdapter);
-        }
-
-        if (mTimer == null) {
-            startUpdateCatalogStatusTimer();
-        }
     }
 
     @Override
@@ -228,13 +217,14 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         return CommonConstant.DEFAULT_CATEGORY_TYPE; // default category id
     }
 
-    public boolean getPointsAvailability(){
-        if(getArguments()!=null){
+    public boolean getPointsAvailability() {
+        if (getArguments() != null) {
             return getArguments().getBoolean(CommonConstant.ARGS_POINTS_AVAILABILITY, false);
         }
         return false;
     }
 
+    @Override
     public void showRedeemCouponDialog(String cta, String code, String title) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
         adb.setTitle(R.string.tp_label_use_coupon);
@@ -269,6 +259,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         decorateDialog(dialog);
     }
 
+    @Override
     public void showConfirmRedeemDialog(String cta, String code, String title) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
         adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> {
@@ -302,6 +293,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
                 title);
     }
 
+    @Override
     public void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
         String labelPositive;
@@ -543,7 +535,72 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
-        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
+        SendGiftFragment sendGiftFragment = new SendGiftFragment();
+        sendGiftFragment.setArguments(bundle);
+        sendGiftFragment.show(getChildFragmentManager(), CommonConstant.FRAGMENT_DETAIL_TOKOPOINT);
+    }
+
+    @Override
+    public void populateCatalog(int categoryId, int subCategoryId, int pointRange, boolean showLoader) {
+        this.showFirstTimeLoader = showLoader;
+        mAdapter = new CatalogListAdapter(mPresenter, getContext(), this, categoryId, subCategoryId, pointRange, false);
+        if (mRecyclerViewCatalog.getItemDecorationCount() == 0) {
+            mRecyclerViewCatalog.addItemDecoration(new SpacesItemDecoration(getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_10),
+                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14),
+                    getActivityContext().getResources().getDimensionPixelOffset(R.dimen.dp_14)));
+        }
+        mRecyclerViewCatalog.setAdapter(mAdapter);
+        mAdapter.startDataLoading();
+
+    }
+
+    @Override
+    public void onRetryPageLoad(int pageNumber) {
+
+    }
+
+    @Override
+    public void onEmptyList(Object rawObject) {
+        onEmptyCatalog();
+    }
+
+    @Override
+    public void onStartFirstPageLoad() {
+        if (showFirstTimeLoader) {
+            showLoader();
+        }
+
+    }
+
+    @Override
+    public void onFinishFirstPageLoad(int itemCount, @Nullable Object rawObject) {
+        hideLoader();
+        if (itemCount == -1) {
+            showError();
+        } else {
+            if (mTimer == null) {
+                startUpdateCatalogStatusTimer();
+            }
+        }
+
+    }
+
+    @Override
+    public void onStartPageLoad(int pageNumber) {
+
+    }
+
+    @Override
+    public void onFinishPageLoad(int itemCount, int pageNumber, @Nullable Object rawObject) {
+
+    }
+
+    @Override
+    public void onError(int pageNumber) {
+        if (pageNumber == 1) {
+            showError();
+        }
+
     }
 }
 

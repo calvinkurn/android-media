@@ -45,6 +45,12 @@ public class ShopProductCheckoutRequest implements Parcelable {
     @SerializedName("promo_codes")
     @Expose
     public ArrayList<String> promoCodes;
+    @SerializedName("is_order_priority")
+    @Expose
+    public int isOrderPriority;
+
+    // Additional data, won't be dispatched over network
+    public String cartString = "";
 
     public ShopProductCheckoutRequest() {
     }
@@ -60,6 +66,8 @@ public class ShopProductCheckoutRequest implements Parcelable {
         fcancelPartial = builder.fcancelPartial;
         warehouseId = builder.warehouseId;
         promoCodes = builder.promoCodes;
+        isOrderPriority = builder.isOrderPriority;
+        cartString = builder.cartString;
     }
 
 
@@ -74,6 +82,8 @@ public class ShopProductCheckoutRequest implements Parcelable {
         fcancelPartial = in.readInt();
         warehouseId = in.readInt();
         promoCodes = in.createStringArrayList();
+        isOrderPriority = in.readInt();
+        cartString = in.readString();
     }
 
     @Override
@@ -88,6 +98,8 @@ public class ShopProductCheckoutRequest implements Parcelable {
         dest.writeInt(fcancelPartial);
         dest.writeInt(warehouseId);
         dest.writeStringList(promoCodes);
+        dest.writeInt(isOrderPriority);
+        dest.writeString(cartString);
     }
 
     @Override
@@ -122,6 +134,8 @@ public class ShopProductCheckoutRequest implements Parcelable {
         private int fcancelPartial;
         private int warehouseId;
         private ArrayList<String> promoCodes;
+        private int isOrderPriority;
+        private String cartString;
 
         public Builder() {
         }
@@ -171,8 +185,18 @@ public class ShopProductCheckoutRequest implements Parcelable {
             return this;
         }
 
-        public Builder promoCodes(ArrayList<String> val){
+        public Builder promoCodes(ArrayList<String> val) {
             promoCodes = val;
+            return this;
+        }
+
+        public Builder isOrderPriority(int val) {
+            isOrderPriority = val;
+            return this;
+        }
+
+        public Builder cartString(String val) {
+            cartString = val;
             return this;
         }
 

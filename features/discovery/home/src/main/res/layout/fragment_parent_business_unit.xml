@@ -61,7 +61,7 @@
             android:layout_height="@dimen/dp_1"
             android:background="@color/grey_100" />
 
-        <com.tokopedia.home.beranda.presentation.view.adapter.viewholder.widget_business.HomeWidgetViewPager
+        <com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.HomeWidgetViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="144dp"
@@ -114,7 +114,7 @@
                     android:layout_width="@dimen/dp_32"
                     android:layout_height="@dimen/dp_32"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_reload_yellow_32dp"
+                    app:srcCompat="@drawable/ic_reload_yellow_32dp"
                     />
 
             </FrameLayout>

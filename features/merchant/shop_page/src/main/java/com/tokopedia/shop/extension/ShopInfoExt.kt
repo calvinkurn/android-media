@@ -1,6 +1,6 @@
 package com.tokopedia.shop.extension
 
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoShipment
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopShipment
 import com.tokopedia.shop.info.view.model.ShopInfoLogisticViewModel
 import com.tokopedia.shop.note.data.source.cloud.model.ShopNote
 import com.tokopedia.shop.note.view.model.ShopNoteViewModel
@@ -10,12 +10,12 @@ const val THOUSAND = 1000
 const val MILLION = 1000000
 val df = DecimalFormat("###.##")
 
-fun ShopInfoShipment.transformToVisitable(): ShopInfoLogisticViewModel {
+fun ShopShipment.transformToVisitable(): ShopInfoLogisticViewModel {
     return ShopInfoLogisticViewModel().also {
-        it.shipmentImage = this.shipmentImage
-        it.shipmentName = this.shipmentName
-        it.shipmentPackage = this.shipmentPackage
-                .mapNotNull { shipmentPackage -> shipmentPackage.productName }
+        it.shipmentImage = this.image
+        it.shipmentName = this.name
+        it.shipmentPackage = this.product
+                .map { shipmentPackage -> shipmentPackage.name }
                 .joinToString(separator = ", ")
     }
 }

@@ -3,10 +3,12 @@ package com.tokopedia.seller.product.etalase.view.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
+import com.tokopedia.seller.ProductEditItemComponentInstance;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -15,6 +17,8 @@ import com.tokopedia.seller.product.etalase.view.dialog.AddEtalaseDialog;
 import com.tokopedia.seller.product.etalase.view.fragment.EtalasePickerFragment;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerFragmentListener;
 import com.tokopedia.seller.product.etalase.view.listener.EtalasePickerView;
+
+import java.util.List;
 
 /**
  * @author sebastianuskh on 4/5/17.
@@ -59,7 +63,14 @@ public class EtalasePickerActivity extends BaseSimpleActivity implements HasComp
 
     @Override
     protected Fragment getNewFragment() {
-        long etalaseId = getIntent().getLongExtra(SELECTED_ETALASE_ID, UNSELECTED_ETALASE_ID);
+        long etalaseId;
+        Uri uri = getIntent().getData();
+        if (uri != null){
+            List<String> segments = uri.getPathSegments();
+            etalaseId = Long.parseLong(segments.get(segments.size() - 1));
+        } else {
+            etalaseId = getIntent().getLongExtra(SELECTED_ETALASE_ID, UNSELECTED_ETALASE_ID);
+        }
         return EtalasePickerFragment.createInstance(etalaseId);
     }
 
@@ -70,6 +81,6 @@ public class EtalasePickerActivity extends BaseSimpleActivity implements HasComp
 
     @Override
     public ProductComponent getComponent() {
-        return ((SellerModuleRouter) getApplication()).getProductComponent();
+        return ProductEditItemComponentInstance.getComponent(getApplication());
     }
 }

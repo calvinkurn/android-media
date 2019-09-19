@@ -26,6 +26,7 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
 
     private static final String EXTRA_APPLINK = "EXTRA_APPLINK";
     private static final String EXTRA_APPLINK_UNSUPPORTED = "EXTRA_APPLINK_UNSUPPORTED";
+    private static final String EXTRA_APPLINK_CONTENT = "content";
 
     @Inject
     AffContract.Presenter presenter;
@@ -52,7 +53,11 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
                     path.add(data.getPathSegments().get(i));
                 }
                 presenter.getTrackingUrl(affName, TextUtils.join("/", path));
-                affiliateAnalytics.onAfterClickTokopediMe(data.toString());
+                if (path.size() > 1 && path.get(0).equalsIgnoreCase(EXTRA_APPLINK_CONTENT)) {
+                    affiliateAnalytics.onAfterClickContentDetail(path.get(1));
+                } else {
+                    affiliateAnalytics.onAfterClickTokopediMe(data.toString());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -101,8 +106,8 @@ public class AffiliateTrackingActivity extends BaseActivity implements AffContra
     private void startHomeActivity(String applink) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(this);
 
-        Intent homeIntent = RouteManager.getIntent(this, ApplinkConst.HOME);
-        taskStackBuilder.addNextIntent(homeIntent);
+        Intent feedIntent = RouteManager.getIntent(this, ApplinkConst.FEED);
+        taskStackBuilder.addNextIntent(feedIntent);
 
         Intent intent = RouteManager.getIntent(this, applink);
         taskStackBuilder.addNextIntent(intent);

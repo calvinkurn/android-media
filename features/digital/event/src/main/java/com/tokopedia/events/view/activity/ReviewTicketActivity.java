@@ -2,15 +2,18 @@ package com.tokopedia.events.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.InputType;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -18,123 +21,82 @@ import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
-import com.tokopedia.events.R2;
 import com.tokopedia.events.view.contractor.EventReviewTicketsContractor;
 import com.tokopedia.events.view.presenter.EventReviewTicketPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsAnalytics;
 import com.tokopedia.events.view.utils.EventsGAConst;
-import com.tokopedia.events.view.utils.ImageTextViewHolder;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
+import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-import butterknife.OnFocusChange;
-
 public class ReviewTicketActivity extends EventBaseActivity implements
-        EventReviewTicketsContractor.EventReviewTicketsView {
+        EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
 
-    @BindView(R2.id.event_image_small)
     ImageView eventImageSmall;
-    @BindView(R2.id.event_name_tv)
     TextView eventNameTv;
-    @BindView(R2.id.event_time_tv)
     View eventTimeTv;
-    @BindView(R2.id.event_address_tv)
     View eventAddressTv;
-    @BindView(R2.id.event_total_tickets)
     TextView eventTotalTickets;
-    @BindView(R2.id.tv_ticket_summary)
     TextView tvTicketSummary;
-    @BindView(R2.id.tv_visitor_names)
     EditText tvEmailID;
-    @BindView(R2.id.tv_telephone)
     EditText tvTelephone;
-    @BindView(R2.id.tv_base_fare)
     TextView tvBaseFare;
-    @BindView(R2.id.tv_conv_fees)
     TextView tvConvFees;
-    @BindView(R2.id.tv_total_price)
     TextView tvTotalPrice;
-    @BindView(R2.id.button_textview)
     TextView buttonTextview;
-    @BindView(R2.id.base_fare_break)
     TextView baseFareBreak;
-    @BindView(R2.id.btn_go_to_payment)
     View btnGoToPayment;
-    @BindView(R2.id.ed_promo_layout)
     View edPromoLayout;
-    @BindView(R2.id.progress_bar_layout)
     View progressBarLayout;
-    @BindView(R2.id.prog_bar)
     ProgressBar progBar;
-    @BindView(R2.id.update_email)
     View updateEmail;
-    @BindView(R2.id.update_number)
     View updateNumber;
-    @BindView(R2.id.scroll_view)
     ScrollView scrollView;
-    @BindView(R2.id.form_layout)
     View formLayout;
-    @BindView(R2.id.ed_form_1)
     EditText edForm1;
-    @BindView(R2.id.ed_form_2)
     EditText edForm2;
-    @BindView(R2.id.ed_form_3)
     EditText edForm3;
-    @BindView(R2.id.ed_form_4)
     EditText edForm4;
-    @BindView(R2.id.main_content)
     FrameLayout mainContent;
-    @BindView(R2.id.tv_promo_success_msg)
     TextView tvPromoSuccessMsg;
-    @BindView(R2.id.tv_promo_cashback_msg)
     TextView tvPromoCashbackMsg;
-    @BindView(R2.id.batal)
     TextView batal;
-    @BindView(R2.id.tooltip_layout)
     View tooltipLayout;
-    @BindView(R2.id.info_email)
     ImageView infoEmail;
-    @BindView(R2.id.info_moreinfo)
     ImageView infoMoreinfo;
-    @BindView(R2.id.tooltipinfo_title)
     TextView tooltipTitle;
-    @BindView(R2.id.tooltipinfo_subtitle)
     TextView tooltipSubtitle;
-    @BindView(R2.id.button_dismisstooltip)
     TextView dismissTooltip;
-    @BindView(R2.id.tv_ticket_cnt_type)
     TextView tvTicketCntType;
-    @BindView(R2.id.selected_seats_layout)
     View selectedSeatLayout;
-    @BindView(R2.id.seat_numbers)
     TextView seatNumbers;
-    @BindView(R2.id.goto_promo)
+    TextView gotoPromoTv;
     View gotoPromo;
-    @BindView(R2.id.rl_section_discount)
     View sectionDiscount;
-    @BindView(R2.id.tv_discount)
     TextView tvDiscount;
+    LinearLayout formsLayout;
 
     private int baseFare;
     private int convFees;
+
+    private List<EditText> formsList = new ArrayList<>();
 
     EventReviewTicketsContractor.EventReviewTicketPresenter eventReviewTicketPresenter;
 
     public static final int PAYMENT_REQUEST_CODE = 65000;
     public static final int PAYMENT_SUCCESS = 5;
-    private ImageTextViewHolder timeHolder;
-    private ImageTextViewHolder addressHolder;
+    private TextView dateRangeName, cityName;
+    private ImageView dateImageView, cityImageView;
     private EventsAnalytics eventsAnalytics;
 
     @Override
@@ -171,22 +133,90 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     }
 
     @Override
-    public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats) {
+    void setupVariables() {
+        eventImageSmall = findViewById(R.id.event_image_small);
+        eventNameTv = findViewById(R.id.event_name_tv);
+        eventTimeTv = findViewById(R.id.event_time_tv);
+        eventAddressTv = findViewById(R.id.event_address_tv);
+        eventTotalTickets = findViewById(R.id.event_total_tickets);
+        tvTicketSummary = findViewById(R.id.tv_ticket_summary);
+        tvEmailID = findViewById(R.id.tv_visitor_names);
+        tvTelephone = findViewById(R.id.tv_telephone);
+        tvBaseFare = findViewById(R.id.tv_base_fare);
+        tvConvFees = findViewById(R.id.tv_conv_fees);
+        tvTotalPrice = findViewById(R.id.tv_total_price);
+        buttonTextview = findViewById(R.id.button_textview);
+        baseFareBreak = findViewById(R.id.base_fare_break);
+        btnGoToPayment = findViewById(R.id.btn_go_to_payment);
+        edPromoLayout = findViewById(R.id.ed_promo_layout);
+        progressBarLayout = findViewById(R.id.progress_bar_layout);
+        progBar = findViewById(R.id.prog_bar);
+        updateEmail = findViewById(R.id.update_email);
+        updateNumber = findViewById(R.id.update_number);
+        scrollView = findViewById(R.id.scroll_view);
+        formLayout = findViewById(R.id.form_layout);
+        mainContent = findViewById(R.id.main_content);
+        formsLayout = findViewById(R.id.forms_layout);
+        tvPromoSuccessMsg = findViewById(R.id.tv_promo_success_msg);
+        tvPromoCashbackMsg = findViewById(R.id.tv_promo_cashback_msg);
+        batal = findViewById(R.id.batal);
+        tooltipLayout = findViewById(R.id.tooltip_layout);
+        infoEmail = findViewById(R.id.info_email);
+        infoMoreinfo = findViewById(R.id.info_moreinfo);
+        tooltipTitle = findViewById(R.id.tooltipinfo_title);
+        tooltipSubtitle = findViewById(R.id.tooltipinfo_subtitle);
+        dismissTooltip = findViewById(R.id.button_dismisstooltip);
+        tvTicketCntType = findViewById(R.id.tv_ticket_cnt_type);
+        selectedSeatLayout = findViewById(R.id.selected_seats_layout);
+        seatNumbers = findViewById(R.id.seat_numbers);
+        gotoPromo = findViewById(R.id.goto_promo);
+        gotoPromoTv = findViewById(R.id.goto_promo_tv);
+        sectionDiscount = findViewById(R.id.rl_section_discount);
+        tvDiscount = findViewById(R.id.tv_discount);
+
+        View view = findViewById(R.id.event_time_tv);
+        dateRangeName = view.findViewById(R.id.textview_holder_small);
+        dateImageView = view.findViewById(R.id.image_holder_small);
+
+        View cityView = findViewById(R.id.event_address_tv);
+        cityName = cityView.findViewById(R.id.textview_holder_small);
+        cityImageView = cityView.findViewById(R.id.image_holder_small);
+
+        btnGoToPayment.setOnClickListener(this);
+        infoEmail.setOnClickListener(this);
+        infoMoreinfo.setOnClickListener(this);
+        updateEmail.setOnClickListener(this);
+        updateNumber.setOnClickListener(this);
+        batal.setOnClickListener(this);
+        gotoPromo.setOnClickListener(this);
+        dismissTooltip.setOnClickListener(this);
+
+    }
+
+    @Override
+    public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats, int customText1) {
+        gotoPromoTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
+                (this, R.drawable.promo_code), null, null, null);
+
+        int result = customText1 & 4096;
+        if (result == 0) {
+            gotoPromo.setVisibility(View.VISIBLE);
+        } else {
+            gotoPromo.setVisibility(View.GONE);
+        }
         toolbar.setTitle(packageViewModel.getTitle());
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_black);
         String timerange = packageViewModel.getTimeRange();
         ImageHandler.loadImageCover2(eventImageSmall, packageViewModel.getThumbnailApp());
-        timeHolder = new ImageTextViewHolder();
-        addressHolder = new ImageTextViewHolder();
-        ButterKnife.bind(timeHolder, eventTimeTv);
-        ButterKnife.bind(addressHolder, eventAddressTv);
         eventNameTv.setText(packageViewModel.getDisplayName());
         if (timerange == null || timerange.length() == 0) {
             eventTimeTv.setVisibility(View.GONE);
         } else {
-            setHolder(R.drawable.ic_time, timerange, timeHolder);
+            dateImageView.setImageResource(R.drawable.ic_time);
+            dateRangeName.setText(timerange);
         }
-        setHolder(R.drawable.ic_skyline, packageViewModel.getAddress(), addressHolder);
+        cityName.setText(packageViewModel.getAddress());
+        cityImageView.setImageResource(R.drawable.ic_placeholder);
         eventTotalTickets.setText(String.format(getString(R.string.jumlah_tiket),
                 packageViewModel.getSelectedQuantity()));
 
@@ -241,23 +271,20 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     public void initForms(String[] hintText, String[] regex) {
         formLayout.setVisibility(View.VISIBLE);
+        formsLayout.setVisibility(View.VISIBLE);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.rightMargin = getResources().getDimensionPixelOffset(R.dimen.dp_16);
         try {
-            edForm1.setHint(hintText[0]);
-            edForm1.setVisibility(View.VISIBLE);
-            edForm1.setTag(regex[0]);
-
-            edForm2.setHint(hintText[1]);
-            edForm2.setVisibility(View.VISIBLE);
-            edForm2.setTag(regex[1]);
-
-            edForm3.setHint(hintText[2]);
-            edForm3.setVisibility(View.VISIBLE);
-            edForm3.setTag(regex[2]);
-
-            edForm4.setHint(hintText[3]);
-            edForm4.setVisibility(View.VISIBLE);
-            edForm4.setTag(regex[3]);
-
+            for (int i = 0; i < hintText.length; i++) {
+                EditText editText = new EditText(this);
+                editText.setHint(hintText[i]);
+                editText.setTag(regex[i]);
+                editText.setTextColor(getResources().getColor(R.color.grey_500));
+                editText.setTextSize(14);
+                editText.setLayoutParams(params);
+                formsLayout.addView(editText);
+                formsList.add(editText);
+            }
         } catch (IndexOutOfBoundsException e) {
             e.printStackTrace();
         }
@@ -302,107 +329,10 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     public boolean validateAllFields() {
         boolean result = true;
-        if (edForm1.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm1);
-        if (edForm2.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm2);
-        if (edForm3.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm3);
-        if (edForm4.getVisibility() == View.VISIBLE)
-            result = result && eventReviewTicketPresenter.validateEditText(edForm4);
+        for (int i= 0; i<formsList.size(); i++) {
+            result = result && eventReviewTicketPresenter.validateEditText(formsList.get(i));
+        }
         return result;
-    }
-
-    @OnClick(R2.id.btn_go_to_payment)
-    void clickPay() {
-        eventReviewTicketPresenter.updateEmail(tvEmailID.getText().toString());
-        eventReviewTicketPresenter.updateNumber(tvTelephone.getText().toString());
-        eventReviewTicketPresenter.proceedToPayment();
-    }
-
-    @OnClick(R2.id.update_email)
-    void updateEmail() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (!tvEmailID.isEnabled()) {
-            tvTelephone.setEnabled(false);
-            tvTelephone.setTextIsSelectable(false);
-            tvTelephone.setFocusable(false);
-            tvTelephone.setInputType(InputType.TYPE_NULL);
-            tvEmailID.setEnabled(true);
-            tvEmailID.setTextIsSelectable(true);
-            tvEmailID.setFocusable(true);
-            tvEmailID.setFocusableInTouchMode(true);
-            tvEmailID.setSelection(tvEmailID.getText().length());
-            tvEmailID.setInputType(InputType.TYPE_CLASS_TEXT);
-            tvEmailID.requestFocus();
-            imm.showSoftInput(tvEmailID, InputMethodManager.SHOW_IMPLICIT);
-        } else {
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(tvEmailID.getWindowToken(), 0);
-            }
-            tvEmailID.setEnabled(false);
-            tvEmailID.setTextIsSelectable(false);
-            tvEmailID.setFocusable(false);
-            tvEmailID.setInputType(InputType.TYPE_NULL);
-            tvEmailID.clearFocus();
-            mainContent.requestFocus();
-        }
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_EMAIL, "");
-        eventReviewTicketPresenter.updateEmail(tvEmailID.getText().toString());
-    }
-
-    @OnClick(R2.id.update_number)
-    void updateNumber() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (!tvTelephone.isEnabled()) {
-            tvEmailID.setEnabled(false);
-            tvEmailID.setTextIsSelectable(false);
-            tvEmailID.setFocusable(false);
-            tvEmailID.setInputType(InputType.TYPE_NULL);
-            tvTelephone.setEnabled(true);
-            tvTelephone.setTextIsSelectable(true);
-            tvTelephone.setSelection(tvTelephone.getText().length());
-            tvTelephone.setFocusable(true);
-            tvTelephone.setFocusableInTouchMode(true);
-            tvTelephone.setInputType(InputType.TYPE_CLASS_TEXT);
-            tvTelephone.requestFocus();
-            imm.showSoftInput(tvTelephone, InputMethodManager.SHOW_IMPLICIT);
-        } else {
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(tvTelephone.getWindowToken(), 0);
-            }
-            tvTelephone.setEnabled(false);
-            tvTelephone.setTextIsSelectable(false);
-            tvTelephone.setFocusable(false);
-            tvTelephone.setInputType(InputType.TYPE_NULL);
-            tvTelephone.clearFocus();
-            mainContent.requestFocus();
-        }
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_NUMBER, "");
-        eventReviewTicketPresenter.updateNumber(tvTelephone.getText().toString());
-    }
-
-    @OnClick(R2.id.batal)
-    void dismissPromoCode() {
-        eventReviewTicketPresenter.updatePromoCode("");
-        showDiscountSection(0, false);
-        updateTotalPrice(baseFare, convFees, 0);
-    }
-
-    @OnClick({R2.id.info_email,
-            R2.id.info_moreinfo,
-            R2.id.button_dismisstooltip,
-            R2.id.goto_promo})
-    void onClickInfoIcon(View view) {
-        if (view.getId() == R.id.info_email) {
-            eventReviewTicketPresenter.clickEmailIcon();
-        } else if (view.getId() == R.id.info_moreinfo) {
-            eventReviewTicketPresenter.clickMoreinfoIcon();
-        } else if (view.getId() == R.id.button_dismisstooltip) {
-            eventReviewTicketPresenter.clickDismissTooltip();
-        } else if (view.getId() == R.id.goto_promo) {
-            eventReviewTicketPresenter.clickGoToPromo();
-        }
     }
 
     @Override
@@ -412,18 +342,18 @@ public class ReviewTicketActivity extends EventBaseActivity implements
             switch (resultCode) {
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_SUCCESS:
                     getActivity().setResult(PAYMENT_SUCCESS);
-                    eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
+                    eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_SUCCESS);
                     finish();
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_FAILED:
                     showToastMessage(
                             getString(R.string.alert_payment_canceled_or_failed_digital_module)
                     );
-                    eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
+                    eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_FAILURE);
                     break;
                 case com.tokopedia.payment.activity.TopPayActivity.PAYMENT_CANCELLED:
                     showToastMessage(getString(R.string.alert_payment_canceled_digital_module));
-                    eventsAnalytics.eventDigitalEventTracking( EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
+                    eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_PURCHASE_ATTEMPT, EventsGAConst.PAYMENT_CANCELLED);
                     break;
                 default:
                     break;
@@ -477,24 +407,11 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
-    @OnFocusChange({
-            R2.id.ed_form_3,
-            R2.id.ed_form_1,
-            R2.id.ed_form_2,
-            R2.id.ed_form_4})
-    void validateEditText(EditText view) {
-        eventReviewTicketPresenter.validateEditText(view);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
     }
 
-    public void setHolder(int resID, String label, ImageTextViewHolder holder) {
-        holder.setImage(resID);
-        holder.setTextView(label);
-    }
 
     private void showDiscountSection(long discount, boolean show) {
         if (show) {
@@ -527,5 +444,89 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     @Override
     protected Fragment getNewFragment() {
         return null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_go_to_payment) {
+            eventReviewTicketPresenter.updateEmail(tvEmailID.getText().toString());
+            eventReviewTicketPresenter.updateNumber(tvTelephone.getText().toString());
+            eventReviewTicketPresenter.proceedToPayment();
+        } else if (v.getId() == R.id.update_email) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (!tvEmailID.isEnabled()) {
+                tvTelephone.setEnabled(false);
+                tvTelephone.setTextIsSelectable(false);
+                tvTelephone.setFocusable(false);
+                tvTelephone.setInputType(InputType.TYPE_NULL);
+                tvEmailID.setEnabled(true);
+                tvEmailID.setTextIsSelectable(true);
+                tvEmailID.setFocusable(true);
+                tvEmailID.setFocusableInTouchMode(true);
+                tvEmailID.setSelection(tvEmailID.getText().length());
+                tvEmailID.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvEmailID.requestFocus();
+                imm.showSoftInput(tvEmailID, InputMethodManager.SHOW_IMPLICIT);
+            } else {
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(tvEmailID.getWindowToken(), 0);
+                }
+                tvEmailID.setEnabled(false);
+                tvEmailID.setTextIsSelectable(false);
+                tvEmailID.setFocusable(false);
+                tvEmailID.setInputType(InputType.TYPE_NULL);
+                tvEmailID.clearFocus();
+                mainContent.requestFocus();
+            }
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_EMAIL, "");
+            eventReviewTicketPresenter.updateEmail(tvEmailID.getText().toString());
+        } else if (v.getId() == R.id.update_number) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (!tvTelephone.isEnabled()) {
+                tvEmailID.setEnabled(false);
+                tvEmailID.setTextIsSelectable(false);
+                tvEmailID.setFocusable(false);
+                tvEmailID.setInputType(InputType.TYPE_NULL);
+                tvTelephone.setEnabled(true);
+                tvTelephone.setTextIsSelectable(true);
+                tvTelephone.setSelection(tvTelephone.getText().length());
+                tvTelephone.setFocusable(true);
+                tvTelephone.setFocusableInTouchMode(true);
+                tvTelephone.setInputType(InputType.TYPE_CLASS_TEXT);
+                tvTelephone.requestFocus();
+                imm.showSoftInput(tvTelephone, InputMethodManager.SHOW_IMPLICIT);
+            } else {
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(tvTelephone.getWindowToken(), 0);
+                }
+                tvTelephone.setEnabled(false);
+                tvTelephone.setTextIsSelectable(false);
+                tvTelephone.setFocusable(false);
+                tvTelephone.setInputType(InputType.TYPE_NULL);
+                tvTelephone.clearFocus();
+                mainContent.requestFocus();
+            }
+            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHANGE_NUMBER, "");
+            eventReviewTicketPresenter.updateNumber(tvTelephone.getText().toString());
+        } else if (v.getId() == R.id.batal) {
+            eventReviewTicketPresenter.updatePromoCode("");
+            showDiscountSection(0, false);
+            updateTotalPrice(baseFare, convFees, 0);
+        } else if (v.getId() == R.id.info_email || v.getId() == R.id.info_moreinfo || v.getId() == R.id.button_dismisstooltip || v.getId() == R.id.goto_promo) {
+            if (v.getId() == R.id.info_email) {
+                eventReviewTicketPresenter.clickEmailIcon();
+            } else if (v.getId() == R.id.info_moreinfo) {
+                eventReviewTicketPresenter.clickMoreinfoIcon();
+            } else if (v.getId() == R.id.button_dismisstooltip) {
+                eventReviewTicketPresenter.clickDismissTooltip();
+            } else if (v.getId() == R.id.goto_promo) {
+                eventReviewTicketPresenter.clickGoToPromo();
+            }
+        }
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        eventReviewTicketPresenter.validateEditText((EditText) v);
     }
 }

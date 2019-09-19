@@ -147,7 +147,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
      */
     constructor(loginID: String, productId: Int, productName: String,
                 productPrice: String, productUrl: String,
-                productImage: String, startTime: String, canShowFooter: Boolean) : super("",
+                productImage: String, startTime: String, canShowFooter: Boolean, shopId: Int) : super("",
             loginID, "", "", "",
             AttachmentType.Companion.TYPE_PRODUCT_ATTACHMENT, SendableViewModel.SENDING_TEXT,
             startTime, false, true, true, productUrl) {
@@ -158,6 +158,7 @@ class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTypeFact
         this.productUrl = productUrl
         this.productImage = productImage
         this.canShowFooter = canShowFooter
+        this.shopId = shopId
     }
 
     override fun type(typeFactory: BaseChatTypeFactory): Int {

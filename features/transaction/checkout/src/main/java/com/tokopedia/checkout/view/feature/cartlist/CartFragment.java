@@ -1,25 +1,23 @@
 package com.tokopedia.checkout.view.feature.cartlist;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.IntentService;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
@@ -28,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -37,23 +37,25 @@ import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
+import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.VoucherOrdersItemData;
+import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
-import com.tokopedia.checkout.domain.datamodel.voucher.promostacking.ResponseFirstStep;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.checkout.view.common.PromoActionListener;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.common.utils.Utils;
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView;
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveWithBackView;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
@@ -61,18 +63,23 @@ import com.tokopedia.checkout.view.di.component.CartListComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
-import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.feature.bottomsheetpromostacking.ClashBottomSheetFragment;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartRecommendationViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartSectionHeaderHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTickerHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.design.component.ToasterError;
-import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
-import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutConstantKt;
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil;
@@ -81,20 +88,20 @@ import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail;
 import com.tokopedia.promocheckout.common.data.entity.request.Promo;
 import com.tokopedia.promocheckout.common.di.PromoCheckoutModule;
 import com.tokopedia.promocheckout.common.util.TickerCheckoutUtilKt;
-import com.tokopedia.promocheckout.common.view.model.PromoData;
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
+import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
-import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
-import com.tokopedia.shipping_recommendation.domain.shipping.ShipmentCartItemModel;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.transaction.common.dialog.UnifyDialog;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
@@ -102,6 +109,7 @@ import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import org.jetbrains.annotations.NotNull;
@@ -111,30 +119,32 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener,
-        CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
+public class CartFragment extends BaseCheckoutFragment implements ActionListener,
+        CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener, PromoActionListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
         ClashBottomSheetFragment.ActionListener {
-
-    private static final String EXTRA_PRODUCT_ITEM = "EXTRA_PRODUCT_ITEM";
-    private static final String GLOBAL_COUPON_ATTR_DESC = "GLOBAL_COUPON_ATTR_DESC";
-    private static final String GLOBAL_COUPON_ATTR_QTY = "GLOBAL_COUPON_ATTR_QTY";
 
     public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
 
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
     private static final String CART_TRACE = "mp_cart";
+    private static final String CART_ALL_TRACE = "mp_cart_all";
+    private static final String CART_PAGE = "cart";
+    private static final int NAVIGATION_PDP = 64728;
     public static final int GO_TO_DETAIL = 2;
     public static final int GO_TO_LIST = 1;
     private boolean FLAG_BEGIN_SHIPMENT_PROCESS = false;
+    private boolean FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
+    private boolean FLAG_IS_CART_EMPTY = false;
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -149,14 +159,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CardView cardHeader;
     private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
-    private LinearLayout emptyCartContainer;
+    private LinearLayout llCartContainer;
 
     private ProgressDialog progressDialog;
 
     @Inject
     ICartListPresenter dPresenter;
-    @Inject
-    CartAdapter cartAdapter;
     @Inject
     RecyclerView.ItemDecoration cartItemDecoration;
     @Inject
@@ -166,21 +174,33 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
     @Inject
-    Context context;
-    @Inject
     TrackingPromoCheckoutUtil trackingPromoCheckoutUtil;
 
+    private CartAdapter cartAdapter;
     private RefreshHandler refreshHandler;
     private UserSessionInterface userSession;
 
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
-    private EmptyCartListener emptyCartListener;
 
+    private PerformanceMonitoring cartPerformanceMonitoring;
+    private boolean isTraceCartStopped;
+    private PerformanceMonitoring cartAllPerformanceMonitoring;
+    private boolean isTraceCartAllStopped;
+
+    private EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
+    private boolean hasLoadRecommendation;
+
+    private SaveInstanceCacheManager saveInstanceCacheManager;
     private CartListData cartListData;
-
-    private PerformanceMonitoring performanceMonitoring;
-    private boolean isTraceStopped;
+    private List<CartWishlistItemHolderData> wishLists;
+    private List<CartRecentViewItemHolderData> recentViewList;
+    private List<CartRecommendationItemHolderData> recommendationList;
+    private CartSectionHeaderHolderData recommendationSectionHeader;
+    private WishListActionListener recommendationWishlistActionListener;
+    private boolean hasTriedToLoadWishList;
+    private boolean hasTriedToLoadRecentViewList;
+    private boolean hasTriedToLoadRecommendation;
 
     public static CartFragment newInstance(Bundle bundle, String args) {
         if (bundle == null) {
@@ -192,10 +212,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         return fragment;
     }
 
-    public void setEmptyCartListener(EmptyCartListener emptyCartListener) {
-        this.emptyCartListener = emptyCartListener;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -203,7 +219,31 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         }
         userSession = new UserSession(getActivity());
-        performanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
+
+        if (getActivity() != null) {
+            saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
+        }
+
+        if (savedInstanceState != null && saveInstanceCacheManager != null) {
+            cartListData = saveInstanceCacheManager.get(CartListData.class.getSimpleName(), CartListData.class);
+            wishLists = saveInstanceCacheManager.get(CartWishlistItemHolderData.class.getSimpleName(),
+                    (new TypeToken<ArrayList<CartWishlistItemHolderData>>() {
+                    }).getType(), null);
+            recentViewList = saveInstanceCacheManager.get(CartRecentViewItemHolderData.class.getSimpleName(),
+                    (new TypeToken<ArrayList<CartRecentViewItemHolderData>>() {
+                    }).getType(), null);
+            recommendationList = saveInstanceCacheManager.get(CartRecommendationItemHolderData.class.getSimpleName(),
+                    (new TypeToken<ArrayList<CartRecommendationItemHolderData>>() {
+                    }).getType(), null);
+            recommendationSectionHeader = saveInstanceCacheManager.get(CartSectionHeaderHolderData.class.getSimpleName(),
+                    (new TypeToken<CartSectionHeaderHolderData>() {
+                    }).getType(), null);
+        } else {
+            cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE);
+            cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE);
+        }
+
+        dPresenter.attachView(this);
     }
 
     @Override
@@ -223,12 +263,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             e.printStackTrace();
         }
 
+        if (FLAG_SHOULD_CLEAR_RECYCLERVIEW) {
+            clearRecyclerView();
+        }
+
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
         cartAdapter.unsubscribeSubscription();
+        dPresenter.detachView();
         super.onDestroy();
     }
 
@@ -241,6 +286,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 .promoCheckoutModule(new PromoCheckoutModule())
                 .build();
         cartListComponent.inject(this);
+        cartAdapter = new CartAdapter(this, this, this);
     }
 
     @Override
@@ -279,8 +325,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             if (args != null && !args.isEmpty()) {
                 isToolbarWithBackButton = false;
             }
-
-            cartListData = arguments.getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
         }
     }
 
@@ -306,7 +350,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_cart_new;
+        return R.layout.fragment_cart;
     }
 
     @Override
@@ -322,16 +366,44 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cardFooter = view.findViewById(R.id.card_footer);
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
-        emptyCartContainer = view.findViewById(R.id.container_empty_cart);
+        llCartContainer = view.findViewById(R.id.ll_cart_container);
 
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage(getString(R.string.title_loading));
         progressDialog.setCancelable(false);
 
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            // Remove default cardview margin on Kitkat or lower
+            int pixel = Utils.convertDpToPixel(-6, getContext());
+            ((ViewGroup.MarginLayoutParams) cardHeader.getLayoutParams()).setMargins(pixel, pixel, pixel, pixel);
+        }
+
         refreshHandler = new RefreshHandler(getActivity(), view, this);
-        cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        cartRecyclerView.setLayoutManager(layoutManager);
         cartRecyclerView.setAdapter(cartAdapter);
         cartRecyclerView.addItemDecoration(cartItemDecoration);
+        cartRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDrawOver(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                super.onDrawOver(c, parent, state);
+                RecyclerView.LayoutManager layoutManager = parent.getLayoutManager();
+                if (layoutManager instanceof GridLayoutManager) {
+                    int cartSelectAllViewHolderPosition = cartAdapter.getCartSelectAllViewHolderPosition();
+                    if (cartSelectAllViewHolderPosition > -1) {
+                        if (((GridLayoutManager) layoutManager).findFirstVisibleItemPosition() >= cartSelectAllViewHolderPosition) {
+                            if (cardHeader != null && cardHeader.getVisibility() != View.VISIBLE && cardFooter.getVisibility() == View.VISIBLE) {
+                                cardHeader.setVisibility(View.VISIBLE);
+                            }
+                        } else {
+                            if (cardHeader != null && cardHeader.getVisibility() != View.GONE) {
+                                cardHeader.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                }
+            }
+        });
         cartRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -347,7 +419,29 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 }
             }
         });
+
         ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (position != RecyclerView.NO_POSITION) {
+                    if (position < cartAdapter.getItemCount() && cartAdapter.getItemViewType(position) == CartRecommendationViewHolder.getLAYOUT()) {
+                        return 1;
+                    }
+                    return 2;
+                }
+                return 0;
+            }
+        });
+        endlessRecyclerViewScrollListener = new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount) {
+                if (hasLoadRecommendation) {
+                    dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), cartAdapter.getAllCartItemProductId());
+                }
+            }
+        };
+        cartRecyclerView.addOnScrollListener(endlessRecyclerViewScrollListener);
     }
 
     private void setupToolbar(View view) {
@@ -415,10 +509,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         List<CartItemData> toBeDeletedCartItemDataList = cartAdapter.getSelectedCartItemData();
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
         if (toBeDeletedCartItemDataList.size() > 0) {
-            final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
-            dialog.setOnOkClickListener(v -> {
+            final UnifyDialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItemDataList.size());
+            dialog.setOkOnClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
-                    dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), true);
+                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), true);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                             dPresenter.generateCartDataAnalytics(
                                     toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -427,9 +521,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 }
                 dialog.dismiss();
             });
-            dialog.setOnCancelClickListener(v -> {
+            dialog.setSecondaryOnClickListener(v -> {
                 if (toBeDeletedCartItemDataList.size() > 0) {
-                    dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false);
+                    dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false);
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                             dPresenter.generateCartDataAnalytics(
                                     toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -452,30 +546,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     private View.OnClickListener getOnClickCheckboxSelectAll() {
-        return v -> {
-            boolean checked = !dPresenter.getCartListData().isAllSelected();
-            if (checked) {
-                sendAnalyticsOnButtonSelectAllChecked();
-            } else {
-                sendAnalyticsOnButtonSelectAllUnchecked();
-            }
-            dPresenter.getCartListData().setAllSelected(checked);
-            cbSelectAll.setChecked(checked);
-            cartAdapter.setAllShopSelected(checked);
-            dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
-            cartAdapter.notifyDataSetChanged();
-            dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-        };
+        return v -> onSelectAllClicked();
     }
 
     @NonNull
     private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
         return view -> {
             if (message == null || message.equals("")) {
-                dPresenter.processToUpdateCartData(getSelectedCartDataList());
+                dPresenter.processToUpdateCartData(getSelectedCartDataList(), cartAdapter.getSelectedCartShopHolderData());
             } else {
                 showToastMessageRed(message);
                 sendAnalyticsOnButtonCheckoutClickedFailed();
+                sendAnalyticsOnGoToShipmentFailed(message);
             }
         };
     }
@@ -501,11 +583,38 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) {
             setHasOptionsMenu(true);
             getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
-            if (cartListData == null) {
+            if (savedInstanceState == null) {
                 refreshHandler.startRefresh();
             } else {
-                renderInitialGetCartListDataSuccess(cartListData);
-                stopTrace();
+                if (cartListData != null) {
+                    dPresenter.setCartListData(cartListData);
+                    renderLoadGetCartDataFinish();
+                    renderInitialGetCartListDataSuccess(cartListData);
+                    stopCartPerformanceTrace();
+                } else {
+                    refreshHandler.startRefresh();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (saveInstanceCacheManager != null) {
+            saveInstanceCacheManager.onSave(outState);
+            saveInstanceCacheManager.put(CartListData.class.getSimpleName(), cartListData);
+            if (wishLists != null) {
+                saveInstanceCacheManager.put(CartWishlistItemHolderData.class.getSimpleName(), new ArrayList<>(wishLists));
+            }
+            if (recentViewList != null) {
+                saveInstanceCacheManager.put(CartRecentViewItemHolderData.class.getSimpleName(), new ArrayList<>(recentViewList));
+            }
+            if (recommendationList != null) {
+                saveInstanceCacheManager.put(CartRecommendationItemHolderData.class.getSimpleName(), new ArrayList<>(recommendationList));
+            }
+            if (recommendationSectionHeader != null) {
+                saveInstanceCacheManager.put(CartSectionHeaderHolderData.class.getSimpleName(), recommendationSectionHeader);
             }
         }
     }
@@ -521,10 +630,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
         ArrayList<CartItemData> cartItemDatas = new ArrayList<>(Collections.singletonList(cartItemHolderData.getCartItemData()));
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
-        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(1);
-        dialog.setOnOkClickListener(view -> {
+        final UnifyDialog dialog = getDialogDeleteConfirmation(1);
+        dialog.setOkOnClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, cartItemDatas, appliedPromoCodes, true);
+                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -533,9 +642,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
             dialog.dismiss();
         });
-        dialog.setOnCancelClickListener(view -> {
+        dialog.setSecondaryOnClickListener(view -> {
             if (cartItemDatas.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, cartItemDatas, appliedPromoCodes, false);
+                dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false);
                 sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -565,14 +674,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCartItemQuantityFormEdited(int position, int parentPosition, boolean needRefreshItemView) {
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-    }
-
-    @Override
     public void onCartItemProductClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.getCartItemData().getOriginData().getProductName());
-        navigateToActivity(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()));
+        navigateToActivityRequest(getProductIntent(cartItemHolderData.getCartItemData().getOriginData().getProductId()), NAVIGATION_PDP);
     }
 
     private Intent getProductIntent(String productId) {
@@ -583,6 +687,185 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
     }
 
+    @Override
+    public void onClickShopNow() {
+        RouteManager.route(getActivity(), ApplinkConst.HOME);
+    }
+
+    @Override
+    public void onShowAllItem(@NotNull String appLink) {
+        RouteManager.route(getActivity(), appLink);
+    }
+
+    private WishListActionListener getRecommendationWishlistActionListener() {
+        if (recommendationWishlistActionListener == null) {
+            recommendationWishlistActionListener = new WishListActionListener() {
+                @Override
+                public void onErrorAddWishList(String errorMessage, String productId) {
+                    showToastMessageRed(errorMessage);
+                    cartAdapter.notifyByProductId(productId, false);
+                    cartAdapter.notifyWishlist(productId, false);
+                    cartAdapter.notifyRecentView(productId, false);
+                    cartAdapter.notifyRecommendation(productId, false);
+                }
+
+                @Override
+                public void onSuccessAddWishlist(String productId) {
+                    showToastMessageGreen(getString(R.string.toast_message_add_wishlist_success));
+                    cartAdapter.notifyByProductId(productId, true);
+                    cartAdapter.notifyWishlist(productId, true);
+                    cartAdapter.notifyRecentView(productId, true);
+                    cartAdapter.notifyRecommendation(productId, true);
+                    cartPageAnalytics.eventClickAddWishlistOnPrimaryProduct();
+                }
+
+                @Override
+                public void onErrorRemoveWishlist(String errorMessage, String productId) {
+                    showToastMessageRed(errorMessage);
+                    cartAdapter.notifyByProductId(productId, true);
+                    cartAdapter.notifyWishlist(productId, true);
+                    cartAdapter.notifyRecentView(productId, true);
+                    cartAdapter.notifyRecommendation(productId, true);
+                }
+
+                @Override
+                public void onSuccessRemoveWishlist(String productId) {
+                    showToastMessageGreen(getString(R.string.toast_message_remove_wishlist_success));
+                    cartAdapter.notifyByProductId(productId, false);
+                    cartAdapter.notifyWishlist(productId, false);
+                    cartAdapter.notifyRecentView(productId, false);
+                    cartAdapter.notifyRecommendation(productId, false);
+                    cartPageAnalytics.eventClickRemoveWishlistOnPrimaryProduct();
+                }
+            };
+        }
+        return recommendationWishlistActionListener;
+    }
+
+    @Override
+    public void onAddToWishlist(@NotNull String productId) {
+        dPresenter.processAddToWishlist(productId, userSession.getUserId(), this);
+    }
+
+    @Override
+    public void onAddRecommendationToWishlist(@NotNull String productId) {
+        dPresenter.processAddToWishlist(productId, userSession.getUserId(), getRecommendationWishlistActionListener());
+    }
+
+    @Override
+    public void onRemoveFromWishlist(@NotNull String productId) {
+        dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), this);
+    }
+
+    @Override
+    public void onRemoveRecommendationFromWishlist(@NotNull String productId) {
+        dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), getRecommendationWishlistActionListener());
+    }
+
+    public void onProductClicked(@NotNull String productId) {
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.PRODUCT_INFO, productId);
+        startActivityForResult(intent, NAVIGATION_PDP);
+    }
+
+    @Override
+    public void onWishlistProductClicked(@NotNull String productId) {
+        int position = 0;
+
+        for (CartWishlistItemHolderData wishlist : wishLists) {
+            if (wishlist.getId().equalsIgnoreCase(productId)) {
+                if (FLAG_IS_CART_EMPTY) {
+                    sendAnalyticsOnClickProductWishlistOnEmptyCart(String.valueOf(position),
+                        dPresenter.generateWishlistProductClickEmptyCartDataLayer(wishlist, position));
+                } else {
+                    sendAnalyticsOnClickProductWishlistOnCartList(String.valueOf(position),
+                        dPresenter.generateWishlistProductClickDataLayer(wishlist, position));
+                }
+            }
+            position++;
+        }
+
+        onProductClicked(productId);
+    }
+
+    @Override
+    public void onRecentViewProductClicked(@NotNull String productId) {
+        int position = 0;
+
+        for (CartRecentViewItemHolderData recentView : recentViewList) {
+            if (recentView.getId().equalsIgnoreCase(productId)) {
+                if (FLAG_IS_CART_EMPTY) {
+                    sendAnalyticsOnClickProductRecentViewOnEmptyCart(String.valueOf(position),
+                        dPresenter.generateRecentViewProductClickEmptyCartDataLayer(recentView, position));
+                } else {
+                    sendAnalyticsOnClickProductRecentViewOnCartList(String.valueOf(position),
+                        dPresenter.generateRecentViewProductClickDataLayer(recentView, position));
+                }
+            }
+            position++;
+        }
+
+        onProductClicked(productId);
+    }
+
+    @Override
+    public void onRecommendationProductClicked(@NotNull String productId) {
+        int index = 0, position = 0;
+        RecommendationItem recommendationItemClick = null;
+        for (CartRecommendationItemHolderData recommendation : recommendationList) {
+            if (String.valueOf(recommendation.getRecommendationItem().getProductId()).equalsIgnoreCase(productId)) {
+                position = index;
+                recommendationItemClick = recommendation.getRecommendationItem();
+                break;
+            }
+            index++;
+        }
+
+        if (recommendationItemClick != null) {
+                sendAnalyticsOnClickProductRecommendation(String.valueOf(position),
+                        dPresenter.generateRecommendationDataOnClickAnalytics(recommendationItemClick, FLAG_IS_CART_EMPTY, position));
+        }
+
+        onProductClicked(productId);
+    }
+
+    @Override
+    public void onButtonAddToCartClicked(@NotNull Object productModel) {
+        dPresenter.processAddToCart(productModel);
+    }
+
+    @Override
+    public void onShowTickerOutOfStock(@NotNull String productId) {
+        cartPageAnalytics.eventViewTickerOutOfStock(productId);
+    }
+
+    @Override
+    public void onSimilarProductUrlClicked(@NotNull String similarProductUrl) {
+        RouteManager.route(getContext(), similarProductUrl);
+        cartPageAnalytics.eventClickMoreLikeThis();
+    }
+
+    @Override
+    public void onSelectAllClicked() {
+        boolean checked = !dPresenter.getCartListData().isAllSelected();
+        if (checked) {
+            sendAnalyticsOnButtonSelectAllChecked();
+        } else {
+            sendAnalyticsOnButtonSelectAllUnchecked();
+        }
+        dPresenter.getCartListData().setAllSelected(checked);
+        cbSelectAll.setChecked(checked);
+        cartAdapter.addCartSelectAll(checked);
+        cartAdapter.setAllShopSelected(checked);
+        cartAdapter.notifyDataSetChanged();
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+    }
+
+    @Override
+    public void onShowCartTicker(@NotNull String tickerId) {
+        cartPageAnalytics.eventViewInformationAndWarningTickerInCart(tickerId);
+    }
+
+    @NonNull
     @Override
     public String getDefaultCartErrorMessage() {
         if (isAdded()) {
@@ -602,7 +885,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onShopItemCheckChanged(int itemPosition, boolean checked) {
-        dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         dPresenter.setHasPerformChecklistChange();
         cartAdapter.setShopSelected(itemPosition, checked);
         cartAdapter.notifyDataSetChanged();
@@ -633,11 +915,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCartItemListIsEmpty(int shopPosition) {
-        renderEmptyCartData(null);
-    }
-
-    @Override
     public void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position) {
         List<CartItemData> cartItemData = getSelectedCartDataList();
         if (cartItemData != null && cartItemData.size() > 0) {
@@ -659,7 +936,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public Promo generateCheckPromoFirstStepParam() {
         List<ShopGroupData> shopGroupDataList = cartListData.getShopGroupDataList();
-        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
+        PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobalData();
         ArrayList<Order> orders = new ArrayList<>();
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             Order order = new Order();
@@ -722,12 +999,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position) {
+    public void onPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal) {
         trackingPromoCheckoutUtil.cartImpressionTicker(cartPromoGlobal.getPromoCodeSafe());
     }
 
     @Override
-    public void onCartPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
+    public void onPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
         sendAnalyticsOnClickCancelPromoCodeAndCouponBanner();
     }
 
@@ -769,10 +1046,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
         ));
-        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
-        dialog.setOnOkClickListener(view -> {
+        final UnifyDialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
+        dialog.setOkOnClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, true);
+                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, true);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductWithAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -781,9 +1058,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
             dialog.dismiss();
         });
-        dialog.setOnCancelClickListener(view -> {
+        dialog.setSecondaryOnClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
-                dPresenter.processDeleteAndRefreshCart(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false);
+                dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItem, appliedPromoCodes, false);
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
                         dPresenter.generateCartDataAnalytics(
                                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
@@ -796,13 +1073,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDropshipperValidationResult(boolean result, Object shipmentData, int position, int requestCode) {
-
-    }
-
-    @Override
     public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
-        dPresenter.processUpdateCartDataPromoStacking(getSelectedCartDataList(), dataGlobal, GO_TO_DETAIL);
+        List<CartItemData> cartItemData = getSelectedCartDataList();
+        if (cartItemData != null && cartItemData.size() > 0) {
+            trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon();
+            dPresenter.processUpdateCartDataPromoStacking(cartItemData, dataGlobal, GO_TO_DETAIL);
+        }
     }
 
     @Override
@@ -817,11 +1093,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (isAdded() && btnToShipment != null) {
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(getString(R.string.message_checkout_empty_selection)));
         }
-    }
-
-    @Override
-    public void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel) {
-
     }
 
     @Override
@@ -840,13 +1111,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onQuantityChanged() {
-
-    }
-
-    @Override
     public boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked) {
-        dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         dPresenter.setHasPerformChecklistChange();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
@@ -880,6 +1145,27 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onCartItemShowTickerPriceDecrease(String productId) {
+        cartPageAnalytics.eventViewTickerPriceDecrease(productId);
+    }
+
+    @Override
+    public void onCartItemShowTickerStockDecreaseAndAlreadyAtcByOtherUser(String productId) {
+        cartPageAnalytics.eventViewTickerStockDecreaseAndAlreadyAtcByOtherUser(productId);
+    }
+
+    @Override
+    public void onCartItemShowTickerOutOfStock(String productId) {
+        cartPageAnalytics.eventViewTickerOutOfStock(productId);
+    }
+
+    @Override
+    public void onCartItemSimilarProductUrlClicked(String similarProductUrl) {
+        RouteManager.route(getContext(), similarProductUrl);
+        cartPageAnalytics.eventClickMoreLikeThis();
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
@@ -910,27 +1196,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
-    }
-
-    @Override
-    public String getStringFromResource(int resId) {
-        return null;
-    }
-
-
-    @Override
     public TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
             TKPDMapParam<String, String> originParams
     ) {
@@ -947,113 +1212,160 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void closeView() {
-
-    }
-
-    @Override
     public void renderInitialGetCartListDataSuccess(CartListData cartListData) {
-        sendAnalyticsScreenName(getScreenName());
-        if (refreshHandler != null) {
-            refreshHandler.finishRefresh();
-        }
-        this.cartListData = cartListData;
-        cartAdapter.resetData();
+        if (cartListData != null) {
+            endlessRecyclerViewScrollListener.resetState();
+            sendAnalyticsScreenName(getScreenName());
+            if (refreshHandler != null) {
+                refreshHandler.finishRefresh();
+            }
+            this.cartListData = cartListData;
+            cartAdapter.resetData();
 
-        boolean flagAutoApplyStack = false;
-        PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
-        if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
-                && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())) {
-            AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
-            if (autoApplyStackData != null) {
-                if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
-                        && autoApplyStackData.getState() != null && autoApplyStackData.getTitleDescription() != null) {
-                    builderGlobal.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
-                            PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
-                            .description(autoApplyStackData.getMessageSuccess())
-                            .amount(autoApplyStackData.getDiscountAmount())
-                            .promoCode(autoApplyStackData.getCode())
-                            .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
-                            .title(autoApplyStackData.getTitleDescription())
-                            .build();
-                    sendAnalyticsOnViewPromoAutoApply();
-                    flagAutoApplyStack = true;
+            boolean flagAutoApplyStack = false;
+            PromoStackingData.Builder builderGlobal = new PromoStackingData.Builder();
+            if (cartListData.getAutoApplyStackData() != null && cartListData.getAutoApplyStackData().isSuccess()
+                    && !TextUtils.isEmpty(cartListData.getAutoApplyStackData().getCode())) {
+                AutoApplyStackData autoApplyStackData = cartListData.getAutoApplyStackData();
+                if (autoApplyStackData != null) {
+                    if (autoApplyStackData.getMessageSuccess() != null && autoApplyStackData.getCode() != null
+                            && autoApplyStackData.getState() != null && autoApplyStackData.getTitleDescription() != null) {
+                        builderGlobal.typePromo(autoApplyStackData.getIsCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON() ?
+                                PromoStackingData.CREATOR.getTYPE_COUPON() : PromoStackingData.CREATOR.getTYPE_VOUCHER())
+                                .description(autoApplyStackData.getMessageSuccess())
+                                .amount(autoApplyStackData.getDiscountAmount())
+                                .promoCode(autoApplyStackData.getCode())
+                                .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(autoApplyStackData.getState()))
+                                .title(autoApplyStackData.getTitleDescription())
+                                .build();
+                        sendAnalyticsOnViewPromoAutoApply();
+                        flagAutoApplyStack = true;
+                    }
+                } else {
+                    builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
                 }
             } else {
                 builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
             }
-        } else {
 
-            builderGlobal.state(TickerPromoStackingCheckoutView.State.EMPTY);
-        }
-
-        if (!flagAutoApplyStack) {
-            if (cartListData.getGlobalCouponAttr() != null) {
-                if (cartListData.getGlobalCouponAttr().getDescription() != null) {
-                    if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
-                        builderGlobal.title(cartListData.getGlobalCouponAttr().getDescription());
-                        builderGlobal.titleDefault(cartListData.getGlobalCouponAttr().getDescription());
+            if (!flagAutoApplyStack) {
+                if (cartListData.getGlobalCouponAttr() != null) {
+                    if (cartListData.getGlobalCouponAttr().getDescription() != null) {
+                        if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
+                            builderGlobal.title(cartListData.getGlobalCouponAttr().getDescription());
+                            builderGlobal.titleDefault(cartListData.getGlobalCouponAttr().getDescription());
+                        }
                     }
-                }
 
-                if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
-                    if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
-                        builderGlobal.counterLabel(cartListData.getGlobalCouponAttr().getQuantityLabel());
-                        builderGlobal.counterLabelDefault(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                    if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
+                        if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
+                            builderGlobal.counterLabel(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                            builderGlobal.counterLabelDefault(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                        }
                     }
                 }
             }
-        }
 
-        cartAdapter.addPromoStackingVoucherData(builderGlobal.build());
+            PromoStackingData promoStackingData = builderGlobal.build();
 
-        if (cartListData.getCartPromoSuggestion().isVisible()) {
-            cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
-        }
+            if (cartListData.getShopGroupDataList().isEmpty()) {
+                if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.EMPTY) {
+                    cartAdapter.addPromoStackingVoucherData(promoStackingData);
+                    if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
+                        onPromoGlobalTrackingImpression(promoStackingData);
+                    }
+                }
+                cartAdapter.addCartEmptyData();
 
-        if (cartListData.isError()) {
-            cartAdapter.addCartTickerError(
-                    new CartItemTickerErrorHolderData.Builder()
-                            .cartTickerErrorData(cartListData.getCartTickerErrorData())
-                            .build()
-            );
-        }
+                CartTickerData tickerData = cartListData.getTicker();
+                if (tickerData != null && tickerData.isValid(CART_PAGE)) {
+                    cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
+                }
 
-        cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
-        cartAdapter.addDataList(cartListData.getShopGroupDataList());
-        if (cartListData.getAdsModel() != null) {
-            cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
-        }
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
-        if (cbSelectAll != null) {
-            cbSelectAll.setChecked(cartListData.isAllSelected());
-        }
+                cartAdapter.notifyDataSetChanged();
+                onCartEmpty();
+            } else {
+                cartAdapter.removeCartEmptyData();
 
-        cartAdapter.checkForShipmentForm();
+                CartTickerData tickerData = cartListData.getTicker();
+                if (tickerData != null && tickerData.isValid(CART_PAGE)) {
+                    cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
+                }
+                cartAdapter.addPromoStackingVoucherData(promoStackingData);
+                if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
+                    onPromoGlobalTrackingImpression(promoStackingData);
+                }
 
-        if (toolbar != null) {
-            setVisibilityRemoveButton(true);
-        } else {
-            if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
-                mIsMenuVisible = true;
-                getActivity().invalidateOptionsMenu();
+                if (cartListData.getCartPromoSuggestion().isVisible()) {
+                    cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
+                }
+
+                if (cartListData.isError()) {
+                    cartAdapter.addCartTickerError(
+                            new CartItemTickerErrorHolderData.Builder()
+                                    .cartTickerErrorData(cartListData.getCartTickerErrorData())
+                                    .build()
+                    );
+                }
+
+                cartAdapter.addDataList(cartListData.getShopGroupDataList());
+                if (cartListData.getAdsModel() != null) {
+                    cartAdapter.mappingTopAdsModel(cartListData.getAdsModel());
+                }
+                dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+                if (cbSelectAll != null) {
+                    cbSelectAll.setChecked(cartListData.isAllSelected());
+                    cartAdapter.addCartSelectAll(cartListData.isAllSelected());
+                }
+
+                cartAdapter.checkForShipmentForm();
+                onCartNotEmpty();
+                cartPageAnalytics.eventViewCartListFinishRender();
+            }
+
+            if (recentViewList == null) {
+                dPresenter.processGetRecentViewData();
+            } else {
+                renderRecentView(null);
+            }
+
+            if (wishLists == null) {
+                dPresenter.processGetWishlistData();
+            } else {
+                renderWishlist(null);
+            }
+
+            if (recommendationList == null) {
+                dPresenter.processGetRecommendationData(endlessRecyclerViewScrollListener.getCurrentPage(), cartAdapter.getAllCartItemProductId());
+            } else {
+                renderRecommendation(null);
+            }
+
+            if (toolbar != null) {
+                setVisibilityRemoveButton(!cartListData.getShopGroupDataList().isEmpty());
+            } else {
+                if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
+                    mIsMenuVisible = true;
+                    getActivity().invalidateOptionsMenu();
+                }
             }
         }
-
-        cartPageAnalytics.eventViewCartListFinishRender();
     }
 
     @Override
-    public void stopTrace() {
-        if (!isTraceStopped) {
-            performanceMonitoring.stopTrace();
-            isTraceStopped = true;
+    public void stopCartPerformanceTrace() {
+        if (cartPerformanceMonitoring != null && !isTraceCartStopped) {
+            cartPerformanceMonitoring.stopTrace();
+            isTraceCartStopped = true;
         }
     }
 
     @Override
-    public void renderAppliedPromoStacking() {
-
+    public void stopAllCartPerformanceTrace() {
+        if (cartAllPerformanceMonitoring != null && !isTraceCartAllStopped && hasTriedToLoadRecentViewList && hasTriedToLoadWishList && hasTriedToLoadRecommendation) {
+            cartAllPerformanceMonitoring.stopTrace();
+            isTraceCartAllStopped = true;
+        }
     }
 
     private void showErrorLayout(String message) {
@@ -1070,13 +1382,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         rlContent.setVisibility(View.VISIBLE);
                         refreshHandler.setRefreshing(true);
                         cartAdapter.resetData();
-                        dPresenter.processInitialGetCartData(dPresenter.getCartListData() == null);
+                        dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false);
                     });
         }
     }
 
     public void showMainContainerLoadingInitData() {
-        emptyCartContainer.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
         cardFooter.setVisibility(View.GONE);
@@ -1084,24 +1395,19 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     public void showMainContainer() {
-        emptyCartContainer.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
         cardFooter.setVisibility(View.VISIBLE);
-        cardHeader.setVisibility(View.VISIBLE);
     }
 
     public void showErrorContainer() {
         rlContent.setVisibility(View.GONE);
-        emptyCartContainer.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
         cardFooter.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
     }
 
     public void showEmptyCartContainer() {
-        rlContent.setVisibility(View.GONE);
-        emptyCartContainer.setVisibility(View.VISIBLE);
         llNetworkErrorView.setVisibility(View.GONE);
         cardFooter.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
@@ -1110,7 +1416,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void showSnackbarRetry(String message) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, ()
-                -> dPresenter.processInitialGetCartData(dPresenter.getCartListData() == null))
+                -> dPresenter.processInitialGetCartData(getCartId(), dPresenter.getCartListData() == null, false))
                 .showRetrySnackbar();
     }
 
@@ -1121,77 +1427,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         } else {
             showErrorLayout(message);
         }
-    }
-
-    @Override
-    public void renderErrorHttpInitialGetCartListData(String message) {
-        if (cartAdapter.getItemCount() > 0) {
-            showSnackbarRetry(message);
-        } else {
-            showErrorLayout(message);
-        }
-    }
-
-    @Override
-    public void renderErrorNoConnectionInitialGetCartListData(String message) {
-        if (cartAdapter.getItemCount() > 0) {
-            showSnackbarRetry(message);
-        } else {
-            showErrorLayout(message);
-        }
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionInitialGetCartListData(String message) {
-        if (cartAdapter.getItemCount() > 0) {
-            showSnackbarRetry(message);
-        } else {
-            showErrorLayout(message);
-        }
-    }
-
-    @Override
-    public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
-
-    }
-
-    @Override
-    public void renderErrorActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionActionDeleteCartData(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData) {
-        Intent intent;
-        if (shipmentAddressFormData.getKeroDiscomToken() != null &&
-                shipmentAddressFormData.getKeroUnixTime() != 0) {
-            Token token = new Token();
-            token.setUt(shipmentAddressFormData.getKeroUnixTime());
-            token.setDistrictRecommendation(shipmentAddressFormData.getKeroDiscomToken());
-
-            intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS, token);
-        } else {
-            intent = CartAddressChoiceActivity.createInstance(getActivity(),
-                    CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
-        }
-
-        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
     }
 
     @Override
@@ -1241,54 +1476,29 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void renderToAddressChoice() {
         FLAG_BEGIN_SHIPMENT_PROCESS = true;
+        FLAG_SHOULD_CLEAR_RECYCLERVIEW = true;
         boolean isAutoApplyPromoStackCodeApplied = dPresenter.getCartListData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData() != null &&
                 dPresenter.getCartListData().getAutoApplyStackData().isSuccess();
-        Intent intent = ShipmentActivity.createInstance(getActivity(), cartAdapter.getPromoStackingGlobaldata(),
+        Intent intent = ShipmentActivity.createInstance(getActivity(), cartAdapter.getPromoStackingGlobalData(),
                 cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(),
                 isAutoApplyPromoStackCodeApplied
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
     }
 
+    private void clearRecyclerView() {
+        cartAdapter.unsubscribeSubscription();
+        cartRecyclerView.setAdapter(null);
+        cartAdapter = new CartAdapter(null, null, null);
+        cartRecyclerView.removeAllViews();
+        cartRecyclerView.getRecycledViewPool().clear();
+    }
+
     @Override
     public void renderErrorToShipmentForm(String message) {
         sendAnalyticsOnButtonCheckoutClickedFailed();
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpToShipmentForm(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionToShipmentForm(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionToShipmentForm(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionToShipmentMultipleAddress(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionToShipmentMultipleAddress(String message) {
+        sendAnalyticsOnGoToShipmentFailed(message);
         showToastMessageRed(message);
     }
 
@@ -1305,68 +1515,28 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.updateItemPromoStackVoucher(promoStackingData);
     }
 
-    @Override
-    public void renderCheckPromoStackingCodeFromSuggestedPromoSuccess(ResponseFirstStep responseFirstStep) {
-        PromoStackingData promoStackingData = new PromoStackingData.Builder()
-                .typePromo(PromoStackingData.CREATOR.getTYPE_VOUCHER())
-                .promoCode(responseFirstStep.getData().getInvoiceDescription())
-                .description(responseFirstStep.getData().getMessage().getText())
-                .amount(responseFirstStep.getData().getCashbackWalletAmount())
-                .state(TickerCheckoutUtilKt.mapToStatePromoStackingCheckout(responseFirstStep.getData().getMessage().getState()))
-                .title(responseFirstStep.getData().getTitleDescription())
-                .build();
-        cartAdapter.updateItemPromoStackVoucher(promoStackingData);
-    }
-
-    @Override
-    public void renderErrorCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorHttpCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorNoConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderErrorTimeoutConnectionCheckPromoCodeFromSuggestedPromo(String message) {
-        showToastMessageRed(message);
-    }
-
-    @Override
-    public void renderEmptyCartData(CartListData cartListData) {
+    private void onCartEmpty() {
+        FLAG_IS_CART_EMPTY = true;
         enableSwipeRefresh();
         sendAnalyticsOnDataCartIsEmpty();
-        refreshHandler.finishRefresh();
-        mIsMenuVisible = false;
-        if (getActivity() != null) getActivity().invalidateOptionsMenu();
         checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
+        showEmptyCartContainer();
+        notifyBottomCartParent();
+        if (cartRecyclerView.getItemDecorationCount() > 0) {
+            cartRecyclerView.removeItemDecoration(cartItemDecoration);
+        }
+        if (getActivity() != null) {
+            llCartContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+        }
+    }
 
-        try {
-            if (emptyCartListener != null) {
-                emptyCartListener.onCartEmpty(
-                        cartListData.getAutoApplyStackData().getMessageSuccess(),
-                        cartListData.getAutoApplyStackData().getState(),
-                        cartListData.getAutoApplyStackData().getTitleDescription(),
-                        cartListData.getAutoApplyStackData().getCode());
-            } else {
-                if (getActivity() instanceof EmptyCartListener) {
-                    ((EmptyCartListener) getActivity()).onCartEmpty(
-                            cartListData.getAutoApplyStackData().getMessageSuccess(),
-                            cartListData.getAutoApplyStackData().getState(),
-                            cartListData.getAutoApplyStackData().getTitleDescription(),
-                            cartListData.getAutoApplyStackData().getCode());
-                }
-            }
-            showEmptyCartContainer();
-            notifyBottomCartParent();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
+    private void onCartNotEmpty() {
+        FLAG_IS_CART_EMPTY = false;
+        if (cartRecyclerView.getItemDecorationCount() == 0) {
+            cartRecyclerView.addItemDecoration(cartItemDecoration);
+        }
+        if (getActivity() != null) {
+            llCartContainer.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.checkout_module_color_background));
         }
     }
 
@@ -1377,26 +1547,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (!hidden) {
             refreshHandler.setRefreshing(true);
             if (dPresenter.getCartListData() == null) {
-                if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
-                    dPresenter.processInitialGetCartData(true);
-                }
+                dPresenter.processInitialGetCartData(getCartId(), true, false);
             } else {
                 if (dPresenter.dataHasChanged()) {
                     dPresenter.processToUpdateAndReloadCartData();
                 } else {
-                    if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
-                        dPresenter.processInitialGetCartData(false);
-                    } else {
-                        CartListData cartListData = getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
-                        dPresenter.setCartListData(cartListData);
-                        renderLoadGetCartDataFinish();
-                        renderInitialGetCartListDataSuccess(cartListData);
-                        stopTrace();
-                    }
+                    dPresenter.processInitialGetCartData(getCartId(), false, true);
                 }
             }
-        } else {
-            dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         }
     }
 
@@ -1431,6 +1589,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             dPresenter.getCartListData().setAllSelected(selectAllCartItem);
         }
         cbSelectAll.setChecked(selectAllCartItem);
+        cartAdapter.addCartSelectAll(selectAllCartItem);
         tvTotalPrice.setText(subtotalPrice);
         btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));
     }
@@ -1438,23 +1597,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void updateCashback(double cashback) {
         cartAdapter.updateShipmentSellerCashback(cashback);
-    }
-
-    @Deprecated
-    @Override
-    public void renderPromoVoucher() {
-        PromoData promoData = new PromoData.Builder()
-                .state(TickerCheckoutView.State.EMPTY)
-                .build();
-        cartAdapter.addPromoVoucherData(promoData);
-    }
-
-    @Override
-    public void renderPromoGlobalVoucher() {
-        PromoStackingData promoStackingData = new PromoStackingData.Builder()
-                .state(TickerPromoStackingCheckoutView.State.EMPTY)
-                .build();
-        cartAdapter.addPromoStackingVoucherData(promoStackingData);
     }
 
     @Override
@@ -1479,19 +1621,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                                 "", promo
                         ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
         );
-    }
-
-    @Override
-    public void goToDetail(PromoData promoData) {
-        Promo promo = generateCheckPromoFirstStepParam();
-
-        if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_COUPON()) {
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutDetailIntentWithCode(promoData.getPromoCodeSafe(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-        } else {
-            startActivityForResult(checkoutModuleRouter.getPromoCheckoutListIntentWithCode(promoData.getPromoCodeSafe(),
-                    cartListData.isPromoCouponActive(), false, TrackingPromoCheckoutConstantKt.getFROM_CART(), promo), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
-        }
     }
 
     @Override
@@ -1541,68 +1670,31 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (refreshHandler.isRefreshing()) {
             refreshHandler.setRefreshing(false);
         }
-        cartAdapter.resetData();
         showMainContainer();
         onContentAvailabilityChanged(true);
     }
 
     @Override
-    public void renderCartTickerError(CartTickerErrorData cartTickerErrorData) {
-        cartAdapter.addCartTickerError(new CartItemTickerErrorHolderData.Builder()
-                .cartTickerErrorData(cartTickerErrorData)
-                .build());
-    }
-
-    @Override
-    public void renderCancelAutoApplyCouponSuccess() {
-        if (layoutUsedPromoEmptyCart != null) {
-            layoutUsedPromoEmptyCart.setVisibility(View.GONE);
-        } else {
-            cartAdapter.cancelAutoApplyCoupon();
-            cartAdapter.checkForShipmentForm();
-        }
-    }
-
-    @Override
-    public void renderCancelAutoApplyCouponStackSuccess(int position) {
-        if (layoutUsedPromoEmptyCart != null) {
-            layoutUsedPromoEmptyCart.setVisibility(View.GONE);
-        } else {
-            cartAdapter.cancelAutoApplyStackCoupon();
-            cartAdapter.checkForShipmentForm();
-        }
-    }
-
-    @Override
-    public void renderCancelAutoApplyCouponError() {
-        if (getActivity() != null) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
-        }
-    }
-
-    @Override
-    public void onDeleteCartDataSuccess() {
+    public void onDeleteCartDataSuccess(List<Integer> deletedCartIds) {
+        cartAdapter.removeCartItemById(deletedCartIds, getContext());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         notifyBottomCartParent();
     }
 
     @NonNull
-    private com.tokopedia.design.component.Dialog getDialogDeleteConfirmation(int count) {
-        final com.tokopedia.design.component.Dialog dialog =
-                new com.tokopedia.design.component.Dialog(getActivity(),
-                        com.tokopedia.design.component.Dialog.Type.LONG_PROMINANCE);
-        dialog.setTitle(getString(R.string.label_dialog_title_delete_item));
-        dialog.setDesc(String.format(getString(R.string.label_dialog_message_remove_cart_multiple_item),
-                String.valueOf(count)));
-        dialog.setBtnOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
-        dialog.setBtnCancel(getString(R.string.label_dialog_action_delete));
-        dialog.getAlertDialog().setCancelable(true);
-        dialog.getAlertDialog().setCanceledOnTouchOutside(true);
-        return dialog;
+    private UnifyDialog getDialogDeleteConfirmation(int count) {
+        UnifyDialog unifyDialog = new UnifyDialog(getActivity(), UnifyDialog.VERTICAL_ACTION, UnifyDialog.NO_HEADER);
+        unifyDialog.setTitle(getString(R.string.label_dialog_title_delete_item, count));
+        unifyDialog.setDescription(getString(R.string.label_dialog_message_remove_cart_item));
+        unifyDialog.setOk(getString(R.string.label_dialog_action_delete_and_add_to_wishlist));
+        unifyDialog.setSecondary(getString(R.string.label_dialog_action_delete));
+        unifyDialog.setCancelable(true);
+        return unifyDialog;
     }
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        navigateToActivity(getProductIntent(product.getId()));
+        navigateToActivityRequest(getProductIntent(product.getId()), NAVIGATION_PDP);
     }
 
     @Override
@@ -1623,7 +1715,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             if (dPresenter.getCartListData() != null && dPresenter.getCartListData().getShopGroupDataList().size() > 0) {
                 showMainContainer();
             }
-            dPresenter.processInitialGetCartData(dPresenter.getCartListData() == null);
+            dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
             String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
             if (!TextUtils.isEmpty(promo)) {
                 dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
@@ -1642,10 +1734,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             case ShipmentActivity.REQUEST_CODE:
                 onResultFromRequestCodeCartShipment(resultCode, data);
                 break;
+            case NAVIGATION_PDP:
+                refreshHandler.setRefreshing(true);
+                dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true);
         }
     }
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
+        if (cartRecyclerView.getAdapter() == null) {
+            cartAdapter = new CartAdapter(this, this, this);
+            cartRecyclerView.setAdapter(cartAdapter);
+        }
+        FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
         if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
             showToastMessageRed(getString(R.string.alert_payment_canceled_or_failed_transaction_module));
             dPresenter.processResetAndRefreshCartData();
@@ -1653,15 +1753,27 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             showToastMessageGreen(getString(R.string.message_payment_success));
             checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
             refreshHandler.setRefreshing(true);
-            dPresenter.processInitialGetCartData(false);
+            dPresenter.processInitialGetCartData(getCartId(), false, false);
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
             sendAnalyticsScreenName(getScreenName());
+            refreshHandler.setRefreshing(true);
+            if (cartListData != null) {
+                renderInitialGetCartListDataSuccess(cartListData);
+            } else {
+                dPresenter.processInitialGetCartData(getCartId(), false, false);
+            }
         } else if (resultCode == Activity.RESULT_CANCELED) {
             sendAnalyticsScreenName(getScreenName());
+            refreshHandler.setRefreshing(true);
+            if (cartListData != null) {
+                renderInitialGetCartListDataSuccess(cartListData);
+            } else {
+                dPresenter.processInitialGetCartData(getCartId(), false, false);
+            }
         } else if (resultCode == ShipmentActivity.RESULT_CODE_COUPON_STATE_CHANGED) {
             refreshHandler.setRefreshing(true);
-            dPresenter.processInitialGetCartData(false);
+            dPresenter.processInitialGetCartData(getCartId(), false, false);
         }
     }
 
@@ -1671,6 +1783,34 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             Bundle bundle = data.getExtras();
             if (bundle != null) {
                 PromoStackingData promoStackingData = bundle.getParcelable(TickerCheckoutUtilKt.getEXTRA_PROMO_DATA());
+
+                if (cartListData != null && promoStackingData != null) {
+                    if (cartListData.getGlobalCouponAttr() != null) {
+                        if (cartListData.getGlobalCouponAttr().getDescription() != null) {
+                            if (!cartListData.getGlobalCouponAttr().getDescription().isEmpty()) {
+                                promoStackingData.setTitleDefault(cartListData.getGlobalCouponAttr().getDescription());
+                            }
+                        }
+
+                        if (cartListData.getGlobalCouponAttr().getQuantityLabel() != null) {
+                            if (!cartListData.getGlobalCouponAttr().getQuantityLabel().isEmpty()) {
+                                promoStackingData.setCounterLabelDefault(cartListData.getGlobalCouponAttr().getQuantityLabel());
+                            }
+                        }
+                    }
+                }
+
+                for (CartItemData cartItemData : cartAdapter.getAllCartItemData()) {
+                    if (promoStackingData != null && promoStackingData.getTrackingDetailUiModels().size() > 0) {
+                        for (TrackingDetailUiModel trackingDetailUiModel : promoStackingData.getTrackingDetailUiModels()) {
+                            if (String.valueOf(trackingDetailUiModel.getProductId()).equalsIgnoreCase(cartItemData.getOriginData().getProductId())) {
+                                cartItemData.getOriginData().setPromoCodes(trackingDetailUiModel.getPromoCodesTracking());
+                                cartItemData.getOriginData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                            }
+                        }
+                    }
+                }
+
                 if (promoStackingData != null) {
                     cartAdapter.updateItemPromoStackVoucher(promoStackingData);
                     if (promoStackingData.getTypePromo() == PromoStackingData.CREATOR.getTYPE_VOUCHER()) {
@@ -1695,30 +1835,39 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
-        hideProgressLoading();
         showToastMessageRed(errorMessage);
         cartAdapter.notifyByProductId(productId, false);
+
+        cartAdapter.notifyWishlist(productId, false);
+        cartAdapter.notifyRecentView(productId, false);
+        cartAdapter.notifyRecommendation(productId, false);
     }
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        hideProgressLoading();
         showToastMessageGreen(getString(R.string.toast_message_add_wishlist_success));
         cartAdapter.notifyByProductId(productId, true);
+        cartAdapter.notifyWishlist(productId, true);
+        cartAdapter.notifyRecentView(productId, true);
+        cartAdapter.notifyRecommendation(productId, true);
     }
 
     @Override
     public void onErrorRemoveWishlist(String errorMessage, String productId) {
-        hideProgressLoading();
         showToastMessageRed(errorMessage);
         cartAdapter.notifyByProductId(productId, true);
+        cartAdapter.notifyWishlist(productId, true);
+        cartAdapter.notifyRecentView(productId, true);
+        cartAdapter.notifyRecommendation(productId, true);
     }
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        hideProgressLoading();
         showToastMessageGreen(getString(R.string.toast_message_remove_wishlist_success));
         cartAdapter.notifyByProductId(productId, false);
+        cartAdapter.notifyWishlist(productId, false);
+        cartAdapter.notifyRecentView(productId, false);
+        cartAdapter.notifyRecommendation(productId, false);
     }
 
     @Override
@@ -1882,6 +2031,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void sendAnalyticsOnGoToShipmentFailed(String errorMessage) {
+        cartPageAnalytics.eventViewErrorWhenCheckout(errorMessage);
+    }
+
+    @Override
     public void sendAnalyticsOnButtonSelectAllChecked() {
         cartPageAnalytics.eventClickCheckoutCartClickPilihSemuaProdukChecklist();
     }
@@ -1897,11 +2051,52 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void sendAnalyticsOnViewProductRecommendation(Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceViewRecommendationOnCart(eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductRecommendation(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(position, eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnViewProductWishlist(Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceProductViewWishList(eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductWishlistOnEmptyCart(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductWishListOnEmptyCart(position, eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductWishlistOnCartList(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductWishListOnCartList(position, eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnViewProductRecentView(Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceProductViewLastSeen(eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductRecentViewOnEmptyCart(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(position, eeDataLayerCart);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickProductRecentViewOnCartList(String position, Map<String, Object> eeDataLayerCart) {
+        cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnCartList(position, eeDataLayerCart);
+    }
+
+    @Override
     public void sendAnalyticsOnViewPromoAutoApply() {
         cartPageAnalytics.eventViewPromoAutoApply();
     }
 
-    private void notifyBottomCartParent() {
+    @Override
+    public void notifyBottomCartParent() {
         if (getActivity() instanceof CartNotifyListener) {
             ((CartNotifyListener) getActivity()).onNotifyCart();
         }
@@ -1937,10 +2132,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onSuccessCheckPromoMerchantFirstStep(@NotNull ResponseGetPromoStackUiModel promoData, @NotNull String promoCode) {
+        onSuccessCheckPromoFirstStep(promoData);
+    }
+
+    @Override
     public void onSuccessCheckPromoFirstStep(@NonNull ResponseGetPromoStackUiModel responseGetPromoStackUiModel) {
         // Update global promo state
         if (responseGetPromoStackUiModel.getData().getCodes().size() > 0) {
-            PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobaldata();
+            PromoStackingData promoStackingGlobalData = cartAdapter.getPromoStackingGlobalData();
             int typePromo;
             if (responseGetPromoStackUiModel.getData().isCoupon() == PromoStackingData.CREATOR.getVALUE_COUPON()) {
                 typePromo = PromoStackingData.CREATOR.getTYPE_COUPON();
@@ -1986,6 +2186,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         break;
                     }
                 }
+                if (responseGetPromoStackUiModel.getData().getTrackingDetailUiModel().size() > 0) {
+                    for (TrackingDetailUiModel trackingDetailUiModel : responseGetPromoStackUiModel.getData().getTrackingDetailUiModel()) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            if (String.valueOf(trackingDetailUiModel.getProductId()).equalsIgnoreCase(cartItemHolderData.getCartItemData().getOriginData().getProductId())) {
+                                cartItemHolderData.getCartItemData().getOriginData().setPromoCodes(trackingDetailUiModel.getPromoCodesTracking());
+                                cartItemHolderData.getCartItemData().getOriginData().setPromoDetails(trackingDetailUiModel.getPromoDetailsTracking());
+                            }
+                        }
+                    }
+                }
+
             }
         }
 
@@ -1995,14 +2206,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onSuccessClearPromoStack(int shopIndex) {
         if (shopIndex == SHOP_INDEX_PROMO_GLOBAL) {
-            PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobaldata();
-            promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
-            promoStackingData.setAmount(0);
-            promoStackingData.setPromoCode("");
-            promoStackingData.setDescription("");
-            promoStackingData.setTitle(promoStackingData.getTitleDefault());
-            promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
-            cartAdapter.updateItemPromoStackVoucher(promoStackingData);
+            if (cartListData.getShopGroupDataList().isEmpty()) {
+                cartAdapter.removePromoStackingVoucherData();
+            } else {
+                PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobalData();
+                promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
+                promoStackingData.setAmount(0);
+                promoStackingData.setPromoCode("");
+                promoStackingData.setDescription("");
+                promoStackingData.setTitle(promoStackingData.getTitleDefault());
+                promoStackingData.setCounterLabel(promoStackingData.getCounterLabelDefault());
+                cartAdapter.updateItemPromoStackVoucher(promoStackingData);
+            }
         } else {
             CartShopHolderData cartShopHolderData = cartAdapter.getCartShopHolderDataByIndex(shopIndex);
             if (cartShopHolderData != null) {
@@ -2015,7 +2230,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onSuccessClearPromoStackAfterClash() {
         // Reset global promo
-        PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobaldata();
+        PromoStackingData promoStackingData = cartAdapter.getPromoStackingGlobalData();
         promoStackingData.setState(TickerPromoStackingCheckoutView.State.EMPTY);
         promoStackingData.setAmount(0);
         promoStackingData.setPromoCode("");
@@ -2044,5 +2259,212 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onSubmitNewPromoAfterClash(@NotNull ArrayList<String> oldPromoList, @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList, @NotNull String type) {
         dPresenter.processCancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList, type);
+    }
+
+    // get newly added cart id if open cart after ATC on PDP
+    @Override
+    public String getCartId() {
+        if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(CartActivity.EXTRA_CART_ID))) {
+            return getArguments().getString(CartActivity.EXTRA_CART_ID);
+        }
+        return "0";
+    }
+
+    @Override
+    public PromoStackingData getPromoStackingGlobalData() {
+        return cartAdapter.getPromoStackingGlobalData();
+    }
+
+    @Override
+    public void renderRecentView(@Nullable List<RecentView> recentViewList) {
+        List<CartRecentViewItemHolderData> cartRecentViewItemHolderDataList = new ArrayList<>();
+        if (this.recentViewList != null) {
+            cartRecentViewItemHolderDataList.addAll(this.recentViewList);
+        } else if (recentViewList != null) {
+            for (RecentView recentView : recentViewList) {
+                CartRecentViewItemHolderData cartRecentViewItemHolderData = new CartRecentViewItemHolderData();
+                cartRecentViewItemHolderData.setId(recentView.getProductId());
+                cartRecentViewItemHolderData.setName(recentView.getProductName());
+                cartRecentViewItemHolderData.setPrice(recentView.getProductPrice());
+                cartRecentViewItemHolderData.setImageUrl(recentView.getProductImage());
+                cartRecentViewItemHolderData.setWishlist(recentView.isWishlist());
+                cartRecentViewItemHolderData.setRating(recentView.getProductRating());
+                cartRecentViewItemHolderData.setReviewCount(recentView.getProductReviewCount());
+                cartRecentViewItemHolderData.setShopLocation(recentView.getShopLocation());
+                cartRecentViewItemHolderData.setShopId(recentView.getShopId());
+                cartRecentViewItemHolderData.setShopName(recentView.getShopName());
+                cartRecentViewItemHolderData.setMinOrder(1);
+                if (recentView.getBadges().size() > 0) {
+                    cartRecentViewItemHolderData.setBadgeUrl(recentView.getBadges().get(0).getImageUrl());
+                    if (recentView.getBadges().get(0).getTitle().equalsIgnoreCase("Official Store")) {
+                        cartRecentViewItemHolderData.setShopType("official_store");
+                    } else if (recentView.getBadges().get(0).getTitle().equalsIgnoreCase("Power Badge")) {
+                        cartRecentViewItemHolderData.setShopType("power_badge");
+                    }
+                }
+                cartRecentViewItemHolderDataList.add(cartRecentViewItemHolderData);
+            }
+        }
+        CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
+        cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recent_view));
+
+        CartRecentViewHolderData cartRecentViewHolderData = new CartRecentViewHolderData();
+        cartRecentViewHolderData.setRecentViewList(cartRecentViewItemHolderDataList);
+        cartAdapter.addCartRecentViewData(cartSectionHeaderHolderData, cartRecentViewHolderData);
+        this.recentViewList = cartRecentViewItemHolderDataList;
+
+        sendAnalyticsOnViewProductRecentView(
+                dPresenter.generateRecentViewDataImpressionAnalytics(cartRecentViewItemHolderDataList, FLAG_IS_CART_EMPTY)
+        );
+    }
+
+    @Override
+    public void renderWishlist(@Nullable List<Wishlist> wishlist) {
+        List<CartWishlistItemHolderData> cartWishlistItemHolderDataList = new ArrayList<>();
+        if (this.wishLists != null) {
+            cartWishlistItemHolderDataList.addAll(this.wishLists);
+        } else if (wishlist != null) {
+            for (Wishlist item : wishlist) {
+                CartWishlistItemHolderData cartWishlistItemHolderData = new CartWishlistItemHolderData();
+                cartWishlistItemHolderData.setId(item.getId());
+                cartWishlistItemHolderData.setName(item.getName());
+                cartWishlistItemHolderData.setRawPrice(String.valueOf(item.getPrice()));
+                cartWishlistItemHolderData.setPrice(item.getPriceFmt());
+                cartWishlistItemHolderData.setImageUrl(item.getImageUrl());
+                cartWishlistItemHolderData.setUrl(item.getUrl());
+                cartWishlistItemHolderData.setWishlist(true);
+                cartWishlistItemHolderData.setRating(item.rating);
+                cartWishlistItemHolderData.setReviewCount(item.reviewCount);
+                cartWishlistItemHolderData.setMinOrder(item.getMinimumOrder());
+                cartWishlistItemHolderData.setCategory(item.getCategoryBreadcrumb());
+                if (item.getShop() != null) {
+                    cartWishlistItemHolderData.setShopId(item.getShop().getId());
+                    cartWishlistItemHolderData.setShopName(item.getShop().getName());
+                    String shopType = "";
+                    if (item.getShop().isOfficial()) {
+                        shopType = "official_store";
+                    } else if (item.getShop().isGoldMerchant()) {
+                        shopType = "gold_merchant";
+                    }
+                    cartWishlistItemHolderData.setShopType(shopType);
+                    cartWishlistItemHolderData.setShopLocation(item.getShop().getLocation());
+                }
+                if (item.getBadges().size() > 0) {
+                    cartWishlistItemHolderData.setBadgeUrl(item.getBadges().get(0).getImageUrl());
+                }
+                cartWishlistItemHolderDataList.add(cartWishlistItemHolderData);
+            }
+        }
+        CartSectionHeaderHolderData cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
+        cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_wishlist));
+        cartSectionHeaderHolderData.setShowAllAppLink(ApplinkConst.WISHLIST);
+
+        CartWishlistHolderData cartRecentViewHolderData = new CartWishlistHolderData();
+        cartRecentViewHolderData.setWishList(cartWishlistItemHolderDataList);
+        cartAdapter.addCartWishlistData(cartSectionHeaderHolderData, cartRecentViewHolderData);
+        this.wishLists = cartWishlistItemHolderDataList;
+
+        sendAnalyticsOnViewProductWishlist(
+                dPresenter.generateWishlistDataImpressionAnalytics(cartWishlistItemHolderDataList, FLAG_IS_CART_EMPTY)
+        );
+    }
+
+    @Override
+    public void renderRecommendation(@Nullable RecommendationWidget recommendationWidget) {
+        List<CartRecommendationItemHolderData> cartRecommendationItemHolderDataList = new ArrayList<>();
+
+        if (recommendationWidget != null) {
+            // Render from API
+            List<RecommendationItem> recommendationItems = recommendationWidget.getRecommendationItemList();
+            for (RecommendationItem recommendationItem : recommendationItems) {
+                CartRecommendationItemHolderData cartRecommendationItemHolderData =
+                        new CartRecommendationItemHolderData(recommendationItem);
+                cartRecommendationItemHolderDataList.add(cartRecommendationItemHolderData);
+            }
+        } else {
+            // Render from Cache
+            if (recommendationList != null && recommendationList.size() != 0) {
+                cartRecommendationItemHolderDataList.addAll(this.recommendationList);
+            }
+        }
+
+        CartSectionHeaderHolderData cartSectionHeaderHolderData = null;
+        if ((endlessRecyclerViewScrollListener.getCurrentPage() == 0 && recommendationWidget == null) || (recommendationWidget != null && endlessRecyclerViewScrollListener.getCurrentPage() == 1 && recommendationSectionHeader == null)) {
+            if (recommendationSectionHeader != null) {
+                cartSectionHeaderHolderData = recommendationSectionHeader;
+            } else {
+                cartSectionHeaderHolderData = new CartSectionHeaderHolderData();
+                if (recommendationWidget != null && !TextUtils.isEmpty(recommendationWidget.getTitle())) {
+                    cartSectionHeaderHolderData.setTitle(recommendationWidget.getTitle());
+                } else {
+                    cartSectionHeaderHolderData.setTitle(getString(R.string.checkout_module_title_recommendation));
+                }
+                recommendationSectionHeader = cartSectionHeaderHolderData;
+            }
+        }
+
+        if (cartRecommendationItemHolderDataList.size() > 0) {
+            cartAdapter.addCartRecommendationData(cartSectionHeaderHolderData, cartRecommendationItemHolderDataList);
+            recommendationList = cartRecommendationItemHolderDataList;
+
+            sendAnalyticsOnViewProductRecommendation(
+                    dPresenter.generateRecommendationDataAnalytics(recommendationList, FLAG_IS_CART_EMPTY)
+            );
+        }
+    }
+
+    @Override
+    public void showItemLoading() {
+        cartAdapter.addCartLoadingData();
+    }
+
+    @Override
+    public void hideItemLoading() {
+        cartAdapter.removeCartLoadingData();
+        endlessRecyclerViewScrollListener.updateStateAfterGetData();
+        hasLoadRecommendation = true;
+    }
+
+    @Override
+    public void triggerSendEnhancedEcommerceAddToCartSuccess(AddToCartDataModel addToCartDataResponseModel, Object productModel) {
+        Map<String, Object> stringObjectMap = null;
+        String eventCategory = "";
+        String eventAction = "";
+        String eventLabel = "";
+        if (productModel instanceof CartWishlistItemHolderData) {
+            eventCategory = ConstantTransactionAnalytics.EventCategory.WISHLIST_PAGE;
+            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_WISHLIST;
+            eventLabel = "";
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartWishlistItemHolderData) productModel, addToCartDataResponseModel);
+        } else if (productModel instanceof CartRecentViewItemHolderData) {
+            eventCategory = ConstantTransactionAnalytics.EventCategory.RECENT_VIEW;
+            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_RECENT_VIEW_PAGE;
+            eventLabel = "";
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecentViewItemHolderData) productModel, addToCartDataResponseModel);
+        } else if (productModel instanceof CartRecommendationItemHolderData) {
+            eventCategory = ConstantTransactionAnalytics.EventCategory.CART;
+            eventAction = ConstantTransactionAnalytics.EventAction.CLICK_ADD_TO_CART;
+            eventLabel = "";
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecommendationItemHolderData) productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY);
+        }
+
+        if (stringObjectMap != null) {
+            checkoutAnalyticsCourierSelection.sendEnhancedECommerceAddToCart(stringObjectMap, eventCategory, eventAction, eventLabel);
+        }
+    }
+
+    @Override
+    public void setHasTriedToLoadRecentView() {
+        hasTriedToLoadRecentViewList = true;
+    }
+
+    @Override
+    public void setHasTriedToLoadWishList() {
+        hasTriedToLoadWishList = true;
+    }
+
+    @Override
+    public void setHasTriedToLoadRecommendation() {
+        hasTriedToLoadRecommendation = true;
     }
 }

@@ -113,9 +113,9 @@ public class TopAdsEditProductMainPageFragment extends TopAdsDetailEditMainPageF
     protected void onCostClicked() {
         Intent intent;
         if(ad!= null) {
-            intent = TopAdsEditCostProductActivity.createIntent(getActivity(), ad.getId());
+            intent = TopAdsEditCostProductActivity.createIntent(getActivity(), ad.getId(), ad.getItemId());
         }else{
-            intent = TopAdsEditCostProductActivity.createIntent(getActivity(), adId);
+            intent = TopAdsEditCostProductActivity.createIntent(getActivity(), adId, ad.getItemId());
         }
         startActivityForResult(intent, REQUEST_CODE_AD_EDIT);
     }

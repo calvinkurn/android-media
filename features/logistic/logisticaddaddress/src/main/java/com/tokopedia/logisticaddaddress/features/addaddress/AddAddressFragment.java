@@ -17,6 +17,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -37,7 +38,8 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
-import com.tokopedia.logisticaddaddress.router.IAddressRouter;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
+import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
@@ -60,18 +62,15 @@ import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
-import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
-import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT;
+import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_DEFAULT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_EDIT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.KERO_TOKEN;
-import static com.tokopedia.logisticaddaddress.AddressConstants.PLATFORM_MARKETPLACE_CART;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE;
 
 /**
@@ -119,13 +118,12 @@ public class AddAddressFragment extends BaseDaggerFragment
     private TextView subDistrictError;
     private ProgressBar mProgressBar;
 
-    private List<String> zipCodes;
+    private List<String> zipCodes = new ArrayList<>();
     private Token token;
     private Destination address;
 
     private CheckoutAnalyticsMultipleAddress checkoutAnalyticsMultipleAddress;
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
-    private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
     @Inject
     AddAddressContract.Presenter mPresenter;
@@ -155,13 +153,16 @@ public class AddAddressFragment extends BaseDaggerFragment
             Bundle arguments = getArguments();
             this.token = arguments.getParcelable(KERO_TOKEN);
             this.address = arguments.getParcelable(EDIT_PARAM);
-            this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
             this.instanceType = arguments.getInt(EXTRA_INSTANCE_TYPE, INSTANCE_TYPE_DEFAULT);
         }
+
+        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
 
         if (token == null && getActivity() != null) {
             getActivity().setResult(ERROR_RESULT_CODE);
             getActivity().finish();
+        } else {
+            if (!isEdit()) sendAnalyticsScreenName(getScreenName());
         }
     }
 
@@ -182,7 +183,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void onStart() {
         super.onStart();
-        if (!isEdit()) sendAnalyticsScreenName(getScreenName());
     }
 
     @Override
@@ -248,7 +248,7 @@ public class AddAddressFragment extends BaseDaggerFragment
                         this.address.setCityName(address.getCityName());
                         this.address.setDistrictName(address.getDistrictName());
 
-                        zipCodes = new ArrayList<>(address.getZipCodes());
+                        if(address.getZipCodes() != null) zipCodes = new ArrayList<>(address.getZipCodes());
                         initializeZipCodes();
                     }
                 }
@@ -300,7 +300,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     @Override
     public void finishActivity() {
         Intent intent = getActivity().getIntent();
-        intent.putExtra(EXTRA_ADDRESS, address);
+            intent.putExtra(EXTRA_ADDRESS, address);
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }
@@ -470,14 +470,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void sendAnalyticsOnSubmitSaveAddressClicked() {
-        if (isAddAddressFromCartCheckoutMarketplace()) {
-            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickSimpanFromTambahAlamat();
-            checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickTambahAlamatFromTambah();
-        }
-    }
-
-    @Override
     public void sendAnalyticsOnDistrictSelectionClicked() {
         if (isAddAddressFromCartCheckoutMarketplace()) {
             checkoutAnalyticsChangeAddress.eventClickShippingCartChangeAddressClickKotaAtauKecamatanPadaTambahAddress();
@@ -596,8 +588,6 @@ public class AddAddressFragment extends BaseDaggerFragment
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanFromEditSuccess();
             } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT) {
                 checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickButtonSimpanFromEditSuccess();
-            } else if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT) {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess();
             }
         } else {
             checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
@@ -607,8 +597,6 @@ public class AddAddressFragment extends BaseDaggerFragment
                 checkoutAnalyticsMultipleAddress.eventClickAddressCartMultipleAddressClickButtonSimpanFromEditNotSuccess();
             } else if (instanceType == INSTANCE_TYPE_EDIT_ADDRESS_FROM_SINGLE_CHECKOUT) {
                 checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickButtonSimpanFromEditNotSuccess();
-            } else if (instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT) {
-                checkoutAnalyticsChangeAddress.eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed();
             }
         }
     }
@@ -685,7 +673,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
 
         saveButton.setOnClickListener(view -> {
-            sendAnalyticsOnSubmitSaveAddressClicked();
             if (isValidAddress()) {
                 updateAddress();
                 performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_SUBMIT_ADD_ADDRESS);
@@ -734,7 +721,6 @@ public class AddAddressFragment extends BaseDaggerFragment
 
     protected void initialVar() {
 
-        checkoutAnalyticsChangeAddress = new CheckoutAnalyticsChangeAddress();
         checkoutAnalyticsMultipleAddress = new CheckoutAnalyticsMultipleAddress();
         if (isEdit() && address != null) {
             receiverNameEditText.setText(address.getReceiverName());
@@ -860,11 +846,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private View.OnClickListener onCityDistrictClick() {
         return view -> {
             sendAnalyticsOnDistrictSelectionClicked();
-            Intent intent = ((IAddressRouter) getActivity().getApplication())
-                    .getDistrictRecommendationIntent(
-                            getActivity(), token,
-                            getArguments().getString(EXTRA_PLATFORM_PAGE, "").equalsIgnoreCase(PLATFORM_MARKETPLACE_CART)
-                    );
+            Intent intent = DiscomActivity.newInstance(getActivity(), token);
             startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
         };
     }
@@ -884,9 +866,13 @@ public class AddAddressFragment extends BaseDaggerFragment
             if (i == 0 && !Character.isDigit(zipCodeTextView.getText().toString().charAt(0))) {
                 zipCodeTextView.setText("");
             }
-
             address.setPostalCode(zipCodeTextView.getText().toString());
             sendAnalyticsOnZipCodeDropdownSelectionClicked();
+
+            if (getContext() != null) {
+                InputMethodManager in = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                in.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
+            }
         };
     }
 
@@ -895,7 +881,7 @@ public class AddAddressFragment extends BaseDaggerFragment
                 address.getLongitude() != null &&
                 !address.getLatitude().equals("") &&
                 !address.getLongitude().equals("")
-                ) {
+        ) {
             mPresenter.requestReverseGeoCode(getContext(), address);
         }
     }
@@ -931,12 +917,11 @@ public class AddAddressFragment extends BaseDaggerFragment
                 locationPass.setLongitude(String.valueOf(MONAS_LONGITUDE));
             }
 
-            Intent intent = ((IAddressRouter) getActivity().getApplication())
-                    .getGeoLocationActivityIntent(
-                            getActivity(), locationPass,
-                            isAddAddressFromCartCheckoutMarketplace()
-                    );
-            startActivityForResult(intent, REQUEST_CODE);
+            if (getActivity() != null) {
+                Intent intent = GeolocationActivity.createInstance(getActivity(), locationPass,
+                        isAddAddressFromCartCheckoutMarketplace());
+                startActivityForResult(intent, REQUEST_CODE);
+            }
         } else {
             CommonUtils.dumper("Google play services unavailable");
             Dialog dialog = availability.getErrorDialog(getActivity(), resultCode, 0);
@@ -949,6 +934,6 @@ public class AddAddressFragment extends BaseDaggerFragment
     }
 
     private boolean isFromMarketPlaceCartEmptyAddressFirst() {
-        return isFromMarketPlaceCartEmptyAddressFirst;
+        return instanceType == INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
     }
 }

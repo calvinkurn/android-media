@@ -124,7 +124,7 @@
                     android:layout_marginTop="@dimen/dp_12"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:text="@string/product_info_label"
+                    android:text="@string/detail_label_digital"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold"
                     android:visibility="gone" />
@@ -153,7 +153,7 @@
                     android:layout_marginTop="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginBottom="@dimen/dp_8"
-                    android:text="@string/detail_label"
+                    android:text="@string/detail_label_digital"
                     android:textSize="@dimen/sp_16"
                     android:textStyle="bold" />
 
@@ -249,23 +249,22 @@
                     android:orientation="vertical" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/help_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_16"
+                android:gravity="center" />
+
             <LinearLayout
                 android:id="@+id/actionBtnLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_6"
                 android:paddingTop="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_10"
                 android:background="@color/white"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/help_label"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:gravity="center" />
 
                 <TextView
                     android:id="@+id/langannan"

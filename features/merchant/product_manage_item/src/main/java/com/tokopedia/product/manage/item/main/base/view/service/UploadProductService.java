@@ -13,15 +13,16 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.crashlytics.android.Crashlytics;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.app.BaseService;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.product.manage.item.BuildConfig;
 import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.common.util.AddProductException;
 import com.tokopedia.product.manage.item.common.util.ProductStatus;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductViewModel;
 import com.tokopedia.product.manage.item.main.base.di.component.DaggerAddProductServiceComponent;
@@ -32,8 +33,9 @@ import com.tokopedia.product.manage.item.main.base.view.presenter.AddProductServ
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.product.manage.item.utils.ErrorHandlerAddProduct;
-import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter;
+import com.tokopedia.product.manage.item.utils.ProductEditItemComponentInstance;
 import com.tokopedia.track.TrackApp;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.HashMap;
 
@@ -48,6 +50,9 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Inject
     AddProductServicePresenter presenter;
+
+    @Inject
+    UserSessionInterface userSession;
 
     private NotificationManager notificationManager;
     private HashMap<Integer, NotificationCompat.Builder> notificationBuilderMap = new HashMap<>();
@@ -65,7 +70,7 @@ public class UploadProductService extends BaseService implements AddProductServi
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         DaggerAddProductServiceComponent
                 .builder()
-                .productComponent(((ProductEditModuleRouter) getApplication()).getProductComponent())
+                .productComponent(ProductEditItemComponentInstance.getComponent(getApplication()))
                 .addProductserviceModule(new AddProductserviceModule())
                 .build().inject(this);
         presenter.attachView(this);
@@ -129,6 +134,8 @@ public class UploadProductService extends BaseService implements AddProductServi
         result.putExtras(bundle);
         sendBroadcast(result);
 
+        logException(t);
+
         LocalBroadcastManager lbm = LocalBroadcastManager.getInstance(this);
         lbm.sendBroadcast(new Intent(ACTION_DRAFT_CHANGED));
     }
@@ -139,6 +146,20 @@ public class UploadProductService extends BaseService implements AddProductServi
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_ERROR_SERVER,
                 label);
+    }
+
+    private void logException(Throwable t) {
+        try {
+            if (!BuildConfig.DEBUG) {
+                String errorMessage = String.format("Error add product. userId: %s | userEmail: %s",
+                        userSession.getUserId(),
+                        userSession.getEmail());
+                AddProductException exception = new AddProductException(errorMessage, t);
+                Crashlytics.logException(exception);
+            }
+        } catch (IllegalStateException ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void removeNotificationFromList(int notificationId) {
@@ -180,24 +201,23 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     private NotificationCompat.Builder buildBaseNotification(String productName) {
         String title = getString(R.string.product_title_notification_upload_product) + " " + productName;
-        ProductEditModuleRouter productEditModuleRouter;
-        Intent pendingIntent = null;
-        if(getApplication() instanceof ProductEditModuleRouter){
-            productEditModuleRouter = (ProductEditModuleRouter) getApplication();
-            pendingIntent = productEditModuleRouter.getManageProductIntent(this);
-        }
-        PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
         int largeIconRes = R.drawable.ic_stat_notify2;
         if (!GlobalConfig.isSellerApp()) {
             largeIconRes = R.drawable.ic_stat_notify;
         }
-        return new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
+        NotificationCompat.Builder notificationBuilder= new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
                 .setContentTitle(title)
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
-                .setContentIntent(pIntent)
                 .setGroup(getString(R.string.product_group_notification))
                 .setOnlyAlertOnce(true);
+
+        Intent pendingIntent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST);
+        if (pendingIntent != null) {
+            PendingIntent pIntent = PendingIntent.getActivity(this, 0, pendingIntent, 0);
+            notificationBuilder.setContentIntent(pIntent);
+        }
+        return notificationBuilder;
     }
 
     private Notification buildFailedNotification(String errorMessage, int notificationId, @ProductStatus int productStatus) {

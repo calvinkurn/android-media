@@ -37,12 +37,12 @@ class ExploreAdapter(adapterTypeFactory: ExploreTypeFactory, visitables: List<Vi
     }
 
     fun getFilterList(): List<FilterViewModel> {
-        return (visitables.first { it is FilterListViewModel } as? FilterListViewModel)?.filters
+        return (visitables.firstOrNull { it is FilterListViewModel } as? FilterListViewModel)?.filters
                 ?: arrayListOf()
     }
 
     fun setFilterList(filterList: List<FilterViewModel>) {
-        (visitables.first { it is FilterListViewModel } as? FilterListViewModel)?.filters =
+        (visitables.firstOrNull { it is FilterListViewModel } as? FilterListViewModel)?.filters =
                 filterList.toMutableList()
         notifyDataSetChanged()
     }

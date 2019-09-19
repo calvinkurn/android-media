@@ -1,18 +1,23 @@
 package com.tokopedia.digital_deals.data.source;
 
+import com.tokopedia.url.TokopediaUrl;
+
 public class DealsUrl {
     //Base Url
-    public static String DEALS_DOMAIN = "https://booking.tokopedia.com/";
+    public static String DEALS_DOMAIN = TokopediaUrl.Companion.getInstance().getBOOKING();
 
     public interface HelperUrl {
         String DEALS_LIST = "v1/api/h/deal";
+        String DEALS_LIST_V2 = "v2/api/h/deal";
         String DEALS_LIST_SEARCH = "v1/api/s/deal";
-        String DEALS_LOCATIONS = "v1/api/location/deal";
+        String DEALS_LOCATIONS = "v1/api/s/location";
+        String DEALS_CITIES = "v1/api/location/deal";
         String DEALS_PRODUCT = "v1/api/p";
         String DEALS_CATEGORY = "v1/api/h/deal/c/";
         String DEALS_LIKES = "v1/api/deal/rating";
         String DEALS_LIKES_PRODUCT = "v1/api/deal/rating/product";
         String DEALS_BRAND = "v1/api/b/";
+        String DEALS_CATEGORIES = "v1/api/c/deal/children";
     }
 
     public interface WebUrl{
@@ -28,5 +33,6 @@ public class DealsUrl {
         String DIGITAL_DEALS_DETAILS = "tokopedia://deals/{slug}";
         String DIGITAL_DEALS_CATEGORY="tokopedia://deals/category/page";
         String DIGITAL_DEALS_BRAND = "tokopedia://deals/brand/{slug}";
+        String DIGITAL_DEALS_ALL_BRAND = "tokopedia://deals/allbrands/{isVoucher}";
     }
 }

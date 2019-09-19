@@ -10,7 +10,6 @@ import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.LabelModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,9 +62,7 @@ public class ProductMapper implements Func1<Response<String>, SearchResultModel>
 
         if (searchProductResponse.getData().getSuggestionText() != null) {
             model.setSuggestionText(searchProductResponse.getData().getSuggestionText().getText());
-            String suggestedQuery
-                    = NetworkParamHelper.getQueryValue(searchProductResponse.getData().getSuggestionText().getQuery());
-            model.setSuggestedQuery(suggestedQuery);
+            model.setSuggestedQuery(searchProductResponse.getData().getSuggestionText().getQuery());
         }
         if (searchProductResponse.getData().getSuggestionsInstead() != null) {
             model.setSuggestionCurrentKeyword(searchProductResponse.getData().getSuggestionsInstead().getCurrentKeyword());

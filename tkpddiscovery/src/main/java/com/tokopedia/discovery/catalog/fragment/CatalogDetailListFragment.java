@@ -309,7 +309,7 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     public void renderListLocation(@NonNull List<CatalogDetailListLocation> locationsData) {
-        if (mLocationsData == null) {
+        if (mLocationsData == null || locationsData == null) {
             return;
         }
         this.mLocationsData.clear();
@@ -329,6 +329,9 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
             mAdapter.showEmpty(true);
         } else {
             mAdapter.showEmpty(false);
+        }
+        if (mCatalogDetailItems == null) {
+            mCatalogDetailItems = new ArrayList<>();
         }
         mCatalogDetailItems.addAll(catalogDetailItems);
         mAdapter.notifyDataSetChanged();

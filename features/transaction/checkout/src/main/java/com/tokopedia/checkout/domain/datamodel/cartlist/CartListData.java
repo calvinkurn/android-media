@@ -17,6 +17,7 @@ import java.util.List;
 public class CartListData implements Parcelable {
     private boolean isError;
     private String errorMessage;
+    private CartTickerData ticker;
 
     private List<ShopGroupData> shopGroupDataList = new ArrayList<>();
     private CartPromoSuggestion cartPromoSuggestion;
@@ -28,6 +29,7 @@ public class CartListData implements Parcelable {
     private String defaultPromoDialogTab;
     private boolean allSelected;
     private TopAdsModel adsModel;
+    private boolean isShowOnboarding;
 
     public TopAdsModel getAdsModel() {
         return adsModel;
@@ -85,6 +87,14 @@ public class CartListData implements Parcelable {
         this.errorMessage = errorMessage;
     }
 
+    public CartTickerData getTicker() {
+        return ticker;
+    }
+
+    public void setTicker(CartTickerData ticker) {
+        this.ticker = ticker;
+    }
+
     public AutoApplyData getAutoApplyData() {
         return autoApplyData;
     }
@@ -125,6 +135,14 @@ public class CartListData implements Parcelable {
         this.allSelected = allSelected;
     }
 
+    public boolean isShowOnboarding() {
+        return isShowOnboarding;
+    }
+
+    public void setShowOnboarding(boolean showOnboarding) {
+        isShowOnboarding = showOnboarding;
+    }
+
     public CartListData() {
     }
 
@@ -137,23 +155,27 @@ public class CartListData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
+        dest.writeParcelable(this.ticker, flags);
         dest.writeTypedList(this.shopGroupDataList);
         dest.writeParcelable(this.cartPromoSuggestion, flags);
         dest.writeByte(this.promoCouponActive ? (byte) 1 : (byte) 0);
         dest.writeByte(this.allSelected ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.cartTickerErrorData, flags);
         dest.writeParcelable(this.autoApplyData, flags);
+        dest.writeByte(this.isShowOnboarding ? (byte) 1 : (byte) 0);
     }
 
     protected CartListData(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
+        this.ticker = in.readParcelable(CartTickerData.class.getClassLoader());
         this.shopGroupDataList = in.createTypedArrayList(ShopGroupData.CREATOR);
         this.cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         this.promoCouponActive = in.readByte() != 0;
         this.allSelected = in.readByte() != 0;
         this.cartTickerErrorData = in.readParcelable(CartTickerErrorData.class.getClassLoader());
         this.autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
+        this.isShowOnboarding = in.readByte() != 0;
     }
 
     public static final Creator<CartListData> CREATOR = new Creator<CartListData>() {

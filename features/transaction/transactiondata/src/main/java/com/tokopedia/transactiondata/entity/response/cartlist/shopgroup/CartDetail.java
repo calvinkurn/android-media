@@ -25,6 +25,12 @@ public class CartDetail {
     @SerializedName("product")
     @Expose
     private Product product = new Product();
+    @SerializedName("checkbox_state")
+    @Expose
+    private boolean checkboxState;
+    @SerializedName("similar_product")
+    @Expose
+    private SimilarProduct similarProduct;
 
     public int getCartId() {
         return cartId;
@@ -40,5 +46,13 @@ public class CartDetail {
 
     public Product getProduct() {
         return product;
+    }
+
+    public boolean isCheckboxState() {
+        return checkboxState;
+    }
+
+    public SimilarProduct getSimilarProduct() {
+        return similarProduct;
     }
 }

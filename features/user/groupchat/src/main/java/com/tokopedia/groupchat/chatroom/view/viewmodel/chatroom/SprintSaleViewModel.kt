@@ -9,7 +9,7 @@ import java.util.*
  * @author by nisie on 3/26/18.
  */
 
-class SprintSaleViewModel : Parcelable {
+class SprintSaleViewModel() : Parcelable {
 
     var listProduct: ArrayList<SprintSaleProductViewModel> = arrayListOf()
     var campaignName: String = ""
@@ -23,12 +23,8 @@ class SprintSaleViewModel : Parcelable {
     var sprintSaleType: String = ""
     var campaignId: String = ""
 
-    constructor(){
-
-    }
-
     constructor(campaignId: String, listProduct: ArrayList<SprintSaleProductViewModel>,
-                campaignName: String, startDate: Long, endDate: Long, redirectUrl: String, sprintSaleType: String) {
+                campaignName: String, startDate: Long, endDate: Long, redirectUrl: String, sprintSaleType: String): this() {
         val localeID = Locale("in", "ID")
         val sdfHour = SimpleDateFormat("HH:mm", localeID)
         this.campaignId = campaignId
@@ -43,7 +39,7 @@ class SprintSaleViewModel : Parcelable {
     }
 
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         listProduct = `in`.createTypedArrayList(SprintSaleProductViewModel.CREATOR)
         campaignName = `in`.readString()
         startDate = `in`.readLong()

@@ -1,15 +1,13 @@
 package com.tokopedia.discovery.newdiscovery.data.source;
 
-import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.newdiscovery.data.mapper.DynamicAttributeMapper;
 import com.tokopedia.discovery.newdiscovery.hotlist.data.mapper.HotlistAttributeMapper;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistAttributeModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 
-import retrofit2.Response;
 import rx.Observable;
-import rx.functions.Func1;
 
 /**
  * Created by hangnadi on 10/6/17.

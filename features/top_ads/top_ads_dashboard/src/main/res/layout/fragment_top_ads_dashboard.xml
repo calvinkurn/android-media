@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -12,10 +12,10 @@
         android:layout_weight="1">
 
         <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fillViewport="true"
-            android:id="@+id/scroll_view">
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -29,17 +29,27 @@
                     android:id="@+id/ticker_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_15"
                     android:layout_marginLeft="@dimen/dp_15"
-                    android:layout_marginRight="@dimen/dp_15"
                     android:layout_marginTop="@dimen/dp_15"
+                    android:layout_marginRight="@dimen/dp_15"
+                    android:layout_marginBottom="@dimen/dp_15"
                     android:visibility="gone"
                     app:tckv_content_text_size="@dimen/sp_12"
+                    app:tckv_highlight_color="@color/green_1000"
                     app:tckv_indicator_off_color="@color/green_indicator_off"
                     app:tckv_indicator_on_color="@color/green_1100"
-                    app:tckv_highlight_color="@color/green_1000"
                     app:tckv_show_close_button="false"
-                    app:tckv_show_link_underline="false"/>
+                    app:tckv_show_link_underline="false" />
+
+
+                <com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
+                    android:id="@+id/autoads_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_12"
+                    android:layout_marginRight="@dimen/dp_12"
+                    android:layout_marginBottom="@dimen/dp_12"
+                    android:visibility="gone" />
 
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -51,7 +61,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <include layout="@layout/partial_top_ads_dashboard_statistics"/>
+                        <include layout="@layout/partial_top_ads_dashboard_statistics" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -71,13 +81,13 @@
                                 app:lv_title="@string/label_top_ads_groups" />
 
                             <LinearLayout
+                                android:id="@+id/view_group_promo"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:background="@color/white"
                                 android:divider="@drawable/bg_list_separator"
-                                android:showDividers="middle"
                                 android:orientation="vertical"
-                                android:id="@+id/view_group_promo">
+                                android:showDividers="middle">
 
                                 <com.tokopedia.design.label.LabelView
                                     android:id="@+id/label_view_item_summary"
@@ -86,7 +96,7 @@
                                     app:lv_content="@string/top_ads_statistic_info_default_value"
                                     app:lv_content_color="@color/tkpd_main_green"
                                     app:lv_image="@drawable/ic_top_ads_produk"
-                                    app:lv_title="@string/label_top_ads_items"/>
+                                    app:lv_title="@string/label_top_ads_items" />
 
                                 <com.tokopedia.design.label.LabelView
                                     android:id="@+id/label_view_keyword"
@@ -95,7 +105,7 @@
                                     app:lv_content="@string/top_ads_statistic_info_default_value"
                                     app:lv_content_color="@color/tkpd_main_green"
                                     app:lv_image="@drawable/ic_top_ads_keyword"
-                                    app:lv_title="@string/label_top_ads_keyword"/>
+                                    app:lv_title="@string/label_top_ads_keyword" />
 
                             </LinearLayout>
                         </LinearLayout>
@@ -120,9 +130,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        app:buttonTextAllCaps="false"
         app:floatButtonSize="big"
         app:floatButtonType="primary"
-        app:text="@string/label_add_promo"
         app:shadowTop="true"
-        app:buttonTextAllCaps="false"/>
+        app:text="@string/label_add_promo" />
 </LinearLayout>

@@ -5,6 +5,13 @@ import com.tokopedia.iris.model.Configuration
 
 interface Iris {
 
+    /**
+     * Simplify initialize iris
+     */
+    fun initialize()
+
+    fun setService(config: String, isEnabled: Boolean)
+
     fun setService(config: Configuration)
 
     fun resetService(config: Configuration)
@@ -26,6 +33,11 @@ interface Iris {
     fun setDeviceId(deviceId: String)
 
     companion object {
-        fun init(context: Context): Iris? = IrisAnalytics(context)
+        fun getInstance(context: Context) : Iris {
+            return IrisAnalytics(context)
+        }
+
+        fun deleteInstance() {
+        }
     }
 }

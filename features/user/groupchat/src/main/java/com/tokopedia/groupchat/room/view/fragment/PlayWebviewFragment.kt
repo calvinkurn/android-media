@@ -24,7 +24,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.groupchat.room.di.PlayComponent
 import com.tokopedia.groupchat.room.di.DaggerPlayComponent
 
-import com.tokopedia.groupchat.GroupChatModuleRouter
 import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
 import com.tokopedia.kotlin.util.getParamBoolean
@@ -255,7 +254,8 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
                         val intent = RouteManager.getIntent(this, url)
                         startActivityForResult(intent, REQUEST_CODE_LOGIN)
                         return true
-                    } else if (RouteManager.isSupportApplink(this, url)) {
+                    } else if (!URLUtil.isNetworkUrl(url) &&
+                        RouteManager.isSupportApplink(this, url)) {
                         RouteManager.route(this, url)
                         return true
                     } else {
@@ -269,7 +269,7 @@ class PlayWebviewFragment : BaseDaggerFragment(), View.OnKeyListener {
 
     private fun openHomePage() {
         activity?.run {
-            startActivity((applicationContext as GroupChatModuleRouter).getHomeIntent(this))
+            startActivity(RouteManager.getIntent(this, ApplinkConst.HOME))
             finish()
         }
 

@@ -3,6 +3,7 @@ package com.tokopedia.topads.dashboard.view.presenter;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsCheckExistGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsEditProductGroupToNewGroupUseCase;
+import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMinimumBidUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsMoveProductGroupToExistGroupUseCase;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsSearchGroupAdsNameUseCase;
 import com.tokopedia.topads.dashboard.utils.ViewUtils;
@@ -10,6 +11,7 @@ import com.tokopedia.topads.dashboard.view.listener.TopAdsGroupEditPromoView;
 import com.tokopedia.topads.sourcetagging.data.TopAdsSourceTaggingModel;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsGetSourceTaggingUseCase;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import rx.Subscriber;
 
@@ -28,8 +30,10 @@ public class TopAdsGroupEditPromoPresenterImpl extends TopAdsManageGroupPromoPre
                                              TopAdsCheckExistGroupUseCase topAdsCheckExistGroupUseCase,
                                              TopAdsEditProductGroupToNewGroupUseCase topAdsEditProductGroupToNewGroupUseCase,
                                              TopAdsMoveProductGroupToExistGroupUseCase topAdsMoveProductGroupToExistGroupUseCase,
-                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase) {
-        super(topAdsSearchGroupAdsNameUseCase, topAdsCheckExistGroupUseCase);
+                                             TopAdsGetSourceTaggingUseCase topAdsGetSourceTaggingUseCase,
+                                             TopAdsMinimumBidUseCase topAdsMinimumBidUseCase,
+                                             UserSessionInterface sessionInterface) {
+        super(topAdsSearchGroupAdsNameUseCase, topAdsCheckExistGroupUseCase, topAdsMinimumBidUseCase, sessionInterface);
         this.topAdsEditProductGroupToNewGroupUseCase = topAdsEditProductGroupToNewGroupUseCase;
         this.topAdsMoveProductGroupToExistGroupUseCase = topAdsMoveProductGroupToExistGroupUseCase;
         this.topAdsGetSourceTaggingUseCase = topAdsGetSourceTaggingUseCase;

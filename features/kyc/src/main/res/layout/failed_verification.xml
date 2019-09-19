@@ -2,19 +2,21 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/clr_ae31353b">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/dp_30"
-        android:layout_marginRight="@dimen/dp_30"
-        android:scrollbars="none">
+        android:layout_marginTop="@dimen/dp_20"
+        android:scrollbars="none"
+        android:background="@drawable/header_bottom_sheet_rounded_white">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/dp_30"
+            android:layout_marginRight="@dimen/dp_30">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -30,9 +32,11 @@
                 android:gravity="center_horizontal"
                 android:text="@string/ovo_lvl_upgrd_fail"
                 android:textColor="@color/black_70"
+                android:textStyle="bold"
                 android:textSize="@dimen/sp_17" />
 
             <TextView
+                android:id="@+id/desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -63,7 +67,7 @@
                 android:gravity="center"
                 android:paddingTop="@dimen/dp_10"
                 android:paddingBottom="@dimen/dp_10"
-                android:text="@string/rtrn_mnpg"
+                android:text="@string/label_later"
                 android:textColor="@color/light_disabled"
                 android:textSize="@dimen/sp_14" />
         </LinearLayout>

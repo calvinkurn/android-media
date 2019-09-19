@@ -1,5 +1,8 @@
 package com.tokopedia.seller.shop.common.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.seller.shop.common.di.scope.DeleteCacheScope;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoTomeUseCase;
 import com.tokopedia.seller.shop.common.domain.interactor.DeleteShopInfoUseCase;
@@ -17,14 +20,14 @@ public class ShopDeleteCacheModule {
 
     @DeleteCacheScope
     @Provides
-    DeleteShopInfoTomeUseCase provideDeleteShopInfoTomeUseCase() {
-        return new DeleteShopInfoTomeUseCase();
+    DeleteShopInfoTomeUseCase provideDeleteShopInfoTomeUseCase(@ApplicationContext Context context) {
+        return new DeleteShopInfoTomeUseCase(context);
     }
 
     @DeleteCacheScope
     @Provides
-    DeleteShopInfoUseCase provideDeleteShopInfoUseCase(DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
-        return new DeleteShopInfoUseCase(deleteShopInfoTomeUseCase);
+    DeleteShopInfoUseCase provideDeleteShopInfoUseCase(@ApplicationContext Context context, DeleteShopInfoTomeUseCase deleteShopInfoTomeUseCase) {
+        return new DeleteShopInfoUseCase(context, deleteShopInfoTomeUseCase);
     }
 }
 

@@ -7,11 +7,11 @@ import android.os.Parcelable
  * @author anggaprasetiyo on 3/2/17.
  */
 
-class Relation : Parcelable {
+class Relation() : Parcelable {
 
     var data: RelationData? = null
 
-    constructor(data: RelationData) {
+    constructor(data: RelationData): this() {
         this.data = data
     }
 
@@ -24,7 +24,7 @@ class Relation : Parcelable {
         dest.writeParcelable(this.data, flags)
     }
 
-    protected constructor(`in`: Parcel) {
+    protected constructor(`in`: Parcel): this() {
         this.data = `in`.readParcelable(RelationData::class.java.classLoader)
     }
 
