@@ -334,14 +334,8 @@ public class FeedPlusPresenter
                         if (hasFeed(model)) {
                             getView().updateCursor(model.getCursor());
                             getView().setLastCursorOnFirstPage(model.getCursor());
-                            WhitelistDomain whitelistDomain = new WhitelistDomain();
-                            if (firstPageDomainModel.getWhitelistDomain() != null
-                                    && firstPageDomainModel.getWhitelistDomain().isWhitelist()) {
-                                whitelistDomain = firstPageDomainModel.getWhitelistDomain();
-                            }
                             getView().onSuccessGetFeedFirstPage(
-                                    new ArrayList<>(model.getPostList()),
-                                    new WhitelistViewModel(whitelistDomain)
+                                    new ArrayList<>(model.getPostList())
                             );
 
                             if (model.getHasNext()) {
