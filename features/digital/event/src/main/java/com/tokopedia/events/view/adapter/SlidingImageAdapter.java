@@ -72,8 +72,9 @@ public class SlidingImageAdapter extends PagerAdapter {
         });
         itemsForGA.add(mData.get(position));
         int  itemsToSend = (mData.size() - 1) - position;
-        if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
-            eventsAnalytics.sendPromoImpressions(EventsAnalytics.EVENT_PROMO_VIEW, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_PROMO_IMPRESSION, mData);
+        if (itemsForGA != null && (itemsToSend == 0 || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
+            eventsAnalytics.sendPromoImpressions(EventsAnalytics.EVENT_PROMO_VIEW, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_PROMO_IMPRESSION, itemsForGA);
+            itemsForGA.clear();
         }
         return imageLayout;
     }

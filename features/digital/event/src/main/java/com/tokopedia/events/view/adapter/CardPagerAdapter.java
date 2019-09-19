@@ -92,8 +92,10 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
 
         itemsForGA.add(mData.get(position));
         int  itemsToSend = (mData.size() - 1) - position;
-        if (itemsForGA != null && (itemsToSend < Utils.MAX_ITEMS_FOR_GA || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
-            eventsAnalytics.sendSearchProductImpressions(EventsAnalytics.EVENT_PRODUCT_VIEW, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.EVENT_TOP_EVENT_IMPRESSION, mData);
+        Log.d("Naveen", "items to send is +" + itemsToSend);
+        if (itemsForGA != null && (itemsToSend == 0 || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
+            eventsAnalytics.sendSearchProductImpressions(EventsAnalytics.EVENT_PRODUCT_VIEW, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.EVENT_TOP_EVENT_IMPRESSION, itemsForGA);
+            itemsForGA.clear();
         }
         cardView.setMaxCardElevation(mBaseElevation * MAX_ELEVATION_FACTOR);
         cardView.setScaleY((float) (0.9));

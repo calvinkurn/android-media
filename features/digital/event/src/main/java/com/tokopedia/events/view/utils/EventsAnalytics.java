@@ -124,6 +124,7 @@ public class EventsAnalytics {
 
     public void sendSearchProductImpressions(String eventProductView, String digitalEvent, String eventProductImression, List<CategoryItemsViewModel> categoryItems) {
 
+        Log.d("Naveen", "impression event" + eventProductImression);
         List<HashMap<String, Object>> impressionList = new ArrayList<>();
         Map<String, Object> generalEvents = new HashMap<>();
         generalEvents.put(EVENT_NAME, eventProductView);
