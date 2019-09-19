@@ -13,14 +13,12 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.*
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.instantloan.InstantLoanComponentInstance
 import com.tokopedia.instantloan.common.analytics.InstantLoanAnalytics
 import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants
@@ -33,7 +31,6 @@ import com.tokopedia.instantloan.network.InstantLoanUrl
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.HELP_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.PAYMENT_METHODS_URL
 import com.tokopedia.instantloan.network.InstantLoanUrl.COMMON_URL.SUBMISSION_HISTORY_URL
-import com.tokopedia.instantloan.router.InstantLoanRouter
 import com.tokopedia.instantloan.view.adapter.*
 import com.tokopedia.instantloan.view.contractor.InstantLoanLendingDataContractor
 import com.tokopedia.instantloan.view.fragment.DanaInstantFragment
@@ -489,7 +486,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     private fun initializeView() {
         tabLayout = findViewById(com.tokopedia.instantloan.R.id.tabs)
-        heightWrappingViewPager = findViewById(com.tokopedia.abstraction.R.id.pager)
+        heightWrappingViewPager = findViewById(com.tokopedia.instantloan.R.id.il_pager)
         partnerHeightWrappingViewPager = findViewById(com.tokopedia.instantloan.R.id.view_pager_partner)
         rvSeoLayout = findViewById(com.tokopedia.instantloan.R.id.rv_lending_seo)
     }
@@ -505,7 +502,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun setupToolbar() {
-        toolbar = findViewById(com.tokopedia.abstraction.R.id.toolbar)
+        toolbar = findViewById(com.tokopedia.instantloan.R.id.toolbar)
         toolbar.setNavigationIcon(com.tokopedia.instantloan.R.drawable.instant_loan_action_back_arrow_black)
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
@@ -597,7 +594,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
 
     object DeepLinkIntents {
-//        @DeepLink(ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB)
+        //        @DeepLink(ApplinkConst.INSTANT_LOAN, ApplinkConst.INSTANT_LOAN_TAB)
         @JvmStatic
         fun getInstantLoanCallingIntent(context: Context, bundle: Bundle): Intent {
             val intent = Intent(context, InstantLoanActivity::class.java)
