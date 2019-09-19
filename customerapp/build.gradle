@@ -333,7 +333,6 @@ dependencies {
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.features.imageSearch)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
@@ -384,7 +383,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.oms)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.fingerprint)
-    implementation project(rootProject.ext.features.imageSearch)
+    //implementation project(rootProject.ext.features.imageSearch)
+    //implementation project(rootProject.ext.features.similarSearch)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
