@@ -36,8 +36,6 @@ public class HomePageTracking {
 
     private static final String EVENT_CLICK_HOME_PAGE = "clickHomePage";
     private static final String EVENT_CLICK_HOME_PAGE_WISHLIST = "clickHomepage";
-    private static final String EVENT_CLICK_HOME_PAGE_STICKY = "clickHomepage";
-    private static final String EVENT_VIEW_HOME_PAGE_STICKY = "viewHomepage";
     private static final String EVENT_GIMMICK = "clickGimmick";
     private static final String EVENT_USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
     private static final String EVENT_TOKO_POINT = "eventTokopoint";
@@ -103,9 +101,9 @@ public class HomePageTracking {
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN = "add wishlist on product recommendation - non login";
     public static final String ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "remove wishlist on product recommendation";
     public static final String EVENT_CLICK_TICKER = "clickTicker";
-    public static final String EVENT_CATEGORY_TICKER_HOMEPAGE = "ticker homepage";
-    public static final String EVENT_ACTION_CLICK_TICKER = "click ticker";
-    public static final String EVENT_ACTION_CLICK_ON_CLOSE_TICKER = "click on close ticker";
+    public static final String EVENT_CATEGORY_TICKER_HOMEPAGE = "tracker homepage";
+    public static final String EVENT_ACTION_CLICK_TICKER = "click tracker";
+    public static final String EVENT_ACTION_CLICK_ON_CLOSE_TICKER = "click on close tracker";
 
     public static final String ON = "on";
     public static final String NON_LOGIN = "non login";
@@ -119,11 +117,6 @@ public class HomePageTracking {
     public static final String ACTION_CLICK_VIEW_ALL_ON_DYNAMIC_CHANNEL_MIX = "click view all on dynamic channel mix";
 
     public static final String CHANNEL_ID = "channelId";
-
-    private static final String EVENT_LABEL_CLICK = "click";
-    private static final String EVENT_ACTION_CLICK_ON_STICKY_LOGIN_WIDGET = "click on login sticky widget";
-    private static final String EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN = "click on button close login sticky widget";
-    private static final String EVENT_VIEW_STICKY_LOGIN_AT_HOME = "view login sticky widget";
 
     public static ContextAnalytics getTracker(Context context) {
         return TrackApp.getInstance().getGTM();
@@ -978,36 +971,5 @@ public class HomePageTracking {
                     bannerChannel.getEnhanceClickBannerButtonChannelMix()
             );
         }
-    }
-
-    public static void eventClickOnStickyLogin(boolean isOnSticky) {
-        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
-        if (tracker != null) {
-            if (isOnSticky) {
-                tracker.sendGeneralEvent(
-                        EVENT_CLICK_HOME_PAGE_STICKY,
-                        CATEGORY_HOME_PAGE,
-                        EVENT_ACTION_CLICK_ON_STICKY_LOGIN_WIDGET,
-                        EVENT_LABEL_CLICK
-                );
-            } else {
-                tracker.sendGeneralEvent(
-                        EVENT_CLICK_HOME_PAGE_STICKY,
-                        CATEGORY_HOME_PAGE,
-                        EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN,
-                        LABEL_EMPTY
-                );
-            }
-        }
-    }
-
-    public static void eventOnStickyLoginShowing() {
-        ContextAnalytics tracker = TrackApp.getInstance().getGTM();
-        tracker.sendGeneralEvent(
-                EVENT_VIEW_HOME_PAGE_STICKY,
-                CATEGORY_HOME_PAGE,
-                EVENT_VIEW_STICKY_LOGIN_AT_HOME,
-                LABEL_EMPTY
-        );
     }
 }
