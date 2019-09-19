@@ -67,6 +67,10 @@ allprojects {
                 password = "${artifactory_password}"
             }
         }
+        maven {
+            url "https://jitpack.io"
+            credentials { username authToken }
+        }
         maven { url "https://www.jitpack.io" }
         maven { url "$rootDir/node_modules/react-native/android" }
         flatDir {
