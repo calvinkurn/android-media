@@ -88,15 +88,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:background="@color/white"
-        android:paddingTop="@dimen/dp_8"
-        android:text="Button" >
+        android:paddingTop="@dimen/dp_8">
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/cta_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:text="Button" />
+            android:layout_marginBottom="@dimen/dp_8" />
     </FrameLayout>
 
 

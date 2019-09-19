@@ -34,6 +34,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     private var contentImageViewType = ""
     private var contentText = ""
     private var contentTitle = ""
+    private var btnText = ""
 
     override fun getTheme(): Int = R.style.BottomSheetDialogTheme
 
@@ -87,6 +88,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         setupContentPadding()
         contentTitleView.text = contentTitle
         contentTextView.text = contentText
+        ctaButton.text = btnText
 
         if (contentImageUrl.isNotBlank()) {
             ImageHandler.loadImage2(contentImageView, contentImageUrl, R.drawable.ic_loading_toped_new)
@@ -111,6 +113,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             contentImageUrl = getParamString(NotificationUpdateFragment.PARAM_CONTENT_IMAGE, arguments, null, "")
             contentImageViewType = getParamString(NotificationUpdateFragment.PARAM_CONTENT_IMAGE_TYPE, arguments, null, "")
             contentTitle = getParamString(NotificationUpdateFragment.PARAM_CONTENT_TITLE, arguments, null, "")
+            btnText = getParamString(NotificationUpdateFragment.PARAM_BUTTON_TEXT, arguments, null, "")
         }
     }
 

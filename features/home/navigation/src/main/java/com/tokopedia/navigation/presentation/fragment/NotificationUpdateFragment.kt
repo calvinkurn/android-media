@@ -444,6 +444,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         bundle.putString(PARAM_CTA_APPLINK, model.appLink)
         bundle.putString(PARAM_CONTENT_TEXT, model.body)
         bundle.putString(PARAM_CONTENT_TITLE, model.title)
+        bundle.putString(PARAM_BUTTON_TEXT, model.btnText)
 
         if (!::longerTextDialog.isInitialized) {
             longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
@@ -460,7 +461,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         val PARAM_CONTENT_TEXT = "content text"
         val PARAM_CONTENT_IMAGE = "content image"
         val PARAM_CONTENT_IMAGE_TYPE = "content image type"
-        val PARAM_CTA_TEXT = "cta text"
         val PARAM_CTA_APPLINK = "cta applink"
+        val PARAM_BUTTON_TEXT = "button text"
     }
 }
