@@ -369,6 +369,14 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
         context?.let(authenticator::startAuthenticate)
     }
 
+    override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
+        shareAdapter.setItems(typeList)
+    }
+
+    override fun changeShareHeaderText(text: String) {
+        activityListener?.updateShareHeader(text)
+    }
+
     open fun updateRelatedProduct() {
         adapter.updateProduct(viewModel.relatedProducts)
         if (viewModel.relatedProducts.isEmpty() || viewModel.isEditState){
@@ -378,14 +386,6 @@ abstract class BaseCreatePostFragment : BaseDaggerFragment(),
             product_attachment.visible()
             label_title_product_attachment.visible()
         }
-    }
-
-    override fun onGetAvailableShareTypeList(typeList: List<ShareType>) {
-        shareAdapter.setItems(typeList)
-    }
-
-    override fun changeShareHeaderText(text: String) {
-        activityListener?.updateShareHeader(text)
     }
 
     fun openShareBottomSheetDialog() {
