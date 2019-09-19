@@ -117,7 +117,8 @@ class TravelContactDataFragment: BaseDaggerFragment(), TravelContactArrayAdapter
         til_contact_phone_number.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
         val initialPhoneCode = getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
-        spinnerData += initialPhoneCode
+        if (contactData.phoneCode != 0) spinnerData += initialPhoneCode
+        else spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, DEFAULT_PHONE_CODE_NUMBER_ID)
         context?.run {
             spinnerAdapter =  ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerData)
             spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
