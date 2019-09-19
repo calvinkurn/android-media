@@ -11,7 +11,7 @@
         <activity
             android:name=".result.presentation.view.activity.SearchActivity"
             android:screenOrientation="portrait"
-            android:label="@string/image_search_title"
+            android:label="@string/search_result_page"
             android:windowSoftInputMode="adjustNothing">
 
             <intent-filter android:autoVerify="true">

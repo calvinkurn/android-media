@@ -35,3 +35,12 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 }
+
+project.ext {
+    artifactId = 'searchbar'
+    groupId = 'com.tokopedia.home'
+    versionName = "1.0.0"
+    artifactName = "homesearchbar-release"
+}
+
+apply from: '../../../publish_local.gradle'

@@ -6,9 +6,10 @@ import android.os.Build
 import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import com.tokopedia.applink.ApplinkConst.HOTEL
-import com.tokopedia.applink.ApplinkConst.TRAVEL_SUBHOMEPAGE
+import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
@@ -38,30 +39,34 @@ object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
     private val SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
+    private val IMAGE_SEARCH = "image_search"
     private val SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val HOTEL_TRAVEL = "hotel_travel"
     private val DIGITAL_TOPUP = "digital_topup"
     private val USER_PROFILE_COMPLETION = "profilecompletion"
     private val USER_SETTING_BANK = "settingbank"
     private val HOMEPAGE_TRAVEL = "homepage_travel"
+    private val HOMEPAGE_DIGITAL = "homepage_digital"
 
 
     private var manager: SplitInstallManager? = null
     private val deeplinkDFPatternListCustomerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-//            DFP({ it.startsWith(HOTEL) }, HOTEL_TRAVEL, R.string.title_hotel)
-//            DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, HOMEPAGE_TRAVEL, R.string.title_travel_homepage)
-//            DFP({ it.startsWith(TELCO_DIGITAL) }, DIGITAL_TOPUP, R.string.digital_topup_title)
-//            DFP({ it.startsWith(OPEN_SHOP) }, SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop)
-            DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title)
-//            DFP({ it.startsWith(SETTING_PROFILE) }, USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title)
-//            DFP({ it.startsWith(SETTING_BANK) }, USER_SETTING_BANK, R.string.applink_setting_bank_title)
+//            add(DFP({ it.startsWith(HOTEL) }, HOTEL_TRAVEL, R.string.title_hotel))
+//            add(DFP({ it.startsWith(TRAVEL_SUBHOMEPAGE) }, HOMEPAGE_TRAVEL, R.string.title_travel_homepage))
+//            add(DFP({ it.startsWith(TELCO_DIGITAL) }, DIGITAL_TOPUP, R.string.digital_topup_title))
+//            add(DFP({ it.startsWith(OPEN_SHOP) }, SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title))
+//            add(DFP({ it.startsWith(ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT) }, IMAGE_SEARCH, R.string.title_image_search))
+//            add(DFP({ it.startsWith(SETTING_PROFILE) }, USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
+//            add(DFP({ it.startsWith(SETTING_BANK) }, USER_SETTING_BANK, R.string.applink_setting_bank_title))
+//            add(DFP({ it.startsWith(DIGITAL_SUBHOMEPAGE) }, HOMEPAGE_DIGITAL, R.string.title_digital_subhomepage))
         }
     }
 
     private val deeplinkDFPatternListSellerApp: List<DFP> by lazy {
         mutableListOf<DFP>().apply {
-            DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title)
+            add(DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_SELLERAPP, R.string.shop_settings_title))
         }
     }
 

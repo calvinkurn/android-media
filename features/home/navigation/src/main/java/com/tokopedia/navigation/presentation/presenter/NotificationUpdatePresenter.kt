@@ -1,12 +1,17 @@
 package com.tokopedia.navigation.presentation.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.navigation.domain.*
 import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
+import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
 import com.tokopedia.navigation.presentation.view.subscriber.GetNotificationTotalUnreadSubscriber
 import com.tokopedia.navigation.presentation.view.subscriber.GetNotificationUpdateFilterSubscriber
@@ -14,6 +19,11 @@ import com.tokopedia.navigation.presentation.view.subscriber.GetNotificationUpda
 import com.tokopedia.navigation.presentation.view.subscriber.NotificationUpdateActionSubscriber
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.usecase.RequestParams
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import javax.inject.Inject
 
 class NotificationUpdatePresenter @Inject constructor(
@@ -25,10 +35,11 @@ class NotificationUpdatePresenter @Inject constructor(
         private var markAllReadNotificationUpdateUseCase: MarkAllReadNotificationUpdateUseCase,
         private var sendNotificationUseCase: SendNotificationUseCase,
         private var getNotificationUpdateMapper : GetNotificationUpdateMapper,
-        private var getNotificationUpdateFilterMapper : GetNotificationUpdateFilterMapper
+        private var getNotificationUpdateFilterMapper : GetNotificationUpdateFilterMapper,
+        private var addToCartUseCase: AddToCartUseCase
 )
-    : BaseDaggerPresenter<NotificationUpdateContract.View>()
-        , NotificationUpdateContract.Presenter {
+    : BaseDaggerPresenter<NotificationUpdateContract.View>(),
+        NotificationUpdateContract.Presenter {
 
     val variables: HashMap<String, Any> = HashMap()
     override fun filterBy(selectedItemList: HashMap<Int, Int>, filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>) {
@@ -77,5 +88,51 @@ class NotificationUpdatePresenter @Inject constructor(
 
     override fun sendNotif(onSuccessSendNotif: (NotifCenterSendNotifData) -> Unit, onErrorSendNotif: (Throwable) -> Unit){
         sendNotificationUseCase.executeCoroutines(onSuccessSendNotif, onErrorSendNotif)
+    }
+
+    override fun addProductToCart(product: ProductData) {
+        val requestParams = getCartRequestParams(product)
+        val atcSubscriber = getAtcSubscriber()
+        addToCartUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(atcSubscriber)
+    }
+
+    private fun getAtcSubscriber(): Subscriber<AddToCartDataModel> {
+        return object : Subscriber<AddToCartDataModel>() {
+            override fun onNext(data: AddToCartDataModel) {
+                val isAtcSuccess = data.status.equals(AddToCartDataModel.STATUS_OK, true)
+                        && data.data.success == 1
+                if (isAtcSuccess) {
+                    val message = data.data.message[0]
+                    view.showMessageAtcSuccess(message)
+                } else {
+                    val errorException = MessageErrorException(data.errorMessage[0])
+                    onError(errorException)
+                }
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+                view.showMessageAtcError(e)
+            }
+        }
+    }
+
+    private fun getCartRequestParams(product: ProductData): RequestParams {
+        val addToCartRequestParams = AddToCartRequestParams()
+        addToCartRequestParams.productId = product.productId.toLongOrZero()
+        addToCartRequestParams.shopId = product.shop?.id ?: -1
+        addToCartRequestParams.quantity = 1
+        addToCartRequestParams.notes = ""
+
+       return RequestParams.create().apply {
+           putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, addToCartRequestParams)
+       }
     }
 }

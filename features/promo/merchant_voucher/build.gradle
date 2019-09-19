@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'merchant-voucher'
-    groupId = 'com.tokopedia.merchantvoucher'
-    versionName = "${tkpdMerchantVoucherVersion}"
-    artifactName ="merchant_voucher-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -21,12 +14,12 @@ buildscript {
 
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.unifyDependencies.principles
@@ -38,6 +31,13 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.guava
+}
+
+project.ext {
+    artifactId = 'merchant-voucher'
+    groupId = 'com.tokopedia.promo'
+    versionName = "1.0.0"
+    artifactName ="promomerchantvoucher-release"
 }
 
 apply from: '../../../publish_local.gradle'

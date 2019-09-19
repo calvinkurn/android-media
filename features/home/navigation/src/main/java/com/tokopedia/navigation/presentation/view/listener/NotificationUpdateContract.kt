@@ -6,13 +6,15 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
+import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
 
 interface NotificationUpdateContract {
 
     interface View : BaseListViewListener<Visitable<*>>, CustomerView {
-
+        fun showMessageAtcError(e: Throwable?)
+        fun showMessageAtcSuccess(message: String)
     }
 
     interface Presenter: CustomerPresenter<View> {
@@ -25,5 +27,6 @@ interface NotificationUpdateContract {
         fun resetFilter()
         fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit)
         fun sendNotif(onSuccessSendNotif: (NotifCenterSendNotifData) -> Unit, onErrorSendNotif: (Throwable) -> Unit)
+        fun addProductToCart(product: ProductData)
     }
 }

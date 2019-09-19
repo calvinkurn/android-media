@@ -7,8 +7,11 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.navigation.util.NotifPreference
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.navigation.R
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 @Module
 class NotificationUpdateModule {
@@ -23,4 +26,12 @@ class NotificationUpdateModule {
     @NotificationUpdateScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+    
+    @NotificationUpdateScope
+    @Provides
+    @Named("atcMutation")
+    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
+    }
+
 }
