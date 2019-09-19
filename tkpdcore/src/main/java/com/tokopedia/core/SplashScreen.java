@@ -33,6 +33,8 @@ import com.tokopedia.linker.model.LinkerError;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
+import com.tokopedia.applink.ApplinkConst;
+
 import timber.log.Timber;
 
 
