@@ -179,7 +179,12 @@ class HotelBookingFragment : HotelBaseFragment() {
         booking_button.setOnClickListener { onBookingButtonClicked() }
 
         context?.let {
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(), this)
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv,
+                    arrayListOf(), object: TravelContactArrayAdapter.ContactArrayListener {
+                override fun getFilterText(): String {
+                    return til_guest.editText.text.toString()
+                }
+            })
             (til_guest.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
         }
     }
