@@ -23,5 +23,5 @@ abstract class CommonTopupBillsViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(TopupBillsViewModel::class)
-    internal abstract fun voucherGameDetailViewModel(viewModel: TopupBillsViewModel): ViewModel
+    internal abstract fun commonTopupBillsViewModel(viewModel: TopupBillsViewModel): ViewModel
 }

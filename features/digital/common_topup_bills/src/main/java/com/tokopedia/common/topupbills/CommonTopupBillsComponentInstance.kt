@@ -9,15 +9,15 @@ import com.tokopedia.common.topupbills.di.DaggerCommonTopupBillsComponent
  * @author by resakemal on 21/08/19
  */
 object CommonTopupBillsComponentInstance {
-    private lateinit var hotelComponent: CommonTopupBillsComponent
+    private lateinit var commonTopupBillsComponent: CommonTopupBillsComponent
 
     fun getCommonTopupBillsComponent(application: Application): CommonTopupBillsComponent {
-        if (!::hotelComponent.isInitialized) {
-            hotelComponent = DaggerCommonTopupBillsComponent.builder()
+        if (!::commonTopupBillsComponent.isInitialized) {
+            commonTopupBillsComponent = DaggerCommonTopupBillsComponent.builder()
                     .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                     .build()
         }
 
-        return hotelComponent
+        return commonTopupBillsComponent
     }
 }

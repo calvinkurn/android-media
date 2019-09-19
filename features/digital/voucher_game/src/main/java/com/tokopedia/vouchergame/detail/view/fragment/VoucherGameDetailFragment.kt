@@ -78,7 +78,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
     lateinit var productTrackingList: List<TopupBillsTrackImpressionItem<VoucherGameProduct>>
 
-    private var inputFieldCount = 0
     lateinit var enquiryData: List<VoucherGameEnquiryFields>
     var inputData: MutableMap<String, String> = mutableMapOf()
     var isEnquired = false
@@ -168,8 +167,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(p0: Int): Int {
                 return when (adapter.getItemViewType(p0)) {
-                    VoucherGameProductViewHolder.LAYOUT -> 1
-                    else -> 2
+                    VoucherGameProductViewHolder.LAYOUT -> FULL_SCREEN_SPAN_SIZE
+                    else -> PRODUCT_ITEM_SPAN_SIZE
                 }
             }
         }
@@ -319,7 +318,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     private fun setInputFieldsError(value: Boolean) {
         context?.run {
             if (value) {
-                input_field_label.text = getString(R.string.input_field_error_message)
+                input_field_label.text = getString(R.string.vg_input_field_error_message)
                 input_field_label.setTextColor(ContextCompat.getColor(this, R.color.red_600))
             } else {
                 input_field_label.visibility = View.GONE
@@ -555,8 +554,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     companion object {
 
+        var inputFieldCount = 0
+
         const val ITEM_DECORATOR_SIZE_DP = 6
         const val INFO_TOUCH_AREA_SIZE_PX = 20
+
+        const val FULL_SCREEN_SPAN_SIZE = 1
+        const val PRODUCT_ITEM_SPAN_SIZE = 2
 
         const val EXTRA_PARAM_OPERATOR_DATA = "EXTRA_PARAM_OPERATOR_DATA"
         const val EXTRA_INPUT_FIELD_1 = "EXTRA_INPUT_FIELD_1"

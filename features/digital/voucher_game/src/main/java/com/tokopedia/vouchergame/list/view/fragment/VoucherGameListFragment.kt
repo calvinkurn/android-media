@@ -278,8 +278,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(p0: Int): Int {
                 return when (adapter.getItemViewType(p0)) {
-                    VoucherGameListViewHolder.LAYOUT -> 1
-                    else -> 3
+                    VoucherGameListViewHolder.LAYOUT -> FULL_SCREEN_SPAN_SIZE
+                    else -> OPERATOR_ITEM_SPAN_SIZE
                 }
             }
         }
@@ -302,7 +302,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun onSearchTextChanged(text: String?) {
         text?.let {
-//            if (text.length > 2)
             voucherGameAnalytics.eventClickSearchResult(it)
             searchVoucherGame(it)
         }
@@ -327,6 +326,9 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     companion object {
+
+        const val FULL_SCREEN_SPAN_SIZE = 1
+        const val OPERATOR_ITEM_SPAN_SIZE = 3
 
         const val ITEM_DECORATOR_SIZE = 8
 
