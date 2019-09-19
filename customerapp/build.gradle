@@ -5,7 +5,6 @@ if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 apply plugin: 'io.hansel.preprocessor'
-apply plugin: 'com.frogermcs.androiddevmetrics'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 
