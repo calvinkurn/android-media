@@ -695,7 +695,12 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
         if (widgetTokenView.getTimesFullEggClicked() % 3 == 0) {
             if (getContext() != null) {
-                NetworkErrorHelper.showErrorSnackBar(getString(R.string.gf_crack_token_response_error), getContext(), rootView, true);
+                if(crackResult.getResultStatus()!= null && crackResult.getResultStatus().getMessage() != null){
+                    NetworkErrorHelper.showErrorSnackBar(crackResult.getResultStatus().getMessage().get(0), getContext(), rootView, true);
+
+                } else {
+                    NetworkErrorHelper.showErrorSnackBar(getString(R.string.gf_crack_token_response_error), getContext(), rootView, true);
+                }
                 trackingSnackbarError(getString(R.string.gf_crack_token_response_error));
             }
         }
