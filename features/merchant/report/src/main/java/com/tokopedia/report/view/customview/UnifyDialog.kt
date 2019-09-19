@@ -1,8 +1,6 @@
 package com.tokopedia.report.view.customview
 
 import android.app.Activity
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.annotation.IntDef
 import android.support.constraint.ConstraintLayout
@@ -32,7 +30,7 @@ class UnifyDialog(private val activity: Activity,
     private var dialogTitle: TextView? = null
     private var dialogDescription: TextView? = null
 
-    fun layoutResId(): Int = R.layout.layout_unify_dialog
+    fun layoutResId(): Int = R.layout.report_layout_unify_dialog
 
     init {
         val dialogView = activity.layoutInflater.inflate(layoutResId(), null)
