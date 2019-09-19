@@ -17,7 +17,7 @@
 
     <FrameLayout
         android:layout_gravity="bottom"
-        android:id="@+id/parent_view"
+        android:id="@+id/similar_search_parent_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -55,7 +55,7 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
         }
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(com.tokopedia.abstraction.R.id.parent_view, newFragment,getTagFragment()).commit();
+        transaction.replace(R.id.similar_search_parent_view, newFragment,getTagFragment()).commit();
     }
 
     @Override
