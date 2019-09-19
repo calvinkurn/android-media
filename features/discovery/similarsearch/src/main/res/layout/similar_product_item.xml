@@ -31,7 +31,7 @@
         android:layout_height="@dimen/wishlish_button_size"
         android:layout_alignEnd="@+id/image_card"
         android:layout_alignTop="@+id/image_card"
-        android:background="@drawable/circle_white"
+        android:background="@drawable/similar_search_circle_white"
         android:visibility="visible"
         android:layout_alignRight="@+id/image_card">
 
