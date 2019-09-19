@@ -31,7 +31,7 @@ class SelectLoanCategoryActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(com.tokopedia.instantloan.R.layout.activity_select_loan_param)
         topBarTitle = findViewById<View>(com.tokopedia.instantloan.R.id.top_bar_title) as TextView
-        recyclerView = findViewById<View>(com.tokopedia.seller.R.id.list) as RecyclerView
+        recyclerView = findViewById<View>(com.tokopedia.instantloan.R.id.il_list) as RecyclerView
         buttonClose = findViewById(com.tokopedia.instantloan.R.id.top_bar_close_button)
         buttonClose.setOnClickListener { onBackPressed() }
         topBarTitle.text = getString(com.tokopedia.instantloan.R.string.il_loan_category)
