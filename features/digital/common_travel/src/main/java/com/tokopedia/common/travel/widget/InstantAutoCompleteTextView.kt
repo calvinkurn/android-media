@@ -18,6 +18,7 @@ class InstantAutoCompleteTextView: AppCompatAutoCompleteTextView {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
+        setOnClickListener { showDropDown() }
         setOnTouchListener { _, _ ->
             showDropDown()
             false
