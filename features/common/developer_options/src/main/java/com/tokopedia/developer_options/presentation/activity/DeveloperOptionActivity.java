@@ -26,6 +26,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.developer_options.remote_config.RemoteConfigFragmentActivity;
+import com.tokopedia.translator.manager.TranslatorManager;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -92,6 +93,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             userSession = new UserSession(this);
             setupView();
             initListener();
+            TranslatorManager.init(this.getApplication(), "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49");
         } else {
             finish();
         }
