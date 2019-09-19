@@ -48,7 +48,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
         btnCart.setOnClickListener {
             listener.getAnalytic().trackAtcOnClick(product)
             listener.addProductToCart(product)
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
         }
     }
