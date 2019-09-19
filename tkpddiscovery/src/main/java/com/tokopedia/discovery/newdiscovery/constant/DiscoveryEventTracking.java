@@ -3,11 +3,9 @@ package com.tokopedia.discovery.newdiscovery.constant;
 public interface DiscoveryEventTracking {
 
     interface Event {
-        String IMAGE_SEARCH_CLICK = "imageSearchClick";
         String EVENT_VIEW_SEARCH_RESULT = "viewSearchResult";
         String SEARCH = "clickSearch";
         String SEARCH_RESULT = "clickSearchResult";
-        String PRODUCT_CLICK = "productClick";
     }
 
     interface Category {

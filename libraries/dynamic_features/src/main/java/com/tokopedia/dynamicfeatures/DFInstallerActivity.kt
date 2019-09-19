@@ -82,11 +82,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
             finish()
             return
         }
-        if (RouteManager.isApplinkDeclaredInManifest(this, applink)) {
-            launchAndForwardIntent(applink)
-            finish()
-            return
-        }
         if (moduleNameTranslated.isNotEmpty()) {
             setTitle(getString(R.string.installing_x, moduleNameTranslated))
         }
