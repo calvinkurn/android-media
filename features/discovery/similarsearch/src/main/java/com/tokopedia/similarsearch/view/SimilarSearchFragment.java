@@ -219,7 +219,7 @@ public class SimilarSearchFragment extends BaseDaggerFragment implements Similar
         mSimilarItemList = v.findViewById(R.id.similar_item_list);
         mContentLayout = v.findViewById(R.id.layout_content);
         mEmptyLayout = v.findViewById(R.id.layout_empty);
-        mClose = v.findViewById(R.id.close_button);
+        mClose = v.findViewById(R.id.fragment_similar_search_close_button);
         mClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -94,7 +94,7 @@ public class SimilarSearchAdapter extends RecyclerView.Adapter<SimilarSearchAdap
         public SimilarProdcutItem(View itemView) {
             super(itemView);
             mProductImage = itemView.findViewById(R.id.product_image);
-            mTitle = itemView.findViewById(R.id.title);
+            mTitle = itemView.findViewById(R.id.similar_product_item_title);
             mTextOriginalPrice = itemView.findViewById(R.id.text_original_price);
             mPrice = itemView.findViewById(R.id.price);
             mTextDiscount = itemView.findViewById(R.id.text_discount);
