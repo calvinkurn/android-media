@@ -32,11 +32,6 @@ class FollowRecommendationAdapter(
         const val TYPE_LOADING = 2
     }
 
-    interface ActionListener {
-        fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecommendationAction)
-        fun onFollowStateChanged(followCount: Int)
-    }
-
     private val itemList: MutableList<FollowRecommendationViewModel> = list.toMutableList()
 
     private val cardList: List<FollowRecommendationCardViewModel>
@@ -120,6 +115,8 @@ class FollowRecommendationAdapter(
         listener.onFollowStateChanged(getFollowedCount())
     }
 
+    fun getItemByAuthorId(authorId: String): FollowRecommendationCardViewModel? = cardList.firstOrNull { it.authorId == authorId }
+
     private fun updateItems(newList: List<FollowRecommendationCardViewModel>) {
         val callback = FollowRecommendationDiffUtilCallback(itemList, newList)
         val result = DiffUtil.calculateDiff(callback)
@@ -191,6 +188,14 @@ class FollowRecommendationAdapter(
                         if (element.isFollowed) FollowRecommendationAction.UNFOLLOW else FollowRecommendationAction.FOLLOW
                 )
             }
+
+            ivProfile.setOnClickListener {
+                listener.onNameOrAvatarClicked(element)
+            }
+
+            tvName.setOnClickListener {
+                listener.onNameOrAvatarClicked(element)
+            }
         }
 
         private fun setBadge(badgeUrl: String) {
@@ -251,5 +256,11 @@ class FollowRecommendationAdapter(
         override fun areContentsTheSame(oldPos: Int, newPos: Int): Boolean {
             return oldList[oldPos] == newList[newPos]
         }
+    }
+
+    interface ActionListener {
+        fun onFollowButtonClicked(authorId: String, isFollowed: Boolean, actionToCall: FollowRecommendationAction)
+        fun onFollowStateChanged(followCount: Int)
+        fun onNameOrAvatarClicked(model: FollowRecommendationCardViewModel)
     }
 }

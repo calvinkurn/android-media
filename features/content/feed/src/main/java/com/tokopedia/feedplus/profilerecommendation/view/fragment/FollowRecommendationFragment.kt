@@ -13,12 +13,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.adapter.FollowRecommendationAdapter
 import com.tokopedia.feedplus.profilerecommendation.view.contract.FollowRecommendationContract
 import com.tokopedia.feedplus.profilerecommendation.view.presenter.FollowRecommendationPresenter
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationInfoViewModel
 import com.tokopedia.feedplus.profilerecommendation.di.DaggerFollowRecommendationComponent
+import com.tokopedia.feedplus.profilerecommendation.view.custom.DialogOnboardingRecommendationFollowView
 import com.tokopedia.feedplus.profilerecommendation.view.state.FollowRecommendationAction
 import com.tokopedia.feedplus.profilerecommendation.view.viewmodel.FollowRecommendationCardViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
@@ -32,7 +34,7 @@ import javax.inject.Inject
 /**
  * Created by jegul on 2019-09-11.
  */
-class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationContract.View, FollowRecommendationAdapter.ActionListener {
+class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationContract.View, FollowRecommendationAdapter.ActionListener, DialogOnboardingRecommendationFollowView.ActionListener {
 
     companion object {
 
@@ -47,23 +49,29 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
         }
     }
 
+    var cursor = ""
+
     @Inject
     lateinit var presenter: FollowRecommendationPresenter
 
-    var cursor = ""
+    private val dialogOnboardingFollowView: DialogOnboardingRecommendationFollowView? by lazy {
+        context?.let(::DialogOnboardingRecommendationFollowView)
+    }
+    private val dialogOnboardingFollow: CloseableBottomSheetDialog by lazy {
+        CloseableBottomSheetDialog.createInstanceRounded(context).apply {
+            dialogOnboardingFollowView?.let { view -> setCustomContentView(view, "Dialog Onboarding Follow", false) }
+            setCancelable(false)
+        }
+    }
+    private val interestIds: IntArray
+        get() = arguments?.getIntArray(EXTRA_INTEREST_IDS) ?: intArrayOf()
 
     private lateinit var followRecommendationAdapter: FollowRecommendationAdapter
-
     private lateinit var rvFollowRecom: RecyclerView
     private lateinit var btnAction: UnifyButton
     private lateinit var tvInfo: TextView
-
     private lateinit var infoViewModel: FollowRecommendationInfoViewModel
-
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
-
-    private val interestIds: IntArray
-        get() = arguments?.getIntArray(EXTRA_INTEREST_IDS) ?: intArrayOf()
 
     override fun getScreenName(): String {
         return "Follow Recommendation"
@@ -87,33 +95,6 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
         initView(view)
         setupView(view)
         presenter.getFollowRecommendationList(interestIds, cursor)
-    }
-
-    private fun initView(view: View) {
-        view.run {
-            rvFollowRecom = findViewById(R.id.rv_follow_recom)
-            btnAction = findViewById(R.id.btn_action)
-            tvInfo = findViewById(R.id.tv_info)
-        }
-    }
-
-    private fun setupView(view: View) {
-        followRecommendationAdapter = FollowRecommendationAdapter(emptyList(), this)
-        rvFollowRecom.apply {
-            val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = followRecommendationAdapter
-            this.layoutManager = layoutManager
-            scrollListener = object: EndlessRecyclerViewScrollListener(layoutManager) {
-                override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                    if (cursor != "") {
-                        followRecommendationAdapter.showLoading()
-                        presenter.getFollowRecommendationList(interestIds, cursor)
-                    }
-                }
-            }
-            addOnScrollListener(scrollListener)
-        }
-        btnAction.setOnClickListener { onBtnActionClicked() }
     }
 
     override fun onGetFollowRecommendationList(recomList: List<FollowRecommendationCardViewModel>, cursor: String) {
@@ -146,10 +127,12 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
 
     override fun onSuccessFollowRecommendation(id: String) {
         followRecommendationAdapter.updateFollowState(id, FollowRecommendationAction.FOLLOW)
+        updateDialogIfApplicable(id)
     }
 
     override fun onSuccessUnfollowRecommendation(id: String) {
         followRecommendationAdapter.updateFollowState(id, FollowRecommendationAction.UNFOLLOW)
+        updateDialogIfApplicable(id)
     }
 
     override fun onSuccessFollowAllRecommendation() {
@@ -169,12 +152,52 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
         view?.let { view -> Toaster.showError(view, error, 2000) }
     }
 
+    override fun onNameOrAvatarClicked(model: FollowRecommendationCardViewModel) {
+        setupDialogViewWithModel(model)
+        dialogOnboardingFollow.show()
+    }
+
     override fun showLoading() {
         view?.showLoadingTransparent()
     }
 
     override fun hideLoading() {
         view?.hideLoadingTransparent()
+    }
+
+    override fun onCloseButtonClicked() {
+        dialogOnboardingFollow.dismiss()
+    }
+
+    override fun onFollowButtonClicked(authorId: String, action: FollowRecommendationAction) {
+        presenter.followUnfollowRecommendation(authorId, action)
+    }
+
+    private fun initView(view: View) {
+        view.run {
+            rvFollowRecom = findViewById(R.id.rv_follow_recom)
+            btnAction = findViewById(R.id.btn_action)
+            tvInfo = findViewById(R.id.tv_info)
+        }
+    }
+
+    private fun setupView(view: View) {
+        followRecommendationAdapter = FollowRecommendationAdapter(emptyList(), this)
+        rvFollowRecom.apply {
+            val layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            adapter = followRecommendationAdapter
+            this.layoutManager = layoutManager
+            scrollListener = object: EndlessRecyclerViewScrollListener(layoutManager) {
+                override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                    if (cursor != "") {
+                        followRecommendationAdapter.showLoading()
+                        presenter.getFollowRecommendationList(interestIds, cursor)
+                    }
+                }
+            }
+            addOnScrollListener(scrollListener)
+        }
+        btnAction.setOnClickListener { onBtnActionClicked() }
     }
 
     private fun setupInfo(infoViewModel: FollowRecommendationInfoViewModel, numOfFollowed: Int) {
@@ -201,5 +224,24 @@ class FollowRecommendationFragment : BaseDaggerFragment(), FollowRecommendationC
 
     private fun followAllRecommendation() {
         presenter.followAllRecommendation(interestIds)
+    }
+
+    private fun updateDialogIfApplicable(id: String) {
+        if (dialogOnboardingFollowView?.tag == id)
+            followRecommendationAdapter.getItemByAuthorId(id)?.let(::setupDialogViewWithModel)
+    }
+
+    private fun setupDialogViewWithModel(model: FollowRecommendationCardViewModel) {
+        dialogOnboardingFollowView?.apply {
+            setupDialog(
+                    authorId = model.authorId,
+                    name = model.title,
+                    avatarUrl = model.avatar,
+                    badgeUrl = model.badgeUrl,
+                    instruction = model.followInstruction,
+                    isFollowed = model.isFollowed
+            )
+            listener = this@FollowRecommendationFragment
+        }
     }
 }

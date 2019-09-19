@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.profilerecommendation.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.feedplus.profilerecommendation.data.AuthorType
 import com.tokopedia.feedplus.profilerecommendation.domain.model.FollowRecommendationQuery
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.FollowAllRecommendationUseCase
 import com.tokopedia.feedplus.profilerecommendation.domain.usecase.GetFollowRecommendationUseCase
@@ -108,6 +109,7 @@ class FollowRecommendationPresenter @Inject constructor(
                 enabledFollowText = data.header.followCta.textFalse,
                 disabledFollowText = data.header.followCta.textTrue,
                 isFollowed = data.header.followCta.isFollow,
+                followInstruction = if (AuthorType.findTypeByString(data.header.followCta.authorType) == AuthorType.SHOP) query.meta.assets.shopDescription else query.meta.assets.profileDescription,
                 authorId = data.header.followCta.authorID
         )
     }
