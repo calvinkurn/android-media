@@ -27,6 +27,7 @@ import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.TextViewCompat
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
+import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
@@ -40,6 +41,9 @@ import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateCon
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateViewModel
+import com.tokopedia.navigation.util.NotifPreference
+import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 /**
@@ -66,6 +70,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     @Inject
     lateinit var analytics: NotificationUpdateAnalytics
+
+    @Inject
+    lateinit var notifPreference: NotifPreference
 
     private var notificationUpdateListener: NotificationUpdateListener? = null
 
@@ -133,6 +140,23 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 }
             }
         })
+
+        if(!notifPreference.isDisplayedGimmickNotif){
+            notifPreference.isDisplayedGimmickNotif = true
+            presenter.sendNotif(onSuccessSendNotif(), onErrorSendNotif())
+        }
+    }
+
+    private fun onSuccessSendNotif(): (NotifCenterSendNotifData) -> Unit { return {} }
+
+
+    private fun onErrorSendNotif(): (Throwable) -> Unit {
+        return {
+            view?.run{
+                val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
+                Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
+            }
+        }
     }
 
     private fun onSuccessMarkAllReadNotificationUpdate(): () -> Unit {

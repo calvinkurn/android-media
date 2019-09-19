@@ -3,7 +3,6 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +15,7 @@ import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +27,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -39,6 +38,7 @@ import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
+import com.tokopedia.home.account.data.util.NotifPreference;
 import com.tokopedia.home.account.di.component.AccountLogoutComponent;
 import com.tokopedia.home.account.di.component.DaggerAccountLogoutComponent;
 import com.tokopedia.home.account.presentation.activity.AccountSettingActivity;
@@ -55,12 +55,17 @@ import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
+import com.tokopedia.sessioncommon.ErrorHandlerSession;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.url.TokopediaUrl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.ACCOUNT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.APPLICATION_REVIEW;
@@ -83,6 +88,8 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     LogoutPresenter presenter;
     @Inject
     WalletPref walletPref;
+    @Inject
+    NotifPreference notifPreference;
 
     private View loadingView;
     private View baseSettingView;
@@ -240,6 +247,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 RouteManager.route(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
                 break;
             case SettingConstant.SETTING_OUT_ID:
+                sendNotif();
                 accountAnalytics.eventClickSetting(LOGOUT);
                 showDialogLogout();
                 break;
@@ -251,6 +259,21 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 break;
             default:
                 break;
+        }
+    }
+
+    private void sendNotif(){
+        if(!notifPreference.isDisplayedGimmickNotif()){
+            notifPreference.setDisplayedGimmickNotif(true);
+            presenter.sendNotif(
+                    notifCenterSendNotifData -> null,
+                    throwable -> {
+                        if(getView() != null){
+                            String errorMessage = ErrorHandlerSession.getErrorMessage(getContext(), throwable);
+                            Toaster.Companion.showError(getView(), errorMessage, Snackbar.LENGTH_LONG);
+                        }
+                        return null;
+                    });
         }
     }
 

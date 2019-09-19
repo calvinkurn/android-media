@@ -4,8 +4,12 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.home.account.data.util.NotifPreference;
 import com.tokopedia.home.account.di.qualifier.AccountLogoutQualifier;
 import com.tokopedia.home.account.di.scope.AccountLogoutScope;
+import com.tokopedia.home.account.domain.SendNotifUseCase;
 import com.tokopedia.home.account.presentation.presenter.LogoutPresenter;
 import com.tokopedia.logout.data.LogoutApi;
 import com.tokopedia.logout.data.LogoutUrl;
@@ -19,6 +23,8 @@ import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -88,14 +94,26 @@ public class LogoutModule {
 
     @AccountLogoutScope
     @Provides
-    public LogoutPresenter provideDialogLogoutPresenter(LogoutUseCase logoutUseCase,
+    public LogoutPresenter provideDialogLogoutPresenter(LogoutUseCase logoutUseCase, SendNotifUseCase sendNotifUseCase,
                                                         UserSession userSession, WalletPref walletPref){
-        return new LogoutPresenter(logoutUseCase, userSession, walletPref);
+        return new LogoutPresenter(logoutUseCase, sendNotifUseCase, userSession, walletPref);
     }
 
     @AccountLogoutScope
     @Provides
     public WalletPref provideWalletPref(@ApplicationContext Context context, Gson gson){
         return new WalletPref(context, gson);
+    }
+
+    @AccountLogoutScope
+    @Provides
+    public GraphqlRepository provideGraphQlRepository(){
+        return GraphqlInteractor.getInstance().getGraphqlRepository();
+    }
+
+    @AccountLogoutScope
+    @Provides
+    public NotifPreference provideNotifPreference(@ApplicationContext Context context){
+        return new NotifPreference(context);
     }
 }

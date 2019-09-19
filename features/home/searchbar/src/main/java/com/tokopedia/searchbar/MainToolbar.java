@@ -14,6 +14,10 @@ import android.widget.TextView;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.searchbar.util.NotifAnalytics;
+import com.tokopedia.searchbar.util.NotifPreference;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -21,6 +25,8 @@ import com.tokopedia.user.session.UserSessionInterface;
  * Created by meta on 22/06/18.
  */
 public class MainToolbar extends Toolbar {
+
+    private static String redDotGimmickRemoteConfigKey = "android_red_dot_gimmick_view";
 
     protected ImageView btnNotification;
     protected ImageView btnWishlist;
@@ -30,6 +36,9 @@ public class MainToolbar extends Toolbar {
 
     protected SearchBarAnalytics searchBarAnalytics;
     protected UserSessionInterface userSession;
+    protected NotifPreference notifPreference;
+    protected RemoteConfig remoteConfig;
+    protected NotifAnalytics notifAnalytics;
 
     protected String screenName = "";
 
@@ -53,6 +62,17 @@ public class MainToolbar extends Toolbar {
             if (badgeViewNotification == null)
                 badgeViewNotification = new BadgeView(getContext());
 
+            boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(redDotGimmickRemoteConfigKey, false);
+            boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
+
+            if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
+                badgeNumber =+ 1;
+                if(!notifPreference.isViewedGimmickNotif() && !userSession.isLoggedIn()){
+                    notifPreference.setViewedGimmickNotif(true);
+                    notifAnalytics.trackImpressionOnGimmickNotif();
+                }
+            }
+
             badgeViewNotification.bindTarget(btnNotification);
             badgeViewNotification.setBadgeGravity(Gravity.END | Gravity.TOP);
             badgeViewNotification.setBadgeNumber(badgeNumber);
@@ -72,7 +92,9 @@ public class MainToolbar extends Toolbar {
 
     protected void init(Context context, @Nullable AttributeSet attrs) {
 
+        notifAnalytics = new NotifAnalytics();
         userSession = new UserSession(context);
+        notifPreference = new NotifPreference(context);
         searchBarAnalytics = new SearchBarAnalytics(this.getContext());
 
         inflateResource(context);
@@ -81,6 +103,8 @@ public class MainToolbar extends Toolbar {
         btnInbox = findViewById(R.id.btn_inbox);
         btnWishlist = findViewById(R.id.btn_wishlist);
         TextView editTextSearch = findViewById(R.id.et_search);
+
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
 
         if (attrs != null) {
             TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.MainToolbar, 0, 0);
@@ -135,9 +159,17 @@ public class MainToolbar extends Toolbar {
             if (userSession.isLoggedIn()) {
                 RouteManager.route(context, ApplinkConst.NOTIFICATION);
             } else {
+                boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(redDotGimmickRemoteConfigKey, false);
+                boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
+                if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
+                    notifAnalytics.trackClickGimmickNotif();
+                }
+
                 RouteManager.route(context, ApplinkConst.LOGIN);
             }
         });
+
+        setNotificationNumber(0);
     }
 
     public void inflateResource(Context context) {
