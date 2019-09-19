@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -404,6 +405,10 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         }
 
         RemoteConfigInstance.getInstance().getABTestPlatform().fetchByType(null);
+
+        SharedPreferences stickyPref = getActivity().getSharedPreferences("sticky_login_widget.pref", Context.MODE_PRIVATE);
+        stickyPref.edit().clear().apply();
+
     }
 
     @Override

@@ -69,7 +69,7 @@ class VideoViewHolder(private val listener: VideoViewListener) : BasePostViewHol
     }
 
     private fun canPlayVideo(element: VideoViewModel): Boolean {
-        return element.canPlayVideo && ContentNetworkListener.getInstance(itemView.context).isWifiEnabled()
+        return element.canPlayVideo && ContentNetworkListener.isWifiEnabled(itemView.context)
     }
 
     private fun playVideo(url: String) {

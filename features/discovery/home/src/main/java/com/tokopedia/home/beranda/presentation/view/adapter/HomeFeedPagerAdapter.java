@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.home.beranda.listener.HomeEggListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 
 import java.util.ArrayList;

@@ -879,7 +879,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         }
 
         List<SectionContent> exploreSectionItem = new ArrayList<>();
-        SectionContent couponSection = null;
 
         for (SectionContent sectionContent : sections) {
             switch (sectionContent.getLayoutType()) {
@@ -890,8 +889,6 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
                     renderCategory(sectionContent);
                     break;
                 case CommonConstant.SectionLayoutType.COUPON:
-                    couponSection = sectionContent;
-                    break;
                 case CommonConstant.SectionLayoutType.CATALOG:
                 case CommonConstant.SectionLayoutType.BANNER:
                     exploreSectionItem.add(sectionContent);
@@ -903,7 +900,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         }
 
         //init explore and kupon-saya tab
-        renderExploreSectionTab(exploreSectionItem, couponSection);
+        renderExploreSectionTab(exploreSectionItem);
     }
 
     @Override
@@ -918,12 +915,12 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         startActivity(CatalogListingActivity.getCallingIntent(getActivityContext(), bundle));
     }
 
-    public void renderExploreSectionTab(List<SectionContent> sections, SectionContent couponSection) {
+    public void renderExploreSectionTab(List<SectionContent> sections) {
         if (sections.isEmpty()) {
             //TODO hide tab or show empty box
         }
 
-        mExploreSectionPagerAdapter = new ExploreSectionPagerAdapter(getActivityContext(), mPresenter, sections, couponSection);
+        mExploreSectionPagerAdapter = new ExploreSectionPagerAdapter(getActivityContext(), mPresenter, sections);
         mExploreSectionPagerAdapter.setRefreshing(false);
         mPagerPromos.setAdapter(mExploreSectionPagerAdapter);
         mPagerPromos.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayoutPromo));

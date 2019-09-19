@@ -39,14 +39,17 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
             ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_loading_toped_new)
         }
 
-        assignClickListenerAtc(product)
+        assignClickListenerAtc(element)
         assignProductClickListener(element)
     }
 
-    private fun assignClickListenerAtc(product: ProductData) {
+    private fun assignClickListenerAtc(element: NotificationUpdateItemViewModel) {
+        val product = element.getAtcProduct() ?: return
         btnCart.setOnClickListener {
             listener.getAnalytic().trackAtcOnClick(product)
             listener.addProductToCart(product)
+            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            element.isRead = true
         }
     }
 

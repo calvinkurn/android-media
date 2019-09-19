@@ -26,6 +26,7 @@ import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButton;
 import com.tokopedia.transaction.orders.orderdetails.data.ActionButtonList;
 import com.tokopedia.transaction.orders.orderdetails.data.AdditionalInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.AdditionalTickerInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.DataResponseCommon;
 import com.tokopedia.transaction.orders.orderdetails.data.DetailsData;
 import com.tokopedia.transaction.orders.orderdetails.data.Flags;
@@ -36,6 +37,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -69,6 +71,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String UPSTREAM = "upstream";
     private static final String PARAM = "param";
     private static final String INVOICE = "invoice";
+    private static final String TAB_ID = "tabId";
+    private static final int DEFAULT_TAB_ID = 1;
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     @Inject
@@ -127,6 +131,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
 
         orderDetailsUseCase.addRequest(graphqlRequest);
+        orderDetailsUseCase.addRequest(makegraphqlRequestForRecommendation());
         orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -147,6 +152,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DetailsData data = response.getData(DetailsData.class);
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
+                    RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                    getView().setRecommendation(rechargeWidgetResponse);
                 }
             }
         });
@@ -367,6 +374,24 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
             getView().setAdditionalInfo(additionalInfo);
         }
+
+        if (details.getAdditionalTickerInfos() != null
+                && details.getAdditionalTickerInfos().size() > 0) {
+            String url = null;
+            for (AdditionalTickerInfo tickerInfo : details.getAdditionalTickerInfos()) {
+                if (tickerInfo.getUrlDetail() != null && !tickerInfo.getUrlDetail().isEmpty()) {
+                    String formattedTitle = formatTitleHtml(
+                            tickerInfo.getNotes(),
+                            tickerInfo.getUrlDetail(),
+                            tickerInfo.getUrlText()
+                    );
+                    tickerInfo.setNotes(formattedTitle);
+                    url = tickerInfo.getUrlDetail();
+                }
+            }
+            getView().setAdditionalTickerInfo(details.getAdditionalTickerInfos(), url);
+        }
+
         for (PayMethod payMethod : details.getPayMethods()) {
             if (!TextUtils.isEmpty(payMethod.getValue()))
                 getView().setPayMethodInfo(payMethod);
@@ -579,4 +604,26 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
                 && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
     }
+
+
+    private GraphqlRequest makegraphqlRequestForRecommendation() {
+        GraphqlRequest graphqlRequestForRecommendation;
+        Map<String, Object> variablesWidget = new HashMap<>();
+        variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
+        graphqlRequestForRecommendation = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
+        return graphqlRequestForRecommendation;
+    }
+
+    public boolean isValidUrl(String invoiceUrl) {
+        Pattern pattern = Pattern.compile("^(https|HTTPS):\\/\\/");
+        Matcher matcher = pattern.matcher(invoiceUrl);
+        return matcher.find();
+    }
+
+    private String formatTitleHtml(String desc, String urlText, String url) {
+        return String.format("%s <a href=\"%s\">%s</a>", desc, urlText, url);
+    }
+
 }

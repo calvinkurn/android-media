@@ -18,13 +18,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'affiliate'
-    groupId = 'com.tokopedia.affiliate'
-    versionName = "${tkpdAffiliateVersion}"
-    artifactName = "affiliate-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -33,9 +26,9 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.attachproduct)
 
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -74,6 +67,15 @@ dependencies {
     }
 
     implementation project(rootProject.ext.libraries.track)
+
+    implementation project(rootProject.ext.libraries.twitterShare)
+}
+
+project.ext {
+    artifactId = 'affiliate'
+    groupId = 'com.tokopedia.content'
+    versionName = "1.0.0"
+    artifactName = "contentaffiliate-release"
 }
 
 apply from: '../../../publish_local.gradle'

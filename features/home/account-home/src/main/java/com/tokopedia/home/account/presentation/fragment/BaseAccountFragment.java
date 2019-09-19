@@ -13,6 +13,7 @@ import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.gm.resource.GMConstant;
 import com.tokopedia.home.account.AccountConstants;
@@ -43,18 +44,19 @@ import com.tokopedia.user_identification_common.KycCommonUrl;
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
+import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPEN_SHOP;
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.BY_ME_CURATION;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
 import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
 import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
+import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
 import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
-import static com.tokopedia.home.account.AccountConstants.Analytics.SECTION_OTHER_FEATURE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.ITEM_POWER_MERCHANT;
 
 /**
  * @author okasurya on 7/26/18.
@@ -154,7 +156,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
         } else {
             sendTracking(PEMBELI, BY_ME_CURATION, "", true);
-            RouteManager.route(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
+            RouteManager.route(getContext(), ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST);
         }
     }
 
@@ -357,8 +359,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     protected void moveToCreateShop(){
         isOpenShop = true;
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivityForResult(((AccountHomeRouter) getContext().getApplicationContext()).
-                    getIntentCreateShop(getContext()),OPEN_SHOP_SUCCESS);
+            startActivityForResult(RouteManager.getIntent(getContext(), OPEN_SHOP), OPEN_SHOP_SUCCESS);
         }
     }
 
@@ -373,8 +374,9 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
     public void onKycLinkClicked(int verificationStatus) {
         if (getActivity() != null && getActivity().getApplicationContext() instanceof ApplinkRouter) {
             accountAnalytics.eventClickKYCSellerAccountPage(verificationStatus);
-            ApplinkRouter applinkRouter = ((ApplinkRouter) getActivity().getApplicationContext());
-            applinkRouter.goToApplinkActivity(getActivity(), ApplinkConst.KYC_SELLER_DASHBOARD);
+            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.KYC);
+            intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER);
+            startActivity(intent);
         }
     }
 

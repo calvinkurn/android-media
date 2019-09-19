@@ -449,6 +449,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val contentList: MutableList<HighlightCardViewModel> = mapHighlightContent(feed, feed.content.cardHighlight, template)
         if (shouldAddHighlightSection(contentList)) {
             posts.add(HighlightViewModel(
+                    feed.id.toString(),
                     feed.content.cardHighlight.title,
                     contentList,
                     template
