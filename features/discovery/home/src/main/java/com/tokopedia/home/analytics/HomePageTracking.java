@@ -215,7 +215,7 @@ public class HomePageTracking {
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
                                                 FIELD_ID, slidesModel.getId(),
-                                                FIELD_NAME, VALUE_NAME_PROMO,
+                                                FIELD_NAME, VALUE_NAME_PROMO_OVERLAY,
                                                 FIELD_CREATIVE, slidesModel.getCreativeName(),
                                                 FIELD_CREATIVE_URL, slidesModel.getImageUrl(),
                                                 FIELD_POSITION, slidesModel.getPosition(),
