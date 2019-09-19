@@ -3,6 +3,8 @@ package com.tokopedia.loginregister.common.di;
 import android.content.Context;
 
 import android.content.res.Resources;
+
+import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
@@ -64,6 +66,7 @@ public class LoginRegisterModule {
         builder.addInterceptor(new HeaderErrorResponseInterceptor(HeaderErrorListResponse.class));
         builder.addInterceptor(new ErrorResponseInterceptor(TkpdV4ResponseError.class));
         builder.addInterceptor(new RiskAnalyticsInterceptor(context));
+        builder.addInterceptor(new AkamaiBotInterceptor());
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor);

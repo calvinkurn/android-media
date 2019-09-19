@@ -11,6 +11,7 @@ import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewM
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.ProductSuggestionItem
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import java.lang.Exception
 
 /**
  * @author by milhamj on 01/03/19.
@@ -70,9 +71,14 @@ class AffiliateCreatePostFragment : BaseCreatePostFragment() {
         if (TextUtils.isEmpty(cache)) {
             super.initVar(savedInstanceState)
         } else {
-            viewModel = gson.fromJson(cache, CreatePostViewModel::class.java)
-            initProductIds()
-            isAddingProduct = false
+            try {
+                viewModel = gson.fromJson(cache, CreatePostViewModel::class.java)
+                initProductIds()
+                isAddingProduct = false
+            } catch (e: Exception) {
+                clearCache()
+                super.initVar(savedInstanceState)
+            }
         }
     }
 
