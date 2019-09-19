@@ -20,7 +20,7 @@ class Data {
     @SerializedName("app_redirection")
     var appRedirection: String? = null
 
-    @SerializedName("is_banned")
+    @SerializedName("isBanned")
     var isBanned: Int = 0
 
     @SerializedName("is_adult")
