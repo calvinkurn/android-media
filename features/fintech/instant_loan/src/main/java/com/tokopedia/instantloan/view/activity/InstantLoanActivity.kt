@@ -506,7 +506,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
 
     private fun setupToolbar() {
         toolbar = findViewById(R.id.toolbar)
-        toolbar.setNavigationIcon(R.drawable.ic_system_action_back_grayscale_24)
+        toolbar.setNavigationIcon(R.drawable.instant_loan_action_back_arrow_black)
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)
