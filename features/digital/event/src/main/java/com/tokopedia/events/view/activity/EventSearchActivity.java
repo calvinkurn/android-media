@@ -173,9 +173,9 @@ public class EventSearchActivity extends EventBaseActivity implements
     }
 
     @Override
-    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards) {
+    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards, boolean shouldFireEvent) {
         if (suggestions != null && !suggestions.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, eventSearchPresenter, showCards, true);
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, eventSearchPresenter, showCards, shouldFireEvent);
             if (!showCards)
                 filterBtn.setVisibility(View.VISIBLE);
             adapter.setHighLightText(highlight);

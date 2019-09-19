@@ -91,7 +91,7 @@ public class EventSearchPresenter
     }
 
 
-    private void getEventsListBySearch(String searchText) {
+    private void getEventsListBySearch(String searchText, boolean shouldFireEvent) {
         highlight = searchText;
         previousSearch = searchText;
         RequestParams requestParams = RequestParams.create();
@@ -115,12 +115,12 @@ public class EventSearchPresenter
                 CommonUtils.dumper("enter error");
                 e.printStackTrace();
                 NetworkErrorHelper.showEmptyState(mView.getActivity(),
-                        mView.getRootView(), () -> getEventsListBySearch(highlight));
+                        mView.getRootView(), () -> getEventsListBySearch(highlight, shouldFireEvent));
             }
 
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
-                mView.setSuggestions(processSearchResponse(searchDomainModel), highlight, showCards);
+                mView.setSuggestions(processSearchResponse(searchDomainModel), highlight, showCards, shouldFireEvent);
                 checkIfToLoad(mView.getLayoutManager());
                 mView.hideProgressBar();
                 CommonUtils.dumper("enter onNext");
@@ -190,7 +190,7 @@ public class EventSearchPresenter
         if (searchText != null) {
             if (searchText.length() > 2) {
                 showCards = true;
-                getEventsListBySearch(searchText);
+                getEventsListBySearch(searchText, false);
                 searchTag = searchText;
             }
             if (searchText.length() == 0) {
@@ -204,7 +204,7 @@ public class EventSearchPresenter
     @Override
     public void searchSubmitted(String searchText) {
         showCards = false;
-        getEventsListBySearch(searchText);
+        getEventsListBySearch(searchText, true);
         searchTag = searchText;
         eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.CLICK_SEARCH_ICON, searchText);
     }
@@ -278,7 +278,7 @@ public class EventSearchPresenter
                     startDate = date;
                     timeFilter = time;
                     if (!previousSearch.isEmpty() || isEventCalendar || showCards)
-                        getEventsListBySearch(previousSearch);
+                        getEventsListBySearch(previousSearch, false);
                 }
             }
         }
