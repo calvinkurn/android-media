@@ -19,7 +19,7 @@ buildscript {
 dependencies {
 
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.akamai_bot_lib)
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.tkpddesign)

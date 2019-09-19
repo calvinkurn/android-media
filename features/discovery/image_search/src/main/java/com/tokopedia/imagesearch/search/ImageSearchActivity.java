@@ -120,10 +120,10 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     protected void initView() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        container = (FrameLayout) findViewById(R.id.container);
-        loadingView = findViewById(R.id.progressBar);
-        root = findViewById(R.id.root);
+        toolbar = (Toolbar) findViewById(R.id.image_search_toolbar);
+        container = (FrameLayout) findViewById(R.id.image_search_container);
+        loadingView = findViewById(R.id.image_search_progressBar);
+        root = findViewById(R.id.image_search_root);
     }
 
     protected void prepareView() {
@@ -163,18 +163,17 @@ public class ImageSearchActivity extends BaseActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        searchItem = menu.findItem(R.id.action_search);
+        getMenuInflater().inflate(R.menu.menu_image_search, menu);
+        searchItem = menu.findItem(R.id.image_search_action_search);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            KeyboardHandler.DropKeyboard(this, findViewById(android.R.id.content));
             onBackPressed();
             return true;
-        } else if (item.getItemId() == R.id.action_search) {
+        } else if (item.getItemId() == R.id.image_search_action_search) {
             return false;
         }
         return super.onOptionsItemSelected(item);
@@ -330,7 +329,7 @@ public class ImageSearchActivity extends BaseActivity
         );
 
         ImagePickerBuilder builder = new ImagePickerBuilder(
-                getString(R.string.choose_image),
+                getString(com.tokopedia.imagepicker.R.string.choose_image),
                 createImagePickerTabTypes(),
                 GalleryType.IMAGE_ONLY,
                 ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
@@ -435,7 +434,7 @@ public class ImageSearchActivity extends BaseActivity
     }
 
     private void errorHandlingImagePicker() {
-        Toast.makeText(this, getString(R.string.error_gallery_valid), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.image_search_error_gallery_valid), Toast.LENGTH_LONG).show();
         finish();
     }
 
@@ -537,14 +536,14 @@ public class ImageSearchActivity extends BaseActivity
         if (productViewModel != null) {
             setLastQuery(productViewModel.getQuery());
             loadSection(productViewModel);
-            setToolbarTitle(getString(R.string.image_search_title));
+            setToolbarTitle(getString(R.string.title_image_search));
         } else {
             moveToAutoCompletePage();
         }
     }
 
     private void loadSection(ProductViewModel productViewModel) {
-        addFragment(R.id.container, ImageSearchProductListFragment.newInstance(productViewModel));
+        addFragment(R.id.image_search_container, ImageSearchProductListFragment.newInstance(productViewModel));
 
         showContainer(true);
     }

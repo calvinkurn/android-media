@@ -253,7 +253,7 @@ android {
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(rootProject.ext.libraries.akamai_bot_lib)
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
@@ -334,6 +334,7 @@ dependencies {
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productCard)
+    implementation project(rootProject.ext.features.imageSearch)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
