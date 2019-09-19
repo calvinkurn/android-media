@@ -22,6 +22,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Status;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderlist.data.ConditionalInfo;
 import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 
@@ -101,6 +102,8 @@ public interface OrderListDetailContract {
         void clearDynamicViews();
 
         void askPermission();
+
+        void setRecommendation(RechargeWidgetResponse rechargeWidgetResponse);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -115,6 +118,7 @@ public interface OrderListDetailContract {
         void onBuyAgainItems(List<Items> item);
 
         void assignInvoiceDataTo(Intent intent);
+
     }
 
     interface ActionInterface {

@@ -80,7 +80,7 @@ public interface FeedPlus {
 
         void onInfoClicked();
 
-        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed, WhitelistViewModel whitelistViewModel);
+        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed);
 
         void onErrorGetFeedFirstPage(String errorMessage);
 

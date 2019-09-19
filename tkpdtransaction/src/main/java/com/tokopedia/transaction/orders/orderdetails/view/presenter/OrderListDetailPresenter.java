@@ -37,6 +37,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.PayMethod;
 import com.tokopedia.transaction.orders.orderdetails.data.Pricing;
 import com.tokopedia.transaction.orders.orderdetails.data.RequestCancelInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.Title;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.RechargeWidgetResponse;
 import com.tokopedia.transaction.orders.orderdetails.domain.FinishOrderUseCase;
 import com.tokopedia.transaction.orders.orderdetails.domain.PostCancelReasonUseCase;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
@@ -70,6 +71,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private static final String UPSTREAM = "upstream";
     private static final String PARAM = "param";
     private static final String INVOICE = "invoice";
+    private static final String TAB_ID = "tabId";
+    private static final int DEFAULT_TAB_ID = 1;
     GraphqlUseCase orderDetailsUseCase;
     List<ActionButton> actionButtonList;
     @Inject
@@ -128,6 +131,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
 
         orderDetailsUseCase.addRequest(graphqlRequest);
+        orderDetailsUseCase.addRequest(makegraphqlRequestForRecommendation());
         orderDetailsUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -148,6 +152,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
                     DetailsData data = response.getData(DetailsData.class);
                     setDetailsData(data.orderDetails());
                     orderDetails = data.orderDetails();
+                    RechargeWidgetResponse rechargeWidgetResponse = response.getData(RechargeWidgetResponse.class);
+                    getView().setRecommendation(rechargeWidgetResponse);
                 }
             }
         });
@@ -597,6 +603,17 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     public boolean shouldShowTimeForCancellation(){
         return requestCancelInfo != null && !requestCancelInfo.getIsRequestCancelAvail()
                 && !TextUtils.isEmpty(requestCancelInfo.getRequestCancelMinTime());
+    }
+
+
+    private GraphqlRequest makegraphqlRequestForRecommendation() {
+        GraphqlRequest graphqlRequestForRecommendation;
+        Map<String, Object> variablesWidget = new HashMap<>();
+        variablesWidget.put(TAB_ID, DEFAULT_TAB_ID);
+        graphqlRequestForRecommendation = new
+                GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.query_recharge_widget), RechargeWidgetResponse.class, variablesWidget);
+        return graphqlRequestForRecommendation;
     }
 
     public boolean isValidUrl(String invoiceUrl) {

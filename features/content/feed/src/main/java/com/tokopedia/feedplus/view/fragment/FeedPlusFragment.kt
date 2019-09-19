@@ -205,11 +205,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         retainInstance = true
     }
 
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-    }
-
     private fun initVar() {
         val typeFactory = FeedPlusTypeFactoryImpl(this, analytics, userSession)
         adapter = FeedPlusAdapter(typeFactory)
@@ -378,7 +373,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>, whitelistViewModel: WhitelistViewModel?) {
+    override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>) {
         trackFeedImpression(listFeed)
 
         adapter.setList(listFeed)
