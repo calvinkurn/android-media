@@ -37,23 +37,23 @@ class AuthHelper {
             val signature = calculateRFC2104HMAC(authString, authKey)
 
             val headerMap = ArrayMap<String, String>()
-            headerMap[AuthConstant.HEADER_CONTENT_TYPE] = contentType
-            headerMap[AuthConstant.HEADER_X_METHOD] = method
-            headerMap[AuthConstant.HEADER_REQUEST_METHOD] = method
-            headerMap[AuthConstant.HEADER_CONTENT_MD5] = contentMD5
-            headerMap[AuthConstant.HEADER_DATE] = date
-            headerMap[AuthConstant.HEADER_AUTHORIZATION] = "${AuthConstant.HEADER_HMAC_SIGNATURE_KEY}${signature.trim()}"
+            headerMap[HEADER_CONTENT_TYPE] = contentType
+            headerMap[HEADER_X_METHOD] = method
+            headerMap[HEADER_REQUEST_METHOD] = method
+            headerMap[HEADER_CONTENT_MD5] = contentMD5
+            headerMap[HEADER_DATE] = date
+            headerMap[HEADER_AUTHORIZATION] = "${HEADER_HMAC_SIGNATURE_KEY}${signature.trim()}"
 
-            headerMap.remove(AuthConstant.HEADER_ACCOUNT_AUTHORIZATION)
+            headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            headerMap[AuthConstant.HEADER_ACCOUNT_AUTHORIZATION] = "${AuthConstant.HEADER_PARAM_BEARER} ${session.accessToken}"
-            headerMap[AuthConstant.HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
-            headerMap[AuthConstant.HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
-            headerMap[AuthConstant.HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
-            headerMap[AuthConstant.HEADER_OS_VERSION] = Build.VERSION.SDK_INT.toString(10)
-            headerMap[AuthConstant.HEADER_USER_AGENT] = getUserAgent()
-            headerMap[AuthConstant.HEADER_USER_ID] = userId
-            headerMap[AuthConstant.HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
+            headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "${HEADER_PARAM_BEARER} ${session.accessToken}"
+            headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
+            headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
+            headerMap[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
+            headerMap[HEADER_OS_VERSION] = Build.VERSION.SDK_INT.toString(10)
+            headerMap[HEADER_USER_AGENT] = getUserAgent()
+            headerMap[HEADER_USER_ID] = userId
+            headerMap[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
 
             return headerMap
         }
@@ -75,24 +75,24 @@ class AuthHelper {
             val signature = calculateRFC2104HMAC(authString, authKey)
 
             val headerMap = ArrayMap<String, String>()
-            headerMap[AuthConstant.HEADER_CONTENT_TYPE] = contentType
-            headerMap[AuthConstant.HEADER_X_METHOD] = method
-            headerMap[AuthConstant.HEADER_REQUEST_METHOD] = method
-            headerMap[AuthConstant.HEADER_CONTENT_MD5] = contentMD5
-            headerMap[AuthConstant.HEADER_DATE] = date
-            headerMap[AuthConstant.HEADER_AUTHORIZATION] = "TKPD Tokopedia:${signature.trim()}"
+            headerMap[HEADER_CONTENT_TYPE] = contentType
+            headerMap[HEADER_X_METHOD] = method
+            headerMap[HEADER_REQUEST_METHOD] = method
+            headerMap[HEADER_CONTENT_MD5] = contentMD5
+            headerMap[HEADER_DATE] = date
+            headerMap[HEADER_AUTHORIZATION] = "TKPD Tokopedia:${signature.trim()}"
 
-            headerMap.remove(AuthConstant.HEADER_ACCOUNT_AUTHORIZATION)
+            headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            headerMap[AuthConstant.HEADER_ACCOUNT_AUTHORIZATION] = "${AuthConstant.HEADER_PARAM_BEARER} ${session.accessToken}"
-            headerMap[AuthConstant.HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
-            headerMap[AuthConstant.HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
-            headerMap[AuthConstant.HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
-            headerMap[AuthConstant.HEADER_OS_VERSION] = Build.VERSION.SDK_INT.toString(10)
-            headerMap[AuthConstant.HEADER_USER_AGENT] = getUserAgent()
+            headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "${HEADER_PARAM_BEARER} ${session.accessToken}"
+            headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
+            headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
+            headerMap[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
+            headerMap[HEADER_OS_VERSION] = Build.VERSION.SDK_INT.toString(10)
+            headerMap[HEADER_USER_AGENT] = getUserAgent()
 
-            headerMap[AuthConstant.HEADER_USER_ID] = userId
-            headerMap[AuthConstant.HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
+            headerMap[HEADER_USER_ID] = userId
+            headerMap[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
 
             return headerMap
         }
@@ -111,11 +111,11 @@ class AuthHelper {
                     path,
                     strParam,
                     method,
-                    contentType ?: AuthConstant.CONTENT_TYPE,
+                    contentType ?: CONTENT_TYPE,
                     authKey,
-                    AuthConstant.DATE_FORMAT, userId, userSessionInterface
+                    DATE_FORMAT, userId, userSessionInterface
             )
-            finalHeader[AuthConstant.HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
+            finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
 
             return finalHeader
         }
@@ -127,19 +127,19 @@ class AuthHelper {
             val encodeString = "${clientID}:${clientSecret}"
 
             val finalHeader = HashMap<String, String>()
-            finalHeader[AuthConstant.HEADER_CONTENT_TYPE] = AuthConstant.CONTENT_TYPE
-            finalHeader[AuthConstant.HEADER_CACHE_CONTROL] = "no-cache"
+            finalHeader[HEADER_CONTENT_TYPE] = CONTENT_TYPE
+            finalHeader[HEADER_CACHE_CONTROL] = "no-cache"
 
             if (authKey.isEmpty()) {
-                finalHeader[AuthConstant.HEADER_AUTHORIZATION] = "Basic ${AuthHelperJava.base64Encoder(encodeString, Base64.NO_WRAP)}"
+                finalHeader[HEADER_AUTHORIZATION] = "Basic ${AuthHelperJava.base64Encoder(encodeString, Base64.NO_WRAP)}"
             } else {
-                finalHeader[AuthConstant.HEADER_AUTHORIZATION] = authKey
+                finalHeader[HEADER_AUTHORIZATION] = authKey
             }
 
-            finalHeader[AuthConstant.HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
-            finalHeader[AuthConstant.HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
-            finalHeader[AuthConstant.HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
-            finalHeader[AuthConstant.HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
+            finalHeader[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
+            finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
+            finalHeader[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
+            finalHeader[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
 
             return finalHeader
         }
@@ -158,15 +158,15 @@ class AuthHelper {
                     path,
                     strParam,
                     method,
-                    contentType ?: AuthConstant.CONTENT_TYPE,
+                    contentType ?: CONTENT_TYPE,
                     authKey,
-                    AuthConstant.DATE_FORMAT,
+                    DATE_FORMAT,
                     userId,
                     userSessionInterface
             ) as ArrayMap<String, String>
 
-            finalHeader[AuthConstant.HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
-            finalHeader[AuthConstant.HEADER_PATH] = path
+            finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
+            finalHeader[HEADER_PATH] = path
 
             return finalHeader
         }
@@ -179,11 +179,11 @@ class AuthHelper {
         ): MutableMap<String, String> {
             val hash = AuthHelperJava.md5("${userId}~${deviceId}")
 
-            params[AuthConstant.PARAM_USER_ID] = userId
-            params[AuthConstant.PARAM_DEVICE_ID] = deviceId
-            params[AuthConstant.PARAM_HASH] = hash
-            params[AuthConstant.PARAM_OS_TYPE] = "1"
-            params[AuthConstant.PARAM_TIMESTAMP] = (Date().time / 1000).toString(10)
+            params[PARAM_USER_ID] = userId
+            params[PARAM_DEVICE_ID] = deviceId
+            params[PARAM_HASH] = hash
+            params[PARAM_OS_TYPE] = "1"
+            params[PARAM_TIMESTAMP] = (Date().time / 1000).toString(10)
 
             return params
         }
@@ -193,20 +193,20 @@ class AuthHelper {
             val session = UserSession(context)
 
             val header = HashMap<String, String>()
-            header[AuthConstant.HEADER_SESSION_ID] = session.deviceId
-            header[AuthConstant.HEADER_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
-            header[AuthConstant.HEADER_AUTHORIZATION] = "Bearer ${session.accessToken}"
+            header[HEADER_SESSION_ID] = session.deviceId
+            header[HEADER_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            header[HEADER_AUTHORIZATION] = "Bearer ${session.accessToken}"
 
-            header.remove(AuthConstant.HEADER_ACCOUNT_AUTHORIZATION)
+            header.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            header[AuthConstant.HEADER_ACCOUNT_AUTHORIZATION] = "${AuthConstant.HEADER_PARAM_BEARER} ${session.accessToken}"
-            header[AuthConstant.PARAM_OS_TYPE] = "1"
-            header[AuthConstant.HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
-            header[AuthConstant.HEADER_USER_ID] = if (session.isLoggedIn) session.userId else "0"
-            header[AuthConstant.HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString()
-            header[AuthConstant.HEADER_X_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
-            header[AuthConstant.HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
-            header[AuthConstant.HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
+            header[HEADER_ACCOUNT_AUTHORIZATION] = "${HEADER_PARAM_BEARER} ${session.accessToken}"
+            header[PARAM_OS_TYPE] = "1"
+            header[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
+            header[HEADER_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            header[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString()
+            header[HEADER_X_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            header[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
+            header[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
 
             return Gson().toJson(header)
         }
@@ -226,28 +226,28 @@ class AuthHelper {
                     method,
                     contentType,
                     AuthKey.KEY_WSV4_NEW,
-                    AuthConstant.DATE_FORMAT,
+                    DATE_FORMAT,
                     session.userId,
                     session
             ) as ArrayMap<String, String>
 
-            headers[AuthConstant.HEADER_SESSION_ID] = session.deviceId
-            headers[AuthConstant.HEADER_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            headers[HEADER_SESSION_ID] = session.deviceId
+            headers[HEADER_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
 
-            headers.remove(AuthConstant.HEADER_ACCOUNT_AUTHORIZATION)
+            headers.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            headers[AuthConstant.HEADER_ACCOUNT_AUTHORIZATION] = "${AuthConstant.HEADER_PARAM_BEARER} ${session.accessToken}"
-            headers[AuthConstant.PARAM_OS_TYPE] = "1"
-            headers[AuthConstant.HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
-            headers[AuthConstant.HEADER_X_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
+            headers[HEADER_ACCOUNT_AUTHORIZATION] = "${HEADER_PARAM_BEARER} ${session.accessToken}"
+            headers[PARAM_OS_TYPE] = "1"
+            headers[HEADER_DEVICE] = "android-${GlobalConfig.VERSION_NAME}"
+            headers[HEADER_X_TKPD_USER_ID] = if (session.isLoggedIn) session.userId else "0"
 
             if (context.applicationContext is NetworkRouter) {
                 val fingerprintModel = (context.applicationContext as NetworkRouter).getFingerprintModel()
                 val json = fingerprintModel.getFingerprintHash()
 
-                headers[AuthConstant.KEY_FINGERPRINT_HASH] = AuthHelperJava.md5("${json}+${session.userId}")
+                headers[KEY_FINGERPRINT_HASH] = AuthHelperJava.md5("${json}+${session.userId}")
                 AuthHelperJava.md5(json + "+" + session.userId)
-                headers[AuthConstant.KEY_FINGERPRINT_DATA] = json
+                headers[KEY_FINGERPRINT_DATA] = json
             }
 
             return headers
@@ -256,8 +256,8 @@ class AuthHelper {
         @JvmStatic
         fun calculateRFC2104HMAC(authString: String, authKey: String): String {
             try {
-                val signingKey = SecretKeySpec(authKey.toByteArray(), AuthConstant.MAC_ALGORITHM)
-                val mac = Mac.getInstance(AuthConstant.MAC_ALGORITHM)
+                val signingKey = SecretKeySpec(authKey.toByteArray(), MAC_ALGORITHM)
+                val mac = Mac.getInstance(MAC_ALGORITHM)
                 mac.init(signingKey)
                 val rawHmac = mac.doFinal(authString.toByteArray())
 

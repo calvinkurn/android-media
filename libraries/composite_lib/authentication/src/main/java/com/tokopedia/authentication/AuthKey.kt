@@ -17,24 +17,24 @@ class AuthKey {
         private val RAW_SCROOGE_KEY = intArrayOf(49, 50, 69, 56, 77, 105, 69, 55, 89, 69, 54, 86, 122, 115, 69, 80, 66, 80, 101, 77)
         private val RAW_ZEUS_KEY = intArrayOf(102, 100, 100, 98, 100, 56, 49, 101, 101, 52, 49, 49, 54, 98, 56, 99, 98, 55, 97, 52, 48, 56, 100, 55, 102, 98, 102, 98, 57, 99, 49, 55)
 
-        val KEY_WSV4_NEW = encodeKey(RAW_KEY_WSV4)
-        val KEY_WSV4 = "web_service_v4"
-        val KEY_MOJITO = "mojito_api_v1"
-        val KEY_KEROPPI = "Keroppi"
-        val TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj"
-        var KEY_CREDIT_CARD_VAULT = encodeKey(RAW_SCROOGE_KEY)
-        var ZEUS_WHITELIST = encodeKey(RAW_ZEUS_KEY)
-        var KEY_NOTP = encodeKey(RAW_NOTP_KEY)
-        var KEY_BRANCHIO = encodeKey(RAW_BRANCHIO_KEY_ID)
-        var ALIYUN_SECRET_KEY = encodeKey(RAW_ALIYUN_SECRET_KEY)
-        var ALIYUN_ACCESS_KEY_ID = encodeKey(RAW_ALIYUN_ACCESS_KEY_ID)
-        var INDI_API_KEY = encodeKey(RAW_INDI_API_KEY)
-        var API_KEY_INSTANT_DEBIT_BCA = encodeKey(RAW_API_KEY_INSTANT_DEBIT_BCA)
-        var API_SEED_INSTANT_DEBIT_BCA = encodeKey(RAW_API_SECRET_INSTANT_DEBIT_BCA)
-        var INSTANT_DEBIT_BCA_MERCHANT_ID = encodeKey(RAW_INSTANT_DEBIT_BCA_MERCHANT_ID)
-        var INSTANT_DEBIT_BCA_BANK_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_BANK_CODE)
-        var INSTANT_DEBIT_BCA_MERCHANT_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_MERCHANT_CODE)
-        var INSTANT_DEBIT_BCA_PROFILE_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_PROFILE_CODE)
+        @JvmField val KEY_WSV4_NEW = encodeKey(RAW_KEY_WSV4)
+        @JvmField val KEY_WSV4 = "web_service_v4"
+        @JvmField val KEY_MOJITO = "mojito_api_v1"
+        @JvmField val KEY_KEROPPI = "Keroppi"
+        @JvmField val TOKO_CASH_HMAC = "CPAnAGpC3NIg7ZSj"
+        @JvmField val KEY_CREDIT_CARD_VAULT = encodeKey(RAW_SCROOGE_KEY)
+        @JvmField val ZEUS_WHITELIST = encodeKey(RAW_ZEUS_KEY)
+        @JvmField val KEY_NOTP = encodeKey(RAW_NOTP_KEY)
+        @JvmField val KEY_BRANCHIO = encodeKey(RAW_BRANCHIO_KEY_ID)
+        @JvmField val ALIYUN_SECRET_KEY = encodeKey(RAW_ALIYUN_SECRET_KEY)
+        @JvmField val ALIYUN_ACCESS_KEY_ID = encodeKey(RAW_ALIYUN_ACCESS_KEY_ID)
+        @JvmField val INDI_API_KEY = encodeKey(RAW_INDI_API_KEY)
+        @JvmField val API_KEY_INSTANT_DEBIT_BCA = encodeKey(RAW_API_KEY_INSTANT_DEBIT_BCA)
+        @JvmField val API_SEED_INSTANT_DEBIT_BCA = encodeKey(RAW_API_SECRET_INSTANT_DEBIT_BCA)
+        @JvmField val INSTANT_DEBIT_BCA_MERCHANT_ID = encodeKey(RAW_INSTANT_DEBIT_BCA_MERCHANT_ID)
+        @JvmField val INSTANT_DEBIT_BCA_BANK_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_BANK_CODE)
+        @JvmField val INSTANT_DEBIT_BCA_MERCHANT_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_MERCHANT_CODE)
+        @JvmField val INSTANT_DEBIT_BCA_PROFILE_CODE = encodeKey(RAW_INSTANT_DEBIT_BCA_PROFILE_CODE)
 
         private fun encodeKey(keys: IntArray): String {
             return keys.joinToString(separator = "") { it.toChar().toString() }
