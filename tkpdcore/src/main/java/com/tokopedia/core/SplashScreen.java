@@ -180,15 +180,21 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
                         if (!TextUtils.isEmpty(deeplink)) {
                             // Notification will go through DeeplinkActivity and DeeplinkHandlerActivity
                             // because we need tracking UTM for those notification applink
+                            String tokopediaDeeplink;
+                            if (deeplink.startsWith(ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://")) {
+                                tokopediaDeeplink = deeplink;
+                            } else {
+                                tokopediaDeeplink = ApplinkConst.APPLINK_CUSTOMER_SCHEME + "://" + deeplink;
+                            }
                             Intent intent = new Intent();
-                            if (URLUtil.isNetworkUrl(deeplink)) {
+                            if (URLUtil.isNetworkUrl(tokopediaDeeplink)) {
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME);
                             } else {
                                 intent.setClassName(SplashScreen.this.getPackageName(),
                                         com.tokopedia.config.GlobalConfig.DEEPLINK_HANDLER_ACTIVITY_CLASS_NAME);
                             }
-                            intent.setData(Uri.parse(deeplink));
+                            intent.setData(Uri.parse(tokopediaDeeplink));
                             startActivity(intent);
                             finish();
                         }
