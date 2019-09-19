@@ -356,6 +356,7 @@ ext {
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
 //            userIdentification              : ":features:user:user_identification_no_op",
+            stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",
             content                         : ":tkpdcontent",
