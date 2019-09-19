@@ -8,7 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.banner.BannerView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
-import com.tokopedia.home.beranda.data.model.Promotion
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.listener.ActivityStateListener
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
@@ -62,28 +61,14 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
 
     }
 
-    private fun getPromotion(position: Int): Promotion {
-        val promotion = Promotion()
-
-        slidesList?.let {
-            val model = it[position]
-            promotion.promotionID = model.id.toString()
-            promotion.promotionName = "/ - p1 - promo"
-            promotion.promotionAlias = model.title.trim { it <= ' ' }.replace(" ".toRegex(), "_")
-            promotion.setPromotionPosition(position + 1)
-            promotion.redirectUrl = slidesList!![position].redirectUrl
-            promotion.promoCode = model.promoCode
-        }
-
-        return promotion
-    }
-
     override fun onPromoClick(position: Int) {
-        val promotion = getPromotion(position)
-        HomePageTracking.eventPromoClick(context, promotion)
         slidesList?.let {
-            listener.onPromoClick(position, it[position],
-                    promotion.impressionDataLayer[ATTRIBUTION].toString())
+            if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO) {
+                HomePageTracking.eventPromoOverlayClick(context, it[position])
+            } else {
+                HomePageTracking.eventPromoClick(context, it[position])
+            }
+            listener.onPromoClick(position, it[position])
             HomeTrackingUtils.homeSlidingBannerClick(context, it[position], position)
         }
     }
@@ -140,7 +125,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                 ))
             }
             if (generalBannerSlides.isNotEmpty()) {
-                listener.putEEToTrackingQueue(HomePageTracking.getBannerTrackingData(
+                listener.putEEToTrackingQueue(HomePageTracking.getBannerImpressionDataLayer(
                         generalBannerSlides
                 ))
             }
