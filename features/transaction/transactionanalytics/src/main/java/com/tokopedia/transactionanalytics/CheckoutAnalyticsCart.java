@@ -489,7 +489,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-    public void enhancedEcommerceProductViewWishListOnEmptyCart(Map<String, Object> cartMap) {
+    public void enhancedEcommerceProductViewWishList(Map<String, Object> cartMap) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.PRODUCT_VIEW,
                 Key.EVENT_CATEGORY, EventCategory.CART,
@@ -500,7 +500,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
-    public void enhancedEcommerceProductViewLastSeenOnEmptyCart(Map<String, Object> cartMap) {
+    public void enhancedEcommerceProductViewLastSeen(Map<String, Object> cartMap) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.PRODUCT_VIEW,
                 Key.EVENT_CATEGORY, EventCategory.CART,
@@ -533,6 +533,17 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void enhancedEcommerceClickProductWishListOnCartList(String position, Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_CLICK,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_WISHLIST_ON_CART_LIST,
+                Key.EVENT_LABEL, position,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
     public void enhancedEcommerceClickProductLastSeenOnEmptyCart(String position, Map<String, Object> cartMap) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.PRODUCT_CLICK,
@@ -544,12 +555,23 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    public void enhancedEcommerceClickProductLastSeenOnCartList(String position, Map<String, Object> cartMap) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.PRODUCT_CLICK,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_LAST_SEEN_ON_CART_LIST,
+                Key.EVENT_LABEL, position,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
     public void enhancedEcommerceClickProductRecommendationOnEmptyCart(String position, Map<String, Object> cartMap) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.PRODUCT_CLICK,
                 Key.EVENT_CATEGORY, EventCategory.CART,
                 Key.EVENT_ACTION, EventAction.CLICK_PRODUCT_RECOMMENDATION,
-                Key.EVENT_LABEL, "",
+                Key.EVENT_LABEL, position,
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
@@ -762,4 +784,30 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    public void eventViewInformationAndWarningTickerInCart(String tickerId) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_ATC,
+                EventCategory.CART,
+                EventAction.VIEW_INFORMATION_AND_WARNING_TICKER_IN_CART,
+                tickerId
+        );
+    }
+
+    public void eventClickAddWishlistOnPrimaryProduct() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_RECOMMENDATION,
+                EventCategory.RECOMMENDATION_PAGE,
+                EventAction.CLICK_ADD_WISHLIST_ON_PRIMARY_PRODUCT,
+                EventLabel.SOURCE_CART
+        );
+    }
+
+    public void eventClickRemoveWishlistOnPrimaryProduct() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_RECOMMENDATION,
+                EventCategory.RECOMMENDATION_PAGE,
+                EventAction.CLICK_REMOVE_WISHLIST_ON_PRIMARY_PRODUCT,
+                EventLabel.SOURCE_CART
+        );
+    }
 }

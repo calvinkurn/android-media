@@ -14,6 +14,8 @@ import com.tokopedia.explore.view.presenter.ContentExplorePresenter;
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
 
@@ -35,6 +37,12 @@ public class ExploreModule {
     ContentExploreContract.Presenter provideContentExplorePresenter(GetExploreDataUseCase
                                                                    getExploreDataUseCase) {
         return new ContentExplorePresenter(getExploreDataUseCase);
+    }
+
+    @ExploreScope
+    @Provides
+    public UserSessionInterface provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 
     @ExploreScope

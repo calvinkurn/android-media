@@ -1,6 +1,7 @@
 package com.tokopedia.user.session;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author by nisie on 9/25/18.
@@ -66,10 +67,26 @@ public interface UserSessionInterface {
 
     String getAutofillUserData();
 
+    @Nullable
+    String getTwitterAccessToken();
+
+    @Nullable
+    String getTwitterAccessTokenSecret();
+
+    boolean getTwitterShouldPost();
+
     /**
      * @return method name from this class
      */
     String getLoginMethod();
+
+    @Nullable
+    String getTwitterAccessToken();
+
+    @Nullable
+    String getTwitterAccessTokenSecret();
+
+    boolean getTwitterShouldPost();
 
     /**
      * SETTER METHOD
@@ -137,8 +154,16 @@ public interface UserSessionInterface {
 
     void setIsPowerMerchantIdle(boolean powerMerchantIdle);
 
+    void setTwitterAccessTokenAndSecret(@NotNull String accessToken, @NotNull String accessTokenSecret);
+
+    void setTwitterShouldPost(boolean shouldPost);
+
     void setAutofillUserData(String autofillUserData);
 
     void setLoginMethod(@NotNull String loginMethod);
+
+    void setTwitterAccessTokenAndSecret(@NotNull String accessToken, @NotNull String accessTokenSecret);
+
+    void setTwitterShouldPost(boolean shouldPost);
 
 }

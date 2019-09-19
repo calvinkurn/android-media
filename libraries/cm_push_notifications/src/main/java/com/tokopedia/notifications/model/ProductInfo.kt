@@ -28,41 +28,41 @@ data class ProductInfo(
         var productButtonMessage: String,
 
         @SerializedName("appLink")
-        var appLink: String
-) : Parcelable{
-        constructor(parcel: Parcel) : this(
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString(),
-                parcel.readString())
+        var appLink: String? = null
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "",
+            parcel.readString()?.let { it } ?: "")
 
-        override fun writeToParcel(parcel: Parcel, flags: Int) {
-                parcel.writeString(productTitle)
-                parcel.writeString(productImage)
-                parcel.writeString(productActualPrice)
-                parcel.writeString(productCurrentPrice)
-                parcel.writeString(productPriceDroppedPercentage)
-                parcel.writeString(productMessage)
-                parcel.writeString(productButtonMessage)
-                parcel.writeString(appLink)
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(productTitle)
+        parcel.writeString(productImage)
+        parcel.writeString(productActualPrice)
+        parcel.writeString(productCurrentPrice)
+        parcel.writeString(productPriceDroppedPercentage)
+        parcel.writeString(productMessage)
+        parcel.writeString(productButtonMessage)
+        parcel.writeString(appLink)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<ProductInfo> {
+        override fun createFromParcel(parcel: Parcel): ProductInfo {
+            return ProductInfo(parcel)
         }
 
-        override fun describeContents(): Int {
-                return 0
+        override fun newArray(size: Int): Array<ProductInfo?> {
+            return arrayOfNulls(size)
         }
-
-        companion object CREATOR : Parcelable.Creator<ProductInfo> {
-                override fun createFromParcel(parcel: Parcel): ProductInfo {
-                        return ProductInfo(parcel)
-                }
-
-                override fun newArray(size: Int): Array<ProductInfo?> {
-                        return arrayOfNulls(size)
-                }
-        }
+    }
 
 }

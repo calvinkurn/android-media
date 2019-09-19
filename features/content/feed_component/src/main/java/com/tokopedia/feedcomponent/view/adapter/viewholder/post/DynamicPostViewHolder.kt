@@ -26,7 +26,6 @@ import com.tokopedia.feedcomponent.util.TagConverter
 import com.tokopedia.feedcomponent.util.TimeConverter
 import com.tokopedia.feedcomponent.view.adapter.post.PostPagerAdapter
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagAdapter
-import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactoryImpl
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -35,7 +34,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
@@ -104,7 +103,7 @@ open class DynamicPostViewHolder(v: View,
 
         bindTitle(element.title, element.template.cardpost.title)
         bindHeader(element.id, element.header, element.template.cardpost.header)
-        bindCaption(element.caption, element.template.cardpost.body)
+        bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType)
         bindFooter(element.id, element.footer, element.template.cardpost.footer, isPostTagAvailable(element.postTag))
@@ -132,13 +131,13 @@ open class DynamicPostViewHolder(v: View,
 
     private fun bindTitle(title: Title, template: TemplateTitle) {
         itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
-            itemView.cardTitle.bind(title, template)
+            itemView.cardTitle.bind(title, template, adapterPosition)
         }
         itemView.cardTitle.listener = cardTitleListener
     }
 
     private fun shouldShowTitle(template: TemplateTitle): Boolean {
-        return template.ctaLink || template.textBadge || template.ctaLink
+        return template.text || template.textBadge || template.ctaLink
     }
 
     private fun bindHeader(postId: Int, header: Header, template: TemplateHeader) {
@@ -231,7 +230,7 @@ open class DynamicPostViewHolder(v: View,
                 || template.avatarTitle || template.followCta || template.report
     }
 
-    open fun bindCaption(caption: Caption, template: TemplateBody) {
+    open fun bindCaption(caption: Caption, template: TemplateBody, trackingPostModel: TrackingPostModel) {
         val tagConverter = TagConverter()
         itemView.caption.shouldShowWithAction(template.caption) {
             if (caption.text.isEmpty()) {
@@ -252,21 +251,22 @@ open class DynamicPostViewHolder(v: View,
                         .plus("</b></font>")
 
                 itemView.caption.text = tagConverter.convertToLinkifyHashtag(
-                        SpannableString(MethodChecker.fromHtml(captionText)), colorLinkHashtag,
-                        this::gotoHashtagLandingPahge)
+                        SpannableString(MethodChecker.fromHtml(captionText)), colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
                 itemView.caption.setOnClickListener {
                     if (!TextUtils.isEmpty(caption.appLink)) {
                         listener.onCaptionClick(adapterPosition, caption.appLink)
                     } else {
+                        if (itemView.caption.text.endsWith(caption.buttonName)) listener.onReadMoreClicked(trackingPostModel)
+
                         itemView.caption.text = tagConverter.convertToLinkifyHashtag(SpannableString(caption.text),
-                                colorLinkHashtag, this::gotoHashtagLandingPahge)
+                                colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
                     }
                 }
                 itemView.caption.movementMethod = LinkMovementMethod.getInstance()
             } else {
                 itemView.caption.text = tagConverter
                         .convertToLinkifyHashtag(SpannableString(caption.text.replace(NEWLINE, " ")),
-                                colorLinkHashtag, this::gotoHashtagLandingPahge)
+                                colorLinkHashtag) { hashtag -> onHashtagClicked(hashtag, trackingPostModel) }
                 itemView.caption.movementMethod = LinkMovementMethod.getInstance()
             }
         }
@@ -275,9 +275,10 @@ open class DynamicPostViewHolder(v: View,
     private val colorLinkHashtag: Int
         get() = ContextCompat.getColor(itemView.context, R.color.tkpd_main_green)
 
-    private fun gotoHashtagLandingPahge(hashtag: String){
+    private fun onHashtagClicked(hashtag: String, trackingPostModel: TrackingPostModel){
         val encodeHashtag = URLEncoder.encode(hashtag)
         RouteManager.route(itemView.context, ApplinkConstInternalContent.HASHTAG_PAGE, encodeHashtag)
+        listener.onHashtagClicked(hashtag, trackingPostModel)
     }
 
     private fun hasSecondLine(caption: Caption): Boolean {
@@ -516,5 +517,9 @@ open class DynamicPostViewHolder(v: View,
         fun onAffiliateTrackClicked(trackList: MutableList<TrackingViewModel>, isClick: Boolean)
 
         fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem)
+
+        fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel)
+
+        fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
     }
 }

@@ -3,7 +3,7 @@ package com.tokopedia.search.result.presentation.presenter.shop;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.discovery.common.Mapper;
 import com.tokopedia.discovery.common.constants.SearchConstant;
-import com.tokopedia.discovery.newdiscovery.constant.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.result.domain.model.SearchShopModel;
 import com.tokopedia.search.result.presentation.ShopListSectionContract;
@@ -126,6 +126,7 @@ final class ShopListPresenter
 
     private void getViewToShowLoadDataFailed() {
         getView().onSearchShopFailed();
+        getView().removeLoading();
         isSearchShopReturnedNull = true;
     }
 
@@ -142,6 +143,7 @@ final class ShopListPresenter
 
     private void getViewToShowEmptyResult() {
         getView().onSearchShopSuccessEmptyResult();
+        getView().removeLoading();
     }
 
     private void getViewToShowSearchResultDataWithHeader(SearchShopModel searchShopModel, String query, int loadShopRow) {
@@ -154,6 +156,7 @@ final class ShopListPresenter
         List<Visitable> visitableList = createVisitableList(shopHeaderViewModel, shopViewModel.getShopItemList());
 
         getView().onSearchShopSuccessWithData(visitableList, shopViewModel.getHasNextPage());
+        getView().removeLoading();
     }
 
     private List<Visitable> createVisitableList(

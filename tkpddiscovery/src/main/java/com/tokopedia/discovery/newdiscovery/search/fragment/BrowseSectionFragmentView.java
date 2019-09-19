@@ -3,7 +3,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.discovery.common.data.DynamicFilterModel;
+import com.tokopedia.filter.common.data.DynamicFilterModel;
 
 import java.util.HashMap;
 
@@ -33,8 +33,6 @@ public interface BrowseSectionFragmentView extends CustomerView {
     void hideRefreshLayout();
 
     String getScreenNameId();
-
-    void setTotalSearchResultCount(String formattedResultCount);
 
     Context getContext();
 

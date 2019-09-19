@@ -21,6 +21,11 @@
             android:name=".view.activity.SelectLoanParamActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.Green" />
+
+        <activity
+            android:name=".view.activity.SelectLoanCategoryActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Green" />
     </application>
 
 </manifest>

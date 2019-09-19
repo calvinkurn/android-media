@@ -17,7 +17,6 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel;
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.CacheDuration;
 import com.tokopedia.core.network.apiservices.mojito.MojitoAuthService;
 import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
@@ -74,6 +73,8 @@ import java.util.Map;
  */
 public class WishListImpl implements WishList {
     private static final String TAG = WishListImpl.class.getSimpleName();
+    private static final int REMOVE_WISHLIST_ON_SUCCESS_DELAY = 5000;
+
     public static final String PAGE_NO = "page";
     public static final String ITEM_COUNT = "count";
     public static final String QUERY = "query";
@@ -637,15 +638,10 @@ public class WishListImpl implements WishList {
     }
 
     private void onFinishedDeleteWishlist(final int position) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                wishListView.dismissProgressDialog();
-                data.remove(position);
-                wishListView.onSuccessDeleteWishlist(
-                        params.getString(QUERY, ""), position);
-            }
-        }, CacheDuration.onSecond(5));
+        wishListView.dismissProgressDialog();
+        data.remove(position);
+        wishListView.onSuccessDeleteWishlist(
+                params.getString(QUERY, ""), position);
     }
 
     private void setDataWishlistOnSearch(GqlWishListDataResponse gqlWishListDataResponse) {

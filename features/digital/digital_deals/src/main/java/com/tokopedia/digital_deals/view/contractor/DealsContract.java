@@ -36,8 +36,6 @@ public class DealsContract {
 
         void renderCuratedDealsList(List<CategoryItem> categoryItems);
 
-        void renderAllTrendingDeals(List<ProductItem> items, String title);
-
         void addDealsToCards(CategoryItem categoryItemsViewModels);
 
         RequestParams getParams();
@@ -68,11 +66,13 @@ public class DealsContract {
 
         int getRequestCode();
 
-        void startLocationFragment(List<Location> locationList, boolean isTopLocations);
+        void startLocationFragment();
 
         void startDealsCategoryFragment(List<CategoryItem> categoryItems, List<CategoriesModel> categoriesModels);
 
         String getSearchInputText();
+
+        void updateInitialLocation(List<Location> locations);
     }
 
     public interface Presenter extends CustomerPresenter<View> {
