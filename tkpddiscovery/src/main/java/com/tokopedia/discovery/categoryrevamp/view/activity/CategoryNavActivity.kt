@@ -220,6 +220,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
                        setEmptyView(it.data)
                     }else {
                         layout_banned_screen.visibility = View.GONE
+                        searchNavContainer?.visibility = View.VISIBLE
                         initViewPager()
                         loadSection()
                         initSwitchButton()
@@ -237,6 +238,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     private fun setEmptyView(data :Data?){
         layout_banned_screen.visibility = View.VISIBLE
+        searchNavContainer?.visibility = View.GONE
         if(data == null) {
             txt_header.text = "There is some error on server"
             txt_no_data_description.text = "try again"

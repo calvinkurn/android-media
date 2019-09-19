@@ -10,9 +10,9 @@
 
     <ImageView
         android:id="@+id/img_no_data"
-        android:layout_width="130dp"
-        android:layout_height="130dp"
-        android:src="@drawable/ic_no_product_found" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cat_ic_banned_item" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_header"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingTop="@dimen/dp_5"
-        app:typographyType="heading_3"
+        app:typographyType="heading_5"
         tools:text="Coba kurangi salah satu filter yang kamu gunakan :" />
 
 </LinearLayout>
