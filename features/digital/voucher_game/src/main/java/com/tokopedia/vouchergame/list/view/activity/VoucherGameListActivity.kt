@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.list.di.DaggerVoucherGameListComponent
@@ -30,6 +31,10 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         return DaggerVoucherGameListComponent.builder()
                 .voucherGameComponent(getVoucherGameComponent())
                 .build()
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.vg_activity
     }
 
     override fun shouldShowOptionMenu(): Boolean { return true }
