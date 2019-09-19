@@ -1092,16 +1092,24 @@ public class ProductListFragment
     }
 
     private void showFullScreenErrorMessage(@NotNull View rootView, String errorMessage) {
-        View linearLayoutErrorMessageContainer  = rootView.findViewById(R.id.linearLayoutErrorMessageContainer);
+        View relativeLayoutErrorMessageContainer  = rootView.findViewById(R.id.relativeLayoutErrorMessageContainer);
 
-        if (linearLayoutErrorMessageContainer != null) {
-            linearLayoutErrorMessageContainer.setVisibility(View.VISIBLE);
+        if (relativeLayoutErrorMessageContainer != null) {
+            relativeLayoutErrorMessageContainer.setVisibility(View.VISIBLE);
 
-            TextView textViewErrorMessage = linearLayoutErrorMessageContainer.findViewById(R.id.textViewErrorMessage);
+            TextView textViewErrorMessage = relativeLayoutErrorMessageContainer.findViewById(R.id.custom_text_view_empty_content_text);
 
             if (textViewErrorMessage != null) {
                 textViewErrorMessage.setText(errorMessage);
             }
+
+            View actionButton  = rootView.findViewById(R.id.custom_button_add_promo);
+            actionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showSearchInputView();
+                }
+            });
         }
     }
 
@@ -1113,10 +1121,10 @@ public class ProductListFragment
     public void hideErrorMessage() {
         if (getView() == null) return;
 
-        View linearLayoutErrorMessageContainer  = getView().findViewById(R.id.linearLayoutErrorMessageContainer);
+        View relativeLayoutErrorMessageContainer  = getView().findViewById(R.id.relativeLayoutErrorMessageContainer);
 
-        if (linearLayoutErrorMessageContainer != null) {
-            linearLayoutErrorMessageContainer.setVisibility(View.GONE);
+        if (relativeLayoutErrorMessageContainer != null) {
+            relativeLayoutErrorMessageContainer.setVisibility(View.GONE);
         }
     }
 }
