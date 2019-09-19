@@ -10,35 +10,6 @@ query image_search($image: String!, $params: String!) {
       source
       share_url
       q
-      suggestion_text {
-        text
-        query
-      }
-      redirection {
-        redirect_url
-        department_id
-      }
-      suggestions {
-        suggestion
-        total_data
-      }
-      suggestion_instead {
-        suggestion_instead
-        current_keyword
-        total_data
-      }
-      catalogs {
-        id
-        name
-        price
-        price_min
-        price_max
-        count_product
-        description
-        image_url
-        url
-        department_id
-      }
       products {
         id
         name
