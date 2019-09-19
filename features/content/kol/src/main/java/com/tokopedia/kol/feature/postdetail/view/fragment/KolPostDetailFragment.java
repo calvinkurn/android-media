@@ -46,6 +46,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
@@ -54,6 +55,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.relatedpost.RelatedPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
 import com.tokopedia.feedcomponent.view.widget.CardTitleView;
+import com.tokopedia.feedcomponent.view.widget.CreatePostFabView;
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.R;
@@ -78,6 +80,7 @@ import com.tokopedia.kol.feature.postdetail.view.viewmodel.PostDetailViewModel;
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity;
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity;
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity;
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
@@ -89,6 +92,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 import static com.tokopedia.kol.common.util.PostMenuUtilKt.createBottomMenu;
 
@@ -120,6 +124,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private Integer postId;
     private SwipeToRefresh swipeToRefresh;
     private RecyclerView recyclerView;
+    private CreatePostFabView createPostFab;
     private ImageView likeButton, commentButton, shareButton;
     private TextView likeCount, commentCount, shareText;
     private View footer;
@@ -182,6 +187,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
         View view = inflater.inflate(R.layout.fragment_kol_post_detail, container, false);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
+        createPostFab = view.findViewById(R.id.create_post_fab);
         likeButton = view.findViewById(R.id.like_button);
         commentButton = view.findViewById(R.id.comment_button);
         shareButton = view.findViewById(R.id.share_button);
@@ -279,6 +285,10 @@ public class KolPostDetailFragment extends BaseDaggerFragment
             this.dynamicPostViewModel = ((DynamicPostViewModel) postDetailViewModel.getDynamicPostViewModel().getPostList().get(0));
             trackImpression(dynamicPostViewModel);
             presenter.getRelatedPost(String.valueOf(dynamicPostViewModel.getId()));
+
+            if (isOwner()) {
+                presenter.getWhitelist();
+            }
         }
         setFooter(postDetailViewModel);
         recyclerView.clearOnScrollListeners();
@@ -312,8 +322,9 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     private boolean isOwner() {
-        return userSession.getUserId().equals(
-                (dynamicPostViewModel.getHeader().getFollowCta().getAuthorID()));
+        return dynamicPostViewModel != null
+                && userSession.getUserId().equals(
+                        dynamicPostViewModel.getHeader().getFollowCta().getAuthorID());
     }
 
     private void setFooter(PostDetailViewModel postDetailViewModel) {
@@ -890,7 +901,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onTitleCtaClick(@NotNull String redirectUrl) {
+    public void onTitleCtaClick(@NotNull String redirectUrl, int adapterPosition) {
         onGoToLink(redirectUrl);
 
     }
@@ -920,7 +931,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onHighlightItemClicked(int positionInFeed, @NotNull String redirectUrl) {
+    public void onHighlightItemClicked(int positionInFeed, @NotNull HighlightCardViewModel item) {
 
     }
 
@@ -992,6 +1003,21 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onSuccessGetWhitelist(Whitelist whitelist) {
+        if (!whitelist.getAuthors().isEmpty()) {
+            createPostFab.render(whitelist);
+            createPostFab.setOnFabBymeClicked(() -> {
+                goToCreateAffiliate();
+                return Unit.INSTANCE;
+            });
+            createPostFab.setOnFabLinkClicked((link) -> {
+                onGoToLink(link);
+                return Unit.INSTANCE;
+            });
+        }
+    }
+
+    @Override
     public void onRelatedPostImpression(@NotNull FeedPostRelated.Datum post) {
         analytics.eventImpressionOtherPost(post.getId());
     }
@@ -1022,13 +1048,23 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     private void onGoToLink(String link) {
         if (getActivity() != null && !TextUtils.isEmpty(link)) {
             if (RouteManager.isSupportApplink(getActivity(), link)) {
-                RouteManager.route(getActivity(), link);
+                Intent intent = RouteManager.getIntent(getActivity(), link);
+                intent.putExtras(new Bundle());
+                startActivity(intent);
             } else {
                 RouteManager.route(
                         getActivity(),
                         String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
                 );
             }
+        }
+    }
+
+    private void goToCreateAffiliate() {
+        if (getContext() != null) {
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1");
+            intent.putExtras(new Bundle());
+            startActivity(intent);
         }
     }
 

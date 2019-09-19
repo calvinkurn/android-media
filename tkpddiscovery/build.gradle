@@ -28,7 +28,7 @@ buildscript {
 project.ext {
     artifactId = 'discovery'
     groupId = 'com.tokopedia.discovery'
-    versionName = "${tkpdDiscoveryVersion}"
+    versionName = "1.0.0"
     artifactName ="tkpddiscovery-release"
 }
 
@@ -39,7 +39,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.core_legacy)
 
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
@@ -50,7 +50,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.linker)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.coreNetwork)
@@ -61,7 +61,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.features.productCard)
 
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation

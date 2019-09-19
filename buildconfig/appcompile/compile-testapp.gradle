@@ -27,7 +27,6 @@ include "libraries:logger"
 //include 'libraries:iris'
 include 'libraries:iris_no_op'
 include "libraries:network"
-//include "libraries:pagination"
 //include "libraries:oms"
 include "libraries:push_notification"
 include 'libraries:permissionchecker'
@@ -50,7 +49,6 @@ include "libraries:trackinterface"
 include 'libraries:cpm'
 include "libraries:linker"
 include "libraries:webview"
-include "libraries:akamai_bot_lib"
 include "libraries:collapsing_tab_layout"
 
 include "libraries:videouploader"

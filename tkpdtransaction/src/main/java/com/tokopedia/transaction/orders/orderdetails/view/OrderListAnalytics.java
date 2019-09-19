@@ -13,7 +13,10 @@ import com.tokopedia.transaction.common.sharedata.buyagain.Datum;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
 import com.tokopedia.transaction.orders.orderdetails.data.MetaDataInfo;
 import com.tokopedia.transaction.orders.orderdetails.data.ShopInfo;
+import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.WidgetGridItem;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.viewModel.OrderListRecomViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,6 +80,21 @@ public class OrderListAnalytics {
     private List<Object> dataLayerList = new ArrayList<>();
     private String recomTitle;
 
+    private static final String PRODUCT_CLICK = "ProductClick";
+    private static final String CLICK_ON_WIDGET_RECOMMENDATION = "click on widget recommendation";
+    private static final String PRODUCT_VIEW = "ProductView";
+    private static final String IMPRESSION_ON_WIDGET_RECOMMENDATION = "impression on widget recommendation";
+    private static final String EVENT = "event";
+    private static final String EVENT_CATEGORY = "eventCategory";
+    private static final String EVENT_ACTION = "eventAction";
+    private static final String EVENT_LABEL = "eventLabel";
+    private static final String ECOMMERCE = "ecommerce";
+    private static final String LIST = "list";
+    private static final String POSITION = "position";
+    private static final String ACTION_FIELD = "actionField";
+    private static final String PRODUCTS = "products";
+    private static final String CLICK = "click";
+    private static final String IMPRESSIONS = "impressions";
 
     @Inject
     public OrderListAnalytics() {
@@ -170,7 +188,7 @@ public class OrderListAnalytics {
             product.put(KEY_SHOP_NAME, shopInfo.getShopName());
             product.put(KEY_SHOP_TYPE, NONE);
             String cartId = NONE;
-            for(Datum datum : responseBuyAgainList)
+            for (Datum datum : responseBuyAgainList)
                 if (datum.getProductId() == item.getId()) {
                     cartId = String.valueOf(datum.getCartId());
                     break;
@@ -287,5 +305,56 @@ public class OrderListAnalytics {
                         RECOMMENDATION_PRODUCT_EVENT_CATEGORY,
                         isAdd ? ADD_WISHLIST : REMOVE_WISHLIST,
                         recomTitle));
+    }
+
+    public static void eventWidgetListView(@NotNull WidgetGridItem contentItemTab, int position) {
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, PRODUCT_VIEW,
+                EVENT_CATEGORY, "my purchase list - " + contentItemTab.getName(),
+                EVENT_ACTION, IMPRESSION_ON_WIDGET_RECOMMENDATION,
+                EVENT_LABEL, "historical - " + contentItemTab.getName() + " - " + (1 + position),
+                ECOMMERCE, DataLayer.mapOf(
+                        CURRENCY_CODE, IDR,
+                        IMPRESSIONS, DataLayer.listOf(DataLayer.mapOf(
+                                NAME, contentItemTab.getName(),
+                                ID, contentItemTab.getId(),
+                                PRICE, contentItemTab.getPrice(),
+                                LIST, contentItemTab.getName(),
+                                POSITION, position + 1
+                                )
+                        )
+                )
+
+        ));
+
+    }
+
+    public static void eventWidgetClick(@NotNull WidgetGridItem item, int position) {
+
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                EVENT, PRODUCT_CLICK,
+                EVENT_CATEGORY, "my purchase list - " + item.getName(),
+                EVENT_ACTION, CLICK_ON_WIDGET_RECOMMENDATION,
+                EVENT_LABEL, "historical - " + item.getName() + " - " + (1 + position),
+                ECOMMERCE, DataLayer.mapOf(
+                        CLICK, DataLayer.mapOf(
+                                ACTION_FIELD, DataLayer.mapOf(
+                                        LIST, item.getName(),
+                                        PRODUCTS, DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        NAME, item.getName(),
+                                                        ID, item.getId(),
+                                                        PRICE, item.getPrice(),
+                                                        LIST, item.getName(),
+                                                        POSITION, position + 1
+                                                )
+                                        )
+                                )
+                        )
+
+                )
+
+        ));
     }
 }
