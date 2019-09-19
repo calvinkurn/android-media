@@ -33,12 +33,14 @@
         >
 
         <ImageView
+            android:id="@+id/no_result_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:scaleType="fitCenter"
             android:src="@drawable/product_search_not_found"/>
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/text_view_empty_title_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:typographyType="heading_4"
