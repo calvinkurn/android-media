@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.RoundedCornerImageView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,6 +38,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     private var contentText = ""
     private var contentTitle = ""
     private var btnText = ""
+    private var appLink = ""
 
     override fun getTheme(): Int = R.style.BottomSheetDialogTheme
 
@@ -103,6 +105,11 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         closeButton.setOnClickListener {
             dismiss()
         }
+
+        ctaButton.setOnClickListener {
+            RouteManager.route(it.context, appLink)
+            dismiss()
+        }
     }
 
     private fun setupContentPadding() {
@@ -121,6 +128,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             contentImageViewType = getParamString(NotificationUpdateFragment.PARAM_CONTENT_IMAGE_TYPE, arguments, null, "")
             contentTitle = getParamString(NotificationUpdateFragment.PARAM_CONTENT_TITLE, arguments, null, "")
             btnText = getParamString(NotificationUpdateFragment.PARAM_BUTTON_TEXT, arguments, null, "")
+            appLink = getParamString(NotificationUpdateFragment.PARAM_CTA_APPLINK, arguments, null, "")
         }
     }
 
