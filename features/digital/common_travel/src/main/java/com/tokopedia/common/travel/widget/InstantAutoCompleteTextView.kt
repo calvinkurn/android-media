@@ -18,9 +18,8 @@ class InstantAutoCompleteTextView: AppCompatAutoCompleteTextView {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     init {
-        setOnClickListener { showDropDown() }
         setOnTouchListener { _, _ ->
-            showDropDown()
+            performFiltering(text, 0)
             false
         }
     }
@@ -29,6 +28,6 @@ class InstantAutoCompleteTextView: AppCompatAutoCompleteTextView {
 
     override fun onFocusChanged(focused: Boolean, direction: Int, previouslyFocusedRect: Rect?) {
         super.onFocusChanged(focused, direction, previouslyFocusedRect)
-        if (focused && filter != null) showDropDown()
+        if (focused && filter != null) performFiltering(text, 0)
     }
 }
