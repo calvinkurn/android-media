@@ -557,7 +557,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
 
     private fun showMessageErrorInSnackBar(resId: Int) {
         view?.let {
-            Toaster.showError(it, getString(resId), Snackbar.LENGTH_LONG)
+            Toaster.showErrorWithAction(it, getString(resId), Snackbar.LENGTH_LONG, "OK", View.OnClickListener { /* do nothing */ })
         }
     }
 

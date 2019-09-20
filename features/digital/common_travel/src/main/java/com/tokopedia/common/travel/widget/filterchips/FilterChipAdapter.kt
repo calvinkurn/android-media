@@ -54,6 +54,11 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
         fun setTextColor(txtColor: Int) {
             chips.setTextColor(view.getResources().getColor(txtColor))
         }
+
+        fun selectChip() {
+            chips.isSelected = true
+            if (selectedColor > 0) setTextColor(selectedColor)
+        }
     }
 
     interface OnClickListener{

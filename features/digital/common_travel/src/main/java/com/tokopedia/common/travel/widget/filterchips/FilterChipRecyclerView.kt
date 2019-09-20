@@ -79,7 +79,7 @@ class FilterChipRecyclerView : BaseCustomView, FilterChipAdapter.ResetChipListen
     fun selectChipByPosition(position: Int) {
         if (position < adapter.itemCount) {
             with(chip_recycler_view.findViewHolderForAdapterPosition(position) as FilterChipAdapter.ViewHolder?) {
-                this?.chips?.isSelected = true
+                this?.selectChip()
             }
         }
     }
