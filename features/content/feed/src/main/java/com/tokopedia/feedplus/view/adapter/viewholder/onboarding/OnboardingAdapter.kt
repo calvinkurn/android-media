@@ -31,17 +31,15 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
                     }
 
                     val resources = view.resources
-                    if (view.layoutParams is GridLayoutManager.LayoutParams) {
-                        val layoutParams = view.layoutParams as? GridLayoutManager.LayoutParams
-                        val layoutManager = parent.layoutManager  as? GridLayoutManager
-                        val spanIndex = layoutParams?.spanIndex
-                        val spanCount = layoutManager?.spanCount
-                        if (spanIndex == spanCount) {
-                            outRect.right = resources.getDimension(R.dimen.dp_0).toInt()
-                        }
+                    val layoutParams = view.layoutParams as? GridLayoutManager.LayoutParams
+                    val layoutManager = parent.layoutManager  as? GridLayoutManager
+                    val spanIndex = layoutParams?.spanIndex
+                    val spanCount = layoutManager?.spanCount
+                    if (spanIndex == spanCount) {
+                        outRect.right = resources.getDimension(R.dimen.dp_0).toInt()
                     }
                 }
-            };
+            }
         }
     }
 
