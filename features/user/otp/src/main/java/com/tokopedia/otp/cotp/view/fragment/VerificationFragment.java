@@ -431,6 +431,10 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         });
         errorImage.setVisibility(View.VISIBLE);
         errorOtp.setVisibility(View.VISIBLE);
+
+        if(errorMessage.contains(PIN_ERR_MSG) && errorMessage.length() > 0){
+            errorOtp.setText(errorMessage.substring(0, errorMessage.indexOf("(")));
+        }
     }
 
     @Override
