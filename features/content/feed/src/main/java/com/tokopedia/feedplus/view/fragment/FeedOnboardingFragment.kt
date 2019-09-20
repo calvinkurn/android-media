@@ -96,12 +96,10 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     private fun showLoading() {
         loadingLayout.visible()
-        mainView.gone()
     }
 
     private fun hideLoading() {
         loadingLayout.gone()
-        mainView.visible()
     }
 
     private fun onSuccessGetData(data: OnboardingViewModel) {
