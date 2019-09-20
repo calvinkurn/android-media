@@ -17,8 +17,7 @@ import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.kol.KolComponentInstance
-import com.tokopedia.kotlin.extensions.view.hideLoading
-import com.tokopedia.kotlin.extensions.view.showLoading
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_feed_onboarding.*
@@ -96,11 +95,13 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     }
 
     private fun showLoading() {
-        mainView.showLoading()
+        loadingLayout.visible()
+        mainView.gone()
     }
 
     private fun hideLoading() {
-        mainView.hideLoading()
+        loadingLayout.gone()
+        mainView.visible()
     }
 
     private fun onSuccessGetData(data: OnboardingViewModel) {
