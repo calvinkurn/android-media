@@ -105,6 +105,7 @@ import javax.inject.Inject
 
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.kol.common.util.createBottomMenu
@@ -145,11 +146,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private lateinit var feedModuleRouter: FeedModuleRouter
     private lateinit var newFeedReceiver: BroadcastReceiver
 
-    private lateinit var layoutManager: LinearLayoutManager
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
     private lateinit var createPostBottomSheet: CloseableBottomSheetDialog
+
+    private var layoutManager: LinearLayoutManager? = null
     private var loginIdInt: Int = 0
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
@@ -217,9 +219,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
                 presenter.fetchNextPage()
         }
-        layoutManager = NpaLinearLayoutManager(activity,
-                LinearLayoutManager.VERTICAL,
-                false)
 
         if (activity!!.application is FeedModuleRouter) {
             feedModuleRouter = activity!!.application as FeedModuleRouter
@@ -277,6 +276,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun prepareView() {
         adapter.itemTreshold = 2
+        layoutManager = NpaLinearLayoutManager(activity,
+                LinearLayoutManager.VERTICAL,
+                false)
         recyclerView.layoutManager = layoutManager
         recyclerView.adapter = adapter
         swipeToRefresh.setOnRefreshListener(this)
@@ -295,11 +297,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         var position = 0
                         val item: Visitable<*>
                         if (itemIsFullScreen()) {
-                            position = layoutManager.findLastVisibleItemPosition()
-                        } else if (layoutManager.findFirstCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager.findFirstCompletelyVisibleItemPosition()
-                        } else if (layoutManager.findLastCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager.findLastCompletelyVisibleItemPosition()
+                            position = layoutManager?.findLastVisibleItemPosition() ?: 0
+                        } else if (layoutManager?.findFirstCompletelyVisibleItemPosition() != -1) {
+                            position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
+                        } else if (layoutManager?.findLastCompletelyVisibleItemPosition() != -1) {
+                            position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
                         }
 
                         item = adapter.getlist()[position]
@@ -320,7 +322,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun itemIsFullScreen(): Boolean {
-        return layoutManager.findLastVisibleItemPosition() - layoutManager.findFirstVisibleItemPosition() == 0
+        return layoutManager?.findLastVisibleItemPosition()  == layoutManager?.findFirstVisibleItemPosition()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -336,8 +338,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         super.onDestroyView()
         presenter.detachView()
 
-//        if (layoutManager != null)
-//            layoutManager = null
+        if (layoutManager != null) {
+            layoutManager = null
+        }
     }
 
     override fun setLastCursorOnFirstPage(lastCursor: String) {
@@ -1200,7 +1203,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 
@@ -1346,7 +1349,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 

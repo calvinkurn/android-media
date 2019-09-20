@@ -103,7 +103,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_setting_info, container, false);
+        View view = inflater.inflate(com.tokopedia.seller.R.layout.fragment_shop_setting_info, container, false);
         presenter.attachView(this);
         initView(view);
         setActionVar();
@@ -111,14 +111,14 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     }
 
     private void initView(View view) {
-        shopDescTextInputLayout = view.findViewById(R.id.shop_desc_input_layout);
-        shopDescEditText = (EditText) view.findViewById(R.id.shop_desc_input_text);
-        shopSloganTextInputLayout = view.findViewById(R.id.shop_slogan_input_layout);
-        shopSloganEditText = (EditText) view.findViewById(R.id.shop_slogan_input_text);
-        containerImagePicker = view.findViewById(R.id.image_picker_container);
-        imagePicker = (ImageView) view.findViewById(R.id.image_picker);
-        buttonNext = (Button) view.findViewById(R.id.button_next);
-        welcomeText = view.findViewById(R.id.welcome_shop_label);
+        shopDescTextInputLayout = view.findViewById(com.tokopedia.seller.R.id.shop_desc_input_layout);
+        shopDescEditText = (EditText) view.findViewById(com.tokopedia.seller.R.id.shop_desc_input_text);
+        shopSloganTextInputLayout = view.findViewById(com.tokopedia.seller.R.id.shop_slogan_input_layout);
+        shopSloganEditText = (EditText) view.findViewById(com.tokopedia.seller.R.id.shop_slogan_input_text);
+        containerImagePicker = view.findViewById(com.tokopedia.seller.R.id.image_picker_container);
+        imagePicker = (ImageView) view.findViewById(com.tokopedia.seller.R.id.image_picker);
+        buttonNext = (Button) view.findViewById(com.tokopedia.seller.R.id.button_next);
+        welcomeText = view.findViewById(com.tokopedia.seller.R.id.welcome_shop_label);
 
         if (onShopStepperListener != null) {
             if (onShopStepperListener.getStepperModel().getResponseIsReserveDomain() == null) {
@@ -135,13 +135,13 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
 
     private void updateView(UserData userData) {
         if (userData.getShopName() != null) {
-            String helloName = getString(R.string.hello_x, userData.getShopName());
+            String helloName = getString(com.tokopedia.seller.R.string.hello_x, userData.getShopName());
             welcomeText.setText(MethodChecker.fromHtml(helloName));
         }
         shopDescEditText.setText(userData.getShortDesc());
         shopSloganEditText.setText(userData.getTagLine());
 
-        Drawable imgAddPhotoBox = AppCompatResources.getDrawable(getActivity(), R.drawable.ic_camera_add);
+        Drawable imgAddPhotoBox = AppCompatResources.getDrawable(getActivity(), com.tokopedia.design.R.drawable.ic_camera_add);
         Glide.with(imagePicker.getContext())
                 .load(userData.getLogo())
                 .dontAnimate()
@@ -155,7 +155,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
         containerImagePicker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_shop_picture),
+                ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.seller.R.string.choose_shop_picture),
                         new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                         DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
                         new ImagePickerEditorBuilder(
@@ -200,7 +200,7 @@ public class ShopOpenMandatoryInfoFragment extends BaseDaggerFragment implements
     public void showProgressDialog() {
         if (tkpdProgressDialog == null) {
             tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
-                    getString(R.string.title_loading));
+                    getString(com.tokopedia.abstraction.R.string.title_loading));
         }
         tkpdProgressDialog.showDialog();
     }

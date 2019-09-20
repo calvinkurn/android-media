@@ -10,7 +10,6 @@ import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.LabelModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.NetworkParamHelper;
 
 import java.util.ArrayList;
 import java.util.List;

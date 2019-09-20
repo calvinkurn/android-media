@@ -45,7 +45,7 @@ class CategoryNavUseCaseModule {
     @CategoryNavScope
     @Named("catalogGqlUseCase")
     @Provides
-    fun providecatatlogGraphQlUseCase(): GraphqlUseCase {
+    fun providecatalogGqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
     }
 

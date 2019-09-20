@@ -479,7 +479,7 @@ public class OrderListFragment extends BaseDaggerFragment implements
 
     @Override
     public void renderOrderStatus(List<QuickFilterItem> filterItems, int selctedIndex) {
-        quickSingleFilterView.setDefaultItem(null);
+        quickSingleFilterView.setDefaultItem(filterItems.get(selctedIndex));
         quickSingleFilterView.renderFilter(filterItems, selctedIndex);
     }
 

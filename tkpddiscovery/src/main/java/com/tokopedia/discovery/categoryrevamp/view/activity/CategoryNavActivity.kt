@@ -14,7 +14,6 @@ import android.view.ViewTreeObserver
 import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.R
@@ -32,7 +31,7 @@ import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigation
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CatalogNavViewModel
 import com.tokopedia.discovery.categoryrevamp.viewmodel.CategoryNavViewModel
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener
@@ -68,14 +67,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
     override fun launchFilterBottomSheet() {
         bottomSheetFilterView?.launchFilterBottomSheet()
-    }
-
-    override fun closeFilterBottomSheet() {
-        bottomSheetFilterView?.closeView()
-    }
-
-    override fun isBottomSheetShown(): Boolean {
-        return bottomSheetFilterView?.isBottomSheetShown() ?: false
     }
 
     private var categorySectionPagerAdapter: CategoryNavigationPagerAdapter? = null
@@ -282,14 +273,6 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
 
             override fun getActivity(): AppCompatActivity {
                 return this@CategoryNavActivity
-            }
-
-            override fun isSearchShown(): Boolean {
-                return false
-            }
-
-            override fun hideKeyboard() {
-                KeyboardHandler.hideSoftKeyboard(this@CategoryNavActivity)
             }
         })
     }

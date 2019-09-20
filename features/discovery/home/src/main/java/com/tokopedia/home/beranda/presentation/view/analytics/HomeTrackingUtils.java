@@ -7,8 +7,7 @@ import com.tokopedia.analytics.firebase.FirebaseEvent;
 import com.tokopedia.analytics.firebase.FirebaseParams;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -213,17 +212,6 @@ public class HomeTrackingUtils {
         Map<String, Object> map = new HashMap<>();
         map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, landingScreen);
         sendEventToAnalytics(context, FirebaseEvent.Home.HOMEPAGE_SEARCH_ICON_CLICKED, map);
-    }
-
-    public static void homepageRecommedationClicked(Context context,
-                                                    InspirationProductViewModel model) {
-        Map<String, Object> map = new HashMap<>();
-        map.put(FirebaseParams.Home.PRODUCT_ID, model.getProductId());
-        map.put(FirebaseParams.Home.PRODUCT_NAME, model.getName());
-        map.put(FirebaseParams.Home.PRODUCT_LIST_NAME, HOMERECOMMENDATION);
-        map.put(FirebaseParams.Home.PRODUCT_CATEGORY, model.getRecommedationType());
-        map.put(FirebaseParams.Home.LANDING_SCREEN_NAME, PRODUCTDETAILSSCREEN);
-        sendEventToAnalytics(context, FirebaseEvent.Home.HOMEPAGE_RECOMMEDATION_CLICKED, map);
     }
 
     public static void homepageHamburgerClick(Context context) {

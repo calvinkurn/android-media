@@ -1,16 +1,11 @@
 package com.tokopedia.filter.newdynamicfilter.analytics;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.trackingoptimizer.TrackingQueue;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**
@@ -77,6 +72,15 @@ public class FilterTracking {
                 FilterEventTracking.Event.SEARCH_RESULT,
                 trackingPrefix + " - " + FilterEventTracking.Category.FILTER_PRODUCT,
                 FilterEventTracking.Action.APPLY_FILTER.toLowerCase() + " - " + screenName,
+                generateFilterEventLabel(selectedFilter)
+        ));
+    }
+
+    public static void eventSearchResultFilter(String trackingPrefix, String screenName, Map<String, String> selectedFilter) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                FilterEventTracking.Event.SEARCH_RESULT,
+                trackingPrefix + " - " + FilterEventTracking.Category.FILTER_PRODUCT,
+                FilterEventTracking.Action.FILTER.toLowerCase() + " - " + screenName,
                 generateFilterEventLabel(selectedFilter)
         ));
     }
