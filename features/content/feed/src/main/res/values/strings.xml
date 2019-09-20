@@ -84,4 +84,7 @@
     <string name="create_post_as">Buat Sebagai</string>
     <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
     <string name="feed_create_post_shop">Buat Post Toko</string>
+
+
+    <string name="feed_onboarding_name_format">Hai, %s</string>
 </resources>

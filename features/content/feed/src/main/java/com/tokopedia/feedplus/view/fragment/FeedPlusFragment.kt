@@ -113,6 +113,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAd
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
@@ -147,7 +148,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
-        HighlightAdapter.HighlightListener {
+        HighlightAdapter.HighlightListener,
+        OnboardingAdapter.InterestPickItemListener{
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -1510,6 +1512,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
+    }
+
+    override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+
+    }
+
+    override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+
+    }
+
+    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
+
     }
 
     private fun doShare(body: String, title: String) {

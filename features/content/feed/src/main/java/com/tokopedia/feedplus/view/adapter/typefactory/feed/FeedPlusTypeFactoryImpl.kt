@@ -28,6 +28,7 @@ import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder
+import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
@@ -73,6 +74,7 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
     private val videoViewListener: VideoViewHolder.VideoViewListener
     private val feedMultipleImageViewListener: FeedMultipleImageView.FeedMultipleImageViewListener
     private val highlightListener: HighlightAdapter.HighlightListener
+    private val interestPickItemListener: OnboardingAdapter.InterestPickItemListener
 
     init {
         this.viewListener = context
@@ -89,6 +91,7 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         this.videoViewListener = context
         this.feedMultipleImageViewListener = context
         this.highlightListener = context
+        this.interestPickItemListener = context
     }
 
     override fun type(emptyModel: EmptyModel): Int {
@@ -192,7 +195,7 @@ class FeedPlusTypeFactoryImpl(context: FeedPlusFragment,
         } else if (type == TopadsShopViewHolder.LAYOUT) {
             viewHolder = TopadsShopViewHolder(view, topadsShopListener, cardTitleListener)
         } else if (type == OnboardingViewHolder.LAYOUT){
-            viewHolder = OnboardingViewHolder(view)
+            viewHolder = OnboardingViewHolder(view, userSession, interestPickItemListener)
         } else
             viewHolder = super.createViewHolder(view, type)
         return viewHolder
