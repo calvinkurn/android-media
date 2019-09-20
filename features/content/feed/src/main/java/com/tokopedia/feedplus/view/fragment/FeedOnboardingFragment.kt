@@ -11,8 +11,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kotlin.extensions.view.hideLoading
@@ -25,11 +27,15 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 2019-09-20.
  */
-class FeedOnboardingFragment : BaseDaggerFragment() {
+class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestPickItemListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
+
+    private val adapter : OnboardingAdapter by lazy {
+        OnboardingAdapter(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +62,7 @@ class FeedOnboardingFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         loadData()
     }
 
@@ -68,6 +75,19 @@ class FeedOnboardingFragment : BaseDaggerFragment() {
                     .build()
                     .inject(this)
         }
+    }
+
+    override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+    }
+
+    override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+    }
+
+    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
+    }
+
+    private fun initView() {
+        interestList.adapter = adapter
     }
 
     private fun loadData() {
@@ -84,7 +104,7 @@ class FeedOnboardingFragment : BaseDaggerFragment() {
     }
 
     private fun onSuccessGetData(data: OnboardingViewModel) {
-
+        adapter.setList(data.dataList)
     }
 
     private fun onErrorGetData(throwable: Throwable) {
