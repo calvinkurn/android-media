@@ -77,7 +77,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toEndOf="@id/sp_contact_phone_code"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="@dimen/dp_2"
+                android:layout_marginTop="@dimen/dp_4"
                 >
 
                 <android.support.v7.widget.AppCompatAutoCompleteTextView
