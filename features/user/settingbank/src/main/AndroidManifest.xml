@@ -1,13 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.settingbank">
+          package="com.tokopedia.settingbank">
 
     <application
         android:allowBackup="true"
-        android:hasCode="false"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        tools:replace="android:hasCode">
+        android:supportsRtl="true">
 
         <activity
             android:name=".banklist.view.activity.SettingBankActivity"

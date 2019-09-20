@@ -1,14 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.tokopedia.profilecompletion">
+          package="com.tokopedia.profilecompletion">
 
 
     <application
         android:allowBackup="true"
-        android:hasCode="true"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        tools:replace="android:hasCode">
+        android:supportsRtl="true">
 
         <activity
             android:name=".settingprofile.view.activity.SettingProfileActivity"
