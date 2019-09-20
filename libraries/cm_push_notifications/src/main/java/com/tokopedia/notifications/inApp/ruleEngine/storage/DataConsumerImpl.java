@@ -18,4 +18,10 @@ public class DataConsumerImpl implements DataConsumer {
     public void dataShown(long id, long newSt){
         RepositoryManager.getInstance().getStorageProvider().updateInAppDataFreq(id, newSt);
     }
+
+    @Override
+    public void inflationError(long id) {
+        RepositoryManager.getInstance().getStorageProvider().deleteRecord(id);
+
+    }
 }

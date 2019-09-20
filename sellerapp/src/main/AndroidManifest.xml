@@ -65,6 +65,10 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="tkpd" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_sellerapp_dashboard"/>
             </intent-filter>
             <meta-data
                 android:name="APPS_HOME"

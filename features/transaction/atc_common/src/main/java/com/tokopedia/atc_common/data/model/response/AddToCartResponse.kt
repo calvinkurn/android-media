@@ -18,5 +18,9 @@ data class AddToCartResponse(
 
         @SerializedName("data")
         @Expose
-        val data: DataResponse = DataResponse()
+        val data: DataResponse = DataResponse(),
+
+        @SerializedName("error_reporter")
+        @Expose
+        val errorReporter: ErrorReporterResponse = ErrorReporterResponse()
 )

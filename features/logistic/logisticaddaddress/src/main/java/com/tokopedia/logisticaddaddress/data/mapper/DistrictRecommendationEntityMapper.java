@@ -49,7 +49,7 @@ public class DistrictRecommendationEntityMapper {
         if (entity != null) {
             token = new Token();
             token.setDistrictRecommendation(entity.getDistrictRecommendation());
-            token.setUnixTime(entity.getUnixTime());
+            token.setUt(entity.getUnixTime());
         }
         return token;
     }

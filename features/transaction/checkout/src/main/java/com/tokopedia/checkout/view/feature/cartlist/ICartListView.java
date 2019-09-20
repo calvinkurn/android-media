@@ -15,6 +15,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData;
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
 import java.util.List;
@@ -97,7 +98,7 @@ public interface ICartListView extends IBaseView {
 
     void renderWishlist(List<Wishlist> wishlist);
 
-    void renderRecommendation(List<RecommendationItem> recommendationItems);
+    void renderRecommendation(RecommendationWidget recommendationWidget);
 
     void showItemLoading();
 

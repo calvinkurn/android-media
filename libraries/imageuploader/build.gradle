@@ -16,7 +16,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
@@ -31,3 +31,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 }
+
+project.ext {
+    artifactId = 'image-uploader'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "libraryimageuploader-release"
+}
+
+apply from: '../../publish_local.gradle'

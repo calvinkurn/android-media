@@ -5,4 +5,4 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginBottom="@dimen/dynamic_filter_item_separator_height" />
+    android:layout_marginBottom="@dimen/dp_16" />

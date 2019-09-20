@@ -29,6 +29,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -80,6 +81,10 @@ public interface ShipmentContract {
         void renderCheckoutCartSuccess(CheckoutData checkoutData);
 
         void renderCheckoutCartError(String message);
+
+        void renderCheckoutCartErrorReporter(CheckoutData checkoutData);
+
+        void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
 
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
@@ -364,6 +369,9 @@ public interface ShipmentContract {
 
         boolean isIneligbilePromoDialogEnabled();
 
+        void processSubmitHelpTicket(CheckoutData checkoutData);
+
         CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, CheckPromoParam checkPromoParam, int isDonation, String leasingId);
     }
+
 }

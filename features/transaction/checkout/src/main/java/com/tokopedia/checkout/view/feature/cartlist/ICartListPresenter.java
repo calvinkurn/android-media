@@ -85,13 +85,13 @@ public interface ICartListPresenter {
 
     void processGetWishlistData();
 
-    void processGetRecommendationData(int page);
+    void processGetRecommendationData(int page, List<String> allProductIds);
 
     void processAddToCart(Object productModel);
 
-    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData, AddToCartDataModel addToCartDataResponseModel);
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData, AddToCartDataModel addToCartDataResponseModel, boolean isCartEmpty);
 
-    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData, AddToCartDataModel addToCartDataResponseModel);
+    Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData, AddToCartDataModel addToCartDataResponseModel, boolean isCartEmpty);
 
     Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecommendationItemHolderData cartRecommendationItemHolderData, AddToCartDataModel addToCartDataResponseModel, boolean isCartEmpty);
 
