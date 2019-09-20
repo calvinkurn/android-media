@@ -113,7 +113,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAd
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
@@ -146,7 +148,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
-        HighlightAdapter.HighlightListener {
+        HighlightAdapter.HighlightListener,
+        OnboardingAdapter.InterestPickItemListener{
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -621,8 +624,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (!data.isEnableOnboarding) {
             presenter.fetchFirstPage()
         } else {
+            finishLoading()
+            clearData()
+            val feedOnboardingData: MutableList<OnboardingDataViewModel> = ArrayList()
+            feedOnboardingData.addAll(data.dataList.take(5))
+            feedOnboardingData.add(getOnboardingDataSeeAll())
+            data.dataList = feedOnboardingData
             adapter.addItem(data)
         }
+    }
+
+    private fun getOnboardingDataSeeAll(): OnboardingDataViewModel {
+        return OnboardingDataViewModel(
+                0,
+                OnboardingDataViewModel.defaultLihatSemuaText,
+                "",
+                false,
+                true)
     }
 
     fun scrollToTop() {
@@ -1494,6 +1512,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
+    }
+
+    override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+
+    }
+
+    override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
+
+    }
+
+    override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
+
     }
 
     private fun doShare(body: String, title: String) {

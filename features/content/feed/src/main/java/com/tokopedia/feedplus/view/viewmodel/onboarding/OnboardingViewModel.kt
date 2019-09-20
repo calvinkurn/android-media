@@ -14,7 +14,7 @@ data class OnboardingViewModel (
         val titleFull: String = "",
         val instruction: String = "",
         val buttonCta: String = "",
-        val dataList : List<OnboardingDataViewModel> = ArrayList()
+        var dataList : List<OnboardingDataViewModel> = ArrayList()
 ) : Visitable<FeedPlusTypeFactory> {
     override fun type(typeFactory: FeedPlusTypeFactory): Int {
         return typeFactory.type(this)
