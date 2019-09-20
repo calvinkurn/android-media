@@ -79,9 +79,9 @@ class StickyLoginView : BaseCustomView {
                     text += " $textHighlight"
                     spannable = SpannableString(text)
                     if (highlightColor != -1) {
-                        spannable!!.setSpan(ForegroundColorSpan(highlightColor), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        spannable.run { this?.setSpan(ForegroundColorSpan(highlightColor), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) }
                     }
-                    spannable!!.setSpan(StyleSpan(Typeface.BOLD), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannable.run { this?.setSpan(StyleSpan(Typeface.BOLD), text.length - textHighlight.length, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE) }
                 }
             }
 
@@ -158,7 +158,7 @@ class StickyLoginView : BaseCustomView {
     }
 
     fun getLocation(): IntArray? {
-        if(isShowing()) {
+        if (isShowing()) {
             val location = IntArray(2)
             this.getLocationOnScreen(location)
             return location
@@ -171,7 +171,7 @@ class StickyLoginView : BaseCustomView {
     }
 
     private fun getLastSeen(page: StickyLoginConstant.Page): Long {
-        val lastSeen = when(page) {
+        val lastSeen = when (page) {
             StickyLoginConstant.Page.HOME -> {
                 getSharedPreference().getLong(KEY_LAST_SEEN_AT_HOME, 0)
             }
@@ -189,7 +189,7 @@ class StickyLoginView : BaseCustomView {
     private fun setLastSeen(page: StickyLoginConstant.Page, epoch: Long) {
         val inMinute = TimeUnit.MILLISECONDS.toMinutes(epoch)
         val sharedPref = getSharedPreference()
-        when(page) {
+        when (page) {
             StickyLoginConstant.Page.HOME -> {
                 sharedPref.edit().putLong(KEY_LAST_SEEN_AT_HOME, inMinute).apply()
             }
