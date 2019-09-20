@@ -43,13 +43,15 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.tokopedia.design.image.RoundedCornerImageView
+                <ImageView
                     android:id="@+id/content_image"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
                     android:layout_gravity="center"
                     android:layout_marginBottom="@dimen/dp_16"
-                    android:src="@color/colorAccent" />
+                    tools:src="@tools:sample/avatars"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/content_text"
@@ -76,7 +78,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_close"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="heading_1"
+            app:typographyType="heading_3"
             tools:text="This is Really Long Tittle That Make The Screen Go Wide" />
 
     </android.support.constraint.ConstraintLayout>

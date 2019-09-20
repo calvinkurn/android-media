@@ -13,7 +13,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.design.image.RoundedCornerImageView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
@@ -27,7 +26,7 @@ import kotlinx.android.synthetic.main.fragment_notification_update_longer.view.*
  */
 class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
 
-    lateinit var contentImageView: RoundedCornerImageView
+    lateinit var contentImageView: ImageView
     lateinit var contentTextView: Typography
     lateinit var contentTitleView: Typography
     lateinit var ctaButton: UnifyButton
@@ -54,7 +53,6 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             closeButton = findViewById(R.id.iv_close)
         }
     }
-
 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -123,7 +121,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         val paddingText = contentTextView.paddingBottom
         val titleHeight = contentTitleView.height
         val totalPaddingBottom = paddingText + titleHeight
-        with (contentTextView) {
+        with(contentTextView) {
             setPadding(paddingLeft, paddingTop, paddingRight, totalPaddingBottom)
         }
     }
