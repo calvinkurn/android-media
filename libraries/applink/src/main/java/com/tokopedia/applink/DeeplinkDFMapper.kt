@@ -9,6 +9,7 @@ import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.SETTING_BANK
@@ -42,6 +43,7 @@ object DeeplinkDFMapper {
     private val SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
     private val IMAGE_SEARCH = "image_search"
+    private val SIMILAR_SEARCH = "similarsearch"
     private val SHOP_OPEN_CUSTOMERAPP = "shop_open"
     private val HOTEL_TRAVEL = "hotel_travel"
     private val DIGITAL_TOPUP = "digital_topup"
@@ -60,6 +62,7 @@ object DeeplinkDFMapper {
             DFP({ it.startsWith(TELCO_DIGITAL) }, DIGITAL_TOPUP, R.string.digital_topup_title),
             DFP({ it.startsWith(OPEN_SHOP) }, SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop),
             DFP({ it.startsWith(SHOP_SETTINGS_BASE) }, SHOP_SETTINGS_CUSTOMERAPP, R.string.shop_settings_title),
+            DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, SIMILAR_SEARCH, R.string.title_similar_search),
             DFP({ it.startsWith(IMAGE_SEARCH_RESULT) }, IMAGE_SEARCH, R.string.title_image_search),
             DFP({ it.startsWith(SETTING_PROFILE) }, USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title),
             DFP({ it.startsWith(SETTING_BANK) }, USER_SETTING_BANK, R.string.applink_setting_bank_title),

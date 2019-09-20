@@ -13,7 +13,7 @@ public class TokenMapper {
 
     public Token reverseTokenModel(com.tokopedia.logisticdata.data.entity.address.Token token) {
         Token tokenModel = new Token();
-        tokenModel.setUnixTime(token.getUt());
+        tokenModel.setUt(token.getUt());
         tokenModel.setDistrictRecommendation(token.getDistrictRecommendation());
 
         return tokenModel;
@@ -21,7 +21,7 @@ public class TokenMapper {
 
     public com.tokopedia.logisticdata.data.entity.address.Token convertTokenModel(Token token) {
         com.tokopedia.logisticdata.data.entity.address.Token result = new com.tokopedia.logisticdata.data.entity.address.Token();
-        result.setUt(token.getUnixTime());
+        result.setUt(token.getUt());
         result.setDistrictRecommendation(token.getDistrictRecommendation());
 
         return result;

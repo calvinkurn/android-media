@@ -31,6 +31,10 @@ public class TradeInParams implements Parcelable {
     private boolean isPreorder;
     @SerializedName("IsOnCampaign")
     private boolean isOnCampaign;
+    @SerializedName("TradeInType")
+    private int tradeInType;
+    @SerializedName("ModelId")
+    private int modelID;
 
     private String productName;
 
@@ -119,6 +123,14 @@ public class TradeInParams implements Parcelable {
         this.isEligible = isEligible;
     }
 
+    public int getModelID() {
+        return modelID;
+    }
+
+    public void setModelID(int modelID) {
+        this.modelID = modelID;
+    }
+
     public String getProductName() {
         return productName;
     }
@@ -141,6 +153,14 @@ public class TradeInParams implements Parcelable {
 
     public void setOnCampaign(boolean onCampaign) {
         isOnCampaign = onCampaign;
+    }
+
+    public int getTradeInType() {
+        return tradeInType;
+    }
+
+    public void setTradeInType(int tradeInType) {
+        this.tradeInType = tradeInType;
     }
 
     public TradeInParams() {
