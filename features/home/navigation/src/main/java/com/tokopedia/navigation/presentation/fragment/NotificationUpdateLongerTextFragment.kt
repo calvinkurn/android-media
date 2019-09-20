@@ -91,9 +91,9 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupViewModel(savedInstanceState)
         setupContentPadding()
+        setupCtaButton()
         contentTitleView.text = contentTitle
         contentTextView.text = contentText
-        ctaButton.text = btnText
 
         if (contentImageUrl.isNotBlank()) {
             ImageHandler.loadImage2(contentImageView, contentImageUrl, R.drawable.ic_loading_toped_new)
@@ -112,6 +112,13 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
         }
     }
 
+    private fun setupCtaButton() {
+        if (btnText.isEmpty()) {
+            btnText = DEFAULT_CTA_BUTTON
+        }
+        ctaButton.text = btnText
+    }
+
     private fun setupContentPadding() {
         val paddingText = contentTextView.paddingBottom
         val titleHeight = contentTitleView.height
@@ -127,7 +134,7 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             contentImageUrl = getParamString(NotificationUpdateFragment.PARAM_CONTENT_IMAGE, arguments, null, "")
             contentImageViewType = getParamString(NotificationUpdateFragment.PARAM_CONTENT_IMAGE_TYPE, arguments, null, "")
             contentTitle = getParamString(NotificationUpdateFragment.PARAM_CONTENT_TITLE, arguments, null, "")
-            btnText = getParamString(NotificationUpdateFragment.PARAM_BUTTON_TEXT, arguments, null, "")
+            btnText = getParamString(NotificationUpdateFragment.PARAM_BUTTON_TEXT, arguments, null, DEFAULT_CTA_BUTTON)
             appLink = getParamString(NotificationUpdateFragment.PARAM_CTA_APPLINK, arguments, null, "")
         }
     }
@@ -139,6 +146,8 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
             fragment.arguments = bundle
             return fragment
         }
+
+        val DEFAULT_CTA_BUTTON = "Klik disini"
 
     }
 }
