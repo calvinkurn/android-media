@@ -31,7 +31,7 @@ class BannerImageViewHolder(itemView: View,
         ImageHandler.loadGifFromUrl(bannerImageView, channel.banner.imageUrl, R.drawable.bannerview_image_placeholder)
         bannerImageView.setOnClickListener {
             RouteManager.route(it.context, channel.banner.applink)
-            HomePageTracking.eventEnhancedClickDynamicChannelHomePage(itemView.context, channel.enhanceClickBannerGif)
+            HomePageTracking.eventEnhanceClickBannerGif(itemView.context, channel)
         }
     }
 

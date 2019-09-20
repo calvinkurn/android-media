@@ -96,6 +96,7 @@ public class HomePageTracking {
     public static final String IMPRESSIONS = "impressions";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK = "product recommendation click";
     public static final String EVENT_LEGO_BANNER_IMPRESSION = "lego banner gif impression";
+    public static final String EVENT_LEGO_BANNER_CLICK = "lego banner gif click";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK_NON_LOGIN = "product recommendation click - non login";
     public static final String CLICK = "click";
     public static final String ACTION_FIELD = "actionField";
@@ -104,6 +105,7 @@ public class HomePageTracking {
     public static final String LIST_CLICK_FEED_HOME_NON_LOGIN = "/ - p2 - non login - %s - rekomendasi untuk anda - %s";
     public static final String PRODUCTS = "products";
     public static final String PRODUCT_CLICK = "productClick";
+    public static final String PROMOTIONS_NAME = "/ - p1 - lego banner gif - %s";
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION = "add wishlist on product recommendation";
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN = "add wishlist on product recommendation - non login";
     public static final String ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "remove wishlist on product recommendation";
@@ -1006,11 +1008,40 @@ public class HomePageTracking {
                                     PROMO_VIEW, DataLayer.mapOf(
                                             PROMOTIONS, DataLayer.listOf(
                                                     DataLayer.mapOf(
-                                                            "id", bannerChannel.getBanner().getId(),
-                                                            "name", "/ - p1 - lego banner gif - " + bannerChannel.getHeader().getName(),
-                                                            "creative", bannerChannel.getBanner().getAttribution(),
-                                                            "creative_url", "tokopedia.com/creative.png",
-                                                            "position", String.valueOf(1)
+                                                            FIELD_ID, bannerChannel.getBanner().getId(),
+                                                            FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
+                                                            FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
+                                                            FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
+                                                            FIELD_POSITION, String.valueOf(1)
+                                                    )
+                                            )
+                                    )
+
+                            )
+                    )
+            );
+        }
+    }
+
+    public static void eventEnhanceClickBannerGif(Context context, DynamicHomeChannel.Channels bannerChannel) {
+        ContextAnalytics tracker = getTracker(context);
+        if (tracker != null) {
+            tracker.sendEnhanceEcommerceEvent(
+                    DataLayer.mapOf(
+                            EVENT, PROMO_CLICK,
+                            EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                            EVENT_ACTION, EVENT_LEGO_BANNER_CLICK,
+                            EVENT_LABEL, bannerChannel.getName(),
+                            CHANNEL_ID, bannerChannel.getId(),
+                            ECOMMERCE, DataLayer.mapOf(
+                                    PROMO_CLICK, DataLayer.mapOf(
+                                            PROMOTIONS, DataLayer.listOf(
+                                                    DataLayer.mapOf(
+                                                            FIELD_ID, bannerChannel.getBanner().getId(),
+                                                            FIELD_NAME, String.format(PROMOTIONS_NAME, bannerChannel.getHeader().getName()),
+                                                            FIELD_CREATIVE, bannerChannel.getBanner().getAttribution(),
+                                                            FIELD_CREATIVE_URL, bannerChannel.getBanner().getImageUrl(),
+                                                            FIELD_POSITION, String.valueOf(1)
                                                     )
                                             )
                                     )
@@ -1198,6 +1229,11 @@ public class HomePageTracking {
         );
     }
 
+    /**
+     * Position always 1 cause just 1 gif dc
+     * @param channel
+     * @return
+     */
     public static HashMap<String, Object> getEnhanceImpressionPromoGifBannerDC(DynamicHomeChannel.Channels channel){
         return (HashMap<String, Object>) DataLayer.mapOf(
                 EVENT, PROMO_VIEW_IRIS,
@@ -1209,11 +1245,11 @@ public class HomePageTracking {
                         PROMO_VIEW, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                "id", channel.getBanner().getId(),
-                                                "name", "/ - p1 - lego banner gif - " + channel.getHeader().getName(),
-                                                "creative", channel.getBanner().getAttribution(),
-                                                "creative_url", "tokopedia.com/creative.png",
-                                                "position", String.valueOf(1)
+                                                FIELD_ID, channel.getBanner().getId(),
+                                                FIELD_NAME, String.format(PROMOTIONS_NAME, channel.getHeader().getName()),
+                                                FIELD_CREATIVE, channel.getBanner().getAttribution(),
+                                                FIELD_CREATIVE_URL, channel.getBanner().getImageUrl(),
+                                                FIELD_POSITION, String.valueOf(1)
                                         )
                                 )
                         )

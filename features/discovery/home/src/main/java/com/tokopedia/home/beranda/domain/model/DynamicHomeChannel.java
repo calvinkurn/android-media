@@ -643,33 +643,6 @@ public class DynamicHomeChannel {
             );
         }
 
-
-        /**
-         * Banner always in position 1 because only 1 banner shown
-         */
-        public Map<String, Object> getEnhanceClickBannerGif() {
-            return DataLayer.mapOf(
-                    "event", "promoClick",
-                    "eventCategory", "homepage",
-                    "eventAction", "lego banner gif click",
-                    "eventLabel", banner.getAttribution(),
-                    "channelId", id,
-                    "ecommerce", DataLayer.mapOf(
-                            "promoClick", DataLayer.mapOf(
-                                    "promotions", DataLayer.listOf(
-                                            DataLayer.mapOf(
-                                                    "id", banner.getId(),
-                                                    "name", "/ - p1 - dynamic channel mix - banner - "+getHeader().getName(),
-                                                    "creative", banner.getAttribution(),
-                                                    "creative_url", "tokopedia.com/creative.png",
-                                                    "position", String.valueOf(1)
-                                            )
-                                    )
-                            )
-                    )
-            );
-        }
-
         public Map<String, Object> getEnhanceClickBannerButtonChannelMix() {
             return DataLayer.mapOf(
                     "event", "promoClick",
