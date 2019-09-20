@@ -93,7 +93,7 @@ public class SplashScreen extends AppCompatActivity implements DownloadResultRec
         super.onResume();
         boolean status = GCMHandler.isPlayServicesAvailable(this);
         if(!status){
-            Timber.w("P3Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
+            Timber.w("P2Problem with PlayStore | " + Build.FINGERPRINT+" | "+  Build.MANUFACTURER + " | "
                     + Build.BRAND + " | "+Build.DEVICE+" | "+Build.PRODUCT+ " | "+Build.MODEL
                     + " | "+Build.TAGS);
         }
