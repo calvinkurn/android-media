@@ -38,7 +38,6 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     private boolean isContentAllignmentLeft;
     private int titleMaxLines;
     private OnAdapterInteractionListener interactionListener;
-    private int resourcesInt;
 
     @ColorInt
     private int contentColorValue;
@@ -56,28 +55,11 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         marginBottomDp = 0f;
         marginLeftDp = 0f;
         marginRightDp = 0f;
-        resourcesInt = R.layout.item_simple_view;
-    }
-
-    public FlightSimpleAdapter(int resources) {
-        viewModels = new ArrayList<>();
-        isArrowVisible = false;
-        isClickable = false;
-        isTitleBold = false;
-        isTitleOnly = false;
-        isContentAllignmentLeft = false;
-        isTitleHalfView = true;
-        titleMaxLines = 1;
-        marginTopDp = 0f;
-        marginBottomDp = 0f;
-        marginLeftDp = 0f;
-        marginRightDp = 0f;
-        resourcesInt = resources;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(resourcesInt, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_simple_view, parent, false);
         return new ViewHolder(view);
     }
 

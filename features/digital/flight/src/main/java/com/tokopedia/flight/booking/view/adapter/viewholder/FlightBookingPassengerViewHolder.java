@@ -114,7 +114,8 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
             }
         }
 
-        FlightSimpleAdapter adapter = new FlightSimpleAdapter(R.layout.item_flight_booking_ps_detail_view);
+        FlightSimpleAdapter adapter = new FlightSimpleAdapter();
+        adapter.setTitleHalfView(false);
         adapter.setContentAllignmentLeft(true);
         adapter.setDescriptionTextColor(itemView.getResources().getColor(R.color.font_black_secondary_54));
         LinearLayoutManager layoutManager
