@@ -85,3 +85,12 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.8.0'
     testImplementation 'org.json:json:20140107'
 }
+
+project.ext {
+    artifactId = 'iris'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "libraryiris-release"
+}
+
+apply from: '../../publish_local.gradle'

@@ -638,15 +638,10 @@ public class WishListImpl implements WishList {
     }
 
     private void onFinishedDeleteWishlist(final int position) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                wishListView.dismissProgressDialog();
-                data.remove(position);
-                wishListView.onSuccessDeleteWishlist(
-                        params.getString(QUERY, ""), position);
-            }
-        }, REMOVE_WISHLIST_ON_SUCCESS_DELAY);
+        wishListView.dismissProgressDialog();
+        data.remove(position);
+        wishListView.onSuccessDeleteWishlist(
+                params.getString(QUERY, ""), position);
     }
 
     private void setDataWishlistOnSearch(GqlWishListDataResponse gqlWishListDataResponse) {

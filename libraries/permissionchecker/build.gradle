@@ -2,5 +2,14 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
 }
+
+project.ext {
+    artifactId = 'permission-checker'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarypermissionchecker-release"
+}
+
+apply from: '../../publish_local.gradle'

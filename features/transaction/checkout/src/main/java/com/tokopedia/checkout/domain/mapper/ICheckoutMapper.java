@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import com.tokopedia.transactiondata.entity.response.checkout.CheckoutResponse;
 import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
-import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
 
 /**
  * @author anggaprasetiyo on 05/03/18.
@@ -9,5 +9,5 @@ import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataRespon
 
 public interface ICheckoutMapper {
 
-    CheckoutData convertCheckoutData(CheckoutDataResponse checkoutDataResponse);
+    CheckoutData convertCheckoutData(CheckoutResponse checkoutResponse);
 }

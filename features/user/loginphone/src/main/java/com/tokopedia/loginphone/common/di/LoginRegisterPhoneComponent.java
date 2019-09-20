@@ -7,8 +7,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.loginphone.common.analytics.LoginPhoneNumberAnalytics;
-import com.tokopedia.sessioncommon.data.GetProfileApi;
-import com.tokopedia.sessioncommon.data.MakeLoginApi;
 import com.tokopedia.sessioncommon.data.TokenApi;
 import com.tokopedia.sessioncommon.di.SessionCommonScope;
 import com.tokopedia.sessioncommon.di.SessionModule;
@@ -28,10 +26,6 @@ import retrofit2.Retrofit;
 @Component(modules = {LoginRegisterPhoneModule.class, SessionModule.class},
         dependencies = BaseAppComponent.class)
 public interface LoginRegisterPhoneComponent {
-
-    MakeLoginApi provideMakeLoginApi();
-
-    GetProfileApi provideGetProfileApi();
 
     TokenApi provideTokenApi();
 

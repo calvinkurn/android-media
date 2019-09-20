@@ -100,20 +100,20 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_setting_logistic, container, false);
-        vContent = view.findViewById(R.id.vg_content);
-        vLoading = view.findViewById(R.id.loading);
+        View view = inflater.inflate(com.tokopedia.seller.R.layout.fragment_shop_setting_logistic, container, false);
+        vContent = view.findViewById(com.tokopedia.seller.R.id.vg_content);
+        vLoading = view.findViewById(com.tokopedia.imagepicker.R.id.loading);
 
         LayoutTransition layoutTransition = ((ViewGroup) vContent).getLayoutTransition();
         layoutTransition.enableTransitionType(LayoutTransition.CHANGING);
 
-        tvMakeSurePickupLoc = view.findViewById(R.id.tv_pickup_location);
+        tvMakeSurePickupLoc = view.findViewById(com.tokopedia.seller.R.id.tv_pickup_location);
 
-        courierListViewGroup = view.findViewById(R.id.vg_courier_list);
+        courierListViewGroup = view.findViewById(com.tokopedia.seller.R.id.vg_courier_list);
         courierListViewGroup.setCourierList(null, selectedCourierServiceIdWrapper, hasPinPointLocation());
         courierListViewGroup.setOnShopCourierExpandableOptionListener(this);
 
-        View continueButton = view.findViewById(R.id.continue_button);
+        View continueButton = view.findViewById(com.tokopedia.seller.R.id.continue_button);
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +142,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
         selectedCourierServiceIdWrapper = courierListViewGroup.getSelectedCourierList();
         List<String> courierIdList = selectedCourierServiceIdWrapper.getSelectedServiceIdList();
         if (courierIdList.size() == 0) {
-            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(R.string.shop_open_error_min_1_courier_must_be_selected));
+            NetworkErrorHelper.showCloseSnackbar(getActivity(), getString(com.tokopedia.seller.R.string.shop_open_error_min_1_courier_must_be_selected));
             return false;
         }
         return true;
@@ -154,8 +154,8 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     }
 
     private void setPickupLocationText() {
-        SpannableString spannableString = new SpannableString(getString(R.string.openshop_make_sure_pickup_location));
-        final String locationPickUpString = getString(R.string.label_pickup_location);
+        SpannableString spannableString = new SpannableString(getString(com.tokopedia.seller.R.string.openshop_make_sure_pickup_location));
+        final String locationPickUpString = getString(com.tokopedia.seller.R.string.label_pickup_location);
         ClickableSpan clickablePickup = new ClickableSpan() {
             @Override
             public void onClick(View view) {
@@ -167,7 +167,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
                 locationPickUpStringIndex, locationPickUpStringIndex + locationPickUpString.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         spannableString.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
-                R.color.tkpd_main_green)), locationPickUpStringIndex,
+                com.tokopedia.design.R.color.tkpd_main_green)), locationPickUpStringIndex,
                 locationPickUpStringIndex + locationPickUpString.length(),
                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvMakeSurePickupLoc.setMovementMethod(LinkMovementMethod.getInstance());
@@ -241,7 +241,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     private void showSubmitLoading() {
         if (tkpdProgressDialog == null) {
             tkpdProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS,
-                    getString(R.string.title_loading));
+                    getString(com.tokopedia.abstraction.R.string.title_loading));
         }
         tkpdProgressDialog.showDialog();
     }
@@ -250,26 +250,26 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public void onDisabledHeaderClicked(Courier courier) {
         AlertDialog.Builder alertDialogBuilder;
         if (courier.isExpressCourierId()) {
-            alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.shop_open_error_courier_cannot_activate_pinpoint_title))
-                    .setMessage(getString(R.string.shop_open_error_courier_cannot_activate_pinpoint_desc))
-                    .setNegativeButton(getString(R.string.label_exit), new DialogInterface.OnClickListener() {
+            alertDialogBuilder = new AlertDialog.Builder(getActivity(), com.tokopedia.seller.R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(com.tokopedia.seller.R.string.shop_open_error_courier_cannot_activate_pinpoint_title))
+                    .setMessage(getString(com.tokopedia.seller.R.string.shop_open_error_courier_cannot_activate_pinpoint_desc))
+                    .setNegativeButton(getString(com.tokopedia.seller.R.string.label_exit), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // no op, just dismiss
                         }
                     })
-                    .setPositiveButton(getString(R.string.select_pickup_location), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(com.tokopedia.seller.R.string.select_pickup_location), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             goToPickupLocation();
                         }
                     });
         } else {
-            alertDialogBuilder = new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                    .setTitle(getString(R.string.shop_open_error_courier_cannot_activate_title))
-                    .setMessage(getString(R.string.shop_open_error_courier_cannot_activate_desc))
-                    .setPositiveButton(getString(R.string.close), new DialogInterface.OnClickListener() {
+            alertDialogBuilder = new AlertDialog.Builder(getActivity(), com.tokopedia.design.R.style.AppCompatAlertDialogStyle)
+                    .setTitle(getString(com.tokopedia.seller.R.string.shop_open_error_courier_cannot_activate_title))
+                    .setMessage(getString(com.tokopedia.seller.R.string.shop_open_error_courier_cannot_activate_desc))
+                    .setPositiveButton(getString(com.tokopedia.abstraction.R.string.close), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             // no op, just dismiss
@@ -288,10 +288,10 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
     public void onCourierServiceInfoIconClicked(String title, String description) {
         trackingOpenShop.eventOpenShopShippingServices(title);
         BottomSheetDialog dialog = new BottomSheetDialog(getActivity());
-        dialog.setContentView(R.layout.shipping_info_bottom_sheet);
+        dialog.setContentView(com.tokopedia.seller.R.layout.shipping_info_bottom_sheet);
 
-        TextView tvInfo = dialog.findViewById(R.id.courier_information);
-        TextView tvServiceName = dialog.findViewById(R.id.courier_name_service);
+        TextView tvInfo = dialog.findViewById(com.tokopedia.seller.R.id.courier_information);
+        TextView tvServiceName = dialog.findViewById(com.tokopedia.seller.R.id.courier_name_service);
 
         tvServiceName.setText(title);
         tvInfo.setText(description);
@@ -349,7 +349,7 @@ public class ShopOpenMandatoryLogisticFragment extends BaseDaggerFragment implem
 
     private void showMessageError(String messsage) {
         NetworkErrorHelper.showEmptyState(getActivity(),
-                getView().findViewById(R.id.vg_root), messsage,
+                getView().findViewById(com.tokopedia.seller.R.id.vg_root), messsage,
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {

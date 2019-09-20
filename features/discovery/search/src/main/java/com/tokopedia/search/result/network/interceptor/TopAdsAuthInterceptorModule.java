@@ -3,7 +3,7 @@ package com.tokopedia.search.result.network.interceptor;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.user.session.UserSessionInterface;
 

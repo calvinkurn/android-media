@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'shop-settings'
-    groupId = 'com.tokopedia.shop'
-    versionName = "${tkpdShopVersion}"
-    artifactName ="shop_settings-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -25,9 +18,9 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
@@ -54,6 +47,13 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+}
+
+project.ext {
+    artifactId = 'shop-settings'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="merchantshopsettings-release"
 }
 
 apply from: '../../../publish_local.gradle'

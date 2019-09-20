@@ -16,20 +16,13 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'digital_deals'
-    groupId = 'com.tokopedia.digital_deals'
-    versionName = "${tkpdDealsVersion}"
-    artifactName ="digital_deals-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.omsApi)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.oms)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.applink)
@@ -54,9 +47,18 @@ dependencies {
     }
 
     implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.components
 
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 }
+
+project.ext {
+    artifactId = 'deals'
+    groupId = 'com.tokopedia.digital'
+    versionName = "1.0.0"
+    artifactName ="digitaldeals-release"
+}
+
 apply from: '../../../publish_local.gradle'

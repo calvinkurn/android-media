@@ -12,11 +12,9 @@ import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_MSISDN
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_OTP_CODE
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_PHONE
-import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_MSISDN
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_OTP_CODE
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_PHONE
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

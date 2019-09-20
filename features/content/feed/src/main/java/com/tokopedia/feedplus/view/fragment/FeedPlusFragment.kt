@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.support.annotation.RestrictTo
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -17,9 +16,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
-import android.widget.FrameLayout
-import android.widget.TextView
 import android.widget.Toast
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -29,13 +25,13 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
@@ -95,7 +91,6 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
-import com.tokopedia.kolcommon.data.pojo.Author
 import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -109,8 +104,9 @@ import java.util.ArrayList
 
 import javax.inject.Inject
 
-import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.kol.common.util.createBottomMenu
@@ -118,6 +114,7 @@ import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
  * @author by nisie on 5/15/17.
@@ -171,10 +168,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     internal lateinit var postTagAnalytics: PostTagAnalytics
 
     @Inject
-    internal lateinit var userSession: UserSessionInterface
+    internal lateinit var feedAnalytics: FeedAnalyticTracker
 
-    val isMainViewVisible: Boolean
-        get() = userVisibleHint
+    @Inject
+    internal lateinit var userSession: UserSessionInterface
 
     private val userIdInt: Int
         get() {
@@ -206,11 +203,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         initVar()
         retainInstance = true
-    }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
     }
 
     private fun initVar() {
@@ -381,7 +373,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>, whitelistViewModel: WhitelistViewModel?) {
+    override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>) {
         trackFeedImpression(listFeed)
 
         adapter.setList(listFeed)
@@ -619,6 +611,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
         unRegisterNewFeedReceiver()
+        feedAnalytics.sendPendingAnalytics()
     }
 
     private fun registerNewFeedReceiver() {
@@ -784,6 +777,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
             menus.show()
         }
+    }
+
+    private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
+        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        dialog.setTitle(getString(R.string.feed_delete_post))
+        dialog.setDesc(getString(R.string.feed_after_delete_cant))
+        dialog.setBtnOk(getString(R.string.action_delete))
+        dialog.setBtnCancel(getString(R.string.cancel))
+        dialog.setOnOkClickListener {
+            presenter.deletePost(id, rowNumber)
+            dialog.dismiss()
+        }
+        dialog.setOnCancelClickListener { dialog.dismiss() }
+        return dialog
     }
 
     override fun onGoToLink(link: String) {
@@ -1136,7 +1143,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                              id: String, type: String,
                                              isFollow: Boolean) {
         if (type == FollowCta.AUTHOR_USER) {
-            val userIdInt = userIdInt
+            val userIdInt = id.toIntOrZero()
 
             if (isFollow) {
                 onUnfollowKolFromRecommendationClicked(positionInFeed, userIdInt, adapterPosition)
@@ -1204,7 +1211,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 
@@ -1218,7 +1225,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                      isFollow: Boolean) {
         if (getUserSession().isLoggedIn) {
             if (type == FollowCta.AUTHOR_USER) {
-                val userIdInt = userIdInt
+                val userIdInt = id.toIntOrZero()
 
                 if (isFollow) {
                     onUnfollowKolClicked(positionInFeed, userIdInt)
@@ -1249,7 +1256,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             val menus = createBottomMenu(context!!, deletable, reportable, false, object : PostMenuListener {
                 override fun onDeleteClicked() {
-
+                    createDeleteDialog(positionInFeed, postId).show()
                 }
 
                 override fun onReportClick() {
@@ -1350,7 +1357,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 
@@ -1400,6 +1407,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onHashtagClicked(hashtagText: String, trackingPostModel: TrackingPostModel) {
+        feedAnalytics.eventTimelineClickHashtag(
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType,
+                hashtagText
+        )
+    }
+
+    override fun onReadMoreClicked(trackingPostModel: TrackingPostModel) {
+        feedAnalytics.eventTimelineClickReadMore(
+                trackingPostModel.postId.toString(),
+                trackingPostModel.activityName,
+                trackingPostModel.mediaType
+        )
+    }
+
     override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: Int,
                                  redirectLink: String) {
         onGoToLink(redirectLink)
@@ -1445,6 +1469,28 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
+    }
+
+    override fun onSuccessDeletePost(rowNumber: Int) {
+        adapter.getlist().removeAt(rowNumber)
+        adapter.notifyItemRemoved(rowNumber)
+        val snackbar = ToasterNormal.make(view,
+                getString(R.string.feed_post_deleted),
+                BaseToaster.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
+        if (adapter.getlist().isEmpty()) {
+            showRefresh()
+            onRefresh()
+        }
+    }
+
+    override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
+        ToasterError.make(view, errorMessage, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again) {
+                    presenter.deletePost(id, rowNumber)
+                }
+                .show()
     }
 
     private fun doShare(body: String, title: String) {

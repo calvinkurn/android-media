@@ -59,7 +59,6 @@
     <string name="msg_ussd_sim_number_change">Silakan masukkan nomor <b>%1$s</b> Anda dalam perangkat ini:</string>
     <string name="promo_category">Promo %1$s</string>
     <string name="other_promo">lainnya</string>
-    <string name="promo_none_applied">Tidak ada promo yang sedang dipakai</string>
 
     <string name="title_header_menu_digital_categories_transaction_list_digital_module">Transaksi Saya</string>
     <string name="title_header_menu_digital_categories_favorite_number_digital_module">Nomor Favorit</string>
@@ -161,7 +160,6 @@
     <string name="digital_cart_deals_showcase_special_detail">Tambahkan voucher spesial dan bayar sekaligus bersama produk sebelumnya.</string>
     <string name="digital_deal_empty_label">Oops! Hasil tidak ditemukan.</string>
     <string name="digital_deal_empty_detail_label">Cari deals di kategori lainnya.</string>
-    <string name="digital_post_paid_dont_show_again_label">Jangan tampilkan lagi</string>
     <string name="digital_channel_top_up_tagihan_title"><![CDATA[Top-up & Tagihan]]></string>
     <string name="digital_my_channel_top_up_tagihan_title"><![CDATA[Top-up & Tagihanmu]]></string>
     <string name="digital_channel_try_again">Coba Lagi</string>

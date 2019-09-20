@@ -22,17 +22,16 @@ import javax.inject.Inject
  */
 
 class FlightAirportPickerPresenterImpl
-@Inject constructor(val flightAirportPopularCityUseCase: FlightAirportPopularCityUseCase,
-                    val flightAirportSuggestionUseCase: FlightAirportSuggestionUseCase)
+@Inject constructor(private val flightAirportPopularCityUseCase: FlightAirportPopularCityUseCase,
+                    private val flightAirportSuggestionUseCase: FlightAirportSuggestionUseCase)
     : BaseDaggerPresenter<FlightAirportPickerContract.View>(),
         FlightAirportPickerContract.Presenter,
         AutoCompleteKeywordListener {
 
-    private val compositeSubscription: CompositeSubscription
+    private val compositeSubscription: CompositeSubscription = CompositeSubscription()
     private var inputListener: AutoCompleteInputListener? = null
 
     init {
-        this.compositeSubscription = CompositeSubscription()
         Observable.create(
                 Observable.OnSubscribe<String> { subscriber ->
                     inputListener = AutoCompleteInputListener { query -> subscriber.onNext(query.toString()) }
