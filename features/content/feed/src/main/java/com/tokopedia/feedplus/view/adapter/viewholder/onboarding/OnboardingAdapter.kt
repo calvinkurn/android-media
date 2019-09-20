@@ -100,7 +100,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
 
         private fun setBackgroundColor(item: OnboardingDataViewModel) {
             if (item.isSelected) {
-                itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.tkpd_main_green))
+                itemView.bg_selected.background = itemView.context.resources.getDrawable(R.drawable.bg_interespick_selected)
                 itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
             } else {
                 itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.white))

@@ -34,6 +34,8 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         OnboardingAdapter(this)
     }
 
+    lateinit var data: OnboardingViewModel
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
@@ -57,7 +59,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         })
 
         feedOnboardingPresenter.submitInterestPickResp.observe(this, Observer {
-            view?.showLoadingTransparent()
+            view?.hideLoadingTransparent()
             when (it) {
                 is Success -> onSuccessSubmitInterestData()
                 is Fail -> onErrorSubmitInterestPickData(it.throwable)
@@ -87,6 +89,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     }
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+        saveInterest.isEnabled = data.minimumPick <= adapter.getSelectedItems().size
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
@@ -118,6 +121,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     }
 
     private fun onSuccessGetData(data: OnboardingViewModel) {
+        this.data = data
         adapter.setList(data.dataList)
         titleTextView.text = String.format(data.titleFull, data.minimumPick.toString()
         )
