@@ -66,7 +66,7 @@ public class MainToolbar extends Toolbar {
             boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
 
             if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
-                badgeNumber =+ 1;
+                badgeNumber += 1;
                 if(!notifPreference.isViewedGimmickNotif() && !userSession.isLoggedIn()){
                     notifPreference.setViewedGimmickNotif(true);
                     notifAnalytics.trackImpressionOnGimmickNotif();
