@@ -40,7 +40,7 @@ ext {
     playServiceBaseVersion = '16.0.1'
     playServiceFirebaseIidVersion = '17.0.4'
 
-    playCoreVersion = '1.6.1'
+    playCoreVersion = '1.6.3'
     playServiceGms = '16.0.0'
     playServiceBase = '16.1.0'
     playServiceAppIndexing = '17.1.0'
@@ -121,6 +121,7 @@ ext {
             preferenceV7        : "com.android.support:preference-v7:${supportLibraryVersion}",
             kotlinSupport       : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}",
             kotlinSupportJdk7   : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlinVersion}",
+            kotlinSupportJdk8   : "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}",
             kotlinReflection    : "org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}"
     ]
 
@@ -233,7 +234,8 @@ ext {
             lifeCycleRuntime      : "android.arch.lifecycle:compiler:$lifeCycleVersion",
             liveData              : "android.arch.lifecycle:livedata:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.2@aar",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.2.3",
+            androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
     ]
 
     testDependencies = [
@@ -284,7 +286,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.2",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.0",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.1",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 

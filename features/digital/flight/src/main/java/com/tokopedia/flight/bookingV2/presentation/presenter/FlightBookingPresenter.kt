@@ -60,7 +60,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         if (userSession.isMsisdnVerified) {
             processGetCartData()
             onGetProfileData()
-        } else {
+        } else if (userSession.isLoggedIn) {
             view.navigateToOtpPage()
         }
     }

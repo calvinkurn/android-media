@@ -12,13 +12,6 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'flight'
-    groupId = 'com.tokopedia.flight'
-    versionName = "2.22"
-    artifactName ="tkpdflight-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -36,8 +29,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.bottomSheetBuilder)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.travelCalendar)
@@ -89,6 +82,13 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+}
+
+project.ext {
+    artifactId = 'flight'
+    groupId = 'com.tokopedia.travel'
+    versionName = "1.0.0"
+    artifactName ="travelflight-release"
 }
 
 apply from: '../../../publish_local.gradle'

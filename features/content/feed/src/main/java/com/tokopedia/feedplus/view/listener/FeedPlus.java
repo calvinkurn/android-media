@@ -80,7 +80,7 @@ public interface FeedPlus {
 
         void onInfoClicked();
 
-        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed, WhitelistViewModel whitelistViewModel);
+        void onSuccessGetFeedFirstPage(ArrayList<Visitable> listFeed);
 
         void onErrorGetFeedFirstPage(String errorMessage);
 
@@ -139,6 +139,11 @@ public interface FeedPlus {
 
         void onErrorToggleFavoriteShop(String message, int rowNumber, int adapterPosition,
                                        String shopId);
+
+        void onSuccessDeletePost(int rowNumber);
+
+        void onErrorDeletePost(String errorMessage, int id, int rowNumber);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -176,5 +181,7 @@ public interface FeedPlus {
         void trackAffiliate(String url);
 
         void addPostTagItemToCart(PostTagItem postTagItem);
+
+        void deletePost(int id, int rowNumber);
     }
 }

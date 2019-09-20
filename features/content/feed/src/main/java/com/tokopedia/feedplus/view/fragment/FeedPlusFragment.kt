@@ -31,6 +31,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
@@ -105,6 +106,7 @@ import javax.inject.Inject
 
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.kol.common.util.createBottomMenu
@@ -201,11 +203,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         super.onCreate(savedInstanceState)
         initVar()
         retainInstance = true
-    }
-
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
     }
 
     private fun initVar() {
@@ -376,7 +373,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>, whitelistViewModel: WhitelistViewModel?) {
+    override fun onSuccessGetFeedFirstPage(listFeed: ArrayList<Visitable<*>>) {
         trackFeedImpression(listFeed)
 
         adapter.setList(listFeed)
@@ -780,6 +777,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
             menus.show()
         }
+    }
+
+    private fun createDeleteDialog(rowNumber: Int, id: Int): Dialog {
+        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        dialog.setTitle(getString(R.string.feed_delete_post))
+        dialog.setDesc(getString(R.string.feed_after_delete_cant))
+        dialog.setBtnOk(getString(R.string.action_delete))
+        dialog.setBtnCancel(getString(R.string.cancel))
+        dialog.setOnOkClickListener {
+            presenter.deletePost(id, rowNumber)
+            dialog.dismiss()
+        }
+        dialog.setOnCancelClickListener { dialog.dismiss() }
+        return dialog
     }
 
     override fun onGoToLink(link: String) {
@@ -1200,7 +1211,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 
@@ -1245,7 +1256,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             val menus = createBottomMenu(context!!, deletable, reportable, false, object : PostMenuListener {
                 override fun onDeleteClicked() {
-
+                    createDeleteDialog(positionInFeed, postId).show()
                 }
 
                 override fun onReportClick() {
@@ -1346,7 +1357,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 
@@ -1458,6 +1469,28 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onAddToCartFailed(pdpAppLink: String) {
         onGoToLink(pdpAppLink)
+    }
+
+    override fun onSuccessDeletePost(rowNumber: Int) {
+        adapter.getlist().removeAt(rowNumber)
+        adapter.notifyItemRemoved(rowNumber)
+        val snackbar = ToasterNormal.make(view,
+                getString(R.string.feed_post_deleted),
+                BaseToaster.LENGTH_LONG
+        )
+        snackbar.setAction(R.string.af_title_ok) { snackbar.dismiss() }.show()
+        if (adapter.getlist().isEmpty()) {
+            showRefresh()
+            onRefresh()
+        }
+    }
+
+    override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
+        ToasterError.make(view, errorMessage, ToasterError.LENGTH_LONG)
+                .setAction(R.string.title_try_again) {
+                    presenter.deletePost(id, rowNumber)
+                }
+                .show()
     }
 
     private fun doShare(body: String, title: String) {
