@@ -12,15 +12,15 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardI
 public class DashboardHeaderViewModel implements Parcelable {
 
     private String totalSaldoAktif;
-    private String saldoString;
+    private String affiliateIncome;
     private String seenCount;
     private String clickCount;
     private String buyCount;
     private String productCount;
 
-    public DashboardHeaderViewModel(String totalSaldoAktif, String saldoString, String seenCount, String clickCount, String buyCount, String productCount) {
+    public DashboardHeaderViewModel(String totalSaldoAktif, String affiliateIncome, String seenCount, String clickCount, String buyCount, String productCount) {
         this.totalSaldoAktif = totalSaldoAktif;
-        this.saldoString = saldoString;
+        this.affiliateIncome = affiliateIncome;
         this.seenCount = seenCount;
         this.clickCount = clickCount;
         this.buyCount = buyCount;
@@ -35,12 +35,12 @@ public class DashboardHeaderViewModel implements Parcelable {
         this.totalSaldoAktif = totalSaldoAktif;
     }
 
-    public String getSaldoString() {
-        return saldoString;
+    public String getAffiliateIncome() {
+        return affiliateIncome;
     }
 
-    public void setSaldoString(String saldoString) {
-        this.saldoString = saldoString;
+    public void setAffiliateIncome(String affiliateIncome) {
+        this.affiliateIncome = affiliateIncome;
     }
 
     public String getSeenCount() {
@@ -82,14 +82,14 @@ public class DashboardHeaderViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.saldoString);
+        dest.writeString(this.affiliateIncome);
         dest.writeString(this.seenCount);
         dest.writeString(this.clickCount);
         dest.writeString(this.buyCount);
     }
 
     protected DashboardHeaderViewModel(Parcel in) {
-        this.saldoString = in.readString();
+        this.affiliateIncome = in.readString();
         this.seenCount = in.readString();
         this.clickCount = in.readString();
         this.buyCount = in.readString();

@@ -60,6 +60,9 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         }
     }
 
+    override val ctx: Context?
+        get() = context
+
     @Inject
     lateinit var presenter: AffiliateDashboardPresenter
 
@@ -68,6 +71,47 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    private val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+
+    private val unifyCalendar
+        get() = calendarView.findViewById<UnifyCalendar>(R.id.uc_filter)
+
+    private val coachMarkIncome: CoachMark by lazy {
+        with(CoachMarkBuilder()) {
+            allowNextButton(false)
+            allowPreviousButton(false)
+        }.build()
+    }
+
+    private val coachMarkIncomeItem: CoachMarkItem by lazy {
+        CoachMarkItem(ivAfIncomeInfo, getString(R.string.af_info), getString(R.string.af_income_tooltip))
+    }
+
+    private val coachMarkFirstTimeUser: CoachMark by lazy {
+        CoachMarkBuilder()
+                .allowNextButton(false)
+                .build()
+    }
+
+    private val coachMarkFirstTimeUserItem: CoachMarkItem by lazy {
+        val tabView: View? = try {
+            val tabListView: ViewGroup = tlCuratedProducts.getChildAt(0) as ViewGroup
+            tabListView.getChildAt(tabListView.childCount - 1)
+        } catch (e: Exception) { null }
+
+        CoachMarkItem(tabView, getString(R.string.curated_from_traffic), getString(R.string.curated_from_traffic_info))
+    }
+
+    private var startDate by Delegates.observable<Date?>(null) { _, _, newValue ->
+        if (::tvStartDate.isInitialized) tvStartDate.text = newValue?.let(dateFormatter::format).orEmpty()
+    }
+    private var endDate by Delegates.observable<Date?>(null) { _, _, newValue ->
+        if (::tvEndDate.isInitialized) tvEndDate.text = newValue?.let(dateFormatter::format).orEmpty()
+    }
+
+    private var tempStartDate = startDate
+    private var tempEndDate = endDate
 
     private lateinit var clDashboard: CoordinatorLayout
     private lateinit var tvTotalSaldo: TextView
@@ -99,53 +143,9 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var directFragmentCurated: AffiliateCuratedProductFragment
     private lateinit var indirectFragmentCurated: AffiliateCuratedProductFragment
 
-    private val dateFormatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-
-    private var startDate by Delegates.observable<Date?>(null) { _, _, newValue ->
-        if (::tvStartDate.isInitialized) tvStartDate.text = newValue?.let(dateFormatter::format).orEmpty()
-    }
-    private var endDate by Delegates.observable<Date?>(null) { _, _, newValue ->
-        if (::tvEndDate.isInitialized) tvEndDate.text = newValue?.let(dateFormatter::format).orEmpty()
-    }
-
-    private var tempStartDate = startDate
-    private var tempEndDate = endDate
-
-    override val ctx: Context?
-        get() = context
-
-    private val unifyCalendar
-        get() = calendarView.findViewById<UnifyCalendar>(R.id.uc_filter)
-
     private lateinit var holidayList: List<Legend>
 
     private lateinit var profileHeader: ShareableByMeProfileViewModel
-
-    private val coachMarkIncome: CoachMark by lazy {
-        with(CoachMarkBuilder()) {
-            allowNextButton(false)
-            allowPreviousButton(false)
-        }.build()
-    }
-
-    private val coachMarkIncomeItem: CoachMarkItem by lazy {
-        CoachMarkItem(ivAfIncomeInfo, getString(R.string.af_info), getString(R.string.af_income_tooltip))
-    }
-
-    private val coachMarkFirstTimeUser: CoachMark by lazy {
-        CoachMarkBuilder()
-                .allowNextButton(false)
-                .build()
-    }
-
-    private val coachMarkFirstTimeUserItem: CoachMarkItem by lazy {
-        val tabView: View? = try {
-            val tabListView: ViewGroup = tlCuratedProducts.getChildAt(0) as ViewGroup
-            tabListView.getChildAt(tabListView.childCount - 1)
-        } catch (e: Exception) { null }
-
-        CoachMarkItem(tabView, getString(R.string.curated_from_traffic), getString(R.string.curated_from_traffic_info))
-    }
 
     override fun getScreenName(): String = "Dashboard"
 
@@ -171,65 +171,11 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         presenter.checkAffiliate()
     }
 
-    private fun initView(view: View) {
-        view.run {
-            clDashboard = findViewById(R.id.cl_dashboard)
-            tvTotalSaldo = findViewById(R.id.tv_total_saldo)
-            tvAffiliateIncome = findViewById(R.id.tv_affiliate_income)
-            tvTotalViewed = findViewById(R.id.tv_total_viewed)
-            tvTotalClicked = findViewById(R.id.tv_total_clicked)
-            tvPostedProduct = findViewById(R.id.tv_posted_product)
-            tlCuratedProducts = findViewById(R.id.tl_curated_products)
-            vpCuratedProduct = findViewById(R.id.vp_curated_product)
-            llStartDate = findViewById(R.id.ll_start_date)
-            llEndDate = findViewById(R.id.ll_end_date)
-            tvStartDate = findViewById(R.id.tv_start_date)
-            tvEndDate = findViewById(R.id.tv_end_date)
-            llCheckBalance = findViewById(R.id.ll_check_balance)
-            tvSeeAll = findViewById(R.id.tv_see_all)
-            rlViewedClicked = findViewById(R.id.rl_viewed_clicked)
-            rlPostedProduct = findViewById(R.id.rl_posted_product)
-            vPostedViewedSeparator = findViewById(R.id.v_posted_viewed_separator)
-            llCuratedProductHistory = findViewById(R.id.ll_curated_product_history)
-            esShareNow = findViewById(R.id.es_share_now)
-            srlRefresh = findViewById(R.id.srl_refresh)
-            ivAfIncomeInfo = findViewById(R.id.iv_af_income_info)
-            bmivShare = findViewById(R.id.bmiv_share)
-            ablAfDashboard = findViewById(R.id.abl_af_dashboard)
-        }
-    }
-
-    private fun setupView(view: View) {
-        fragmentManager?.let {
-            if (!::directFragmentCurated.isInitialized) directFragmentCurated = AffiliateCuratedProductFragment.newInstance(1).apply { setListener(this@AffiliateDashboardFragment) }
-            if (!::indirectFragmentCurated.isInitialized) indirectFragmentCurated = AffiliateCuratedProductFragment.newInstance(2).apply { setListener(this@AffiliateDashboardFragment) }
-            vpCuratedProduct.adapter = AffiliateCuratedProductPagerAdapter(it, listOf(
-                    directFragmentCurated,
-                    indirectFragmentCurated
-            ))
-        }
-        tlCuratedProducts.setupWithViewPager(vpCuratedProduct)
-        llStartDate.setOnClickListener { openCalendarPicker() }
-        llEndDate.setOnClickListener { openCalendarPicker() }
-
-        llCheckBalance.setOnClickListener { onCheckBalanceClicked() }
-        tvSeeAll.setOnClickListener { onSeeAllProductClicked() }
-
-        srlRefresh.setOnRefreshListener { onRefresh() }
-        ivAfIncomeInfo.setOnClickListener { showTooltip() }
-
-        esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
-
-        ablAfDashboard.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            srlRefresh.isEnabled = (verticalOffset == 0)
-        })
-    }
-
     override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel, byMeHeader: ShareableByMeProfileViewModel) {
         srlRefresh.visible()
 
         tvTotalSaldo.text = MethodChecker.fromHtml(header.totalSaldoAktif)
-        tvAffiliateIncome.text = MethodChecker.fromHtml(header.saldoString)
+        tvAffiliateIncome.text = MethodChecker.fromHtml(header.affiliateIncome)
         tvTotalViewed.text = MethodChecker.fromHtml(header.seenCount)
         tvTotalClicked.text = MethodChecker.fromHtml(header.clickCount)
         tvPostedProduct.text = MethodChecker.fromHtml(getString(R.string.posted_product_with_number, header.productCount))
@@ -260,6 +206,57 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     override fun onUserNotLoggedIn() {
         closePage()
+    }
+
+    override fun onGetHolidayList(legendList: List<Legend>) {
+        holidayList = legendList
+        openCalendarPicker()
+    }
+
+    override fun onErrorGetHoliday(error: Throwable) {
+        holidayList = emptyList()
+        openCalendarPicker()
+    }
+
+    override fun onErrorGetDashboardItem(error: String) {
+        srlRefresh.gone()
+        NetworkErrorHelper.showEmptyState(activity,
+                view,
+                error
+        ) { presenter.loadDashboardDetail(startDate, endDate) }
+    }
+
+    override fun showLoading() {
+        view?.showLoading()
+    }
+
+    override fun hideLoading() {
+        view?.hideLoading()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
+
+    override fun shouldShareProfile() {
+        if (::profileHeader.isInitialized) {
+            ShareBottomSheets.newInstance(
+                    this,
+                    "",
+                    profileHeader.avatar,
+                    profileHeader.link,
+                    String.format(getString(R.string.profile_share_text), profileHeader.link),
+                    String.format(getString(R.string.profile_share_title)),
+                    bmivShare.getTempFileUri()
+            ).also {
+                it.show(fragmentManager)
+            }
+        }
+    }
+
+    override fun onShareItemClicked(packageName: String) {
+
     }
 
     private fun onCheckBalanceClicked() {
@@ -377,16 +374,6 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         }
     }
 
-    override fun onGetHolidayList(legendList: List<Legend>) {
-        holidayList = legendList
-        openCalendarPicker()
-    }
-
-    override fun onErrorGetHoliday(error: Throwable) {
-        holidayList = emptyList()
-        openCalendarPicker()
-    }
-
     private fun onDateChanged() {
         presenter.loadDashboardDetail(startDate, endDate)
         directFragmentCurated.apply {
@@ -399,28 +386,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         }.run { loadData(1) }
     }
 
-    override fun onErrorGetDashboardItem(error: String) {
-        srlRefresh.gone()
-        NetworkErrorHelper.showEmptyState(activity,
-                view,
-                error
-        ) { presenter.loadDashboardDetail(startDate, endDate) }
-    }
-
-    override fun showLoading() {
-        view?.showLoading()
-    }
-
-    override fun hideLoading() {
-        view?.hideLoading()
-    }
-
     private fun closePage() = activity?.finish()
-
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
-    }
 
     private fun showEmptyState() {
         rlViewedClicked.gone()
@@ -451,22 +417,6 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         }
     }
 
-    override fun shouldShareProfile() {
-        if (::profileHeader.isInitialized) {
-            ShareBottomSheets.newInstance(
-                    this,
-                    "",
-                    profileHeader.avatar,
-                    profileHeader.link,
-                    String.format(getString(R.string.profile_share_text), profileHeader.link),
-                    String.format(getString(R.string.profile_share_title)),
-                    bmivShare.getTempFileUri()
-            ).also {
-                it.show(fragmentManager)
-            }
-        }
-    }
-
     private fun initByMeInstastoryView(byMeHeader: ShareableByMeProfileViewModel) {
         bmivShare.apply {
             setUserName(byMeHeader.formattedUserName)
@@ -474,7 +424,57 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         }
     }
 
-    override fun onShareItemClicked(packageName: String) {
+    private fun initView(view: View) {
+        view.run {
+            clDashboard = findViewById(R.id.cl_dashboard)
+            tvTotalSaldo = findViewById(R.id.tv_total_saldo)
+            tvAffiliateIncome = findViewById(R.id.tv_affiliate_income)
+            tvTotalViewed = findViewById(R.id.tv_total_viewed)
+            tvTotalClicked = findViewById(R.id.tv_total_clicked)
+            tvPostedProduct = findViewById(R.id.tv_posted_product)
+            tlCuratedProducts = findViewById(R.id.tl_curated_products)
+            vpCuratedProduct = findViewById(R.id.vp_curated_product)
+            llStartDate = findViewById(R.id.ll_start_date)
+            llEndDate = findViewById(R.id.ll_end_date)
+            tvStartDate = findViewById(R.id.tv_start_date)
+            tvEndDate = findViewById(R.id.tv_end_date)
+            llCheckBalance = findViewById(R.id.ll_check_balance)
+            tvSeeAll = findViewById(R.id.tv_see_all)
+            rlViewedClicked = findViewById(R.id.rl_viewed_clicked)
+            rlPostedProduct = findViewById(R.id.rl_posted_product)
+            vPostedViewedSeparator = findViewById(R.id.v_posted_viewed_separator)
+            llCuratedProductHistory = findViewById(R.id.ll_curated_product_history)
+            esShareNow = findViewById(R.id.es_share_now)
+            srlRefresh = findViewById(R.id.srl_refresh)
+            ivAfIncomeInfo = findViewById(R.id.iv_af_income_info)
+            bmivShare = findViewById(R.id.bmiv_share)
+            ablAfDashboard = findViewById(R.id.abl_af_dashboard)
+        }
+    }
 
+    private fun setupView(view: View) {
+        fragmentManager?.let {
+            if (!::directFragmentCurated.isInitialized) directFragmentCurated = AffiliateCuratedProductFragment.newInstance(1).apply { setListener(this@AffiliateDashboardFragment) }
+            if (!::indirectFragmentCurated.isInitialized) indirectFragmentCurated = AffiliateCuratedProductFragment.newInstance(2).apply { setListener(this@AffiliateDashboardFragment) }
+            vpCuratedProduct.adapter = AffiliateCuratedProductPagerAdapter(it, listOf(
+                    directFragmentCurated,
+                    indirectFragmentCurated
+            ))
+        }
+        tlCuratedProducts.setupWithViewPager(vpCuratedProduct)
+        llStartDate.setOnClickListener { openCalendarPicker() }
+        llEndDate.setOnClickListener { openCalendarPicker() }
+
+        llCheckBalance.setOnClickListener { onCheckBalanceClicked() }
+        tvSeeAll.setOnClickListener { onSeeAllProductClicked() }
+
+        srlRefresh.setOnRefreshListener { onRefresh() }
+        ivAfIncomeInfo.setOnClickListener { showTooltip() }
+
+        esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
+
+        ablAfDashboard.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+            srlRefresh.isEnabled = (verticalOffset == 0)
+        })
     }
 }
