@@ -11,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.domain.gql.feed.Badge
+import com.tokopedia.home.beranda.domain.gql.feed.LabelGroup
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -27,6 +28,9 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.home_feed_item
+        private const val LABEL_POSITION_OFFERS = "offers"
+        private const val LABEL_POSITION_PROMO = "promo"
+        private const val LABEL_POSITION_CREDIBILITY = "credibility"
     }
 
     private val productCardView by lazy { itemView.findViewById<ProductCardViewSmallGrid>(R.id.productCardView) }
@@ -59,6 +63,7 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
             setReviewCount(element.countReview)
             mapBadges(element.badges)
             setShopLocationText(element.location)
+            setLabelGroup(element.labelGroups)
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
                     homeFeedView.onProductImpression(element, adapterPosition)
@@ -106,4 +111,30 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
         Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
     }
 
+    private fun ProductCardViewSmallGrid.setLabelGroup(labelGroup: List<LabelGroup>){
+        setLabelCredibilityVisible(false)
+        setLabelPromoVisible(false)
+        setLabelOffersVisible(false)
+        for (label: LabelGroup in labelGroup){
+            when(label.position){
+                LABEL_POSITION_CREDIBILITY -> {
+                    setLabelCredibilityText(label.title)
+                    setLabelCredibilityType(label.type)
+                    setLabelCredibilityVisible(true)
+                    setImageRatingVisible(false)
+                    setReviewCountVisible(false)
+                }
+                LABEL_POSITION_PROMO -> {
+                    setLabelPromoText(label.title)
+                    setLabelPromoType(label.type)
+                    setLabelPromoVisible(true)
+                }
+                LABEL_POSITION_OFFERS -> {
+                    setLabelOffersText(label.title)
+                    setLabelOffersType(label.type)
+                    setLabelOffersVisible(true)
+                }
+            }
+        }
+    }
 }
