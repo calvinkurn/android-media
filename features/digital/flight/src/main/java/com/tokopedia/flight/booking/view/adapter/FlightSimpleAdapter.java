@@ -163,14 +163,14 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         private TextView titleTextView;
         private TextView contentTextView;
         private ImageView arrowImageView;
-        private ViewGroup containerLinearLayout;
+        private LinearLayout containerLinearLayout;
 
         public ViewHolder(View itemView) {
             super(itemView);
             titleTextView = (TextView) itemView.findViewById(R.id.tv_title);
             contentTextView = (TextView) itemView.findViewById(R.id.tv_content);
             arrowImageView = (ImageView) itemView.findViewById(R.id.iv_arrow);
-            containerLinearLayout = (ViewGroup) itemView.findViewById(R.id.container);
+            containerLinearLayout = (LinearLayout) itemView.findViewById(R.id.container);
         }
 
         public void bind(final SimpleViewModel viewModel) {
