@@ -26,7 +26,7 @@ class AffiliateCuratedProductPresenter
         getCuratedProductListUseCase.run {
             clearRequest()
             addRequest(getRequest(type, cursor, sort, startDate, endDate))
-            execute(GetCuratedProductListSubscriber(type, view))
+            execute(GetCuratedProductListSubscriber(type, view, cursor))
         }
     }
 

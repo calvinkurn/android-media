@@ -23,10 +23,12 @@ public class GetCuratedProductListSubscriber extends Subscriber<GraphqlResponse>
 
     private AffiliateCuratedProductContract.View mainView;
     private Integer type;
+    private String cursor;
 
-    public GetCuratedProductListSubscriber(Integer type, AffiliateCuratedProductContract.View mainView) {
+    public GetCuratedProductListSubscriber(Integer type, AffiliateCuratedProductContract.View mainView, String cursor) {
         this.mainView = mainView;
         this.type = type;
+        this.cursor = cursor;
     }
 
     @Override
@@ -75,7 +77,11 @@ public class GetCuratedProductListSubscriber extends Subscriber<GraphqlResponse>
                     pojo.getCommission() != null ? pojo.getCommission() : "",
                     pojo.isIsActive(),
                     pojo.isIsActive() ? activeSection : inactiveSection,
-                    (type != null) && (index == 0 || pojoList.get(index-1).isIsActive() != pojo.isIsActive()),
+                    (type != null) &&
+                            (
+                                    (cursor.equals("") && index == 0) ||
+                                    (index != 0 && pojoList.get(index-1).isIsActive() != pojo.isIsActive())
+                            ),
                     type,
                     pojo.getCreatePostAppLink(),
                     pojo.getReviewCount(),
