@@ -112,6 +112,32 @@ yang ditemukan</string>
 
     <string name="title_understand">Mengerti</string>
     <string name="title_save">Simpan</string>
+    <string name="title_official">Official</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="menu_chat_search">Cari chat atau user</string>
+    <string name="menu_chat_filter">Filter</string>
+    <string name="menu_chat_setting">Pengaturan</string>
+    <string name="search_chat_by_username">Cari nama pengguna</string>
+
+    <string name="filter_chat_all">Semua</string>
+    <string name="filter_chat_unread">Belum Dibaca</string>
+    <string name="filter_chat_read">Sudah Dibaca</string>
+    <string name="filter_chat_unreplied">Belum Dibalas</string>
+
+    <string name="seller_empty_chat_title">Hiks, sepi banget</string>
+    <string name="seller_empty_chat_subtitle">Yuk, lengkapi tokomu dengan produk unggulan untuk menarik perhatian pembeli</string>
+    <string name="buyer_empty_chat_title">Belum ada chat dari pembeli</string>
+    <string name="buyer_empty_chat_subtitle">Yuk bikin toko kamu lebih menarik agar pembeli jatuh hati</string>
+    <string name="empty_chat_read_all_title">Mantap! Semua chat sudah kamu baca</string>
+
+
+    <!--Delete Chat Popup-->
+    <string name="topchat_chat_delete_title">Hapus Chat?</string>
+    <string name="topchat_chat_delete_body">Percakapan kamu dengan pengguna ini akan dihapus selamanya</string>
+    <string name="topchat_chat_delete_cancel">Batalkan</string>
+    <string name="topchat_chat_delete_confirm">Ya, Hapus</string>
 
     <string name="chat_check_cart">Lihat</string>
     <string name="error_compress_image">Gagal mengkompres gambar. Silahkan pilih gambar lain.</string>

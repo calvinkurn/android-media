@@ -40,7 +40,7 @@ ext {
     playServiceBaseVersion = '16.0.1'
     playServiceFirebaseIidVersion = '17.0.4'
 
-    playCoreVersion = '1.6.1'
+    playCoreVersion = '1.6.3'
     playServiceGms = '16.0.0'
     playServiceBase = '16.1.0'
     playServiceAppIndexing = '17.1.0'
@@ -286,7 +286,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.2",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.0",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.6.1",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 
