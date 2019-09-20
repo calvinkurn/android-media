@@ -113,6 +113,7 @@ class ReadGradlefileTasks extends DefaultTask{
             def reader = new File("${module}/build.gradle")
             def backup = new File("${module}/.build_backup")
             def writer = new File("${module}/build_temp.gradle")
+	        def compile_log = new File("${module}/${module}_log.txt")
             backup.delete()
             copyFile(reader, backup)
             reader.eachLine{ line ->
@@ -140,6 +141,7 @@ class ReadGradlefileTasks extends DefaultTask{
             reader.delete()
             writer.renameTo("${module}/build.gradle")
             def saveStatus =  compileModule(module)
+            compile_log.append(saveStatus)
             if(saveStatus.contains("BUILD SUCCESSFUL")){
                 def version = versionMap.get(module)
                 log.append("${module} - ${version} - SUCCESSFUL\n")
