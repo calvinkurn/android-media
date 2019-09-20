@@ -18,7 +18,7 @@ import com.tokopedia.promocheckout.list.model.listexchangecoupon.CatalogListItem
 class PromoCheckOutExchangeCouponAdapter(items: ArrayList<CatalogListItem>,listener:ListenerCouponExchange) : RecyclerView.Adapter<PromoCheckOutExchangeCouponAdapter.ViewHolder>() {
 
     interface ListenerCouponExchange{
-        fun onClickRedeemCoupon(position: Int,slug:String?)
+         fun onClickRedeemCoupon(position: Int,slug:String?)
     }
     var mListener:ListenerCouponExchange
     var items: ArrayList<CatalogListItem>? = null

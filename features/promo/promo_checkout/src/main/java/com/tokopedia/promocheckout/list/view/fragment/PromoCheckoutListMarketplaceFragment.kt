@@ -36,33 +36,25 @@ import javax.inject.Inject
 class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), PromoCheckoutListMarketplaceContract.View {
 
     lateinit var bottomSheetView: View
-    override fun onClickRedeemCoupon(position: Int,slug:String?) {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        this.containerParent = container
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+    @Inject
+    lateinit var mPresenter: CheckoutCatalogDetailPresenter
 
-        /*    val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activity)
-            val viewBottomSheet = view?.findViewById<View>(R.id.container_fragment)
-            viewBottomSheet?.visibility=View.VISIBLE
-            val closeBtn = view?.findViewById<View>(R.id.gf_close_button)
-            closeBtn?.setOnClickListener { v -> bottomSheet.dismiss() }
-            bottomSheet.setCustomContentView(viewBottomSheet, "", false)
-            bottomSheet.show()*/
+    override fun onClickRedeemCoupon(catalog_id: Int, slug: String?) {
 
-     /*   val checkoutcatlog=CheckoutCatalogDetailFragment()
-        checkoutcatlog.show(childFragmentManager,"")*/
-        val bundle=Bundle()
-        bundle.putString("slug",slug)
-        bundle.putInt("catalog_id",158)
-
-       val fragment = CheckoutCatalogDetailFragment()
+        val bundle = Bundle()
+        bundle.putString("slug", slug)
+        bundle.putInt("catalog_id",catalog_id)
+        bundle.putBoolean("isuse", false)
+        bundle.putBoolean("onclickshipment", false)
+        bundle.putInt("pagetracking", pageTracking)
+        bundle.putParcelable("promos", promo)
+        val fragment=CheckoutCatalogDetailFragment()
         fragment.arguments=bundle
-        fragment.show(childFragmentManager, "")
-//
-//        var closeableBottomSheetDialog: CloseableBottomSheetDialogFragment = CloseableBottomSheetDialog.createInstance(activity)
-//        bottomSheetView = layoutInflater.inflate(R.layout.promo_coupon_detail_bottomsheet, null, false)
-//        closeableBottomSheetDialog.setCustomContentView(bottomSheetView, "Redeem Coupon", true)
-//        closeableBottomSheetDialog.show()
-//        childFragmentManager.beginTransaction()
-//                .add(R.id.container, CheckoutCatalogDetailFragment.newInstance())
-//                .commit()
+        fragment.show(childFragmentManager,"")
     }
 
     @Inject
@@ -76,35 +68,6 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     lateinit var progressDialog: ProgressDialog
     var pageTracking: Int = 1
     private var promo: Promo? = null
-
-/*    override fun onClickRedeemCoupon(position: Int) {
-        val bottomSheet = CloseableBottomSheetDialog.createInstanceRounded(activity)
-        val viewBottomSheet = layoutInflater.inflate(R.layout.promo_coupon_detail_bottomsheet, null, true)
-        val closeBtn = viewBottomSheet.gf_close_button
-
-        val framelayoutbottomsheet = viewBottomSheet.findViewById<FrameLayout>(R.id.catalog_detail_unique)
-
-        fragmentContainer=viewBottomSheet.catalog_detail_unique
-        val fragment = PromoCheckoutDetailMarketplaceFragment.createInstance("codeCoupon", false,oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = this.promo!!)
-
-        childFragmentManager.beginTransaction().add(fragment, "PromoCheckoutDetailDigitalFragment").commit()
-//        val fragment = viewBottomSheet.findViewById<View>(R.id.catalog_detail_unique) as Fragment
-        closeBtn.setOnClickListener { v ->
-            val fragmentTransaction: FragmentTransaction = fragmentManager?.beginTransaction()!!
-//            fragmentTransaction.remove(fragment)
-//            fragmentTransaction.commit()
-            bottomSheet.dismiss()
-
-        }
-        bottomSheet.setOnCancelListener(DialogInterface.OnCancelListener {
-            val fragmentTransaction: FragmentTransaction = fragmentManager?.beginTransaction()!!
-//            fragmentTransaction.remove(fragment)
-//            fragmentTransaction.commit()
-            bottomSheet.dismiss()
-        })
-       // bottomSheet.setCustomContentView(viewBottomSheet, "", false)
-      //  bottomSheet.show()
-    }*/
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
 
@@ -131,14 +94,9 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
         }
-
-        val fragment = PromoCheckoutDetailMarketplaceFragment.createInstance(promoCheckoutListModel?.code
+        val promoCheckoutDetailMarketplaceFragment=PromoCheckoutDetailMarketplaceFragment.createInstance(promoCheckoutListModel?.code
                 ?: "", false, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = this.promo!!)
-
-        childFragmentManager.beginTransaction().add(fragment, "PromoCheckoutDetailDigitalFragment").commit()
-
-//        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
-//                activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
+        promoCheckoutDetailMarketplaceFragment.show(childFragmentManager,"")
     }
 
     override fun onPromoCodeUse(promoCode: String) {
@@ -235,16 +193,6 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
                 .promoCheckoutListModule(PromoCheckoutListModule())
                 .build()
                 .inject(this)
-    }
-
-    override fun onDestroyView() {
-//        var mFragmentMgr:FragmentManager= this.fragmentManager!!
-//        var mTransaction :FragmentTransaction = mFragmentMgr.beginTransaction()
-//        var childFragment:Fragment = mFragmentMgr.findFragmentByTag("TAG")!!
-//        mTransaction.remove(childFragment)
-//        mTransaction.commit()
-//        promoCheckoutListMarketplacePresenter.detachView()
-        super.onDestroyView()
     }
 
     companion object {

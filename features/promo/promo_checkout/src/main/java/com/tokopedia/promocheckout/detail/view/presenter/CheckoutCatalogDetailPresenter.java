@@ -28,6 +28,7 @@ public class CheckoutCatalogDetailPresenter extends BaseDaggerPresenter<Checkout
     private GraphqlUseCase mGetCouponDetail;
     GraphqlUseCase mValidateCouponUseCase;
     GraphqlUseCase mRedeemCouponUseCase;
+    CouponDetailsResponse data;
 
 
     @Inject
@@ -151,7 +152,7 @@ public class CheckoutCatalogDetailPresenter extends BaseDaggerPresenter<Checkout
             @Override
             public void onNext(GraphqlResponse response) {
                 PromoRedeemCouponResponse redeemCouponBaseEntity = response.getData(PromoRedeemCouponResponse.class);
-                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem() != null) {
+                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.getHachikoRedeem() != null && redeemCouponBaseEntity.getHachikoRedeem().getCoupons()!=null) {
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
@@ -176,7 +177,7 @@ public class CheckoutCatalogDetailPresenter extends BaseDaggerPresenter<Checkout
     }
 
     @Override
-    public void getCatalogDetail(String uniqueCatalogCode,int catalog_id) {
+    public void getCatalogDetail(String uniqueCatalogCode, int catalog_id) {
         getView().showLoader();
         Map<String, Object> variables = new HashMap<>();
         variables.put("slug", uniqueCatalogCode);
@@ -188,7 +189,6 @@ public class CheckoutCatalogDetailPresenter extends BaseDaggerPresenter<Checkout
                 variables, false);
         mGetCouponDetail.clearRequest();
         mGetCouponDetail.addRequest(request);
-
         mGetCouponDetail.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -205,20 +205,21 @@ public class CheckoutCatalogDetailPresenter extends BaseDaggerPresenter<Checkout
 
             @Override
             public void onNext(GraphqlResponse response) {
-                if (getView() != null) {
-                    getView().hideLoader();
-                    CouponDetailsResponse data = response.getData(CouponDetailsResponse.class);
-                    getView().populateDetail(data.getHachikoCatalogDetail());
-                }
+                   if (getView() !=null) {
+                       getView().hideLoader();
+                       data = response.getData(CouponDetailsResponse.class);
+                       getView().populateDetail(data.getHachikoCatalogDetail());
+                   }
+
             }
         });
+//        return data.getHachikoCatalogDetail();
     }
 
     @Override
     public void fetchLatestStatus(List<Integer> catalogsIds) {
 //        Map<String, Object> variables = new HashMap<>();
 //        variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_IDS, catalogsIds);
-//
 //        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
 //                R.raw.tp_gql_catalog_status),
 //                CatalogStatusOuter.class,
@@ -256,6 +257,8 @@ public class CheckoutCatalogDetailPresenter extends BaseDaggerPresenter<Checkout
     public void showRedeemCouponDialog(String cta, String code, String title) {
         getView().showRedeemCouponDialog(cta, code, title);
     }
+
+
 
 //    private void handlePointQuery(TokoPointDetailEntity pointDetailEntity) {
     //Handling the point

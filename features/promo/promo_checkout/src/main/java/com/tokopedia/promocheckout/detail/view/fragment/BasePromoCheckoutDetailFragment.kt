@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
 
-abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoCheckoutDetailContract.View {
+abstract class BasePromoCheckoutDetailFragment : BottomSheetDialogFragment(), PromoCheckoutDetailContract.View {
 
     var isLoadingFinished = false
     var codeCoupon = ""
@@ -39,14 +39,14 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     var catalog_id=158
     open var isUse = false
 
-    override fun getScreenName(): String {
-        return ""
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_checkout_detail_layout, container, false)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL,R.style.TransparentBottomSheetDialogTheme)
+    }
     private lateinit var timerUsage: TimerPromoCheckout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

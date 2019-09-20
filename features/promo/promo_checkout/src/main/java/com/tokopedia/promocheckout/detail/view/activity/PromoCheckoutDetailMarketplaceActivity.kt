@@ -3,11 +3,30 @@ package com.tokopedia.promocheckout.detail.view.activity
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.Fragment
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
+import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
+import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailMarketplaceFragment
 
-class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity() {
+class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity(),HasComponent<PromoCheckoutDetailComponent> {
+
+
+     var promoCheckoutDetailComponent: PromoCheckoutDetailComponent?=null
+    override fun getComponent(): PromoCheckoutDetailComponent {
+        if (promoCheckoutDetailComponent==null)
+        { initInjector()}
+
+        return promoCheckoutDetailComponent!!
+    }
+
+    private fun initInjector() {
+        promoCheckoutDetailComponent = DaggerPromoCheckoutDetailComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .build()
+    }
     override fun getNewFragment(): Fragment {
         return PromoCheckoutDetailMarketplaceFragment.createInstance(intent.getStringExtra(PromoCheckoutDetailMarketplaceFragment.EXTRA_KUPON_CODE),
                 intent.getBooleanExtra(PromoCheckoutDetailMarketplaceFragment.EXTRA_IS_USE, false),

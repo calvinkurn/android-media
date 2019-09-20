@@ -7,7 +7,6 @@
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16">
 
-
     <ImageView
         android:id="@+id/gf_close_button"
         android:layout_width="@dimen/dp_24"
@@ -17,6 +16,11 @@
         android:tint="@color/gf_tint_close_color"
         app:srcCompat="@drawable/ic_close_button" />
 
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="0dp"/>
 <!--    <fragment-->
 <!--        android:id="@+id/catalog_detail_unique"-->
 <!--        android:name="com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment"-->

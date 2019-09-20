@@ -5,6 +5,7 @@ import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.promocheckout.detail.model.detailmodel.CouponDetailsResponse;
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail;
 
 import java.util.List;
@@ -53,7 +54,7 @@ public interface CheckoutCatalogDetailContract {
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
-        void getCatalogDetail(String uniqueCatalogCode,int catalog_id);
+        void getCatalogDetail(String uniqueCatalogCode, int catalog_id);
 
         void fetchLatestStatus(List<Integer> catalogsIds);
     }

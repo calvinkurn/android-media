@@ -1,20 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@drawable/header_bottom_sheet_rounded_white"
     android:orientation="vertical"
-    app:elevation="@dimen/dp_0">
+    android:gravity="bottom"
+    android:id="@+id/parent"
+    app:elevation="@dimen/dp_0"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+    >
 
-    <ScrollView
+    <TextView
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_gravity="center"
+        android:id="@+id/tray_close"
+        android:layout_width="@dimen/dp_28"
+        android:layout_height="@dimen/dp_4"
+        android:background="@drawable/close_button_bottom_sheet" />
+
+    <com.tokopedia.unifyprinciples.Typography
+            android:layout_marginLeft="@dimen/dp_16"
+            android:id="@+id/title_closeable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:text="Detail Coupon"
+            android:paddingLeft="@dimen/dp_8"
+            android:textColor="@color/clr_f531353b"
+            android:textStyle="normal"
+            app:typographyType="heading_4" />
+
+    <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:scrollbars="none"
-        android:layout_marginBottom="-6dp">
+        android:layout_marginBottom="-6dp"
+        android:scrollbars="none">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,6 +57,127 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/top_separator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:layout_margin="@dimen/dp_16"
+                android:background="#fef4f5"
+                app:layout_constraintLeft_toLeftOf="@+id/text_description"
+                app:layout_constraintRight_toRightOf="@+id/text_description"
+                app:layout_constraintTop_toBottomOf="@+id/titleMinTrans" />
+
+            <View
+                android:id="@+id/mid_separator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:layout_margin="@dimen/dp_16"
+                android:background="#f3f4f5"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="@+id/tnc_see_more"
+                app:layout_constraintRight_toRightOf="@+id/tnc_see_more"
+                app:layout_constraintTop_toBottomOf="@+id/tnc_see_more" />
+
+            <View
+                android:id="@+id/bottom_separator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_2"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:background="#f3f4f5"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="@+id/how_to_use_see_more"
+                app:layout_constraintRight_toRightOf="@+id/how_to_use_see_more"
+                app:layout_constraintTop_toBottomOf="@+id/how_to_use_see_more"
+                app:layout_goneMarginBottom="@dimen/dp_8" />
+
+            <WebView
+                android:id="@+id/tnc_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:scrollbars="none"
+                app:layout_constraintLeft_toLeftOf="@+id/tnc"
+                app:layout_constraintRight_toRightOf="@+id/tnc"
+                app:layout_constraintTop_toBottomOf="@+id/tnc" />
+
+
+            <WebView
+                android:id="@+id/how_to_use_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginRight="@dimen/dp_16"
+                android:scrollbars="none"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="@+id/how_to_use"
+                app:layout_constraintRight_toRightOf="@+id/how_to_use"
+                app:layout_constraintTop_toBottomOf="@+id/how_to_use" />
+            <!--
+                        <android.support.constraint.ConstraintLayout
+                            android:id="@+id/gift_section_main_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:paddingBottom="@dimen/dp_16"
+                            android:visibility="gone"
+                            app:layout_constraintLeft_toLeftOf="@+id/bottom_separator"
+                            app:layout_constraintRight_toRightOf="@+id/bottom_separator"
+                            app:layout_constraintTop_toBottomOf="@+id/bottom_separator">
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/gift_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintBottom_toBottomOf="@+id/gift_btn"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/gift_btn"
+                                app:srcCompat="@drawable/ic_tp_gift" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/gift_msg"
+                                android:layout_width="@dimen/dp_0"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/dp_12"
+                                android:layout_marginLeft="@dimen/dp_12"
+                                app:layout_constraintBottom_toBottomOf="@+id/gift_btn"
+                                app:layout_constraintLeft_toRightOf="@+id/gift_image"
+                                app:layout_constraintRight_toLeftOf="@+id/gift_btn"
+                                app:layout_constraintTop_toTopOf="@+id/gift_btn"
+                                app:typographyType="body_2" />
+
+                            <com.tokopedia.unifyprinciples.Typography
+                                android:id="@+id/gift_btn"
+                                android:layout_width="@dimen/dp_120"
+                                android:layout_height="@dimen/dp_40"
+                                android:background="@drawable/rounded_red_border_only"
+                                android:gravity="center"
+                                android:lineSpacingExtra="@dimen/sp_4"
+                                android:paddingLeft="@dimen/dp_24"
+                                android:paddingRight="@dimen/dp_24"
+                                android:textColor="#fa591d"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:typographyType="body_2"
+                                app:typographyWeight="bold" />
+
+                        </android.support.constraint.ConstraintLayout>-->
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/text_description"
@@ -106,17 +252,6 @@
                 app:layout_constraintTop_toTopOf="@+id/titleMinTrans"
                 tools:text="Rp 3000000" />
 
-
-            <View
-                android:id="@+id/top_separator"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:layout_margin="@dimen/dp_16"
-                android:background="#fef4f5"
-                app:layout_constraintLeft_toLeftOf="@+id/text_description"
-                app:layout_constraintRight_toRightOf="@+id/text_description"
-                app:layout_constraintTop_toBottomOf="@+id/titleMinTrans" />
-
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tnc"
                 android:layout_width="wrap_content"
@@ -130,263 +265,176 @@
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 
-            <WebView
-                android:id="@+id/tnc_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginEnd="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:scrollbars="none"
-                app:layout_constraintLeft_toLeftOf="@+id/tnc"
-                app:layout_constraintRight_toRightOf="@+id/tnc"
-                app:layout_constraintTop_toBottomOf="@+id/tnc" />
-
             <com.tokopedia.unifyprinciples.Typography
-                android:visibility="gone"
                 android:id="@+id/tnc_see_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:textColor="@color/medium_green"
+                android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="@+id/tnc_content"
                 app:layout_constraintTop_toBottomOf="@+id/tnc_content"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
-            <View
-                android:visibility="gone"
-                android:id="@+id/mid_separator"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:layout_margin="@dimen/dp_16"
-                android:background="#f3f4f5"
-                app:layout_constraintLeft_toLeftOf="@+id/tnc_see_more"
-                app:layout_constraintRight_toRightOf="@+id/tnc_see_more"
-                app:layout_constraintTop_toBottomOf="@+id/tnc_see_more" />
-
             <com.tokopedia.unifyprinciples.Typography
-                android:visibility="gone"
                 android:id="@+id/how_to_use"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_16"
                 android:lineSpacingExtra="@dimen/sp_6"
                 android:textColor="@color/clr_f531353b"
+                android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="@+id/mid_separator"
                 app:layout_constraintTop_toBottomOf="@+id/mid_separator"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold" />
 
-            <WebView
-                android:visibility="gone"
-                android:id="@+id/how_to_use_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:layout_marginRight="@dimen/dp_16"
-                android:scrollbars="none"
-                app:layout_constraintLeft_toLeftOf="@+id/how_to_use"
-                app:layout_constraintRight_toRightOf="@+id/how_to_use"
-                app:layout_constraintTop_toBottomOf="@+id/how_to_use" />
-
             <com.tokopedia.unifyprinciples.Typography
-                android:visibility="gone"
                 android:id="@+id/how_to_use_see_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="@dimen/sp_4"
                 android:paddingBottom="@dimen/dp_16"
                 android:textColor="@color/medium_green"
+                android:visibility="gone"
                 app:layout_constraintLeft_toLeftOf="@+id/how_to_use_content"
                 app:layout_constraintTop_toBottomOf="@+id/how_to_use_content"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+    <android.support.constraint.ConstraintLayout
+        app:layout_anchor="@id/scrollview"
+        app:layout_anchorGravity="bottom"
+        android:id="@+id/catalog_bottom_section"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:orientation="vertical">
+
             <View
-                android:visibility="gone"
-                android:id="@+id/bottom_separator"
+                android:id="@+id/top_shaded_view"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_2"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:background="#f3f4f5"
-                app:layout_constraintLeft_toLeftOf="@+id/how_to_use_see_more"
-                app:layout_constraintRight_toRightOf="@+id/how_to_use_see_more"
-                app:layout_constraintTop_toBottomOf="@+id/how_to_use_see_more"
-                app:layout_goneMarginBottom="@dimen/dp_8" />
+                android:layout_height="@dimen/dp_6"
+                android:background="@drawable/bg_tp_shadow"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <android.support.constraint.ConstraintLayout
-                android:visibility="gone"
-                android:id="@+id/gift_section_main_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                app:layout_constraintLeft_toLeftOf="@+id/bottom_separator"
-                app:layout_constraintRight_toRightOf="@+id/bottom_separator"
-                app:layout_constraintTop_toBottomOf="@+id/bottom_separator">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/gift_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toBottomOf="@+id/gift_btn"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/gift_btn"
-                    app:srcCompat="@drawable/ic_tp_gift" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/gift_msg"
-                    android:layout_width="@dimen/dp_0"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dp_12"
-                    android:layout_marginLeft="@dimen/dp_12"
-                    app:layout_constraintBottom_toBottomOf="@+id/gift_btn"
-                    app:layout_constraintLeft_toRightOf="@+id/gift_image"
-                    app:layout_constraintRight_toLeftOf="@+id/gift_btn"
-                    app:layout_constraintTop_toTopOf="@+id/gift_btn"
-                    app:typographyType="body_2" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/gift_btn"
-                    android:layout_width="@dimen/dp_120"
-                    android:layout_height="@dimen/dp_40"
-                    android:background="@drawable/rounded_red_border_only"
-                    android:gravity="center"
-                    android:lineSpacingExtra="@dimen/sp_4"
-                    android:paddingLeft="@dimen/dp_24"
-                    android:paddingRight="@dimen/dp_24"
-                    android:textColor="#fa591d"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:typographyType="body_2"
-                    app:typographyWeight="bold" />
-
-            </android.support.constraint.ConstraintLayout>
-            <ProgressBar
-                android:id="@+id/progressbar"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_point_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_8"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:paddingBottom="@dimen/dp_2"
+                android:text=";laksdjf;alsjd"
+                android:textColor="#7031353b"
+                android:visibility="gone"
+                app:layout_constraintStart_toEndOf="@+id/text_point_discount"
+                app:layout_constraintTop_toTopOf="@+id/text_point_discount"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_point_discount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:background="@drawable/bg_red_rounded_discount"
+                android:paddingLeft="@dimen/dp_4"
+                android:paddingTop="@dimen/dp_2"
+                android:paddingRight="@dimen/dp_4"
+                android:paddingBottom="@dimen/dp_2"
+                android:text="14% OFF"
+                android:textColor="@color/Red_R400"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:typographyType="small"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_point_value_coupon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:text=";lkdf;lkjsdnm"
+                android:textColor="@color/Yellow_Y500"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/text_point_discount"
+                app:layout_goneMarginTop="@dimen/dp_24"
+                app:typographyType="heading_4"
+                app:typographyWeight="bold" />
 
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_point_value_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/dp_2"
+                android:text="Points Saya"
+                android:textColor="@color/clr_ae31353b"
+                app:layout_constraintStart_toStartOf="@+id/text_point_value_coupon"
+                app:layout_constraintTop_toBottomOf="@+id/text_point_value_coupon"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/text_point_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:text="afdsafs"
+                android:textColor="@color/clr_ae31353b"
+                app:layout_constraintBaseline_toBaselineOf="@+id/text_point_value_label"
+                app:layout_constraintStart_toEndOf="@+id/text_point_value_label"
+                app:layout_constraintTop_toTopOf="@+id/text_point_value_label"
+                app:typographyType="body_2"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/button_action_2"
+                android:layout_width="@dimen/dp_120"
+                android:layout_height="@dimen/dp_48"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button_orange_enabled"
+                android:gravity="center"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/top_shaded_view" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/button_action_gunakan"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/dp_48"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_12"
+                android:layout_weight="1"
+                android:background="@drawable/bg_button_green"
+                android:gravity="center"
+                android:text="Gunakan"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/top_shaded_view" />
         </android.support.constraint.ConstraintLayout>
-    </ScrollView>
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/catalog_bottom_section"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@color/transparent"
-        android:orientation="vertical">
-
-        <View
-            android:id="@+id/top_shaded_view"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_6"
-            android:background="@drawable/bg_tp_shadow"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_point_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_2"
-            android:text=";laksdjf;alsjd"
-            android:textColor="#7031353b"
-            android:visibility="gone"
-            app:layout_constraintStart_toEndOf="@+id/text_point_discount"
-            app:layout_constraintTop_toTopOf="@+id/text_point_discount"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_point_discount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:background="@drawable/bg_red_rounded_discount"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingTop="@dimen/dp_2"
-            android:paddingRight="@dimen/dp_4"
-            android:paddingBottom="@dimen/dp_2"
-            android:text="14% OFF"
-            android:textColor="@color/Red_R400"
-            android:visibility="gone"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="small"
-            app:typographyWeight="bold" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_point_value_coupon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:text=";lkdf;lkjsdnm"
-            android:textColor="@color/Yellow_Y500"
-            android:visibility="visible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_point_discount"
-            app:layout_goneMarginTop="@dimen/dp_24"
-            app:typographyType="heading_4"
-            app:typographyWeight="bold" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_point_value_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dp_2"
-            android:text="Points Saya"
-            android:textColor="@color/clr_ae31353b"
-            app:layout_constraintStart_toStartOf="@+id/text_point_value_coupon"
-            app:layout_constraintTop_toBottomOf="@+id/text_point_value_coupon"
-            app:typographyType="body_3" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/text_point_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_4"
-            android:text="afdsafs"
-            android:textColor="@color/clr_ae31353b"
-            app:layout_constraintBaseline_toBaselineOf="@+id/text_point_value_label"
-            app:layout_constraintStart_toEndOf="@+id/text_point_value_label"
-            app:layout_constraintTop_toTopOf="@+id/text_point_value_label"
-            app:typographyType="body_2"
-            app:typographyWeight="bold" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/button_action_2"
-            android:layout_width="@dimen/dp_120"
-            android:layout_height="@dimen/dp_48"
-            android:layout_gravity="center_vertical"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:layout_weight="1"
-            android:background="@drawable/bg_button_orange_enabled"
-            android:gravity="center"
-            android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_14"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/top_shaded_view" />
-
-    </android.support.constraint.ConstraintLayout>
 </LinearLayout>

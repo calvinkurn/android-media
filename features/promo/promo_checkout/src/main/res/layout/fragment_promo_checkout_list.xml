@@ -128,10 +128,4 @@
         tools:listitem="@layout/item_list_promo_checkout"
         tools:visibility="gone" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragmentCont"/>
-
-
 </android.support.design.widget.CoordinatorLayout>
