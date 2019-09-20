@@ -95,6 +95,7 @@ public class HomePageTracking {
     public static final String IDR = "IDR";
     public static final String IMPRESSIONS = "impressions";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK = "product recommendation click";
+    public static final String EVENT_LEGO_BANNER_IMPRESSION = "lego banner gif impression";
     public static final String EVENT_ACTION_PRODUCT_RECOMMENDATION_CLICK_NON_LOGIN = "product recommendation click - non login";
     public static final String CLICK = "click";
     public static final String ACTION_FIELD = "actionField";
@@ -995,8 +996,28 @@ public class HomePageTracking {
         ContextAnalytics tracker = getTracker(context);
         if (tracker != null) {
             tracker.sendEnhanceEcommerceEvent(
-                    bannerChannel.getEnhanceImpressionGIFBanner()
-                    );
+                    DataLayer.mapOf(
+                            EVENT, PROMO_VIEW,
+                            EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                            EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
+                            EVENT_LABEL, "",
+                            CHANNEL_ID, bannerChannel.getId(),
+                            ECOMMERCE, DataLayer.mapOf(
+                                    PROMO_VIEW, DataLayer.mapOf(
+                                            PROMOTIONS, DataLayer.listOf(
+                                                    DataLayer.mapOf(
+                                                            "id", bannerChannel.getBanner().getId(),
+                                                            "name", "/ - p1 - lego banner gif - " + bannerChannel.getHeader().getName(),
+                                                            "creative", bannerChannel.getBanner().getAttribution(),
+                                                            "creative_url", "tokopedia.com/creative.png",
+                                                            "position", String.valueOf(1)
+                                                    )
+                                            )
+                                    )
+
+                            )
+                    )
+            );
         }
     }
 
@@ -1174,6 +1195,30 @@ public class HomePageTracking {
                                 list.toArray(new Object[list.size()])
 
                         ))
+        );
+    }
+
+    public static HashMap<String, Object> getEnhanceImpressionPromoGifBannerDC(DynamicHomeChannel.Channels channel){
+        return (HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, PROMO_VIEW_IRIS,
+                EVENT_CATEGORY, CATEGORY_HOME_PAGE,
+                EVENT_ACTION, EVENT_LEGO_BANNER_IMPRESSION,
+                EVENT_LABEL, "",
+                CHANNEL_ID, channel.getId(),
+                ECOMMERCE, DataLayer.mapOf(
+                        PROMO_VIEW, DataLayer.mapOf(
+                                PROMOTIONS, DataLayer.listOf(
+                                        DataLayer.mapOf(
+                                                "id", channel.getBanner().getId(),
+                                                "name", "/ - p1 - lego banner gif - " + channel.getHeader().getName(),
+                                                "creative", channel.getBanner().getAttribution(),
+                                                "creative_url", "tokopedia.com/creative.png",
+                                                "position", String.valueOf(1)
+                                        )
+                                )
+                        )
+
+                )
         );
     }
 
