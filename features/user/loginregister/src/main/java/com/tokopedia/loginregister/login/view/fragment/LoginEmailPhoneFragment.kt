@@ -553,7 +553,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun goToRegisterInitial(source: String) {
         if (activity != null) {
-            analytics.eventClickRegisterFromLogin(context)
+            analytics.eventClickRegisterFromLogin()
             val intent = RegisterInitialActivity.getCallingIntent(activity)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)

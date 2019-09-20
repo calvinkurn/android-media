@@ -2,9 +2,7 @@ package com.tokopedia.loginregister.common.analytics
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import android.util.Patterns
-
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.cashshield.CashShield
@@ -14,11 +12,10 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
-
-import java.util.HashMap
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -251,9 +248,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     //#11
     fun eventClickLoginEmailButton(applicationContext: Context) {
-//        applicationContext?.let {
-//            getCashShield(it).send()
-//        }
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -295,9 +289,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     //#12
     fun eventClickLoginGoogle(applicationContext: Context) {
-//        applicationContext?.let {
-//            getCashShield(it).send()
-//        }
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -313,10 +304,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     //#13
     fun eventClickLoginFacebook(applicationContext: Context) {
-//        applicationContext?.let {
-//            getCashShield(it).send()
-//        }
-
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_CLICK_LOGIN,
                 CATEGORY_LOGIN_PAGE,
@@ -341,10 +328,7 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
 
-    fun eventClickRegisterFromLogin(context: Context?) {
-//        context?.let {
-//            getCashShield(it).send()
-//        }
+    fun eventClickRegisterFromLogin() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_LOGIN,
                 CATEGORY_LOGIN,
@@ -779,7 +763,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     fun initCashShield(context: Context?) {
         context?.let {
             getCashShield(it).refreshSession()
-            Log.d("Cashield", getCashShield(it).getSessionId())
         }
     }
 
