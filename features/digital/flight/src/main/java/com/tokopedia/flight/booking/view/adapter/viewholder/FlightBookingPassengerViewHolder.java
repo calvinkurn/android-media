@@ -32,7 +32,6 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
 
     private LabelView headerLabel;
     private LinearLayout passengerDetailLayout;
-    private AppCompatTextView tvPassengerName;
     private RecyclerView rvPassengerDetail;
 
     private FlightBookingPassengerActionListener listener;
@@ -46,7 +45,6 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
     private void findViews(View view) {
         headerLabel = (LabelView) view.findViewById(R.id.header_label);
         passengerDetailLayout = (LinearLayout) view.findViewById(R.id.passenger_detail_layout);
-        tvPassengerName = (AppCompatTextView) view.findViewById(R.id.tv_passenger_name);
         rvPassengerDetail = (RecyclerView) view.findViewById(R.id.rv_list_details);
     }
 
@@ -77,7 +75,7 @@ public class FlightBookingPassengerViewHolder extends AbstractViewHolder<FlightB
         if (viewModel.getPassengerTitle() != null && viewModel.getPassengerTitle().length() > 0) {
             passengerName = String.format("%s %s", viewModel.getPassengerTitle(), passengerName);
         }
-        tvPassengerName.setText(String.valueOf(passengerName));
+        headerLabel.setTitle(String.valueOf(passengerName));
         initiatePassengerDetailView(viewModel);
     }
 

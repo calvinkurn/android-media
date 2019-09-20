@@ -54,24 +54,31 @@
             app:layout_constraintTop_toBottomOf="@id/til_contact_email"
             app:textViewTheme="lightDisabled" />
 
-        <LinearLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_24"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dp_4">
 
             <Spinner
                 android:id="@+id/sp_contact_phone_code"
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/til_contact_phone_number"
+                app:layout_constraintBottom_toBottomOf="@id/til_contact_phone_number"
+                app:layout_constraintLeft_toLeftOf="parent"/>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
                 android:id="@+id/til_contact_phone_number"
                 style="@style/HintTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toEndOf="@id/sp_contact_phone_code"
+                app:layout_constraintEnd_toEndOf="parent">
 
                 <android.support.v7.widget.AppCompatAutoCompleteTextView
                     android:layout_width="match_parent"
@@ -81,7 +88,7 @@
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
-        </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
 
         <com.tokopedia.unifycomponents.ticker.Ticker
             android:id="@+id/contact_data_info_ticker"

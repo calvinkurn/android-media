@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -17,7 +18,6 @@ import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.common.travel.data.entity.TravelContactIdCard
 import com.tokopedia.common.travel.data.entity.TravelContactListModel
@@ -66,12 +66,13 @@ import kotlinx.android.synthetic.main.fragment_flight_booking_passenger.til_birt
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * @author by jessica on 2019-09-05
  */
 
-class FlightBookingPassengerFragment: BaseDaggerFragment() {
+class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
     lateinit var passengerModel: FlightBookingPassengerViewModel
     lateinit var luggageModels: List<FlightBookingAmenityMetaViewModel>
@@ -133,20 +134,20 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        passengerViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer {
-            contactList -> contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
+        passengerViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
+            contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
-        passengerViewModel.nationalityData.observe(this, android.arch.lifecycle.Observer {
-            value -> value?.let { onNationalityChanged(it) }
+        passengerViewModel.nationalityData.observe(this, android.arch.lifecycle.Observer { value ->
+            value?.let { onNationalityChanged(it) }
         })
 
-        passengerViewModel.passportIssuerCountryData.observe(this, android.arch.lifecycle.Observer {
-            value -> value?.let { onIssuerCountryChanged(it) }
+        passengerViewModel.passportIssuerCountryData.observe(this, android.arch.lifecycle.Observer { value ->
+            value?.let { onIssuerCountryChanged(it) }
         })
     }
 
-    private fun initView () {
+    private fun initView() {
         context?.let {
 
             renderViewBasedOnType()
@@ -189,8 +190,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
                     }
                 })
         (et_first_name as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
-        (et_first_name as AutoCompleteTextView).onItemClickListener = AdapterView.OnItemClickListener {
-            _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
+        (et_first_name as AutoCompleteTextView).onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ -> autofillPassengerContact(travelContactArrayAdapter.getItem(position)) }
 
     }
 
@@ -200,7 +200,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             passengerModel.passengerTitleId = getPassengerTitleId(getPassengerTitle())
             passengerModel.passengerFirstName = getFirstName()
             passengerModel.passengerLastName = getLastName()
-            if (isMandatoryDoB() || !isDomestic) passengerModel.passengerBirthdate =  FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
+            if (isMandatoryDoB() || !isDomestic) passengerModel.passengerBirthdate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassengerBirthDate())
             if (!isDomestic) {
                 passengerModel.passportNumber = getPassportNumber()
                 passengerModel.passportExpiredDate = FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, FlightDateUtil.DEFAULT_FORMAT, getPassportExpiryDate())
@@ -306,8 +306,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
             selectedDate = FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_VIEW_FORMAT, getPassportExpiryDate())
         }
 
-        showCalendarPickerDialog(selectedDate, minDate, maxDate, DatePickerDialog.OnDateSetListener {
-            _, year, month, dayOfMonth ->
+        showCalendarPickerDialog(selectedDate, minDate, maxDate, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             val calendar = FlightDateUtil.getCurrentCalendar()
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
@@ -468,7 +467,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     fun renderViewBasedOnType() {
         if (isAdultPassenger()) {
             (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_adult_title))
-          if (isMandatoryDoB() || isDomestic) til_birth_date.visibility = View.VISIBLE else View.GONE
+            if (isMandatoryDoB() || isDomestic) til_birth_date.visibility = View.VISIBLE else View.GONE
         } else {
             if (isChildPassenger()) (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_child_title))
             else (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_infant_title))
@@ -476,8 +475,12 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         }
 
         if (isAdultPassenger() || isChildPassenger()) {
-            if (luggageModels.isNotEmpty()) { renderPassengerLuggages(luggageModels, passengerModel.flightBookingLuggageMetaViewModels) }
-            if (mealModels.isNotEmpty()) { renderPassengerMeals(mealModels, passengerModel.flightBookingMealMetaViewModels) }
+            if (luggageModels.isNotEmpty()) {
+                renderPassengerLuggages(luggageModels, passengerModel.flightBookingLuggageMetaViewModels)
+            }
+            if (mealModels.isNotEmpty()) {
+                renderPassengerMeals(mealModels, passengerModel.flightBookingMealMetaViewModels)
+            }
         }
     }
 
@@ -510,8 +513,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         currentTime.set(Calendar.MINUTE, DEFAULT_LAST_MIN_IN_DAY)
         currentTime.set(Calendar.SECOND, DEFAULT_LAST_SEC_IN_DAY)
 
-        var onDateSetListener = DatePickerDialog.OnDateSetListener {
-            _, year, month, dayOfMonth ->
+        var onDateSetListener = DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             val calendar = FlightDateUtil.getCurrentCalendar()
             calendar.set(Calendar.YEAR, year)
             calendar.set(Calendar.MONTH, month)
@@ -550,7 +552,7 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
         et_nationality.setText("")
     }
 
-    fun autofillPassengerContact(contact:TravelContactListModel.Contact?) {
+    fun autofillPassengerContact(contact: TravelContactListModel.Contact?) {
         clearAllFields()
         if (contact != null) {
             if (contact.firstName.isNotBlank()) {
@@ -755,11 +757,9 @@ class FlightBookingPassengerFragment: BaseDaggerFragment() {
     }
 
     fun showMessageErrorInSnackBar(resId: Int) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resId))
-    }
-
-    fun showMessageErrorInSnackBar(resId: Int, arg: String) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resId, arg))
+        view?.let {
+            Toaster.showError(it, getString(resId), Snackbar.LENGTH_LONG)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -6,17 +6,15 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
-import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode
 import com.tokopedia.common.travel.presentation.model.TravelContactData
 import com.tokopedia.common.travel.ticker.TravelTickerUtils
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
@@ -51,6 +49,7 @@ import kotlinx.android.synthetic.main.fragment_flight_booking.*
 import rx.Observable
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.unifycomponents.Toaster
 
 /**
  * @author by furqan on 04/03/19
@@ -435,9 +434,10 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     override fun showGetCartDataErrorStateLayout(t: Throwable) {
-        NetworkErrorHelper.showEmptyState(
-                activity, view, FlightErrorUtil.getMessageFromException(activity, t)
-        ) { flightBookingPresenter.onRetryGetCartData() }
+        view?.let {
+            Toaster.showErrorWithAction(it, FlightErrorUtil.getMessageFromException(activity, t),
+                    Snackbar.LENGTH_LONG, "Coba Lagi", View.OnClickListener { flightBookingPresenter.onRetryGetCartData() })
+        }
     }
 
     override fun renderFinishTimeCountDown(date: Date) {
@@ -534,9 +534,11 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     override fun showUpdateDataErrorStateLayout(t: Throwable) {
-        NetworkErrorHelper.showEmptyState(
-                activity, view, FlightErrorUtil.getMessageFromException(activity, t)
-        ) { flightBookingPresenter.onFinishTransactionTimeReached() }
+        view?.let {
+            Toaster.showErrorWithAction(it, FlightErrorUtil.getMessageFromException(activity, t),
+                    Snackbar.LENGTH_LONG, "Coba Lagi",
+                    View.OnClickListener { flightBookingPresenter.onFinishTransactionTimeReached() })
+        }
     }
 
     override fun getCartId(): String = bookingCartId
@@ -554,12 +556,14 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     private fun showMessageErrorInSnackBar(resId: Int) {
-        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resId))
+        view?.let {
+            Toaster.showError(it, getString(resId), Snackbar.LENGTH_LONG)
+        }
     }
 
     private fun initView() {
 
-        widget_partial_traveller_info.setListener(object: TravellerInfoWidget.TravellerInfoWidgetListener {
+        widget_partial_traveller_info.setListener(object : TravellerInfoWidget.TravellerInfoWidgetListener {
             override fun onClickEdit() {
                 context?.let {
                     startActivityForResult(TravelContactDataActivity.getCallingIntent(it,
