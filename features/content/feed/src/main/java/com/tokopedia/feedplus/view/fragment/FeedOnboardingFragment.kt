@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_feed_onboarding.*
+import kotlinx.android.synthetic.main.item_layout_onboarding.view.*
 import javax.inject.Inject
 
 /**
@@ -87,6 +88,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     private fun initView() {
         interestList.adapter = adapter
+        interestList.addItemDecoration(OnboardingAdapter.getItemDecoration())
     }
 
     private fun loadData() {

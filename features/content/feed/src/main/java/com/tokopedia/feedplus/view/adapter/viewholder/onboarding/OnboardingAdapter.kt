@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.onboarding
 
+import android.graphics.Rect
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -15,6 +17,30 @@ import kotlinx.android.synthetic.main.item_feed_onboarding.view.*
  * @author by yoasfs on 2019-09-18
  */
 class OnboardingAdapter(private val listener: InterestPickItemListener) : RecyclerView.Adapter<OnboardingAdapter.Holder>() {
+
+    companion object {
+        fun getItemDecoration(): RecyclerView.ItemDecoration {
+            return object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView,
+                                            state: RecyclerView.State) {
+                    super.getItemOffsets(outRect, view, parent, state)
+                    val position = parent.getChildAdapterPosition(view)
+
+                    if (position < 0) {
+                        return
+                    }
+
+                    val resources = view.resources
+                    if (view.layoutParams is GridLayoutManager.LayoutParams) {
+                        val spanIndex = (view.layoutParams as GridLayoutManager.LayoutParams).spanIndex
+                        if (spanIndex == 0) {
+                            outRect.left = resources.getDimension(R.dimen.dp_8).toInt()
+                        }ga
+                    }
+                }
+            };
+        }
+    }
 
     private val list: MutableList<OnboardingDataViewModel> = arrayListOf()
 
@@ -88,7 +114,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
         return list.filter { it.isSelected }
     }
 
-    public interface InterestPickItemListener {
+    interface InterestPickItemListener {
         fun onInterestPickItemClicked(item: OnboardingDataViewModel)
         fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>)
         fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>)
