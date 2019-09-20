@@ -4,6 +4,7 @@ import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.gql.feed.Badge
 import com.tokopedia.home.beranda.domain.gql.feed.Label
+import com.tokopedia.home.beranda.domain.gql.feed.LabelGroup
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
@@ -22,6 +23,7 @@ class HomeFeedViewModel(val productId: String,
                         var priceNumber: Int,
                         val isTopAds: Boolean,
                         val position: Int,
+                        val labelGroups: List<LabelGroup>,
                         val labels: List<Label>,
                         val badges: List<Badge>,
                         val location: String,

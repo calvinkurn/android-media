@@ -60,4 +60,7 @@
     <!--Report-->
     <string name="title_module_report">Report Module</string>
     <string name="product_report">Laporkan Produk</string>
+    <string name="title_similar_search" >Pencarian Serupa</string>
+    <string name="title_similar_search_module_name" >Pencarian Serupa</string>
+    <string name="similar_search_app_name">similarsearch</string>
 </resources>
