@@ -35,7 +35,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
                         val spanIndex = (view.layoutParams as GridLayoutManager.LayoutParams).spanIndex
                         if (spanIndex == 0) {
                             outRect.left = resources.getDimension(R.dimen.dp_8).toInt()
-                        }ga
+                        }
                     }
                 }
             };
