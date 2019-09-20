@@ -31,9 +31,9 @@
         android:layout_marginTop="@dimen/dp_16"
         android:layout_weight="1"
         app:layoutManager="android.support.v7.widget.GridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView"
-        app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
         app:reverseLayout="false"
         app:spanCount="3" />
 
@@ -49,13 +49,47 @@
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/saveInterest"
             android:layout_width="match_parent"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:text="@string/feed_see_inspiration"
             android:textAllCaps="false"
             app:buttonCompatSize="medium"
             app:buttonCompatType="primary" />
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible">
+
+        <include
+            layout="@layout/partial_shimmering_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16" />
+
+        <include
+            layout="@layout/item_shimmering_grid_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16" />
+
+        <include
+            layout="@layout/item_shimmering_grid_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16" />
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>
