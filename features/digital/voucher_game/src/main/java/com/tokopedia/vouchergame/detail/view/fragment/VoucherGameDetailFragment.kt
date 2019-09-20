@@ -474,18 +474,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     private fun selectProduct(product: VoucherGameProduct, position: Int) {
         // Show selected item in list
         if (::selectedProduct.isInitialized && product == selectedProduct) return
-//        {
-//            // If product is already selected, do nothing
-//            if (product == selectedProduct) return
-//
-//            val selectedIndex = adapter.data.indexOf(selectedProduct)
-//            (adapter.data[selectedIndex] as VoucherGameProduct).selected = false
-//            adapter.notifyItemChanged(selectedIndex)
-//        }
-//        (adapter.data[position] as VoucherGameProduct).selected = true
-//        adapter.notifyItemChanged(position)
-        adapter.setSelectedProduct(position)
 
+        adapter.setSelectedProduct(position)
         // Update selected product
         selectedProduct = product
 
