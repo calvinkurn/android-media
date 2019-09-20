@@ -4,9 +4,11 @@ import android.arch.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.feedplus.data.pojo.onboarding.DataItem
 import com.tokopedia.feedplus.data.pojo.onboarding.OnboardingData
+import com.tokopedia.feedplus.data.pojo.onboarding.SubmitInterestResponse
 import com.tokopedia.feedplus.view.di.RawQueryKeyConstant
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -30,8 +32,12 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
     : BaseViewModel(baseDispatcher) {
 
     val PARAM_SOURC = "source"
+    val PARAM_ACTION = "action"
+    val PARAM_INTEREST_ID = "interestID"
 
     val onboardingResp = MutableLiveData<Result<OnboardingViewModel>> ()
+
+    val submitInterestPickResp = MutableLiveData<Result<SubmitInterestResponseViewModel>>()
 
     fun getOnboardingData(source: String, forceRefresh: Boolean) {
         launchCatchError(block = {
@@ -42,6 +48,17 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
             onboardingResp.value = Fail(it)
         }
     }
+
+    fun submitInterestPickData(dataList: List<OnboardingDataViewModel>) {
+        launchCatchError(block = {
+            val result = submitInterestPickDeferred(dataList.map { it.id })
+            submitInterestPickResp.value = Success(result.await())
+        }) {
+            it.printStackTrace()
+            submitInterestPickResp.value = Fail(it)
+        }
+    }
+
     private suspend fun loadOnboardingData(source: String, forceRefresh: Boolean): Deferred<OnboardingViewModel> {
         return async(Dispatchers.IO) {
             var resultData = OnboardingViewModel()
@@ -55,6 +72,24 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
             if (gqlResponse.getError(OnboardingData::class.java)?.isNotEmpty() != true) {
                 val result = (gqlResponse.getData(OnboardingData::class.java) as OnboardingData)
                 resultData = mappingOnboardingData(result)
+            }
+            resultData
+        }
+    }
+
+    private suspend fun submitInterestPickDeferred(idList: List<Int>): Deferred<SubmitInterestResponseViewModel> {
+        return async(Dispatchers.IO) {
+            var resultData = SubmitInterestResponseViewModel()
+            val param = mapOf(PARAM_ACTION to "", PARAM_INTEREST_ID to idList)
+            val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_SUBMIT_INTEREST_ID],
+                    SubmitInterestResponse::class.java, param)
+            val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+            val requests = mutableListOf(request)
+            val gqlResponse = graphqlRepository.getReseponse(requests, cacheStrategy)
+            if (gqlResponse.getError(SubmitInterestResponse::class.java)?.isNotEmpty() != true) {
+                val result = (gqlResponse.getData(SubmitInterestResponse::class.java) as SubmitInterestResponse)
+                resultData.success = result.feedInterestUserUpdate.success
+                resultData.error = result.feedInterestUserUpdate.error
             }
             resultData
         }
@@ -85,4 +120,5 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
         }
         return dataList
     }
+
 }

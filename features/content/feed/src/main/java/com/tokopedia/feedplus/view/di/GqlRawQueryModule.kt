@@ -21,5 +21,13 @@ class GqlRawQueryModule {
             GraphqlHelper.loadRawString(context.resources, R.raw.query_onboarding_interest)
 
 
+    @FeedPlusScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.MUTATION_SUBMIT_INTEREST_ID)
+    fun provideMutationSubmitInterestId(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_submit_interest_id)
+
+
 
 }

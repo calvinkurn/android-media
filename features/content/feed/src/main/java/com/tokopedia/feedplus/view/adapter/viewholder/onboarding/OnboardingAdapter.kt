@@ -30,7 +30,7 @@ class OnboardingAdapter(val itemList: List<OnboardingDataViewModel>, val listene
 
     class Holder(v: View, val listener: InterestPickItemListener): RecyclerView.ViewHolder(v) {
 
-        val VAL_ICON_SIZE = 40
+        val VAL_ICON_SIZE = 30
 
         fun bind(item: OnboardingDataViewModel, positionInAdapter: Int) {
             initView(item, positionInAdapter)
@@ -57,6 +57,7 @@ class OnboardingAdapter(val itemList: List<OnboardingDataViewModel>, val listene
                 } else {
                     item.isSelected = !item.isSelected
                     setBackgroundColor(item)
+                    listener.onInterestPickItemClicked(item)
                 }
             }
         }

@@ -114,6 +114,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewMod
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
+import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
@@ -122,7 +123,8 @@ import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
@@ -231,6 +233,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
             when (it) {
                 is Success -> onSuccessGetOnboardingData(it.data)
                 is Fail -> onErrorGetFeedFirstPage(ErrorHandler.getErrorMessage(activity, it.throwable))
+            }
+        })
+
+        feedOnboardingPresenter.submitInterestPickResp.observe(this, Observer {
+            view?.hideLoading()
+            when (it) {
+                is Success -> onSuccessSubmitInterestPickData()
+                is Fail  -> onErrorSubmitInterestPickData(it.throwable)
             }
         })
     }
@@ -618,29 +628,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 dataShop.shop.id,
                 FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE)
 
-    }
-
-    private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
-        if (!data.isEnableOnboarding) {
-            presenter.fetchFirstPage()
-        } else {
-            finishLoading()
-            clearData()
-            val feedOnboardingData: MutableList<OnboardingDataViewModel> = ArrayList()
-            feedOnboardingData.addAll(data.dataList.take(5))
-            feedOnboardingData.add(getOnboardingDataSeeAll())
-            data.dataList = feedOnboardingData
-            adapter.addItem(data)
-        }
-    }
-
-    private fun getOnboardingDataSeeAll(): OnboardingDataViewModel {
-        return OnboardingDataViewModel(
-                0,
-                OnboardingDataViewModel.defaultLihatSemuaText,
-                "",
-                false,
-                true)
     }
 
     fun scrollToTop() {
@@ -1523,7 +1510,44 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
+        view?.showLoadingTransparent()
+        feedOnboardingPresenter.submitInterestPickData(selectedItemList)
+    }
 
+    private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
+        if (!data.isEnableOnboarding) {
+            presenter.fetchFirstPage()
+        } else {
+            finishLoading()
+            clearData()
+            val feedOnboardingData: MutableList<OnboardingDataViewModel> = ArrayList()
+            feedOnboardingData.addAll(data.dataList.take(5))
+            feedOnboardingData.add(getOnboardingDataSeeAll())
+            data.dataList = feedOnboardingData
+            adapter.addItem(data)
+        }
+    }
+
+
+    private fun onSuccessSubmitInterestPickData() {
+        //go to recom profile
+    }
+
+    private fun onErrorSubmitInterestPickData(throwable: Throwable) {
+        Toaster.showError(view!!,
+                ErrorHandler.getErrorMessage(activity, throwable),
+                2000
+        )
+    }
+
+
+    private fun getOnboardingDataSeeAll(): OnboardingDataViewModel {
+        return OnboardingDataViewModel(
+                0,
+                OnboardingDataViewModel.defaultLihatSemuaText,
+                "",
+                false,
+                true)
     }
 
     private fun doShare(body: String, title: String) {

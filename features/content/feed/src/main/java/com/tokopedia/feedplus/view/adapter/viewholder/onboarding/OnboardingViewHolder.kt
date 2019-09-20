@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_layout_onboarding.view.*
@@ -18,7 +19,9 @@ class OnboardingViewHolder(
         v : View,
         val userSession: UserSessionInterface,
         val listener: OnboardingAdapter.InterestPickItemListener)
-    : AbstractViewHolder<OnboardingViewModel>(v){
+    : AbstractViewHolder<OnboardingViewModel>(v), OnboardingAdapter.InterestPickItemListener by listener {
+
+    var COUNT_MINIMUM_PICK = 0
 
     companion object {
         @LayoutRes
@@ -33,21 +36,30 @@ class OnboardingViewHolder(
     }
 
     private fun initView(element: OnboardingViewModel) {
+        COUNT_MINIMUM_PICK = element.minimumPick
         ImageHandler.loadImageCircle2(itemView.context, itemView.iv_onboarding_user, userSession.profilePicture)
         itemView.tv_onboarding_instruction.text = element.instruction
         itemView.tv_onboarding_user.text = String.format(getString(R.string.feed_onboarding_name_format), userSession.name)
         itemView.tv_onboarding_title.text =  element.titleIntro
         itemView.btn_onboarding.text = element.buttonCta
 
-        itemView.btn_onboarding.isEnabled = false
         itemView.rv_interest_pick.layoutManager = GridLayoutManager(itemView.context, 3)
-        adapter = OnboardingAdapter(element.dataList, listener)
+        adapter = OnboardingAdapter(element.dataList, this)
         itemView.rv_interest_pick.adapter = adapter
+        updateButtonCheckRecommendation()
+    }
+
+    private fun updateButtonCheckRecommendation() {
+        itemView.btn_onboarding.isEnabled = COUNT_MINIMUM_PICK <= adapter.getSelectedItems().size
     }
 
     private fun initViewListener(element: OnboardingViewModel) {
         itemView.btn_onboarding.setOnClickListener {
             listener.onCheckRecommendedProfileButtonClicked(adapter.getSelectedItems())
         }
+    }
+
+    override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
+        updateButtonCheckRecommendation()
     }
 }
