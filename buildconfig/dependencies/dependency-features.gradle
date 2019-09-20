@@ -60,6 +60,7 @@ ext {
             productCard                     : ":features:discovery:productcard",
             filter                          : ":features:discovery:filter",
             imageSearch                     : ":features:discovery:image_search",
+            similarSearch                   : ":features:discovery:similarsearch",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
 
             homecredit                      : ":features:fintech:home_credit",
