@@ -12,8 +12,6 @@ import com.tokopedia.chat_common.data.ImageUploadViewModel
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.topchat.chatroom.view.viewmodel.PreviewViewModel
-import com.tokopedia.topchat.common.TopChatRouter
-import kotlin.collections.ArrayList
 
 /**
  * @author : Steven 11/12/18
@@ -81,8 +79,7 @@ interface TopChatContract {
 
         fun loadPreviousChat(messageId: String, page: Int, onError: (Throwable) -> Unit, onSuccessGetPreviousChat: (ChatroomViewModel) -> Unit)
 
-        fun addProductToCart(router: TopChatRouter,
-                             element: ProductAttachmentViewModel,
+        fun addProductToCart(element: ProductAttachmentViewModel,
                              onError: (Throwable) -> Unit,
                              onSuccess: (addToCartResult: AddToCartDataModel) -> Unit,
                              shopId: Int)

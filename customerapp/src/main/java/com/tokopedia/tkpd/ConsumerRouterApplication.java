@@ -86,7 +86,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -296,7 +295,6 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
-import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -352,7 +350,6 @@ import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
-import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.train.checkout.presentation.model.TrainCheckoutViewModel;
@@ -450,7 +447,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NetworkRouter,
         InstantLoanChuckRouter,
         InstantLoanRouter,
-        TopChatRouter,
         TokopointRouter,
         SearchBarRouter,
         GlobalNavRouter,
@@ -1964,11 +1960,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public File writeImage(String filePath, int qualityProcentage) {
         return FileUtils.writeImageToTkpdPath(filePath, qualityProcentage);
-    }
-
-    @Override
-    public boolean isIndicatorVisible() {
-        return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY, false);
     }
 
     @Override

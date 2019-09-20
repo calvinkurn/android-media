@@ -6,10 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -20,10 +18,9 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.adapter.IndicatorAdapter;
 import com.tokopedia.topchat.chatlist.fragment.InboxChatFragment;
-import com.tokopedia.topchat.chatlist.viewmodel.IndicatorItem;
 import com.tokopedia.topchat.chatlist.view.ChatNotifInterface;
+import com.tokopedia.topchat.chatlist.viewmodel.IndicatorItem;
 import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.util.SpaceItemDecoration;
 
@@ -107,8 +104,7 @@ public class InboxChatActivity extends BaseSimpleActivity
     }
 
     private boolean isIndicatorVisible() {
-        return getApplicationContext() instanceof TopChatRouter
-                && ((TopChatRouter) getApplicationContext()).isIndicatorVisible();
+        return false;
     }
 
     private List<IndicatorItem> getIndicatorList() {
@@ -125,8 +121,7 @@ public class InboxChatActivity extends BaseSimpleActivity
     @Override
     public void onBackPressed() {
         if (isTaskRoot()) {
-            Intent homeIntent = ((TopChatRouter) getApplicationContext()).getHomeIntent(this);
-            startActivity(homeIntent);
+            RouteManager.route(this, ApplinkConst.HOME);
             finish();
         }
         super.onBackPressed();

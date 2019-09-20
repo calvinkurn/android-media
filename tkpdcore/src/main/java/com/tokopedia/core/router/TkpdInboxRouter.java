@@ -62,7 +62,5 @@ public interface TkpdInboxRouter {
 
     Intent getChatBotIntent(Context context, String messageId);
 
-    boolean isIndicatorVisible();
-
     boolean isSupportedDelegateDeepLink(String url);
 }

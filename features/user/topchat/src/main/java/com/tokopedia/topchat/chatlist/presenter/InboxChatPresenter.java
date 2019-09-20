@@ -9,9 +9,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase;
-import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.data.TopChatUrl;
 import com.tokopedia.topchat.chatlist.data.mapper.WebSocketMapper;
@@ -26,8 +27,8 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.common.TopChatRouter;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -299,18 +300,11 @@ public class InboxChatPresenter extends BaseDaggerPresenter<InboxChatContract.Vi
     }
 
     public void goToProfile(int userId) {
-        if (getView().getActivity().getApplicationContext() instanceof TopChatRouter) {
-            getView().startActivity(
-                    ((TopChatRouter) getView().getActivity().getApplicationContext())
-                            .getTopProfileIntent(getView().getActivity(), String.valueOf(userId))
-            );
-        }
+        RouteManager.route(getView().getActivity(), ApplinkConst.PROFILE.replace("{user_id}", String.valueOf(userId)));
     }
 
     public void goToShop(int shopId) {
-        Intent intent = ((TopChatRouter) getView().getActivity().getApplicationContext()).getShopPageIntent
-                (getView().getActivity(), String.valueOf(shopId));
-        getView().startActivity(intent);
+        RouteManager.route(getView().getActivity(), ApplinkConst.SHOP, String.valueOf(shopId));
     }
 
     public void refreshData() {

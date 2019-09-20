@@ -36,7 +36,6 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.imagepicker.common.util.ImageUtils
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
@@ -68,7 +67,8 @@ import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.InboxChatConstant.PARCEL
 import com.tokopedia.topchat.common.InboxMessageConstant
 import com.tokopedia.topchat.common.TopChatInternalRouter
-import com.tokopedia.topchat.common.TopChatRouter
+import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP
+import com.tokopedia.topchat.common.TopChatInternalRouter.Companion.REQUEST_CODE_USER_LOGIN_CART
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import com.tokopedia.unifycomponents.Toaster
@@ -383,7 +383,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         activity?.let {
             val strings: ArrayList<String> = ArrayList()
             strings.add(imageUrl)
-            val topChatRouter = (it.applicationContext as TopChatRouter)
 
             it.startActivity(ImagePreviewActivity.getCallingIntent(it,
                     strings,
@@ -569,9 +568,8 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onClickSeeButtonOnAtcSuccessToaster(): View.OnClickListener {
         return View.OnClickListener {
-            val cartIntent = (activity!!.application as TopChatRouter).getCartIntent(activity)
             analytics.eventClickSeeButtonOnAtcSuccessToaster()
-            activity?.startActivity(cartIntent)
+            goToCart()
         }
     }
 
@@ -594,8 +592,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private fun onReturnFromShopPage(resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK && data != null) {
-            getViewState().isShopFollowed = data.getBooleanExtra(TopChatRouter
-                    .EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP, false)
+            getViewState().isShopFollowed = data.getBooleanExtra(EXTRA_SHOP_STATUS_FAVORITE_FROM_SHOP, false)
         }
     }
 
@@ -671,13 +668,12 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
         activity?.let {
-            val router = (it.application as TopChatRouter)
             (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
             var shopId = this.shopId
             if(shopId == 0) {
                 shopId = element.shopId
             }
-            presenter.addProductToCart(router, element, onError(), onSuccessBuyFromProdAttachment(), shopId)
+            presenter.addProductToCart(element, onError(), onSuccessBuyFromProdAttachment(), shopId)
         }
     }
 
@@ -699,8 +695,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         return {
             showSnackbarAddToCart(it)
             if (it.status.equals(AddToCartDataModel.STATUS_OK, true) && it.data.success == 1) {
-                activity?.startActivity((activity!!.application as TopChatRouter)
-                        .getCartIntent(activity))
+                goToCart()
             }
         }
     }
@@ -891,6 +886,15 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun sendAnalyticAttachmentSent(attachment: PreviewViewModel) {
         if (attachment is InvoicePreviewViewModel) {
             analytics.invoiceAttachmentSent(attachment)
+        }
+    }
+
+    private fun goToCart() {
+        if (session.isLoggedIn) {
+            startActivity(RouteManager.getIntent(activity, ApplinkConst.CART))
+        } else {
+            startActivityForResult(RouteManager.getIntent(activity, ApplinkConst.LOGIN),
+                    REQUEST_CODE_USER_LOGIN_CART)
         }
     }
 }
