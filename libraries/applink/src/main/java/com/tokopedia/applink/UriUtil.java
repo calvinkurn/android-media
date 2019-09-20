@@ -114,6 +114,7 @@ public class UriUtil {
                         result.put(segmentName ,
                                 uri.getPathSegments().get(i));
                     }
+                    i++;
                 }
             }
         } catch (Exception e) {

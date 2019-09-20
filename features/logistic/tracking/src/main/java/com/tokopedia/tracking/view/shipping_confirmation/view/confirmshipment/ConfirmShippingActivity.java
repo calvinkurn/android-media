@@ -44,6 +44,7 @@ import com.tokopedia.transaction.common.listener.ToolbarChangeListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -106,8 +107,8 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
         initInjector();
         Uri uri = getIntent().getData();
         if (uri != null) {
-            Map<String, Object> param = UriUtil.destructureUriToMap(ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION, uri, true);
-            mMode = (String) param.get("mode");
+            List<String> param = UriUtil.destructureUri(ApplinkConstInternalLogistic.SHIPPING_CONFIRMATION, uri, true);
+            mMode = param.get(0);
         }
 
         Bundle extras = getIntent().getExtras();
@@ -117,6 +118,8 @@ public class ConfirmShippingActivity extends BaseSimpleActivity
             }
             orderDetailData = extras.getParcelable(EXTRA_ORDER_DETAIL_DATA);
         }
+
+        initView();
     }
 
     private boolean isChangeCourierMode(int orderCode) {
