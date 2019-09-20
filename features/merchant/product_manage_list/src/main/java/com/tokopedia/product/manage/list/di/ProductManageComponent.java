@@ -13,7 +13,7 @@ import dagger.Component;
  */
 
 @ProductManageScope
-@Component(modules = ProductManageModule.class, dependencies = ProductComponent.class)
+@Component(modules = {ProductManageModule.class, ViewModelModule.class}, dependencies = ProductComponent.class)
 public interface ProductManageComponent {
     void inject(ProductManageFragment productManageFragment);
 

@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor;
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
@@ -23,12 +22,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.product.manage.list.R;
-import com.tokopedia.product.manage.list.data.repository.ActionProductManageRepositoryImpl;
-import com.tokopedia.product.manage.list.data.source.ActionProductManageDataSource;
-import com.tokopedia.product.manage.list.data.source.ProductActionApi;
-import com.tokopedia.product.manage.list.domain.ActionProductManageRepository;
 import com.tokopedia.product.manage.list.domain.BulkUpdateProductUseCase;
-import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
+import com.tokopedia.product.manage.list.domain.EditPriceUseCase;
 import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase;
 import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
@@ -64,8 +59,8 @@ import static com.tokopedia.shop.common.constant.ShopCommonParamApiConstant.GQL_
 public class ProductManageModule {
     @Provides
     @ProductManageScope
-    public ProductManagePresenter provideManageProductPresenter(GetShopInfoUseCase getShopInfoUseCase,
-                                                                EditPriceProductUseCase editPriceProductUseCase,
+    public ProductManagePresenter provideManageProductPresenter(EditPriceUseCase editPriceUseCase,
+                                                                GetShopInfoUseCase getShopInfoUseCase,
                                                                 UserSessionInterface userSession,
                                                                 TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                                                 SetCashbackUseCase setCashbackUseCase,
@@ -73,7 +68,7 @@ public class ProductManageModule {
                                                                 GetProductListUseCase getProductListUseCase,
                                                                 ProductListMapperView productListMapperView,
                                                                 BulkUpdateProductUseCase bulkUpdateProductUseCase) {
-        return new ProductManagePresenterImpl(getShopInfoUseCase, editPriceProductUseCase, userSession, topAdsGetShopDepositGraphQLUseCase,
+        return new ProductManagePresenterImpl(editPriceUseCase, getShopInfoUseCase, userSession, topAdsGetShopDepositGraphQLUseCase,
                 setCashbackUseCase, popupManagerAddProductUseCase, getProductListUseCase, productListMapperView, bulkUpdateProductUseCase);
     }
 
@@ -172,18 +167,6 @@ public class ProductManageModule {
         } else {
             return null;
         }
-    }
-
-    @Provides
-    @ProductManageScope
-    public ActionProductManageRepository provideActionManageProductRepository(ActionProductManageDataSource actionProductManageDataSource) {
-        return new ActionProductManageRepositoryImpl(actionProductManageDataSource);
-    }
-
-    @Provides
-    @ProductManageScope
-    public ProductActionApi provideProductActionApi(@WsV4QualifierWithErrorHander Retrofit retrofit) {
-        return retrofit.create(ProductActionApi.class);
     }
 
     @Provides

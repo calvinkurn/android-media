@@ -71,10 +71,10 @@ public abstract class BasePresenterActivity<P> extends TActivity {
         super.onPause();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
+//    @Override
+//    protected void onStop() {
+//        super.onStop();
+//    }
 
     /**
      * Kalau memang ada uri data dari intent, mau diapain?

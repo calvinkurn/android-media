@@ -23,12 +23,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.activity.ProductManageSortActivity"
+            android:name=".view.activity.ProductManageFilterActivity"
             android:label="@string/title_sort_by"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".view.activity.ProductManageFilterActivity"
+            android:name=".view.activity.ProductManageSortActivity"
             android:label="@string/title_filter_but"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
     </application>

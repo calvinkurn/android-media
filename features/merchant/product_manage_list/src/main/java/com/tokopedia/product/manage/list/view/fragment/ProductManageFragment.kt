@@ -64,7 +64,6 @@ import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActi
 import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.list.R
-import com.tokopedia.product.manage.list.constant.CashbackOption
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.ERROR_CODE_LIMIT_CASHBACK
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
@@ -76,9 +75,13 @@ import com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQU
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.REQUEST_CODE_SORT
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.STOCK_EDIT_REQUEST_CODE
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.URL_TIPS_TRICK
-import com.tokopedia.product.manage.list.constant.StatusProductOption
+import com.tokopedia.product.manage.list.constant.option.CashbackOption
+import com.tokopedia.product.manage.list.constant.option.SortProductOption
+import com.tokopedia.product.manage.list.constant.option.StatusProductOption
 import com.tokopedia.product.manage.list.data.ConfirmationProductData
 import com.tokopedia.product.manage.list.data.model.BulkBottomSheetType
+import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
+import com.tokopedia.product.manage.list.data.model.ProductManageSortModel
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent
 import com.tokopedia.product.manage.list.di.ProductManageModule
@@ -98,9 +101,6 @@ import com.tokopedia.product.share.ProductShare
 import com.tokopedia.seller.SellerModuleRouter
 import com.tokopedia.seller.common.utils.KMNumbers
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
-import com.tokopedia.seller.product.manage.constant.SortProductOption
-import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel
-import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -209,18 +209,29 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderCheckedView()
 
         bottomActionView.setButton1OnClickListener {
-            val intent = ProductManageSortActivity.createIntent(activity, sortProductOption)
-            startActivityForResult(intent, REQUEST_CODE_SORT)
+            context?.let {
+                val intent = ProductManageSortActivity.createIntent(it, sortProductOption)
+                startActivityForResult(intent, REQUEST_CODE_SORT)
+            }
         }
 
         bottomActionView.setButton2OnClickListener {
-            val intent = ProductManageFilterActivity.createIntent(activity, productManageFilterModel)
-            startActivityForResult(intent, REQUEST_CODE_FILTER)
+            context?.let {
+                val intent = ProductManageFilterActivity.createIntent(it, productManageFilterModel)
+                startActivityForResult(intent, REQUEST_CODE_FILTER)
+            }
         }
 
         bulkCheckBox.setOnCheckedChangeListener { _, isChecked ->
             productManageViewModels.forEachIndexed { index, _ ->
-                adapter.updateListByCheck(isChecked, index)
+                if (!isChecked) {
+                    adapter.updateListByCheck(isChecked, index)
+                } else {
+                    // If products are already checked just ignore
+                    if (!adapter.isChecked(index)) {
+                        adapter.updateListByCheck(isChecked, index)
+                    }
+                }
             }
         }
 
@@ -864,11 +875,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         val productManageEditPriceDialogFragment = ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, productCurrencyId, goldMerchant, isOfficialStore)
         productManageEditPriceDialogFragment.setListenerDialogEditPrice(object : ProductManageEditPriceDialogFragment.ListenerDialogEditPrice {
             override fun onSubmitEditPrice(productId: String, price: String, currencyId: String, currencyText: String) {
-                productManagePresenter.editPrice(productId, price, currencyId.toString(), currencyText)
+                productManagePresenter.editPrice(productId, price, currencyId, currencyText)
             }
         })
         activity?.let {
-            productManageEditPriceDialogFragment.show(fragmentManager, "")
+            fragmentManager?.let {
+                productManageEditPriceDialogFragment.show(it, "")
+            }
         }
     }
 
@@ -927,7 +940,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         confirmationProductDataList = productManagePresenter.mapToProductConfirmationData(isActionDelete, stockType, etalaseType, itemsChecked)
         val confirmationUpdateProductBottomSheet = ConfirmationUpdateProductBottomSheet.newInstance(confirmationProductDataList)
         confirmationUpdateProductBottomSheet.setListener(this)
-        confirmationUpdateProductBottomSheet.show(fragmentManager, "bs_update_product")
+        fragmentManager?.let {
+            confirmationUpdateProductBottomSheet.show(it, "bs_update_product")
+        }
     }
 
     override fun updateProduct() {
@@ -945,6 +960,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             activity?.unregisterReceiver(addProductReceiver)
         }
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -965,37 +981,42 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        var intentResult = Intent()
+        intent?.let {
+            intentResult = it
+        }
         when (requestCode) {
             INSTAGRAM_SELECT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val imageUrls = intent.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                val imageDescList = intent.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
+                val imageUrls = intentResult.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                val imageDescList = intentResult.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
                 if (imageUrls != null && imageUrls.size > 0) {
                     ProductDraftListActivity.startInstagramSaveBulkFromLocal(context, imageUrls, imageDescList)
                 }
             }
             REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
-                productManageFilterModel = intent.getParcelableExtra(EXTRA_FILTER_SELECTED)
+                productManageFilterModel = intentResult.getParcelableExtra(EXTRA_FILTER_SELECTED)
+                        ?: ProductManageFilterModel()
                 loadInitialData()
-                ProductManageTracking.trackingFilter(productManageFilterModel, context)
+                ProductManageTracking.trackingFilter(productManageFilterModel)
             }
             ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val etalaseId = intent.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
-                val etalaseNameString = intent.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME)
+                val etalaseId = intentResult.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
+                val etalaseNameString = intentResult.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME)
                 etalaseType.etalaseId = etalaseId
                 etalaseType.etalaseValue = etalaseNameString
                 editProductBottomSheet.setResultValue(etalaseType, null)
             }
             STOCK_EDIT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val isActive = intent.getBooleanExtra(EXTRA_STOCK, false)
+                val isActive = intentResult.getBooleanExtra(EXTRA_STOCK, false)
                 val productStock: Int
                 productStock = if (isActive) 1 else 0
                 stockType.stockStatus = productStock
                 editProductBottomSheet.setResultValue(null, stockType)
             }
             REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
-                val productManageSortModel: ProductManageSortModel = intent.getParcelableExtra(EXTRA_SORT_SELECTED)
-                sortProductOption = productManageSortModel.id
+                val productManageSortModel: ProductManageSortModel = intentResult.getParcelableExtra(EXTRA_SORT_SELECTED)
+                sortProductOption = productManageSortModel.sortId
                 loadInitialData()
                 ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
             }
