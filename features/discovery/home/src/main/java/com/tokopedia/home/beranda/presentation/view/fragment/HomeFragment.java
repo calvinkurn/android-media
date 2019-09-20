@@ -776,6 +776,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             presenter.getSearchHint();
             presenter.getHomeData();
             presenter.getHeaderData(false);
+            presenter.getStickyContent();
         }
 
         if (getActivity() instanceof RefreshNotificationListener) {
