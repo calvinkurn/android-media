@@ -68,7 +68,7 @@
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toTopOf="@id/til_contact_phone_number"
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
