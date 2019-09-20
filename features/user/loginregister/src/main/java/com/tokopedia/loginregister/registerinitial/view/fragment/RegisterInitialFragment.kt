@@ -747,7 +747,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onSuccessRegister() {
         activity?.let{
-            registerAnalytics.trackSuccessRegister(context, userSession.loginMethod)
+            registerAnalytics.trackSuccessRegister(userSession.loginMethod)
 
             if(isFromAccount()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
