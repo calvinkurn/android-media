@@ -159,7 +159,7 @@ public class MainToolbar extends Toolbar {
             if (userSession.isLoggedIn()) {
                 RouteManager.route(context, ApplinkConst.NOTIFICATION);
             } else {
-                boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(redDotGimmickRemoteConfigKey, false);
+                boolean redDotGimmickRemoteConfigStatus = false;//remoteConfig.getBoolean(redDotGimmickRemoteConfigKey, false);
                 boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
                 if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
                     notifAnalytics.trackClickGimmickNotif();
