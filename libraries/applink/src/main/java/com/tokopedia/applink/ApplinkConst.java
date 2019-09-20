@@ -136,6 +136,8 @@ public interface ApplinkConst {
     String MODAL_TOKO_ORDER = "tokopedia://modaltoko/order";
     String HOTEL_ORDER = "tokopedia://hotel/order";
     String HOTEL = "tokopedia://hotel";
+    String TRAVEL_SUBHOMEPAGE = "tokopedia://travelentertainment";
+    String DIGITAL_SUBHOMEPAGE = "tokopedia://recharge";
 
     String MARKETPLACE_ORDER = "tokopedia://belanja/order";
     String MARKETPLACE_ORDER_FILTER = "tokopedia://order/marketplace/filter/{filter_id}";

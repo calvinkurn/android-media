@@ -20,8 +20,8 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.filter.common.data.Option;
@@ -35,6 +35,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.SortHelper;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.search.R;
+import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
 import com.tokopedia.search.result.presentation.view.adapter.SearchSectionGeneralAdapter;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
@@ -54,6 +55,9 @@ import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.LANDSCAPE_COLUMN_MAIN;
 import static com.tokopedia.discovery.common.constants.SearchConstant.PORTRAIT_COLUMN_MAIN;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
 
 public abstract class SearchSectionFragment
         extends BaseDaggerFragment
@@ -249,29 +253,48 @@ public abstract class SearchSectionFragment
         }
 
         switch (getAdapter().getCurrentLayoutType()) {
-            case GRID_1:
-                setSpanCount(1);
-                gridLayoutManager.setSpanCount(spanCount);
-                staggeredGridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeSingleGridView();
+            case LIST:
+                switchLayoutTypeTo(BIG_GRID);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(), "grid 1", getScreenName());
                 break;
-            case GRID_2:
-                setSpanCount(1);
-                gridLayoutManager.setSpanCount(spanCount);
-                staggeredGridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeListView();
+            case SMALL_GRID:
+                switchLayoutTypeTo(LIST);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
-            case GRID_3:
-                setSpanCount(2);
-                gridLayoutManager.setSpanCount(spanCount);
-                staggeredGridLayoutManager.setSpanCount(spanCount);
-                getAdapter().changeDoubleGridView();
+            case BIG_GRID:
+                switchLayoutTypeTo(SMALL_GRID);
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"grid 2", getScreenName());
                 break;
         }
+    }
+
+    protected void switchLayoutTypeTo(SearchConstant.ViewType layoutType) {
+        if (!getUserVisibleHint() || getAdapter() == null) {
+            return;
+        }
+
+        switch (layoutType) {
+            case LIST:
+                recyclerViewLayoutManagerChangeSpanCount(1);
+                getAdapter().changeListView();
+                break;
+            case SMALL_GRID:
+                recyclerViewLayoutManagerChangeSpanCount(2);
+                getAdapter().changeDoubleGridView();
+                break;
+            case BIG_GRID:
+                recyclerViewLayoutManagerChangeSpanCount(1);
+                getAdapter().changeSingleGridView();
+                break;
+        }
+
         refreshMenuItemGridIcon();
+    }
+
+    private void recyclerViewLayoutManagerChangeSpanCount(int spanCount) {
+        setSpanCount(spanCount);
+        gridLayoutManager.setSpanCount(spanCount);
+        staggeredGridLayoutManager.setSpanCount(spanCount);
     }
 
     public void refreshMenuItemGridIcon() {

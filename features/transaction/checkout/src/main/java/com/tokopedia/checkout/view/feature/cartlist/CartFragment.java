@@ -999,12 +999,12 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     }
 
     @Override
-    public void onCartPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal, int position) {
+    public void onPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal) {
         trackingPromoCheckoutUtil.cartImpressionTicker(cartPromoGlobal.getPromoCodeSafe());
     }
 
     @Override
-    public void onCartPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
+    public void onPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
         sendAnalyticsOnClickCancelPromoCodeAndCouponBanner();
     }
 
@@ -1271,6 +1271,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             if (cartListData.getShopGroupDataList().isEmpty()) {
                 if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.EMPTY) {
                     cartAdapter.addPromoStackingVoucherData(promoStackingData);
+                    if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
+                        onPromoGlobalTrackingImpression(promoStackingData);
+                    }
                 }
                 cartAdapter.addCartEmptyData();
 
@@ -1289,6 +1292,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
                 }
                 cartAdapter.addPromoStackingVoucherData(promoStackingData);
+                if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
+                    onPromoGlobalTrackingImpression(promoStackingData);
+                }
 
                 if (cartListData.getCartPromoSuggestion().isVisible()) {
                     cartAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
@@ -2426,15 +2432,15 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         String eventAction = "";
         String eventLabel = "";
         if (productModel instanceof CartWishlistItemHolderData) {
-            eventCategory = ConstantTransactionAnalytics.EventCategory.WISHLIST_PAGE;
+            eventCategory = ConstantTransactionAnalytics.EventCategory.CART;
             eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_WISHLIST;
             eventLabel = "";
-            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartWishlistItemHolderData) productModel, addToCartDataResponseModel);
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartWishlistItemHolderData) productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY);
         } else if (productModel instanceof CartRecentViewItemHolderData) {
-            eventCategory = ConstantTransactionAnalytics.EventCategory.RECENT_VIEW;
+            eventCategory = ConstantTransactionAnalytics.EventCategory.CART;
             eventAction = ConstantTransactionAnalytics.EventAction.CLICK_BELI_ON_RECENT_VIEW_PAGE;
             eventLabel = "";
-            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecentViewItemHolderData) productModel, addToCartDataResponseModel);
+            stringObjectMap = dPresenter.generateAddToCartEnhanceEcommerceDataLayer((CartRecentViewItemHolderData) productModel, addToCartDataResponseModel, FLAG_IS_CART_EMPTY);
         } else if (productModel instanceof CartRecommendationItemHolderData) {
             eventCategory = ConstantTransactionAnalytics.EventCategory.CART;
             eventAction = ConstantTransactionAnalytics.EventAction.CLICK_ADD_TO_CART;

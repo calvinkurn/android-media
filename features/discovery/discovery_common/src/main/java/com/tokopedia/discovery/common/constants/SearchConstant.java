@@ -20,13 +20,18 @@ public interface SearchConstant {
     int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY = 12323;
 
     interface RecyclerView {
-        int VIEW_PRODUCT = 3;
-        int VIEW_PRODUCT_GRID_1 = 12;
-        int VIEW_PRODUCT_GRID_2 = 13;
+        int VIEW_LIST = 3;
+        int VIEW_PRODUCT_BIG_GRID = 12;
+        int VIEW_PRODUCT_SMALL_GRID = 13;
     }
 
-    enum GridType {
-        GRID_1, GRID_2, GRID_3
+    enum ViewType {
+        LIST, SMALL_GRID, BIG_GRID
+    }
+
+    interface DefaultViewType {
+        int SMALL_GRID = 1;
+        int LIST = 2;
     }
 
     interface Wishlist {
