@@ -20,7 +20,7 @@ class FeedOnboardingActivity : BaseSimpleActivity() {
         @JvmStatic
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            return Intent(context, FeedPlusDetailActivity::class.java)
+            return Intent(context, FeedOnboardingActivity::class.java)
                     .setData(uri.build())
                     .putExtras(extras)
         }
