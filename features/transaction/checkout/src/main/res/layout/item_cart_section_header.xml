@@ -23,7 +23,9 @@
             android:layout_toLeftOf="@+id/label_show_all"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
-            android:text="@string/label_empty_cart_recent_view" />
+            android:text="@string/label_empty_cart_recent_view"
+            app:typographyType="body_1"
+            app:typographyWeight="bold" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_show_all"
