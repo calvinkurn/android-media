@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
+import com.tokopedia.kol.KolComponentInstance
 
 /**
  * @author by milhamj on 2019-09-20.
@@ -24,6 +26,11 @@ class FeedOnboardingFragment : BaseDaggerFragment() {
     override fun getScreenName(): String =  ""
 
     override fun initInjector() {
-
+        activity?.application?.let {
+            DaggerFeedPlusComponent.builder()
+                    .kolComponent(KolComponentInstance.getKolComponent(it))
+                    .build()
+                    .inject(this)
+        }
     }
 }

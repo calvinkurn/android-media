@@ -32,16 +32,20 @@
         app:reverseLayout="false"
         app:spanCount="3" />
 
-    <com.tokopedia.design.component.ButtonCompat
-        android:id="@+id/saveInterest"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:background="@drawable/card_shadow_top"
-        android:text="@string/feed_see_inspiration"
-        android:textAllCaps="false"
-        app:buttonCompatSize="medium"
-        app:buttonCompatType="primary" />
+        android:background="@drawable/card_shadow_top">
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/saveInterest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/feed_see_inspiration"
+            android:textAllCaps="false"
+            app:buttonCompatSize="medium"
+            app:buttonCompatType="primary" />
+    </FrameLayout>
 </LinearLayout>
