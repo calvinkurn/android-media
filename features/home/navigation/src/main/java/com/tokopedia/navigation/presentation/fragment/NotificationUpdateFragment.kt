@@ -143,6 +143,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     override fun updateFilter(filter: HashMap<String, Int>) {
         presenter.updateFilter(filter)
+        cursor = ""
         loadInitialData()
     }
 
