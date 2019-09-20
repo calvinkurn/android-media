@@ -415,29 +415,31 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
     }
 
+    private void setErrorView(String errorMessage) {
+        if (viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER) {
+            analytics.eventFailedClickVerificationButton(errorMessage);
+        }
+
+        inputOtp.setError(true);
+        inputOtp.setFocusableInTouchMode(true);
+        inputOtp.post(new Runnable() {
+            public void run() {
+                inputOtp.requestFocusFromTouch();
+                InputMethodManager lManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                lManager.showSoftInput(inputOtp, 0);
+            }
+        });
+        errorImage.setVisibility(View.VISIBLE);
+        errorOtp.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onErrorVerifyOtpCode(String errorMessage) {
         if (errorMessage.contains(VERIFICATION_CODE) || errorMessage.contains(PIN_ERR_MSG)) {
-
-            if (viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER) {
-                analytics.eventFailedClickVerificationButton(errorMessage);
-            }
-
-            inputOtp.setError(true);
-            inputOtp.setFocusableInTouchMode(true);
-            inputOtp.post(new Runnable() {
-                public void run() {
-                    inputOtp.requestFocusFromTouch();
-                    InputMethodManager lManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    lManager.showSoftInput(inputOtp, 0);
-                }
-            });
-            errorImage.setVisibility(View.VISIBLE);
-            errorOtp.setVisibility(View.VISIBLE);
+            setErrorView(errorMessage);
         } else {
             onErrorVerifyLogin(errorMessage);
         }
-
     }
 
     @Override
