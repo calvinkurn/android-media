@@ -44,13 +44,11 @@ class OnboardingViewHolder(
         itemView.btn_onboarding.text = element.buttonCta
 
         itemView.rv_interest_pick.layoutManager = GridLayoutManager(itemView.context, 3)
-        adapter = OnboardingAdapter(element.dataList, this)
-        itemView.rv_interest_pick.adapter = adapter
-        updateButtonCheckRecommendation()
-    }
 
-    private fun updateButtonCheckRecommendation() {
-        itemView.btn_onboarding.isEnabled = COUNT_MINIMUM_PICK <= adapter.getSelectedItems().size
+        val adapter = OnboardingAdapter(this)
+        adapter.setList(element.dataList)
+        itemView.rv_interest_pick.adapter = adapter
+        itemView.rv_interest_pick.addItemDecoration(OnboardingAdapter.getItemDecoration())
     }
 
     private fun initViewListener(element: OnboardingViewModel) {
@@ -58,6 +56,11 @@ class OnboardingViewHolder(
             listener.onCheckRecommendedProfileButtonClicked(adapter.getSelectedItems())
         }
     }
+
+    private fun updateButtonCheckRecommendation() {
+        itemView.btn_onboarding.isEnabled = COUNT_MINIMUM_PICK <= adapter.getSelectedItems().size
+    }
+
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
         updateButtonCheckRecommendation()

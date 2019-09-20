@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
+import com.tokopedia.feedplus.view.fragment.FeedOnboardingFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.kol.common.di.KolComponent;
@@ -36,4 +37,6 @@ public interface FeedPlusComponent {
     void inject(FeedPlusDetailFragment feedPlusDetailFragment);
 
     void inject(DynamicFeedFragment dynamicFeedFragment);
+
+    void inject(FeedOnboardingFragment feedOnboardingFragment);
 }
