@@ -25,6 +25,7 @@ import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickList
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.appbar.AppBarLayout
 import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
@@ -53,7 +54,6 @@ import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -84,7 +84,6 @@ import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
 import com.tokopedia.product.manage.list.data.model.ProductManageSortModel
 import com.tokopedia.product.manage.list.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent
-import com.tokopedia.product.manage.list.di.ProductManageModule
 import com.tokopedia.product.manage.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivity
 import com.tokopedia.product.manage.list.view.activity.ProductManageSortActivity
@@ -98,7 +97,6 @@ import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
-import com.tokopedia.seller.SellerModuleRouter
 import com.tokopedia.seller.common.utils.KMNumbers
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.topads.common.data.model.DataDeposit
@@ -319,11 +317,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        context?.let {
+        activity?.let {
             GraphqlClient.init(it)
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
             DaggerProductManageComponent.builder()
-                    .productManageModule(ProductManageModule())
-                    .productComponent(getComponent(ProductComponent::class.java))
+                    .baseAppComponent(appComponent)
                     .build()
                     .inject(this)
             productManagePresenter.attachView(this)
@@ -776,8 +774,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     private fun onSetCashbackClicked(productManageViewModel: ProductManageViewModel) {
         activity?.let {
-            if (!GlobalConfig.isSellerApp() && it.application is SellerModuleRouter) {
-                (it.application as SellerModuleRouter).goToGMSubscribe(it)
+            if (!GlobalConfig.isSellerApp()) {
+                RouteManager.route(context,ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
                 return
             }
             showOptionCashback(productManageViewModel.productId, productManageViewModel.productPricePlain,

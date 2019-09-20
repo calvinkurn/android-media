@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.list.view.presenter
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.core.base.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.option.SortProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageSortModel

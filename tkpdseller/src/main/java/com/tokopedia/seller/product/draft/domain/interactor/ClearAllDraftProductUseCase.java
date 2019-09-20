@@ -1,10 +1,8 @@
 package com.tokopedia.seller.product.draft.domain.interactor;
 
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.product.manage.item.main.draft.domain.ProductDraftRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -18,8 +16,7 @@ public class ClearAllDraftProductUseCase extends UseCase<Boolean> {
     private final ProductDraftRepository productDraftRepository;
 
     @Inject
-    public ClearAllDraftProductUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, ProductDraftRepository productDraftRepository) {
-        super(threadExecutor, postExecutionThread);
+    public ClearAllDraftProductUseCase(ProductDraftRepository productDraftRepository) {
         this.productDraftRepository = productDraftRepository;
     }
 

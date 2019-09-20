@@ -1,0 +1,80 @@
+package com.tokopedia.product.manage.list.di
+
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
+import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
+import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
+import com.tokopedia.gm.common.constant.GMCommonUrl
+import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
+import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi
+import dagger.Module
+import dagger.Provides
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+
+@Module
+class ProductManageNetworkModule {
+
+    @GMProductManageQualifier
+    @ProductManageScope
+    @Provides
+    fun provideGMRetrofit(@GMProductManageQualifier okHttpClient: OkHttpClient,
+                          retrofitBuilder: Retrofit.Builder): Retrofit {
+        return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build()
+    }
+
+    @ProductManageQualifier
+    @ProductManageScope
+    @Provides
+    fun provideTomeRetrofit(@ProductManageQualifier okHttpClient: OkHttpClient,
+                            retrofitBuilder: Retrofit.Builder): Retrofit {
+        return retrofitBuilder.baseUrl("TOME").client(okHttpClient).build()
+    }
+
+    @Provides
+    @ProductManageScope
+    fun provideTomeApi(@ProductManageQualifier retrofit: Retrofit): TomeProductApi {
+        return retrofit.create(TomeProductApi::class.java)
+    }
+
+    @GMProductManageQualifier
+    @Provides
+    fun provideGMOkHttpClient(tkpdAuthInterceptor: TkpdAuthInterceptor,
+                              httpLoggingInterceptor: HttpLoggingInterceptor,
+                              errorResponseInterceptor: HeaderErrorResponseInterceptor,
+                              cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+                .addInterceptor(cacheApiInterceptor)
+                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(errorResponseInterceptor)
+                .addInterceptor(httpLoggingInterceptor)
+                .build()
+    }
+
+    @ProductManageQualifier
+    @Provides
+    fun provideOkHttpClientTomeBearerAuth(httpLoggingInterceptor: HttpLoggingInterceptor,
+                                          tkpdAuthInterceptor: TkpdAuthInterceptor
+    ): OkHttpClient {
+        return OkHttpClient.Builder()
+                .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
+                .addInterceptor(tkpdAuthInterceptor)
+                .build()
+    }
+
+    @Provides
+    @ProductManageScope
+    fun provideGmCommonApi(@GMProductManageQualifier retrofit: Retrofit): GMCommonApi {
+        return retrofit.create(GMCommonApi::class.java)
+    }
+
+    @ProductManageScope
+    @Provides
+    fun provideApiCacheInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
+        return CacheApiInterceptor(context)
+    }
+
+}

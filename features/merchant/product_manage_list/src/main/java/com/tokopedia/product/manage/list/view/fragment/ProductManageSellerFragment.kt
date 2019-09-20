@@ -11,13 +11,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.DRAFT_PRODUCT
-import com.tokopedia.product.manage.list.di.DaggerProductDraftListCountComponent
-import com.tokopedia.product.manage.list.di.ProductDraftListCountModule
+import com.tokopedia.product.manage.list.di.DaggerProductManageComponent
 import com.tokopedia.product.manage.list.utils.ProductManageTracking
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView
@@ -64,12 +63,13 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
 
     override fun initInjector() {
         super.initInjector()
-        DaggerProductDraftListCountComponent
-                .builder()
-                .productDraftListCountModule(ProductDraftListCountModule())
-                .productComponent(getComponent(ProductComponent::class.java))
-                .build()
-                .inject(this)
+        activity?.let{
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
+            DaggerProductManageComponent.builder()
+                    .baseAppComponent(appComponent)
+                    .build()
+                    .inject(this)
+        }
         productDraftListCountPresenter.attachView(this)
         productManagePresenter.attachView(this)
     }
@@ -78,7 +78,6 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         super.onDestroy()
         productDraftListCountPresenter.detachView()
     }
-
 
     override fun onResume() {
         super.onResume()

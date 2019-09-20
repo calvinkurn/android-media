@@ -11,14 +11,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tkpd.library.ui.view.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.product.manage.item.common.di.component.ProductComponent
 import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_SORT_SELECTED
 import com.tokopedia.product.manage.list.constant.option.SortProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageSortModel
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent
-import com.tokopedia.product.manage.list.di.ProductManageModule
 import com.tokopedia.product.manage.list.view.adapter.ProductManageSortAdapter
 import com.tokopedia.product.manage.list.view.adapter.ProductManageSortViewHolder
 import com.tokopedia.product.manage.list.view.presenter.ProductManageSortViewModel
@@ -49,11 +48,14 @@ class ProductManageSortFragment : BaseDaggerFragment(), ProductManageSortViewHol
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerProductManageComponent.builder()
-                .productComponent(getComponent(ProductComponent::class.java))
-                .productManageModule(ProductManageModule())
-                .build()
-                .inject(this)
+        activity?.let {
+            val appComponent = (it.application as BaseMainApplication).baseAppComponent
+
+            DaggerProductManageComponent.builder()
+                    .baseAppComponent(appComponent)
+                    .build()
+                    .inject(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
