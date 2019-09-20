@@ -14,11 +14,9 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_16"
-        android:text="@string/feed_choose_topic_you_like"
         android:textColor="@color/font_black_primary_70"
         app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        tools:text="Kamu Suka Apa? Aku suka kamu hehe xD Kalau kamu gimana? Yang bener dong" />
+        app:typographyWeight="bold" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/interestList"

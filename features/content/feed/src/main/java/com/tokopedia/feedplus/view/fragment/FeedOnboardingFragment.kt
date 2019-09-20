@@ -29,13 +29,13 @@ import javax.inject.Inject
  */
 class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestPickItemListener {
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
-
     private val adapter : OnboardingAdapter by lazy {
         OnboardingAdapter(this)
     }
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var feedOnboardingPresenter: FeedOnboardingViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +105,9 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     private fun onSuccessGetData(data: OnboardingViewModel) {
         adapter.setList(data.dataList)
+        titleTextView.text = String.format(
+                getString(R.string.feed_choose_topic_you_like, data.minimumPick.toString())
+        )
     }
 
     private fun onErrorGetData(throwable: Throwable) {
