@@ -28,6 +28,7 @@ import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.DaggerManageAddressComponent;
 import com.tokopedia.logisticaddaddress.di.ManageAddressModule;
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressViewModelMapper;
+import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
@@ -202,11 +203,12 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
+        com.tokopedia.logisticaddaddress.domain.model.Token tempToken = new TokenMapper().reverseTokenModel(token);
         if (data == null) {
             if (isAddNewAddressEnabled()) {
                 AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_USER_NEW);
                 startActivityForResult(PinpointMapActivity.newInstance(getActivity(),
-                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
+                        AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, tempToken,
                         false, false, false, null,
                         false), REQUEST_CODE_PARAM_CREATE);
 

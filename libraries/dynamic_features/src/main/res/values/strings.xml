@@ -7,4 +7,5 @@
     <string name="downloading_x">Mendownload %1$s</string>
     <string name="error_for_module">Terjadi kesalahan ketika menginstall module %1$s (%2$d)</string>
     <string name="error_for_module_x">Terjadi kesalahan ketika menginstall module %1$s</string>
+    <string name="error_install_df_insufficient_storate">Tempat penyimpanan tidak mencukupi untuk mendownload modul</string>
 </resources>

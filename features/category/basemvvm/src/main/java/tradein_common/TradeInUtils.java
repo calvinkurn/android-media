@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.TelephonyManager;
 
 import com.tokopedia.user.session.UserSession;
@@ -17,7 +18,7 @@ public class TradeInUtils {
     public static String getDeviceId(Context context) {
         try {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
-            if (!(ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == 0)) {
+            if (!(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == 0)) {
                 Bundle tradeInData = ((Activity) context).getIntent().getExtras();
                 if (tradeInData != null) {
                     String did = tradeInData.getString("DEVICE ID");
