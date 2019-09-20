@@ -36,7 +36,6 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
@@ -398,7 +397,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         getString(R.string.ticker_phone_verification)
                 )
                 tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         goToVerifyPhone()
                     }
 
