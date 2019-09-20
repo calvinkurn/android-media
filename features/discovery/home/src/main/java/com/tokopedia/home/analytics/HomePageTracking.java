@@ -101,9 +101,9 @@ public class HomePageTracking {
     public static final String ACTION_ADD_WISHLIST_ON_PRODUCT_RECOMMENDATION_NON_LOGIN = "add wishlist on product recommendation - non login";
     public static final String ACTION_REMOVE_WISHLIST_ON_PRODUCT_RECOMMENDATION = "remove wishlist on product recommendation";
     public static final String EVENT_CLICK_TICKER = "clickTicker";
-    public static final String EVENT_CATEGORY_TICKER_HOMEPAGE = "tracker homepage";
-    public static final String EVENT_ACTION_CLICK_TICKER = "click tracker";
-    public static final String EVENT_ACTION_CLICK_ON_CLOSE_TICKER = "click on close tracker";
+    public static final String EVENT_CATEGORY_TICKER_HOMEPAGE = "ticker homepage";
+    public static final String EVENT_ACTION_CLICK_TICKER = "click ticker";
+    public static final String EVENT_ACTION_CLICK_ON_CLOSE_TICKER = "click on close ticker";
 
     public static final String ON = "on";
     public static final String NON_LOGIN = "non login";
