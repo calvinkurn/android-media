@@ -687,31 +687,6 @@ public class DynamicHomeChannel {
             );
         }
 
-        public HashMap<String, Object> getEnhanceImpressionGIFBanner() {
-            List<Object> list = convertPromoEnhanceBannerChannelMix();
-            return (HashMap<String, Object>) DataLayer.mapOf(
-                    "event", "promoView",
-                    "eventCategory", "homepage",
-                    "eventAction", "lego banner gif impression",
-                    "eventLabel", "",
-                    "channelId", id,
-                    "ecommerce", DataLayer.mapOf(
-                            "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(
-                                            DataLayer.mapOf(
-                                                    "id", getBanner().getId(),
-                                                    "name", "/ - p1 - lego banner gif - " + getHeader().getName(),
-                                                    "creative", getBanner().getAttribution(),
-                                                    "creative_url", "tokopedia.com/creative.png",
-                                                    "position", String.valueOf(1)
-                                            )
-                                    )
-                            )
-
-                    )
-            );
-        }
-
         public void setPromoName(String promoName) {
             this.promoName = promoName;
         }

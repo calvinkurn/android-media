@@ -42,9 +42,4 @@ class BannerImageViewHolder(itemView: View,
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
         HomePageTracking.eventClickSeeAllGifDCBannerChannel(itemView.context, channel.header.name, channel.id)
     }
-
-
-
-
-
 }
