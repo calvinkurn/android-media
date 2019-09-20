@@ -3,7 +3,6 @@
 /tkpddigital/       @tokopedia/minion-mark
 /tkpdcore/          @tokopedia/core-team
 /tkpdinbox/         @tokopedia/minion-kevin
-/tkpddiscovery/     @tokopedia/minion-dave
 /tkpdtransaction/   @tokopedia/minion-darth
 /feature/discovery/category_common/     @tokopedia/minion-stuart
 /feature/discovery/topadssdk/           @tokopedia/minion-dave
@@ -18,6 +17,7 @@
 /features/discovery/filter/             @tokopedia/minion-dave
 /features/discovery/image_search/       @tokopedia/minion-dave
 /features/discovery/similarsearch/      @tokopedia/minion-dave
+/features/discovery/autocomplete/       @tokopedia/minion-dave
 /features/digital/digital_browse/       @tokopedia/minion-dave
 /tkpddesign/        @tokopedia/core-team
 /sellerapp/         @tokopedia/minion-stuart
