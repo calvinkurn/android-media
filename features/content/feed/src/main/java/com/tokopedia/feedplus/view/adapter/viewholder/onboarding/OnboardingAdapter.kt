@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.view.adapter.viewholder.onboarding
 
+import android.graphics.Rect
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -14,23 +16,56 @@ import kotlinx.android.synthetic.main.item_feed_onboarding.view.*
 /**
  * @author by yoasfs on 2019-09-18
  */
-class OnboardingAdapter(val itemList: List<OnboardingDataViewModel>, val listener: InterestPickItemListener): RecyclerView.Adapter<OnboardingAdapter.Holder>() {
+class OnboardingAdapter(private val listener: InterestPickItemListener) : RecyclerView.Adapter<OnboardingAdapter.Holder>() {
+
+    companion object {
+        fun getItemDecoration(): RecyclerView.ItemDecoration {
+            return object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView,
+                                            state: RecyclerView.State) {
+                    super.getItemOffsets(outRect, view, parent, state)
+                    val position = parent.getChildAdapterPosition(view)
+
+                    if (position < 0 && position >= state.itemCount) {
+                        return
+                    }
+
+                    val resources = view.resources
+                    val layoutParams = view.layoutParams as? GridLayoutManager.LayoutParams
+                    val layoutManager = parent.layoutManager  as? GridLayoutManager
+                    val spanIndex = layoutParams?.spanIndex
+                    val spanCount = layoutManager?.spanCount
+                    if (spanIndex == spanCount) {
+                        outRect.right = resources.getDimension(R.dimen.dp_0).toInt()
+                    }
+                }
+            }
+        }
+    }
+
+    private val list: MutableList<OnboardingDataViewModel> = arrayListOf()
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): Holder {
         return Holder(LayoutInflater.from(p0.context).inflate(R.layout.item_feed_onboarding, p0, false), listener)
     }
 
     override fun getItemCount(): Int {
-        return itemList.size
+        return list.size
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(itemList[position], position)
+        holder.bind(list[position], position)
     }
 
-    class Holder(v: View, val listener: InterestPickItemListener): RecyclerView.ViewHolder(v) {
+    fun setList(list: List<OnboardingDataViewModel>) {
+        this.list.clear()
+        this.list.addAll(list)
+        notifyDataSetChanged()
+    }
 
-        val VAL_ICON_SIZE = 40
+    class Holder(v: View, val listener: InterestPickItemListener) : RecyclerView.ViewHolder(v) {
+
+        private val VAL_ICON_SIZE = 40
 
         fun bind(item: OnboardingDataViewModel, positionInAdapter: Int) {
             initView(item, positionInAdapter)
@@ -65,22 +100,23 @@ class OnboardingAdapter(val itemList: List<OnboardingDataViewModel>, val listene
             if (item.isSelected) {
                 itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.tkpd_main_green))
                 itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
-            } else{
+            } else {
                 itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.white))
                 itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.Neutral_N700))
             }
         }
+
         private fun convertDpToPixel(dp: Int): Int {
             val metrics = itemView.context.resources.displayMetrics
             return dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)
         }
     }
 
-    fun getSelectedItems() : List<OnboardingDataViewModel> {
-        return itemList.filter {it.isSelected}
+    fun getSelectedItems(): List<OnboardingDataViewModel> {
+        return list.filter { it.isSelected }
     }
 
-    public interface InterestPickItemListener {
+    interface InterestPickItemListener {
         fun onInterestPickItemClicked(item: OnboardingDataViewModel)
         fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>)
         fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>)

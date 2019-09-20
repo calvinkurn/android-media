@@ -23,7 +23,6 @@ class InterestPickActivity : BaseSimpleActivity() {
     }
 
     object DeeplinkIntent {
-        @DeepLink(ApplinkConst.INTEREST_PICK)
         @JvmStatic
         fun createIntent(context: Context, extras: Bundle) = Companion.createIntent(context)
     }
