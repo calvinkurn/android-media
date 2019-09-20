@@ -103,12 +103,12 @@ public class CartMapper implements ICartMapper {
         }
 
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();
-        boolean isDisableAllProducts;
+//        boolean isDisableAllProducts;
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             ShopGroupData shopGroupData = new ShopGroupData();
 
             shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
-            isDisableAllProducts = true;
+//            isDisableAllProducts = true;
 
             if (!shopGroupData.isError()) {
                 int errorItemCountPerShop = 0;
@@ -121,9 +121,9 @@ public class CartMapper implements ICartMapper {
                 boolean shopError = false;
                 if (errorItemCountPerShop == shopGroup.getCartDetails().size()) {
                     shopError = true;
-                    isDisableAllProducts = true;
-                } else {
-                    isDisableAllProducts = false;
+//                    isDisableAllProducts = true;
+//                } else {
+//                    isDisableAllProducts = false;
                 }
                 shopGroupData.setError(shopError);
             }
@@ -297,7 +297,7 @@ public class CartMapper implements ICartMapper {
                 } else {
                     cartItemData.setParentHasErrorOrWarning(true);
                 }
-                cartItemData.setDisableAllProducts(isDisableAllProducts);
+//                cartItemData.setDisableAllProducts(isDisableAllProducts);
 
                 if (!cartItemData.isError() && shopGroupData.isError()) {
                     cartItemData.setError(true);

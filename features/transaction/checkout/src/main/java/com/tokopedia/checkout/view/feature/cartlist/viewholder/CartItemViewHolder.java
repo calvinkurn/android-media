@@ -276,13 +276,13 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarningAndError(CartItemHolderData data) {
         if (data.getCartItemData().isParentHasErrorOrWarning()) {
-            if (!data.getCartItemData().isDisableAllProducts() || (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
+//            if (data.getCartItemData().isError() || data.getCartItemData().isWarning()) {
                 renderErrorItemHeader(data);
                 renderWarningItemHeader(data);
                 setWarningAndErrorVisibility(data);
-            } else {
-                disableView(data);
-            }
+//            } else {
+//                disableView(data);
+//            }
         } else {
             if (!data.getCartItemData().isSingleChild()) {
                 renderErrorItemHeader(data);
