@@ -58,7 +58,8 @@
                     android:imeActionLabel="@string/label_next"
                     android:imeOptions="actionNext"
                     android:nextFocusForward="@+id/et_last_name"
-                    android:inputType="textNoSuggestions|textVisiblePassword"
+                    android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
+                    android:importantForAutofill="no"
                     android:singleLine="true"
                     android:textColor="@color/font_black_primary_70" />
             </com.tokopedia.design.text.TkpdHintTextInputLayout>

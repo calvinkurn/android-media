@@ -23,7 +23,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/travel_contact_data_name_hint"
-                android:inputType="text" />
+                android:inputType="textNoSuggestions|textVisiblePassword|textFilter"
+                android:importantForAutofill="no" />
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
