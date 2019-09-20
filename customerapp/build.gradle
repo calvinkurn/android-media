@@ -5,7 +5,6 @@ if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 apply plugin: 'io.hansel.preprocessor'
-apply plugin: 'com.frogermcs.androiddevmetrics'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 
@@ -248,6 +247,7 @@ android {
     // put Dynamic Feature Modules in dynamic-feature-customerapp.cfg
     // to disable dynamic feature, use command option -Pdisable-dynamic-feature
     dynamicFeatures = getDynamicFeatureIfEnabled(project)
+    generateAssetFile(project, dynamicFeatures)
 }
 
 dependencies {
