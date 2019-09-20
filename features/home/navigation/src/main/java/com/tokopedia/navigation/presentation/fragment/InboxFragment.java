@@ -36,7 +36,6 @@ import com.tokopedia.navigation.presentation.view.InboxView;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
@@ -77,6 +76,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     @Inject
     GlobalNavAnalytics globalNavAnalytics;
 
+    @Inject
+    RemoteConfig remoteConfig;
+
     private SwipeRefreshLayout swipeRefreshLayout;
     private InboxAdapter adapter;
     private View emptyLayout;
@@ -84,7 +86,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private TrackingQueue trackingQueue;
     private List<Visitable> visitables;
-    private RemoteConfig remoteConfig;
 
     public static InboxFragment newInstance() {
         return new InboxFragment();
@@ -94,7 +95,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         trackingQueue = new TrackingQueue(getContext());
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
