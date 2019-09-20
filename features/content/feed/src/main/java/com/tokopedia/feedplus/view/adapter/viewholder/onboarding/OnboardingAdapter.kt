@@ -13,36 +13,39 @@ import kotlinx.android.synthetic.main.item_feed_onboarding.view.*
 /**
  * @author by yoasfs on 2019-09-18
  */
-class OnboardingAdapter(val itemList: List<OnboardingDataViewModel>): RecyclerView.Adapter<OnboardingAdapter.Holder>() {
-
-    val MAX_ITEM_SIZE = 6
+class OnboardingAdapter : RecyclerView.Adapter<OnboardingAdapter.Holder>() {
+    private val list: MutableList<OnboardingDataViewModel> = arrayListOf()
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): Holder {
         return Holder(LayoutInflater.from(p0.context).inflate(R.layout.item_feed_onboarding, p0, false))
     }
 
     override fun getItemCount(): Int {
-        return MAX_ITEM_SIZE
+        return list.size
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        if (position != MAX_ITEM_SIZE -1) {
-            holder.bind(itemList[position], position)
-        } else {
-            holder.bind(OnboardingDataViewModel(
-                    0,
-                    OnboardingDataViewModel.defaultLihatSemuaText,
-                    "",
-                    false,
-                    true),
-                    position)
-        }
+        holder.bind(list[position], position)
+
+//        if (position != MAX_ITEM_SIZE -1) {
+//        } else {
+//            holder.bind(OnboardingDataViewModel(
+//                    0,
+//                    OnboardingDataViewModel.defaultLihatSemuaText,
+//                    "",
+//                    false,
+//                    true),
+//                    position)
+//        }
+    }
+
+    fun setList(list: List<OnboardingDataViewModel>) {
+        this.list.clear()
+        this.list.addAll(list)
+        notifyDataSetChanged()
     }
 
     class Holder(v: View): RecyclerView.ViewHolder(v) {
-
-        val MAX_ITEM_SIZE = 6
-
         fun bind(item: OnboardingDataViewModel, positionInAdapter: Int) {
             initView(item, positionInAdapter)
             initViewListener(item, positionInAdapter)
@@ -50,7 +53,7 @@ class OnboardingAdapter(val itemList: List<OnboardingDataViewModel>): RecyclerVi
 
         private fun initView(item: OnboardingDataViewModel, positionInAdapter: Int) {
             itemView.tv_onboarding_item.text = item.name
-            if (positionInAdapter != MAX_ITEM_SIZE -1) {
+            if (item.isLihatSemuaItem) {
                 ImageHandler.LoadImage(itemView.iv_onboarding_item, item.image)
             } else {
                 itemView.tv_onboarding_item.setTextColor(itemView.context.resources.getColor(R.color.tkpd_main_green))

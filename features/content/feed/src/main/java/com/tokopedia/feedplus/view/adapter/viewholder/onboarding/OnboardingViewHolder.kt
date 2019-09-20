@@ -29,7 +29,9 @@ class OnboardingViewHolder(v : View) : AbstractViewHolder<OnboardingViewModel>(v
 
         itemView.btn_onboarding.isEnabled = false
         itemView.rv_interest_pick.layoutManager = GridLayoutManager(itemView.context, 3)
-        val adapter = OnboardingAdapter(element.dataList)
+
+        val adapter = OnboardingAdapter()
+        adapter.setList(element.dataList)
         itemView.rv_interest_pick.adapter = adapter
     }
 
