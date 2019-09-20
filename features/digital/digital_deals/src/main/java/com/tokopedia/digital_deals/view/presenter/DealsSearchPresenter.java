@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.view.presenter;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -14,10 +15,13 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
+import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.contractor.DealsSearchContract;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
 import com.tokopedia.digital_deals.view.utils.Utils;
@@ -39,6 +43,7 @@ public class DealsSearchPresenter
     private GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase;
     private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
+    private PostNsqEventUseCase postNsqEventUseCase;
     private List<ProductItem> mTopDeals;
     private SearchResponse mSearchData;
     private String highlight;
@@ -49,10 +54,11 @@ public class DealsSearchPresenter
 
     @Inject
     public DealsSearchPresenter(GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase,
-                                GetLocationListRequestUseCase getLocationListRequestUseCase, GetSearchNextUseCase searchNextUseCase) {
+                                GetLocationListRequestUseCase getLocationListRequestUseCase, GetSearchNextUseCase searchNextUseCase, PostNsqEventUseCase postNsqEventUseCase) {
         this.getSearchDealsListRequestUseCase = getSearchDealsListRequestUseCase;
         this.getSearchLocationListRequestUseCase = getLocationListRequestUseCase;
         this.getSearchNextUseCase = searchNextUseCase;
+        this.postNsqEventUseCase = postNsqEventUseCase;
     }
 
     @Override
@@ -106,6 +112,9 @@ public class DealsSearchPresenter
         getSearchNextUseCase.unsubscribe();
         if (getSearchLocationListRequestUseCase != null) {
             getSearchLocationListRequestUseCase.unsubscribe();
+        }
+        if (postNsqEventUseCase != null) {
+            postNsqEventUseCase.unsubscribe();
         }
     }
 
@@ -235,4 +244,31 @@ public class DealsSearchPresenter
         });
     }
 
+    public void sendNSQEvent(String userId, String action, String customMessage) {
+        NsqServiceModel nsqServiceModel = new NsqServiceModel();
+        nsqServiceModel.setService(Utils.NSQ_SERVICE);
+        NsqMessage nsqMessage = new NsqMessage();
+        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
+        nsqMessage.setAction(action);
+        nsqMessage.setMessage(customMessage);
+        nsqServiceModel.setMessage(nsqMessage);
+        postNsqEventUseCase.setRequestModel(nsqServiceModel);
+        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper(e);
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Log.d("Naveen", "NSQ Event Sent search page");
+            }
+        });
+    }
 }
