@@ -59,5 +59,7 @@
     <string name="profile_share_this_profile">Bagikan Profile Ini</string>
     <string name="profile_other_share_title">Suka profil ini? Share, yuk!</string>
 
-
+    <!--Create Post-->
+    <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
+    <string name="feed_create_post_shop">Buat Post Toko</string>
 </resources>

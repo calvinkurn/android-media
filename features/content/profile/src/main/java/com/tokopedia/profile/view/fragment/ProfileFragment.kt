@@ -6,7 +6,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
 import android.graphics.Rect
 import android.os.Bundle
 import android.support.design.widget.AppBarLayout
@@ -81,7 +80,6 @@ import com.tokopedia.kol.feature.postdetail.view.activity.KolPostDetailActivity.
 import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
-import com.tokopedia.kotlin.extensions.media.toTempFile
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.profile.ProfileModuleRouter
@@ -99,6 +97,7 @@ import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.widget.ByMeInstastoryView
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -925,7 +924,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 
@@ -973,7 +972,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 

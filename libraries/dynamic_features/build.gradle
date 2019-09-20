@@ -15,9 +15,18 @@ buildscript {
 dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
 
     implementation rootProject.ext.unifyDependencies.components
 
     implementation rootProject.ext.playServicesDependencies.core
 }
+
+project.ext {
+    artifactId = 'dynamic-feature'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName ="librarydynamicfeature-release"
+}
+
+apply from: '../../publish_local.gradle'

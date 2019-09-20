@@ -5,8 +5,6 @@ import android.content.Context;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.discovery.imagesearch.di.module.ImageSearchModule;
-import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.data.repository.AttributeRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
@@ -32,15 +30,14 @@ import dagger.Provides;
 @HotlistScope
 @Module(includes = {ProductModule.class,
         ApiModule.class,
-        ImageSearchModule.class,
         BannerModule.class,
         AttributeModule.class})
 public class HotlistModule {
 
     @HotlistScope
     @Provides
-    HotlistPresenter provideHotlistPresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
-        return new HotlistPresenter(context, getProductUseCase, getImageSearchUseCase);
+    HotlistPresenter provideHotlistPresenter(GetProductUseCase getProductUseCase) {
+        return new HotlistPresenter(getProductUseCase);
     }
 
     @HotlistScope
@@ -77,5 +74,10 @@ public class HotlistModule {
                 postExecutionThread,
                 productRepository
         );
+    }
+
+    @Provides
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
+        return new UserSession(context);
     }
 }
