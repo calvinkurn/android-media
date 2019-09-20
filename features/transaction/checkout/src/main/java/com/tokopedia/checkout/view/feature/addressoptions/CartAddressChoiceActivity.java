@@ -12,14 +12,15 @@ import com.tokopedia.checkout.domain.datamodel.MultipleAddressAdapterData;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.feature.cornerlist.CornerListFragment;
 import com.tokopedia.logisticaddaddress.AddressConstants;
+import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity;
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticdata.data.constant.LogisticCommonConstant;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
-import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,21 +44,20 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 101;
     public static final int RESULT_CODE_ACTION_EDIT_ADDRESS = 103;
 
-    private static final String EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST";
+    public static final String EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST";
     public static final String EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS";
     public static final String EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN";
     public static final String EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX = "EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX";
     public static final String EXTRA_MULTIPLE_ADDRESS_DATA_LIST = "EXTRA_MULTIPLE_ADDRESS_DATA_LIST";
     public static final String EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX = "EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX";
     public static final String EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA";
-    private static final String TAG_CORNER_FRAGMENT = "TAG_CORNER_FRAGMENT";
-
     public static final int TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS = 1;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT = 3;
     public static final int TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS = 2;
     public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST = 0;
     public static final int TYPE_REQUEST_EDIT_ADDRESS_FOR_TRADE_IN = 4;
-
+    public static final int TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN = 5;
+    private static final String TAG_CORNER_FRAGMENT = "TAG_CORNER_FRAGMENT";
     private int typeRequest;
     private Token token;
 
@@ -156,8 +156,9 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
             case TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS:
                 if (isAddNewAddressEnabled()) {
                     AddNewAddressAnalytics.sendScreenName(this, SCREEN_NAME_CART_NEW_USER);
+                    com.tokopedia.logisticaddaddress.domain.model.Token tempToken = new TokenMapper().reverseTokenModel(token);
                     startActivityForResult(PinpointMapActivity.newInstance(this,
-                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, token,
+                            AddressConstants.MONAS_LAT, AddressConstants.MONAS_LONG, true, tempToken,
                             false, false, false, null,
                             false), LogisticCommonConstant.ADD_NEW_ADDRESS_CREATED_FROM_EMPTY);
                 } else {
@@ -215,6 +216,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         Intent resultIntent;
         switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
+            case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN:
                 resultIntent = new Intent();
                 resultIntent.putExtra(EXTRA_SELECTED_ADDRESS_DATA, selectedAddressResult);
                 setResult(RESULT_CODE_ACTION_SELECT_ADDRESS, resultIntent);
@@ -279,6 +281,8 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
         switch (typeRequest) {
             case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST:
                 return ShipmentAddressListFragment.newInstance(currentAddress);
+            case TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN:
+                return ShipmentAddressListFragment.newInstance(currentAddress, TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN);
             case TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT:
             case TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS:
                 return ShipmentAddressListFragment.newInstanceFromMultipleAddressForm(currentAddress, true);
