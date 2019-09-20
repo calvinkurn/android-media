@@ -35,7 +35,7 @@ class CatalogDetailProductListingViewModel
                             mProductList.value = Success((productList) as List<ProductsItem>)
                         }
 
-                        mProductCount.value = searchProduct.totalData.toString()
+                        mProductCount.value = searchProduct.countText
                     }
                 }
 

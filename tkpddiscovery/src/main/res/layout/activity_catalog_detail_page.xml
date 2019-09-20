@@ -28,7 +28,7 @@
             android:id="@+id/icon_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_category_sort"
+            app:srcCompat="@drawable/catalog_ic_sort"
             android:paddingLeft="@dimen/dp_22"
             android:paddingTop="@dimen/dp_12"
             android:paddingBottom="@dimen/dp_12" />
@@ -56,7 +56,7 @@
             android:id="@+id/icon_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_category_filter"
+            app:srcCompat="@drawable/catalog_ic_filter"
             android:paddingLeft="@dimen/dp_16"
             android:paddingTop="@dimen/dp_12"
             android:paddingBottom="@dimen/dp_12" />

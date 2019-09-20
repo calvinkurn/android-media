@@ -33,17 +33,6 @@
             android:padding="@dimen/dp_12"
             android:orientation="horizontal">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/txt_product_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:typographyType="heading_4"
-                android:paddingTop="@dimen/dp_5"
-                android:textColor="@color/black"
-                app:typographyWeight="bold"
-                android:paddingRight="@dimen/dp_10"
-                tools:text="9.9jt+ produk" />
-
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/quickfilter_recyclerview"
                 android:layout_width="wrap_content"

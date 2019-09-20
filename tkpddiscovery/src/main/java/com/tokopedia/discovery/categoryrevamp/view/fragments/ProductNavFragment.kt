@@ -239,11 +239,13 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
         productNavListAdapter?.addShimmer()
 
-        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this)
+    }
+
+    private fun setQuickFilterAdapter(productCount:String){
+        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, productCount)
         quickfilter_recyclerview.adapter = quickFilterAdapter
         quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
                 RecyclerView.HORIZONTAL, false)
-
     }
 
     private fun attachScrollListener() {
@@ -314,10 +316,10 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         productNavViewModel.mProductCount.observe(this, Observer {
             it?.let {
                 setTotalSearchResultCount(it)
-                if (it.toInt() > 0) {
-                    txt_product_count.text = it
+                if (!TextUtils.isEmpty(it)) {
+                    setQuickFilterAdapter(getString(R.string.result_count_template_text, it))
                 } else {
-                    txt_product_count.text = ""
+                    setQuickFilterAdapter("")
                 }
             }
         })

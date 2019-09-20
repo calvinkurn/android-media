@@ -92,27 +92,45 @@ class CatalogDetailPageAnalytics {
                                   categoryPath: String,
                                   isTopAds: Boolean) {
             val tracker = TrackApp.getInstance().gtm
+            val ecommerce: MutableMap<String, Any>?
+            if (isTopAds) {
+                ecommerce = DataLayer.mapOf(
+                        "click", DataLayer.mapOf(
+                        "actionField", "list : $pathList",
+                        "products", DataLayer.listOf(DataLayer.mapOf(
+                        "name", product_name,
+                        "id", product_id,
+                        "price", price,
+                        "brand", "",
+                        "category", categoryPath,
+                        "variant", "",
+                        "list", pathList,
+                        "position", position,
+                        "attribution", ""))))
+            } else {
+                ecommerce = DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "click", DataLayer.mapOf(
+                        "actionField", "list : $pathList",
+                        "products", DataLayer.listOf(DataLayer.mapOf(
+                        "name", product_name,
+                        "id", product_id,
+                        "price", price,
+                        "brand", "",
+                        "category", categoryPath,
+                        "variant", "",
+                        "list", pathList,
+                        "position", position,
+                        "attribution", ""))
+                )
+                )
+            }
             val map = DataLayer.mapOf(
                     KEY_EVENT, PRODUCT_CLICK,
                     KEY_EVENT_CATEGORY, CATALOG_PAGE,
                     KEY_EVENT_ACTION, if (isTopAds) "click product - topads" else "click product list",
-                    KEY_EVENT_LABEL, "catalog product list",
-                    KEY_ECOMMERCE, DataLayer.mapOf(
-                    "currencyCode", "IDR",
-                    "click", DataLayer.mapOf(
-                    "actionField","list : $categoryPath",
-                    "products", DataLayer.listOf(DataLayer.mapOf(
-                    "name", product_name,
-                    "id", product_id,
-                    "price", price,
-                    "brand", "",
-                    "category", categoryPath,
-                    "variant", "",
-                    "list", pathList,
-                    "position", position,
-                    "attribution", ""))
-            )
-            ))
+                    KEY_EVENT_LABEL, if (isTopAds) "" else "catalog product list",
+                    KEY_ECOMMERCE, ecommerce)
             tracker.sendEnhanceEcommerceEvent(map)
         }
 
@@ -181,7 +199,7 @@ class CatalogDetailPageAnalytics {
                     EVENT_CATALOG,
                     CATALOG_PAGE,
                     CLICK_QUICK_FILTER,
-                    "${option.name}-${option.value}" + "-" + filterValue.toString()
+                    "Penawaran-${option.name}" + "-" + filterValue.toString()
             ))
         }
 

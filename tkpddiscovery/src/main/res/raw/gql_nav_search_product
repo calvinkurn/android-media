@@ -2,6 +2,7 @@ query SearchProduct($params: String) {
   searchProduct(params: $params) {
     source
     totalData: count
+    count_text
     additionalParams: additional_params
     redirection {
       redirectionURL: redirect_url
