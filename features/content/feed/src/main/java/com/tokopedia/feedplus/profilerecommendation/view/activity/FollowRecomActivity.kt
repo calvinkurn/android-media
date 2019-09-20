@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.profilerecommendation.view.activity
 
+import android.content.Context
+import android.content.Intent
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.feedplus.profilerecommendation.view.fragment.FollowRecomFragment
@@ -10,7 +12,13 @@ import com.tokopedia.feedplus.profilerecommendation.view.fragment.FollowRecomFra
 class FollowRecomActivity : BaseSimpleActivity() {
 
     companion object {
-        const val EXTRA_INTEREST_IDS = FollowRecomFragment.EXTRA_INTEREST_IDS
+        private const val EXTRA_INTEREST_IDS = FollowRecomFragment.EXTRA_INTEREST_IDS
+
+        @JvmStatic
+        fun createIntent(context: Context, interestIds: IntArray): Intent {
+            return Intent(context, FollowRecomActivity::class.java)
+                    .putExtra(EXTRA_INTEREST_IDS, interestIds)
+        }
     }
 
     override fun getNewFragment(): Fragment? {

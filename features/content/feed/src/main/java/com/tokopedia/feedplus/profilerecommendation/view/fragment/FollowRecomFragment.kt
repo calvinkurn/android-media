@@ -176,9 +176,11 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     override fun onThumbnailClicked(model: FollowRecomCardThumbnailViewModel) {
-        context
-                ?.let { ctx -> MediaPreviewActivity.createIntent(ctx, model.id, 0) }
-                ?.run(::startActivity)
+        context?.let { ctx ->
+            startActivity(
+                    MediaPreviewActivity.createIntent(ctx, model.id, 0)
+            )
+        }
     }
 
     private fun initView(view: View) {
