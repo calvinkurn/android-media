@@ -49,7 +49,7 @@ public class UserIdentificationCameraFragment extends TkpdBaseV4Fragment {
     public static final int PARAM_VIEW_MODE_FACE = 2;
 
     private static final long DEFAULT_ONE_MEGABYTE = 1024;
-    private static final int MAX_FILE_SIZE = 10240;
+    private static final int MAX_FILE_SIZE = 15360;
 
     private CameraView cameraView;
     private ImageButton closeButton;
