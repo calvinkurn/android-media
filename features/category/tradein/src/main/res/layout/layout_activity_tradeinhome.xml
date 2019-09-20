@@ -40,7 +40,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:visibility="gone" />
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/button_remove"
@@ -147,7 +147,7 @@
         android:gravity="center"
         android:lineHeight="@dimen/sp_20"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:text="@string/text_not_upto_15min"
+        android:text="@string/moneyin_text_not_upto_15min"
         android:textColor="@color/black_54"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/tv_go_to_product_details"

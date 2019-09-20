@@ -713,7 +713,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     protected fun showBottomSheetStatisticTypeOptions() {
         val checkedBottomSheetMenu = TopAdsMenuBottomSheets()
                 .setMode(TopAdsOptionMenuAdapter.MODE_CHECKABLE)
-                .setTitle(getString(com.tokopedia.core2.R.string.drawer_title_statistic))
+                .setTitle(getString(R.string.drawer_title_statistic))
 
         checkedBottomSheetMenu.setMenuItemSelected(TopAdsMenuBottomSheets.OnMenuItemSelected { itemId ->
             checkedBottomSheetMenu.dismiss()
