@@ -2,10 +2,10 @@ package com.tokopedia.discovery.autocomplete.usecase;
 
 import android.text.TextUtils;
 
+import com.tokopedia.authentication.AuthHelperJava;
 import com.tokopedia.discovery.autocomplete.repository.AutoCompleteRepository;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.search.domain.model.SearchData;
-import com.tokopedia.network.utils.zAuthUtil;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -57,9 +57,9 @@ public class AutoCompleteUseCase extends UseCase<List<SearchData>> {
         params.putString(KEY_DEVICE, DEFAULT_DEVICE);
         params.putString(KEY_SOURCE, DEFAULT_SOURCE);
         params.putString(KEY_COUNT, DEFAULT_COUNT);
-        String uniqueId = AuthUtil.md5(registrationId);
+        String uniqueId = AuthHelperJava.md5(registrationId);
         if (!TextUtils.isEmpty(userId)) {
-            uniqueId = AuthUtil.md5(userId);
+            uniqueId = AuthHelperJava.md5(userId);
             params.putString(KEY_USER_ID, userId);
         }
         params.putString(KEY_UNIQUE_ID, uniqueId);
