@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokopoints.R;
 
 public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
@@ -145,12 +146,15 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
 
         currentToolbarState = ToolbarState.TOOLBAR_DARK;
 
+        int whiteColor = MethodChecker.getColor(getContext(),R.color.tp_toolbar_navigation_white_color);
+        int greyColor = MethodChecker.getColor(getContext(),R.color.tp_toolbar_navigation_grey_color);
+
         couponCrossfader.reverseTransition(200);
         leaderboardCrossfader.reverseTransition(200);
-        toggleNavigationIconColor(Color.parseColor("#FFFFFF"), Color.parseColor("#666666"));
+        toggleNavigationIconColor(whiteColor, greyColor);
 
         ObjectAnimator colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor",
-                Color.parseColor("#FFFFFF"), Color.parseColor("#666666"));
+                whiteColor, greyColor);
         colorAnim.setDuration(200);
         colorAnim.setEvaluator(new ArgbEvaluator());
         colorAnim.start();
@@ -173,12 +177,14 @@ public class TokoPointToolbar extends Toolbar implements View.OnClickListener {
             return;
         currentToolbarState = ToolbarState.TOOLBAR_TRANSPARENT;
 
+        int whiteColor = MethodChecker.getColor(getContext(),R.color.tp_toolbar_navigation_white_color);
+        int greyColor = MethodChecker.getColor(getContext(),R.color.tp_toolbar_navigation_grey_color);
+
         couponCrossfader.reverseTransition(200);
         leaderboardCrossfader.reverseTransition(200);
-        toggleNavigationIconColor(Color.parseColor("#666666"), Color.parseColor("#FFFFFF"));
+        toggleNavigationIconColor(greyColor, whiteColor);
 
-        ObjectAnimator colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor",
-                Color.parseColor("#666666"), Color.parseColor("#FFFFFF"));
+        ObjectAnimator colorAnim = ObjectAnimator.ofInt(tvToolbarTitle, "textColor", greyColor, whiteColor);
         colorAnim.setDuration(200);
         colorAnim.setEvaluator(new ArgbEvaluator());
         colorAnim.start();
