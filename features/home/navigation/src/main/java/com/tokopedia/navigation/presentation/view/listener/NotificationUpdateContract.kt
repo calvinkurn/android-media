@@ -18,7 +18,6 @@ interface NotificationUpdateContract {
 
     interface Presenter: CustomerPresenter<View> {
         fun loadData(lastNotifId: String, onSuccessInitiateData: (NotificationUpdateViewModel) -> Unit, onErrorInitiateData: (Throwable) -> Unit)
-        fun filterBy(selectedItemList: HashMap<Int, Int>, filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>)
         fun getFilter(onSuccessGetFilter: (ArrayList<NotificationUpdateFilterItemViewModel>) -> Unit)
         fun clearNotifCounter()
         fun markReadNotif(notifId: String)
@@ -26,5 +25,6 @@ interface NotificationUpdateContract {
         fun resetFilter()
         fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit)
         fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit)
+        fun updateFilter(filter: HashMap<String, Int>)
     }
 }
