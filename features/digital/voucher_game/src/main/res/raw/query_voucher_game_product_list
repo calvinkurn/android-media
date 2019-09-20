@@ -10,6 +10,7 @@ query voucherGameProductList($menuID: Int!){
         name
         image
         image_url
+        description
         help_cta
         help_text
         help_image
