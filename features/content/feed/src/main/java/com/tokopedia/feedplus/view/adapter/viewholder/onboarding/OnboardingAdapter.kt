@@ -26,15 +26,18 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
                     super.getItemOffsets(outRect, view, parent, state)
                     val position = parent.getChildAdapterPosition(view)
 
-                    if (position < 0) {
+                    if (position < 0 && position >= state.itemCount) {
                         return
                     }
 
                     val resources = view.resources
                     if (view.layoutParams is GridLayoutManager.LayoutParams) {
-                        val spanIndex = (view.layoutParams as GridLayoutManager.LayoutParams).spanIndex
-                        if (spanIndex == 0) {
-                            outRect.left = resources.getDimension(R.dimen.dp_8).toInt()
+                        val layoutParams = view.layoutParams as? GridLayoutManager.LayoutParams
+                        val layoutManager = parent.layoutManager  as? GridLayoutManager
+                        val spanIndex = layoutParams?.spanIndex
+                        val spanCount = layoutManager?.spanCount
+                        if (spanIndex == spanCount) {
+                            outRect.right = resources.getDimension(R.dimen.dp_0).toInt()
                         }
                     }
                 }
@@ -62,7 +65,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
         notifyDataSetChanged()
     }
 
-    class Holder(v: View, val listener: InterestPickItemListener): RecyclerView.ViewHolder(v) {
+    class Holder(v: View, val listener: InterestPickItemListener) : RecyclerView.ViewHolder(v) {
 
         private val VAL_ICON_SIZE = 40
 
@@ -99,11 +102,12 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
             if (item.isSelected) {
                 itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.tkpd_main_green))
                 itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.white))
-            } else{
+            } else {
                 itemView.bg_selected.setBackgroundColor(MethodChecker.getColor(itemView.context, R.color.white))
                 itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.Neutral_N700))
             }
         }
+
         private fun convertDpToPixel(dp: Int): Int {
             val metrics = itemView.context.resources.displayMetrics
             return dp * (metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT)

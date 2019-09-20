@@ -26,16 +26,19 @@
         android:id="@+id/interestList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginStart="@dimen/dp_5"
-        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         android:layout_weight="1"
         app:layoutManager="android.support.v7.widget.GridLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/buttonLayout"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView"
         app:reverseLayout="false"
-        app:spanCount="3" />
+        app:spanCount="3"
+        tools:listitem="@layout/item_feed_onboarding"/>
 
     <FrameLayout
         android:id="@+id/buttonLayout"
@@ -67,7 +70,8 @@
         android:orientation="vertical"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
 
         <include
             layout="@layout/partial_shimmering_list"

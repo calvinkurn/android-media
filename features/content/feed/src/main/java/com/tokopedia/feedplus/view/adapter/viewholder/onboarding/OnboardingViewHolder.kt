@@ -41,11 +41,11 @@ class OnboardingViewHolder(
 
         itemView.btn_onboarding.isEnabled = false
         itemView.rv_interest_pick.layoutManager = GridLayoutManager(itemView.context, 3)
-        itemView.rv_interest_pick.addItemDecoration(OnboardingAdapter.getItemDecoration())
 
         val adapter = OnboardingAdapter(listener)
         adapter.setList(element.dataList)
         itemView.rv_interest_pick.adapter = adapter
+        itemView.rv_interest_pick.addItemDecoration(OnboardingAdapter.getItemDecoration())
     }
 
     private fun initViewListener(element: OnboardingViewModel) {
