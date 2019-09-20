@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="@dimen/dp_10">
+        android:padding="@dimen/dp_10"
+        android:background="@drawable/digital_bg_product_item">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_product"
@@ -23,7 +24,8 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:gravity="center_vertical"
-            android:lines="2"
+            android:maxLines="2"
+            android:ellipsize="end"
             android:textColor="@color/black_70"
             app:typographyType="heading_5"
             tools:text="Data 40.000" />
@@ -32,24 +34,22 @@
             android:id="@+id/product_promo_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
             android:layout_below="@id/title_product"
+            android:layout_alignParentLeft="true"
             android:layout_marginRight="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_4"
-            android:visibility="invisible"
+            android:visibility="gone"
             app:labelType="general_dark_red"
             app:textAllCaps="true"
-            tools:labelTitle="test"
-            tools:visibility="visible" />
+            tools:labelTitle="test"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_promo_price"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_19"
             android:layout_below="@id/title_product"
+            android:layout_marginBottom="@dimen/dp_4"
             android:layout_toRightOf="@id/product_promo_label"
-            android:layout_alignTop="@id/product_promo_label"
-            android:layout_alignBottom="@id/product_promo_label"
             android:gravity="center"
             android:lines="1"
             android:textColor="@color/Neutral_N700_44"
@@ -60,7 +60,7 @@
             android:id="@+id/product_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/product_promo_label"
+            android:layout_below="@id/product_promo_price"
             android:layout_alignParentLeft="true"
             android:layout_marginBottom="@dimen/dp_4"
             android:lines="1"

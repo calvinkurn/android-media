@@ -17,9 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16">
+            android:padding="@dimen/dp_16">
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/operator_detail_container"
