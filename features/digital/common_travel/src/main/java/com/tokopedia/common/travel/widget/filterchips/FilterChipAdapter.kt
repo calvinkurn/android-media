@@ -1,36 +1,39 @@
-package com.tokopedia.hotel.roomlist.widget
+package com.tokopedia.common.travel.widget.filterchips
 
 import android.support.annotation.ColorRes
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.common.travel.R
 import com.tokopedia.design.text.Chips
-import com.tokopedia.hotel.R
 
 /**
  * @author by jessica on 18/04/19
  */
 
-class ChipAdapter(val list: List<String>, val listener: OnClickListener,
+class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
                   val onResetChipListener: ResetChipListener,
-                  @ColorRes val selectedColor: Int = com.tokopedia.design.R.color.black_56)
-    : RecyclerView.Adapter<ChipAdapter.ViewHolder>() {
+                  @ColorRes val selectedColor: Int = com.tokopedia.design.R.color.snackbar_border_normal)
+    : RecyclerView.Adapter<FilterChipAdapter.ViewHolder>() {
 
     var selectOnlyOneChip = false
+    var initialPositionSelected: Int? = null
+    var canDiselectAfterSelect = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder
-            = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_chip, parent, false))
+            = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.widget_filter_chip_item, parent, false))
 
     override fun getItemCount(): Int = list.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
             chips.text = list.get(position)
-            chips.isSelected = false
+            chips.isSelected = if (initialPositionSelected != null) position == initialPositionSelected else false
             chips.setOnClickListener {
                 if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
-                chips.isSelected = !chips.isSelected
+                if (canDiselectAfterSelect) chips.isSelected = !chips.isSelected
+                else if (!chips.isSelected) chips.isSelected = true
                 if (selectedColor > 0) {
                     if (chips.isSelected) setTextColor(selectedColor)
                     else setTextColor(com.tokopedia.design.R.color.black_56)
@@ -41,6 +44,7 @@ class ChipAdapter(val list: List<String>, val listener: OnClickListener,
     }
 
     fun resetChipSelected() {
+        initialPositionSelected = null
         notifyDataSetChanged()
     }
 
@@ -49,6 +53,11 @@ class ChipAdapter(val list: List<String>, val listener: OnClickListener,
 
         fun setTextColor(txtColor: Int) {
             chips.setTextColor(view.getResources().getColor(txtColor))
+        }
+
+        fun selectChip() {
+            chips.isSelected = true
+            if (selectedColor > 0) setTextColor(selectedColor)
         }
     }
 
