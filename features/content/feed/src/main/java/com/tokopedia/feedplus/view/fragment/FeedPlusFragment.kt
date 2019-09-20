@@ -113,11 +113,13 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAd
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
@@ -237,9 +239,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         })
 
         feedOnboardingPresenter.submitInterestPickResp.observe(this, Observer {
-            view?.hideLoading()
+            view?.hideLoadingTransparent()
             when (it) {
-                is Success -> onSuccessSubmitInterestPickData()
+                is Success -> onSuccessSubmitInterestPickData(it.data)
                 is Fail  -> onErrorSubmitInterestPickData(it.throwable)
             }
         })
@@ -1506,12 +1508,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
-
+        view?.showLoadingTransparent()
+        feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_SEE_ALL_CLICK)
     }
 
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
         view?.showLoadingTransparent()
-        feedOnboardingPresenter.submitInterestPickData(selectedItemList)
+        feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK)
     }
 
     private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
@@ -1529,8 +1532,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
 
-    private fun onSuccessSubmitInterestPickData() {
-        //go to recom profile
+    private fun onSuccessSubmitInterestPickData(data : SubmitInterestResponseViewModel) {
+        context?.let {
+            when (data.source) {
+                FeedOnboardingViewModel.PARAM_SOURCE_SEE_ALL_CLICK -> {
+                    startActivity(FeedOnboardingActivity.getCallingIntent(it, Bundle()))
+                }
+                FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK -> {
+                }
+
+            }
+        }
     }
 
     private fun onErrorSubmitInterestPickData(throwable: Throwable) {

@@ -54,7 +54,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(list[position], position)
+        holder.bind(list[position], position, list)
     }
 
     fun setList(list: List<OnboardingDataViewModel>) {
@@ -67,9 +67,9 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
 
         private val VAL_ICON_SIZE = 30
 
-        fun bind(item: OnboardingDataViewModel, positionInAdapter: Int) {
+        fun bind(item: OnboardingDataViewModel, positionInAdapter: Int, list: List<OnboardingDataViewModel>) {
             initView(item, positionInAdapter)
-            initViewListener(item, positionInAdapter)
+            initViewListener(item, positionInAdapter, list)
         }
 
         private fun initView(item: OnboardingDataViewModel, positionInAdapter: Int) {
@@ -77,6 +77,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
             if (!item.isLihatSemuaItem) {
                 ImageHandler.LoadImage(itemView.iv_onboarding_item, item.image)
             } else {
+                itemView.bg_selected.visibility = View.GONE
                 itemView.tv_onboarding_item.setTextColor(MethodChecker.getColor(itemView.context, R.color.tkpd_main_green))
                 itemView.iv_onboarding_item.setImageDrawable(MethodChecker.getDrawable(itemView.context, R.drawable.ic_chevron_right_green_24dp))
                 itemView.iv_onboarding_item.maxHeight = convertDpToPixel(VAL_ICON_SIZE)
@@ -85,10 +86,10 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
             setBackgroundColor(item)
         }
 
-        private fun initViewListener(item: OnboardingDataViewModel, positionInAdapter: Int) {
+        private fun initViewListener(item: OnboardingDataViewModel, positionInAdapter: Int, list: List<OnboardingDataViewModel>) {
             itemView.setOnClickListener {
                 if (item.isLihatSemuaItem) {
-//                    listener.onLihatSemuaItemClicked()
+                    listener.onLihatSemuaItemClicked(list.filter { it.isSelected })
                 } else {
                     item.isSelected = !item.isSelected
                     setBackgroundColor(item)

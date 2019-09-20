@@ -18,6 +18,7 @@ import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_feed_onboarding.*
@@ -52,6 +53,14 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
             when (it) {
                 is Success -> onSuccessGetData(it.data)
                 is Fail -> onErrorGetData(it.throwable)
+            }
+        })
+
+        feedOnboardingPresenter.submitInterestPickResp.observe(this, Observer {
+            view?.showLoadingTransparent()
+            when (it) {
+                is Success -> onSuccessSubmitInterestData()
+                is Fail -> onErrorSubmitInterestPickData(it.throwable)
             }
         })
     }
@@ -89,6 +98,10 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     private fun initView() {
         interestList.adapter = adapter
         interestList.addItemDecoration(OnboardingAdapter.getItemDecoration())
+        saveInterest.setOnClickListener {
+            view?.showLoadingTransparent()
+            feedOnboardingPresenter.submitInterestPickData(adapter.getSelectedItems(), "")
+        }
     }
 
     private fun loadData() {
@@ -106,8 +119,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     private fun onSuccessGetData(data: OnboardingViewModel) {
         adapter.setList(data.dataList)
-        titleTextView.text = String.format(
-                getString(R.string.feed_choose_topic_you_like, data.minimumPick.toString())
+        titleTextView.text = String.format(data.titleFull, data.minimumPick.toString()
         )
     }
 
@@ -119,5 +131,16 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
                 loadData()
             }
         }
+    }
+
+    private fun onSuccessSubmitInterestData() {
+
+    }
+
+    private fun onErrorSubmitInterestPickData(throwable: Throwable) {
+        Toaster.showError(view!!,
+                ErrorHandler.getErrorMessage(activity, throwable),
+                2000
+        )
     }
 }

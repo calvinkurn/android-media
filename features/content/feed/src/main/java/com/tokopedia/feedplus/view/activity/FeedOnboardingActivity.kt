@@ -26,6 +26,12 @@ class FeedOnboardingActivity : BaseSimpleActivity() {
         }
     }
 
+    companion object {
+        fun getCallingIntent(context: Context, extras: Bundle): Intent {
+            return Intent(context, FeedOnboardingActivity::class.java).putExtras(extras)
+        }
+    }
+
     override fun getNewFragment(): Fragment? {
         return FeedOnboardingFragment()
     }

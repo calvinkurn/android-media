@@ -45,7 +45,7 @@ class OnboardingViewHolder(
 
         itemView.rv_interest_pick.layoutManager = GridLayoutManager(itemView.context, 3)
 
-        val adapter = OnboardingAdapter(this)
+        adapter = OnboardingAdapter(this)
         adapter.setList(element.dataList)
         itemView.rv_interest_pick.adapter = adapter
         itemView.rv_interest_pick.addItemDecoration(OnboardingAdapter.getItemDecoration())
