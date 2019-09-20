@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/search_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:visibility="invisible">
+    android:layout_height="match_parent">
 
     <View
         android:id="@+id/transparent_view"
@@ -117,7 +116,7 @@
 
             <fragment
                 android:id="@+id/search_suggestion"
-                android:name="com.tokopedia.discovery.search.view.fragment.SearchMainFragment"
+                android:name="com.tokopedia.autocomplete.fragment.SearchMainFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />

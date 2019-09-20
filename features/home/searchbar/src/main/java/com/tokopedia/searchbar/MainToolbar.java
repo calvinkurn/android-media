@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -127,7 +128,7 @@ public class MainToolbar extends Toolbar {
 
         editTextSearch.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingSearchBar(screenName);
-            RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+            RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
         });
 
         btnNotification.setOnClickListener(v -> {
