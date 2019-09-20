@@ -735,8 +735,7 @@ public class DynamicHomeChannel {
                                     )
                             )
 
-                    ),
-                    "attribution", getHomeAttribution(1, getHeader().getName())
+                    )
             );
         }
 
