@@ -95,6 +95,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     @Override
     public void processGetRecommendationData(int page, boolean isFirstTime) {
+        if (getView() == null)
+            return;
         getView().displayLoadMore(true);
         RequestParams requestParam = getRecommendationUseCase.getRecomParams(
                 page, XSOURCE, PAGE_NAME, new ArrayList<>());
@@ -127,6 +129,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     @Override
     public void onRefresh() {
+        if (getView() == null)
+            return;
         orderList.clear();
         getView().displayLoadMore(false);
     }
@@ -231,6 +235,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     }
 
     public void buildAndRenderFilterList(List<FilterStatus> filterItems) {
+        if (getView() == null)
+            return;
         List<QuickFilterItem> quickFilterItems = new ArrayList<>();
         int selectedIndex = 0;
         boolean isAnyItemSelected = false;
@@ -275,6 +281,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
 
     public void checkBomSurveyEligibility() {
+        if (getView() == null || getView().getAppContext() == null)
+            return;
         Map<String, Object> variables = new HashMap<>();
 
         CheckBOMSurveyParams checkBOMSurveyParams = new CheckBOMSurveyParams();
@@ -325,6 +333,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     }
 
     public void insertSurveyRequest(int rating, String comment) {
+        if (getView() == null || getView().getAppContext() == null)
+            return;
         Map<String, Object> variables = new HashMap<>();
 
         InsertBOMSurveyParams insertBOMSurveyParams = new InsertBOMSurveyParams();
@@ -375,6 +385,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     }
 
     public void processAddToCart(Object productModel) {
+        if (getView() == null)
+            return;
         getView().displayLoadMore(true);
 
         int productId = 0;
@@ -437,6 +449,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     }
 
     public void addWishlist(RecommendationItem model, WishListResponseListener wishListResponseListener) {
+        if (getView() == null)
+            return;
         getView().displayLoadMore(true);
         if (model.isTopAds()) {
             RequestParams params = RequestParams.create();
@@ -500,6 +514,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     }
 
     public void removeWishlist(RecommendationItem model, WishListResponseListener wishListResponseListener) {
+        if (getView() == null)
+            return;
         getView().displayLoadMore(true);
         removeWishListUseCase.createObservable(String.valueOf(model.getProductId()), userSessionInterface.getUserId(), new WishListActionListener() {
             @Override
