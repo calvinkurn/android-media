@@ -103,6 +103,8 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_TOO_BIG) {
             sendAnalyticErrorImageTooLarge(requestCode);
             NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_file_too_big));
+        } else if (resultCode == KYCConstant.IS_FILE_IMAGE_NOT_EXIST) {
+            NetworkErrorHelper.showRedSnackbar(getActivity(), getResources().getString(R.string.error_text_image_cant_be_accessed));
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
