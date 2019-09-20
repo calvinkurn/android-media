@@ -7,6 +7,8 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethod
+import android.view.inputmethod.InputMethodManager
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.vouchergame.R
 import kotlinx.android.synthetic.main.view_voucher_game_input_field.view.*
@@ -45,6 +47,10 @@ open class VoucherGameInputFieldWidget @JvmOverloads constructor(@NotNull contex
                 if (count == 0) {
                     btn_clear_input.visibility = View.GONE
                 } else {
+                    if (count > 1) {
+                        val inputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        inputMethodManager.showSoftInput(ac_input, InputMethod.SHOW_FORCED)
+                    }
                     btn_clear_input.visibility = View.VISIBLE
                 }
             }

@@ -9,6 +9,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.list.data.VoucherGameListData
+import com.tokopedia.vouchergame.list.data.VoucherGameOperator
 import javax.inject.Inject
 
 /**
@@ -17,7 +18,7 @@ import javax.inject.Inject
 
 class VoucherGameListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCase<VoucherGameListData.Response>(graphqlRepository) {
 
-    suspend fun getVoucherGameList(rawQuery: String, mapParam: Map<String, Any>, searchQuery: String, isForceRefresh: Boolean): Result<VoucherGameListData> {
+    suspend fun getVoucherGameOperators(rawQuery: String, mapParam: Map<String, Any>, searchQuery: String, isForceRefresh: Boolean): Result<VoucherGameListData> {
         try {
             this.setGraphqlQuery(rawQuery)
             this.setRequestParams(mapParam)
@@ -29,7 +30,15 @@ class VoucherGameListUseCase(graphqlRepository: GraphqlRepository): GraphqlUseCa
             if(searchQuery.isNotEmpty()){
                 voucherGameListData.response.operators = voucherGameListData.response.operators.filter { it.attributes.name.contains(searchQuery, true) }
             }
-            return Success(voucherGameListData.response)
+
+            // Add product initial position for tracking
+            val operatorList = voucherGameListData.response
+            operatorList.operators = operatorList.operators.mapIndexed { index, item ->
+                item.position = index
+                return@mapIndexed item
+            }
+
+            return Success(operatorList)
         } catch (throwable: Throwable) {
             this.clearCache()
             return Fail(throwable)

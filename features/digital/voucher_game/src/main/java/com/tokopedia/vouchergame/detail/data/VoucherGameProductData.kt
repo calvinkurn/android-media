@@ -18,7 +18,7 @@ class VoucherGameProductData(
         val text: String = "",
         @SerializedName("dataCollections")
         @Expose
-        val dataCollections: List<DataCollection> = listOf()
+        var dataCollections: List<DataCollection> = listOf()
 
 ) {
         class DataCollection(
@@ -27,7 +27,7 @@ class VoucherGameProductData(
                 val name: String = "",
                 @SerializedName("products")
                 @Expose
-                val products: List<VoucherGameProduct> = listOf()
+                var products: List<VoucherGameProduct> = listOf()
         ): Visitable<VoucherGameDetailAdapterFactory> {
                 override fun type(typeFactory: VoucherGameDetailAdapterFactory) = typeFactory.type(this)
         }

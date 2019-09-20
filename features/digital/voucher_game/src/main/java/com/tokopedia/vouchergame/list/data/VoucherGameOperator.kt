@@ -16,7 +16,8 @@ class VoucherGameOperator(
         val id: Int = 0,
         @SerializedName("attributes")
         @Expose
-        val attributes: VoucherGameOperatorAttributes = VoucherGameOperatorAttributes()
+        val attributes: VoucherGameOperatorAttributes = VoucherGameOperatorAttributes(),
+        var position: Int = 0
 
 ): Visitable<VoucherGameListAdapterFactory> {
 

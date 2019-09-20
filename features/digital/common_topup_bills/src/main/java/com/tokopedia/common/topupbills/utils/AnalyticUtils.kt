@@ -12,47 +12,6 @@ import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
 class AnalyticUtils {
 
     companion object {
-        fun <T: Any> getVisibleItems(data: List<TopupBillsTrackImpressionItem<T>>,
-                                     list: RecyclerView,
-                                     callback: (List<TopupBillsTrackImpressionItem<T>>) -> Unit):
-                List<TopupBillsTrackImpressionItem<T>> {
-            val trackList = mutableListOf<TopupBillsTrackImpressionItem<T>>()
-            val itemPos = getVisibleItemIndexes(list)
-            if (itemPos.first >= 0 && itemPos.second <= data.size - 1) {
-                for (i in itemPos.first..itemPos.second) {
-                    if (!data[i].isTracked) {
-                        trackList.add(data[i])
-                        data[i].isTracked = true
-                    }
-                }
-                callback(data)
-            }
-            return trackList
-        }
-
-        fun <T: Any> getVisibleItemsOfViewType(data: List<TopupBillsTrackImpressionItem<T>>,
-                                               list: RecyclerView,
-                                               viewType: Int,
-                                               callback: (List<TopupBillsTrackImpressionItem<T>>) -> Unit):
-                List<TopupBillsTrackImpressionItem<T>> {
-            val trackList = mutableListOf<TopupBillsTrackImpressionItem<T>>()
-            val itemPos = getVisibleItemIndexes(list)
-            var indexOffset = 0
-            list.adapter?.run {
-                for (i in 0..itemPos.second) {
-                    if (getItemViewType(i) != viewType) indexOffset++
-                    else if (i >= itemPos.first) {
-                        val index = i - indexOffset
-                        if (!data[index].isTracked) {
-                            trackList.add(data[index])
-                            data[index].isTracked = true
-                        }
-                    }
-                }
-            }
-            callback(data)
-            return trackList
-        }
 
         fun getVisibleItemIndexes(list: RecyclerView): Pair<Int, Int> {
             var firstPos = 0
@@ -66,5 +25,17 @@ class AnalyticUtils {
             }
             return Pair(firstPos, lastPos)
         }
+
+        fun getVisibleItemIndexesOfType(list: RecyclerView, viewType: Int): Pair<Int, Int> {
+            val visibleIndexes = getVisibleItemIndexes(list)
+            var indexOffset = 0
+            list.adapter?.run {
+                for (i in visibleIndexes.first..visibleIndexes.second) {
+                    if (getItemViewType(i) != viewType) indexOffset++
+                }
+            }
+            return Pair(visibleIndexes.first, visibleIndexes.second - indexOffset)
+        }
+
     }
 }

@@ -16,6 +16,7 @@ class VoucherGameProduct(
         @SerializedName("attributes")
         @Expose
         val attributes: Attributes = Attributes(),
+        var position: Int = 0,
         var selected: Boolean = false
 
 ): Visitable<VoucherGameDetailAdapterFactory> {

@@ -30,9 +30,9 @@ class VoucherGameListViewModel @Inject constructor(private val voucherGameUseCas
     val voucherGameList = MutableLiveData<Result<VoucherGameListData>>()
     val voucherGameMenuDetail = MutableLiveData<Result<TopupBillsMenuDetail>>()
 
-    fun getVoucherGameList(rawQuery: String, mapParam: Map<String, Any>, searchQuery: String, isForceRefresh: Boolean = false) {
+    fun getVoucherGameOperators(rawQuery: String, mapParam: Map<String, Any>, searchQuery: String, isForceRefresh: Boolean = false) {
         launch {
-            voucherGameList.value = voucherGameUseCase.getVoucherGameList(rawQuery, mapParam, searchQuery, isForceRefresh)
+            voucherGameList.value = voucherGameUseCase.getVoucherGameOperators(rawQuery, mapParam, searchQuery, isForceRefresh)
         }
     }
 

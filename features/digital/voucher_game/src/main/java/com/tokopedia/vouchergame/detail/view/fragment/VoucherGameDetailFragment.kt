@@ -20,9 +20,8 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.topupbills.data.TopupBillsMenuDetail
 import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiryMainInfo
-import com.tokopedia.common.topupbills.utils.AnalyticUtils.Companion.getVisibleItemsOfViewType
+import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
-import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
@@ -76,7 +75,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
-    lateinit var productTrackingList: List<TopupBillsTrackImpressionItem<VoucherGameProduct>>
 
     lateinit var enquiryData: List<VoucherGameEnquiryFields>
     var inputData: MutableMap<String, String> = mutableMapOf()
@@ -97,7 +95,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             //Setup adapter
             adapter = VoucherGameDetailAdapter(it, resources,
                     VoucherGameDetailAdapterFactory(this),
-                    this, this)
+                    this)
         }
 
         arguments?.let {
@@ -178,12 +176,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (::productTrackingList.isInitialized) {
-                        voucherGameAnalytics.impressionProductCard(getVisibleItemsOfViewType(
-                                productTrackingList,
-                                recycler_view,
-                                VoucherGameProductViewHolder.LAYOUT,
-                                this@VoucherGameDetailFragment::updateTrackingList))
+                    val productData = voucherGameViewModel.voucherGameProducts.value
+                    if (productData is Success) {
+                        val visibleIndexes = AnalyticUtils.getVisibleItemIndexesOfType(recycler_view, VoucherGameProductViewHolder.LAYOUT)
+                        voucherGameAnalytics.impressionProductCard(
+                                getAllProductsList(productData.data).subList(visibleIndexes.first, visibleIndexes.second + 1))
                     }
                 }
             }
@@ -354,17 +351,13 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             adapter.hasMoreDetails = hasMoreDetails
             recycler_view.addItemDecoration(decorator)
 
-            productTrackingList = trackingList.mapIndexed { index, item ->
-                TopupBillsTrackImpressionItem(item, index)
-            }
             adapter.renderList(listData)
             recycler_view.post {
-                if (::productTrackingList.isInitialized) {
-                    voucherGameAnalytics.impressionProductCard(getVisibleItemsOfViewType(
-                            productTrackingList,
-                            recycler_view,
-                            VoucherGameProductViewHolder.LAYOUT,
-                            this@VoucherGameDetailFragment::updateTrackingList))
+                val productData = voucherGameViewModel.voucherGameProducts.value
+                if (productData is Success) {
+                    val visibleIndexes = AnalyticUtils.getVisibleItemIndexesOfType(recycler_view, VoucherGameProductViewHolder.LAYOUT)
+                    voucherGameAnalytics.impressionProductCard(
+                            getAllProductsList(productData.data).subList(visibleIndexes.first, visibleIndexes.second + 1))
                 }
             }
         }
@@ -442,9 +435,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onItemClicked(product: VoucherGameProduct, position: Int) {
         if (::voucherGameOperatorData.isInitialized) {
-            val productIndex = productTrackingList.indexOfFirst { it.item == product }
             voucherGameAnalytics.eventClickProductCard(voucherGameOperatorData.name,
-                    product.attributes.desc, productIndex, productTrackingList[productIndex])
+                    product)
         }
         selectProduct(product, position)
     }
@@ -481,16 +473,18 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     private fun selectProduct(product: VoucherGameProduct, position: Int) {
         // Show selected item in list
-        if (::selectedProduct.isInitialized) {
-            // If product is already selected, do nothing
-            if (product == selectedProduct) return
-
-            val selectedIndex = adapter.data.indexOf(selectedProduct)
-            (adapter.data[selectedIndex] as VoucherGameProduct).selected = false
-            adapter.notifyItemChanged(selectedIndex)
-        }
-        (adapter.data[position] as VoucherGameProduct).selected = true
-        adapter.notifyItemChanged(position)
+        if (::selectedProduct.isInitialized && product == selectedProduct) return
+//        {
+//            // If product is already selected, do nothing
+//            if (product == selectedProduct) return
+//
+//            val selectedIndex = adapter.data.indexOf(selectedProduct)
+//            (adapter.data[selectedIndex] as VoucherGameProduct).selected = false
+//            adapter.notifyItemChanged(selectedIndex)
+//        }
+//        (adapter.data[position] as VoucherGameProduct).selected = true
+//        adapter.notifyItemChanged(position)
+        adapter.setSelectedProduct(position)
 
         // Update selected product
         selectedProduct = product
@@ -512,10 +506,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     override fun onClickNextBuyButton() {
         if (isEnquired) {
             if (::voucherGameOperatorData.isInitialized) {
-                productTrackingList.find { it.item == selectedProduct }?.run {
-                    voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
-                            voucherGameOperatorData.name, product = this)
-                }
+                voucherGameAnalytics.eventClickBuy(voucherGameExtraParam.categoryId,
+                        voucherGameOperatorData.name, product = selectedProduct)
             }
             processCheckout()
         }
@@ -548,8 +540,12 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun updateTrackingList(data: List<TopupBillsTrackImpressionItem<VoucherGameProduct>>) {
-        productTrackingList = data
+    private fun getAllProductsList(data: VoucherGameDetailData): List<VoucherGameProduct> {
+        val productList = mutableListOf<VoucherGameProduct>()
+        for (dataCollection in data.product.dataCollections) {
+            productList.addAll(dataCollection.products)
+        }
+        return productList
     }
 
     companion object {

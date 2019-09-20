@@ -19,7 +19,7 @@ class VoucherGameDetailData(
         val enquiryFields: List<VoucherGameEnquiryFields> = listOf(),
         @SerializedName("product")
         @Expose
-        val product: VoucherGameProductData = VoucherGameProductData()
+        var product: VoucherGameProductData = VoucherGameProductData()
 
 ) {
         class Response(

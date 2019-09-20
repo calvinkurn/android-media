@@ -6,6 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchergame.R
 import com.tokopedia.vouchergame.detail.data.VoucherGameProduct
+import com.tokopedia.vouchergame.detail.view.adapter.VoucherGameDetailAdapter
 import kotlinx.android.synthetic.main.item_voucher_game_detail.view.*
 
 /**
@@ -15,6 +16,7 @@ import kotlinx.android.synthetic.main.item_voucher_game_detail.view.*
 class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener) : AbstractViewHolder<VoucherGameProduct>(view) {
 
     var hasMoreDetails = false
+    lateinit var adapter: VoucherGameDetailAdapter
 
     override fun bind(product: VoucherGameProduct) {
         with(itemView) {
@@ -41,15 +43,14 @@ class VoucherGameProductViewHolder(val view: View, val listener: OnClickListener
                     product_detail.visibility = if (hasMoreDetails) View.INVISIBLE else View.GONE
                 }
             }
+            if (::adapter.isInitialized) {
+                isSelected = adapter.selectedPos == adapterPosition
 
-            // Show selected item
-            var drawable = AppCompatResources.getDrawable(context, R.drawable.digital_bg_transparent_round)
-            if (product.selected) {
-                drawable = AppCompatResources.getDrawable(context, R.drawable.digital_bg_green_light_rounded)
+                layout_product.setOnClickListener {
+                    adapter.setSelectedProduct(adapterPosition)
+                    listener.onItemClicked(product, adapterPosition)
+                }
             }
-            layout_product.background = drawable
-
-            layout_product.setOnClickListener { listener.onItemClicked(product, adapterPosition) }
         }
     }
 

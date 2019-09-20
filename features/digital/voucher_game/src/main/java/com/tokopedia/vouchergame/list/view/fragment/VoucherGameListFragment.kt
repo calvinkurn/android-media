@@ -19,8 +19,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.banner.Indicator
 import com.tokopedia.common.topupbills.data.TopupBillsBanner
-import com.tokopedia.common.topupbills.utils.AnalyticUtils.Companion.getVisibleItems
-import com.tokopedia.common.topupbills.view.model.TopupBillsTrackImpressionItem
+import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.usecase.coroutines.Fail
@@ -57,8 +56,6 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     @Inject
     lateinit var voucherGameAnalytics: VoucherGameAnalytics
-    lateinit var operatorTrackingList: List<TopupBillsTrackImpressionItem<VoucherGameOperator>>
-    lateinit var bannerTrackingList: List<TopupBillsTrackImpressionItem<TopupBillsBanner>>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -150,14 +147,18 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    if (::operatorTrackingList.isInitialized) {
-                        if (searchInputView.searchText.isNotEmpty()) {
-                            voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
-                                    getVisibleItems(operatorTrackingList, recycler_view,
-                                            this@VoucherGameListFragment::updateOperatorTrackingList))
-                        } else {
-                            voucherGameAnalytics.impressionOperatorCard(getVisibleItems(operatorTrackingList,
-                                    recycler_view, this@VoucherGameListFragment::updateOperatorTrackingList))
+                    val operatorList = voucherGameViewModel.voucherGameList.value
+                    if (operatorList is Success) {
+                        val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
+                        with(operatorList.data) {
+                            if (searchInputView.searchText.isNotEmpty()) {
+                                voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
+                                        operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+                            } else {
+                                voucherGameAnalytics.impressionOperatorCard(
+                                        operators.subList(visibleIndexes.first,
+                                        visibleIndexes.second + 1))
+                            }
                         }
                     }
                 }
@@ -181,35 +182,26 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             checkAutoSelectOperator(data.operators)
             renderList(data.operators)
 
-            operatorTrackingList = data.operators.mapIndexed { index, item ->
-                TopupBillsTrackImpressionItem(item, index)
-            }
-
             recycler_view.post {
-                if (::operatorTrackingList.isInitialized) {
-                    if (searchInputView.searchText.isNotEmpty()) {
-                        voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
-                                getVisibleItems(operatorTrackingList, recycler_view, this::updateOperatorTrackingList))
-                    } else {
-                        voucherGameAnalytics.impressionOperatorCard(getVisibleItems(operatorTrackingList,
-                                recycler_view, this::updateOperatorTrackingList))
-                    }
+                val visibleIndexes = AnalyticUtils.getVisibleItemIndexes(recycler_view)
+                if (searchInputView.searchText.isNotEmpty()) {
+                    voucherGameAnalytics.impressionOperatorCardSearchResult(searchInputView.searchText,
+                            data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
+                } else {
+                    voucherGameAnalytics.impressionOperatorCard(
+                            data.operators.subList(visibleIndexes.first, visibleIndexes.second + 1))
                 }
             }
         }
     }
 
     private fun renderBanners(data: List<TopupBillsBanner>) {
-        bannerTrackingList = data.mapIndexed { index, item ->
-            TopupBillsTrackImpressionItem(item, index)
-        }
-
         promo_banner.setPromoList(data.map { it.imageUrl })
         promo_banner.setOnPromoClickListener {
             val banner = data[it]
-            voucherGameAnalytics.eventClickBanner(bannerTrackingList[it])
+            voucherGameAnalytics.eventClickBanner(banner, it)
             RouteManager.route(context, banner.applinkUrl) }
-        promo_banner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(listOf(bannerTrackingList[it])) }
+        promo_banner.setOnPromoScrolledListener { voucherGameAnalytics.impressionBanner(data[it], it) }
         promo_banner.setOnPromoAllClickListener {
             voucherGameAnalytics.eventClickViewAllBanner()
             RouteManager.route(context, ApplinkConst.PROMO_LIST)
@@ -233,7 +225,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     override fun loadData(page: Int) {
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
-            voucherGameViewModel.getVoucherGameList(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
+            voucherGameViewModel.getVoucherGameOperators(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
                     voucherGameViewModel.createParams(it), "", true)
         }
     }
@@ -243,13 +235,10 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onItemClicked(operator: VoucherGameOperator) {
-        val operatorIndex = operatorTrackingList.indexOfFirst { it.item == operator }
         if (searchInputView.searchText.isNotEmpty()) {
-            voucherGameAnalytics.eventClickOperatorCardSearchResult(operator.attributes.name,
-                    operatorIndex, operatorTrackingList[operatorIndex])
+            voucherGameAnalytics.eventClickOperatorCardSearchResult(operator)
         } else {
-            voucherGameAnalytics.eventClickOperatorCard(operator.attributes.name,
-                    operatorIndex, operatorTrackingList[operatorIndex])
+            voucherGameAnalytics.eventClickOperatorCard(operator)
         }
 
         voucherGameExtraParam.operatorId = operator.id.toString()
@@ -313,12 +302,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     private fun searchVoucherGame(query: String) {
-        voucherGameViewModel.getVoucherGameList(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
+        voucherGameViewModel.getVoucherGameOperators(GraphqlHelper.loadRawString(resources, R.raw.query_voucher_game_product_list),
                 voucherGameViewModel.createParams(voucherGameExtraParam.menuId.toInt()), query)
-    }
-
-    private fun updateOperatorTrackingList(data: List<TopupBillsTrackImpressionItem<VoucherGameOperator>>) {
-        operatorTrackingList = data
     }
 
     fun onBackPressed() {

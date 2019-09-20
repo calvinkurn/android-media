@@ -31,7 +31,19 @@ class VoucherGameDetailViewModel @Inject constructor(private val graphqlReposito
                 graphqlRepository.getReseponse(listOf(graphqlRequest))
             }.getSuccessData<VoucherGameDetailData.Response>()
 
-            voucherGameProducts.value = Success(data.response)
+            // Add product initial position for tracking
+            val productList = data.response
+            var productCount = 0
+            productList.product.dataCollections = productList.product.dataCollections.map {
+                it.products = it.products.mapIndexed { index, item ->
+                    item.position = index + productCount
+                    return@mapIndexed item
+                }
+                productCount += it.products.size
+                return@map it
+            }
+
+            voucherGameProducts.value = Success(productList)
         }) {
             voucherGameProducts.value = Fail(it)
         }

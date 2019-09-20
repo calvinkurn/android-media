@@ -13,14 +13,15 @@ import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProdu
 class VoucherGameDetailAdapter(val context: Context,
                                val resources: Resources,
                                adapterFactory: VoucherGameDetailAdapterFactory,
-                               interactionListener: OnAdapterInteractionListener<Visitable<*>>,
                                private val loaderListener: LoaderListener):
-        BaseListAdapter<Visitable<*>, VoucherGameDetailAdapterFactory>(adapterFactory, interactionListener) {
+        BaseListAdapter<Visitable<*>, VoucherGameDetailAdapterFactory>(adapterFactory) {
 
     var hasMoreDetails = false
+    var selectedPos = SELECTED_POSITION_INIT
 
     override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
         if (holder is VoucherGameProductViewHolder) {
+            holder.adapter = this
             holder.hasMoreDetails = hasMoreDetails
         }
         super.onBindViewHolder(holder, position)
@@ -51,8 +52,22 @@ class VoucherGameDetailAdapter(val context: Context,
         }
     }
 
+    fun setSelectedProduct(position: Int) {
+        // Check if a product has been selected
+        if (selectedPos > -1) {
+            val oldPosition = selectedPos
+            notifyItemChanged(oldPosition)
+        }
+        selectedPos = position
+        notifyItemChanged(position)
+    }
+
     interface LoaderListener {
         fun loadData()
+    }
+
+    companion object {
+        const val SELECTED_POSITION_INIT = -1
     }
 
 }
