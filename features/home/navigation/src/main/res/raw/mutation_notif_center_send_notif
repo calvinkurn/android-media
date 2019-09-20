@@ -1,5 +1,5 @@
-mutation notifcenter_sendNotif($section_type: String!, $template_key: String!, $expired_time: Int!,$unique_id: Int, $disabled_notification: Boolean) {
-    notifcenter_sendNotif(section_type: $section_type, template_key:$template_key, expired_time :$expired_time, unique_id : $unique_id, disable_notification : $disabled_notification) {
+mutation notifcenter_sendNotif($section_type: String!, $template_key: String!, $expired_time: Int!,$unique_id: Int) {
+    notifcenter_sendNotif(section_type: $section_type, template_key:$template_key, expired_time :$expired_time, unique_id : $unique_id) {
         status
         message_error
         process_time

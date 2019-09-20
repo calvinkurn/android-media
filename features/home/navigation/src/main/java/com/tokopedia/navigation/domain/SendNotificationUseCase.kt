@@ -36,15 +36,13 @@ class SendNotificationUseCase @Inject constructor(
                 NotificationQueriesConstant.PARAM_SECTION_TYPE to SECTION_TYPE,
                 NotificationQueriesConstant.PARAM_TEMPLATE_KEY to TEMPLATE_KEY,
                 NotificationQueriesConstant.PARAM_EXPIRED_TIME to EXPIRED_TIME,
-                NotificationQueriesConstant.PARAM_UNIQUE_ID to userSession.userId.toIntOrZero(),
-                NotificationQueriesConstant.PARAM_DISABLED_NOTIFICATION to DISABLED_NOTIF)
+                NotificationQueriesConstant.PARAM_UNIQUE_ID to userSession.userId.toIntOrZero())
     }
 
     companion object {
         val SECTION_TYPE = "userapp_"
         val TEMPLATE_KEY = "first_access_notification"
         val EXPIRED_TIME = 0
-        val DISABLED_NOTIF = true
     }
 
 }
