@@ -114,6 +114,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewMod
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.kol.common.util.createBottomMenu
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
@@ -621,8 +622,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (!data.isEnableOnboarding) {
             presenter.fetchFirstPage()
         } else {
+            finishLoading()
+            clearData()
+            val feedOnboardingData: MutableList<OnboardingDataViewModel> = ArrayList()
+            feedOnboardingData.addAll(data.dataList.take(5))
+            feedOnboardingData.add(getOnboardingDataSeeAll())
+            data.dataList = feedOnboardingData
             adapter.addItem(data)
         }
+    }
+
+    private fun getOnboardingDataSeeAll(): OnboardingDataViewModel {
+        return OnboardingDataViewModel(
+                0,
+                OnboardingDataViewModel.defaultLihatSemuaText,
+                "",
+                false,
+                true)
     }
 
     fun scrollToTop() {

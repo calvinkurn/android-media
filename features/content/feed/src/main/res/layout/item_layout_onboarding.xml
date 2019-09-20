@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_margin="@dimen/dp_16"
     android:orientation="vertical">
 
@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:typographyType="heading_2"
-        tools:text="00:14"/>
+        tools:text="Mungkin Kamu Suka"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_interest_pick"
@@ -25,6 +25,7 @@
         android:id="@+id/btn_onboarding"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_48"
-        android:layout_marginTop="@dimen/dp_12"/>
+        android:layout_marginTop="@dimen/dp_12"
+        tools:text="Mungkin Kamu Suka"/>
 
 </LinearLayout>

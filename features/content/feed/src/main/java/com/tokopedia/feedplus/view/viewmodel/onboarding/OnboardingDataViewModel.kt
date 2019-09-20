@@ -10,7 +10,7 @@ data class OnboardingDataViewModel (
          val id: Int = 0,
          val name: String = "",
          val image: String = "",
-         val isSelected: Boolean = false,
+         var isSelected: Boolean = false,
          val isLihatSemuaItem: Boolean = false
 ) {
     companion object {
