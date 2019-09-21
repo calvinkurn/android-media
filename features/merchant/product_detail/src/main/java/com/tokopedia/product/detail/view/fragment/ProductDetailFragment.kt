@@ -103,8 +103,11 @@ import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
 import com.tokopedia.product.detail.view.viewmodel.Loaded
 import com.tokopedia.product.detail.view.viewmodel.Loading
 import com.tokopedia.product.detail.view.viewmodel.ProductInfoViewModel
-import com.tokopedia.product.detail.view.widget.*
+import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet
 import com.tokopedia.product.detail.view.widget.AddToCartDoneBottomSheet.Companion.KEY_ADDED_PRODUCT_DATA_MODEL
+import com.tokopedia.product.detail.view.widget.PictureScrollingView
+import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
+import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.product.warehouse.view.viewmodel.ProductWarehouseViewModel
@@ -117,6 +120,8 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shopetalasepicker.constant.ShopParamConstant
 import com.tokopedia.shopetalasepicker.view.activity.ShopEtalasePickerActivity
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
+import com.tokopedia.stickylogin.view.StickyLoginView
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.tradein.model.TradeInParams
@@ -180,7 +185,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     lateinit var recommendationThirdView: PartialRecommendationThirdView
     lateinit var recommendationFourthView: PartialRecommendationFourthView
     lateinit var valuePropositionView: PartialValuePropositionView
-    lateinit var stickyLoginTextView: StickyTextView
+    lateinit var stickyLoginView: StickyLoginView
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -401,6 +406,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         warehouseId?.let{
             productInfoViewModel.warehouseId = it
         }
+
+        productInfoViewModel.stickyLoginResp.observe(this, Observer {
+            it?.tickers?.first()?.run {
+                stickyLoginView.setContent(this)
+            }
+        })
     }
 
     private fun hideRecommendationView() {
@@ -485,6 +496,16 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset -> refreshLayout?.isEnabled = (verticalOffset == 0) })
         refreshLayout?.setOnRefreshListener {
             loadProductData(true)
+            updateStickyState()
+
+            productInfoViewModel.getStickyLoginContent(
+                onSuccess = {
+                    stickyLoginView.setContent(it)
+                },
+                onError = {
+                    stickyLoginView.hide()
+                }
+            )
             updateStickyState()
         }
 
@@ -624,20 +645,28 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
         loadProductData()
 
-        stickyLoginTextView = view.findViewById(R.id.sticky_login_text)
-        stickyLoginTextView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+        stickyLoginView = view.findViewById(R.id.sticky_login_text)
+        stickyLoginView.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
             updateStickyState()
         }
-        stickyLoginTextView.setOnClickListener {
-            productDetailTracking.eventClickOnStickyLogin(true)
+        stickyLoginView.setOnClickListener {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            stickyLoginView.tracker.clickOnLogin(StickyLoginConstant.Page.PDP)
         }
-        stickyLoginTextView.setOnDismissListener(View.OnClickListener {
-            productDetailTracking.eventClickOnStickyLogin(false)
-            stickyLoginTextView.dismiss()
+        stickyLoginView.setOnDismissListener(View.OnClickListener {
+            stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
+            stickyLoginView.tracker.clickOnDismiss(StickyLoginConstant.Page.PDP)
             updateStickyState()
         })
 
+        productInfoViewModel.getStickyLoginContent(
+                onSuccess = {
+                    stickyLoginView.setContent(it)
+                },
+                onError = {
+                    stickyLoginView.hide()
+                }
+        )
         updateStickyState()
     }
 
@@ -654,6 +683,14 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     override fun onResume() {
         super.onResume()
 
+        productInfoViewModel.getStickyLoginContent(
+                onSuccess = {
+                    stickyLoginView.setContent(it)
+                },
+                onError = {
+                    stickyLoginView.hide()
+                }
+        )
         updateStickyState()
     }
 
@@ -2252,18 +2289,18 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun updateStickyState() {
-        val isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true)
+        val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
         if (!isCanShowing) {
-            stickyLoginTextView.visibility = View.GONE
+            stickyLoginView.visibility = View.GONE
             return
         }
 
         val userSession = UserSession(activity)
         if (userSession.isLoggedIn) {
-            stickyLoginTextView.dismiss()
+            stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
         } else {
-            stickyLoginTextView.show()
-            productDetailTracking.eventViewLoginStickyWidget()
+            stickyLoginView.show()
+            stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
         }
 
         val tv = TypedValue()
@@ -2272,9 +2309,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             paddingBottom = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
         }
 
-        if (stickyLoginTextView.isShowing()) {
+        if (stickyLoginView.isShowing()) {
             actionButtonView.setBackground(R.color.white)
-            nested_scroll.setPadding(0, 0, 0, paddingBottom + stickyLoginTextView.height)
+            nested_scroll.setPadding(0, 0, 0, paddingBottom + stickyLoginView.height)
         } else {
             nested_scroll.setPadding(0, 0, 0, paddingBottom)
             ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
