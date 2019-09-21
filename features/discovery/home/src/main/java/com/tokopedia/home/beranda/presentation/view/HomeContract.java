@@ -17,7 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackDa
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
-import com.tokopedia.stickylogin.data.TickerPojo;
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import java.util.List;
@@ -88,7 +88,7 @@ public interface HomeContract {
 
         boolean hasGeolocationPermission();
 
-        void setStickyContent(TickerPojo.TickerDetail tickerDetail);
+        void setStickyContent(StickyLoginTickerPojo stickyContent);
     }
 
     interface Presenter extends CustomerPresenter<View> {

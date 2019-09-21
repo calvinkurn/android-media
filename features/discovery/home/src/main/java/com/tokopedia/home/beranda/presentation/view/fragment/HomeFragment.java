@@ -96,7 +96,7 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.HomeMainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
-import com.tokopedia.stickylogin.data.TickerPojo;
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokocash.TokoCashRouter;
@@ -1551,8 +1551,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setStickyContent(TickerPojo.TickerDetail tickerDetail) {
-        stickyLoginView.setContent(tickerDetail);
+    public void setStickyContent(StickyLoginTickerPojo stickyContent) {
+        if (stickyContent.getTickers().size() > 0) {
+            stickyLoginView.setContent(stickyContent.getTickers().get(0));
+        } else {
+            stickyLoginView.setVisibility(View.GONE);
+        }
     }
 
     private void updateStickyState() {
@@ -1567,7 +1571,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
 
         if (isUserLoggedIn()) {
-            stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
+            stickyLoginView.setVisibility(View.GONE);
         } else {
             stickyLoginView.show(StickyLoginConstant.Page.HOME);
             stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);

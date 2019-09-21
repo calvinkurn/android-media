@@ -625,9 +625,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         stickyLoginUseCase.setParams(StickyLoginConstant.Page.HOME);
         stickyLoginUseCase.execute(
             tickerResponse -> {
-                if (tickerResponse.getResponse().getTickers().size() > 0) {
-                    getView().setStickyContent(tickerResponse.getResponse().getTickers().get(0));
-                }
+                getView().setStickyContent(tickerResponse.getResponse());
                 return Unit.INSTANCE;
             },
             throwable -> {
