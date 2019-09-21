@@ -53,8 +53,11 @@ class DashboardItemViewHolder(
         tvComission.text = element.earnedComission
         if (element.productRating >= 0) {
             val rating = (element.productRating / 100.0f * 5).toInt()
-            rbCuratedTraffic.updateRating(rating)
+            rbCuratedTraffic
+                    .apply { visible() }
+                    .also { it.updateRating(rating) }
         }
+        else rbCuratedTraffic.gone()
         if (element.reviewCount >= 0) tvRating.text = getString(R.string.af_review_count_format, element.reviewCount.toString())
         if (element.isShouldShowSection) tvSection.visible() else tvSection.gone()
 
