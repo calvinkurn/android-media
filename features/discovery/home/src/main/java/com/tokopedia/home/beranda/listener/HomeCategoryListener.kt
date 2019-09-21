@@ -34,7 +34,7 @@ interface HomeCategoryListener {
 
     fun onCloseTicker(pos: Int)
 
-    fun onPromoClick(position: Int, slidesModel: BannerSlidesModel, attribution: String)
+    fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
     fun openShop()
 

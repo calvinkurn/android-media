@@ -75,7 +75,7 @@ class TopAdsAutoTopUpFragment:
             sendResultIntentOk()
         } else {
             ToasterError.make(view, ErrorHandler.getErrorMessage(context, it.throwable))
-                    .setAction(R.string.close){}.show()
+                    .setAction(com.tokopedia.abstraction.R.string.close){}.show()
         }
     }
 
@@ -110,6 +110,10 @@ class TopAdsAutoTopUpFragment:
             else R.string.topads_inactive)
             adapter.notifyDataSetChanged()
         }
+    }
+
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

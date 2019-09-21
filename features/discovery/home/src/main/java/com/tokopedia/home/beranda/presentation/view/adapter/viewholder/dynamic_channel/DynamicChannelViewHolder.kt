@@ -39,6 +39,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_CURATED = 5
         const val TYPE_BANNER = 6
         const val TYPE_BANNER_CAROUSEL = 7
+        const val TYPE_GIF_BANNER = 8
     }
 
     protected fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
@@ -50,6 +51,8 @@ abstract class DynamicChannelViewHolder(itemView: View,
             DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> return TYPE_ORGANIC
             DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> return TYPE_BANNER_CAROUSEL
             DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
+            DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> return TYPE_GIF_BANNER
+
         }
         return TYPE_CURATED
     }
@@ -185,6 +188,11 @@ abstract class DynamicChannelViewHolder(itemView: View,
                             HomePageTracking.getIrisEnhanceImpressionLegoThreeBannerHomePage(
                                     channel.id, channel.grids, channel.header.name, position
                             )
+                    )
+                }
+                TYPE_GIF_BANNER -> {
+                    listener.putEEToIris(
+                            HomePageTracking.getEnhanceImpressionPromoGifBannerDC(channel)
                     )
                 }
                 TYPE_BANNER, TYPE_BANNER_CAROUSEL -> {
