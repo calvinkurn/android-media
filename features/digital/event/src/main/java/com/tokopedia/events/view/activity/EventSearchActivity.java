@@ -55,7 +55,6 @@ public class EventSearchActivity extends EventBaseActivity implements
     LinearLayoutManager layoutManager;
 
     private EventsAnalytics eventsAnalytics;
-    private UserSession userSession;
 
     @Override
     void initPresenter() {
@@ -80,7 +79,6 @@ public class EventSearchActivity extends EventBaseActivity implements
         searchInputView.setListener(this);
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         eventsAnalytics = new EventsAnalytics();
-        userSession = new UserSession(this);
         eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
@@ -112,12 +110,6 @@ public class EventSearchActivity extends EventBaseActivity implements
         if (imm != null)
             imm.hideSoftInputFromWindow(getRootView().getWindowToken(), 0);
         eventSearchPresenter.searchSubmitted(text);
-        if (userSession.isLoggedIn()) {
-            if (!TextUtils.isEmpty(text)) {
-                customMessage = text;
-            }
-            eventSearchPresenter.sendNSQEvent(userSession.getUserId(), "search", customMessage);
-        }
     }
 
     @Override
