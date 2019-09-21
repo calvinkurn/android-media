@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -31,10 +30,7 @@ import com.tokopedia.sellerorder.list.presentation.activity.SomFilterActivity
 import com.tokopedia.sellerorder.list.presentation.adapter.SomListItemAdapter
 import com.tokopedia.sellerorder.list.presentation.bottomsheet.TickerDetailBottomSheetFragment
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifycomponents.ticker.TickerData
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.empty_list.*
@@ -98,7 +94,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         super.onViewCreated(view, savedInstanceState)
 
         prepareLayout()
-        setListener()
+        setListeners()
         setInitialValue()
         observingTicker()
         observingFilter()
@@ -113,15 +109,16 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             layoutManager = LinearLayoutManager(activity)
             adapter = somListItemAdapter
         }
-        filter_action_button.setOnClickListener {
-            startActivity(Intent(context, SomFilterActivity::class.java))
-        }
     }
 
-    private fun setListener() {
+    private fun setListeners() {
         search_input_view?.setListener(this)
         search_input_view?.setResetListener(this)
         search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
+
+        filter_action_button.setOnClickListener {
+            startActivity(Intent(context, SomFilterActivity::class.java))
+        }
     }
 
     private fun setInitialValue() {
@@ -168,15 +165,24 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         if (tickerList.isNotEmpty()) {
             if (tickerList.size > 1) {
                 val listTickerData = arrayListOf<TickerData>()
+                var indexTicker = 0
                 tickerList.forEach {
                     if (it.isActive) {
-                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true))
+                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true, indexTicker))
+                        indexTicker++
                     }
                 }
 
                 context?.let {
                     val adapter = TickerPagerAdapter(it, listTickerData)
-                    adapter.setDescriptionClickEvent(object: TickerCallback {
+                    adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                        override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                            println("++ linkUrl = $linkUrl, itemData = ${itemData.toString()}")
+                            val index = itemData as Int
+                            showTickerBottomSheet(listTickerData[index].description)
+                        }
+                    })
+                    /*adapter.setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(link: CharSequence?) {
                             // changed to open bottomsheet
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
@@ -184,7 +190,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
 
                         override fun onDismiss() {}
-                    })
+                    })*/
                     ticker_info?.addPagerView(adapter, listTickerData)
                 }
             } else {
@@ -193,9 +199,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     ticker_info?.setHtmlDescription(it.shortDesc)
                     ticker_info?.tickerType = Ticker.TYPE_ANNOUNCEMENT
                     ticker_info?.setDescriptionClickEvent(object : TickerCallback {
-                        override fun onDescriptionViewClick(link: CharSequence?) {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {
                             // changed to open bottomsheet
-                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                             // showTickerBottomSheet(it.body)
                         }
 

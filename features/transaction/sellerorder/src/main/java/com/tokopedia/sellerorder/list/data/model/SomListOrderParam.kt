@@ -1,7 +1,11 @@
 package com.tokopedia.sellerorder.list.data.model
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.createIntList
+import com.tokopedia.kotlin.extensions.view.writeIntList
 
 /**
  * Created by fwidjaja on 2019-08-28.
@@ -28,7 +32,45 @@ data class SomListOrderParam(
         @Expose
         var statusList: List<Int> = listOf(),
 
+        @SerializedName("shipping_list")
+        @Expose
+        var shippingList: List<Int> = listOf(),
+
         @SerializedName("sort_by")
         @Expose
         var sortBy: Int = 2
-)
+) : Parcelable {
+        constructor(parcel: Parcel) : this(
+                parcel.readString() ?: "",
+                parcel.readString()  ?: "",
+                parcel.readString()  ?: "",
+                parcel.readInt(),
+                parcel.createIntList(),
+                parcel.createIntList(),
+                parcel.readInt()) {
+        }
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+                parcel.writeString(search)
+                parcel.writeString(startDate)
+                parcel.writeString(endDate)
+                parcel.writeInt(filterStatus)
+                parcel.writeIntList(statusList)
+                parcel.writeIntList(shippingList)
+                parcel.writeInt(sortBy)
+        }
+
+        override fun describeContents(): Int {
+                return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<SomListOrderParam> {
+                override fun createFromParcel(parcel: Parcel): SomListOrderParam {
+                        return SomListOrderParam(parcel)
+                }
+
+                override fun newArray(size: Int): Array<SomListOrderParam?> {
+                        return arrayOfNulls(size)
+                }
+        }
+}

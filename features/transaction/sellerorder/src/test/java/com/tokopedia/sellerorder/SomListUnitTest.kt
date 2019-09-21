@@ -52,10 +52,30 @@ class SomListUnitTest {
     }
 
     @Test
-    fun loadGetFilterListNotNull() {
+    fun confirmedLoadFilterFunc() {
+        //given
+        val spy = spyk(viewModel)
+        val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(filterSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
+        val response = gson.fromJson(jsonResponse, SomListFilter::class.java)
+        val gqlResponseSuccess = GraphqlResponse(
+                mapOf(SomListFilter::class.java to response),
+                mapOf(SomListFilter::class.java to listOf()), false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        runBlocking {
+            spy.getFilterList(queryFilterList)
+        }
+
+        //then
+        coVerify { spy.getFilterList(queryFilterList) }
+    }
+
+    @Test
+    fun getFilterListNotNull() {
         val spy = spyk(viewModel)
         //given
-        coEvery() { graphqlRepository.getReseponse(any()) }
+        coEvery { graphqlRepository.getReseponse(any()) }
         every { mockLiveDataFilterList.value } returns mockk()
         every { spy.filterListResult } returns mockLiveDataFilterList
 
@@ -72,17 +92,36 @@ class SomListUnitTest {
     }
 
     @Test
-    fun loadGetFilterSuccess() {
+    fun confirmedLoadFilterFuncSuccess() {
         //given
-        val spy = spyk(viewModel)
         val jsonResponse = this.javaClass.classLoader?.getResourceAsStream(filterSuccessJson)?.readBytes()?.toString(Charsets.UTF_8)
         val response = gson.fromJson(jsonResponse, SomListFilter::class.java)
         val gqlResponseSuccess = GraphqlResponse(
                 mapOf(SomListFilter::class.java to response),
                 mapOf(SomListFilter::class.java to listOf()), false)
-        // every { mockLiveDataFilterList.value } returns mockk()
-        // every { spy.filterListResult } returns mockLiveDataFilterList
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseSuccess
+
+        //when
+        runBlocking {
+            viewModel.getFilterList(queryFilterList)
+        }
+
+        //then
+        Assert.assertTrue(viewModel.filterListResult.value is Success<*>)
+        // assert(viewModel.filterListResult.value == response.data.orderFilterSom.statusList)
+    }
+
+    @Test
+    fun getFilterReturnNull() {
+        val spy = spyk(viewModel)
+
+        //given
+        coEvery { graphqlRepository.getReseponse(any()) }
+        every { mockLiveDataFilterList.value } returns null
+        every { spy.filterListResult } returns mockLiveDataFilterList
+
+
+        coEvery { spy.getFilterList(queryFilterList)} answers {  }
 
         //when
         runBlocking {
@@ -90,7 +129,17 @@ class SomListUnitTest {
         }
 
         //then
-        // Assert.assertEquals(spied.filterListResult, Success<MutableList<SomListFilter.Data.OrderFilterSom.StatusList>>())
         coVerify { spy.getFilterList(queryFilterList) }
+        Assert.assertEquals(null, spy.filterListResult.value)
     }
+
+    /*@Test
+    fun getFilterReturnError() {
+        val spy = spyk(viewModel)
+
+        //given
+        coEvery { graphqlRepository.getReseponse(any()) }
+        every { mockLiveDataFilterList } returns kotlin.Throwable("ERROR")
+        every { spy.filterListResult } returns mockLiveDataFilterList
+    }*/
 }

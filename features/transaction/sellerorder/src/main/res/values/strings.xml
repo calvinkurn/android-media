@@ -26,8 +26,11 @@
     <string name="title_courier">Kurir</string>
     <string name="title_see_all">Lihat Semua</string>
     <string name="title_status">Status</string>
+    <string name="title_filter">Filter</string>
     <string name="subtitle_status">Pilih Status</string>
     <string name="mulai_dari">Mulai Dari</string>
     <string name="sampai">Sampai</string>
     <string name="terapkan">Terapkan</string>
+    <string name="reset">Reset</string>
+    <string name="simpan">Simpan</string>
 </resources>

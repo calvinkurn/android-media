@@ -1,0 +1,86 @@
+package com.tokopedia.sellerorder.list.presentation.activity
+
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.Toolbar
+import android.view.View
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
+import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
+import com.tokopedia.sellerorder.list.data.model.SomSubFilter
+import com.tokopedia.sellerorder.list.presentation.adapter.SomSubFilterAdapter
+import kotlinx.android.synthetic.main.activity_filter_sublist.*
+import kotlinx.android.synthetic.main.partial_toolbar_reset_button.*
+import kotlin.collections.ArrayList
+
+/**
+ * Created by fwidjaja on 2019-09-13.
+ */
+class SomSubFilterActivity : BaseSimpleActivity() {
+    private var listFilter: List<SomSubFilter> = listOf()
+    private lateinit var actionListener: ActionListener
+    private var currentFilterParam = SomListOrderParam()
+
+    override fun getLayoutRes(): Int = R.layout.activity_filter_sublist
+    override fun getNewFragment(): Fragment? = null
+
+    interface ActionListener {
+        fun onResetClicked()
+        fun saveSubFilter() : SomListOrderParam
+    }
+
+    companion object {
+        private const val PARAM_LIST_FILTER = "LIST_FILTER"
+        private const val CURRENT_FILTER_PARAM = "CURRENT_FILTER_PARAM"
+
+        @JvmStatic
+        fun createIntent(context: Context, listFilter: ArrayList<SomSubFilter>, currentFilterParams: SomListOrderParam): Intent =
+                 Intent(context, SomSubFilterActivity::class.java)
+                        .putParcelableArrayListExtra(PARAM_LIST_FILTER, ArrayList(listFilter))
+                         .putExtra(CURRENT_FILTER_PARAM, currentFilterParams)
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        setContentView(layoutRes)
+        toolbar = findViewById<View>(R.id.toolbar_filter) as Toolbar
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.let {
+            it.setDisplayHomeAsUpEnabled(true)
+            it.title = getString(R.string.title_status)
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        listFilter = intent.getParcelableArrayListExtra(PARAM_LIST_FILTER) ?: listOf()
+        currentFilterParam = intent.getParcelableExtra(CURRENT_FILTER_PARAM)
+
+        super.onCreate(savedInstanceState)
+        rv_sublist_filter.apply {
+            adapter = SomSubFilterAdapter(listFilter, currentFilterParam)
+            setActionListener(adapter as SomSubFilterAdapter)
+            layoutManager = LinearLayoutManager(context)
+        }
+
+        label_reset.setOnClickListener {
+            actionListener.onResetClicked()
+        }
+
+        btn_simpan.setOnClickListener {
+            val listOrderParam = actionListener.saveSubFilter()
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra(PARAM_LIST_ORDER, listOrderParam)
+            })
+            finish()
+        }
+    }
+
+    private fun setActionListener(adapter: SomSubFilterAdapter) {
+        this.actionListener = adapter
+    }
+}

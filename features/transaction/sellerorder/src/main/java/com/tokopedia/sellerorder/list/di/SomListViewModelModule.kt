@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.sellerorder.list.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.sellerorder.list.presentation.viewmodel.SomListViewModel
 import dagger.Binds
 import dagger.Module
@@ -25,4 +26,9 @@ abstract class SomListViewModelModule {
     @IntoMap
     @ViewModelKey(SomListViewModel::class)
     internal abstract fun somListViewModel(viewModel: SomListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SomFilterViewModel::class)
+    internal abstract fun somFilterViewModel(viewModel: SomFilterViewModel): ViewModel
 }

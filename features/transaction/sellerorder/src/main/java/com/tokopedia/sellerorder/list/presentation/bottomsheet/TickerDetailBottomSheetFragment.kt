@@ -39,7 +39,9 @@ class TickerDetailBottomSheetFragment : BottomSheets() {
 
     override fun initView(view: View) {
         tickerDetail = view.findViewById(R.id.ticker_detail)
-        tickerDetail.setHtmlDescription(descriptionDetail)
+        descriptionDetail?.let {
+            tickerDetail.setHtmlDescription(it)
+        }
     }
 
     override fun title(): String {

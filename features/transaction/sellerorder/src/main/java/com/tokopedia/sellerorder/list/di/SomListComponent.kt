@@ -3,6 +3,7 @@ package com.tokopedia.sellerorder.list.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.sellerorder.common.di.SomComponent
 import com.tokopedia.sellerorder.list.presentation.activity.SomListActivity
+import com.tokopedia.sellerorder.list.presentation.fragment.SomFilterFragment
 import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment
 import dagger.Component
 
@@ -11,9 +12,10 @@ import dagger.Component
  */
 
 @SomListScope
-@Component(modules = [SomListModule::class, SomListViewModelModule::class], dependencies = [SomComponent::class])
+@Component(modules = [SomListViewModelModule::class], dependencies = [SomComponent::class])
 interface SomListComponent {
 
     fun inject(somListActivity: SomListActivity)
     fun inject(somListFragment: SomListFragment)
+    fun inject(somFilterFragment: SomFilterFragment)
 }

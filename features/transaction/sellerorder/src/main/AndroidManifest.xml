@@ -54,6 +54,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
+        <activity
+            android:name=".list.presentation.activity.SomSubFilterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
     </application>
 </manifest>
 
