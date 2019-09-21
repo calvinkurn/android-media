@@ -99,7 +99,7 @@ public class ShippingDurationConverter {
         shippingCourierViewModel.setBlackboxInfo(blackboxInfo);
         shippingCourierViewModel.setServiceData(shippingDurationViewModel.getServiceData());
         shippingCourierViewModel.setRatesId(ratesId);
-        if (selectedSpId != 0) {
+        if (selectedSpId != 0 && !isPromoStackingApplied) {
             if (selectedSpId == productData.getShipperProductId()) {
                 shippingCourierViewModel.setSelected(true);
                 shippingDurationViewModel.setSelected(true);
