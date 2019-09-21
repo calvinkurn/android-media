@@ -59,7 +59,6 @@ public class EventSearchPresenter
     private GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase;
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
-    private PostNsqEventUseCase postNsqEventUseCase;
     private ArrayList<CategoryItemsViewModel> mTopEvents;
     private ArrayList<Integer> likedEvents;
     private SearchDomainModel mSearchData;
@@ -81,11 +80,10 @@ public class EventSearchPresenter
     private EventsAnalytics eventsAnalytics;
 
     public EventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
-                                GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, PostNsqEventUseCase postNsqEventUseCase, EventsAnalytics eventsAnalytics) {
+                                GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
         this.getSearchEventsListRequestUseCase = getSearchEventsListRequestUseCase;
         this.getSearchNextUseCase = searchNextUseCase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
-        this.postNsqEventUseCase = postNsqEventUseCase;
         adapterCallbacks = new ArrayList<>();
         this.eventsAnalytics = eventsAnalytics;
     }
@@ -362,32 +360,5 @@ public class EventSearchPresenter
         } else {
             mView.setTopEvents(mTopEvents);
         }
-    }
-
-    public void sendNSQEvent(String userId, String action, String customMessage) {
-        NsqServiceModel nsqServiceModel = new NsqServiceModel();
-        nsqServiceModel.setService(Utils.NSQ_SERVICE);
-        NsqMessage nsqMessage = new NsqMessage();
-        nsqMessage.setUserId(Integer.parseInt(userId));
-        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
-        nsqMessage.setAction(action);
-        nsqMessage.setMessage(customMessage);
-        nsqServiceModel.setMessage(nsqMessage);
-        postNsqEventUseCase.setRequestModel(nsqServiceModel);
-        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper(e);
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-            }
-        });
     }
 }

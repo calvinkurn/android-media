@@ -490,6 +490,9 @@ public class EventsHomeActivity extends EventBaseActivity
         if (v.getId() == R.id.tv_addtocalendar) {
             eventHomePresenter.onClickEventCalendar();
         } else if (v.getId() == R.id.search_input_view) {
+            if (userSession.isLoggedIn()) {
+                eventHomePresenter.sendNSQEvent(userSession.getUserId(), "search");
+            }
             eventsAnalytics.sendGeneralEvent(EventsAnalytics.EVENT_CLICK_SEARCH, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.CLICK_SEARCH_ACTION, "");
             eventHomePresenter.onOptionMenuClick(R.id.action_menu_search);
         } else if (v.getId() == R.id.promo_event) {
