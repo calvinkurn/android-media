@@ -68,6 +68,11 @@ data class ShopInfo(
         @Expose
         val bbInfo: List<BBInfo> = listOf()
 ) {
+    companion object{
+        @JvmField
+        val TAG : String = ShopInfo::class.java.simpleName
+    }
+
     data class Response(
         @SerializedName("shopInfoByID")
         val result: Result = Result()

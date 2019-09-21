@@ -36,6 +36,7 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -67,6 +68,7 @@ import com.tokopedia.shop.page.view.widget.StickyTextView
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
+import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
@@ -75,6 +77,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import kotlinx.android.synthetic.main.partial_shop_page_header.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
@@ -325,6 +328,29 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         })
 
         updateStickyState()
+        initSearchInputView()
+    }
+
+    private fun initSearchInputView() {
+        searchInputView.searchTextView.movementMethod = null
+        searchInputView.searchTextView.keyListener = null
+        searchInputView.setOnClickListener {
+            (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
+                saveShopInfoModelToCacheManager(it)?.let {
+                    goToShopSearchProduct(it)
+                }
+            }
+        }
+    }
+
+    private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
+        val cacheManager = SaveInstanceCacheManager(this, true)
+        cacheManager.put(ShopInfo.TAG, shopInfo, TimeUnit.DAYS.toMillis(7))
+        return cacheManager.id
+    }
+
+    private fun goToShopSearchProduct(cacheManagerId: String) {
+        startActivity(ShopSearchProductActivity.createIntent(this,cacheManagerId))
     }
 
     override fun onResume() {

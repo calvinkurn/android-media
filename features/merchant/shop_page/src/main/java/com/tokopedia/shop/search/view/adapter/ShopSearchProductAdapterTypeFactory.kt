@@ -6,25 +6,25 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.search.view.adapter.viewholder.ShopSearchProductDynamicResultViewHolder
 import com.tokopedia.shop.search.view.adapter.viewholder.ShopSearchProductFixResultViewHolder
-import com.tokopedia.shop.search.view.model.ShopSearchProductDynamicResultDataModel
-import com.tokopedia.shop.search.view.model.ShopSearchProductFixedResultDataModel
+import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDynamicResultDataModel
+import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductFixedResultDataModel
 
 class ShopSearchProductAdapterTypeFactory: BaseAdapterTypeFactory() {
 
     fun type(searchProductFixedResultDataModel: ShopSearchProductFixedResultDataModel): Int{
-        return ShopSearchProductFixedResultDataModel.LAYOUT
+        return ShopSearchProductFixResultViewHolder.LAYOUT
     }
 
     fun type(searchProductDynamicResultDataModel: ShopSearchProductDynamicResultDataModel): Int{
-        return ShopSearchProductDynamicResultDataModel.LAYOUT
+        return ShopSearchProductDynamicResultViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
-            ShopSearchProductFixedResultDataModel.LAYOUT -> {
+            ShopSearchProductFixResultViewHolder.LAYOUT -> {
                 ShopSearchProductFixResultViewHolder(parent)
             }
-            ShopSearchProductDynamicResultDataModel.LAYOUT -> {
+            ShopSearchProductDynamicResultViewHolder.LAYOUT -> {
                 ShopSearchProductDynamicResultViewHolder(parent)
             }
             else ->
