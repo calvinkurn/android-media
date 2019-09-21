@@ -30,6 +30,7 @@ import io.branch.referral.util.LinkProperties;
 public class BranchWrapper implements WrapperInterface {
 
     private String deferredDeeplinkPath;
+    private String APPS_GROUPCHAT_URL = "https://tokopedia.link/playblog";
     private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://tokopedia.link/playblog";
 
     @Override
@@ -232,9 +233,9 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.GROUPCHAT, data.getId());
             if (context.getApplicationContext() instanceof LinkerRouter) {
                 desktopUrl = DESKTOP_GROUPCHAT_URL;
-                linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, desktopUrl);
-                linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
-                linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
+                linkProperties.addControlParameter(LinkerConstants.KEY_DESKTOP_URL, DESKTOP_GROUPCHAT_URL);
+                linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, APPS_GROUPCHAT_URL);
+                linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, APPS_GROUPCHAT_URL);
                 linkProperties.addTag(String.format(LinkerConstants.STRING_FORMAT_TAG, data.getId(), data.getSource()));
                 linkProperties.setFeature(data.getPrice());
                 linkProperties.setCampaign(String.format(LinkerConstants.STRING_FORMAT_TAG, data.getType(), data.getId()));
