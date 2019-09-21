@@ -5,9 +5,7 @@ import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.support.v4.text.HtmlCompat
 import android.support.v7.content.res.AppCompatResources
-import android.text.Html
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -21,9 +19,12 @@ import android.widget.TextView
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.stickylogin.R
 import com.tokopedia.stickylogin.analytics.StickyLoginTracking
-import com.tokopedia.stickylogin.data.TickerPojo
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
 import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import java.util.concurrent.TimeUnit
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.utils.StripedUnderlineUtil
+
 
 class StickyLoginView : BaseCustomView {
 
@@ -118,12 +119,9 @@ class StickyLoginView : BaseCustomView {
         imageViewRight.setOnClickListener(listener)
     }
 
-    fun setContent(tickerDetail: TickerPojo.TickerDetail) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            textContent.text = Html.fromHtml(tickerDetail.message, Html.FROM_HTML_MODE_COMPACT)
-        } else {
-            textContent.text = HtmlCompat.fromHtml(tickerDetail.message, HtmlCompat.FROM_HTML_MODE_COMPACT)
-        }
+    fun setContent(stickyLoginTickerDetail: StickyLoginTickerPojo.TickerDetail) {
+        textContent.text = MethodChecker.fromHtml(stickyLoginTickerDetail.message)
+        StripedUnderlineUtil.stripUnderlines(textContent)
     }
 
     fun show(page: StickyLoginConstant.Page) {

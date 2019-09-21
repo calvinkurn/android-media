@@ -36,10 +36,7 @@
           android:layout_marginRight="@dimen/dp_8"
           android:layout_marginBottom="@dimen/dp_11"
           android:textSize="@dimen/sp_14"
-          android:textStyle="normal"
-          tools:ignore="MissingPrefix,RtlHardcoded,RtlSymmetry">
-        
-        </TextView>
+          tools:ignore="MissingPrefix,RtlHardcoded,RtlSymmetry"/>
         
         <ImageView
           android:id="@+id/layout_sticky_image_right"
