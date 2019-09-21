@@ -43,7 +43,6 @@ public class DealsSearchPresenter
     private GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase;
     private GetLocationListRequestUseCase getSearchLocationListRequestUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
-    private PostNsqEventUseCase postNsqEventUseCase;
     private List<ProductItem> mTopDeals;
     private SearchResponse mSearchData;
     private String highlight;
@@ -54,11 +53,10 @@ public class DealsSearchPresenter
 
     @Inject
     public DealsSearchPresenter(GetSearchDealsListRequestUseCase getSearchDealsListRequestUseCase,
-                                GetLocationListRequestUseCase getLocationListRequestUseCase, GetSearchNextUseCase searchNextUseCase, PostNsqEventUseCase postNsqEventUseCase) {
+                                GetLocationListRequestUseCase getLocationListRequestUseCase, GetSearchNextUseCase searchNextUseCase) {
         this.getSearchDealsListRequestUseCase = getSearchDealsListRequestUseCase;
         this.getSearchLocationListRequestUseCase = getLocationListRequestUseCase;
         this.getSearchNextUseCase = searchNextUseCase;
-        this.postNsqEventUseCase = postNsqEventUseCase;
     }
 
     @Override
@@ -112,9 +110,6 @@ public class DealsSearchPresenter
         getSearchNextUseCase.unsubscribe();
         if (getSearchLocationListRequestUseCase != null) {
             getSearchLocationListRequestUseCase.unsubscribe();
-        }
-        if (postNsqEventUseCase != null) {
-            postNsqEventUseCase.unsubscribe();
         }
     }
 
@@ -240,34 +235,6 @@ public class DealsSearchPresenter
                 LocationResponse locationResponse = (LocationResponse) dataResponse.getData();
                 mTopLocations = locationResponse.getLocations();
                 getView().startLocationFragment(mTopLocations, isForFirstime);
-            }
-        });
-    }
-
-    public void sendNSQEvent(String userId, String action, String customMessage) {
-        NsqServiceModel nsqServiceModel = new NsqServiceModel();
-        nsqServiceModel.setService(Utils.NSQ_SERVICE);
-        NsqMessage nsqMessage = new NsqMessage();
-        nsqMessage.setUserId(Integer.parseInt(userId));
-        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
-        nsqMessage.setAction(action);
-        nsqMessage.setMessage(customMessage);
-        nsqServiceModel.setMessage(nsqMessage);
-        postNsqEventUseCase.setRequestModel(nsqServiceModel);
-        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                CommonUtils.dumper(e);
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Log.d("Naveen", "NSQ Event Sent search page");
             }
         });
     }

@@ -91,7 +91,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private boolean forceRefresh;
     private AppBarLayout appBarToolbar;
     private boolean isLocationUpdated;
-    private UserSession userSession;
 
     @Override
     public int getLayoutRes() {
@@ -125,7 +124,6 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     }
 
     private void setUpVariables() {
-        userSession = new UserSession(this);
         rvDeals = findViewById(R.id.rv_search_results);
         searchInputView = findViewById(R.id.search_input_view);
         noBrandsFound = findViewById(R.id.no_brands);
@@ -183,17 +181,10 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        String customMessage = "NOTHING";
         if (text.length() > 2)
             dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_SEARCH_VOUCHER_OR_OUTLET, text);
         KeyboardHandler.hideSoftKeyboard(getActivity());
         mPresenter.searchTextChanged(text);
-        if (userSession.isLoggedIn()) {
-            if (!TextUtils.isEmpty(text)) {
-                customMessage = text;
-            }
-            mPresenter.sendNSQEvent(userSession.getUserId(), "search", customMessage);
-        }
     }
 
     @Override
