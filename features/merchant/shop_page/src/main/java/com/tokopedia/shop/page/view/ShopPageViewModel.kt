@@ -17,6 +17,9 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.page.domain.interactor.GetModerateShopUseCase
 import com.tokopedia.shop.page.domain.interactor.RequestModerateShopUseCase
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -33,6 +36,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
                                             private val getModerateShopUseCase: GetModerateShopUseCase,
                                             private val requestModerateShopUseCase: RequestModerateShopUseCase,
+                                            private val stickyLoginUseCase: StickyLoginUseCase,
                                             @Named(ShopPageConstant.SHOP_FAVORITE_QUERY) private val gqlFavorite: String,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
@@ -46,6 +50,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
     val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()
     val shopModerateResp = MutableLiveData<Result<ShopModerateRequestData>>()
     val shopFavourite = MutableLiveData<ShopInfo.FavoriteData>()
+    val stickyLoginResp = MutableLiveData<StickyLoginTickerPojo>()
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
@@ -178,6 +183,22 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                         onError(e)
                     }
                 })
+    }
+
+    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+        stickyLoginUseCase.execute(
+            onSuccess = {
+                if (it.response.tickers.isNotEmpty()) {
+                    onSuccess.invoke(it.response.tickers[0])
+                } else {
+                    onError?.invoke(Throwable("Data not found"))
+                }
+            },
+            onError = {
+                onError?.invoke(it)
+            }
+        )
     }
 
     override fun clear() {
