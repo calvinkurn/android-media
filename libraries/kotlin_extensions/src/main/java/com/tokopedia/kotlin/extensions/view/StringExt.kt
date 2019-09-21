@@ -1,5 +1,7 @@
 package com.tokopedia.kotlin.extensions.view
 
+import java.net.URLDecoder
+
 /**
  * @author by nisie on 12/02/19.
  */
@@ -30,6 +32,13 @@ fun CharSequence?.hasValue(): Boolean {
     return !this.isNullOrBlank()
 }
 
+fun String.decodeToUtf8(): String = URLDecoder.decode(this, "UTF-8")
+
 fun String.isEmail(): Boolean {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+}
+
+
+fun String?.toBlankOrString(): String {
+    return this?:""
 }

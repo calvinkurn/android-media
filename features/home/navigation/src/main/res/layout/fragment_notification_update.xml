@@ -19,7 +19,7 @@
             android:orientation="vertical"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             app:reverseLayout="false"
-            tools:listitem="@layout/notification_update_default_item" />
+            tools:listitem="@layout/item_notification_update_text" />
 
         <com.tokopedia.design.button.BottomActionView
             android:id="@+id/filterBtn"

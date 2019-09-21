@@ -22,9 +22,11 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.constant.SearchEventTracking;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
+import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.newdiscovery.constant.DiscoveryEventTracking;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter;
+import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.search.view.fragment.SearchMainFragment;
 import com.tokopedia.discovery.util.AutoCompleteTracking;
@@ -33,7 +35,6 @@ import com.tokopedia.track.TrackApp;
 import java.util.List;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
-import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_FORCE_SWIPE_TO_SHOP;
 
 public class DiscoveryActivity extends BaseDiscoveryActivity implements
         DiscoverySearchView.SearchViewListener,
@@ -175,13 +176,17 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     protected void onProductQuerySubmit() {
-        setForceSwipeToShop(false);
+        setActiveTabForSearchPage(SearchConstant.ActiveTab.PRODUCT);
         moveToSearchPage();
     }
 
     private void onShopQuerySubmit() {
-        setForceSwipeToShop(true);
+        setActiveTabForSearchPage(SearchConstant.ActiveTab.SHOP);
         moveToSearchPage();
+    }
+
+    private void setActiveTabForSearchPage(String activeTab) {
+        searchParameter.getSearchParameterHashMap().put(SearchApiConst.ACTIVE_TAB, activeTab);
     }
 
     private void moveToSearchPage() {
@@ -193,11 +198,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
     }
 
     private Intent createIntentToSearchResult() {
-        Intent intent = RouteManager.getIntent(this, createSearchResultApplink());
-
-        intent.putExtra(EXTRA_FORCE_SWIPE_TO_SHOP, isForceSwipeToShop());
-
-        return intent;
+        return RouteManager.getIntent(this, createSearchResultApplink());
     }
 
     private String createSearchResultApplink() {
@@ -215,9 +216,9 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     public void eventDiscoveryVoiceSearch(String label) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(
-                SearchEventTracking.Event.SEARCH,
-                SearchEventTracking.Category.SEARCH,
-                SearchEventTracking.Action.VOICE_SEARCH,
+                DiscoveryEventTracking.Event.SEARCH,
+                DiscoveryEventTracking.Category.SEARCH,
+                DiscoveryEventTracking.Action.VOICE_SEARCH,
                 label);
     }
 

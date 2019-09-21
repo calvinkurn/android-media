@@ -10,4 +10,6 @@ public class Constants {
     public static final String ACTION_GO_TO_SHIPMENT = "ACTION_GO_TO_SHIPMENT";
     public static final String CAMPAIGN_ID_PROD = "tokopediaTradeInProduction";
     public static final String CAMPAIGN_ID_STAGING = "tokopediaSandbox";
+    public static final int LOGIN_REQUIRED = 1;
+    public static final int LOGEED_IN = 2;
 }

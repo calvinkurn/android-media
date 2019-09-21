@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AutoTopAds</string>
+    <string name="auto_ads_app_name">AutoTopAds</string>
     <string name="autoads_iklan_otomatis">Iklan Otomatis</string>
     <string name="autoads_topads">TopAds</string>
     <string name="autoads_pengaturan_iklan">Pengaturan Iklan</string>

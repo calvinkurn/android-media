@@ -48,11 +48,11 @@ public class ShopOpenRoutingFragment extends BaseDaggerFragment implements ShopO
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_open_routing, container, false);
-        loadingLayout = view.findViewById(R.id.layout_loading);
-        errorLayout = view.findViewById(R.id.layout_error);
-        tvMessageRetry = view.findViewById(R.id.message_retry);
-        View retryButton = view.findViewById(R.id.button_retry);
+        View view = inflater.inflate(com.tokopedia.seller.R.layout.fragment_shop_open_routing, container, false);
+        loadingLayout = view.findViewById(com.tokopedia.seller.R.id.layout_loading);
+        errorLayout = view.findViewById(com.tokopedia.core2.R.id.layout_error);
+        tvMessageRetry = view.findViewById(com.tokopedia.abstraction.R.id.message_retry);
+        View retryButton = view.findViewById(com.tokopedia.abstraction.R.id.button_retry);
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

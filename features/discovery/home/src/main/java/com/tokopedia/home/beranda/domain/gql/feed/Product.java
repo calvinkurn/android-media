@@ -69,6 +69,9 @@ public class Product {
     @SerializedName("labels")
     @Expose
     private List<Label> labels = new ArrayList<>();
+    @SerializedName("label_group")
+    @Expose
+    private List<LabelGroup> labelGroup = new ArrayList<>();
     @SerializedName("badges")
     @Expose
     private List<Badge> badges = new ArrayList<>();
@@ -250,6 +253,14 @@ public class Product {
 
     public void setLabels(List<Label> labels) {
         this.labels = labels;
+    }
+
+    public List<LabelGroup> getLabelGroup() {
+        return labelGroup;
+    }
+
+    public void setLabelGroup(List<LabelGroup> labelGroup) {
+        this.labelGroup = labelGroup;
     }
 
     public List<Badge> getBadges() {

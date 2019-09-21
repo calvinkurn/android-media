@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'reputation'
-    groupId = 'com.tokopedia.reputation'
-    versionName = "${tkpdReputationVersion}"
-    artifactName ="reputation-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -20,9 +13,9 @@ buildscript {
 }
 
 dependencies {
-    implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -59,6 +52,13 @@ dependencies {
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+}
+
+project.ext {
+    artifactId = 'reputation'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="merchantreputation-release"
 }
 
 apply from: '../../../publish_local.gradle'

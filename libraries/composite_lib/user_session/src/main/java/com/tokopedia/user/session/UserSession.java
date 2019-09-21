@@ -69,13 +69,6 @@ public class UserSession implements UserSessionInterface {
         this.context = context;
     }
 
-    /**
-     * GETTER METHOD
-     */
-    private static final String TWITTER_ACCESS_TOKEN = "TWITTER_ACCESS_TOKEN";
-    private static final String TWITTER_ACCESS_TOKEN_SECRET = "TWITTER_ACCESS_TOKEN_SECRET";
-    private static final String TWITTER_SHOULD_POST = "TWITTER_SHOULD_POST";
-
     public String getAccessToken() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
