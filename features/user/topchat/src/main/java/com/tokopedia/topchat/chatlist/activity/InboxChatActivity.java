@@ -47,7 +47,7 @@ public class InboxChatActivity extends BaseSimpleActivity
     @Inject
     TopChatAnalytics analytics;
 
-    @DeepLink(ApplinkConst.TOPCHAT_IDLESS)
+    @DeepLink(ApplinkConst.TOPCHAT_OLD)
     public static Intent getCallingIntentTopchatWithoutId(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
 
@@ -58,17 +58,6 @@ public class InboxChatActivity extends BaseSimpleActivity
                 .putExtras(extras);
 
         return destination;
-    }
-
-    @DeepLink(ApplinkConst.GROUPCHAT_LIST)
-    public static TaskStackBuilder getCallingTaskStack(Context context) {
-        Intent homeIntent = RouteManager.getIntent(context, ApplinkConst.HOME);
-        Intent channelListIntent = InboxChatActivity.getChannelCallingIntent(context);
-        channelListIntent.putExtra("title", "Play");
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(channelListIntent);
-        return taskStackBuilder;
     }
 
     public static Intent getCallingIntent(Context context) {
@@ -114,14 +103,7 @@ public class InboxChatActivity extends BaseSimpleActivity
             indicatorLayout.setVisibility(View.GONE);
         }
 
-        if (getIntent().getExtras() != null
-                && getIntent().getExtras().getInt(ACTIVE_INDICATOR_POSITION, -1) != -1) {
-            indicatorAdapter.setActiveIndicator(getIntent().getExtras().getInt
-                    (ACTIVE_INDICATOR_POSITION, 0));
-            initGroupChatFragment();
-        } else {
-            initTopChatFragment();
-        }
+        initTopChatFragment();
     }
 
     private boolean isIndicatorVisible() {
@@ -165,35 +147,9 @@ public class InboxChatActivity extends BaseSimpleActivity
                 break;
             case POSITION_GROUP_CHAT:
                 analytics.eventClickInboxChannel();
-                initGroupChatFragment();
                 break;
             default:
         }
-    }
-
-    private void initGroupChatFragment() {
-
-        if (!TextUtils.isEmpty(getIntent().getExtras().getString("title"))) {
-            getSupportActionBar().setTitle(getIntent().getExtras().getString("title"));
-        }
-        ;
-
-        Bundle bundle = new Bundle();
-        if (getIntent().getExtras() != null) {
-            bundle.putAll(getIntent().getExtras());
-        }
-
-        TopChatRouter inboxRouter = (TopChatRouter) getApplicationContext();
-
-        Fragment fragment = getSupportFragmentManager().findFragmentByTag
-                (inboxRouter.getChannelFragmentTag());
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (fragment == null) {
-            fragment = inboxRouter.getChannelFragment(bundle);
-        }
-        fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
-        fragmentTransaction.commit();
     }
 
     private void initTopChatFragment() {

@@ -31,7 +31,7 @@ buildscript {
 project.ext {
     artifactId = 'design'
     groupId = 'com.tokopedia.design'
-    versionName = "2.22"
+    versionName = "1.0.0"
     artifactName ="tkpddesign-release"
 }
 

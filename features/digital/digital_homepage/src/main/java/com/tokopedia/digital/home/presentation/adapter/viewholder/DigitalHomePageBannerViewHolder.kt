@@ -2,7 +2,7 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.design.banner.BannerView
+import com.tokopedia.banner.BannerView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.presentation.listener.OnItemBindListener
@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.layout_digital_home_banner.view.*
 class DigitalHomePageBannerViewHolder(val view : View?, val onItemBindListener: OnItemBindListener) :
         AbstractViewHolder<DigitalHomePageBannerModel>(view), BannerView.OnPromoAllClickListener,
         BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener {
+
     override fun onPromoDragStart() {
         //do nothing
     }

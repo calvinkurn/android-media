@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'shop-open'
-    groupId = 'com.tokopedia.shop'
-    versionName = "${tkpdShopVersion}"
-    artifactName ="shop_open-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -22,10 +15,10 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.baseListSeller)
@@ -35,8 +28,8 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.track)
 
-    implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.features.seller)
+    implementation project(rootProject.ext.features.tkpdcore)
+    implementation project(rootProject.ext.features.tkpdseller)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.logisticdata)
 
@@ -58,6 +51,13 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation project(rootProject.ext.libraries.core_legacy)
+}
+
+project.ext {
+    artifactId = 'shop-open'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="merchantshopopen-release"
 }
 
 apply from: '../../../publish_local.gradle'

@@ -23,8 +23,6 @@ public interface AccountHomeRouter {
 
     void goToManageShopProduct(Context context);
 
-    Intent getSettingBankIntent(Context context);
-
     void goToManageCreditCard(Context context);
 
     void goToTokoCash(String applinkUrl, Activity activity);
@@ -34,8 +32,6 @@ public interface AccountHomeRouter {
     AccountHomeInjection getAccountHomeInjection();
 
     Fragment getFavoriteFragment();
-
-    void gotoTopAdsDashboard(Context context);
 
     String getStringRemoteConfig(String key, String defaultValue);
 
