@@ -724,6 +724,14 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventCancelPromoStackingLogistic() {
+        sendEventCategoryAction(
+            "",
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
+        );
+    }
+
     public void eventViewDetailMerchantVoucher(String promoCode) {
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER,

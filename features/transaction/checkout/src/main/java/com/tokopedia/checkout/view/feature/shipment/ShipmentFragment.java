@@ -1766,6 +1766,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCancelVoucherLogisticClicked(String pslCode, int position) {
+        checkoutAnalyticsCourierSelection.eventCancelPromoStackingLogistic();
         ArrayList<String> codes = new ArrayList<>();
         codes.add(pslCode);
         shipmentPresenter.cancelAutoApplyPromoStack(position, codes, false, "logistic");
