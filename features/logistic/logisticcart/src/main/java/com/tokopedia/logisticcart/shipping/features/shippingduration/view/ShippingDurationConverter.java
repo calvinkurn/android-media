@@ -51,7 +51,7 @@ public class ShippingDurationConverter {
             shippingDurationViewModel.setServiceData(serviceData);
             List<ShippingCourierViewModel> shippingCourierViewModels =
                     convertToShippingCourierViewModel(shippingDurationViewModel, serviceData.getProducts(),
-                            shopShipmentList, ratesId, selectedSpId, selectedServiceId, blackboxInfo);
+                            shopShipmentList, ratesId, selectedSpId, selectedServiceId, blackboxInfo, isPromoStackingApplied);
             shippingDurationViewModel.setShippingCourierViewModelList(shippingCourierViewModels);
             if (shippingCourierViewModels.size() > 0) {
                 shippingDurationViewModels.add(shippingDurationViewModel);
@@ -77,11 +77,12 @@ public class ShippingDurationConverter {
                                                                              List<ShopShipment> shopShipmentList,
                                                                              String ratesId,
                                                                              int selectedSpId, int selectedServiceId,
-                                                                             String blackboxInfo) {
+                                                                             String blackboxInfo,
+                                                                             boolean isPromoStackingApplied) {
         List<ShippingCourierViewModel> shippingCourierViewModels = new ArrayList<>();
         for (ProductData productData : productDataList) {
             addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, ratesId, selectedSpId,
-                    selectedServiceId, shippingCourierViewModels, productData, blackboxInfo);
+                    selectedServiceId, shippingCourierViewModels, productData, blackboxInfo, isPromoStackingApplied);
         }
 
         return shippingCourierViewModels;
@@ -92,7 +93,7 @@ public class ShippingDurationConverter {
                                              String ratesId,
                                              int selectedSpId, int selectedServiceId,
                                              List<ShippingCourierViewModel> shippingCourierViewModels,
-                                             ProductData productData, String blackboxInfo) {
+                                             ProductData productData, String blackboxInfo, boolean isPromoStackingApplied) {
         ShippingCourierViewModel shippingCourierViewModel = new ShippingCourierViewModel();
         shippingCourierViewModel.setProductData(productData);
         shippingCourierViewModel.setBlackboxInfo(blackboxInfo);
@@ -103,7 +104,7 @@ public class ShippingDurationConverter {
                 shippingCourierViewModel.setSelected(true);
                 shippingDurationViewModel.setSelected(true);
             }
-        } else if (selectedServiceId != 0) {
+        } else if (selectedServiceId != 0 && !isPromoStackingApplied) {
             if (!(shippingDurationViewModel.getServiceData().getError() != null &&
                     !TextUtils.isEmpty(shippingDurationViewModel.getServiceData().getError().getErrorId())) &&
                     selectedServiceId == shippingDurationViewModel.getServiceData().getServiceId()) {

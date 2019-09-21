@@ -103,6 +103,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
     }
 
     private boolean isPromoStackingApplied(GetRatesCourierRecommendationData data) {
+        if (data.getRatesData().getRatesDetailData().getPromoStacking() == null) return false;
         return data.getRatesData().getRatesDetailData().getPromoStacking().getIsApplied() == 1;
     }
 
