@@ -226,9 +226,9 @@ public class EventModule {
     @Provides
     @EventScope
     EventSearchContract.EventSearchPresenter providesEventSearchPresenter(GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase,
-                                                                          GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, PostNsqEventUseCase postNsqEventUseCase, EventsAnalytics eventsAnalytics) {
+                                                                          GetSearchNextUseCase searchNextUseCase, PostUpdateEventLikesUseCase eventLikesUseCase, EventsAnalytics eventsAnalytics) {
         return new EventSearchPresenter(getSearchEventsListRequestUseCase,
-                searchNextUseCase, eventLikesUseCase, postNsqEventUseCase, eventsAnalytics);
+                searchNextUseCase, eventLikesUseCase, eventsAnalytics);
     }
 
     @Provides
