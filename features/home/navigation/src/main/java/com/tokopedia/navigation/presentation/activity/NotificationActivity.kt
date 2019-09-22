@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
+import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.navigation.presentation.di.notification.DaggerNotificationUpdateComponent
@@ -30,6 +32,10 @@ import com.tokopedia.navigation.presentation.fragment.NotificationFragment
 import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
+import com.tokopedia.navigation.util.NotifPreference
+import com.tokopedia.sessioncommon.ErrorHandlerSession
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.item_account_recommendation_title.*
 import javax.inject.Inject
 
 /**
@@ -45,6 +51,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
     @Inject
     lateinit var analytics: NotificationUpdateAnalytics
 
+    @Inject
+    lateinit var notifPreference: NotifPreference
+
     private var fragmentAdapter: NotificationFragmentAdapter? = null
     private val tabList = ArrayList<NotificationFragmentAdapter.NotificationFragmentItem>()
     private var updateCounter = 0L
@@ -55,6 +64,27 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         super.onCreate(savedInstanceState)
         initInjector()
         initView()
+
+        if(!notifPreference.isDisplayedGimmickNotif){
+            notifPreference.isDisplayedGimmickNotif = true
+            presenter.sendNotif(onSuccessSendNotif(), onErrorSendNotif())
+        }
+    }
+
+    private fun onSuccessSendNotif(): (NotifCenterSendNotifData) -> Unit {
+        return {
+            presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
+        }
+    }
+
+
+    private fun onErrorSendNotif(): (Throwable) -> Unit {
+        return {
+            view?.run{
+                val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
+                Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
+            }
+        }
     }
 
     fun initInjector() {

@@ -26,7 +26,6 @@ interface NotificationUpdateContract {
         fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit)
         fun resetFilter()
         fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit)
-        fun sendNotif(onSuccessSendNotif: (NotifCenterSendNotifData) -> Unit, onErrorSendNotif: (Throwable) -> Unit)
         fun addProductToCart(product: ProductData)
     }
 }

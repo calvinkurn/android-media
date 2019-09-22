@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateFilterMapper
 import com.tokopedia.navigation.data.mapper.GetNotificationUpdateMapper
 import com.tokopedia.navigation.domain.*
-import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateContract
@@ -33,7 +32,6 @@ class NotificationUpdatePresenter @Inject constructor(
         private var clearCounterNotificationUpdateUseCase: ClearCounterNotificationUpdateUseCase,
         private var markReadNotificationUpdateItemUseCase: MarkReadNotificationUpdateItemUseCase,
         private var markAllReadNotificationUpdateUseCase: MarkAllReadNotificationUpdateUseCase,
-        private var sendNotificationUseCase: SendNotificationUseCase,
         private var getNotificationUpdateMapper : GetNotificationUpdateMapper,
         private var getNotificationUpdateFilterMapper : GetNotificationUpdateFilterMapper,
         private var addToCartUseCase: AddToCartUseCase
@@ -84,10 +82,6 @@ class NotificationUpdatePresenter @Inject constructor(
 
     override fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit) {
         getNotificationTotalUnreadUseCase.execute(GetNotificationTotalUnreadSubscriber(onSuccessGetTotalUnreadCounter))
-    }
-
-    override fun sendNotif(onSuccessSendNotif: (NotifCenterSendNotifData) -> Unit, onErrorSendNotif: (Throwable) -> Unit){
-        sendNotificationUseCase.executeCoroutines(onSuccessSendNotif, onErrorSendNotif)
     }
 
     override fun addProductToCart(product: ProductData) {

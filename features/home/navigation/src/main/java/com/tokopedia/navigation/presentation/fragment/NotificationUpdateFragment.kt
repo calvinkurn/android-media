@@ -74,9 +74,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     @Inject
     lateinit var analytics: NotificationUpdateAnalytics
 
-    @Inject
-    lateinit var notifPreference: NotifPreference
-
     private var notificationUpdateListener: NotificationUpdateListener? = null
 
     interface NotificationUpdateListener {
@@ -143,23 +140,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 }
             }
         })
-
-        if(!notifPreference.isDisplayedGimmickNotif){
-            notifPreference.isDisplayedGimmickNotif = true
-            presenter.sendNotif(onSuccessSendNotif(), onErrorSendNotif())
-        }
-    }
-
-    private fun onSuccessSendNotif(): (NotifCenterSendNotifData) -> Unit { return {} }
-
-
-    private fun onErrorSendNotif(): (Throwable) -> Unit {
-        return {
-            view?.run{
-                val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
-                Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
-            }
-        }
     }
 
     private fun onSuccessMarkAllReadNotificationUpdate(): () -> Unit {
