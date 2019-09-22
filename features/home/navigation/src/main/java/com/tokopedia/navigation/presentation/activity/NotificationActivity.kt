@@ -32,6 +32,7 @@ import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
 import com.tokopedia.navigation.util.NotifPreference
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
 
 /**
@@ -61,9 +62,14 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         initInjector()
         initView()
 
-        if(!notifPreference.isDisplayedGimmickNotif){
-            notifPreference.isDisplayedGimmickNotif = true
-            presenter.sendNotif(onSuccessSendNotif(), onErrorSendNotif())
+        baseContext?.let {
+            val remoteConfig = FirebaseRemoteConfigImpl(it)
+            val redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false)
+            val redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif
+            if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
+                notifPreference.isDisplayedGimmickNotif = true
+                presenter.sendNotif(onSuccessSendNotif(), onErrorSendNotif())
+            }
         }
     }
 
@@ -246,6 +252,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
 
         var INDEX_NOTIFICATION_ACTIVITY = 0
         var INDEX_NOTIFICATION_UPDATE = 1
+        const val RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view"
 
         fun start(context: Context): Intent {
             return Intent(context, NotificationActivity::class.java)

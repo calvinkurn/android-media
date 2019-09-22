@@ -53,6 +53,8 @@ import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemV
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.sessioncommon.ErrorHandlerSession;
@@ -83,6 +85,8 @@ import static com.tokopedia.home.account.constant.SettingConstant.Url.PATH_CHECK
 
 public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
+
+    private static String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
 
     @Inject
     LogoutPresenter presenter;
@@ -262,7 +266,10 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     }
 
     private void sendNotif(){
-        if(!notifPreference.isDisplayedGimmickNotif()){
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false);
+        boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
+        if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
             notifPreference.setDisplayedGimmickNotif(true);
             presenter.sendNotif(
                     notifCenterSendNotifData -> {

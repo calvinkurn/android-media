@@ -26,7 +26,7 @@ import com.tokopedia.user.session.UserSessionInterface;
  */
 public class MainToolbar extends Toolbar {
 
-    private static String redDotGimmickRemoteConfigKey = "android_red_dot_gimmick_view";
+    private static String RED_DOT_GIMMICK_REMOTE_CONFIG_KEY = "android_red_dot_gimmick_view";
 
     protected ImageView btnNotification;
     protected ImageView btnWishlist;
@@ -62,9 +62,8 @@ public class MainToolbar extends Toolbar {
             if (badgeViewNotification == null)
                 badgeViewNotification = new BadgeView(getContext());
 
-            boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(redDotGimmickRemoteConfigKey, false);
+            boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false);
             boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
-
             if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
                 badgeNumber += 1;
                 if(!notifPreference.isViewedGimmickNotif() && !userSession.isLoggedIn()){
@@ -159,7 +158,7 @@ public class MainToolbar extends Toolbar {
             if (userSession.isLoggedIn()) {
                 RouteManager.route(context, ApplinkConst.NOTIFICATION);
             } else {
-                boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(redDotGimmickRemoteConfigKey, false);
+                boolean redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false);
                 boolean redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif();
                 if(redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus){
                     notifAnalytics.trackClickGimmickNotif();
