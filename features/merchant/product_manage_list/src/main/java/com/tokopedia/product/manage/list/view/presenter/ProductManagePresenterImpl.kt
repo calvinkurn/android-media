@@ -47,18 +47,9 @@ class ProductManagePresenterImpl @Inject constructor(
     override fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     override fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
 
-    protected var getProductListJob: Job = Job()
-
     override fun getGoldMerchantStatus() {
-        getProductListJob.cancel()
-        getProductListJob = Job()
-        val handler = CoroutineExceptionHandler { _, ex ->
-            CoroutineScope(Dispatchers.Main).launch {
-
-            }
-        }
-
-        CoroutineScope(Dispatchers.Main + getProductListJob + handler).launch {
+        val getProductListJob: Job = SupervisorJob()
+        CoroutineScope(Dispatchers.Main + getProductListJob).launch {
             val shopId: List<Int> = listOf(userSessionInterface.shopId.toInt())
             gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
             val shopInfo = gqlGetShopInfoUseCase.executeOnBackground()
@@ -335,5 +326,16 @@ class ProductManagePresenterImpl @Inject constructor(
         return confirmationProductDataList.filter {
             failData.map { it.productUpdateV3Data.productId }.contains(it.productId)
         }.toMutableList()
+    }
+
+    override fun detachView() {
+        super.detachView()
+        editPriceProductUseCase.unsubscribe()
+        gqlGetShopInfoUseCase.cancelJobs()
+        topAdsGetShopDepositGraphQLUseCase.unsubscribe()
+        setCashbackUseCase.unsubscribe()
+        popupManagerAddProductUseCase.unsubscribe()
+        getProductListUseCase.unsubscribe()
+        bulkUpdateProductUseCase.unsubscribe()
     }
 }
