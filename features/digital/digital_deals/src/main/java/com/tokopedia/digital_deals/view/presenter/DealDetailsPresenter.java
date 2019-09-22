@@ -354,7 +354,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
         nsqEntertainmentModel.setImageUrl(data.getMediaUrl().get(0).getUrl());
         nsqEntertainmentModel.setId(data.getBrand().getTitle());
         nsqEntertainmentModel.setPricePrefix(Utils.getSingletonInstance().convertToCurrencyString(data.getMrp()));
-        nsqEntertainmentModel.setUrl("/deals/i/" + data.getSeoUrl());
+        nsqEntertainmentModel.setUrl("https://www.tokopedia.com/deals/i/" + data.getSeoUrl() + "/");
         nsqEntertainmentModel.setAppUrl("tokopedia://deals/"+data.getSeoUrl());
         nsqRecentDataModel.setNsqEntertainmentModel(nsqEntertainmentModel);
         nsqRecentSearchModel.setNsqRecentDataModel(nsqRecentDataModel);

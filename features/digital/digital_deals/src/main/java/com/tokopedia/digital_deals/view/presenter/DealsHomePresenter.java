@@ -202,7 +202,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.search_input_view || id == R.id.action_menu_search) {
             dealsAnalytics.sendSearchClickedEvent(getView().getSearchInputText());
-            sendNSQEvent(userSession.getUserId(), "search");
+            if (userSession.isLoggedIn()) {
+                sendNSQEvent(userSession.getUserId(), "search");
+            }
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
             TopDealsCacheHandler.init().setTopDeals(getCarouselOrTop(categoryItems, TOP).getItems());
             searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
