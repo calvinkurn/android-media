@@ -214,4 +214,5 @@ public class HomeModule {
     @HomeScope
     protected StickyLoginUseCase provideStickyLoginUseCase(@ApplicationContext Context context, GraphqlRepository graphqlRepository) {
         return new StickyLoginUseCase(context.getResources(), graphqlRepository);
+    }
 }
