@@ -209,6 +209,16 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
                                 HomePageTracking.eventEnhanceImpressionBanner(context, channel);
                                 break;
+                            case DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF:
+                                list.add(mappingDynamicChannel(
+                                        channel,
+                                        channel.getEnhanceImpressionProductChannelMix(),
+                                        null,
+                                        false,
+                                        homeData.isCache()
+                                ));
+                                HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
+                                break;
                         }
                     }
                 }
