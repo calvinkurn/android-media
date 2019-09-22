@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.design.widget.TabLayout
 import android.support.v4.view.PagerAdapter
 import android.view.LayoutInflater
@@ -33,9 +32,6 @@ import com.tokopedia.navigation.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.navigation.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
 import com.tokopedia.navigation.util.NotifPreference
-import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.item_account_recommendation_title.*
 import javax.inject.Inject
 
 /**
@@ -77,13 +73,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>, 
         }
     }
 
-
     private fun onErrorSendNotif(): (Throwable) -> Unit {
         return {
-            view?.run{
-                val errorMessage = ErrorHandlerSession.getErrorMessage(context, it)
-                Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
-            }
+            presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         }
     }
 

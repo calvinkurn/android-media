@@ -247,7 +247,6 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 RouteManager.route(getActivity(), ApplinkConst.CONTACT_US_NATIVE);
                 break;
             case SettingConstant.SETTING_OUT_ID:
-                sendNotif();
                 accountAnalytics.eventClickSetting(LOGOUT);
                 showDialogLogout();
                 break;
@@ -266,14 +265,20 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         if(!notifPreference.isDisplayedGimmickNotif()){
             notifPreference.setDisplayedGimmickNotif(true);
             presenter.sendNotif(
-                    notifCenterSendNotifData -> null,
+                    notifCenterSendNotifData -> {
+                        doLogout();
+                        return null;
+                    },
                     throwable -> {
+                        doLogout();
                         if(getView() != null){
                             String errorMessage = ErrorHandlerSession.getErrorMessage(getContext(), throwable);
                             Toaster.Companion.showError(getView(), errorMessage, Snackbar.LENGTH_LONG);
                         }
                         return null;
                     });
+        }else {
+            doLogout();
         }
     }
 
@@ -299,7 +304,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         dialog.setBtnCancel(getString(R.string.account_home_label_cancel));
         dialog.setOnOkClickListener(v -> {
             dialog.dismiss();
-            doLogout();
+            sendNotif();
         });
         dialog.setOnCancelClickListener(v -> dialog.dismiss());
         dialog.show();
