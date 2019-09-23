@@ -89,7 +89,7 @@ class SearchShopViewModel(
         }
     }
 
-    fun searchShop() {
+    private fun searchShop() {
         launchCatchError(block = {
             trySearchShop()
         }, onError = {
@@ -103,6 +103,8 @@ class SearchShopViewModel(
         val searchShopModel = requestSearchShopModel(START_ROW_FIRST_TIME_LOAD, searchShopFirstPageUseCase)
 
         searchShopFirstPageSuccess(searchShopModel)
+
+        getDynamicFilter()
     }
 
     private fun isSearchShopListContainItems(): Boolean {
@@ -116,13 +118,13 @@ class SearchShopViewModel(
     private suspend fun requestSearchShopModel(startRow: Int, searchShopUseCase: SearchUseCase<SearchShopModel>): SearchShopModel? {
         setSearchParameterStartRow(startRow)
 
-        val requestParams = createSearchShopParam(searchParameter)
+        val requestParams = createSearchShopParam()
         searchShopUseCase.setRequestParams(requestParams.parameters)
 
         return searchShopUseCase.executeOnBackground()
     }
 
-    private fun createSearchShopParam(searchParameter: Map<String, Any>): RequestParams {
+    private fun createSearchShopParam(): RequestParams {
         val requestParams = RequestParams.create()
 
         putRequestParamsOtherParameters(requestParams)
@@ -263,21 +265,46 @@ class SearchShopViewModel(
         searchShopLiveData.postValue(Error("", searchShopMutableList))
     }
 
-//    private fun getDynamicFilter() {
-//        launchCatchError(block = {
-//            tryGetDynamicFilter()
-//        }, onError = {
-//            catchGetDynamicFilterError()
-//        })
-//    }
-//
-//    private suspend fun tryGetDynamicFilter() {
-//
-//    }
-//
-//    private fun catchGetDynamicFilterError() {
-//
-//    }
+    private fun getDynamicFilter() {
+        launchCatchError(block = {
+            tryGetDynamicFilter()
+        }, onError = {
+            catchGetDynamicFilterError(it)
+        })
+    }
+
+    private suspend fun tryGetDynamicFilter() {
+        val requestParams = createGetDynamicFilterParams()
+
+        getDynamicFilterUseCase.setRequestParams(requestParams.parameters)
+        getDynamicFilterUseCase.executeOnBackground()
+    }
+
+    private fun createGetDynamicFilterParams(): RequestParams {
+        val requestParams = RequestParams.create()
+        requestParams.putAll(searchParameter)
+        requestParams.putAllString(generateParamsNetwork(requestParams))
+        requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SHOP)
+        requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
+
+        return requestParams
+    }
+
+    private fun generateParamsNetwork(requestParams: RequestParams): Map<String, String> {
+        return AuthUtil.generateParamsNetwork(
+                        userSession.userId,
+                        userSession.deviceId,
+                        requestParams.paramsAllValueInString)
+    }
+
+    private fun catchGetDynamicFilterError(e: Throwable?) {
+        if (e is CancellationException) {
+            e.printStackTrace()
+        }
+        else {
+            e?.printStackTrace()
+        }
+    }
 
     fun onViewLoadMore(isViewVisible: Boolean) {
         if (hasNextPage && isViewVisible) {
@@ -285,7 +312,7 @@ class SearchShopViewModel(
         }
     }
 
-    fun searchMoreShop() {
+    private fun searchMoreShop() {
         launchCatchError(block = {
             trySearchMoreShop()
         }, onError = {

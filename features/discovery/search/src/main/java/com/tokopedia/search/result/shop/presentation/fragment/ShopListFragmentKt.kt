@@ -170,12 +170,10 @@ class ShopListFragmentKt:
     }
 
     private fun showRetryLayout(searchShopLiveData: State<List<Visitable<*>>>) {
-        // TODO:: Put retry click listener as global variable
         val retryClickedListener = NetworkErrorHelper.RetryClickedListener {
             searchShopViewModel?.onViewClickRetry()
         }
 
-        // TODO:: Use "Event" LiveData to show network error, do not use if else here
         if (isSearchShopLiveDataContainItems(searchShopLiveData)) {
             NetworkErrorHelper.showEmptyState(activity, view, retryClickedListener)
         } else {

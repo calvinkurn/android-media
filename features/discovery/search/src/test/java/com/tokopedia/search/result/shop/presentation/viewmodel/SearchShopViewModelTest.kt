@@ -95,6 +95,7 @@ class SearchShopViewModelTest : Spek({
     val userSession = mockk<UserSessionInterface>().also {
         every { it.isLoggedIn }.returns(true)
         every { it.userId }.returns("123456")
+        every { it.deviceId }.returns("pixel 2")
     }
 
     val localCacheHandler = mockk<LocalCacheHandler>().also {
@@ -110,14 +111,14 @@ class SearchShopViewModelTest : Spek({
             mockk<SearchUseCase<SearchShopModel>>(relaxed = true)
         }
 
-        val dynamicFilterUseCase by memoized {
+        val getDynamicFilterUseCase by memoized {
             mockk<SearchUseCase<DynamicFilterModel>>(relaxed = true)
         }
 
         val searchShopViewModel by memoized {
             SearchShopViewModel(
                     Dispatchers.Unconfined, searchShopParameter,
-                    searchShopUseCase, searchMoreShopUseCase, dynamicFilterUseCase,
+                    searchShopUseCase, searchMoreShopUseCase, getDynamicFilterUseCase,
                     shopHeaderViewModelMapper, shopViewModelMapper,
                     emptySearchCreator, userSession, localCacheHandler
             )
@@ -250,6 +251,48 @@ class SearchShopViewModelTest : Spek({
         }
     }
 
+    Feature("Get Dynamic Filter After Search Shop First Page Successful") {
+        createTestInstance()
+
+        Scenario("Search Shop First Page Successful") {
+            val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+            val getDynamicFilterUseCase by memoized<SearchUseCase<DynamicFilterModel>>()
+
+            Given("search shop API will be successful and return search shop data") {
+                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
+            }
+
+            When("handle view is visible and added") {
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert get dynamic filter API called once") {
+                getDynamicFilterUseCase.isExecuted()
+            }
+        }
+
+        Scenario("Search Shop First Page Error") {
+            val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
+            val searchShopViewModel by memoized<SearchShopViewModel>()
+            val getDynamicFilterUseCase by memoized<SearchUseCase<DynamicFilterModel>>()
+
+            Given("search shop API will be successful and return search shop data") {
+                val exception = Exception("Mock exception for testing error")
+
+                searchShopUseCase.stubExecuteOnBackground().throws(exception)
+            }
+
+            When("handle view is visible and added") {
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Then("assert get dynamic filter API never called") {
+                getDynamicFilterUseCase.isNeverExecuted()
+            }
+        }
+    }
+
     Feature("Handle View Scroll to Load More") {
         createTestInstance()
 
@@ -258,7 +301,7 @@ class SearchShopViewModelTest : Spek({
             val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("view has loaded first page and has next page") {
+            Given("view search shop first page and has next page") {
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
                 searchMoreShopUseCase.stubExecuteOnBackground().returns(searchMoreShopModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
@@ -278,7 +321,7 @@ class SearchShopViewModelTest : Spek({
             val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("view has loaded first page and does not have next page") {
+            Given("view search shop first page and does not have next page") {
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModelWithoutNextPage)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
@@ -316,7 +359,7 @@ class SearchShopViewModelTest : Spek({
             val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("view has loaded first page and has next page") {
+            Given("view search shop first page and has next page") {
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
@@ -346,7 +389,7 @@ class SearchShopViewModelTest : Spek({
             val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("view has load first page data successfully") {
+            Given("view search shop first page successfully") {
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
@@ -373,7 +416,7 @@ class SearchShopViewModelTest : Spek({
             val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("view has load first page data successfully") {
+            Given("view search shop first page successfully") {
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
@@ -397,23 +440,24 @@ class SearchShopViewModelTest : Spek({
         }
     }
 
-    Feature("Retry Search Shop") {
+    Feature("Handle View Retry Search Shop") {
         createTestInstance()
 
         Scenario("Retry Search Shop After Error in Search Shop") {
             val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("search more shop API will fail first, and then success") {
+            Given("view search shop first page error") {
                 val exception = Exception("Mock exception for testing retry mechanism")
 
                 searchShopUseCase.stubExecuteOnBackground()
                         .throws(exception)
                         .andThen(searchShopModel)
+
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
-            When("execute search shop, and then retry") {
-                searchShopViewModel.searchShop()
+            When("handle view retry search shop") {
                 searchShopViewModel.onViewClickRetry()
             }
 
@@ -435,22 +479,23 @@ class SearchShopViewModelTest : Spek({
             val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("search more shop API will success, and search more shop API will fail first, and then success") {
+            Given("view search shop first page successfully, but error during search shop second page") {
                 val exception = Exception("Mock exception for testing retry mechanism")
 
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
                 searchMoreShopUseCase.stubExecuteOnBackground()
                         .throws(exception)
                         .andThen(searchMoreShopModel)
+
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+                searchShopViewModel.onViewLoadMore(true)
             }
 
-            When("execute search shop, search more shop, and then retry") {
-                searchShopViewModel.searchShop()
-                searchShopViewModel.searchMoreShop()
+            When("handle view retry search more shop") {
                 searchShopViewModel.onViewClickRetry()
             }
 
-            Then("verify search shop API called twice") {
+            Then("verify search shop API called once, and search more shop API called twice") {
                 searchShopUseCase.isExecuted()
                 searchMoreShopUseCase.isExecuted(2)
             }
@@ -465,47 +510,23 @@ class SearchShopViewModelTest : Spek({
         }
     }
 
-    Feature("Reload Search Shop") {
+    Feature("Handle View Reload Search Shop") {
         createTestInstance()
-
-        Scenario("Reload Search Shop") {
-            val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
-            val searchShopViewModel by memoized<SearchShopViewModel>()
-
-            Given("search shop API call will be successful and return search shop data") {
-                searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
-            }
-
-            When("execute reload search shop") {
-                searchShopViewModel.onViewReloadData()
-            }
-
-            Then("verify search shop API called once") {
-                searchShopUseCase.isExecuted()
-            }
-
-            Then("assert search shop state success after retry") {
-                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
-
-                searchShopState.shouldBeInstanceOf<Success<*>>()
-                searchShopState.shouldHaveHeaderAndLoadingMoreWithShopItemInBetween()
-                searchShopState.shouldHaveShopItemCount(shopItemList.size)
-            }
-        }
 
         Scenario("Reload Search Shop After Search Shop and Search More Shop") {
             val searchShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchMoreShopUseCase by memoized<SearchUseCase<SearchShopModel>>()
             val searchShopViewModel by memoized<SearchShopViewModel>()
 
-            Given("search shop and search more shop API call will be successful and return search shop data") {
+            Given("view search shop first and second page successfully") {
                 searchShopUseCase.stubExecuteOnBackground().returns(searchShopModel)
                 searchMoreShopUseCase.stubExecuteOnBackground().returns(searchMoreShopModel)
+
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+                searchShopViewModel.onViewLoadMore(isViewVisible = true)
             }
 
-            When("execute reload search shop") {
-                searchShopViewModel.searchShop()
-                searchShopViewModel.searchMoreShop()
+            When("handle view reload search shop") {
                 searchShopViewModel.onViewReloadData()
             }
 
@@ -514,7 +535,7 @@ class SearchShopViewModelTest : Spek({
                 searchMoreShopUseCase.isExecuted()
             }
 
-            Then("assert search shop state success after retry") {
+            Then("assert search shop state success after reload") {
                 val searchShopState = searchShopViewModel.getSearchShopLiveData().value
 
                 searchShopState.shouldBeInstanceOf<Success<*>>()
