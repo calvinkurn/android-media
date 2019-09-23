@@ -1,5 +1,5 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -16,10 +16,8 @@ buildscript {
 }
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.3.0"
 
     //retrofit
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
 }
 
