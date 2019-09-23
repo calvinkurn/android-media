@@ -828,37 +828,6 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         }
     }
 
-    fun eventClickOnStickyLogin(isOnSticky: Boolean) {
-        val tracker = TrackApp.getInstance().gtm
-        if (tracker != null) {
-            if (isOnSticky) {
-                tracker.sendGeneralEvent(
-                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                        ProductTrackingConstant.Category.PDP,
-                        ProductTrackingConstant.Action.CLICK_ON_LOGIN_STICKY_WIDGET,
-                        ProductTrackingConstant.Label.CLICK
-                )
-            } else {
-                tracker.sendGeneralEvent(
-                        ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
-                        ProductTrackingConstant.Category.PDP,
-                        ProductTrackingConstant.Action.CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET,
-                        ProductTrackingConstant.Label.EMPTY_LABEL
-                )
-            }
-        }
-    }
-
-    fun eventViewLoginStickyWidget() {
-        val tracker = TrackApp.getInstance().gtm
-        tracker.sendGeneralEvent(
-                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.VIEW_LOGIN_STICKY_WIDGET,
-                ProductTrackingConstant.Label.EMPTY_LABEL
-        )
-    }
-
     fun eventClickApplyLeasing(productId: String, isVariant: Boolean){
         TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
