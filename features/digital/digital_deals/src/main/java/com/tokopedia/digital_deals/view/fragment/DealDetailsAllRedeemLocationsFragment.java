@@ -83,7 +83,7 @@ public class DealDetailsAllRedeemLocationsFragment extends BaseDaggerFragment im
         noContentLayout = view.findViewById(R.id.no_content);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         searchInputView = view.findViewById(R.id.search_input_view);
-        searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals_locations));
+        searchInputView.setSearchHint(getResources().getString(R.string.search_input_hint_deals_outlets));
         searchInputView.setSearchTextSize(getResources().getDimension(R.dimen.sp_16));
         searchInputView.setSearchImageView(MethodChecker.getDrawable(getActivity(),R.drawable.ic_search_deal));
         searchInputView.setListener(this);
