@@ -211,8 +211,7 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticcart.cod.view.CodActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
-import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
+import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.common.PopUpNotif;
@@ -444,7 +443,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ImageUploaderRouter,
         ContactUsModuleRouter,
         ITransactionOrderDetailRouter,
-        ILogisticUploadAwbRouter,
         NetworkRouter,
         InstantLoanChuckRouter,
         InstantLoanRouter,
@@ -2280,16 +2278,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getHelpUsIntent(Context context) {
         return ContactUsHomeActivity.getContactUsHomeIntent(context, new Bundle());
-    }
-
-    @Override
-    public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {
-        return UploadAwbLogisticActivity.newInstance(this, urlUpload);
-    }
-
-    @Override
-    public String logisticUploadRouterGetApplicationBuildFlavor() {
-        return BuildConfig.FLAVOR;
     }
 
     @Override

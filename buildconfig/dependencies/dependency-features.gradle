@@ -81,13 +81,8 @@ ext {
 //            challenges                    : ":features:im:challenges_no_op",
 
             logisticdata                    : ":features:logistic:logisticdata",
-            logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment",
-//            logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment_no_op",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             tracking                        : ":features:logistic:tracking",
-//            tracking                      : ":features:logistic:tracking_no_op",
-            logisticuploadawb               : ":features:logistic:logisticuploadawb",
-//            logisticuploadawb               : ":features:logistic:logisticuploadawb_no_op",
             logisticcart                    : ":features:logistic:logisticcart",
 
             goldMerchant                    : ":features:merchant:gold_merchant",

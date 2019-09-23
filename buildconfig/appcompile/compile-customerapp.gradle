@@ -75,15 +75,9 @@ include "features:im:referral"
 include "features:kyc"
 
 include "features:logistic:tracking"
-//include 'features:logistic:tracking_no_op'
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
-include "features:logistic:logisticuploadawb"
-//include "features:logistic:logisticuploadawb_no_op"
-include "features:logistic:logisticinputreceiptshipment"
-//include 'features:logistic:logisticinputreceiptshipment_no_op'
-//include "features:logistic:logisticinsurance_no_op"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
