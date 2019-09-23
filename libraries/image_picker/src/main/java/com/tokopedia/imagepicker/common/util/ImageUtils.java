@@ -875,4 +875,81 @@ public class ImageUtils {
         file.delete();
         return imgIn;
     }
+
+
+    /*
+        Compress Image like WA
+     */
+    public static File compressImageFile(String filePath, int quality) throws IOException {
+
+        Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
+        File imageFile = new File(filePath);
+        int reqWidth = 612;
+        int reqHeight = 816;
+        FileOutputStream fileOutputStream = null;
+        File file = getTokopediaPhotoPath(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE, false);
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        try {
+            fileOutputStream = new FileOutputStream(file);
+            decodeBitmapAndCompress(imageFile, reqHeight, reqWidth)
+                    .compress(compressFormat, quality, fileOutputStream);
+        } finally {
+            if (fileOutputStream != null) {
+                fileOutputStream.flush();
+                fileOutputStream.close();
+            }
+        }
+        return file;
+    }
+
+    private static Bitmap decodeBitmapAndCompress(File imageFile, int reqHeight, int reqWidth)
+            throws IOException {
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+
+        BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+        //Calculating Sample Size
+
+
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+
+        int halfHeight = height / 2;
+        int halfWidth = width / 2;
+
+        if (height > reqHeight || width > reqWidth) {
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        options.inSampleSize = inSampleSize;
+
+        options.inJustDecodeBounds = false;
+
+        Bitmap scaledBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+
+        ExifInterface exifInterface;
+        exifInterface = new ExifInterface(imageFile.getAbsolutePath());
+        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, 0);
+        Matrix matrix = new Matrix();
+        if (orientation == ExifInterface.ORIENTATION_ROTATE_90) {
+            matrix.postRotate(90);
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_180) {
+            matrix.postRotate(180);
+        } else if (orientation == ExifInterface.ORIENTATION_ROTATE_270) {
+            matrix.postRotate(270);
+        } else {
+            return scaledBitmap;
+        }
+        scaledBitmap = Bitmap.createBitmap(scaledBitmap, 0, 0, scaledBitmap.getWidth()
+                , scaledBitmap.getHeight(), matrix, true);
+        return scaledBitmap;
+    }
 }

@@ -136,14 +136,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void initialize() {
-        if (userSession.isLoggedIn()) {
-            onInitialize();
-        } else {
-            getView().navigateToLoginPage();
-        }
-    }
-
-    private void onInitialize() {
         setupViewModel();
         getBannerData();
 
@@ -468,15 +460,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         detachView();
     }
 
-    @Override
-    public void onLoginResultReceived() {
-        if (userSession.isLoggedIn()) {
-            onInitialize();
-        } else {
-            getView().closePage();
-        }
-    }
-
     private void transformExtras() {
         try {
             FlightDashboardPassDataViewModel flightDashboardPassDataViewModel = getView().getDashboardPassData();
@@ -654,9 +637,8 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
                                     if (getView().getCurrentDashboardViewModel().getFlightClass() == null) {
                                         isAvailableToSearch = false;
                                     }
-                                    if (isSearchImmediately && isAvailableToSearch) {
-                                        //TODO : search immediately is not work
-//                                        onSearchTicketButtonClicked();
+                                    if (isSearchImmediately && isAvailableToSearch && getView().isAutoSearch()) {
+                                        onSearchTicketButtonClicked();
                                     }
                                 }
 
@@ -771,7 +753,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private String getAirportListString(List<String> airports) {
         String airportsString = "";
-        for (int i=0;i<airports.size();i++) {
+        for (int i = 0; i < airports.size(); i++) {
             airportsString += airports.get(i);
             if (i < airports.size() - 1) {
                 airportsString += ",";

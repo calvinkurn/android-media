@@ -43,6 +43,14 @@ public class Campaign {
         this.campaignMap.put(AppEventTracking.GTM.UTM_GCLID, gclid);
     }
 
+    public void setExternalClientId(String clid) {
+        this.campaignMap.put(AppEventTracking.GTM.X_CLID, clid);
+    }
+
+    public void setXAtttribute(String attr) {
+        this.campaignMap.put(AppEventTracking.GTM.X_ATTR, attr);
+    }
+
     public void setScreenName(String screenName) {
         this.campaignMap.put("screenName", screenName);
     }
@@ -52,13 +60,9 @@ public class Campaign {
     }
 
     public Map<String, Object> getNullCampaignMap() {
-        setUtmCampaign(null);
-        setUtmContent(null);
-        setUtmMedium(null);
-        setUtmSource(null);
-        setUtmTerm(null);
-        setGclid(null);
-        setScreenName(null);
+        for(Map.Entry<String, Object> item: campaignMap.entrySet()) {
+            campaignMap.put(item.getKey(), null);
+        }
         return campaignMap;
     }
 }

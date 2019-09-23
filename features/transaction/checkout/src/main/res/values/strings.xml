@@ -134,7 +134,6 @@
     <string name="checkout_module_title_activity_cart">Keranjang</string>
     <string name="checkout_module_title_activity_checkout">Pengiriman</string>
     <string name="checkout_module_title_shipping_dest">Tujuan Pengiriman</string>
-    <string name="checkout_module_title_shipping_dest_new">Alamat Pengiriman</string>
     <string name="checkout_module_title_send_to_multiple_address">Kirim ke Banyak Alamat</string>
     <string name="checkout_module_title_shipping_dest_multiple_address">Alamat Pengiriman</string>
     <string name="checkout_module_title_activity_people_tx_details">Detil Transaksi</string>
@@ -160,13 +159,13 @@
     <string name="label_title_showcase_shipment_blackbox">Pilih Pengiriman</string>
     <string name="label_title_showcase_shipment_courier_recommendation">Pilih Durasi Pengiriman</string>
     <string name="label_message_showcase_shipment">Gunakan layanan jasa pengiriman yang didukung oleh toko ini.</string>
-    <string name="label_dialog_action_delete_and_add_to_wishlist"><![CDATA[Hapus Terpilih & Tambah Wishlist]]></string>
-    <string name="label_dialog_title_delete_item">Hapus Barang Terpilih?</string>
-    <string name="label_dialog_action_delete">\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020Hapus Terpilih</string>
+    <string name="label_dialog_action_delete_and_add_to_wishlist">Pindahkan ke Wishlist</string>
+    <string name="label_dialog_title_delete_item">Hapus %1d barang dari keranjang?</string>
+    <string name="label_dialog_action_delete">Hapus Barang</string>
     <string name="label_message_showcase_shipment_courier_recommendation">Pilih jangka waktu pengiriman yang didukung oleh toko ini.</string>
     <string name="label_message_showcase_shipment_courier_recommendation_blackbox">Pilih tipe pengiriman yang didukung oleh toko ini.</string>
     <string name="label_dialog_action_delete_all">Hapus Semua</string>
-    <string name="label_dialog_message_remove_cart_item">Barang ini akan dihapus dari keranjang belanja Anda</string>
+    <string name="label_dialog_message_remove_cart_item">Eits, coba pindahkan ke Wishlist, siapa tahu nanti kamu butuh barang ini.</string>
     <string name="label_dialog_message_remove_cart_multiple_item" formatted="false">Barang yang terpilih (%s) akan dihapus dari keranjang Anda</string>
     <string name="label_delete_cart_item_success">Produk berhasil dihapus dari keranjang</string>
     <string name="label_delete_cart_item_failed">Gagal menghapus produk dari keranjang</string>
@@ -194,6 +193,7 @@
     <string name="label_donation">Donasi</string>
     <string name="label_emas">Pembulatan Emas</string>
     <string name="order_prioritas_label">Biaya Order Prioritas</string>
+    <string name="booking_fee_label">Biaya Layanan Kredit</string>
     <string name="label_button_change_address">Pilih Alamat Lain</string>
     <string name="label_button_change_address_new">Ganti Alamat</string>
     <string name="label_button_send_to_multiple_address">Kirim ke Banyak Alamat</string>
@@ -310,12 +310,13 @@
     <string name="label_promo_not_eligible_info"><![CDATA[Promo yang tidak memenuhi syarat & ketentuan akan dinon-aktifkan untuk pembayaran ini.]]></string>
     <string name="label_button_continue">Lanjutkan</string>
     <string name="label_button_cancel">Batal</string>
-    <string name="checkout_module_title_wishlist">Wishlist</string>
-    <string name="checkout_module_title_recent_view">Terakhir Dilihat</string>
+    <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
+    <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
     <string name="product_invenage_remaining_stock">$less_than_count</string>
     <string name="product_invenage_in_other_cart">$pita_by_user_count</string>
 
     <string name="label_toko">Toko: </string>
 
+    <string name="ticker_action_link" formatted="false"><![CDATA[<a href="%1$s">%2$s</a>]]></string>
 </resources>

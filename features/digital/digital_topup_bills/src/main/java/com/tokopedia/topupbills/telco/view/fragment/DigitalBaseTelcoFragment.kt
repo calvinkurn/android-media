@@ -17,12 +17,17 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
+import com.tokopedia.common.topupbills.data.TopupBillsPromo
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsTicker
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.common.DigitalTopupAnalytics
 import com.tokopedia.topupbills.covertContactUriToContactData
+import com.tokopedia.topupbills.generateRechargeCheckoutToken
 import com.tokopedia.topupbills.telco.data.*
 import com.tokopedia.topupbills.telco.view.activity.DigitalSearchNumberActivity
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
@@ -101,7 +106,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     abstract fun setFavNumbers(data: TelcoRechargeFavNumberData)
 
-    fun renderTicker(tickers: List<TelcoTicker>) {
+    fun renderTicker(tickers: List<TopupBillsTicker>) {
         if (tickers.isNotEmpty()) {
             val messages = ArrayList<TickerData>()
             for (item in tickers) {
@@ -160,19 +165,26 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
+    fun navigateToLoginPage() {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    }
+
     fun processToCart() {
-        if (userSession.isLoggedIn && ::checkoutPassData.isInitialized) {
+        if (userSession.isLoggedIn) {
             navigateToCart()
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+            navigateToLoginPage()
         }
     }
 
     private fun navigateToCart() {
-        val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
-        intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
-        startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        if (::checkoutPassData.isInitialized) {
+            checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+            val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
+            intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
+            startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -208,7 +220,7 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                         }
                     }
                 } else if (requestCode == REQUEST_CODE_LOGIN) {
-                    if (userSession.isLoggedIn && ::checkoutPassData.isInitialized) {
+                    if (userSession.isLoggedIn) {
                         navigateToCart()
                     }
                 }
@@ -222,13 +234,13 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
 
     protected abstract fun handleCallbackSearchNumberCancel()
 
-    private fun renderRecentTransactions(recentNumbers: List<TelcoRecommendation>) {
+    private fun renderRecentTransactions(recentNumbers: List<TopupBillsRecommendation>) {
         if (recentNumbers.isNotEmpty()) {
             recentNumbersWidget.setListener(object : DigitalRecentTransactionWidget.ActionListener {
-                override fun onClickRecentNumber(telcoRecommendation: TelcoRecommendation, categoryId: Int,
+                override fun onClickRecentNumber(topupBillsRecommendation: TopupBillsRecommendation, categoryId: Int,
                                                  position: Int) {
-                    telcoRecommendation.position = position
-                    onClickItemRecentNumber(telcoRecommendation)
+                    topupBillsRecommendation.position = position
+                    onClickItemRecentNumber(topupBillsRecommendation)
                 }
 
                 override fun onTrackImpressionRecentList(digitalTrackRecentList: List<DigitalTrackRecentTransactionTelco>) {
@@ -249,9 +261,9 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
         }
     }
 
-    protected abstract fun onClickItemRecentNumber(telcoRecommendation: TelcoRecommendation)
+    protected abstract fun onClickItemRecentNumber(topupBillsRecommendation: TopupBillsRecommendation)
 
-    private fun renderPromoList(promos: List<TelcoPromo>) {
+    private fun renderPromoList(promos: List<TopupBillsPromo>) {
         if (promos.isNotEmpty()) {
             promoListWidget.visibility = View.VISIBLE
             promoListWidget.setListener(object : DigitalPromoListWidget.ActionListener {
@@ -277,10 +289,10 @@ open abstract class DigitalBaseTelcoFragment : BaseDaggerFragment() {
                     topupAnalytics.impressionEnhanceCommercePromoList(digitalTrackPromoList)
                 }
 
-                override fun onClickItemPromo(telcoPromo: TelcoPromo, position: Int) {
-                    topupAnalytics.clickEnhanceCommercePromo(telcoPromo, position)
-                    if (!TextUtils.isEmpty(telcoPromo.urlBannerPromo)) {
-                        RouteManager.route(activity, telcoPromo.urlBannerPromo)
+                override fun onClickItemPromo(topupBillsPromo: TopupBillsPromo, position: Int) {
+                    topupAnalytics.clickEnhanceCommercePromo(topupBillsPromo, position)
+                    if (!TextUtils.isEmpty(topupBillsPromo.urlBannerPromo)) {
+                        RouteManager.route(activity, topupBillsPromo.urlBannerPromo)
                     }
                 }
             })

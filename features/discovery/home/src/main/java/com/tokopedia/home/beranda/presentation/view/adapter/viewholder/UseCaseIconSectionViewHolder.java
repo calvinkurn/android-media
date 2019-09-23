@@ -17,14 +17,18 @@ import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeIconItem;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.UseCaseIconSectionViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionViewModel;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 
 /**
  * @author by errysuprayogi on 11/28/17.
  */
+/**
+ * Use dynamic icon section instead of use case icon
+ */
 
+@Deprecated
 public class UseCaseIconSectionViewHolder extends AbstractViewHolder<UseCaseIconSectionViewModel> {
 
     @LayoutRes

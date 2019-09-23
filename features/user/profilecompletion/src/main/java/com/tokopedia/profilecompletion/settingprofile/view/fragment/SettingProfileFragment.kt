@@ -27,13 +27,16 @@ import com.tokopedia.profilecompletion.changegender.view.ChangeGenderFragment
 import com.tokopedia.profilecompletion.customview.UnifyDialog
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.settingprofile.data.ProfileCompletionData
+import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
 import com.tokopedia.profilecompletion.settingprofile.data.UploadProfilePictureResult
 import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileInfoViewModel
+import com.tokopedia.profilecompletion.settingprofile.viewmodel.ProfileRoleViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_setting_profile.*
@@ -54,6 +57,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val profileInfoViewModel by lazy { viewModelProvider.get(ProfileInfoViewModel::class.java) }
+    private val profileRoleViewModel by lazy { viewModelProvider.get(ProfileRoleViewModel::class.java) }
 
     lateinit var overlayView: View
     lateinit var tickerPhoneVerification: Ticker
@@ -84,7 +88,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         val dialog = UnifyDialog(activity as Activity, UnifyDialog.SINGLE_ACTION, UnifyDialog.NO_HEADER)
         dialog.setTitle(getString(R.string.title_change_email_dialog))
         dialog.setDescription(getString(R.string.cannot_change_email))
-        dialog.setOk(getString(R.string.title_ok))
+        dialog.setOk(getString(com.tokopedia.abstraction.R.string.title_ok))
         dialog.setOkOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
     }
@@ -101,6 +105,13 @@ class SettingProfileFragment : BaseDaggerFragment() {
             when (it) {
                 is Success -> onSuccessUploadProfilePicture(it.data)
                 is Fail -> onErrorUploadProfilePicture(it.throwable)
+            }
+        })
+
+        profileRoleViewModel.userProfileRole.observe(this, Observer {
+            when (it) {
+                is Success -> onSuccessGetProfileRole(it.data)
+                is Fail -> onErrorGetProfileRole(it.throwable)
             }
         })
     }
@@ -134,7 +145,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun initSettingProfileData() {
         showLoading()
-        profileInfoViewModel.getUserProfileInfo()
+        profileInfoViewModel.getUserProfileInfo(context!!)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -190,7 +201,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun refreshProfile() {
         showLoading(true)
-        profileInfoViewModel.getUserProfileInfo()
+        profileInfoViewModel.getUserProfileInfo(context!!)
     }
 
     private fun onSuccessAddGender(data: Intent?) {
@@ -246,7 +257,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     onErrorGetProfilePhoto(MessageErrorException(getString(R.string.failed_to_get_picture)))
                 } else {
                     showLoading(true)
-                    profileInfoViewModel.uploadProfilePicture(savedLocalImageUrl)
+                    profileInfoViewModel.uploadProfilePicture(context!!, savedLocalImageUrl)
                 }
 
             } else {
@@ -276,8 +287,6 @@ class SettingProfileFragment : BaseDaggerFragment() {
         userSession.phoneNumber = profileCompletionData.phone
         userSession.email = profileCompletionData.email
 
-        dismissLoading()
-
         ImageHandler.loadImageCircle2(context, profilePhoto, profileCompletionData.profilePicture)
 
         name.showFilled(
@@ -291,7 +300,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
             bod.showEmpty(
                     getString(R.string.subtitle_bod_setting_profile),
                     getString(R.string.hint_bod_setting_profile),
-                    false,
+                    true,
                     View.OnClickListener {
                         goToAddBod()
                     }
@@ -331,8 +340,8 @@ class SettingProfileFragment : BaseDaggerFragment() {
                     false
             )
         }
-
-        if (profileCompletionData.email.isEmpty()) {
+        val isEmailDone = profileCompletionData.isEmailDone
+        if (profileCompletionData.email.isEmpty() || !isEmailDone) {
             email.showEmpty(
                     getString(R.string.subtitle_email_setting_profile),
                     getString(R.string.hint_email_setting_profile),
@@ -389,7 +398,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
                         getString(R.string.ticker_phone_verification)
                 )
                 tickerPhoneVerification.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         goToVerifyPhone()
                     }
 
@@ -398,6 +407,33 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
                 })
 
+            }
+        }
+
+        profileRoleViewModel.getUserProfileRole()
+    }
+
+    private fun onErrorGetProfileInfo(throwable: Throwable) {
+        dismissLoading()
+        view?.run {
+            val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+            NetworkErrorHelper.showEmptyState(context, this, error) {
+                initSettingProfileData()
+            }
+        }
+    }
+
+    private fun onSuccessGetProfileRole(profileRoleData: ProfileRoleData) {
+        dismissLoading()
+        bod.isEnabled = profileRoleData.isAllowedChangeDob
+    }
+
+    private fun onErrorGetProfileRole(throwable: Throwable) {
+        dismissLoading()
+        view?.run {
+            val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
+            NetworkErrorHelper.showEmptyState(context, this, error) {
+                initSettingProfileData()
             }
         }
     }
@@ -421,28 +457,15 @@ class SettingProfileFragment : BaseDaggerFragment() {
 
     private fun goToAddBod() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(R.string.title_add_bod))
         startActivityForResult(intent, REQUEST_CODE_ADD_BOD)
-    }
-
-    private fun goToChangeBod() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
-        startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
     }
 
     private fun goToChangeBod(bod: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_BOD)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD_TITLE, getString(R.string.title_change_bod))
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_BOD, bod)
         startActivityForResult(intent, REQUEST_CODE_EDIT_BOD)
-    }
-
-    private fun onErrorGetProfileInfo(throwable: Throwable) {
-        dismissLoading()
-        view?.run {
-            val error = ErrorHandlerSession.getErrorMessage(throwable, context, true)
-            NetworkErrorHelper.showEmptyState(context, this, error) {
-                initSettingProfileData()
-            }
-        }
     }
 
     override fun onDestroy() {

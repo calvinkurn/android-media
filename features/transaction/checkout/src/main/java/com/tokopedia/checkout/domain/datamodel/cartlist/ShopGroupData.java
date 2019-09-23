@@ -20,6 +20,7 @@ public class ShopGroupData implements Parcelable {
     private boolean isError;
     private String errorTitle;
     private String errorDescription;
+    private String similarProductUrl;
     private boolean isWarning;
     private String warningTitle;
     private String warningDescription;
@@ -49,6 +50,7 @@ public class ShopGroupData implements Parcelable {
         isError = in.readByte() != 0;
         errorTitle = in.readString();
         errorDescription = in.readString();
+        similarProductUrl = in.readString();
         isWarning = in.readByte() != 0;
         warningTitle = in.readString();
         warningDescription = in.readString();
@@ -75,6 +77,7 @@ public class ShopGroupData implements Parcelable {
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorTitle);
         dest.writeString(errorDescription);
+        dest.writeString(similarProductUrl);
         dest.writeByte((byte) (isWarning ? 1 : 0));
         dest.writeString(warningTitle);
         dest.writeString(warningDescription);
@@ -201,6 +204,14 @@ public class ShopGroupData implements Parcelable {
 
     public void setErrorDescription(String errorDescription) {
         this.errorDescription = errorDescription;
+    }
+
+    public String getSimilarProductUrl() {
+        return similarProductUrl;
+    }
+
+    public void setSimilarProductUrl(String similarProductUrl) {
+        this.similarProductUrl = similarProductUrl;
     }
 
     public boolean isWarning() {

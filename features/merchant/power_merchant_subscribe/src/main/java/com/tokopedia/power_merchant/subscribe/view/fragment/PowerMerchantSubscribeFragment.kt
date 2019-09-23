@@ -29,6 +29,7 @@ import com.tokopedia.gm.common.constant.GMParamConstant.PM_SUBSCRIBE_SUCCESS
 import com.tokopedia.gm.common.data.source.cloud.model.PowerMerchantStatus
 import com.tokopedia.gm.common.data.source.cloud.model.ShopStatusModel
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
+import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hideLoading
 import com.tokopedia.kotlin.extensions.view.showEmptyState
@@ -37,7 +38,6 @@ import com.tokopedia.power_merchant.subscribe.*
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
 import com.tokopedia.power_merchant.subscribe.view.activity.PowerMerchantTermsActivity
 import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantCancelBottomSheet
-import com.tokopedia.power_merchant.subscribe.view.bottomsheets.PowerMerchantSuccessBottomSheet
 import com.tokopedia.power_merchant.subscribe.view.contract.PmSubscribeContract
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialBenefitPmViewHolder
 import com.tokopedia.power_merchant.subscribe.view.viewholder.PartialMemberPmViewHolder
@@ -65,7 +65,7 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     lateinit var partialTncViewHolder: PartialTncViewHolder
     lateinit var shopStatusModel: ShopStatusModel
     lateinit var getApprovalStatusPojo: GetApprovalStatusPojo
-    lateinit var bottomSheetSuccess: PowerMerchantSuccessBottomSheet
+    lateinit var bottomSheetCommon: MerchantCommonBottomSheet
     lateinit var bottomSheetCancel: PowerMerchantCancelBottomSheet
 
     private var shopScore: Int = 0
@@ -211,7 +211,9 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
             dialog.setCanceledOnTouchOutside(true)
             dialog.setContentView(R.layout.dialog_kyc_verification)
             dialog.btn_submit_kyc.setOnClickListener {
-                RouteManager.route(context, ApplinkConst.KYC_SELLER_DASHBOARD)
+                val intent = RouteManager.getIntent(activity, ApplinkConst.KYC)
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, ApplinkConstInternalGlobal.PARAM_SOURCE_KYC_SELLER)
+                startActivity(intent)
                 activity?.finish()
             }
             dialog.btn_close_kyc.setOnClickListener {
@@ -246,27 +248,27 @@ class PowerMerchantSubscribeFragment : BaseDaggerFragment(), PmSubscribeContract
     private fun showBottomSheetSuccess(shopStatusModel: ShopStatusModel) {
         val imgUrl = IMG_URL_BS_SUCCESS
         isSuccessActivatedPm = false
-        val bottomSheetModel: PowerMerchantSuccessBottomSheet.BottomSheetModel =
+        val bottomSheetModel: MerchantCommonBottomSheet.BottomSheetModel =
                 if (shopStatusModel.isTransitionPeriod()) {
                     val headerString = getString(R.string.pm_label_bs_success_header_transition)
                     val descString = getString(R.string.pm_label_bs_success_desc_transition)
                     val btnString = getString(R.string.pm_label_bs_success_button_transition)
-                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, "")
+                    MerchantCommonBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, "")
                 } else {
                     val headerString = getString(R.string.pm_label_bs_success_header)
                     val descString = getString(R.string.pm_label_bs_success_desc)
                     val btnString = getString(R.string.pm_label_bs_success_button)
-                    PowerMerchantSuccessBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, PM_SUBSCRIBE_SUCCESS)
+                    MerchantCommonBottomSheet.BottomSheetModel(headerString, descString, imgUrl, btnString, PM_SUBSCRIBE_SUCCESS)
                 }
 
-        bottomSheetSuccess = PowerMerchantSuccessBottomSheet.newInstance(bottomSheetModel)
-        bottomSheetSuccess.setListener(object : PowerMerchantSuccessBottomSheet.BottomSheetListener {
-            override fun onButtonClicked() {
-                bottomSheetSuccess.dismiss()
+        bottomSheetCommon = MerchantCommonBottomSheet.newInstance(bottomSheetModel)
+        bottomSheetCommon.setListener(object : MerchantCommonBottomSheet.BottomSheetListener {
+            override fun onBottomSheetButtonClicked() {
+                bottomSheetCommon.dismiss()
                 refreshData()
             }
         })
-        bottomSheetSuccess.show(childFragmentManager, "power_merchant_success")
+        bottomSheetCommon.show(childFragmentManager, "power_merchant_success")
     }
 
     fun showBottomSheetCancel() {

@@ -5,5 +5,4 @@
         <attr name="spsd_title" format="string" />
         <attr name="spsd_content_layout" format="reference" />
     </declare-styleable>
-
 </resources>

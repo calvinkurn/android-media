@@ -36,6 +36,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
     private boolean isTitleOnly;
     private boolean isTitleHalfView;
     private boolean isContentAllignmentLeft;
+    private int titleMaxLines;
     private OnAdapterInteractionListener interactionListener;
 
     @ColorInt
@@ -49,6 +50,7 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         isTitleOnly = false;
         isContentAllignmentLeft = false;
         isTitleHalfView = true;
+        titleMaxLines = 1;
         marginTopDp = 0f;
         marginBottomDp = 0f;
         marginLeftDp = 0f;
@@ -123,6 +125,10 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
         this.marginBottomDp = marginBottomDp;
     }
 
+    public void setTitleMaxLines(int maxLines) {
+        this.titleMaxLines = maxLines;
+    }
+
     public void setMarginLeftDp(float marginLeftDp) {
         this.marginLeftDp = marginLeftDp;
     }
@@ -170,6 +176,8 @@ public class FlightSimpleAdapter extends RecyclerView.Adapter<FlightSimpleAdapte
                 titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
                 contentTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, fontSize);
             }
+
+            titleTextView.setMaxLines(titleMaxLines);
 
             if (isTitleHalfView) {
                 layoutParams.width = 0;

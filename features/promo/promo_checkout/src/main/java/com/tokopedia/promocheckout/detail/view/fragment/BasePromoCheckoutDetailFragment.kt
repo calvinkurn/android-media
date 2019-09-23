@@ -2,6 +2,7 @@ package com.tokopedia.promocheckout.detail.view.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -11,9 +12,13 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
+import com.tokopedia.promocheckout.common.analytics.FROM_CART
+import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.domain.CheckPromoCodeException
 import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
@@ -28,15 +33,27 @@ import com.tokopedia.promocheckout.widget.TimerPromoCheckout
 import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
+import javax.inject.Inject
 
 abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoCheckoutDetailContract.View {
 
+    @Inject
+    lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
+
     var isLoadingFinished = false
     var codeCoupon = ""
+    var pageTracking: Int = 1
     open var isUse = false
+
+    lateinit var progressDialog: ProgressDialog
 
     override fun getScreenName(): String {
         return ""
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        pageTracking = arguments?.getInt(PAGE_TRACKING, 1) ?: 1
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,7 +83,14 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
     }
 
     abstract fun onClickUse()
-    abstract fun onClickCancel()
+
+    protected open fun onClickCancel() {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickCancelPromoCoupon(codeCoupon)
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickCancelPromoCoupon(codeCoupon)
+        }
+    }
 
     protected open fun loadData() {
         isLoadingFinished = false
@@ -189,7 +213,13 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         view?.timerUsage?.start()
     }
 
-    override fun onErrorValidatePromo(e: Throwable) {
+    override fun onErrorCheckPromo(e: Throwable) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
+        }
+
         var message = ErrorHandler.getErrorMessage(activity, e)
         if (e is CheckPromoCodeException) {
             message = e.message
@@ -197,9 +227,15 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         NetworkErrorHelper.createSnackbarRedWithAction(activity, message, { onClickUse() }).showRetrySnackbar()
     }
 
-    override fun onErrorValidatePromoStacking(e: Throwable) {
+    override fun onErrorCheckPromoStacking(e: Throwable) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponFailed()
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponFailed()
+        }
+
         var message = ErrorHandler.getErrorMessage(activity, e)
-        if (e is CheckPromoCodeException) {
+        if (e is CheckPromoCodeException || e is MessageErrorException) {
             message = e.message
         }
         NetworkErrorHelper.showRedCloseSnackbar(activity, message)
@@ -210,7 +246,13 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     }
 
-    override fun onSuccessValidatePromoStacking(data: DataUiModel) {
+    override fun onSuccessCheckPromo(data: DataUiModel) {
+        if (pageTracking == FROM_CART) {
+            trackingPromoCheckoutUtil.cartClickUsePromoCouponSuccess(data.codes[0])
+        } else {
+            trackingPromoCheckoutUtil.checkoutClickUsePromoCouponSuccess(data.codes[0])
+        }
+
         val intent = Intent()
         val variant = "global"
         val typePromo = if (data.isCoupon == PromoStackingData.VALUE_COUPON) PromoStackingData.TYPE_COUPON else PromoStackingData.TYPE_VOUCHER
@@ -234,7 +276,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(activity, e))
     }
 
-    override fun onSuccessCancelPromoStacking() {
+    override fun onSuccessCancelPromo() {
         isUse = false
         validateButton()
         val intent = Intent()
@@ -251,6 +293,18 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
 
     override fun hideLoading() {
         succesLoad()
+    }
+
+    override fun hideProgressLoading() {
+        progressDialog?.hide()
+    }
+
+    override fun showProgressLoading() {
+        try {
+            progressDialog?.show()
+        } catch (exception: UnsupportedOperationException) {
+            CommonUtils.dumper(exception)
+        }
     }
 
     private fun getFormattedHtml(content: String?): String {
@@ -285,5 +339,11 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         view?.timerUsage?.cancel()
         timerUsage?.cancel()
         super.onDestroyView()
+    }
+
+    companion object {
+        val EXTRA_KUPON_CODE = "EXTRA_KUPON_CODE"
+        val EXTRA_IS_USE = "EXTRA_IS_USE"
+        val PAGE_TRACKING = "PAGE_TRACKING"
     }
 }

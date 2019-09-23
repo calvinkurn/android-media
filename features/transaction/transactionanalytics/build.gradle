@@ -15,18 +15,11 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "${artifactIdTransactionAnalytics}"
-    groupId = "${groupIdTransaction}"
-    versionName = "${transactionGroupVersion}"
-    artifactName = "${artifactIdTransactionAnalytics}-release"
-}
-
 dependencies {
-    
+    implementation rootProject.ext.firebase.core
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
 
     implementation rootProject.ext.playServicesDependencies.analytics
 
@@ -41,4 +34,12 @@ dependencies {
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+project.ext {
+    artifactId = "analytics"
+    groupId = "com.tokopedia.transaction"
+    versionName = "1.0.0"
+    artifactName = "transactionanalytics-release"
+}
+
 apply from: "$rootProject.projectDir/publish_local.gradle"

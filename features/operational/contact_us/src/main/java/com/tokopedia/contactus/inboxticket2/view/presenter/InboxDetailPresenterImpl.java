@@ -816,6 +816,7 @@ public class InboxDetailPresenterImpl
 
     @Override
     public void onClickEmoji(int number) {
+        sendGTMEventView();
         mView.startActivityForResult(ProvideRatingActivity.getInstance(mView.getActivity(), number,mView.getCommentID(),mTicketDetail.getBadCsatReasonList()),REQUEST_SUBMIT_FEEDBACK);
     }
 
@@ -908,5 +909,12 @@ public class InboxDetailPresenterImpl
         mTicketDetail.getComments().add(newItem);
         mTicketDetail.setNeedAttachment(false);
         mView.updateAddComment();
+    }
+
+    private void sendGTMEventView() {
+        ContactUsTracking.sendGTMInboxTicket(InboxTicketTracking.Event.EventView,
+                InboxTicketTracking.Category.EventHelpMessageInbox,
+                InboxTicketTracking.Action.EventImpressionOnCsatRating,
+                mView.getTicketID());
     }
 }

@@ -12,13 +12,6 @@ android {
     }
 }
 
-project.ext {
-    artifactId = 'product-draft-database'
-    groupId = 'com.tokopedia.productdraftdatabase'
-    versionName = "${tkpdProductVersion}"
-    artifactName ="product_draft_database-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -33,6 +26,13 @@ dependencies {
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
+}
+
+project.ext {
+    artifactId = 'product-draft-database'
+    groupId = 'com.tokopedia.merchant'
+    versionName = "1.0.0"
+    artifactName ="merchantproductdraftdatabase-release"
 }
 
 apply from: '../../../publish_local.gradle'

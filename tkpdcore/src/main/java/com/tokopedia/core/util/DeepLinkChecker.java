@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -263,7 +264,8 @@ public class DeepLinkChecker {
                 && !isKycTerms(linkSegment)
                 && !isProfile(linkSegment)
                 && !isSMCReferral(linkSegment)
-                && !isHomeRecoomendation(linkSegment);
+                && !isHomeRecoomendation(linkSegment)
+                && !isLeasing(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -310,11 +312,27 @@ public class DeepLinkChecker {
     }
 
     private static boolean isSMCReferral(List<String> linkSegment) {
-        return (linkSegment.get(0).equals("kupon-thr"));
+        if(linkSegment == null || linkSegment.isEmpty()){
+            return false;
+        }
+
+        String segments = "";
+
+        if (linkSegment.size() == 1){
+            segments = linkSegment.get(0);
+        } else {
+            segments = linkSegment.get(0) + "/" + linkSegment.get(1);
+        }
+
+        return (Arrays.asList("kupon-thr", "seru/games", "seru/referral", "seru/topquest").contains(segments));
     }
 
     private static boolean isHomeRecoomendation(List<String> linkSegment){
         return (linkSegment.get(0).equals("rekomendasi"));
+    }
+
+    private static boolean isLeasing(List<String> linkSegment){
+        return (linkSegment.get(0).equals("kredit-motor"));
     }
 
     private static boolean isKycTerms(List<String> linkSegment) {
@@ -364,7 +382,7 @@ public class DeepLinkChecker {
 
     private static String constructSearchApplink(String query, String departmentId) {
         String applink = TextUtils.isEmpty(query) ?
-                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConstInternalDiscovery.AUTOCOMPLETE :
                 ApplinkConst.DISCOVERY_SEARCH;
 
         return applink

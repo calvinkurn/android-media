@@ -36,11 +36,7 @@ public interface GlobalNavRouter {
 
     Intent getShopPageIntent(Context context, String shopID);
 
-    Intent getOpenShopIntent(Context context);
-
     Intent getHomeIntent(Context context);
-
-    Intent gotoSearchAutoCompletePage(Context context);
 
     Intent instanceIntentDigitalCategoryList();
 

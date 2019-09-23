@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.common.travel.widget.filterchips.FilterChipAdapter
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelReviewActivity
@@ -18,7 +19,6 @@ import com.tokopedia.hotel.hoteldetail.presentation.adapter.ReviewAdapterTypeFac
 import com.tokopedia.hotel.hoteldetail.presentation.model.HotelReviewParam
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReview
 import com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel.HotelReviewViewModel
-import com.tokopedia.hotel.roomlist.widget.ChipAdapter
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_review.*
@@ -28,7 +28,7 @@ import javax.inject.Inject
  * @author by jessica on 29/04/19
  */
 
-class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFactory>(), ChipAdapter.OnClickListener {
+class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFactory>(), FilterChipAdapter.OnClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -70,6 +70,9 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         return view
     }
 
+    override fun getSwipeRefreshLayoutResourceId() = 0
+    override fun getRecyclerViewResourceId() = R.id.recycler_view
+
     fun onSuccessGetResult(reviews: HotelReview.ReviewData) {
         showHotelMetaReview(true)
         super.renderList(reviews.reviewList, reviews.hasNext)
@@ -99,11 +102,11 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         filter_recycler_view.setItem(arrayListOf(getString(R.string.hotel_review_filter_first_rank),
                 getString(R.string.hotel_review_filter_second_rank),
                 getString(R.string.hotel_review_filter_third_rank)),
-                R.color.snackbar_border_normal)
+                com.tokopedia.design.R.color.snackbar_border_normal)
         filter_recycler_view.selectOnlyOneChip(true)
 
         //initially select recent search chip
-        filter_recycler_view.initiallySelectedChip(0)
+        filter_recycler_view.selectChipByPosition(0)
     }
 
     private fun onErrorGetResult(throwable: Throwable) {
@@ -157,11 +160,11 @@ class HotelReviewFragment : BaseListFragment<HotelReview, ReviewAdapterTypeFacto
         var emptyModel = EmptyModel()
         
         if (indonesia_review_switch.isChecked) {
-            emptyModel.iconRes = R.drawable.ic_no_indonesian_review
+            emptyModel.urlRes = getString(R.string.hotel_url_no_indonesian_review)
             emptyModel.title = getString(R.string.hotel_review_indonesia_not_found_title)
             emptyModel.content = getString(R.string.hotel_review_indonesia_not_found_subtitle)
         } else {
-            emptyModel.iconRes = R.drawable.ic_no_review
+            emptyModel.urlRes = getString(R.string.hotel_url_no_review)
             emptyModel.title = getString(R.string.hotel_review_filter_review_not_found_title)
             emptyModel.content = getString(R.string.hotel_review_filter_review_not_found_subtitle)
         }

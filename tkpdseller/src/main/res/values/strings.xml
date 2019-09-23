@@ -235,7 +235,6 @@
     <string name="shop_performance">Skor Perfoma Toko</string>
     <string name="this_week_statistics">Statistik Minggu ini</string>
 
-
     <string name="label_call_ondemand_driver_logistic_action_1">Telepon Driver</string>
     <string name="label_call_ondemand_driver_logistic_action_2">SMS Driver</string>
     <string name="error_message_sms_app_not_found">Maaf, aplikasi SMS tidak ditemukan</string>
@@ -341,6 +340,7 @@
     <string name="title_booking_code_detail">Detail Kode Booking</string>
     <string name="transaction_title_activity_order_history">Detail Status</string>
     <string name="title_scan_awb">Scan Barcode</string>
+    <string name="label_no_color_variant">Tidak ada varian yang terpilih</string>
 
 
 </resources>

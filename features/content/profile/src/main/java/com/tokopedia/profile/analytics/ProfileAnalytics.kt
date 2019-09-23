@@ -3,6 +3,7 @@ package com.tokopedia.profile.analytics
 import android.app.Activity
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.feedcomponent.data.pojo.FeedPostRelated
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import java.util.*
@@ -87,6 +88,7 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
         const val CLICK_EMPTY_CTA = "cta byme"
         const val IMPRESSION_OTHER_POST = "impression post lainnya"
         const val CLICK_OTHER_POST = "click post lainnya"
+        const val CLICK_READ_MORE = "click read more"
     }
 
     object Label {
@@ -314,18 +316,17 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                 Screen.PROFILE,
                 Event.EVENT_CLICK_SOCIAL_COMMERCE,
                 Category.USER_PROFILE_SOCIALCOMMERCE,
-                Action.CLICK_OTHER_POST,
-                    "$viewedProfileId - ${feedDatum.content.tracking.authorID}"
+                Action.CLICK_OTHER_POST, "$viewedProfileId - ${feedDatum.content.tracking.authorID}"
             ).also {
                 it[EVENT_ECOMMERCE] = ProfileEnhancedTracking.Ecommerce.getEcommerceClick(
                         listOf(
                                 ProfileEnhancedTracking.Promotion(
-                                        id = feedDatum.id.toInt(),
+                                        id = feedDatum.id.toIntOrZero(),
                                         name = String.format(FORMAT_RECOMMENDATION_PROMOTION_NAME, Category.USER_PROFILE_PAGE, Promotion.Name.EMPTY_POST_RECOMMENDATION),
                                         creative = "${feedDatum.content.header.avatarTitle} - ${feedDatum.content.tracking.authorID}",
                                         position = position,
                                         category = "",
-                                        promoId = currentUserId.toInt(),
+                                        promoId = currentUserId.toIntOrZero(),
                                         promoCode = currentUserName
                                 )
                         )
@@ -340,18 +341,17 @@ class ProfileAnalytics @Inject constructor(private val userSessionInterface: Use
                 Screen.PROFILE,
                 Event.EVENT_CLICK_SOCIAL_COMMERCE,
                 Category.USER_PROFILE_SOCIALCOMMERCE,
-                Action.IMPRESSION_OTHER_POST,
-                viewedProfileId
+                Action.IMPRESSION_OTHER_POST, viewedProfileId
             ).also {
                 it[EVENT_ECOMMERCE] = ProfileEnhancedTracking.Ecommerce.getEcommerceView(
                         feedDatumList.mapIndexed { position, feedDatum ->
                             ProfileEnhancedTracking.Promotion(
-                                    id = feedDatum.id.toInt(),
+                                    id = feedDatum.id.toIntOrZero(),
                                     name = String.format(FORMAT_RECOMMENDATION_PROMOTION_NAME, Category.USER_PROFILE_PAGE, Promotion.Name.EMPTY_POST_RECOMMENDATION),
                                     creative = "${feedDatum.content.header.avatarTitle} - ${feedDatum.content.tracking.authorID}",
                                     position = position,
                                     category = "",
-                                    promoId = currentUserId.toInt(),
+                                    promoId = currentUserId.toIntOrZero(),
                                     promoCode = currentUserName
                             )
                         }

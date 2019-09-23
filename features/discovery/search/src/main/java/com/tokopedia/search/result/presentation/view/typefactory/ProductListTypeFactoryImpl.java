@@ -6,15 +6,17 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.HeaderViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.HeaderViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductEmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.RelatedSearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
@@ -69,11 +71,11 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     @Override
     public int type(ProductItemViewModel productItem) {
         switch (getRecyclerViewItem()) {
-            case SearchConstant.RecyclerView.VIEW_PRODUCT:
+            case SearchConstant.RecyclerView.VIEW_LIST:
                 return ListProductItemViewHolder.LAYOUT;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
                 return BigGridProductItemViewHolder.LAYOUT;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
             default:
                 return SmallGridProductItemViewHolder.LAYOUT;
         }
@@ -81,7 +83,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
 
     @Override
     public int type(EmptySearchViewModel emptySearchModel) {
-        return EmptySearchViewHolder.LAYOUT;
+        return ProductEmptySearchViewHolder.LAYOUT;
     }
 
     @Override
@@ -92,6 +94,11 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     @Override
     public int type(RelatedSearchViewModel relatedSearchModel) {
         return RelatedSearchViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(GlobalNavViewModel globalNavViewModel) {
+        return GlobalNavViewHolder.LAYOUT;
     }
 
     @Override
@@ -111,13 +118,15 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
             viewHolder = new BigGridProductItemViewHolder(view, productListener);
         } else if(type == HeaderViewHolder.LAYOUT){
             viewHolder = new HeaderViewHolder(view, suggestionListener, quickFilterListener,
-                    guidedSearchListener, globalNavWidgetListener, bannerAdsListener);
-        } else if (type == EmptySearchViewHolder.LAYOUT) {
-            viewHolder = new EmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
+                    guidedSearchListener, bannerAdsListener);
+        } else if (type == ProductEmptySearchViewHolder.LAYOUT) {
+            viewHolder = new ProductEmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
         } else if (type == TopAdsViewHolder.LAYOUT) {
             viewHolder = new TopAdsViewHolder(view, productListener);
         } else if (type == RelatedSearchViewHolder.LAYOUT) {
             viewHolder = new RelatedSearchViewHolder(view, relatedSearchListener);
+        } else if (type == GlobalNavViewHolder.LAYOUT) {
+            viewHolder = new GlobalNavViewHolder(view, globalNavWidgetListener);
         } else if (type == SearchLoadingMoreViewHolder.LAYOUT) {
             viewHolder = new SearchLoadingMoreViewHolder(view);
         } else {

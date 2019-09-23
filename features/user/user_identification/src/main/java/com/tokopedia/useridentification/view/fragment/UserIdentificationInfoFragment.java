@@ -15,12 +15,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.user_identification_common.KYCConstant;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 import com.tokopedia.user_identification_common.subscriber.GetApprovalStatusSubscriber;
+import com.tokopedia.user_identification_common.subscriber.GetUserProjectInfoSubcriber;
 import com.tokopedia.useridentification.KycUrl;
 import com.tokopedia.useridentification.R;
 import com.tokopedia.useridentification.analytics.UserIdentificationAnalytics;
@@ -39,6 +40,7 @@ import javax.inject.Inject;
 public class UserIdentificationInfoFragment extends BaseDaggerFragment
         implements UserIdentificationInfo.View,
         GetApprovalStatusSubscriber.GetApprovalStatusListener,
+        GetUserProjectInfoSubcriber.GetUserProjectInfoListener,
         UserIdentificationInfoActivity.Listener {
 
     private final static int FLAG_ACTIVITY_KYC_FORM = 1301;
@@ -119,7 +121,35 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     private void getStatusInfo() {
         showLoading();
-        presenter.getStatus();
+        presenter.getInfo();
+    }
+
+    @Override
+    public void isAllowToRegister(boolean isAllow) {
+        if (isAllow) {
+            presenter.getStatus();
+        } else {
+            hideLoading();
+            showStatusBlacklist();
+        }
+    }
+
+    @Override
+    public void onErrorGetUserProjectInfo(Throwable throwable) {
+        if (getContext() != null) {
+            hideLoading();
+            String error = ErrorHandler.getErrorMessage(getContext(), throwable);
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
+        }
+    }
+
+    @Override
+    public void onErrorGetUserProjectInfoWithErrorCode(String errorCode) {
+        if (getContext() != null) {
+            hideLoading();
+            String error = String.format("%s (%s)", getContext().getString(R.string.default_request_error_unknown), errorCode);
+            NetworkErrorHelper.showEmptyState(getContext(), mainView, error, this::getStatusInfo);
+        }
     }
 
     @Override
@@ -193,6 +223,17 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         analytics.eventViewRejectedPage();
     }
 
+    private void showStatusBlacklist() {
+        ImageHandler.LoadImage(image, KycUrl.ICON_FAIL_VERIFY);
+        title.setText(R.string.kyc_failed_title);
+        text.setText(R.string.kyc_blacklist_text);
+        button.setText(R.string.kyc_blacklist_button);
+        button.setTextColor(getResources().getColor(R.color.white));
+        button.setBackgroundResource(R.drawable.green_button_rounded);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(v -> getActivity().onBackPressed());
+    }
+
     @Override
     public void onErrorGetShopVerificationStatus(Throwable errorMessage) {
         if (getContext() != null) {
@@ -222,6 +263,11 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
     public void hideLoading() {
         mainView.setVisibility(View.VISIBLE);
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public GetUserProjectInfoSubcriber.GetUserProjectInfoListener getUserProjectInfoListener() {
+        return this;
     }
 
     @Override

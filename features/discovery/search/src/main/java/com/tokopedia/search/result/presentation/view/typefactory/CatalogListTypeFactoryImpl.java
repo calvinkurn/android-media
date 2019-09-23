@@ -11,7 +11,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.catalog.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.catalog.CatalogHeaderViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.catalog.GridCatalogViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.catalog.ListCatalogViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.EmptySearchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.CatalogListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
@@ -39,11 +39,11 @@ public class CatalogListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     @Override
     public int type(CatalogViewModel viewModel) {
         switch (getRecyclerViewItem()) {
-            case SearchConstant.RecyclerView.VIEW_PRODUCT:
+            case SearchConstant.RecyclerView.VIEW_LIST:
                 return ListCatalogViewHolder.LAYOUT;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_1:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID:
                 return BigGridCatalogViewHolder.LAYOUT;
-            case SearchConstant.RecyclerView.VIEW_PRODUCT_GRID_2:
+            case SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID:
             default:
                 return GridCatalogViewHolder.LAYOUT;
         }

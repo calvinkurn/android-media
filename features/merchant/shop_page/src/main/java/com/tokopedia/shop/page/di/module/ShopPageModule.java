@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
@@ -13,6 +15,7 @@ import com.tokopedia.shop.page.di.scope.ShopPageScope;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductUseCase;
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -86,5 +89,18 @@ public class ShopPageModule {
         );
     }
 
+    @ShopPageScope
+    @Provides
+    @Named(ShopPageConstant.SHOP_FAVORITE_QUERY)
+    public String favoriteQuery(@ApplicationContext Context context) {
+        return GraphqlHelper.loadRawString(
+                context.getResources(),
+                R.raw.gql_get_shop_favorite_status);
+    }
 
+    @ShopPageScope
+    @Provides
+    public StickyLoginUseCase provideStickyLoginUseCase(@ApplicationContext Context context, GraphqlRepository graphqlRepository){
+        return new StickyLoginUseCase(context.getResources(), graphqlRepository);
+    }
 }

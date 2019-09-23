@@ -38,8 +38,7 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerAddressComponent;
-import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper;
-import com.tokopedia.logisticaddaddress.features.district_recommendation.DistrictRecommendationActivity;
+import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Destination;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
@@ -64,9 +63,7 @@ import rx.subscriptions.CompositeSubscription;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_INSTANCE_TYPE;
-import static com.tokopedia.logisticaddaddress.AddressConstants.EXTRA_PLATFORM_PAGE;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_MULTIPLE_CHECKOUT;
-import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ADD_ADDRESS_FROM_SINGLE_CHECKOUT_EMPTY_DEFAULT_ADDRESS;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_DEFAULT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_EDIT_ADDRESS_FROM_MULTIPLE_CHECKOUT;
@@ -74,7 +71,6 @@ import static com.tokopedia.logisticaddaddress.AddressConstants.INSTANCE_TYPE_ED
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.logisticaddaddress.AddressConstants.IS_EDIT;
 import static com.tokopedia.logisticaddaddress.AddressConstants.KERO_TOKEN;
-import static com.tokopedia.logisticaddaddress.AddressConstants.PLATFORM_MARKETPLACE_CART;
 import static com.tokopedia.logisticaddaddress.AddressConstants.REQUEST_CODE;
 
 /**
@@ -122,7 +118,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private TextView subDistrictError;
     private ProgressBar mProgressBar;
 
-    private List<String> zipCodes;
+    private List<String> zipCodes = new ArrayList<>();
     private Token token;
     private Destination address;
 
@@ -252,7 +248,7 @@ public class AddAddressFragment extends BaseDaggerFragment
                         this.address.setCityName(address.getCityName());
                         this.address.setDistrictName(address.getDistrictName());
 
-                        zipCodes = new ArrayList<>(address.getZipCodes());
+                        if(address.getZipCodes() != null) zipCodes = new ArrayList<>(address.getZipCodes());
                         initializeZipCodes();
                     }
                 }
@@ -850,7 +846,7 @@ public class AddAddressFragment extends BaseDaggerFragment
     private View.OnClickListener onCityDistrictClick() {
         return view -> {
             sendAnalyticsOnDistrictSelectionClicked();
-            Intent intent = DistrictRecommendationActivity.newInstance(getActivity(), token);
+            Intent intent = DiscomActivity.newInstance(getActivity(), token);
             startActivityForResult(intent, DISTRICT_RECOMMENDATION_REQUEST_CODE);
         };
     }

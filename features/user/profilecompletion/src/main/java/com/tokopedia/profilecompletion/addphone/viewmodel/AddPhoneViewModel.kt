@@ -1,16 +1,20 @@
 package com.tokopedia.profilecompletion.addphone.viewmodel
 
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.content.Context
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.profilecompletion.R
 import com.tokopedia.profilecompletion.addphone.data.AddPhonePojo
 import com.tokopedia.profilecompletion.addphone.data.AddPhoneResult
 import com.tokopedia.profilecompletion.addphone.data.CheckPhonePojo
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_MSISDN
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_OTP_CODE
-import com.tokopedia.profilecompletion.data.ProfileCompletionQueriesConstant.PARAM_PHONE
+import com.tokopedia.profilecompletion.addphone.data.UserValidatePojo
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_MSISDN
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_OTP_CODE
+import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_PHONE
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,16 +24,18 @@ import javax.inject.Inject
 
 class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: GraphqlUseCase<AddPhonePojo>,
                                             private val checkMsisdnGraphQlUseCase: GraphqlUseCase<CheckPhonePojo>,
-                                            private val rawQueries: Map<String, String>,
+                                            private val userValidateGraphQlUseCase: GraphqlUseCase<UserValidatePojo>,
                                             val dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     val mutateAddPhoneResponse = MutableLiveData<Result<AddPhoneResult>>()
     val mutateCheckPhoneResponse = MutableLiveData<Result<CheckPhonePojo>>()
+    private val mutableUserValidateResponse = MutableLiveData<Result<UserValidatePojo>>()
+    val userValidateResponse: LiveData<Result<UserValidatePojo>>
+        get() = mutableUserValidateResponse
 
 
-    fun mutateAddPhone(msisdn: String, otp : String) {
-
-        rawQueries[ProfileCompletionQueriesConstant.MUTATION_ADD_PHONE]?.let { query ->
+    fun mutateAddPhone(context: Context, msisdn: String, otp : String) {
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_phone)?.let { query ->
 
             val params = mapOf(
                     PARAM_MSISDN to msisdn,
@@ -69,9 +75,9 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
        }
     }
 
-    fun mutateCheckPhone(msisdn: String) {
+    fun mutateCheckPhone(context: Context, msisdn: String) {
 
-        rawQueries[ProfileCompletionQueriesConstant.MUTATION_CHECK_PHONE]?.let { query ->
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_check_phone)?.let { query ->
 
             val params = mapOf(PARAM_PHONE to msisdn)
 
@@ -106,6 +112,42 @@ class AddPhoneViewModel @Inject constructor(private val addPhoneGraphQlUseCase: 
         }
     }
 
+    fun userProfileCompletionValidate(context: Context, msisdn: String){
+        GraphqlHelper.loadRawString(context.resources, R.raw.mutation_user_profile_completion_validate)?.let { query ->
 
+            val params = mapOf(PARAM_PHONE to msisdn)
 
+            userValidateGraphQlUseCase.setTypeClass(UserValidatePojo::class.java)
+            userValidateGraphQlUseCase.setRequestParams(params)
+            userValidateGraphQlUseCase.setGraphqlQuery(query)
+
+            userValidateGraphQlUseCase.execute(
+                    onSuccessUserValidatePojo(),
+                    onErrorUserValidatePojo()
+            )
+        }
+    }
+
+    private fun onErrorUserValidatePojo(): (Throwable) -> Unit {
+        return {
+            it.printStackTrace()
+            mutableUserValidateResponse.postValue(Fail(it))
+        }
+    }
+
+    private fun onSuccessUserValidatePojo(): (UserValidatePojo) -> Unit {
+        return {
+            val errorMessage = it.userProfileCompletionValidate.msisdnMessage
+            val isValid = it.userProfileCompletionValidate.isValid
+
+            if (errorMessage.isBlank() && isValid) {
+                mutableUserValidateResponse.postValue(Success(it))
+            } else if (!errorMessage.isBlank()) {
+                mutableUserValidateResponse.postValue(Fail(MessageErrorException(errorMessage,
+                        ErrorHandlerSession.ErrorCode.WS_ERROR.toString())))
+            } else {
+                mutableUserValidateResponse.postValue(Fail(RuntimeException()))
+            }
+        }
+    }
 }

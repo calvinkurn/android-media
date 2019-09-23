@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.login.view.fragment
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -30,6 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -45,6 +47,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
+import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
@@ -67,10 +70,11 @@ import com.tokopedia.loginregister.registeremail.view.activity.RegisterEmailActi
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
 import com.tokopedia.loginregister.registerinitial.view.customview.PartialRegisterInputView
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
-import com.tokopedia.loginregister.welcomepage.WelcomePageActivity
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -134,7 +138,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private lateinit var source : String
+    private var source: String = ""
+    private var isAutoLogin: Boolean = false
 
     private lateinit var partialRegisterInputView: PartialRegisterInputView
     private lateinit var loginLayout: LinearLayout
@@ -184,6 +189,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
+            analytics.initCashShield(this)
+            analytics.sendCashShield(this)
         }
     }
 
@@ -262,6 +269,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
+        isAutoLogin = getParamBoolean(IS_AUTO_LOGIN, arguments, savedInstanceState, false)
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -290,7 +298,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
         if (arguments != null && arguments!!.getBoolean(IS_AUTO_FILL, false)) {
             emailPhoneEditText.setText(arguments!!.getString(AUTO_FILL_EMAIL, ""))
-        } else if (arguments != null && arguments!!.getBoolean(IS_AUTO_LOGIN, false)) {
+        } else if (isAutoLogin) {
             when (arguments!!.getInt(AUTO_LOGIN_METHOD)) {
                 LoginActivity.METHOD_FACEBOOK -> onLoginFacebookClick()
                 LoginActivity.METHOD_GOOGLE -> onLoginGoogleClick()
@@ -346,17 +354,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun prepareView() {
-        emailPhoneEditText.setOnEditorActionListener { _, id, _ ->
-            if (id == EditorInfo.IME_ACTION_DONE) {
-                showLoadingLogin()
-                analytics.trackClickOnNext(emailPhoneEditText.text.toString())
-                presenter.checkLoginEmailPhone(emailPhoneEditText.text.toString())
-                true
-            } else {
-                false
-            }
-        }
-
         partialActionButton.text = getString(R.string.next)
         partialActionButton.setOnClickListener {
             showLoadingLogin()
@@ -452,6 +449,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             val tv = LoginTextView(activity, MethodChecker.getColor(context, R.color.white))
             tv.tag = it.id
             tv.setText(it.name)
+            if(userSession.name.isNotEmpty()){
+                var name = userSession.name
+                if(name.split("\\s".toRegex()).size > 1)
+                    name = name.substring(0, name.indexOf(" "))
+                if ((it.id.equals(FACEBOOK, ignoreCase = true) &&
+                        userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_FACEBOOK) ||
+                        (it.id.equals(GPLUS, ignoreCase = true) &&
+                                userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
+                    tv.setText("${it.name} ${getString(R.string.socmed_account_as)} $name")
+                }
+            }
             if (!TextUtils.isEmpty(it.image)) {
                 tv.setImage(it.image)
             } else if (it.imageResource != 0) {
@@ -476,7 +484,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     private fun onLoginGoogleClick() {
         if (activity != null) {
-
             analytics.eventClickLoginGoogle(activity!!.applicationContext)
 
             val intent = mGoogleSignInClient.signInIntent
@@ -486,6 +493,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun onLoginFacebookClick() {
+
         if (activity != null) {
             analytics.eventClickLoginFacebook(activity!!.applicationContext)
             presenter.getFacebookCredential(this, callbackManager)
@@ -543,7 +551,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
 
     }
 
-    private fun goToRegisterInitial(source : String) {
+    private fun goToRegisterInitial(source: String) {
         if (activity != null) {
             analytics.eventClickRegisterFromLogin()
             val intent = RegisterInitialActivity.getCallingIntent(activity)
@@ -573,10 +581,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             activity!!.setResult(Activity.RESULT_OK)
             activity!!.finish()
 
-            analytics.eventSuccessLogin(userSession.loginMethod, registerAnalytics)
+            analytics.eventSuccessLogin(context, userSession.loginMethod, registerAnalytics)
             setTrackingUserId(userSession.userId)
             setFCM()
         }
+
+        RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
     }
 
     private fun setFCM() {
@@ -621,7 +631,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     userSession.shopName,
                     userSession.shopId,
                     userSession.hasShop(),
-                    LoginRegisterAnalytics.LABEL_EMAIL
+                    analytics.getLoginMethodMoengage(userSession.loginMethod)
             )
 
         } catch (e: Exception) {
@@ -629,7 +639,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         }
     }
 
-    private fun loginEventAppsFlyer(userId:String, userEmail:String){
+    private fun loginEventAppsFlyer(userId: String, userEmail: String) {
         var dataMap = HashMap<String, Any>()
         dataMap.put("user_id", userId)
         dataMap.put("user_email", userEmail)
@@ -720,7 +730,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             dialog.setOnOkClickListener { v ->
                 context?.let {
                     dialog.dismiss()
-                    startActivity(RegisterEmailActivity.getCallingIntentWithEmail(it, email))
+                    startActivity(RegisterEmailActivity.getCallingIntentWithEmail(it, email, source))
                     activity!!.finish()
                 }
             }
@@ -837,7 +847,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onGoToActivationPage(email: String): (MessageErrorException) -> Unit {
         return {
             val intent = ActivationActivity.getCallingIntent(activity,
-                    email, passwordEditText.text.toString())
+                    email, passwordEditText.text.toString(), source)
             startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT)
         }
     }
@@ -869,7 +879,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onErrorReloginAfterSQ(validateToken: String): (Throwable) -> Unit {
         return {
             dismissLoadingLogin()
-            val errorMessage =   ErrorHandlerSession.getErrorMessage(it, context, true)
+            val errorMessage = ErrorHandlerSession.getErrorMessage(it, context, true)
             NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
                 presenter.reloginAfterSQ(validateToken)
             }.showRetrySnackbar()
@@ -951,7 +961,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 dismissLoadingLogin()
                 activity!!.setResult(Activity.RESULT_CANCELED)
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-                onGoToWelcomeNewUserPage()
+                onSuccessLogin()
             } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
                 analytics.eventFailedLogin(userSession.loginMethod, getString(R.string.error_login_user_cancel_activate_account))
                 dismissLoadingLogin()
@@ -965,7 +975,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val msisdn = data.extras!!.getString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
                 goToAddNameFromRegisterPhone(uuid, msisdn)
             } else if (requestCode == REQUEST_ADD_NAME_REGISTER_PHONE && resultCode == Activity.RESULT_OK) {
-               onGoToWelcomeNewUserPage()
+                isAutoLogin = true
+                showLoading(true)
+                presenter.getUserInfo()
+                onGoToWelcomeNewUserPage()
             } else if (requestCode == REQUEST_LOGIN_PHONE
                     && resultCode == Activity.RESULT_OK
                     && data != null
@@ -989,11 +1002,10 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     private fun onGoToWelcomeNewUserPage() {
-        if(isFromAccountPage()) {
+        if (isFromAccountPage()) {
             val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
             startActivity(intent)
         }
-        onSuccessLogin()
     }
 
     private fun isFromAccountPage(): Boolean {
@@ -1050,6 +1062,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        analytics.onDestroy()
     }
 
     override fun onBackPressed() {
@@ -1066,18 +1079,18 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     }
 
     override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
-        if(listTickerInfo.isNotEmpty()){
+        if (listTickerInfo.isNotEmpty()) {
             tickerAnnouncement.visibility = View.VISIBLE
-            if(listTickerInfo.size > 1){
+            if (listTickerInfo.size > 1) {
                 val mockData = arrayListOf<TickerData>()
                 listTickerInfo.forEach {
                     mockData.add(TickerData(it.title, it.message, getTickerType(it.color), true))
                 }
                 val adapter = TickerPagerAdapter(activity!!, mockData)
-                adapter.setDescriptionClickEvent(object : TickerCallback{
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        analytics.eventClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                adapter.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        analytics.eventClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -1085,17 +1098,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     }
 
                 })
-                tickerAnnouncement.addPagerView( adapter, mockData)
-            }else {
+                tickerAnnouncement.addPagerView(adapter, mockData)
+            } else {
                 listTickerInfo.first().let {
                     tickerAnnouncement.tickerTitle = it.title
                     tickerAnnouncement.setHtmlDescription(it.message)
                     tickerAnnouncement.tickerShape = getTickerType(it.color)
                 }
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback{
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        analytics.eventClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        analytics.eventClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -1105,7 +1118,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 })
             }
             tickerAnnouncement.setOnClickListener { v ->
-                analytics.eventClickTicker() }
+                analytics.eventClickTicker()
+            }
 
         }
     }
@@ -1131,6 +1145,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
+        outState.putBoolean(IS_AUTO_LOGIN, isAutoLogin)
     }
 
 }

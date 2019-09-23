@@ -29,7 +29,6 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.categorynav.view.CategoryNavigationActivity;
-import com.tokopedia.discovery.search.view.DiscoverySearchView;
 import com.tokopedia.discovery.util.MoEngageEventTracking;
 
 import java.io.UnsupportedEncodingException;
@@ -52,7 +51,6 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     private String categoryName = CATEGORY_DEFAULT_TITLE;
 
     Toolbar toolbar;
-    DiscoverySearchView searchView;
     ProgressBar progressBar;
     FrameLayout frameLayout;
     private boolean fromNavigation;
@@ -198,7 +196,6 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     protected void initView() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         frameLayout = (FrameLayout) findViewById(R.id.container);
-        searchView = (DiscoverySearchView) findViewById(R.id.search);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         toolbar.setTitle(categoryName);
         setSupportActionBar(toolbar);

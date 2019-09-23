@@ -1,7 +1,7 @@
 package com.tokopedia.home_recom.model.datamodel
 
 import com.tokopedia.home_recom.view.adapter.HomeRecommendationTypeFactoryImpl
-import com.tokopedia.home_recom.view.listener.TrackingListener
+import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -11,7 +11,7 @@ import org.junit.Test
  */
 class RecommendationCarouselDataModelTest{
     private val visitor = HomeRecommendationTypeFactoryImpl()
-    private fun recommendationCarouselDataModelFactory(title: String, recommendationItems: List<RecommendationCarouselItemDataModel>, listener: TrackingListener) = RecommendationCarouselDataModel(title, recommendationItems, listener)
+    private fun recommendationCarouselDataModelFactory(title: String, recommendationItems: List<RecommendationCarouselItemDataModel>, listener: RecommendationListener) = RecommendationCarouselDataModel(title, recommendationItems, listener)
 
     @Test
     fun test(){

@@ -41,7 +41,7 @@
 
         <activity
             android:name=".search.presentation.activity.HotelSearchFilterActivity"
-            android:label="@string/label_filter"
+            android:label=""
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 
@@ -117,6 +117,12 @@
         <activity
             android:name=".booking.presentation.activity.HotelBookingActivity"
             android:label="@string/hotel_booking_activity_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".booking.presentation.activity.HotelContactDataActivity"
+            android:label="@string/travel_contact_data_activity_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.domain.GetEventsListRequestUseCase;
@@ -16,6 +17,9 @@ import com.tokopedia.events.domain.GetProductRatingUseCase;
 import com.tokopedia.events.domain.GetUserLikesUseCase;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
+import com.tokopedia.events.domain.model.NsqMessage;
+import com.tokopedia.events.domain.model.NsqServiceModel;
+import com.tokopedia.events.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.domain.scanTicketUsecase.CheckScanOptionUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
@@ -34,8 +38,10 @@ import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -60,6 +66,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
     private GetEventsListRequestUseCase getEventsListRequestUsecase;
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetUserLikesUseCase getUserLikesUseCase;
+    private PostNsqEventUseCase postNsqEventUseCase;
     private CategoryViewModel carousel;
     private List<CategoryViewModel> categoryViewModels;
     private ArrayList<Integer> likedEventsLocal;
@@ -75,10 +82,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
     public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
                        PostUpdateEventLikesUseCase eventLikesUseCase,
                        GetUserLikesUseCase likesUseCase,
-                       GetProductRatingUseCase ratingUseCase, EventsAnalytics eventsAnalytics) {
+                       GetProductRatingUseCase ratingUseCase, PostNsqEventUseCase postNsqEventUseCase, EventsAnalytics eventsAnalytics) {
         this.getEventsListRequestUsecase = getEventsListRequestUsecase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
         this.getUserLikesUseCase = likesUseCase;
+        this.postNsqEventUseCase = postNsqEventUseCase;
         adapterCallbacks = new ArrayList<>();
         this.eventsAnalytics = eventsAnalytics;
     }
@@ -174,7 +182,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
             searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
             mView.navigateToActivityRequest(searchIntent,
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
-            eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_SEARCH, "");
             return true;
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);
@@ -441,5 +448,31 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventBaseContract.Ev
         super.attachView(view);
         mView = (EventsContract.EventHomeView) view;
         getEventsList();
+    }
+
+    public void sendNSQEvent(String userId, String action) {
+        NsqServiceModel nsqServiceModel = new NsqServiceModel();
+        nsqServiceModel.setService(Utils.NSQ_SERVICE);
+        NsqMessage nsqMessage = new NsqMessage();
+        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
+        nsqMessage.setAction(action);
+        nsqServiceModel.setMessage(nsqMessage);
+        postNsqEventUseCase.setRequestModel(nsqServiceModel);
+        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper(e);
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+            }
+        });
     }
 }

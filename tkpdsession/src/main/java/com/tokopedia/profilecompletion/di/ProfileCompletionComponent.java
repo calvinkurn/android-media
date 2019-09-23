@@ -11,7 +11,11 @@ import dagger.Component;
 
 
 @ProfileCompletionScope
-@Component(modules = ProfileCompletionModule.class, dependencies = AppComponent.class)
+@Component(modules = {
+        ProfileCompletionModule.class,
+        ProfileCompletionQueriesModule.class,
+        ProfileCompletionViewModelModule.class
+}, dependencies = AppComponent.class)
 public interface ProfileCompletionComponent {
     void inject(ProfileCompletionFragment fragment);
 }

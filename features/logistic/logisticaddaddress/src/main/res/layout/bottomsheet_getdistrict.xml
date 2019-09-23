@@ -136,7 +136,7 @@
                 android:paddingLeft="2dp"
                 android:paddingEnd="2dp"
                 android:paddingRight="2dp"
-                android:text="@string/tv_detail_address_info"
+                android:text="@string/tv_detail_address_placeholder"
                 android:textColor="@color/label_grey"
                 android:textSize="@dimen/sp_12" />
 
@@ -238,7 +238,7 @@
             android:id="@+id/invalid_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/choose_this_location"
+            android:text="@string/choose_this_incomplete_location"
             android:visibility="gone"
             app:buttonCompatSize="medium"
             app:buttonCompatType="primary" />
