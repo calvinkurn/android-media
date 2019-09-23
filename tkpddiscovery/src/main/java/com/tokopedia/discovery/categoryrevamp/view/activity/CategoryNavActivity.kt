@@ -12,6 +12,7 @@ import com.tkpd.library.utils.legacy.MethodChecker
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.CategoryNavigationPagerAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
@@ -307,7 +308,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener, BottomSh
     }
 
     private fun moveToAutoCompleteActivity() {
-        RouteManager.route(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + departmentName)
+        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + departmentName)
     }
 
     override fun setupSearchNavigation(clickListener: CategoryNavigationListener.ClickListener) {

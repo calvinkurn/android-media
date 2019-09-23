@@ -407,7 +407,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processToUpdateCartData(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList) {
+    public void processToUpdateCartData(List<CartItemData> cartItemDataList) {
         view.showProgressLoading();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
@@ -429,7 +429,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList, cartShopHolderDataList))
+                        .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList))
         );
     }
 
@@ -963,7 +963,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList) {
+    private Subscriber<UpdateCartData> getSubscriberToShipmentSingleAddress(List<CartItemData> cartItemDataList) {
         return new Subscriber<UpdateCartData>() {
             @Override
             public void onCompleted() {
@@ -993,7 +993,8 @@ public class CartListPresenter implements ICartListPresenter {
                     } else {
                         int checklistCondition = getChecklistCondition();
                         view.renderToShipmentFormSuccess(
-                                generateCheckoutDataAnalytics(cartItemDataList, cartShopHolderDataList),
+                                generateCheckoutDataAnalytics(cartItemDataList),
+                                cartItemDataList,
                                 isCheckoutProductEligibleForCashOnDelivery(cartItemDataList),
                                 checklistCondition);
                     }
@@ -1392,7 +1393,7 @@ public class CartListPresenter implements ICartListPresenter {
         return enhancedECommerceProductCartMapData;
     }
 
-    private EnhancedECommerceProductCartMapData getCheckoutEnhancedECommerceProductCartMapData(CartItemData cartItemData, CartShopHolderData cartShopHolderData) {
+    private EnhancedECommerceProductCartMapData getCheckoutEnhancedECommerceProductCartMapData(CartItemData cartItemData) {
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
                 new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setDimension80(
@@ -1424,7 +1425,7 @@ public class CartListPresenter implements ICartListPresenter {
         return enhancedECommerceProductCartMapData;
     }
 
-    private Map<String, Object> generateCheckoutDataAnalytics(List<CartItemData> cartItemDataList, List<CartShopHolderData> cartShopHolderDataList) {
+    private Map<String, Object> generateCheckoutDataAnalytics(List<CartItemData> cartItemDataList) {
         Map<String, Object> checkoutMapData = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
         enhancedECommerceActionField.setStep(EnhancedECommerceActionField.STEP_1);
@@ -1432,15 +1433,8 @@ public class CartListPresenter implements ICartListPresenter {
 
         EnhancedECommerceCheckout enhancedECommerceCheckout = new EnhancedECommerceCheckout();
         for (CartItemData cartItemData : cartItemDataList) {
-            CartShopHolderData selectedCartShopHolderData = null;
-            for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
-                if (cartShopHolderData.getShopGroupData().getCartString().equalsIgnoreCase(cartItemData.getOriginData().getCartString())) {
-                    selectedCartShopHolderData = cartShopHolderData;
-                    break;
-                }
-            }
             EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData
-                    = getCheckoutEnhancedECommerceProductCartMapData(cartItemData, selectedCartShopHolderData);
+                    = getCheckoutEnhancedECommerceProductCartMapData(cartItemData);
             enhancedECommerceCheckout.addProduct(enhancedECommerceProductCartMapData.getProduct());
         }
         enhancedECommerceCheckout.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
@@ -1541,10 +1535,10 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartWishlistItemHolderData cartWishlistItemHolderData,
-                                                                          AddToCartDataModel addToCartDataResponseModel) {
+                                                                          AddToCartDataModel addToCartDataResponseModel, boolean isCartEmpty) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
-        enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_WISHLIST);
+        enhancedECommerceActionField.setList(isCartEmpty ? EnhancedECommerceActionField.LIST_WISHLIST_ON_EMPTY_CART : EnhancedECommerceActionField.LIST_WISHLIST);
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setProductName(cartWishlistItemHolderData.getName());
         enhancedECommerceProductCartMapData.setProductID(cartWishlistItemHolderData.getId());
@@ -1572,10 +1566,10 @@ public class CartListPresenter implements ICartListPresenter {
 
     @Override
     public Map<String, Object> generateAddToCartEnhanceEcommerceDataLayer(CartRecentViewItemHolderData cartRecentViewItemHolderData,
-                                                                          AddToCartDataModel addToCartDataResponseModel) {
+                                                                          AddToCartDataModel addToCartDataResponseModel, boolean isCartEmpty) {
         Map<String, Object> stringObjectMap = new HashMap<>();
         EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
-        enhancedECommerceActionField.setList(EnhancedECommerceActionField.LIST_RECENT_VIEW);
+        enhancedECommerceActionField.setList(isCartEmpty ? EnhancedECommerceActionField.LIST_RECENT_VIEW_ON_EMPTY_CART : EnhancedECommerceActionField.LIST_RECENT_VIEW);
         EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData = new EnhancedECommerceProductCartMapData();
         enhancedECommerceProductCartMapData.setProductName(cartRecentViewItemHolderData.getName());
         enhancedECommerceProductCartMapData.setProductID(cartRecentViewItemHolderData.getId());

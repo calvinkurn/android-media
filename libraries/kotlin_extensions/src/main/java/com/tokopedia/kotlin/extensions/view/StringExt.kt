@@ -37,3 +37,8 @@ fun String.decodeToUtf8(): String = URLDecoder.decode(this, "UTF-8")
 fun String.isEmail(): Boolean {
     return android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
 }
+
+
+fun String?.toBlankOrString(): String {
+    return this?:""
+}

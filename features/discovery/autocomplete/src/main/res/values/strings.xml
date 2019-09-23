@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="autocomplete_app_name">autocomplete</string>
+    <string name="title_autocomplete">Pencarian</string>
+    <string name="on_board_title" >Pencarian Gambar</string>
+    <string name="on_board_desc" >Kini lebih mudah. Cukup ambil gambar dan temukan produk yang diinginkan.</string>
+    <string name="title_all">Semua</string>
+    <string name="title_product">Produk</string>
+    <string name="title_catalog">Katalog</string>
+    <string name="title_shop">Toko</string>
+    <string name="title_profile">Profil</string>
+    <string name="navigate_back">Kembali</string>
+    <string name="next">></string>
+    <string name="title_done">Selesai</string>
+    <string name="formated_in_category">di %1$s</string>
+    <string name="search_autocomplete_hint">Cari di Tokopedia</string>
+    <string name="search_cancel_text">Cancel</string>
+    <string name="title_search_recent">PENCARIAN TERAKHIR</string>
+    <string name="delete_all">Hapus Semua</string>
+</resources>

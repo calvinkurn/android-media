@@ -33,6 +33,11 @@ query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
             title
             color
           }
+          label_group {
+            type
+            title
+            position
+          }
           badges{
             title
             image_url

@@ -263,7 +263,11 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                 tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
                 tickerError.setCloseButtonVisibility(View.GONE);
                 tickerError.setVisibility(View.VISIBLE);
-                tickerError.requestLayout();
+                tickerError.post(() -> {
+                    tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                    tickerError.requestLayout();
+                });
                 layoutError.setVisibility(View.VISIBLE);
             } else {
                 layoutError.setVisibility(View.GONE);
@@ -293,7 +297,11 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
-            tickerWarning.requestLayout();
+            tickerWarning.post(() -> {
+                tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                tickerWarning.requestLayout();
+            });
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
             tickerWarning.setVisibility(View.GONE);

@@ -3,12 +3,9 @@ package com.tokopedia.feedplus.view.fragment
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -23,16 +20,17 @@ import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
+import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
-import com.tokopedia.feedplus.view.viewmodel.FeedPlusTabItem
-import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel
-import com.tokopedia.kolcommon.data.pojo.Author
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.usecase.coroutines.Fail
@@ -66,16 +64,27 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         ViewModelProviders.of(this, viewModelFactory)[FeedPlusContainerViewModel::class.java]
     }
 
-    private val pagerAdapter : FeedPlusTabAdapter by lazy {
+    private val pagerAdapter: FeedPlusTabAdapter by lazy {
         FeedPlusTabAdapter(childFragmentManager, emptyList(), arguments)
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.tabResp.observe(this, Observer {
-            when(it){
+            when (it) {
                 is Success -> onSuccessGetTab(it.data)
                 is Fail -> onErrorGetTab(it.throwable)
+            }
+        })
+        viewModel.whitelistResp.observe(this, Observer {
+            when (it) {
+                is Success -> renderFab(it.data)
+                is Fail -> onErrorGetWhitelist(it.throwable)
             }
         })
     }
@@ -90,6 +99,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initView()
         activity?.let { status_bar_bg.layoutParams.height = DisplayMetricUtils.getStatusBarHeight(it) }
         requestFeedTab()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        hideAllFab(false)
+    }
+
+    override fun onDestroy() {
+        viewModel.tabResp.removeObservers(this)
+        viewModel.whitelistResp.removeObservers(this)
+        viewModel.clear()
+        super.onDestroy()
     }
 
     override fun getScreenName(): String? = null
@@ -124,13 +145,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         hideAllFab(true)
         if (!userSession.isLoggedIn) {
             fab_feed.show()
-            fab_feed.setOnClickListener { v -> onGoToLogin() }
+            fab_feed.setOnClickListener { onGoToLogin() }
         }
         setAdapter()
         onNotificationChanged(badgeNumberNotification, badgeNumberInbox) // notify badge after toolbar created
     }
 
-    private fun requestFeedTab(){
+    private fun requestFeedTab() {
         showLoading()
         viewModel.getDynamicTabs()
     }
@@ -156,6 +177,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         val feedData = data.feedData.filter { it.type == FeedTabs.TYPE_FEEDS || it.type == FeedTabs.TYPE_EXPLORE || it.type == FeedTabs.TYPE_CUSTOM }
         pagerAdapter.setItemList(feedData)
         view_pager.currentItem = if (data.meta.selectedIndex < feedData.size) data.meta.selectedIndex else 0
+        view_pager.offscreenPageLimit = pagerAdapter.count
         feed_loading.visibility = View.GONE
         feed_error.visibility = View.GONE
         tab_layout.visibility = View.VISIBLE
@@ -165,22 +187,26 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             goToExplore()
         }
         if (userSession.isLoggedIn) {
-            viewModel.getWhitelist(object : FeedPlusContainerViewModel.OnGetWhitelistData {
-                override fun onSuccessGetWhitelistData(whitelistDomain: WhitelistDomain) {
-                    renderFab(whitelistDomain)
-                }
-
-                override fun onErrorGetWhitelistData(errString: String) {
-                    error(errString)
-                }
-            })
+            viewModel.getWhitelist()
         }
     }
 
     private fun renderFab(whitelistDomain: WhitelistDomain) {
-        if (userSession.isLoggedIn && !whitelistDomain.authors.isEmpty()) {
+        if (userSession.isLoggedIn && whitelistDomain.authors.isNotEmpty()) {
             showFeedFab(whitelistDomain)
         }
+    }
+
+    private fun onErrorGetWhitelist(throwable: Throwable) {
+        ToasterError.make(view_pager,
+                ErrorHandler.getErrorMessage(context, throwable),
+                BaseToaster.LENGTH_LONG)
+                .setAction(getString(R.string.title_try_again)) {
+                    if (userSession.isLoggedIn) {
+                        viewModel.getWhitelist()
+                    }
+                }
+
     }
 
     private fun setAdapter() {
@@ -216,17 +242,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         this.badgeNumberInbox = inboxCount
     }
 
-    override fun onDestroy() {
-        viewModel.tabResp.removeObservers(this)
-        viewModel.clear()
-        super.onDestroy()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        hideAllFab(false)
-    }
-
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
         if (!isVisibleToUser) {
@@ -234,19 +249,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
-    }
-
     private fun showFeedFab(whitelistDomain: WhitelistDomain) {
         fab_feed.show()
         isFabExpanded = true
-        if (!whitelistDomain.authors.isEmpty() && whitelistDomain.authors.size != 1) {
+        if (whitelistDomain.authors.size > 1) {
             fab_feed.setOnClickListener(fabClickListener(whitelistDomain))
-        } else {
-            val author = whitelistDomain.authors[0]
-            fab_feed.setOnClickListener { v -> onGoToLink(author.link) }
+        } else if (whitelistDomain.authors.size == 1) {
+            val author = whitelistDomain.authors.first()
+            fab_feed.setOnClickListener { onGoToLink(author.link) }
         }
     }
 
@@ -258,23 +268,25 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 fab_feed.animation = AnimationUtils.loadAnimation(activity, R.anim.rotate_forward)
                 layout_grey_popup.visibility = View.VISIBLE
                 for (author in whitelistDomain.authors) {
-                    if (author.title.equals(Author.KEY_POST_TOKO, ignoreCase = true)) {
-                        fab_feed_shop.show()
-                        text_fab_shop.visibility = View.VISIBLE
-                        fab_feed_shop.setOnClickListener { v1 -> onGoToLink(author.link) }
-                    } else {
+                    if (author.type.equals(Author.TYPE_AFFILIATE, ignoreCase = true)) {
                         fab_feed_byme.show()
                         text_fab_byme.visibility = View.VISIBLE
-                        fab_feed_byme.setOnClickListener { v12 -> goToCreateAffiliate(author.link) }
+                        text_fab_byme.text = author.title
+                        fab_feed_byme.setOnClickListener { goToCreateAffiliate() }
+                    } else {
+                        fab_feed_shop.show()
+                        text_fab_shop.visibility = View.VISIBLE
+                        text_fab_shop.text = author.title
+                        fab_feed_shop.setOnClickListener { onGoToLink(author.link) }
                     }
                 }
-                layout_grey_popup.setOnClickListener { v3 -> hideAllFab(false) }
+                layout_grey_popup.setOnClickListener { hideAllFab(false) }
                 isFabExpanded = true
             }
         }
     }
 
-    private fun goToCreateAffiliate(link: String) {
+    private fun goToCreateAffiliate() {
         if (context != null) {
             if (affiliatePreference.isFirstTimeEducation(userSession.userId)) {
 
@@ -310,13 +322,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         isFabExpanded = false
     }
 
-    fun onGoToLink(link: String) {
+    private fun onGoToLink(link: String) {
         if (!TextUtils.isEmpty(link)) {
             RouteManager.route(activity, link)
         }
     }
 
-    fun onGoToLogin() {
+    private fun onGoToLogin() {
         if (activity != null) {
             val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
             activity!!.startActivityForResult(intent, FeedPlusFragment.REQUEST_LOGIN)
