@@ -192,7 +192,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                 if (it.response.tickers.isNotEmpty()) {
                     onSuccess.invoke(it.response.tickers[0])
                 } else {
-                    onError?.invoke(Throwable(DATA_NOT_FOUND)
+                    onError?.invoke(Throwable(DATA_NOT_FOUND))
                 }
             },
             onError = {
