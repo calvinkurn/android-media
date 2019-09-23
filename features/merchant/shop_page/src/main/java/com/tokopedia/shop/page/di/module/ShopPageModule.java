@@ -17,6 +17,7 @@ import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -85,6 +86,5 @@ public class ShopPageModule {
                 R.raw.mutation_moderate_shop
         );
     }
-
 
 }

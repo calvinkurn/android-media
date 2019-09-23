@@ -24,7 +24,7 @@ project.ext {
 
 dependencies {
 
-    implementation project(":libraries:akamai_bot_lib")
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.miscDependencies.reactNative

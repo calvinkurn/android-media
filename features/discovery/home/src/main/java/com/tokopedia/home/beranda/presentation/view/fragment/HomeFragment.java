@@ -23,7 +23,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,24 +63,26 @@ import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
+import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.LinearLayoutManagerWithSmoothScroller;
-import com.tokopedia.home.beranda.presentation.view.adapter.TrackedVisitable;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.GeolocationPromptViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeRecommendationFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeRecommendationFeedViewHolder;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.GeolocationPromptViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HomeRecommendationFeedViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.home.widget.StickyTextView;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
+import com.tokopedia.iris.Iris;
+import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.locationmanager.DeviceLocation;
 import com.tokopedia.locationmanager.LocationDetectorHelper;
 import com.tokopedia.loyalty.view.activity.PromoListActivity;
@@ -112,6 +113,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -170,6 +172,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private TrackingQueue trackingQueue;
 
+    private Iris irisAnalytics;
+
     private HomeMainToolbar homeMainToolbar;
 
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
@@ -203,6 +207,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         performanceMonitoring = PerformanceMonitoring.start(BERANDA_TRACE);
         userSession = new UserSession(getActivity());
         trackingQueue = new TrackingQueue(getActivity());
+        irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
 
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
@@ -963,9 +968,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void addImpressionToTrackingQueue(List<TrackedVisitable> visitables) {
+    public void addImpressionToTrackingQueue(List<HomeVisitable> visitables) {
         List<Object> combinedTracking = new ArrayList<>();
-        for (TrackedVisitable visitable : visitables) {
+        for (HomeVisitable visitable : visitables) {
             if (visitable.isTrackingCombined() && visitable.getTrackingDataForCombination() != null) {
                 combinedTracking.addAll(visitable.getTrackingDataForCombination());
             } else if (!visitable.isTrackingCombined() && visitable.getTrackingData() != null) {
@@ -1031,8 +1036,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onDynamicChannelClicked(String actionLink, String trackingAttribution) {
-        onActionLinkClicked(actionLink, trackingAttribution);
+    public void onDynamicChannelClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
     }
 
     private void onActionLinkClicked(String actionLink) {
@@ -1121,12 +1126,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onSixGridItemClicked(String actionLink, String trackingAttribution) {
-        onActionLinkClicked(actionLink, trackingAttribution);
-    }
-
-    @Override
-    public void onThreeGridItemClicked(String actionLink, String trackingAttribution) {
+    public void onLegoBannerClicked(String actionLink, String trackingAttribution) {
         onActionLinkClicked(actionLink, trackingAttribution);
     }
 
@@ -1534,13 +1534,17 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onDynamicIconScrollStart() {
-
+    public void putEEToTrackingQueue(HashMap<String, Object> data) {
+        if (trackingQueue!=null) {
+            trackingQueue.putEETracking(data);
+        }
     }
 
     @Override
-    public void onDynamicIconScrollEnd() {
-
+    public void putEEToIris(@NotNull HashMap<String, Object> data) {
+        if (irisAnalytics!=null) {
+            irisAnalytics.saveEvent(data);
+        }
     }
 
     private void updateStickyState() {

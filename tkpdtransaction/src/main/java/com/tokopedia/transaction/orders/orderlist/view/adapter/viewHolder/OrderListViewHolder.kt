@@ -34,7 +34,7 @@ import com.tokopedia.transaction.orders.orderlist.view.viewState.*
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 
-class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics,  var menuListener: OnMenuItemListener?) : AbstractViewHolder<OrderListViewModel>(itemView) {
+class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnalytics, var menuListener: OnMenuItemListener?) : AbstractViewHolder<OrderListViewModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
@@ -90,7 +90,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     private fun setObservers(element: OrderListViewModel) {
         element.orderListLiveData.removeObservers(itemView.context as FragmentActivity)
         element.orderListLiveData.observe(itemView.context as FragmentActivity, Observer {
-            when(it){
+            when (it) {
                 is DotMenuVisibility -> {
                     orderListBtnOverflow?.visibility = it.visibility
                 }
@@ -98,34 +98,34 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
                     setButtonData(leftButton, it.leftVisibility, it.leftActionButton)
                     setButtonData(rightButton, it.rightVisibility, it.rightActionButton)
                 }
-                is SetCategoryAndTitle ->{
+                is SetCategoryAndTitle -> {
                     setCategoryAndTitle(it.title, it.categoryName)
                 }
-                is SetItemCount ->{
+                is SetItemCount -> {
                     setItemCount(it.itemCount)
                 }
-                is SetTotal ->{
+                is SetTotal -> {
                     setTotal(it.textColor, it.totalLabel, it.totalValue)
                 }
-                is SetDate ->{
+                is SetDate -> {
                     date?.text = it.date
                 }
-                is SetInvoice ->{
+                is SetInvoice -> {
                     invoice?.text = it.invoice
                 }
-                is SetConditionalInfo ->{
+                is SetConditionalInfo -> {
                     setConditionalInfo(it.successConditionalText, it.successCondInfoVisibility, it.color)
                 }
-                is SetFailStatusBgColor ->{
+                is SetFailStatusBgColor -> {
                     status?.setBackgroundColor(android.graphics.Color.parseColor(it.statusColor))
                 }
-                is SetStatus ->{
+                is SetStatus -> {
                     status?.text = it.statusText
                 }
-                is SetMetaDataToCustomView ->{
+                is SetMetaDataToCustomView -> {
                     setMetadata(it.metaData)
                 }
-                is SetPaymentAvatar ->{
+                is SetPaymentAvatar -> {
                     setPaymentAvatar(it.imgUrl)
                 }
             }
@@ -168,7 +168,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     }
 
     private fun setConditionalInfo(successConditionalText: String?, successCondInfoVisibility: Int, color: Color?) {
-        if (successConditionalText!= null) {
+        if (successConditionalText != null) {
             conditionalInfoLayout?.visibility = successCondInfoVisibility
             val shape = GradientDrawable()
             shape.apply {
@@ -189,7 +189,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         val childLayout = DoubleTextView(itemView.context, LinearLayout.VERTICAL)
         childLayout.setTopText(metaData.label())
         childLayout.setTopTextSize(topTextSize)
-        val value : String? = metaData.value()
+        val value: String? = metaData.value()
         val tv = TextView(itemView.context)
         if (value?.contains(KEY_META_DATA) == true) {
             val values = value.split(KEY_META_DATA.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -213,7 +213,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
             val popup = PopupMenu(it.context, it)
             popup.menu.add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan")
             popup.menu.add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail")
-            popup.setOnMenuItemClickListener(OnMenuPopupClicked(it.context, order.appLink))
+            popup.setOnMenuItemClickListener(OnMenuPopupClicked(it.context, order))
             popup.show()
         }
         itemView.setOnClickListener {
@@ -224,17 +224,22 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
         }
     }
 
-    private inner class OnMenuPopupClicked (private val context:Context, private val appLink: String?) : PopupMenu.OnMenuItemClickListener {
+    private inner class OnMenuPopupClicked(private val context: Context, private val order: Order) : PopupMenu.OnMenuItemClickListener {
+
+        private val list = order.dotMenu()
+        private val URL_POSITION = 0
 
         override fun onMenuItemClick(item: MenuItem): Boolean {
-            return when {
-                item.itemId == R.id.action_bantuan -> {
-                    menuListener?.startUri(context.resources.getString(R.string.contact_us_applink))
+            return when (item.itemId) {
+                R.id.action_bantuan -> {
+                    if (list.isNotEmpty() && list.get(URL_POSITION).uri().isNotEmpty()) {
+                        menuListener?.startUri(list.get(URL_POSITION).uri())
+                    }
                     true
                 }
-                item.itemId == R.id.action_order_detail -> {
-                    if (!TextUtils.isEmpty(appLink)) {
-                        RouteManager.route(context, appLink)
+                R.id.action_order_detail -> {
+                    if (order.appLink.isNotEmpty()) {
+                        RouteManager.route(context, order.appLink)
                     }
                     true
                 }

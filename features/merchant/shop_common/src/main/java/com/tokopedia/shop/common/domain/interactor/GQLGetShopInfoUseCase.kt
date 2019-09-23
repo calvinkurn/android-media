@@ -9,8 +9,8 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 
-class GQLGetShopInfoUseCase (private val gqlQuery: String,
-                             private val gqlUseCase: MultiRequestGraphqlUseCase): UseCase<ShopInfo>() {
+class GQLGetShopInfoUseCase(private var gqlQuery: String,
+                            private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ShopInfo>() {
 
     var params: RequestParams = RequestParams.EMPTY
     var isFromCacheFirst: Boolean = true
@@ -24,25 +24,24 @@ class GQLGetShopInfoUseCase (private val gqlQuery: String,
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ShopInfo.Response::class.java)
-        if (error == null || error.isEmpty()){
+        if (error == null || error.isEmpty()) {
             return (gqlResponse.getData(ShopInfo.Response::class.java) as ShopInfo.Response).result.data.first()
         } else {
             throw MessageErrorException(error.mapNotNull { it.message }.joinToString(separator = ", "))
         }
     }
 
-    companion object{
+    companion object {
         private const val PARAM_SHOP_IDS = "shopIds"
         private const val PARAM_SHOP_FIELDS = "fields"
         private const val PARAM_SHOP_DOMAIN = "shopDomain"
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",
-                "is_owner", "other-goldos", "status","is_open","closed_info","create_info")
+                "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info")
 
         @JvmStatic
-        fun createParams(shopIds: List<Int>, shopDomain: String? = null, fields: List<String> = DEFAULT_SHOP_FIELDS): RequestParams
-                = RequestParams.create().apply {
+        fun createParams(shopIds: List<Int>, shopDomain: String? = null, fields: List<String> = DEFAULT_SHOP_FIELDS): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_IDS, shopIds)
             putObject(PARAM_SHOP_FIELDS, fields)
             putString(PARAM_SHOP_DOMAIN, shopDomain)

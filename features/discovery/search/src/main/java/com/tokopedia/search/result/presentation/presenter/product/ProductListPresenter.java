@@ -543,10 +543,13 @@ final class ProductListPresenter
         ProductViewModel productViewModel = createProductViewModelWithPosition(searchProductModel);
 
         sendTrackingNoSearchResult(productViewModel);
+        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
 
         if (productViewModel.getProductList().isEmpty()) {
+            getViewToHandleErrorMessage(true, productViewModel.getErrorMessage());
             getViewToShowEmptySearch(productViewModel);
         } else {
+            getViewToHandleErrorMessage(false, productViewModel.getErrorMessage());
             getViewToShowProductList(productViewModel);
         }
 
@@ -582,6 +585,15 @@ final class ProductListPresenter
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
         return productViewModel;
+    }
+
+    private void getViewToHandleErrorMessage(boolean isFullScreenMessage, String errorMessage) {
+        if (errorMessage != null && errorMessage.length() > 0) {
+            getView().showErrorMessage(isFullScreenMessage, errorMessage);
+        }
+        else {
+            getView().hideErrorMessage();
+        }
     }
 
     private void getViewToShowEmptySearch(ProductViewModel productViewModel) {
@@ -624,7 +636,6 @@ final class ProductListPresenter
         }
 
         getView().setAdditionalParams(productViewModel.getAdditionalParams());
-        getView().setAutocompleteApplink(productViewModel.getAutocompleteApplink());
         getView().removeLoading();
         getView().setProductList(list);
         getView().initQuickFilter(productViewModel.getQuickFilterModel().getFilter());
