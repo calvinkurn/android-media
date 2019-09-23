@@ -192,7 +192,7 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                 if (it.response.tickers.isNotEmpty()) {
                     onSuccess.invoke(it.response.tickers[0])
                 } else {
-                    onError?.invoke(Throwable("Data not found"))
+                    onError?.invoke(Throwable(DATA_NOT_FOUND)
                 }
             },
             onError = {
@@ -207,5 +207,9 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
         toggleFavouriteShopUseCase.unsubscribe()
         getModerateShopUseCase.unsubscribe()
         requestModerateShopUseCase.unsubscribe()
+    }
+
+    companion object {
+        private const val DATA_NOT_FOUND = "Data not found"
     }
 }
