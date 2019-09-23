@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -25,6 +26,7 @@ import com.tokopedia.digital_deals.domain.getusecase.GetDealsListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetInitialLocationUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextDealPageUseCase;
+import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
@@ -36,6 +38,8 @@ import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.DealsResponse;
@@ -80,6 +84,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private GetAllBrandsUseCase getAllBrandsUseCase;
     private GetNextDealPageUseCase getNextDealPageUseCase;
     private ArrayList<CategoryItem> categoryItems;
+    private PostNsqEventUseCase postNsqEventUseCase;
     private ArrayList<CategoryItem> curatedItems;
     private List<Brand> brands;
     private List<CategoriesModel> categoriesModels;
@@ -97,13 +102,14 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
 
     @Inject
-    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetInitialLocationUseCase getInitialLocationUseCase, DealsAnalytics dealsAnalytics) {
+    public DealsHomePresenter(GetDealsListRequestUseCase getDealsListRequestUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetNextDealPageUseCase getNextDealPageUseCase, GetLocationListRequestUseCase getSearchLocationListRequestUseCase, GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetInitialLocationUseCase getInitialLocationUseCase, PostNsqEventUseCase postNsqEventUseCase, DealsAnalytics dealsAnalytics) {
         this.getDealsListRequestUseCase = getDealsListRequestUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextDealPageUseCase = getNextDealPageUseCase;
         this.getSearchLocationListRequestUseCase = getSearchLocationListRequestUseCase;
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
         this.getInitialLocationUseCase = getInitialLocationUseCase;
+        this.postNsqEventUseCase = postNsqEventUseCase;
         this.dealsAnalytics = dealsAnalytics;
     }
 
@@ -125,6 +131,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
         if (getInitialLocationUseCase != null) {
             getInitialLocationUseCase.unsubscribe();
+        }
+        if (postNsqEventUseCase != null) {
+            postNsqEventUseCase.unsubscribe();
         }
         stopBannerSlide();
     }
@@ -193,6 +202,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.search_input_view || id == R.id.action_menu_search) {
             dealsAnalytics.sendSearchClickedEvent(getView().getSearchInputText());
+            if (userSession.isLoggedIn()) {
+                sendNSQEvent(userSession.getUserId(), "search");
+            }
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
             TopDealsCacheHandler.init().setTopDeals(getCarouselOrTop(categoryItems, TOP).getItems());
             searchIntent.putParcelableArrayListExtra(AllBrandsActivity.EXTRA_LIST, (ArrayList<? extends Parcelable>) categoriesModels);
@@ -587,5 +599,32 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     public void sendScreenNameEvent(String screenName) {
         dealsAnalytics.sendScreenNameEvent(screenName);
+    }
+
+    public void sendNSQEvent(String userId, String action) {
+        NsqServiceModel nsqServiceModel = new NsqServiceModel();
+        nsqServiceModel.setService(Utils.NSQ_SERVICE);
+        NsqMessage nsqMessage = new NsqMessage();
+        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
+        nsqMessage.setAction(action);
+        nsqServiceModel.setMessage(nsqMessage);
+        postNsqEventUseCase.setRequestModel(nsqServiceModel);
+        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper(e);
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Log.d("Naveen", "NSQ Event Sent home page");
+            }
+        });
     }
 }

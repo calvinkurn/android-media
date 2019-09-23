@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.subscriber
 
 import com.tokopedia.checkout.view.feature.shipment.ShipmentContract
-import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.promocheckout.common.domain.model.clearpromo.ClearCacheAutoApplyStackResponse
 import rx.Subscriber
@@ -11,7 +10,7 @@ import rx.Subscriber
  */
 
 class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
-                                            val presenter: ShipmentPresenter,
+                                            val voucherType: String,
                                             val shopIndex: Int,
                                             val ignoreAPIResponse: Boolean) : Subscriber<GraphqlResponse>() {
 
@@ -32,11 +31,11 @@ class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (ignoreAPIResponse) {
             if (responseData.successData.success) {
-                view?.onSuccessClearPromoStack(shopIndex)
+                view?.onSuccessClearPromoStack(shopIndex, voucherType)
             }
         } else {
             if (responseData.successData.success) {
-                view?.onSuccessClearPromoStack(shopIndex)
+                view?.onSuccessClearPromoStack(shopIndex, voucherType)
             } else {
                 view?.onFailedClearPromoStack(ignoreAPIResponse)
             }

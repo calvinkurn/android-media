@@ -183,10 +183,9 @@ public class EventBookTicketPresenter extends BaseDaggerPresenter<EventBaseContr
         validateShow.setScheduleId(selectedPackageViewModel.getProductScheduleId());
         validateShow.setProductId(selectedPackageViewModel.getProductId());
         postValidateShowUseCase.setValidateShowModel(validateShow);
-        eventsAnalytics.eventDigitalEventTracking(EventsGAConst.EVENT_CHECKOUT, selectedPackageViewModel.getTitle().toLowerCase() + " - " +
-                selectedPackageViewModel.getDisplayName().toLowerCase() + " - " +
-                CurrencyUtil.convertToCurrencyString(selectedPackageViewModel.getSalesPrice() * selectedPackageViewModel.getSelectedQuantity()));
+        eventsAnalytics.sendATCEvent(selectedPackageViewModel);
         getProfile();
+        eventsAnalytics.sendSelectPackageEvent(selectedPackageViewModel.getDisplayName(), selectedPackageViewModel.getSelectedQuantity());
     }
 
     @Override
