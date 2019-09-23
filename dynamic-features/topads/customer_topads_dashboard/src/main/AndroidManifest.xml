@@ -8,6 +8,4 @@
         dist:title="@string/title_module_top_ads_dashboard">
         <dist:fusing dist:include="true" />
     </dist:module>
-
-    <application android:hasCode="false" />
 </manifest>
