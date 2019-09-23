@@ -21,7 +21,7 @@ class OnboardingViewHolder(
         val listener: OnboardingAdapter.InterestPickItemListener)
     : AbstractViewHolder<OnboardingViewModel>(v), OnboardingAdapter.InterestPickItemListener by listener {
 
-    var COUNT_MINIMUM_PICK = 0
+    var countMinimumPick = 0
 
     companion object {
         @LayoutRes
@@ -36,7 +36,7 @@ class OnboardingViewHolder(
     }
 
     private fun initView(element: OnboardingViewModel) {
-        COUNT_MINIMUM_PICK = element.minimumPick
+        countMinimumPick = element.minimumPick
         ImageHandler.loadImageCircle2(itemView.context, itemView.iv_onboarding_user, userSession.profilePicture)
         itemView.tv_onboarding_instruction.text = element.instruction
         itemView.tv_onboarding_user.text = String.format(getString(R.string.feed_onboarding_name_format), userSession.name)
@@ -58,7 +58,7 @@ class OnboardingViewHolder(
     }
 
     private fun updateButtonCheckRecommendation() {
-        itemView.btn_onboarding.isEnabled = COUNT_MINIMUM_PICK <= adapter.getSelectedItems().size
+        itemView.btn_onboarding.isEnabled = countMinimumPick <= adapter.getSelectedItems().size
     }
 
 

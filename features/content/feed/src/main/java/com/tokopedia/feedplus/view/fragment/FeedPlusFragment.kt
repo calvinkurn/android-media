@@ -11,6 +11,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.support.annotation.RestrictTo
+import android.support.design.widget.Snackbar
 import android.support.v4.content.LocalBroadcastManager
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -246,10 +247,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 is Fail  -> onErrorSubmitInterestPickData(it.throwable)
             }
         })
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
     }
 
     private fun initVar() {
@@ -1583,10 +1580,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorSubmitInterestPickData(throwable: Throwable) {
-        Toaster.showError(view!!,
-                ErrorHandler.getErrorMessage(activity, throwable),
-                2000
-        )
+        view?.let{
+            Toaster.showError(it,
+                    ErrorHandler.getErrorMessage(activity, throwable),
+                    Snackbar.LENGTH_LONG
+            )
+        }
+
     }
 
 

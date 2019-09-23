@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,7 +90,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     }
 
     override fun onInterestPickItemClicked(item: OnboardingDataViewModel) {
-        saveInterest.isEnabled = data.minimumPick <= adapter.getSelectedItems().size
+        checkButtonSaveInterest()
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
@@ -112,6 +113,10 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         showLoading()
     }
 
+    private fun checkButtonSaveInterest() {
+        saveInterest.isEnabled = data.minimumPick <= adapter.getSelectedItems().size
+    }
+
     private fun showLoading() {
         loadingLayout.visible()
     }
@@ -124,6 +129,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         this.data = data
         adapter.setList(data.dataList)
         titleTextView.text = String.format(data.titleFull, data.minimumPick)
+        checkButtonSaveInterest()
     }
 
     private fun onErrorGetData(throwable: Throwable) {
@@ -141,9 +147,11 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     }
 
     private fun onErrorSubmitInterestPickData(throwable: Throwable) {
-        Toaster.showError(view!!,
-                ErrorHandler.getErrorMessage(activity, throwable),
-                2000
-        )
+        view?.let{
+            Toaster.showError(it,
+                    ErrorHandler.getErrorMessage(activity, throwable),
+                    Snackbar.LENGTH_LONG
+            )
+        }
     }
 }
