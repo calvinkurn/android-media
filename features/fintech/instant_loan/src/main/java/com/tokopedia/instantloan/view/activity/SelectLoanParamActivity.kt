@@ -110,7 +110,7 @@ class SelectLoanParamActivity : BaseActivity() {
             var title: TextView
 
             init {
-                title = v.findViewById<View>(com.tokopedia.design.R.id.title) as TextView
+                title = v.findViewById<View>(com.tokopedia.instantloan.R.id.il_rv_item_title) as TextView
                 title.setOnClickListener(this)
             }
 

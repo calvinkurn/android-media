@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.design.component.TextViewCompat
-        android:id="@+id/title"
+        android:id="@+id/il_rv_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Medium Text"
