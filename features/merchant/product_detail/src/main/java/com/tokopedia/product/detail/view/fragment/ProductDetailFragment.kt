@@ -693,7 +693,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                         shopInfo?.shopCore?.name,
                         isOcsCheckoutType,
                         isLeasing)
-                if(::tradeInParams.isInitialized) {
+                if (::tradeInParams.isInitialized) {
                     intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, tradeInParams)
                 }
                 startActivityForResult(intent,
@@ -840,7 +840,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onApplyLeasingClicked(){
+    private fun onApplyLeasingClicked() {
         productInfo?.run {
             productDetailTracking.eventClickApplyLeasing(
                     parentProductId,
@@ -913,15 +913,9 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun initView() {
-        val appShowSearchPDP = remoteConfig.getBoolean(RemoteConfigKey.REMOTE_CONFIG_APP_SHOW_SEARCH_BAR_PDP, true)
-        if (appShowSearchPDP) {
-            initShowSearchPDP()
-        } else {
-            initCollapsingToolBar()
-        }
+        initShowSearchPDP()
         varToolbar.show()
         varPictureImage.show()
-        collapsing_toolbar.title = ""
         varToolbar.title = ""
         activity?.let {
             varToolbar.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
@@ -953,6 +947,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         search_pdp_toolbar.show()
         varToolbar = search_pdp_toolbar
         varPictureImage = view_picture_search_bar
+        varPictureImage.isNotVisibleOnTheScreen(object : ViewHintListener{
+            override fun onViewHint() {
+                varPictureImage.stopVideo()
+            }
+        })
+
         initToolBarMethod = ::initToolbarLight
         fab_detail.setAnchor(R.id.view_picture_search_bar)
         nested_scroll.viewTreeObserver.addOnScrollChangedListener {
@@ -968,15 +968,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 }
             }
         }
-
-    }
-
-    private fun initCollapsingToolBar() {
-        collapsing_toolbar.show()
-        varToolbar = toolbar
-        varPictureImage = view_picture
-        initToolBarMethod = ::initToolbarTransparent
-        fab_detail.setAnchor(R.id.view_picture)
 
     }
 
@@ -997,8 +988,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     private fun initToolbarLight() {
         activity?.run {
             if (isAdded) {
-                collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
-                collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
                 varToolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.grey_icon_light_toolbar))
                 varToolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.white))
                 (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_dark)
@@ -1022,26 +1011,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isAdded) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
                 window.statusBarColor = ContextCompat.getColor(this, R.color.green_600)
-            }
-        }
-    }
-
-    private fun initToolbarTransparent() {
-        activity?.run {
-            if (isAdded) {
-                collapsing_toolbar.setCollapsedTitleTextColor(ContextCompat.getColor(this, R.color.white))
-                collapsing_toolbar.setExpandedTitleColor(Color.TRANSPARENT)
-                varToolbar.background = ContextCompat.getDrawable(this, R.drawable.gradient_shadow_black_vertical)
-                (this as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back_light)
-                menu?.let {
-                    if (it.size() > 2) {
-                        it.findItem(R.id.action_share).icon = ContextCompat.getDrawable(this, R.drawable.ic_product_share_light)
-                        val menuCart = it.findItem(R.id.action_cart)
-                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_light
-                        setBadgeMenuCart(menuCart)
-                    }
-                }
-                varToolbar.overflowIcon = ContextCompat.getDrawable(this, R.drawable.ic_product_more_light)
             }
         }
     }
@@ -1552,7 +1521,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         shouldShowCod = data.shouldShowCod
         isLeasing = data.basic.isLeasing
         headerView.renderData(data)
-        varPictureImage.renderData(data.pictures, this::onPictureProductClicked)
+        varPictureImage.renderData(data.media, this::onPictureProductClicked, childFragmentManager)
         productStatsView.renderData(data, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data)
@@ -1893,7 +1862,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     }
 
     private fun getImageURIPaths(): ArrayList<String> {
-        return ArrayList(productInfo?.run { pictures?.map { it.urlOriginal } } ?: listOf())
+        return ArrayList(productInfo?.run {
+            media.map {
+                if(it.type == "image") {
+                    it.urlOriginal
+                } else {
+                    it.urlThumbnail
+                }
+            }
+        } ?: listOf())
     }
 
     private fun onVariantClicked() {
