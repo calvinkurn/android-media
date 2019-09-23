@@ -6,10 +6,6 @@ import android.app.ProgressDialog
 import android.content.*
 import android.graphics.Typeface
 import android.os.Bundle
-import com.google.android.material.appbar.AppBarLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AlertDialog
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.method.LinkMovementMethod
@@ -21,9 +17,13 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
+import com.google.android.material.appbar.AppBarLayout
 import com.tkpd.library.utils.CommonUtils
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
@@ -219,7 +219,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
         bulkCheckBox.setOnCheckedChangeListener { _, isChecked ->
             productManageViewModels.forEachIndexed { index, _ ->
-                adapter.updateListByCheck(isChecked, index)
+                if (!isChecked || !adapter.isChecked(index)) {
+                    adapter.updateListByCheck(isChecked, index)
+                }
             }
         }
 
@@ -956,41 +958,43 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
-        when (requestCode) {
-            INSTAGRAM_SELECT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val imageUrls = intent.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                val imageDescList = intent.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
-                if (imageUrls != null && imageUrls.size > 0) {
-                    ProductDraftListActivity.startInstagramSaveBulkFromLocal(context, imageUrls, imageDescList)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        intent?.let {
+            when (requestCode) {
+                INSTAGRAM_SELECT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                    val imageUrls = it.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                    val imageDescList = it.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
+                    if (imageUrls != null && imageUrls.size > 0) {
+                        ProductDraftListActivity.startInstagramSaveBulkFromLocal(context, imageUrls, imageDescList)
+                    }
                 }
+                REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
+                    productManageFilterModel = it.getParcelableExtra(EXTRA_FILTER_SELECTED)
+                    loadInitialData()
+                    ProductManageTracking.trackingFilter(productManageFilterModel, context)
+                }
+                ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                    val etalaseId = it.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
+                    val etalaseNameString = it.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME)
+                    etalaseType.etalaseId = etalaseId
+                    etalaseType.etalaseValue = etalaseNameString
+                    editProductBottomSheet.setResultValue(etalaseType, null)
+                }
+                STOCK_EDIT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                    val isActive = it.getBooleanExtra(EXTRA_STOCK, false)
+                    val productStock: Int
+                    productStock = if (isActive) 1 else 0
+                    stockType.stockStatus = productStock
+                    editProductBottomSheet.setResultValue(null, stockType)
+                }
+                REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
+                    val productManageSortModel: ProductManageSortModel = it.getParcelableExtra(EXTRA_SORT_SELECTED)
+                    sortProductOption = productManageSortModel.id
+                    loadInitialData()
+                    ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
+                }
+                else -> super.onActivityResult(requestCode, resultCode, it)
             }
-            REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
-                productManageFilterModel = intent.getParcelableExtra(EXTRA_FILTER_SELECTED)
-                loadInitialData()
-                ProductManageTracking.trackingFilter(productManageFilterModel, context)
-            }
-            ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val etalaseId = intent.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
-                val etalaseNameString = intent.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME)
-                etalaseType.etalaseId = etalaseId
-                etalaseType.etalaseValue = etalaseNameString
-                editProductBottomSheet.setResultValue(etalaseType, null)
-            }
-            STOCK_EDIT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val isActive = intent.getBooleanExtra(EXTRA_STOCK, false)
-                val productStock: Int
-                productStock = if (isActive) 1 else 0
-                stockType.stockStatus = productStock
-                editProductBottomSheet.setResultValue(null, stockType)
-            }
-            REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
-                val productManageSortModel: ProductManageSortModel = intent.getParcelableExtra(EXTRA_SORT_SELECTED)
-                sortProductOption = productManageSortModel.id
-                loadInitialData()
-                ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
-            }
-            else -> super.onActivityResult(requestCode, resultCode, intent)
         }
     }
 
