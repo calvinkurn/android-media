@@ -20,6 +20,8 @@ public interface ShipmentAdapterActionListener {
 
     void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse);
 
+    void onCancelVoucherLogisticClicked(String pslCode, int position);
+
     void onDataEnableToCheckout();
 
     void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel);

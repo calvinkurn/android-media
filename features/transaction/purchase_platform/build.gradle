@@ -21,7 +21,7 @@ dependencies {
     //------------------------- Library Section -------------------------//
     //-------------------------------------------------------------------//
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(rootProject.ext.libraries.akamai_bot_lib)
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'
         exclude group: 'com.squareup.okio'

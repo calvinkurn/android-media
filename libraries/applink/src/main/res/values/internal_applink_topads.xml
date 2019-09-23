@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="applink_topads_dashboard_title">TopAds</string>
+    <string name="host_topads" translatable="false">topads</string>
+    <string name="path_topads_dashboard" translatable="false">/dashboard</string>
+    <string name="path_topads_buy_credit" translatable="false">/buy</string>
+    <string name="path_topads_detail_shop" translatable="false">/detail-shop</string>
+    <string name="path_topads_keyword_list" translatable="false">/keyword-list</string>
+    <string name="path_topads_keyword_new_choose_group" translatable="false">/keyword-new-choose-group</string>
+    <string name="path_topads_product_ads_list" translatable="false">/product-ads-list</string>
+    <string name="path_topads_group_ads_list" translatable="false">/group-ads-list</string>
+    <string name="path_topads_group_new_promo" translatable="false">/group-new-promo</string>
+    <string name="path_topads_add_promo_option" translatable="false">/add-promo-option</string>
+    <string name="path_topads_autoads" translatable="false">/autoads</string>
+</resources>

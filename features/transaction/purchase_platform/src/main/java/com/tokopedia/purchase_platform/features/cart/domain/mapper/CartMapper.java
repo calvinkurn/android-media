@@ -109,6 +109,7 @@ public class CartMapper implements ICartMapper {
             ShopGroupData shopGroupData = new ShopGroupData();
 
             shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
+            isDisableAllProducts = true;
 
             if (!shopGroupData.isError()) {
                 int errorItemCountPerShop = 0;

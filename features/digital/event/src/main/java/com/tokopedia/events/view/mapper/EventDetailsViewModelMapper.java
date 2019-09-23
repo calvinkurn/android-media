@@ -37,6 +37,7 @@ public class EventDetailsViewModelMapper {
         target.setTnc(source.getTnc());
         target.setDisplayTags(source.getDisplayTags());
         target.setUrl(source.getUrl());
+        target.setSeoUrl(source.getSeoUrl());
         target.setThumbnailApp(source.getThumbnailApp());
         target.setThumbsDown(source.getThumbsDown());
         target.setThumbsUp(source.getThumbsUp());

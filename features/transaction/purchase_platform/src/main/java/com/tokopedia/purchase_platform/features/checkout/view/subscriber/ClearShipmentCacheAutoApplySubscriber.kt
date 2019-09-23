@@ -11,7 +11,7 @@ import rx.Subscriber
  */
 
 class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
-                                            val presenter: ShipmentPresenter,
+                                            val voucherType: String,
                                             val shopIndex: Int,
                                             val ignoreAPIResponse: Boolean) : Subscriber<GraphqlResponse>() {
 
@@ -32,11 +32,11 @@ class ClearShipmentCacheAutoApplySubscriber(val view: ShipmentContract.View?,
         val responseData = response.getData<ClearCacheAutoApplyStackResponse>(ClearCacheAutoApplyStackResponse::class.java)
         if (ignoreAPIResponse) {
             if (responseData.successData.success) {
-                view?.onSuccessClearPromoStack(shopIndex)
+                view?.onSuccessClearPromoStack(shopIndex, voucherType)
             }
         } else {
             if (responseData.successData.success) {
-                view?.onSuccessClearPromoStack(shopIndex)
+                view?.onSuccessClearPromoStack(shopIndex, voucherType)
             } else {
                 view?.onFailedClearPromoStack(ignoreAPIResponse)
             }

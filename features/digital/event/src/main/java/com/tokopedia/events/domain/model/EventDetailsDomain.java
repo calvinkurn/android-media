@@ -15,6 +15,7 @@ public class EventDetailsDomain {
     private String title;
     private String duration;
     private String url;
+    private String seoUrl;
     private String imageApp;
     private String thumbnailApp;
     private String tnc;
@@ -130,6 +131,14 @@ public class EventDetailsDomain {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getSeoUrl() {
+        return seoUrl;
+    }
+
+    public void setSeoUrl(String seoUrl) {
+        this.seoUrl = seoUrl;
     }
 
     public String getImageApp() {

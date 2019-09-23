@@ -42,11 +42,15 @@ public class BannerViewModel extends ImpressHolder implements HomeVisitable<Home
         return typeFactory.type(this);
     }
 
+    //avoid setter and gettter for tracking from parent class, implement your tracker in viewholders
+    @Deprecated
     @Override
     public void setTrackingData(Map<String, Object> trackingData) {
         this.trackingData = trackingData;
     }
 
+    //avoid setter and gettter for tracking from parent class, implement your tracker in viewholders
+    @Deprecated
     @Override
     public Map<String, Object> getTrackingData() {
         return trackingData;

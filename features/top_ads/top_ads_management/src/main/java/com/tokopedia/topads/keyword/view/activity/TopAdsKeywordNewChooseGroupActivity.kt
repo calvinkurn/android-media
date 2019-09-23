@@ -60,8 +60,16 @@ class TopAdsKeywordNewChooseGroupActivity : BaseStepperActivity(), HasComponent<
 
     private fun createNewStepperModel(): StepperModel {
         return TopAdsKeywordNewStepperModel().apply {
-            this.groupId = intent?.extras?.getString(EXTRA_CHOOSEN_GROUP)
-            this.isPositive = intent?.extras?.getBoolean(EXTRA_IS_POSITIVE, true) ?: false
+
+            if (intent != null) {
+                if(intent.data != null){
+                    this.groupId = intent?.data?.getQueryParameter(EXTRA_CHOOSEN_GROUP)
+                    this.isPositive = intent?.data?.getBooleanQueryParameter(EXTRA_IS_POSITIVE, true) ?: false
+                } else if (intent.extras != null){
+                    this.groupId = intent?.extras?.getString(EXTRA_CHOOSEN_GROUP)
+                    this.isPositive = intent?.extras?.getBoolean(EXTRA_IS_POSITIVE, true) ?: false
+                }
+            }
         }
     }
 

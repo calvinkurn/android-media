@@ -1,8 +1,10 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics;
 
@@ -331,6 +333,31 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 ConstantTransactionAnalytics.Key.CURRENT_SITE, null
         );
         sendEnhancedEcommerce(dataLayer);
+    }
+
+    // GTM v5 EE Step 2 - 4
+    public void sendEnhancedECommerceCheckoutV5(Bundle eCommerceBundle,
+                                                int step,
+                                                String checkoutOption,
+                                                String transactionId,
+                                                boolean isTradeIn,
+                                                String eventAction,
+                                                String eventLabel) {
+        String eventCategory = EventCategory.COURIER_SELECTION;
+        if (isTradeIn) {
+            eventCategory = EventCategory.COURIER_SELECTION_TRADE_IN;
+        }
+
+        eCommerceBundle.putLong(FirebaseAnalytics.Param.CHECKOUT_STEP, step);
+        eCommerceBundle.putString(FirebaseAnalytics.Param.CHECKOUT_OPTION, checkoutOption);
+        eCommerceBundle.putString("eventCategory", eventCategory);
+        eCommerceBundle.putString("eventAction", eventAction);
+        eCommerceBundle.putString("eventLabel", eventLabel);
+
+        if (!TextUtils.isEmpty(transactionId)) {
+            eCommerceBundle.putString("payment_id", transactionId);
+        }
+        sendEnhancedEcommerceV5(FirebaseAnalytics.Event.CHECKOUT_PROGRESS, eCommerceBundle);
     }
 
     public void eventClickCourierSelectionClickPilihAlamatLain() {
@@ -713,6 +740,14 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    public void eventCancelPromoStackingLogistic() {
+        sendEventCategoryAction(
+            "",
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_X_ON_PROMO_STACKING_LOGISTIC
+        );
+    }
+
     public void eventViewDetailMerchantVoucher(String promoCode) {
         sendEventCategoryActionLabel(
                 EventName.VIEW_COURIER,
@@ -856,6 +891,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 promoCode
         );
     }
+
     public void eventViewCourierImpressionErrorCourierNoAvailable() {
         sendEventCategoryAction(
                 EventName.VIEW_COURIER,
