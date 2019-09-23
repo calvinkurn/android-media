@@ -25,7 +25,6 @@ import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
-import com.tokopedia.topchat.chatlist.data.mapper.GetMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
@@ -189,9 +188,8 @@ class ChatModule {
     @Provides
     fun provideMessageFactory(
             chatApi: ChatApi,
-            getMessageMapper: GetMessageMapper,
             deleteMessageMapper: DeleteMessageMapper): MessageFactory {
-        return MessageFactory(chatApi, getMessageMapper, deleteMessageMapper)
+        return MessageFactory(chatApi, deleteMessageMapper)
     }
 
     @ChatScope

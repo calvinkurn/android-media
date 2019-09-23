@@ -168,6 +168,7 @@ import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gallery.ImageReviewGalleryActivity;
 import com.tokopedia.gamification.GamificationRouter;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.groupchat.channel.view.activity.ChannelActivity;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -348,7 +349,6 @@ import com.tokopedia.topads.dashboard.TopAdsDashboardInternalRouter;
 import com.tokopedia.topads.dashboard.TopAdsDashboardRouter;
 import com.tokopedia.topads.sdk.base.TopAdsRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
-import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -1347,7 +1347,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxMessageIntent(Context context) {
-        return InboxChatActivity.getCallingIntent(context);
+        return RouteManager.getIntent(context, ApplinkConst.TOPCHAT_IDLESS);
     }
 
     @Override
@@ -1910,7 +1910,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public Intent getInboxChannelsIntent(Context context) {
-        return InboxChatActivity.getChannelCallingIntent(context);
+        return new Intent(context, ChannelActivity.class);
     }
 
     @Override
@@ -2403,10 +2403,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void startSaldoDepositIntent(Context context) {
         SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
-    }
-
-    public Intent getInboxChatIntent(Context context) {
-        return InboxChatActivity.getCallingIntent(context);
     }
 
     public Intent getInboxReviewIntent(Context context) {
