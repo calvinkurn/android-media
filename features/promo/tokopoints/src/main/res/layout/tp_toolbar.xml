@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:orientation="horizontal"
-        android:padding="@dimen/dp_8"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_8"
         tools:background="@color/black">
 
 
@@ -31,20 +32,20 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="TokoPoint" />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_tpToolbar_leaderboard"
             android:layout_width="@dimen/tp_toolbar_icon_wh"
             android:layout_height="@dimen/tp_toolbar_icon_wh"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_12"
-            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginEnd="@dimen/dp_0"
+            android:layout_marginRight="@dimen/dp_0"
             android:layout_marginBottom="@dimen/dp_8"
             android:padding="@dimen/dp_5"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_tpToolbar_coupon"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/iv_tpToolbar_coupon"
             android:layout_width="@dimen/tp_toolbar_icon_wh"
             android:layout_height="@dimen/tp_toolbar_icon_wh"
@@ -62,10 +63,10 @@
             android:id="@+id/tv_tpToolbar_couponCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_2"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
             android:layout_marginBottom="@dimen/dp_18"
-            android:layout_marginTop="@dimen/dp_2"
             android:background="@drawable/bg_tp_cr_red"
             android:textColor="@color/white"
             android:textSize="@dimen/tp_text_size_xxsmall"
