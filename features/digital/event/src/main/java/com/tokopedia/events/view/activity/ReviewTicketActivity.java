@@ -66,10 +66,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     View updateNumber;
     ScrollView scrollView;
     View formLayout;
-    EditText edForm1;
-    EditText edForm2;
-    EditText edForm3;
-    EditText edForm4;
     FrameLayout mainContent;
     TextView tvPromoSuccessMsg;
     TextView tvPromoCashbackMsg;
@@ -158,10 +154,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         updateNumber = findViewById(R.id.update_number);
         scrollView = findViewById(R.id.scroll_view);
         formLayout = findViewById(R.id.form_layout);
-        edForm1 = findViewById(R.id.ed_form_1);
-        edForm2 = findViewById(R.id.ed_form_2);
-        edForm3 = findViewById(R.id.ed_form_3);
-        edForm4 = findViewById(R.id.ed_form_4);
         mainContent = findViewById(R.id.main_content);
         formsLayout = findViewById(R.id.forms_layout);
         tvPromoSuccessMsg = findViewById(R.id.tv_promo_success_msg);
@@ -197,11 +189,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         batal.setOnClickListener(this);
         gotoPromo.setOnClickListener(this);
         dismissTooltip.setOnClickListener(this);
-
-        edForm1.setOnFocusChangeListener(this);
-        edForm2.setOnFocusChangeListener(this);
-        edForm3.setOnFocusChangeListener(this);
-        edForm4.setOnFocusChangeListener(this);
 
         eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
