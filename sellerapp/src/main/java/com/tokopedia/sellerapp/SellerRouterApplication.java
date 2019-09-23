@@ -28,7 +28,6 @@ import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.changepassword.ChangePasswordRouter;
-import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.chatbot.ChatbotRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -751,11 +750,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public Intent getKolFollowingPageIntent(Context context, int userId) {
         return null;
-    }
-
-    @Override
-    public Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber) {
-        return ChangePhoneNumberWarningActivity.newInstance(context, email, phoneNumber);
     }
 
     @Override
