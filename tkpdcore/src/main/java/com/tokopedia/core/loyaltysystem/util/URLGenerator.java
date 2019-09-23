@@ -15,13 +15,15 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.SessionHandler;
 
+import java.net.URLDecoder;
+
 /**
  * Created by ricoharisin on 9/29/15.
  */
 public class URLGenerator {
 
     private static final String SEAMLESS_LOGIN = "seamless?";
-    private static final String PARAM_APPCLIENT_ID = "appClientId?";
+    private static final String PARAM_APPCLIENT_ID = "appClientId";
     private static final String HOST_TOKOPEDIA = "tokopedia.com";
 
     public static String generateURLLucky(String url, Context context) {
@@ -92,16 +94,23 @@ public class URLGenerator {
             return "";
         }
 
-        //parse url
-        Uri uri = Uri.parse(url);
 
-        //logic to append GA clientID in web URL to track app to web sessions
-        if(uri != null && isPassingGAClientIdEnable(context)) {
-            String clientID = TrackApp.getInstance().getGTM().getClientIDString();
+        try {
+            String decodedUrl = URLDecoder.decode(url, "UTF-8");
 
-            if(clientID != null && url != null && url.contains(HOST_TOKOPEDIA)) {
-                url = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString();
+            //parse url
+            Uri uri = Uri.parse(decodedUrl);
+
+            //logic to append GA clientID in web URL to track app to web sessions
+            if (uri != null && isPassingGAClientIdEnable(context)) {
+                String clientID = TrackApp.getInstance().getGTM().getClientIDString();
+
+                if (clientID != null && url != null && url.contains(HOST_TOKOPEDIA)) {
+                    url = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString();
+                }
             }
+        }catch (Exception ex){
+            //do nothing
         }
 
         return url;
