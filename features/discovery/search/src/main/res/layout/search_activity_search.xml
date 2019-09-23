@@ -56,19 +56,29 @@
                     app:typographyWeight="reguler" />
 
                 <ImageView
-                    android:id="@+id/search_cart_button"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:id="@+id/search_home_button"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
                     android:scaleType="centerInside"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    app:srcCompat="@drawable/search_ic_cart"/>
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    app:srcCompat="@drawable/ic_product_discovery_home_grayscale_24" />
+
+                <ImageView
+                    android:id="@+id/search_cart_button"
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:scaleType="centerInside"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_8"
+                    app:srcCompat="@drawable/search_ic_cart" />
 
                 <ImageView
                     android:id="@+id/search_change_grid_button"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"/>
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"/>
 
             </LinearLayout>
 
