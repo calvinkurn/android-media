@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:src="@drawable/circle_red"
+        android:visibility="visible"
+        tools:src="@drawable/ic_chat_icon_account"/>
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_14"
+        android:textColor="@color/Neutral_N300"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:gravity="center_horizontal"
+        tools:text="Update (99+)"
+        android:textStyle="bold"
+        android:maxLines="1"
+        />
+
+    <ImageView
+        android:id="@+id/circle"
+        android:layout_width="@dimen/dp_8"
+        android:layout_height="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        android:src="@drawable/circle_red"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+</LinearLayout>

@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import android.widget.Button
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 
 /**
  * Author errysuprayogi on 07,May,2019
@@ -30,7 +31,7 @@ class AutoAdsActivatedFragment : BaseDaggerFragment() {
         val view = inflater.inflate(R.layout.layout_autoads_activated, container, false)
         performanceBtn = view.findViewById(R.id.see_performance_btn)
         performanceBtn!!.setOnClickListener {
-            (activity!!.application as TopAdsAutoRouter).openTopAdsDashboardApplink(activity!!)
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
             activity!!.finishAffinity()
         }
         return view
