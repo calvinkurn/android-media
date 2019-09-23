@@ -7,32 +7,6 @@ import java.util.Map;
  */
 public interface ICartListAnalyticsListener {
 
-    // 5 condition EE Checkout Step 1 as eventLabel
-    // at 15 feb add more condition for eligible COD, request by logistic tribe for fetures cod, Lourent
-    //======================================================================
-    void sendAnalyticsOnSuccessToCheckoutDefault(Map<String, Object> eeData);
-
-    void sendAnalyticsOnSuccessToCheckoutCheckAll(Map<String, Object> eeData);
-
-    void sendAnalyticsOnSuccessToCheckoutPartialShop(Map<String, Object> eeData);
-
-    void sendAnalyticsOnSuccessToCheckoutPartialProduct(Map<String, Object> eeData);
-
-    void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(Map<String, Object> eeData);
-
-    //==========
-
-    void sendAnalyticsOnSuccessToCheckoutDefaultEligibleCod(Map<String, Object> eeData);
-
-    void sendAnalyticsOnSuccessToCheckoutCheckAllEligibleCod(Map<String, Object> eeData);
-
-    void sendAnalyticsOnSuccessToCheckoutPartialShopEligibleCod(Map<String, Object> eeData);
-
-    void sendAnalyticsOnSuccessToCheckoutPartialProductEligibleCod(Map<String, Object> eeData);
-
-    void sendAnalyticsOnSuccessToCheckoutPartialShopAndProductEligibleCod(Map<String, Object> eeData);
-    //=======================================================================
-
     void sendAnalyticsOnButtonCheckoutClicked();
 
     void sendAnalyticsOnClickBackArrow();

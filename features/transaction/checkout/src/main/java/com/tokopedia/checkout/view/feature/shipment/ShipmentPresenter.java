@@ -293,16 +293,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public CheckoutData getCheckoutData() {
-        return checkoutData;
-    }
-
-    @Override
-    public void setCheckoutData(CheckoutData checkoutData) {
-        this.checkoutData = checkoutData;
-    }
-
-    @Override
     public void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList) {
         this.dataCheckoutRequestList = dataCheckoutRequestList;
     }
@@ -527,7 +517,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         TKPDMapParam<String, String> paramGetShipmentForm = new TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
         if (cornerId != null) paramGetShipmentForm.put("corner_id", cornerId);
-        if (leasingId != null && !leasingId.isEmpty()) paramGetShipmentForm.put("vehicle_leasing_id", leasingId);
+        if (leasingId != null && !leasingId.isEmpty())
+            paramGetShipmentForm.put("vehicle_leasing_id", leasingId);
 
         RequestParams requestParams = RequestParams.create();
         Map<String, String> params = getGeneratedAuthParamNetwork(paramGetShipmentForm);
@@ -943,10 +934,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
             @Override
             public void onNext(CheckoutData checkoutData) {
-
+                ShipmentPresenter.this.checkoutData = checkoutData;
                 getView().hideLoading();
                 if (!checkoutData.isError()) {
-                    getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
+                    getView().triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(checkoutData.getTransactionId());
                     if (isPurchaseProtectionPage) {
                         mTrackerPurchaseProtection.eventClickOnBuy(
                                 checkoutRequest.isHavingPurchaseProtectionEnabled() ?
@@ -974,9 +965,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             EnhancedECommerceActionField enhancedECommerceActionField = new EnhancedECommerceActionField();
             enhancedECommerceActionField.setStep(step);
             String option = "";
-            if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_1)) {
-                option = EnhancedECommerceActionField.STEP_1_OPTION_CART_PAGE_LOADED;
-            } else if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_2)) {
+            if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_2)) {
                 option = EnhancedECommerceActionField.STEP_2_OPTION_CHECKOUT_PAGE_LOADED;
             } else if (step.equalsIgnoreCase(EnhancedECommerceActionField.STEP_3)) {
                 option = EnhancedECommerceActionField.STEP_3_OPTION_DATA_VALIDATION;
@@ -1191,7 +1180,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 });
     }
 
-    private CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, CheckPromoParam checkPromoParam, int isDonation, String leasingId) {
+    @Override
+    public CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
+                                                   CheckPromoParam checkPromoParam,
+                                                   int isDonation,
+                                                   String leasingId) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(R.string.default_request_error_unknown_short));
             return null;

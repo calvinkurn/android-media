@@ -127,6 +127,7 @@ import com.tokopedia.transactiondata.entity.shared.checkout.CheckoutData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -206,6 +207,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutAnalyticsPurchaseProtection mTrackerPurchaseProtection;
     @Inject
     CornerAnalytics mTrackerCorner;
+    @Inject
+    ShipmentTrackingDataGenerator shipmentTrackingDataGenerator;
 
     SaveInstanceCacheManager saveInstanceCacheManager;
     CartPromoSuggestion savedCartPromoSuggestion;
@@ -525,6 +528,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
+
+        sendEESGTMv5(dataCheckoutRequests, 2, "checkout page loaded", "",
+                ConstantTransactionAnalytics.EventAction.VIEW_CHECKOUT_PAGE, ConstantTransactionAnalytics.EventLabel.SUCCESS);
+    }
+
+    private void sendEESGTMv5(List<DataCheckoutRequest> dataCheckoutRequests, int step, String option,
+                              String transactionId, String eventAction, String eventLabel) {
+        CheckPromoParam checkPromoParam = new CheckPromoParam();
+        checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
+
+        int isDonation = shipmentPresenter.getShipmentDonationModel() != null && shipmentPresenter.getShipmentDonationModel().isChecked() ? 1 : 0;
+        CheckoutRequest checkoutRequest = shipmentPresenter.generateCheckoutRequest(
+                dataCheckoutRequests, checkPromoParam, isDonation, getCheckoutLeasingId()
+        );
+
+        Bundle eCommerceBundle = shipmentTrackingDataGenerator.generateBundleEnhancedEcommerce(checkoutRequest, shipmentPresenter.getShipmentCartItemModelList());
+        checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckoutV5(eCommerceBundle, step, option,
+                transactionId, isTradeIn(), eventAction, eventLabel);
     }
 
     @Override
@@ -729,7 +750,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCheckoutCartSuccess(CheckoutData checkoutData) {
-        shipmentPresenter.setCheckoutData(checkoutData);
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setRedirectUrl(checkoutData.getRedirectUrl());
         paymentPassData.setTransactionId(checkoutData.getTransactionId());
@@ -1588,6 +1608,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsScreenName(String screenName) {
         checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), screenName);
+        if (screenName.equalsIgnoreCase(ConstantTransactionAnalytics.ScreenName.ONE_CLICK_SHIPMENT) ||
+                screenName.equalsIgnoreCase(ConstantTransactionAnalytics.ScreenName.CHECKOUT)) {
+            Map<String, String> params = new HashMap<>();
+            params.put("deeplinkUrl", ApplinkConst.CHECKOUT);
+            checkoutAnalyticsCourierSelection.sendScreenNameV5(screenName, params);
+        }
     }
 
     @Override
@@ -1687,6 +1713,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED,
                 "",
                 getCheckoutLeasingId());
+
+        sendEESGTMv5(dataCheckoutRequests, 3, "data validation", "",
+                ConstantTransactionAnalytics.EventAction.CLICK_ALL_COURIER_SELECTED, ConstantTransactionAnalytics.EventLabel.SUCCESS);
     }
 
     @Override
@@ -2456,6 +2485,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @NonNull
+    @Override
     public Promo generateCheckPromoFirstStepParam() {
         Promo promo = new Promo();
         ArrayList<Order> orders = new ArrayList<>();
@@ -2560,7 +2590,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess() {
+    public void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId) {
         List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentAdapter.getPromoGlobalStackData(), shipmentAdapter.getShipmentCartItemModelList());
         shipmentPresenter.triggerSendEnhancedEcommerceCheckoutAnalytics(
                 dataCheckoutRequests,
@@ -2568,6 +2598,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
                 ConstantTransactionAnalytics.EventLabel.SUCCESS,
                 getCheckoutLeasingId());
+
+        sendEESGTMv5(dataCheckoutRequests, 4, "click payment option button", transactionId,
+                ConstantTransactionAnalytics.EventAction.CLICK_PILIH_METODE_PEMBAYARAN, ConstantTransactionAnalytics.EventLabel.SUCCESS);
     }
 
     @Override
