@@ -9,8 +9,10 @@ enum class AuthorType(val typeString: String) {
     USER("user");
 
     companion object {
+        val values = values()
+
         fun findTypeByString(typeString: String): AuthorType? {
-            return values().firstOrNull { it.typeString == typeString }
+            return values.firstOrNull { it.typeString == typeString }
         }
     }
 }
