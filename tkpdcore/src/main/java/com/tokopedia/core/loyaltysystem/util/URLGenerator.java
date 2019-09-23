@@ -22,7 +22,7 @@ public class URLGenerator {
 
     private static final String SEAMLESS_LOGIN = "seamless?";
     private static final String PARAM_APPCLIENT_ID = "appClientId?";
-    private static final String HOST_TOKOPEDIA = "tokopedia";
+    private static final String HOST_TOKOPEDIA = "tokopedia.com";
 
     public static String generateURLLucky(String url, Context context) {
         Uri uri = Uri.parse(url);
@@ -38,7 +38,7 @@ public class URLGenerator {
     }
 
     public static String generateURLSessionLogin(String url, Context context) {
-        String updateUrl = appendGAClientIdasQueryParam(url, context);
+        String updateUrl = appendGAClientIdAsQueryParam(url, context);
 
         String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
                 + "token=" + GCMHandler.getRegistrationId(context)
@@ -49,7 +49,7 @@ public class URLGenerator {
     }
 
     public static String generateURLSessionLoginV4(String url, Context context) {
-        String updateUrl =appendGAClientIdasQueryParam(url, context);
+        String updateUrl = appendGAClientIdAsQueryParam(url, context);
 
         String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
                 + "token=" + GCMHandler.getRegistrationId(context)
@@ -87,7 +87,7 @@ public class URLGenerator {
      * @param context
      * @return
      */
-    private static String appendGAClientIdasQueryParam(String url, Context context){
+    private static String appendGAClientIdAsQueryParam(String url, Context context){
         if(url == null){
             return "";
         }
@@ -97,10 +97,9 @@ public class URLGenerator {
 
         //logic to append GA clientID in web URL to track app to web sessions
         if(uri != null && isPassingGAClientIdEnable(context)) {
-            String host = uri.getHost();
-
             String clientID = TrackApp.getInstance().getGTM().getClientIDString();
-            if(clientID != null && host != null && host.contains(HOST_TOKOPEDIA)) {
+
+            if(clientID != null && url != null && url.contains(HOST_TOKOPEDIA)) {
                 url = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString();
             }
         }
