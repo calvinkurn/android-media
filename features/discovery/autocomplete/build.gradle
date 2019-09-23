@@ -38,6 +38,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
