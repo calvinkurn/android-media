@@ -37,14 +37,14 @@ import java.util.concurrent.TimeUnit
 @ExperimentalCoroutinesApi
 class PMCancellationQuestionnaireViewModelTest {
 
-    val getPMCancellationQuestionnaireDataUseCase by lazy {
+    private val getPMCancellationQuestionnaireDataUseCase by lazy {
         GetPMCancellationQuestionnaireDataUseCase(
                 getShopStatusUseCase,
                 getGoldCancellationsQuestionaireUseCase
         )
     }
 
-    val deactivatePowerMerchantUseCase by lazy {
+    private val deactivatePowerMerchantUseCase by lazy {
         DeactivatePowerMerchantUseCase(
                 graphqlUseCase,
                 anyString()

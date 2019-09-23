@@ -1,5 +1,6 @@
 package com.tokopedia.power_merchant.subscribe.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnaireAnswerModel
@@ -28,12 +29,20 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    val pmCancellationQuestionnaireData by lazy {
+    private val _pmCancellationQuestionnaireData by lazy {
         MutableLiveData<Result<PMCancellationQuestionnaireData>>()
     }
 
-    val isSuccessUnsubscribe by lazy {
+    private val _isSuccessUnsubscribe by lazy {
         MutableLiveData<Result<Boolean>>()
+    }
+
+    val pmCancellationQuestionnaireData: LiveData<Result<PMCancellationQuestionnaireData>> by lazy {
+        _pmCancellationQuestionnaireData
+    }
+
+    val isSuccessUnsubscribe: LiveData<Result<Boolean>> by lazy {
+        _isSuccessUnsubscribe
     }
 
     fun getPMCancellationQuestionnaireData(shopId: String) {
@@ -47,14 +56,14 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
                                 expiredDate,
                                 questionData
                         )
-                        pmCancellationQuestionnaireData.value = Success(cancellationQuestionnaireData)
+                        _pmCancellationQuestionnaireData.value = Success(cancellationQuestionnaireData)
                     }
 
                     override fun onCompleted() {
                     }
 
                     override fun onError(e: Throwable) {
-                        pmCancellationQuestionnaireData.value = Fail(e)
+                        _pmCancellationQuestionnaireData.value = Fail(e)
                     }
 
                 }
@@ -108,14 +117,14 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
                 DeactivatePowerMerchantUseCase.createRequestParam(questionData),
                 object : Subscriber<Boolean>() {
                     override fun onNext(successUnsubscribe: Boolean) {
-                        isSuccessUnsubscribe.value = Success(successUnsubscribe)
+                        _isSuccessUnsubscribe.value = Success(successUnsubscribe)
                     }
 
                     override fun onCompleted() {
                     }
 
                     override fun onError(e: Throwable) {
-                        isSuccessUnsubscribe.value = Fail(e)
+                        _isSuccessUnsubscribe.value = Fail(e)
                     }
                 }
         )
