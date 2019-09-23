@@ -113,7 +113,8 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
             onBackPressed();
             return true;
         } else if (item.getItemId() == R.id.action_search) {
-            return false;
+            RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
