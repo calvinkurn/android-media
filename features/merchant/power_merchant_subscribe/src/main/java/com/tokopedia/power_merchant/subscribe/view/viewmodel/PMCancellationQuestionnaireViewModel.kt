@@ -33,12 +33,12 @@ class PMCancellationQuestionnaireViewModel @Inject constructor(
         MutableLiveData<Result<PMCancellationQuestionnaireData>>()
     }
 
-    private val _isSuccessUnsubscribe by lazy {
-        MutableLiveData<Result<Boolean>>()
-    }
-
     val pmCancellationQuestionnaireData: LiveData<Result<PMCancellationQuestionnaireData>> by lazy {
         _pmCancellationQuestionnaireData
+    }
+
+    private val _isSuccessUnsubscribe by lazy {
+        MutableLiveData<Result<Boolean>>()
     }
 
     val isSuccessUnsubscribe: LiveData<Result<Boolean>> by lazy {
