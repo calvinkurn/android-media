@@ -39,15 +39,11 @@ class NotificationUpdatePresenter @Inject constructor(
     : BaseDaggerPresenter<NotificationUpdateContract.View>(),
         NotificationUpdateContract.Presenter {
 
-    val variables: HashMap<String, Any> = HashMap()
-    override fun filterBy(selectedItemList: HashMap<Int, Int>, filterViewModel: ArrayList<NotificationUpdateFilterItemViewModel>) {
-        variables.clear()
-        for ((key, value) in selectedItemList) {
-            val filterType = filterViewModel[key].filterType
-            val filterItemId = filterViewModel[key].list[value].id.toIntOrZero()
-            val filterName = filterViewModel[key].list[value].text
-            variables[filterType] = filterItemId
-        }
+    var variables: HashMap<String, Any> = HashMap()
+
+    override fun updateFilter(filter: HashMap<String, Int>) {
+        resetFilter()
+        variables.putAll(filter)
     }
 
     override fun resetFilter() {
@@ -84,9 +80,9 @@ class NotificationUpdatePresenter @Inject constructor(
         getNotificationTotalUnreadUseCase.execute(GetNotificationTotalUnreadSubscriber(onSuccessGetTotalUnreadCounter))
     }
 
-    override fun addProductToCart(product: ProductData) {
+    override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {
         val requestParams = getCartRequestParams(product)
-        val atcSubscriber = getAtcSubscriber()
+        val atcSubscriber = getAtcSubscriber(onSuccessAddToCart)
         addToCartUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -94,7 +90,7 @@ class NotificationUpdatePresenter @Inject constructor(
                 .subscribe(atcSubscriber)
     }
 
-    private fun getAtcSubscriber(): Subscriber<AddToCartDataModel> {
+    private fun getAtcSubscriber(onSuccessAddToCart: () -> Unit): Subscriber<AddToCartDataModel> {
         return object : Subscriber<AddToCartDataModel>() {
             override fun onNext(data: AddToCartDataModel) {
                 val isAtcSuccess = data.status.equals(AddToCartDataModel.STATUS_OK, true)
@@ -102,6 +98,7 @@ class NotificationUpdatePresenter @Inject constructor(
                 if (isAtcSuccess) {
                     val message = data.data.message[0]
                     view.showMessageAtcSuccess(message)
+                    onSuccessAddToCart()
                 } else {
                     val errorException = MessageErrorException(data.errorMessage[0])
                     onError(errorException)

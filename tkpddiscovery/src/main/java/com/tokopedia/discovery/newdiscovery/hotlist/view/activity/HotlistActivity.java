@@ -129,22 +129,6 @@ public class HotlistActivity extends DiscoveryActivity
         this.fragmentListener = fragmentListener;
     }
 
-    @Override
-    public void onSearchViewShown() {
-        super.onSearchViewShown();
-        if (fragmentListener != null) {
-            fragmentListener.stopScroll();
-        }
-        appBarLayout.setVisibility(View.GONE);
-        setSearchQuery(getToolbarTitle().toString());
-    }
-
-    @Override
-    public void onSearchViewClosed() {
-        super.onSearchViewClosed();
-        appBarLayout.setVisibility(View.VISIBLE);
-    }
-
     public void renderHotlistDescription(String txt) {
         descriptionView = new DescriptionView();
         descriptionView.setDescTxt(txt);

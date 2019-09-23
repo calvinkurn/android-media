@@ -114,6 +114,9 @@ public class AllBrandsActivity extends DealsBaseActivity implements AllBrandsHom
         overridePendingTransition(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
         userSession = new UserSession(this);
         dealsAnalytics = new DealsAnalytics();
+        if (userSession.isLoggedIn()) {
+            mPresenter.sendNSQEvent(userSession.getUserId(), "allbrand-page");
+        }
         setUpVariables();
     }
 

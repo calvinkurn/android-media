@@ -16,7 +16,7 @@ import com.tokopedia.topupbills.telco.view.adapter.DigitalTelcoProductTabAdapter
 import com.tokopedia.topupbills.telco.view.di.DigitalTopupInstance
 import com.tokopedia.topupbills.telco.view.model.DigitalProductSubMenu
 import com.tokopedia.topupbills.telco.view.model.DigitalTabTelcoItem
-import com.tokopedia.topupbills.telco.view.model.DigitalTelcoExtraParam
+import com.tokopedia.common.topupbills.view.model.TopupBillsExtraParam
 import com.tokopedia.topupbills.telco.view.widget.DigitalSubMenuWidget
 import kotlinx.android.synthetic.main.fragment_digital_telco.*
 import javax.inject.Inject
@@ -54,9 +54,9 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
     fun renderSubMenu() {
         val listMenuTab = mutableListOf<DigitalTabTelcoItem>()
         arguments?.run {
-            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM_TELCO) as DigitalTelcoExtraParam
-            var prepaidExtraParam = DigitalTelcoExtraParam()
-            var postpaidExtraParam = DigitalTelcoExtraParam()
+            val digitalTelcoExtraParam = this.getParcelable(EXTRA_PARAM_TELCO) as TopupBillsExtraParam
+            var prepaidExtraParam = TopupBillsExtraParam()
+            var postpaidExtraParam = TopupBillsExtraParam()
 
             if (digitalTelcoExtraParam.menuId.toInt() == TelcoComponentType.TELCO_PREPAID) {
                 prepaidExtraParam = digitalTelcoExtraParam
@@ -125,10 +125,10 @@ class DigitalTelcoFragment : BaseDaggerFragment() {
 
         const val EXTRA_PARAM_TELCO = "extra_param_telco"
 
-        fun newInstance(digitalTelcoExtraParam: DigitalTelcoExtraParam): Fragment {
+        fun newInstance(topupBillsExtraParam: TopupBillsExtraParam): Fragment {
             val fragment = DigitalTelcoFragment()
             val bundle = Bundle()
-            bundle.putParcelable(EXTRA_PARAM_TELCO, digitalTelcoExtraParam)
+            bundle.putParcelable(EXTRA_PARAM_TELCO, topupBillsExtraParam)
             fragment.arguments = bundle
             return fragment
         }

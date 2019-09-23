@@ -137,6 +137,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="sans-serif"
+                android:gravity="center"
                 android:text="@string/error_wrong_otp"
                 android:textColor="@color/red_500"
                 android:textSize="@dimen/sp_12"

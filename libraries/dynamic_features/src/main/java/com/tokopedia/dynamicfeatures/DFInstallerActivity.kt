@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.google.android.play.core.splitinstall.*
+import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -79,11 +80,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         manager = SplitInstallManagerFactory.create(this)
         if (moduleName.isEmpty()) {
-            finish()
-            return
-        }
-        if (RouteManager.isApplinkDeclaredInManifest(this, applink)) {
-            launchAndForwardIntent(applink)
             finish()
             return
         }
@@ -248,8 +244,14 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     private fun showFailedMessage(message: String, errorCode: String = "") {
         Timber.w("P1Failed Module {$moduleName} - {$errorCode}")
+        val userMessage:String
+        if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
+            userMessage = getString(R.string.error_install_df_insufficient_storate)
+        } else {
+            userMessage = message
+        }
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
-            message,
+            userMessage,
             Snackbar.LENGTH_INDEFINITE,
             getString(R.string.general_label_ok), View.OnClickListener { })
     }

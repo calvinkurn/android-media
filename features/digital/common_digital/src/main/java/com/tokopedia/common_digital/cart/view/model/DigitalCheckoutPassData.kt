@@ -12,6 +12,7 @@ class DigitalCheckoutPassData() : Parcelable {
     var action: String? = null
     var categoryId: String? = null
     var clientNumber: String? = null
+    var zoneId: String? = null
     var productId: String? = null
     var operatorId: String? = null
     var isPromo: String? = null
@@ -28,6 +29,7 @@ class DigitalCheckoutPassData() : Parcelable {
         action = builder.action
         categoryId = builder.categoryId
         clientNumber = builder.clientNumber
+        zoneId = builder.zoneId
         productId = builder.productId
         operatorId = builder.operatorId
         isPromo = builder.isPromo
@@ -45,6 +47,7 @@ class DigitalCheckoutPassData() : Parcelable {
         action = `in`.readString()
         categoryId = `in`.readString()
         clientNumber = `in`.readString()
+        zoneId = `in`.readString()
         productId = `in`.readString()
         operatorId = `in`.readString()
         isPromo = `in`.readString()
@@ -66,6 +69,7 @@ class DigitalCheckoutPassData() : Parcelable {
         parcel.writeString(action)
         parcel.writeString(categoryId)
         parcel.writeString(clientNumber)
+        parcel.writeString(zoneId)
         parcel.writeString(productId)
         parcel.writeString(operatorId)
         parcel.writeString(isPromo)
@@ -83,6 +87,7 @@ class DigitalCheckoutPassData() : Parcelable {
          var action: String? = null
          var categoryId: String? = null
          var clientNumber: String? = null
+         var zoneId: String? = null
          var productId: String? = null
          var operatorId: String? = null
          var isPromo: String? = null
@@ -107,6 +112,11 @@ class DigitalCheckoutPassData() : Parcelable {
 
         fun clientNumber(`val`: String): Builder {
             clientNumber = `val`
+            return this
+        }
+
+        fun zoneId(`val`: String): Builder {
+            zoneId = `val`
             return this
         }
 
@@ -176,6 +186,7 @@ class DigitalCheckoutPassData() : Parcelable {
         val PARAM_ACTION = "action"
         val PARAM_CATEGORY_ID = "category_id"
         val PARAM_CLIENT_NUMBER = "client_number"
+        val PARAM_ZONE_ID = "zone_id"
         val PARAM_PRODUCT_ID = "product_id"
         val PARAM_OPERATOR_ID = "operator_id"
         val PARAM_IS_PROMO = "is_promo"

@@ -46,15 +46,13 @@
     <string name="no_result_found">No Results Found</string>
     <string name="on_board_title" >Pencarian Gambar</string>
     <string name="on_board_desc" >Kini lebih mudah. Cukup ambil gambar dan temukan produk yang diinginkan.</string>
-    <string name="image_search_title" >Pencarian Gambar</string>
+    <string name="search_title" >Pencarian</string>
     <string name="baca_deskripsi">Baca Deskripsi</string>
     <string name="product_count">%s+ Produk</string>
     <string name="cashback_text" >cashback</string>
     <string name="cashback" >cashback</string>
     <string name="bottom_sheet_filter_finish_button_template_text">Tampilkan %s produk</string>
     <string name="other_filter_title">Lainnya</string>
-    <string name="invalid_image_search_response" >Terjadi kesalahan, ulangi beberapa saat lagi</string>
-    <string name="image_not_supported">Ukuran gambar tidak didukung</string>
     <string name="title_all">Semua</string>
     <string name="produk_serupa">Produk Serupa</string>
     <string name="megerti">Mengerti</string>
@@ -74,7 +72,6 @@
     <string name="label_shop_status">Status Toko:</string>
     <string name="label_shop_inactive">Sudah Tidak Aktif</string>
     <string name="label_shop_close">Tutup</string>
-    <string name="search_autocomplete_hint">Cari di Tokopedia</string>
     <string name="global_nav_see_all_text">Lihat Semua</string>
     <string name="no_support_application">Tidak ada aplikasi pendukung untuk membuka konten.</string>
     <string name="description_page_title">Deskripsi Produk</string>
