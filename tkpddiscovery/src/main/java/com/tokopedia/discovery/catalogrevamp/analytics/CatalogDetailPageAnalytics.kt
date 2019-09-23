@@ -92,39 +92,19 @@ class CatalogDetailPageAnalytics {
                                   categoryPath: String,
                                   isTopAds: Boolean) {
             val tracker = TrackApp.getInstance().gtm
-            val ecommerce: MutableMap<String, Any>?
-            if (isTopAds) {
-                ecommerce = DataLayer.mapOf(
-                        "click", DataLayer.mapOf(
-                        "actionField", "list : $pathList",
-                        "products", DataLayer.listOf(DataLayer.mapOf(
-                        "name", product_name,
-                        "id", product_id,
-                        "price", price,
-                        "brand", "",
-                        "category", categoryPath,
-                        "variant", "",
-                        "list", pathList,
-                        "position", position,
-                        "attribution", ""))))
-            } else {
-                ecommerce = DataLayer.mapOf(
-                        "currencyCode", "IDR",
-                        "click", DataLayer.mapOf(
-                        "actionField", "list : $pathList",
-                        "products", DataLayer.listOf(DataLayer.mapOf(
-                        "name", product_name,
-                        "id", product_id,
-                        "price", price,
-                        "brand", "",
-                        "category", categoryPath,
-                        "variant", "",
-                        "list", pathList,
-                        "position", position,
-                        "attribution", ""))
-                )
-                )
-            }
+            val ecommerce: MutableMap<String, Any>? = DataLayer.mapOf(
+                    "click", DataLayer.mapOf(
+                    "actionField", DataLayer.mapOf("list", pathList),
+                    "products", DataLayer.listOf(DataLayer.mapOf(
+                    "name", product_name,
+                    "id", product_id,
+                    "price", price,
+                    "brand", "",
+                    "category", categoryPath,
+                    "variant", "",
+                    "list", pathList,
+                    "position", position,
+                    "attribution", ""))))
             val map = DataLayer.mapOf(
                     KEY_EVENT, PRODUCT_CLICK,
                     KEY_EVENT_CATEGORY, CATALOG_PAGE,
