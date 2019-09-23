@@ -4,5 +4,5 @@ import javax.inject.Scope
 
 @MustBeDocumented
 @Scope
-@Retention
+@kotlin.annotation.Retention
 annotation class PowerMerchantSubscribeScope
