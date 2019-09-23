@@ -16,9 +16,6 @@ public interface SearchConstant {
     int LANDSCAPE_COLUMN_MAIN = 3;
     int PORTRAIT_COLUMN_MAIN = 2;
 
-    int AUTO_COMPLETE_ACTIVITY_REQUEST_CODE = 14332;
-    int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY = 12323;
-
     interface RecyclerView {
         int VIEW_LIST = 3;
         int VIEW_PRODUCT_BIG_GRID = 12;

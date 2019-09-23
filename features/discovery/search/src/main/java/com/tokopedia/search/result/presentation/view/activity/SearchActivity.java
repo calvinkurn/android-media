@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -63,8 +62,6 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-import static com.tokopedia.discovery.common.constants.SearchConstant.AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Cart.CACHE_TOTAL_CART;
 import static com.tokopedia.discovery.common.constants.SearchConstant.EXTRA_SEARCH_PARAMETER_MODEL;
 import static com.tokopedia.discovery.common.constants.SearchConstant.GCM_ID;
@@ -567,52 +564,8 @@ public class SearchActivity extends BaseActivity
 
     @Override
     public void startActivityWithApplink(String applink, String... parameter) {
-        finishCurrentActivityIfRedirectedToSearch(applink);
-
         Intent intent = RouteManager.getIntent(this, applink, parameter);
-        int startActivityForResultRequestCode = getStartActivityForResultRequestCode(applink);
-
-        startActivityForResult(intent, startActivityForResultRequestCode);
-    }
-
-    private void finishCurrentActivityIfRedirectedToSearch(String applink) {
-        if(isApplinkToSearchActivity(applink)) {
-            finish();
-        }
-    }
-
-    private boolean isApplinkToSearchActivity(String applink) {
-        if(TextUtils.isEmpty(applink)) return false;
-
-        Uri uri = Uri.parse(applink);
-        String applinkTarget = constructApplinkTarget(uri);
-
-        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH)
-                || applinkTarget.equals(ApplinkConstInternalDiscovery.SEARCH_RESULT);
-    }
-
-    private String constructApplinkTarget(@NonNull Uri uri) {
-        String scheme = uri.getScheme();
-        String host = uri.getHost();
-        String path = uri.getEncodedPath();
-
-        return scheme + "://" + host + path;
-    }
-
-    private int getStartActivityForResultRequestCode(String applink) {
-        if(isApplinkToAutoCompleteActivity(applink)) {
-            return AUTO_COMPLETE_ACTIVITY_REQUEST_CODE;
-        }
-
-        return -1;
-    }
-
-    private boolean isApplinkToAutoCompleteActivity(String applink) {
-        Uri uri = Uri.parse(applink);
-        String applinkTarget = constructApplinkTarget(uri);
-
-        return applinkTarget.equals(ApplinkConstInternalDiscovery.AUTOCOMPLETE) ||
-                applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+        startActivity(intent);
     }
 
     @Override
@@ -625,27 +578,10 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        switch(requestCode) {
-            case AUTO_COMPLETE_ACTIVITY_REQUEST_CODE:
-                handleResultFromAutoCompleteActivity(resultCode);
-                break;
-            default:
-                handleDefaultActivityResult(requestCode, resultCode, data);
-                break;
-        }
+        onActivityResultBottomSheet(requestCode, resultCode, data);
     }
 
-    private void handleResultFromAutoCompleteActivity(int resultCode) {
-        switch(resultCode) {
-            case AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY:
-                finish();
-                overridePendingTransition(0, 0);
-                break;
-        }
-    }
-
-    private void handleDefaultActivityResult(int requestCode, int resultCode, Intent data) {
+    private void onActivityResultBottomSheet(int requestCode, int resultCode, Intent data) {
         bottomSheetFilterView.onActivityResult(requestCode, resultCode, data);
     }
 
