@@ -14,6 +14,7 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragment
@@ -177,7 +178,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     }
 
     private fun onSearchClicked() {
-        RouteManager.route(this, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_SHOPPING_NAV_SOURCE, autocompleteParam)
+        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource=shoppingnav", autocompleteParam)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {

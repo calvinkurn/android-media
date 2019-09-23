@@ -35,6 +35,11 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
 
 
     inner class ProductAttachmentViewHolder(view: View): RecyclerView.ViewHolder(view) {
+        private val fullWidth = with(itemView.context.resources){
+            displayMetrics.widthPixels - getDimensionPixelSize(R.dimen.dp_16) * 2
+        }
+
+        private val standardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_260)
 
         fun bind(relatedProductItem: RelatedProductItem) {
             with(itemView){
@@ -53,12 +58,6 @@ class ProductAttachmentAdapter(private val products: MutableList<RelatedProductI
                 delete.setOnClickListener { removeProduct(adapterPosition) }
             }
         }
-
-        val fullWidth = with(itemView.context.resources){
-            displayMetrics.widthPixels - getDimensionPixelSize(R.dimen.dp_16) * 2
-        }
-
-        val standardWidth = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_260)
     }
 
     private fun removeProduct(adapterPosition: Int) {

@@ -34,9 +34,12 @@ import com.tokopedia.oms.scrooge.ScroogePGUtil;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 public class ReviewTicketActivity extends EventBaseActivity implements
         EventReviewTicketsContractor.EventReviewTicketsView, View.OnClickListener, View.OnFocusChangeListener {
 
+    public static final String SCREEN_NAME = "digital/events/summary";
     ImageView eventImageSmall;
     TextView eventNameTv;
     View eventTimeTv;
@@ -112,7 +115,6 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        eventsAnalytics = new EventsAnalytics();
         tvEmailID.setEnabled(false);
         tvEmailID.setTextIsSelectable(false);
         tvEmailID.setFocusable(false);
@@ -126,6 +128,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     void setupVariables() {
+        eventsAnalytics = new EventsAnalytics();
         eventImageSmall = findViewById(R.id.event_image_small);
         eventNameTv = findViewById(R.id.event_name_tv);
         eventTimeTv = findViewById(R.id.event_time_tv);
@@ -190,6 +193,8 @@ public class ReviewTicketActivity extends EventBaseActivity implements
         edForm2.setOnFocusChangeListener(this);
         edForm3.setOnFocusChangeListener(this);
         edForm4.setOnFocusChangeListener(this);
+
+        eventsAnalytics.sendScreenNameEvent(getScreenName());
     }
 
     @Override
@@ -242,6 +247,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
             seatNumbers.setText(builder.toString());
             selectedSeatLayout.setVisibility(View.VISIBLE);
         }
+        eventsAnalytics.sendViewCheckoutEvent(packageViewModel);
     }
 
     @Override
@@ -445,7 +451,7 @@ public class ReviewTicketActivity extends EventBaseActivity implements
 
     @Override
     public String getScreenName() {
-        return eventReviewTicketPresenter.getSCREEN_NAME();
+        return SCREEN_NAME;
     }
 
     @Override

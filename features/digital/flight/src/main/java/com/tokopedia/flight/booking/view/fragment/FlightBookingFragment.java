@@ -40,7 +40,7 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.flight.booking.view.activity.FlightBookingPassengerActivity;
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
@@ -429,7 +429,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                                               boolean isAirAsiaAirlines, String departureDate,
                                               String requestId) {
         startActivityForResult(
-                FlightBookingPassengerActivity.getCallingIntent(
+                FlightBookingPassengerActivity.Companion.getCallingIntent(
                         getActivity(),
                         getDepartureTripId(),
                         getReturnTripId(),

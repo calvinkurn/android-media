@@ -53,6 +53,9 @@ data class NotificationUpdateItem(
         @SerializedName("update_time")
         @Expose
         var updateTime: String = "",
+        @SerializedName("button_text")
+        @Expose
+        var btnText: String = "",
         @SerializedName("update_time_unix")
         @Expose
         var updateTimeUnix: Long = 0,
