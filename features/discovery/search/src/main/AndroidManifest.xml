@@ -12,7 +12,8 @@
             android:name=".result.presentation.view.activity.SearchActivity"
             android:screenOrientation="portrait"
             android:label="@string/search_result_page"
-            android:windowSoftInputMode="adjustNothing">
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@style/Theme.White">
 
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
