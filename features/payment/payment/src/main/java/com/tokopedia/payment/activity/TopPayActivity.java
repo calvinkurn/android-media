@@ -40,6 +40,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.common.payment.model.PaymentCode;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.payment.R;
@@ -69,7 +70,6 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 
 /**
@@ -91,9 +91,9 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private static final String HCI_KTP_IMAGE_PATH = "ktp_image_path";
     private static final String[] THANK_PAGE_URL_LIST = new String[]{"thanks", "thank"};
 
-    public static final int PAYMENT_SUCCESS = 5;
-    public static final int PAYMENT_CANCELLED = 6;
-    public static final int PAYMENT_FAILED = 7;
+    public static final int PAYMENT_SUCCESS = PaymentCode.PAYMENT_SUCCESS;
+    public static final int PAYMENT_CANCELLED = PaymentCode.PAYMENT_CANCELLED;
+    public static final int PAYMENT_FAILED = PaymentCode.PAYMENT_FAILED;
     public static final int HCI_CAMERA_REQUEST_CODE = 978;
     public static final long FORCE_TIMEOUT = 90000L;
 
