@@ -25,6 +25,11 @@ class DashboardItemViewHolder(
         private val onBuyClick: (applink: String) -> Unit
 ) : AbstractViewHolder<DashboardItemViewModel>(itemView) {
 
+    companion object {
+        @LayoutRes
+        val LAYOUT = R.layout.item_af_dashboard
+    }
+
     private val ivItem: ImageView = itemView.findViewById(R.id.iv_item)
     private val tvName: TextView = itemView.findViewById(R.id.tv_name)
     private val tvBuyCount: TextView = itemView.findViewById(R.id.tv_buy_count)
@@ -74,11 +79,5 @@ class DashboardItemViewHolder(
 
         llBtnCreatePost.setOnClickListener { onBuyClick(element.createPostApplink) }
         if (element.isActive) llBtnCreatePost.visible() else llBtnCreatePost.gone()
-    }
-
-    companion object {
-
-        @LayoutRes
-        val LAYOUT = R.layout.item_af_dashboard
     }
 }

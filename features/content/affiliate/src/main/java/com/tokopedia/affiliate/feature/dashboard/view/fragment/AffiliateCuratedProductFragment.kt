@@ -19,6 +19,7 @@ import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
 import com.tokopedia.affiliate.feature.dashboard.view.activity.AffiliateCuratedProductActivity
+import com.tokopedia.affiliate.feature.dashboard.view.activity.CommissionDetailActivity
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.CuratedProductSortAdapter
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.CuratedProductSortTypeFactoryImpl
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactory
@@ -133,8 +134,15 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
     }
 
-    override fun onItemClicked(t: DashboardItemViewModel?) {
-
+    override fun onItemClicked(model: DashboardItemViewModel?) {
+        context?.let {
+            val affPostId = model?.id
+            if (affPostId != null) {
+                startActivity(
+                        CommissionDetailActivity.newInstance(it, affPostId)
+                )
+            }
+        }
     }
 
     override fun getScreenName(): String = "Curated Product List"

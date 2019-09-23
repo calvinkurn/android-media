@@ -21,7 +21,8 @@
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/abl_af_dashboard"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@color/Neutral_N0">
 
                 <android.support.constraint.ConstraintLayout
                     android:layout_width="match_parent"
