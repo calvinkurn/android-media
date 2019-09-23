@@ -16,6 +16,7 @@ import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 /**
  * Created by ricoharisin on 9/29/15.
@@ -107,6 +108,7 @@ public class URLGenerator {
 
                 if (clientID != null && url != null && url.contains(HOST_TOKOPEDIA)) {
                     url = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString();
+                    url = URLEncoder.encode(url, "UTF-8");
                 }
             }
         }catch (Exception ex){
