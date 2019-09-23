@@ -17,6 +17,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.google.android.gms.tagmanager.DataLayer
+
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
@@ -61,7 +63,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.feedplus.FeedModuleRouter
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity
 import com.tokopedia.feedplus.view.adapter.EntryPointAdapter
@@ -92,6 +93,7 @@ import com.tokopedia.kol.feature.report.view.activity.ContentReportActivity
 import com.tokopedia.kol.feature.video.view.activity.MediaPreviewActivity
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.profile.view.activity.ProfileActivity
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.domain.model.Shop
@@ -114,6 +116,7 @@ import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LIKE_TRUE
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
+import com.tokopedia.track.TrackApp
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 /**
@@ -144,7 +147,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var mainContent: View
     private lateinit var newFeed: View
-    private lateinit var feedModuleRouter: FeedModuleRouter
     private lateinit var newFeedReceiver: BroadcastReceiver
 
     private lateinit var layoutManager: LinearLayoutManager
@@ -183,6 +185,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         }
 
+    object MoEngage {
+        const val LOGIN_STATUS = "logged_in_status"
+        const val IS_FEED_EMPTY = "is_feed_empty"
+    }
+
+    object EventMoEngage {
+        const val OPEN_FEED = "Feed_Screen_Launched"
+    }
+
     override fun getScreenName(): String {
         return FeedTrackingEventLabel.SCREEN_UNIFY_HOME_FEED
     }
@@ -217,12 +228,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         layoutManager = NpaLinearLayoutManager(activity,
                 LinearLayoutManager.VERTICAL,
                 false)
-
-        if (activity!!.application is FeedModuleRouter) {
-            feedModuleRouter = activity!!.application as FeedModuleRouter
-        } else {
-            throw IllegalStateException("Application must implement " + FeedModuleRouter::class.java.simpleName)
-        }
 
         val loginIdString = getUserSession().userId
         loginIdInt = if (TextUtils.isEmpty(loginIdString)) 0 else Integer.valueOf(loginIdString)
@@ -412,9 +417,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun showInterestPick() {
-        if (context != null && feedModuleRouter.isEnableInterestPick) {
+        if (context != null && isEnableInterestPick()) {
             RouteManager.route(context, ApplinkConst.INTEREST_PICK)
         }
+    }
+
+    private fun isEnableInterestPick(): Boolean{
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return remoteConfig.getBoolean(REMOTE_CONFIG_ENABLE_INTEREST_PICK, true)
     }
 
     override fun onErrorGetFeedFirstPage(errorMessage: String) {
@@ -675,11 +685,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String) {
-        feedModuleRouter.openRedirectUrl(activity, applink)
+        onGoToLink(applink)
     }
 
     override fun onOpenKolTooltip(rowNumber: Int, uniqueTrackingId: String, url: String) {
-        feedModuleRouter.openRedirectUrl(activity, url)
+        onGoToLink(url)
     }
 
     override fun trackContentClick(hasMultipleContent: Boolean, activityId: String, activityType: String, position: String) {
@@ -794,8 +804,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onGoToLink(link: String) {
-        if (!TextUtils.isEmpty(link)) {
-            RouteManager.route(activity, link)
+        context?.let {
+            if (!TextUtils.isEmpty(link)) {
+                if (RouteManager.isSupportApplink(it, link)) {
+                    RouteManager.route(it, link)
+                } else {
+                    RouteManager.route(
+                            it,
+                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                    )
+                }
+            }
         }
     }
 
@@ -1097,7 +1116,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun sendMoEngageOpenFeedEvent() {
-        feedModuleRouter.sendMoEngageOpenFeedEvent(!hasFeed())
+        val isEmptyFeed = !hasFeed()
+        val value = DataLayer.mapOf(
+                MoEngage.LOGIN_STATUS, userSession.isLoggedIn,
+                MoEngage.IS_FEED_EMPTY, isEmptyFeed
+        )
+        TrackApp.getInstance().moEngage.sendTrackEvent(value, EventMoEngage.OPEN_FEED)
     }
 
     override fun onStop() {
@@ -1722,6 +1746,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val BROADCAST_FEED = "BROADCAST_FEED"
         val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
+        val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
+
 
         fun newInstance(bundle: Bundle?): FeedPlusFragment {
             val fragment = FeedPlusFragment()
