@@ -15,7 +15,7 @@ public class ChangeInactiveFormRequest {
 
         void showErrorValidateData(String errorMessage);
 
-        void onUserDataValidated();
+        void onUserDataValidated(String userId);
 
         void onPhoneTooShort();
 
