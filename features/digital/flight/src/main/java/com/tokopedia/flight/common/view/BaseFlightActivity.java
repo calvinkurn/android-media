@@ -12,7 +12,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.orderlist.view.FlightOrderListActivity;
@@ -96,15 +95,6 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
     }
 
     private void navigateToAllPromoPage() {
-        if (getApplication() instanceof FlightModuleRouter) {
-            if (((FlightModuleRouter) getApplication())
-                    .isPromoNativeEnable()) {
-                startActivity(((FlightModuleRouter) getApplication())
-                        .getPromoListIntent(this));
-            } else {
-                startActivity(((FlightModuleRouter) getApplication())
-                        .getBannerWebViewIntent(this, FlightUrl.ALL_PROMO_LINK));
-            }
-        }
+        RouteManager.route(this, ApplinkConst.PROMO_LIST);
     }
 }

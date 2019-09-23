@@ -25,18 +25,18 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.design.component.ticker.TickerView;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity;
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
 import com.tokopedia.flight.banner.view.adapter.FlightBannerPagerAdapter;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.dashboard.di.FlightDashboardComponent;
 import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity;
@@ -86,6 +86,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     private static final int REQUEST_CODE_AIRPORT_PASSENGER = 3;
     private static final int REQUEST_CODE_AIRPORT_CLASSES = 4;
     private static final int REQUEST_CODE_SEARCH = 5;
+    private static final String PROMO_SLUG = "{slug}";
 
     AppCompatImageView reverseAirportImageView;
     LinearLayout airportDepartureLayout;
@@ -661,50 +662,23 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
         if (getBannerData(position) != null && getBannerData(position).getAttributes() != null) {
             String url = getBannerData(position).getAttributes().getLinkUrl();
             Uri uri = Uri.parse(url);
-            boolean isPromoNativeActive = isPromoNativeActive();
-            if (isPromoNativeActive && uri != null
-                    && uri.getPathSegments() != null
+            if (uri != null && uri.getPathSegments() != null
                     && uri.getPathSegments().size() == 2
                     && uri.getPathSegments().get(0).equalsIgnoreCase(PROMO_PATH)) {
                 String slug = uri.getPathSegments().get(1);
-                if (getActivity().getApplication() instanceof FlightModuleRouter
-                        && ((FlightModuleRouter) getActivity().getApplication())
-                        .getPromoDetailIntent(getActivity(), slug) != null) {
+                if (RouteManager.getIntent(getContext(), ApplinkConst.PROMO_DETAIL.replace(PROMO_SLUG, slug)) != null) {
                     presenter.onBannerItemClick(position, getBannerData(position));
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getPromoDetailIntent(getActivity(), slug));
+                    RouteManager.route(getContext(), ApplinkConst.PROMO_DETAIL.replace(PROMO_SLUG, slug));
                 }
             } else {
-                if (getActivity().getApplication() instanceof FlightModuleRouter
-                        && ((FlightModuleRouter) getActivity().getApplication())
-                        .getBannerWebViewIntent(getActivity(), url) != null) {
                     presenter.onBannerItemClick(position, getBannerData(position));
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getBannerWebViewIntent(getActivity(), url));
-                }
+                    RouteManager.route(getContext(), url);
             }
-        }
-    }
-
-    private boolean isPromoNativeActive() {
-        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-            return ((FlightModuleRouter) getActivity().getApplication())
-                    .isPromoNativeEnable();
-        } else {
-            return false;
         }
     }
 
     private void bannerAllClickAction() {
-        if (getActivity() != null && getActivity().getApplication() instanceof FlightModuleRouter) {
-            if (isPromoNativeActive()) {
-                startActivity(((FlightModuleRouter) getActivity().getApplication())
-                        .getPromoListIntent(getActivity()));
-            } else {
-                startActivity(((FlightModuleRouter) getActivity().getApplication())
-                        .getBannerWebViewIntent(getActivity(), FlightUrl.ALL_PROMO_LINK));
-            }
-        }
+        RouteManager.route(getContext(), ApplinkConst.PROMO_LIST);
     }
 
     @Override
