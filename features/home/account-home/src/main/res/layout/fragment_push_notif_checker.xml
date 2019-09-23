@@ -14,19 +14,9 @@
         android:layout_gravity="center_vertical"
         android:layout_centerInParent="true"
         android:visibility="invisible"/>
-    
-    <ImageView
-        android:id="@+id/img_success_push_notif_status"
-        android:src="@drawable/ic_green_checked"
-        android:paddingRight="10dp"
-        android:layout_gravity="center_vertical"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:layout_width="40dp"
-        android:layout_height="40dp" />
 
     <ImageView
-        android:id="@+id/img_error_push_notif_status"
+        android:id="@+id/img_push_notif_status"
         android:src="@drawable/ic_red_error"
         android:paddingRight="10dp"
         android:layout_gravity="center_vertical"
