@@ -22,6 +22,7 @@ public class URLGenerator {
 
     private static final String SEAMLESS_LOGIN = "seamless?";
     private static final String PARAM_APPCLIENT_ID = "appClientId?";
+    private static final String HOST_TOKOPEDIA = "tokopedia";
 
     public static String generateURLLucky(String url, Context context) {
         Uri uri = Uri.parse(url);
@@ -37,35 +38,24 @@ public class URLGenerator {
     }
 
     public static String generateURLSessionLogin(String url, Context context) {
-        Uri uri = Uri.parse(url);
-        String newUrl = url;
-
-        if(uri != null) {
-            String clientID = TrackApp.getInstance().getGTM().getClientIDString();
-            newUrl = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString();
-        }
+        String updateUrl = appendGAClientIdasQueryParam(url, context);
 
         String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
                 + "token=" + GCMHandler.getRegistrationId(context)
                 + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
-                + "&url=" + newUrl;
+                + "&url=" + updateUrl;
         return urlFinal;
     }
 
     public static String generateURLSessionLoginV4(String url, Context context) {
-        Uri uri = Uri.parse(url);
-        String path = uri.getLastPathSegment();
-        String queryStart = uri.getQuery();
-
-        String clientID = TrackApp.getInstance().getGTM().getClientIDString();
-        String newUrl = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID , clientID).build().toString();
+        String updateUrl =appendGAClientIdasQueryParam(url, context);
 
         String urlFinal = getBaseUrl() + SEAMLESS_LOGIN
                 + "token=" + GCMHandler.getRegistrationId(context)
                 + "&os_type=1"
                 + "&uid=" + SessionHandler.getLoginID(context)
-                + "&url=" + newUrl;
+                + "&url=" + updateUrl;
         return urlFinal;
     }
 
@@ -91,7 +81,34 @@ public class URLGenerator {
         return baseUrl;
     }
 
-    private static boolean isPassingCLientIdEnable(Context context){
+    /**
+     * This function appends GA client ID as a query param for url contains tokopedia as domain
+     * @param url
+     * @param context
+     * @return
+     */
+    private static String appendGAClientIdasQueryParam(String url, Context context){
+        if(url == null){
+            return "";
+        }
+
+        //parse url
+        Uri uri = Uri.parse(url);
+
+        //logic to append GA clientID in web URL to track app to web sessions
+        if(uri != null && isPassingGAClientIdEnable(context)) {
+            String host = uri.getHost();
+
+            String clientID = TrackApp.getInstance().getGTM().getClientIDString();
+            if(clientID != null && host != null && host.contains(HOST_TOKOPEDIA)) {
+                url = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString();
+            }
+        }
+
+        return url;
+    }
+
+    private static boolean isPassingGAClientIdEnable(Context context){
         if(context == null)  return false;
 
         FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
