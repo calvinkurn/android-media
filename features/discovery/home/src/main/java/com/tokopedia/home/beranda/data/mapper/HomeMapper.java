@@ -5,10 +5,9 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
-import com.tokopedia.home.beranda.data.model.Promotion;
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeIcon;
 import com.tokopedia.home.beranda.domain.model.HomeData;
-import com.tokopedia.home.beranda.domain.model.SearchPlaceholder;
 import com.tokopedia.home.beranda.domain.model.Ticker;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.Spotlight;
@@ -16,11 +15,9 @@ import com.tokopedia.home.beranda.domain.model.SpotlightItem;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.SearchPlaceholderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TopAdsDynamicChannelModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.UseCaseIconSectionViewModel;
@@ -34,6 +31,8 @@ import com.tokopedia.home.util.ServerTimeOffsetUtil;
 import com.tokopedia.topads.sdk.base.adapter.Item;
 import com.tokopedia.topads.sdk.domain.model.ProductImage;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +50,12 @@ import static com.tokopedia.home.util.ErrorMessageUtils.getErrorMessage;
 
 public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, List<HomeVisitable>> {
     private final Context context;
+    private final HomeVisitableFactory homeVisitableFactory;
 
-    public HomeMapper(Context context) {
+    public HomeMapper(Context context,
+                      HomeVisitableFactory homeVisitableFactory) {
         this.context = context;
+        this.homeVisitableFactory = homeVisitableFactory;
     }
 
     @Override
@@ -207,6 +209,16 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
 
                                 HomePageTracking.eventEnhanceImpressionBanner(context, channel);
                                 break;
+                            case DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF:
+                                list.add(mappingDynamicChannel(
+                                        channel,
+                                        channel.getEnhanceImpressionProductChannelMix(),
+                                        null,
+                                        false,
+                                        homeData.isCache()
+                                ));
+                                HomePageTracking.eventEnhanceImpressionBannerGif(context, channel);
+                                break;
                         }
                     }
                 }
@@ -265,41 +277,9 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
         return viewModel;
     }
 
-    private HomeVisitable mappingSearchPlaceholder(SearchPlaceholder placeholder){
-        SearchPlaceholderViewModel viewModel = new SearchPlaceholderViewModel();
-        viewModel.setSearchPlaceholder(placeholder);
-        return viewModel;
-    }
-
     private HomeVisitable mappingBanner(List<BannerSlidesModel> slides, boolean isCache) {
-        BannerViewModel viewModel = new BannerViewModel();
-        viewModel.setSlides(slides);
-        if (!isCache) {
-            viewModel.setTrackingData(getBannerTrackingData(slides));
-        }
-        return viewModel;
-    }
-
-    private Map<String, Object> getBannerTrackingData(List<BannerSlidesModel> slides) {
-        if (slides != null && slides.size() > 0) {
-            List<Promotion> promotionList = new ArrayList<>();
-            for (int i = 0, sizei = slides.size(); i < sizei; i++) {
-                BannerSlidesModel model = slides.get(i);
-
-                Promotion promotion = new Promotion();
-                promotion.setPromotionID(String.valueOf(model.getId()));
-                promotion.setPromotionName("/ - p1 - promo");
-                promotion.setPromotionAlias(model.getTitle().trim().replaceAll(" ", "_"));
-                promotion.setPromotionPosition(i + 1);
-                promotion.setRedirectUrl(model.getRedirectUrl());
-                promotion.setPromoCode(model.getPromoCode());
-
-                promotionList.add(promotion);
-            }
-            return HomePageTracking.convertToPromoImpression(promotionList);
-        } else {
-            return null;
-        }
+        return homeVisitableFactory.createBannerVisitable(
+                slides, isCache);
     }
 
     private HomeVisitable mappingUseCaseIcon(List<DynamicHomeIcon.UseCaseIcon> iconList) {

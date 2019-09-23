@@ -17,6 +17,11 @@ fun Int.dpToPx(displayMetrics: DisplayMetrics): Int = (this * displayMetrics.den
 fun Int.pxToDp(displayMetrics: DisplayMetrics): Int = (this / displayMetrics.density).toInt()
 
 
+fun Int?.toZeroIfNull():Int {
+    return this?:0
+}
+
+
 const val INTEGER_MILLION = 1_000_000
 const val INTEGER_THOUSAND = 1_000
 

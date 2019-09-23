@@ -33,8 +33,6 @@ public interface AccountHomeRouter {
 
     Fragment getFavoriteFragment();
 
-    void gotoTopAdsDashboard(Context context);
-
     String getStringRemoteConfig(String key, String defaultValue);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);

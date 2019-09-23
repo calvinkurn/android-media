@@ -648,8 +648,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 });
                 tickerError.setHtmlDescription(itemView.getContext().getString(R.string.ticker_action_link, similarProduct.getUrl(), similarProduct.getText()));
                 actionListener.onCartItemShowTickerOutOfStock(data.getCartItemData().getOriginData().getProductId());
-            }
-            else {
+            } else if (!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle())) {
                 String errorDescription = data.getCartItemData().getErrorMessageDescription();
                 if (!TextUtils.isEmpty(errorDescription)) {
                     tickerError.setTickerTitle(data.getCartItemData().getErrorMessageTitle());
@@ -663,7 +662,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerError.setCloseButtonVisibility(View.GONE);
             tickerError.setVisibility(View.VISIBLE);
-            tickerError.requestLayout();
+            tickerError.post(() -> {
+                tickerError.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                tickerError.requestLayout();
+            });
             layoutError.setVisibility(View.VISIBLE);
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
@@ -686,7 +689,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             tickerWarning.setTickerShape(Ticker.SHAPE_LOOSE);
             tickerWarning.setCloseButtonVisibility(View.GONE);
             tickerWarning.setVisibility(View.VISIBLE);
-            tickerWarning.requestLayout();
+            tickerWarning.post(() -> {
+                tickerWarning.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                        View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+                tickerWarning.requestLayout();
+            });
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
             tickerWarning.setVisibility(View.GONE);

@@ -13,6 +13,8 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper;
 import com.tokopedia.home.beranda.data.mapper.HomeMapper;
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactory;
+import com.tokopedia.home.beranda.data.mapper.factory.HomeVisitableFactoryImpl;
 import com.tokopedia.home.beranda.data.repository.HomeRepository;
 import com.tokopedia.home.beranda.data.repository.HomeRepositoryImpl;
 import com.tokopedia.home.beranda.data.source.HomeDataSource;
@@ -25,6 +27,7 @@ import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -46,8 +49,9 @@ public class HomeModule {
 
     @HomeScope
     @Provides
-    protected HomeMapper providehomeMapper(@ApplicationContext Context context){
-        return new HomeMapper(context);
+    protected HomeMapper providehomeMapper(@ApplicationContext Context context,
+                                           HomeVisitableFactory homeVisitableFactory){
+        return new HomeMapper(context, homeVisitableFactory);
     }
 
     @HomeScope
@@ -198,5 +202,17 @@ public class HomeModule {
     @HomeScope
     protected PermissionCheckerHelper providePermissionCheckerHelper() {
         return new PermissionCheckerHelper();
+    }
+
+    @Provides
+    @HomeScope
+    protected HomeVisitableFactory provideHomeVisitableFactory() {
+        return new HomeVisitableFactoryImpl();
+    }
+  
+    @Provides
+    @HomeScope
+    protected StickyLoginUseCase provideStickyLoginUseCase(@ApplicationContext Context context, GraphqlRepository graphqlRepository) {
+        return new StickyLoginUseCase(context.getResources(), graphqlRepository);
     }
 }

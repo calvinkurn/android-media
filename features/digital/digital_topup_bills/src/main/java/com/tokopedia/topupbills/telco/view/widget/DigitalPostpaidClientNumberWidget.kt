@@ -7,11 +7,10 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.topupbills.R
 import com.tokopedia.topupbills.getColorFromResources
-import com.tokopedia.topupbills.telco.data.TelcoEnquiryData
+import com.tokopedia.common.topupbills.data.TelcoEnquiryData
 import com.tokopedia.topupbills.telco.view.listener.ClientNumberPostpaidListener
 
 /**

@@ -22,9 +22,6 @@ object ProductTrackingConstant {
         const val CLICK_SHIPPING = "click - shipping"
         const val CLICK_SHIPPING_RATE_ESTIMATION = "click - shipping rate estimation"
         const val ACTION_WISHLIST_ON_PRODUCT_RECOMMENDATION = " - wishlist on product recommendation"
-        const val CLICK_ON_LOGIN_STICKY_WIDGET = "click on login sticky widget"
-        const val CLICK_ON_BUTTON_CLOSE_LOGIN_STICKY_WIDGET = "click on button close login sticky widget"
-        const val VIEW_LOGIN_STICKY_WIDGET = "view login sticky widget"
         const val CLICK_APPLY_LEASING = "click - ajukan kredit"
         const val VIEW_HELP_POP_UP_WHEN_ATC = "view help pop up when atc"
         const val CLICK_REPORT_ON_HELP_POP_UP_ATC = "click report on help pop up atc"
@@ -46,7 +43,6 @@ object ProductTrackingConstant {
     object PDP {
         const val EVENT_CLICK_PDP = "clickPDP"
         const val EVENT_VIEW_PDP = "viewPDP"
-
     }
 
     object Affiliate {
