@@ -253,7 +253,7 @@ public class SearchActivity extends BaseActivity
         if (!TextUtils.isEmpty(autocompleteApplink)) {
             startActivityWithApplink(autocompleteApplink);
         } else {
-            startActivityWithApplink(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE + "?q=" + query);
+            startActivityWithApplink(ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?q=" + query);
         }
     }
 
@@ -611,7 +611,8 @@ public class SearchActivity extends BaseActivity
         Uri uri = Uri.parse(applink);
         String applinkTarget = constructApplinkTarget(uri);
 
-        return applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
+        return applinkTarget.equals(ApplinkConstInternalDiscovery.AUTOCOMPLETE) ||
+                applinkTarget.equals(ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE);
     }
 
     @Override

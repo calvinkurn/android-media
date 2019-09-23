@@ -61,6 +61,7 @@ ext {
             filter                          : ":features:discovery:filter",
             imageSearch                     : ":features:discovery:image_search",
             similarSearch                   : ":features:discovery:similarsearch",
+            autocomplete                    : ":features:discovery:autocomplete",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
 
             homecredit                      : ":features:fintech:home_credit",
