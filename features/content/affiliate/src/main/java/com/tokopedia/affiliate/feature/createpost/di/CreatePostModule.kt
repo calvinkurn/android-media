@@ -6,10 +6,18 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.analytics.AffiliateAnalytics
 import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetAffiliateProductSuggestionUseCase
+import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetShopProductSuggestionUseCase
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract
 import com.tokopedia.affiliate.feature.createpost.view.presenter.CreatePostPresenter
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imageuploader.di.ImageUploaderModule
 import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
 import com.tokopedia.imageuploader.domain.GenerateHostRepository
@@ -28,6 +36,7 @@ import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
 
 import dagger.Module
 import dagger.Provides
+import javax.inject.Named
 
 /**
  * @author by milhamj on 9/26/18.
@@ -93,6 +102,34 @@ class CreatePostModule(private val context: Context) {
             UploadVideoUseCase<DefaultUploadVideoResponse> {
         return UploadVideoUseCase(uploadVideoApi, gson, DefaultUploadVideoResponse::class.java, generateVideoTokenUseCase)
     }
+
+    @Provides
+    @CreatePostScope
+    fun provideGraphQlRepository(@ApplicationContext context: Context): GraphqlRepository {
+        GraphqlClient.init(context)
+        return GraphqlInteractor.getInstance().graphqlRepository
+    }
+
+    @Provides
+    @CreatePostScope
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
+        return MultiRequestGraphqlUseCase(graphqlRepository)
+    }
+
+    @Provides
+    @CreatePostScope
+    @Named(GetShopProductSuggestionUseCase.QUERY_SHOP_PRODUCT_SUGGESTION)
+    fun provideGetProductSuggestionShopQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_af_shop_product_suggestion)
+    }
+
+    @Provides
+    @CreatePostScope
+    @Named(GetAffiliateProductSuggestionUseCase.QUERY_AFFILIATE_PRODUCT_SUGGESTION)
+    fun provideGetProductSuggestionAffiliateQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.query_af_affiliate_product_suggestion)
+    }
+
 
     @Provides
     @CreatePostScope

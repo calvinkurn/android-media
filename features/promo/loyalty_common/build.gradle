@@ -14,13 +14,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'loyalty-common'
-    groupId = 'com.tokopedia.loyalty'
-    versionName = "${tkpdLoyaltyVersion}"
-    artifactName = "loyalty_common-release"
-}
-
 dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
 }
@@ -63,6 +56,13 @@ android {
             returnDefaultValues = true
         }
     }
+}
+
+project.ext {
+    artifactId = 'loyalty-common'
+    groupId = 'com.tokopedia.promo'
+    versionName = "1.0.0"
+    artifactName = "promoloyaltycommon-release"
 }
 
 apply from: '../../../publish_local.gradle'

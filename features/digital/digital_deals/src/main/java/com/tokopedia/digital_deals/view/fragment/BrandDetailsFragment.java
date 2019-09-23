@@ -77,6 +77,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private String locationName;
     private int adapterPosition = -1;
     private boolean forceRefresh;
+    private UserSession userSession;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new BrandDetailsFragment();
@@ -90,6 +91,7 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         View view = inflater.inflate(R.layout.fragment_brand_detail, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
+        userSession = new UserSession(getActivity());
         mPresenter.getBrandDetails(true);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -103,6 +105,9 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
                 }
             }
         });
+        if (userSession.isLoggedIn()) {
+            mPresenter.sendNSQEvent(userSession.getUserId(), "brand-detail");
+        }
         return view;
     }
 
@@ -114,7 +119,6 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
 
     private void setViewIds(View view) {
-
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         ivHeader = view.findViewById(R.id.header_image);

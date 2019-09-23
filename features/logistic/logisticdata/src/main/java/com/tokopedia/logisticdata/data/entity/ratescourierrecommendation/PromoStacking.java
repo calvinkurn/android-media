@@ -44,6 +44,9 @@ public class PromoStacking {
     @SerializedName("shipper_disable_text")
     @Expose
     private String shipperDisableText;
+    @SerializedName("is_applied")
+    @Expose
+    private Integer isApplied;
 
     public Integer getIsPromo() {
         return isPromo;
@@ -139,5 +142,13 @@ public class PromoStacking {
 
     public void setShipperDisableText(String shipperDisableText) {
         this.shipperDisableText = shipperDisableText;
+    }
+
+    public Integer getIsApplied() {
+        return isApplied;
+    }
+
+    public void setIsApplied(Integer isApplied) {
+        this.isApplied = isApplied;
     }
 }

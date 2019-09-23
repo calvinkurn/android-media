@@ -49,7 +49,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
         btnCart.setOnClickListener {
             listener.getAnalytic().trackAtcOnClick(product)
             listener.addProductToCart(product, onSuccessAddToCart())
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
         }
     }
@@ -73,7 +73,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
 
     private fun getItemClickListener(product: ProductData, element: NotificationUpdateItemViewModel): View.OnClickListener {
         return View.OnClickListener {
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
             listener.getAnalytic().trackAtcToPdpClick(product)
             RouteManager.route(

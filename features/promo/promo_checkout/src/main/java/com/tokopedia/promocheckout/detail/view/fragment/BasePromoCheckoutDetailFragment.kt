@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
@@ -234,7 +235,7 @@ abstract class BasePromoCheckoutDetailFragment : BaseDaggerFragment(), PromoChec
         }
 
         var message = ErrorHandler.getErrorMessage(activity, e)
-        if (e is CheckPromoCodeException) {
+        if (e is CheckPromoCodeException || e is MessageErrorException) {
             message = e.message
         }
         NetworkErrorHelper.showRedCloseSnackbar(activity, message)

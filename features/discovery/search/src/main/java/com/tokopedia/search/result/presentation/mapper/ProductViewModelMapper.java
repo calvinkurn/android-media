@@ -55,6 +55,7 @@ public class ProductViewModelMapper {
         }
         productViewModel.setAdditionalParams(searchProduct.getAdditionalParams());
         productViewModel.setAutocompleteApplink(searchProduct.getAutocompleteApplink());
+        productViewModel.setDefaultView(searchProduct.getDefaultView());
 
         return productViewModel;
     }

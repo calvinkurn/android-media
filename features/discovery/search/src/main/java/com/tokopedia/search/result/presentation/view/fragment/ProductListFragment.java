@@ -23,11 +23,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.manager.AdultManager;
-import com.tokopedia.discovery.common.manager.SimilarSearchManager;
+import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.DataValue;
 import com.tokopedia.filter.common.data.Filter;
@@ -88,6 +89,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
+
 public class ProductListFragment
         extends SearchSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView,
@@ -131,7 +135,6 @@ public class ProductListFragment
     private String additionalParams = "";
     private boolean isFirstTimeLoad;
 
-    private SimilarSearchManager similarSearchManager;
     private PerformanceMonitoring performanceMonitoring;
     private TrackingQueue trackingQueue;
     private ShowCaseDialog showCaseDialog;
@@ -155,7 +158,6 @@ public class ProductListFragment
 
         if(getContext() == null) return;
 
-        similarSearchManager = SimilarSearchManager.getInstance(getContext());
         trackingQueue = new TrackingQueue(getContext());
     }
 
@@ -535,9 +537,13 @@ public class ProductListFragment
 
     @Override
     public void onLongClick(ProductItemViewModel item, int adapterPosition) {
-        if(similarSearchManager == null || getSearchParameter() == null) return;
+        if(getSearchParameter() == null) return;
+        SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
+        startSimilarSearch(item.getProductID());
+    }
 
-        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getSearchQuery(), item.getProductID());
+    public void startSimilarSearch(String productId) {
+        RouteManager.route(getContext(), ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT, productId);
     }
 
     private void sendItemClickTrackingEvent(ProductItemViewModel item, int pos) {
@@ -1070,6 +1076,21 @@ public class ProductListFragment
     private void finishActivity() {
         if(getActivity() != null) {
             getActivity().finish();
+        }
+    }
+
+    @Override
+    public void setDefaultLayoutType(int defaultView) {
+        switch (defaultView) {
+            case SearchConstant.DefaultViewType.SMALL_GRID:
+                switchLayoutTypeTo(SMALL_GRID);
+                break;
+            case SearchConstant.DefaultViewType.LIST:
+                switchLayoutTypeTo(LIST);
+                break;
+            default:
+                switchLayoutTypeTo(SMALL_GRID);
+                break;
         }
     }
 

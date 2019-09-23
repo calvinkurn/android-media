@@ -27,7 +27,6 @@ public class ProductViewModel implements Parcelable {
     private SuggestionModel suggestionModel;
     private int totalData;
     private int totalItem;
-    private boolean imageSearch;
     private DynamicFilterModel dynamicFilterModel;
     private TopAdsModel adsModel;
     private CpmModel cpmModel;
@@ -35,10 +34,6 @@ public class ProductViewModel implements Parcelable {
 
     public TopAdsModel getAdsModel() {
         return adsModel;
-    }
-
-    public void setImageSearch(boolean imageSearch) {
-        this.imageSearch = imageSearch;
     }
 
     public DynamicFilterModel getDynamicFilterModel() {
@@ -145,7 +140,6 @@ public class ProductViewModel implements Parcelable {
         dest.writeParcelable(this.suggestionModel, flags);
         dest.writeInt(this.totalData);
         dest.writeInt(this.totalItem);
-        dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.dynamicFilterModel, flags);
         dest.writeParcelable(this.adsModel, flags);
         dest.writeParcelable(this.cpmModel, flags);
@@ -162,7 +156,6 @@ public class ProductViewModel implements Parcelable {
         this.suggestionModel = in.readParcelable(SuggestionModel.class.getClassLoader());
         this.totalData = in.readInt();
         this.totalItem = in.readInt();
-        this.imageSearch = in.readByte() != 0;
         this.dynamicFilterModel = in.readParcelable(DynamicFilterModel.class.getClassLoader());
         this.adsModel = in.readParcelable(TopAdsModel.class.getClassLoader());
         this.cpmModel = in.readParcelable(CpmModel.class.getClassLoader());

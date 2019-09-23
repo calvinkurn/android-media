@@ -18,10 +18,10 @@ abstract class HotelBookingViewModelModule {
 
     @HotelBookingScope
     @Binds
-    internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
+    abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
     @ViewModelKey(HotelBookingViewModel::class)
-    internal abstract fun hotelDestinationViewModel(viewModel: HotelBookingViewModel): ViewModel
+    abstract fun hotelDestinationViewModel(viewModel: HotelBookingViewModel): ViewModel
 }

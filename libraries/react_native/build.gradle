@@ -15,13 +15,6 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'reactnative'
-    groupId = 'com.tokopedia.tkpdreactnative'
-    versionName = "${tkpdReactNativeVersion}"
-    artifactName ="react_native-release"
-}
-
 dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
@@ -30,11 +23,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.miscDependencies.codePushReactNative
 
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.tkpdcore)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.design)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.remoteConfig)
@@ -60,6 +53,13 @@ dependencies {
     implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
     implementation 'com.squareup.okhttp3:okhttp-urlconnection:3.12.1'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
+}
+
+project.ext {
+    artifactId = 'react-native'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "libraryreactnative-release"
 }
 
 apply from: '../../publish_local.gradle'

@@ -16,7 +16,7 @@ buildscript {
 project.ext {
     artifactId = 'seller'
     groupId = 'com.tokopedia.seller'
-    versionName = "2.22"
+    versionName = "1.0.0"
     artifactName ="tkpdseller-release"
 }
 
@@ -38,24 +38,23 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.features.logisticinputreceiptshipment)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation rootProject.ext.playServicesDependencies.analytics
 
 
-    implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.topAdsManagementCommon)
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.shopCommon)
-    implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.payment)
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.logisticdata)
-    implementation project(rootProject.ext.features.transactioncommon)
+    implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.resourcesCommon)
@@ -63,11 +62,11 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation project(rootProject.ext.libraries.cacheApi)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.linker)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.webview)
 
