@@ -123,8 +123,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     private fun onSuccessGetData(data: OnboardingViewModel) {
         this.data = data
         adapter.setList(data.dataList)
-        titleTextView.text = String.format(data.titleFull, data.minimumPick.toString()
-        )
+        titleTextView.text = String.format(data.titleFull, data.minimumPick)
     }
 
     private fun onErrorGetData(throwable: Throwable) {
