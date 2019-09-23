@@ -29,6 +29,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
+import com.tokopedia.common.payment.model.PaymentCode;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
@@ -43,7 +44,6 @@ import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.data.model.FlightError;
@@ -350,9 +350,9 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                     hideCheckoutLoading();
                     reviewTime.start();
                     if (getActivity().getApplication() instanceof FlightModuleRouter) {
-                        int paymentSuccess = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentSuccessCode();
-                        int paymentFailed = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentFailedCode();
-                        int paymentCancel = ((FlightModuleRouter) getActivity().getApplication()).getTopPayPaymentCancelCode();
+                        int paymentSuccess = PaymentCode.PAYMENT_SUCCESS;
+                        int paymentFailed = PaymentCode.PAYMENT_FAILED;
+                        int paymentCancel = PaymentCode.PAYMENT_CANCELLED;
                         if (resultCode == paymentSuccess) {
                             flightBookingReviewPresenter.onPaymentSuccess();
                         } else if (resultCode == paymentFailed) {
