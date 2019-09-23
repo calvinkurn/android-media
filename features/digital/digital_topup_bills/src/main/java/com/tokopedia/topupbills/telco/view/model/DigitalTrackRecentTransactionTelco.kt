@@ -2,15 +2,15 @@ package com.tokopedia.topupbills.telco.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.topupbills.telco.data.TelcoRecommendation
+import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 
 class DigitalTrackRecentTransactionTelco constructor(
-        val itemRecent: TelcoRecommendation,
+        val itemRecent: TopupBillsRecommendation,
         val categoryId: Int,
         val position: Int) : Parcelable {
 
     constructor(parcel: Parcel) : this(
-            parcel.readParcelable(TelcoRecommendation::class.java.classLoader),
+            parcel.readParcelable(TopupBillsRecommendation::class.java.classLoader),
             parcel.readInt(),
             parcel.readInt())
 

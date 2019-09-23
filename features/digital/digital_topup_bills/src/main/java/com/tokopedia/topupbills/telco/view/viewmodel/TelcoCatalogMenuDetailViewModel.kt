@@ -5,7 +5,7 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.topupbills.telco.data.TelcoCatalogMenuDetailData
+import com.tokopedia.common.topupbills.data.TelcoCatalogMenuDetailData
 import com.tokopedia.topupbills.telco.data.TelcoRechargeFavNumberData
 import com.tokopedia.topupbills.telco.data.constant.TelcoComponentType
 import kotlinx.coroutines.CoroutineDispatcher
