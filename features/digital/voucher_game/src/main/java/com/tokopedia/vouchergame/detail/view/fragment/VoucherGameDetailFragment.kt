@@ -144,10 +144,8 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (isEnquired) {
-            if (input_field_1.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_1, input_field_1.getInputText())
-            if (input_field_2.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_2, input_field_2.getInputText())
-        }
+        if (input_field_1.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_1, input_field_1.getInputText())
+        if (input_field_2.getInputText().isNotEmpty()) outState.putString(EXTRA_INPUT_FIELD_2, input_field_2.getInputText())
         if (::selectedProduct.isInitialized) voucherGameExtraParam.productId = selectedProduct.id
         outState.putParcelable(EXTRA_PARAM_VOUCHER_GAME, voucherGameExtraParam)
         outState.putParcelable(EXTRA_PARAM_OPERATOR_DATA, voucherGameOperatorData)
@@ -262,7 +260,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         if (inputFieldCount in 1..2 && ::enquiryData.isInitialized && inputData.isNotEmpty()) {
             inputData[EXTRA_INPUT_FIELD_1]?.let { input -> input_field_1.setInputText(input) }
             inputData[EXTRA_INPUT_FIELD_2]?.let { input -> input_field_2.setInputText(input) }
-            enquireFields()
+            if (inputData.size == inputFieldCount) enquireFields()
         }
     }
 
@@ -328,7 +326,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         if (dataCollection.isEmpty()) adapter.showEmpty()
         else {
             val listData = mutableListOf<Visitable<*>>()
-            val decorator = VoucherGameProductDecorator(ITEM_DECORATOR_SIZE_DP, resources)
+            val decorator = VoucherGameProductDecorator(resources.getDimensionPixelOffset(ITEM_DECORATOR_SIZE))
             val trackingList = mutableListOf<VoucherGameProduct>()
 
             var hasMoreDetails = false
@@ -542,7 +540,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         var inputFieldCount = 0
 
-        const val ITEM_DECORATOR_SIZE_DP = 6
+        val ITEM_DECORATOR_SIZE = R.dimen.dp_6
         const val INFO_TOUCH_AREA_SIZE_PX = 20
 
         const val FULL_SCREEN_SPAN_SIZE = 1

@@ -11,7 +11,7 @@ import com.tokopedia.vouchergame.detail.view.adapter.viewholder.VoucherGameProdu
 /**
  * Created by resakemal on 14/08/19.
  */
-class VoucherGameProductDecorator(val space: Int, val resources: Resources) : RecyclerView.ItemDecoration() {
+class VoucherGameProductDecorator(val space: Int) : RecyclerView.ItemDecoration() {
 
     private var needOffset = true
 
@@ -19,24 +19,19 @@ class VoucherGameProductDecorator(val space: Int, val resources: Resources) : Re
         outRect.run {
             parent.let {
                 val childPosition = it.getChildAdapterPosition(view)
-                val offset = TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP,
-                        space.toFloat(),
-                        resources.displayMetrics
-                ).toInt()
 
                 // Add decorator only for product items
                 it.adapter?.run {
                     if (getItemViewType(childPosition) == VoucherGameProductViewHolder.LAYOUT) {
-                        bottom = offset
+                        bottom = space
                         /**
-                         * Add right offset if product item is on the left side of the screen
+                         * Add right space if product item is on the left side of the screen
                          * while putting into account non-product items beforehand
                          */
                         if (getItemViewType(childPosition - 1) != VoucherGameProductViewHolder.LAYOUT) {
                             needOffset = true
                         }
-                        if (needOffset) right = offset
+                        if (needOffset) right = space
                         needOffset = !needOffset
                     }
                 }

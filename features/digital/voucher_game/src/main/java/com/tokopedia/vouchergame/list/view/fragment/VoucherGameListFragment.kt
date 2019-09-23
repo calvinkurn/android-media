@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import com.tokopedia.common.topupbills.data.TopupBillsBanner
 import com.tokopedia.common.topupbills.utils.AnalyticUtils
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.vouchergame.R
@@ -142,7 +144,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         searchInputView.setResetListener(this)
         searchInputView.searchTextView.setOnClickListener { voucherGameAnalytics.eventClickSearchBox() }
 
-        recycler_view.addItemDecoration(VoucherGameListDecorator(ITEM_DECORATOR_SIZE, resources))
+        recycler_view.addItemDecoration(VoucherGameListDecorator(resources.getDimensionPixelOffset(ITEM_DECORATOR_SIZE)))
         recycler_view.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -210,6 +212,10 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             promo_banner.setBannerSeeAllTextColor(ContextCompat.getColor(it, R.color.unify_G500))
         }
         promo_banner.setBannerIndicator(Indicator.GREEN)
+
+        val seeAllText = promo_banner.bannerSeeAll
+        seeAllText.setTextSize(TypedValue.COMPLEX_UNIT_PX, resources.getDimension(BANNER_SEE_ALL_TEXT_SIZE))
+
         promo_banner.buildView()
     }
 
@@ -312,10 +318,11 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     companion object {
 
+        val BANNER_SEE_ALL_TEXT_SIZE = R.dimen.sp_16
+        val ITEM_DECORATOR_SIZE = R.dimen.dp_8
+
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val OPERATOR_ITEM_SPAN_SIZE = 3
-
-        const val ITEM_DECORATOR_SIZE = 8
 
         const val REQUEST_VOUCHER_GAME_DETAIL = 300
 
