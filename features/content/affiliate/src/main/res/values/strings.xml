@@ -166,4 +166,7 @@
     <string name="af_suggestion_aff_cm_title">Mari post barang kesukaanmu!</string>
     <string name="af_suggestion_aff_cm_desc">Pilih barangnya, buat post-nya, dan dapatkan komisi kalau terjual.</string>
 
+    <string name="af_tab_curated_from_post">Dibeli dari Post</string>
+    <string name="af_tab_curated_from_traffic">Dibeli dari Traffic</string>
+
 </resources>

@@ -18,11 +18,7 @@ class AffiliateCuratedProductPagerAdapter(
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
-        return when (position) {
-            0 -> "Dibeli dari Post"
-            1 -> "Dibeli dari Traffic"
-            else -> ""
-        }
+        return ""
     }
 
     override fun getCount(): Int {

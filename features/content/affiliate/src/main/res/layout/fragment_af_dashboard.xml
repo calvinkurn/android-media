@@ -417,7 +417,7 @@
                 <com.tokopedia.design.component.Tabs
                     android:id="@+id/tl_curated_products"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_height="wrap_content"
                     android:visibility="visible"
                     app:tabMode="fixed"
                     app:tabGravity="fill"

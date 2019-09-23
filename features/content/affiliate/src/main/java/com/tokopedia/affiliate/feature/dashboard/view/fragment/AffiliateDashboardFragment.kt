@@ -22,6 +22,7 @@ import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
 import com.tokopedia.affiliate.feature.dashboard.view.activity.AffiliateCuratedProductActivity
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.viewpager.AffiliateCuratedProductPagerAdapter
+import com.tokopedia.affiliate.feature.dashboard.view.custom.AffiliateDashboardTab
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboardPresenter
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel
@@ -77,6 +78,18 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private val unifyCalendar
         get() = calendarView.findViewById<UnifyCalendar>(R.id.uc_filter)
 
+    private val tabCuratedPost: AffiliateDashboardTab by lazy {
+        AffiliateDashboardTab(context).apply {
+            setTitle(getString(R.string.af_tab_curated_from_post))
+        }
+    }
+
+    private val tabCuratedTraffic: AffiliateDashboardTab by lazy {
+        AffiliateDashboardTab(context).apply {
+            setTitle(getString(R.string.af_tab_curated_from_traffic))
+        }
+    }
+
     private val coachMarkIncome: CoachMark by lazy {
         with(CoachMarkBuilder()) {
             allowNextButton(false)
@@ -98,7 +111,9 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         val tabView: View? = try {
             val tabListView: ViewGroup = tlCuratedProducts.getChildAt(0) as ViewGroup
             tabListView.getChildAt(tabListView.childCount - 1)
-        } catch (e: Exception) { null }
+        } catch (e: Exception) {
+            null
+        }
 
         CoachMarkItem(tabView, getString(R.string.curated_from_traffic), getString(R.string.curated_from_traffic_info))
     }
@@ -461,7 +476,6 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
                     indirectFragmentCurated
             ))
         }
-        tlCuratedProducts.setupWithViewPager(vpCuratedProduct)
         llStartDate.setOnClickListener { openCalendarPicker() }
         llEndDate.setOnClickListener { openCalendarPicker() }
 
@@ -473,8 +487,32 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
         esShareNow.setPrimaryCTAClickListener { shouldShareProfile() }
 
-        ablAfDashboard.addOnOffsetChangedListener (AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
+        ablAfDashboard.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             srlRefresh.isEnabled = (verticalOffset == 0)
         })
+
+        tlCuratedProducts.apply {
+            setupWithViewPager(vpCuratedProduct)
+
+            getTabAt(0)?.let { tab ->
+                tab.customView = tabCuratedPost
+            }
+
+            getTabAt(1)?.let { tab ->
+                tab.customView = tabCuratedTraffic
+            }
+
+            onTabSelected { tab ->
+                if (tab.customView == tabCuratedPost) {
+                    tabCuratedPost.setActive(true)
+                    tabCuratedTraffic.setActive(false)
+                } else {
+                    tabCuratedPost.setActive(false)
+                    tabCuratedTraffic.setActive(true)
+                }
+            }
+        }
+
+        tabCuratedPost.setActive(true)
     }
 }
