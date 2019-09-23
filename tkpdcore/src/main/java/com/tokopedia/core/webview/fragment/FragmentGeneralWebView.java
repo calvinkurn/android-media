@@ -341,6 +341,9 @@ public class FragmentGeneralWebView extends Fragment implements BaseWebViewClien
                 case DeepLinkChecker.CONTENT:
                     DeepLinkChecker.openContent(getActivity(), url);
                     return false;
+                case DeepLinkChecker.HOTEL:
+                    DeepLinkChecker.openHotel(getActivity(), url);
+                    return true;
                 default:
                     return false;
             }

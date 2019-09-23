@@ -10,6 +10,7 @@ import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -29,7 +30,8 @@ import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
 
-class ShopPageViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
+class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
+                                            private val userSessionInterface: UserSessionInterface,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
@@ -50,7 +52,6 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
     val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()
     val shopModerateResp = MutableLiveData<Result<ShopModerateRequestData>>()
     val shopFavourite = MutableLiveData<ShopInfo.FavoriteData>()
-    val stickyLoginResp = MutableLiveData<StickyLoginTickerPojo>()
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
@@ -77,10 +78,8 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
             var favoritInfo = ShopInfo.FavoriteData()
 
             try {
-                getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
-                getShopInfoUseCase.isFromCacheFirst = false
-                getShopInfoUseCase.gqlFavoriteQuery = gqlFavorite
-                favoritInfo = getShopInfoUseCase.executeOnBackground().favoriteData
+                gqlGetShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
+                favoritInfo = gqlGetShopFavoriteStatusUseCase.executeOnBackground().favoriteData
             } catch (t: Throwable) {
             }
 
