@@ -48,7 +48,6 @@ import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListVi
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
@@ -761,8 +760,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId)
         shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, shopEtalaseViewModel.etalaseBadge)
 
-        updateHintRemoteConfig(selectedEtalaseName)
-
         if (shopInfo != null) {
             shopId = shopInfo!!.shopCore.shopID
             shopPageTracking?.clickEtalaseChip(
@@ -911,8 +908,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
                 if (shopProductAdapter.isEtalaseInChip(etalaseId)) {
                     this.selectedEtalaseId = etalaseId
                     this.selectedEtalaseName = etalaseName
-                    updateHintRemoteConfig(selectedEtalaseName)
-
                 } else {
                     if (shopInfo != null) {
                         val intent = ShopProductListActivity.createIntent(activity,
@@ -1105,12 +1100,6 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
         shopModuleRouter = context.applicationContext as ShopModuleRouter
         onShopProductListFragmentListener = context as? ShopProductListFragment.OnShopProductListFragmentListener
 
-    }
-
-    private fun updateHintRemoteConfig(selectedEtalaseName: String?) {
-        if (remoteConfig?.getBoolean(RemoteConfigKey.SHOP_ETALASE_TOGGLE) == false) {
-            onShopProductListFragmentListener?.updateUIByEtalaseName(selectedEtalaseName)
-        }
     }
 
 

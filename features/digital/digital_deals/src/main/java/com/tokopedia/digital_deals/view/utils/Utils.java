@@ -58,6 +58,12 @@ import java.util.TimeZone;
 public class Utils {
     private static Utils singleInstance;
     private static Location location;
+    public static String LOCATION_OBJECT = "loc_obj";
+    public static String LOCATION_NAME_PARAM = "location_name";
+    public static String LOCATION_ID_PARAM = "id";
+    public static String LOCATION_TYPE = "location_type";
+    public static String LOCATION_CITY_ID = "city_id";
+    public static String LOCATION_COORDINATES = "coordinates";
     public static String BRAND_QUERY_PARAM_TREE = "tree";
     public static String BRAND_QUERY_TAGS = "tags";
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
@@ -75,6 +81,8 @@ public class Utils {
     private static final String SHOWCASE_PREFERENCES = "show_case_pref";
     private SparseIntArray likedEventMap;
     private SparseIntArray unLikedEventMap;
+    public static final String NSQ_SERVICE = "Recommendation_For_You";
+    public static final String NSQ_USE_CASE = "24";
 
 
     synchronized public static Utils getSingletonInstance() {

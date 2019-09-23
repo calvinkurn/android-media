@@ -6,8 +6,14 @@ package com.tokopedia.contactus.common.analytics;
 
 public interface InboxTicketTracking {
 
+    interface Event{
+        String EventName = "clickInboxBantuan";
+        String EventView = "viewInboxBantuan";
+    }
+
     interface Category {
         String EventInboxTicket = "Inbox Ticket";
+        String EventHelpMessageInbox = "inbox pesan bantuan";
     }
     interface Action{
         String EventTicketClick = "Click Ticket";
@@ -25,6 +31,10 @@ public interface InboxTicketTracking {
         String EventClickSearch = "Click Search";
         String EventClickSearchDetails = "Click Search In Details";
         String EventNotAttachImageRequired = "Not Attach Image Required";
+        String EventClickCsatPerReply = "click rating csat per reply";
+        String EventRatingCsatOnSlider = "click rating csat on slider";
+        String EventClickCloseTicket = "click close ticket";
+        String EventImpressionOnCsatRating= "impression on csat rating";
     }
     interface Label {
         String InboxEmpty = "Inbox - Empty State";
@@ -34,5 +44,9 @@ public interface InboxTicketTracking {
         String ImageError2 = "Error Message 2";
         String GetResult = "Get Result";
         String NoResult = "No Result";
+        String EventHelpful = "helpful";
+        String EventNotHelpful = "not helpful";
+        String EventYes = "yes";
+        String EventNo = "no";
     }
 }

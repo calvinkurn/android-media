@@ -29,6 +29,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.transaction.common.sharedata.ticket.SubmitTicketResult;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -80,6 +81,10 @@ public interface ShipmentContract {
         void renderCheckoutCartSuccess(CheckoutData checkoutData);
 
         void renderCheckoutCartError(String message);
+
+        void renderCheckoutCartErrorReporter(CheckoutData checkoutData);
+
+        void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
 
         void renderCheckPromoCodeFromSuggestedPromoSuccess(PromoCodeCartListData promoCodeCartListData);
 
@@ -134,7 +139,7 @@ public interface ShipmentContract {
 
         void stopTrace();
 
-        void onSuccessClearPromoStack(int shopIndex);
+        void onSuccessClearPromoStack(int shopIndex, String voucherType);
 
         void onFailedClearPromoStack(boolean ignoreAPIResponse);
 
@@ -152,7 +157,7 @@ public interface ShipmentContract {
 
         void clearTotalBenefitPromoStacking();
 
-        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess();
+        void triggerSendEnhancedEcommerceCheckoutAnalyticAfterCheckoutSuccess(String transactionId);
 
         void removeIneligiblePromo(int checkoutType, ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataList);
     }
@@ -291,10 +296,6 @@ public interface ShipmentContract {
 
         void setCartPromoSuggestion(CartPromoSuggestion cartPromoSuggestion);
 
-        CheckoutData getCheckoutData();
-
-        void setCheckoutData(CheckoutData checkoutData);
-
         void setDataCheckoutRequestList(List<DataCheckoutRequest> dataCheckoutRequestList);
 
         void setPromoCodeCartShipmentRequestData(
@@ -315,7 +316,7 @@ public interface ShipmentContract {
 
         void cancelAutoApplyCoupon(String variant);
 
-        void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse);
+        void cancelAutoApplyPromoStack(int shopIndex, ArrayList<String> promoCodeList, boolean ignoreAPIResponse, String voucherType);
 
         void cancelNotEligiblePromo(ArrayList<NotEligiblePromoHolderdata> notEligiblePromoHolderdataArrayList, int checkoutType);
 
@@ -367,6 +368,10 @@ public interface ShipmentContract {
         List<DataCheckoutRequest> updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(PromoStackingData promoStackingData, List<ShipmentCartItemModel> shipmentCartItemModels);
 
         boolean isIneligbilePromoDialogEnabled();
+
+        void processSubmitHelpTicket(CheckoutData checkoutData);
+
+        CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests, CheckPromoParam checkPromoParam, int isDonation, String leasingId);
     }
 
 }

@@ -290,73 +290,10 @@
                     app:fontSize="micro"
                     app:textViewTheme="lightSecondary" />
 
-                <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                <com.tokopedia.common.travel.widget.TravellerInfoWidget
+                    android:id="@+id/widget_traveller_info"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    card_view:cardBackgroundColor="@color/white"
-                    card_view:cardCornerRadius="4dp"
-                    android:layout_margin="@dimen/dp_1">
-
-                    <android.support.constraint.ConstraintLayout
-                        android:id="@+id/user_contact_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/dp_16"
-                        android:paddingTop="@dimen/dp_12"
-                        android:paddingRight="@dimen/dp_12"
-                        android:paddingBottom="@dimen/dp_12">
-
-                        <LinearLayout
-                            android:id="@+id/linearLayout"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent">
-
-                            <com.tokopedia.design.component.TextViewCompat
-                                android:id="@+id/tv_contact_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/dp_8"
-                                android:textStyle="bold"
-                                app:fontSize="small"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toTopOf="parent"
-                                app:textViewTheme="lightPrimary"
-                                tools:text="Stevanus Kurniawan Suharyanto" />
-
-                            <com.tokopedia.design.component.TextViewCompat
-                                android:id="@+id/tv_contact_email"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="@dimen/dp_2"
-                                app:fontSize="micro"
-                                app:textViewTheme="lightSecondary"
-                                tools:text="stevanus.suharyanto@tokopedia.com " />
-
-                            <com.tokopedia.design.component.TextViewCompat
-                                android:id="@+id/tv_contact_phone_number"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                app:fontSize="micro"
-                                app:textViewTheme="lightSecondary"
-                                tools:text="+62 131 014 7481" />
-
-
-                        </LinearLayout>
-
-                        <android.support.v7.widget.AppCompatImageView
-                            android:id="@+id/iv_edit_contact"
-                            android:layout_width="@dimen/dp_16"
-                            android:layout_height="@dimen/dp_16"
-                            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-                            app:layout_constraintTop_toTopOf="@+id/linearLayout"
-                            app:srcCompat="@drawable/ic_hotel_edit" />
-
-                    </android.support.constraint.ConstraintLayout>
-                </android.support.v7.widget.CardView>
+                    android:layout_height="wrap_content"/>
 
                 <RadioGroup
                     android:id="@+id/radio_group_contact"
@@ -394,7 +331,7 @@
                         app:errorEnabled="true"
                         app:helperEnabled="true">
 
-                        <android.support.v7.widget.AppCompatAutoCompleteTextView
+                        <com.tokopedia.common.travel.widget.InstantAutoCompleteTextView
                             android:id="@+id/tv_guest_input"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

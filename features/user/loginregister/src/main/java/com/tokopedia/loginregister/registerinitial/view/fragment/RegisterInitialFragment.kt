@@ -170,6 +170,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
         super.onStart()
         activity?.run {
             analytics.trackScreen(this, screenName)
+            analytics.initCashShield(this)
+            analytics.sendCashShield(this)
         }
     }
 
@@ -198,7 +200,6 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     .build()
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         }
-        analytics.onCreate(context)
 
         phoneNumber = getParamString(PHONE_NUMBER, arguments, savedInstanceState, "")
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
@@ -746,7 +747,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
 
     private fun onSuccessRegister() {
         activity?.let{
-            registerAnalytics.trackSuccessRegister(context, userSession.loginMethod)
+            registerAnalytics.trackSuccessRegister(userSession.loginMethod)
 
             if(isFromAccount()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
@@ -805,9 +806,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                 }
                 val adapter = TickerPagerAdapter(activity!!, mockData)
                 adapter.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        registerAnalytics.trackClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -823,9 +824,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
                     tickerAnnouncement.tickerShape = getTickerType(it.color)
                 }
                 tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(link: CharSequence?) {
-                        registerAnalytics.trackClickLinkTicker(link.toString())
-                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                        registerAnalytics.trackClickLinkTicker(linkUrl.toString())
+                        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -911,6 +912,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), RegisterInitialContract.Vi
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+        analytics.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

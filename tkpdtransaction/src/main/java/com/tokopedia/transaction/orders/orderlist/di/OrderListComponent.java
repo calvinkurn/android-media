@@ -11,7 +11,7 @@ import dagger.Component;
  */
 
 @OrderListModuleScope
-@Component(dependencies = {BaseAppComponent.class})
+@Component(dependencies = {BaseAppComponent.class}, modules = OrderListUseCaseModule.class)
 public interface OrderListComponent {
     void inject(OrderListFragment orderListFragment);
     void inject(OrderListActivity orderListActivity);

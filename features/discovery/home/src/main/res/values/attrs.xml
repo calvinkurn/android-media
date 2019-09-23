@@ -13,11 +13,4 @@
     <declare-styleable name="ExpandingLineView">
         <attr name="lineColor" format="color" />
     </declare-styleable>
-    
-    <declare-styleable name="StickyTextView">
-        <attr name="sticky_left_icon" format="reference" />
-        <attr name="sticky_text" format="string|reference" />
-        <attr name="sticky_text_highlight" format="string|reference" />
-        <attr name="sticky_highlight_color" format="reference|color" />
-    </declare-styleable>
 </resources>

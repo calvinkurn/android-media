@@ -331,7 +331,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         hasNextPage = false;
 
         userSession = new UserSession(getActivity());
-        productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
+        if (userSession.hasShop()) {
+            productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
+        } else if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
     @Override
