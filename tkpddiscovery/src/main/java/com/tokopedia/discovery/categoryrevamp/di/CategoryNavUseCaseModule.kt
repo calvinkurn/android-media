@@ -36,6 +36,13 @@ class CategoryNavUseCaseModule {
     }
 
     @CategoryNavScope
+    @Named("subCategoryV3GqlUseCaseObject")
+    @Provides
+    fun provideGqlUseCaseForSubV3(): GraphqlUseCase {
+        return GraphqlUseCase()
+    }
+
+    @CategoryNavScope
     @Named("catalogGqlUseCase")
     @Provides
     fun providecatalogGqlUseCase(): GraphqlUseCase {
@@ -106,4 +113,14 @@ class CategoryNavUseCaseModule {
             : RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
+
+    @CategoryNavScope
+    @Provides
+    fun getSubCategoryV3UseCase(context: Context, @Named("subCategoryV3GqlUseCaseObject") graphqlUseCase
+    : GraphqlUseCase)
+            : SubCategoryV3UseCase {
+        return SubCategoryV3UseCase(context,graphqlUseCase)
+    }
+
+
 }

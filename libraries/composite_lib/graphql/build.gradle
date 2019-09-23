@@ -35,8 +35,6 @@ project.ext {
     artifactName = "graphql"
 }
 
-
-
 dependencies {
     implementation "com.tokopedia.akamai:akamai_bot_lib:1.0.1"
     implementation "com.tokopedia.usecase:usecase:1.0.1"
