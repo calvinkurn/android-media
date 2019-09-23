@@ -24,6 +24,7 @@ public interface KYCConstant {
     int STATUS_VERIFIED = 1;
     int STATUS_EXPIRED = 2;
     int STATUS_NOT_VERIFIED = 3;
+    int STATUS_BLACKLISTED = 5;
 
     int IS_SUCCESS_GET_STATUS = 1;
 
