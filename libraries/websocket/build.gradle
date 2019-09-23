@@ -20,7 +20,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -37,3 +37,12 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation 'io.reactivex:rxkotlin:0.60.0'
 }
+
+project.ext {
+    artifactId = 'websocket'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "librarywebsocket-release"
+}
+
+apply from: '../../publish_local.gradle'

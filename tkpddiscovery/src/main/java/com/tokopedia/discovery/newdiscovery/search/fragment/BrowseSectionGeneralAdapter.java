@@ -13,7 +13,6 @@ import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.RelatedSearchModel;
-import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.List;
 
@@ -131,20 +130,19 @@ public abstract class BrowseSectionGeneralAdapter extends RecyclerView.Adapter<A
     }
 
     public void showEmptyState(Context context, String query, boolean isFilterActive,
-                               FilterFlagSelectedModel filterFlagSelectedModel, String sectionTitle) {
+                               String sectionTitle) {
         clearData();
-        getItemList().add(mappingEmptySearch(context, query, isFilterActive, filterFlagSelectedModel, sectionTitle));
+        getItemList().add(mappingEmptySearch(context, query, isFilterActive, sectionTitle));
         notifyDataSetChanged();
     }
 
     protected EmptySearchModel mappingEmptySearch(Context context, String query, boolean isFilterActive,
-                                                FilterFlagSelectedModel filterFlagSelectedModel, String sectionTitle) {
+                                                  String sectionTitle) {
         EmptySearchModel emptySearchModel = new EmptySearchModel();
         emptySearchModel.setImageRes(R.drawable.ic_empty_search);
         if (isFilterActive) {
             emptySearchModel.setTitle(getEmptySearchTitle(context, sectionTitle));
             emptySearchModel.setContent(String.format(context.getString(R.string.msg_empty_search_with_filter_2), query));
-            emptySearchModel.setFilterFlagSelectedModel(filterFlagSelectedModel);
         } else {
             emptySearchModel.setTitle(getEmptySearchTitle(context, sectionTitle));
             emptySearchModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));

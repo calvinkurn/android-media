@@ -40,7 +40,6 @@
 -libraryjars libs/signpost-commonshttp4-1.2.1.2.jar
 -libraryjars libs/signpost-core-1.2.1.2.jar
 -libraryjars libs/simple.facebook-2.1.jar
--libraryjars libs/twitter4j-core-3.0.5.jar
 -libraryjars libs/universal-image-loader-1.8.6.jar
 
 
@@ -54,7 +53,6 @@
 -dontwarn com.comscore.**
 -dontwarn com.squareup.**
 -dontwarn oauth.signpost.**
--dontwarn twitter4j.**
 -dontwarn com.google.ads.**
 -dontwarn javax.management.**
 -dontwarn javax.xml.**

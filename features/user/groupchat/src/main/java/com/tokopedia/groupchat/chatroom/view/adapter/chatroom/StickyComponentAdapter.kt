@@ -17,6 +17,7 @@ import com.tokopedia.groupchat.R
 import com.tokopedia.groupchat.chatroom.domain.pojo.AttributeStickyComponentData
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Action1
@@ -62,7 +63,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
             subtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
             subtitle.setTypeface(null, Typeface.BOLD)
             subtitle.setTextColor(MethodChecker.getColor(title.context, R.color.orange_red))
-
+            atcStickyPlay.hide()
 
             itemView.animate().setDuration(200)
                     .alpha(1f)
@@ -111,6 +112,7 @@ class StickyComponentAdapter(var eventClickStickyComponent: (item: StickyCompone
         ) {
             when (stickyComponentViewModel.componentType.toLowerCase()) {
                 StickyComponentViewModel.TYPE_PRODUCT -> {
+                    atcStickyPlay.show()
                     atcStickyPlay.setOnClickListener {
                         val attribute = Gson().fromJson(
                                 stickyComponentViewModel.attributeData,

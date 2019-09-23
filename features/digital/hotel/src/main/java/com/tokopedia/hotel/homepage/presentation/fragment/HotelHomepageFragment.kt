@@ -30,6 +30,9 @@ import com.tokopedia.hotel.homepage.presentation.model.viewmodel.HotelHomepageVi
 import com.tokopedia.hotel.homepage.presentation.widget.HotelRoomAndGuestBottomSheets
 import com.tokopedia.hotel.hoteldetail.presentation.activity.HotelDetailActivity
 import com.tokopedia.hotel.search.presentation.activity.HotelSearchResultActivity
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_hotel_homepage.*
@@ -55,6 +58,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
     private lateinit var promoAdapter: HotelPromoAdapter
     private var promoDataList: List<HotelPromoEntity> = listOf()
 
+    private lateinit var remoteConfig: RemoteConfig
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -72,6 +77,8 @@ class HotelHomepageFragment : HotelBaseFragment(),
             hotelHomepageModel.locName = arguments?.getString(EXTRA_PARAM_NAME) ?: "Bali"
             hotelHomepageModel.locType = arguments?.getString(EXTRA_PARAM_TYPE) ?: "region"
         }
+
+        remoteConfig = FirebaseRemoteConfigImpl(context)
 
     }
 
@@ -92,7 +99,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         homepageViewModel.promoData.observe(this, Observer {
             when (it) {
                 is Success -> {
-                    if (it.data.size > 0) {
+                    if (remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_HOTEL_SHOW_PROMO) && it.data.size > 0) {
                         promoDataList = it.data
                         renderHotelPromo(promoDataList)
                     } else {

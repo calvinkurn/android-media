@@ -2,6 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
 }
@@ -9,14 +10,18 @@ repositories {
 buildscript {
     repositories {
         mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 
 dependencies {
     implementation project(rootProject.ext.features.productCard)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -26,3 +31,12 @@ dependencies {
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
+
+project.ext {
+    artifactId = 'recommendation-widget-common'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoveryrecommendationwidgetcommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

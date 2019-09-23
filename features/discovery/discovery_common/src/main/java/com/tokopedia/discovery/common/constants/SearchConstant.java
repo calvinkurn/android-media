@@ -4,10 +4,6 @@ public interface SearchConstant {
 
     String EXTRA_SEARCH_PARAMETER_MODEL = "EXTRA_SEARCH_PARAMETER_MODEL";
 
-    String EXTRA_FORCE_SWIPE_TO_SHOP = "EXTRA_FORCE_SWIPE_TO_SHOP";
-
-    String EXTRA_ACTIVE_TAB_POSITION = "EXTRA_ACTIVE_TAB_POSITION";
-
     String EXTRA_CATALOG_ID = "EXTRA_CATALOG_ID";
 
     String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
@@ -24,13 +20,18 @@ public interface SearchConstant {
     int AUTO_COMPLETE_ACTIVITY_RESULT_CODE_FINISH_ACTIVITY = 12323;
 
     interface RecyclerView {
-        int VIEW_PRODUCT = 3;
-        int VIEW_PRODUCT_GRID_1 = 12;
-        int VIEW_PRODUCT_GRID_2 = 13;
+        int VIEW_LIST = 3;
+        int VIEW_PRODUCT_BIG_GRID = 12;
+        int VIEW_PRODUCT_SMALL_GRID = 13;
     }
 
-    enum GridType {
-        GRID_1, GRID_2, GRID_3
+    enum ViewType {
+        LIST, SMALL_GRID, BIG_GRID
+    }
+
+    interface DefaultViewType {
+        int SMALL_GRID = 1;
+        int LIST = 2;
     }
 
     interface Wishlist {
@@ -110,5 +111,17 @@ public interface SearchConstant {
         int TAB_SECOND_POSITION = 1;
         int TAB_THIRD_POSITION = 2;
         int TAB_FORTH_POSITION = 3;
+    }
+
+    interface Cart {
+        String CART_LOCAL_CACHE_NAME = "CART";
+        String CACHE_TOTAL_CART = "CACHE_TOTAL_CART";
+    }
+
+    interface ActiveTab {
+        String PRODUCT = "product";
+        String SHOP = "shop";
+        String CATALOG = "catalog";
+        String PROFILE = "profile";
     }
 }

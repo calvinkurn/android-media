@@ -13,6 +13,7 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.fragment.DealDetailsAllRedeemLocationsFragment;
 import com.tokopedia.digital_deals.view.fragment.DealsHomeFragment;
+import com.tokopedia.digital_deals.view.fragment.SelectLocationBottomSheet;
 import com.tokopedia.digital_deals.view.fragment.TrendingDealsFragment;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
@@ -20,7 +21,7 @@ import com.tokopedia.digital_deals.view.utils.TrendingDealsCallBacks;
 
 import java.util.List;
 
-public class DealsHomeActivity extends DealsBaseActivity implements TrendingDealsCallBacks, DealsHomeFragment.OpenTrendingDeals {
+public class DealsHomeActivity extends DealsBaseActivity implements TrendingDealsCallBacks, DealsHomeFragment.OpenTrendingDeals, SelectLocationBottomSheet.SelectedLocationListener {
 
 
     public static final int REQUEST_CODE_DEALSLOCATIONACTIVITY = 101;
@@ -28,9 +29,10 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     public final static int REQUEST_CODE_DEALDETAILACTIVITY=103;
     public final static int REQUEST_CODE_LOGIN=104;
 
+    private boolean isLocationUpdated;
+    private DealsHomeFragment dealsHomeFragment;
     private String title;
     private String url;
-    private List<ProductItem> categoryItems;
     private int position;
 
     @DeepLink({DealsUrl.AppLink.DIGITAL_DEALS})
@@ -59,20 +61,13 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     @Override
     protected Fragment getNewFragment() {
         toolbar.setVisibility(View.GONE);
-        return DealsHomeFragment.createInstance();
-    }
-
-    public String getTrendingDealsUrl() {
-        return url;
-    }
-
-    public List<ProductItem> getCategoryItems() {
-        return categoryItems;
+        dealsHomeFragment = DealsHomeFragment.createInstance(isLocationUpdated);
+        return dealsHomeFragment;
     }
 
     @Override
-    public int getHomePosition() {
-        return position;
+    public String getTrendingDealsUrl() {
+        return url;
     }
 
     @Override
@@ -81,15 +76,25 @@ public class DealsHomeActivity extends DealsBaseActivity implements TrendingDeal
     }
 
     @Override
-    public void replaceFragment(String url, String title, List<ProductItem> items, int position) {
+    public int getHomePosition() {
+        return position;
+    }
+
+    @Override
+    public void replaceFragment(String url, String title, int position) {
         this.url = url;
         this.title = title;
-        this.categoryItems = items;
         this.position = position;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.setCustomAnimations(R.anim.slide_in_left_brands, R.anim.slide_out_right_brands);
         transaction.add(R.id.parent_view, TrendingDealsFragment.createInstance());
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onLocationItemUpdated(boolean isLocationUpdated) {
+        this.isLocationUpdated = isLocationUpdated;
+        dealsHomeFragment.refreshHomePage(isLocationUpdated);
     }
 }

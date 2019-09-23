@@ -15,6 +15,7 @@ import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analytics.debugger.GtmLogger;
 import com.tokopedia.analytics.debugger.TetraDebugger;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
@@ -366,6 +367,10 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String ADDTOCART = "addtocart";
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
+        // always allow sending gtm v5 in debug mode, and use remote config value in production
+        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
+            return;
+
         // replace list
         if (TextUtils.isEmpty(bundle.getString(FirebaseAnalytics.Param.ITEM_LIST))
                 && !TextUtils.isEmpty(bundle.getString("list"))) {
@@ -393,6 +398,9 @@ public class GTMAnalytics extends ContextAnalytics {
 
     public void pushGeneralGtmV5(Map<String, Object> params){
         sendGeneralEvent(params);
+        
+        if(GlobalConfig.isAllowDebuggingTools() || remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GTM_REFRESH, false))
+            return;
 
         Bundle bundle = new Bundle();
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");

@@ -10,11 +10,16 @@ import com.tokopedia.common.travel.database.TravelPassengerDao;
 import com.tokopedia.common.travel.domain.provider.TravelProvider;
 import com.tokopedia.common.travel.domain.provider.TravelScheduler;
 import com.tokopedia.flight.country.database.CountryPhoneCodeDao;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 
 import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
+import kotlinx.coroutines.CoroutineDispatcher;
+import kotlinx.coroutines.Dispatchers;
 
 /**
  * Created by nabillasabbaha on 13/08/18.
@@ -41,4 +46,16 @@ public class CommonTravelModule {
     TravelProvider provideTravelProvider() {
         return new TravelScheduler();
     }
+
+    @Provides
+    GraphqlRepository provideGraphqlRepository() { return GraphqlInteractor.getInstance().getGraphqlRepository(); }
+
+    @Provides
+    MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase(GraphqlRepository graphqlRepository)
+    { return new MultiRequestGraphqlUseCase(graphqlRepository); }
+
+    @CommonTravelScope
+    @Provides
+    CoroutineDispatcher provideMainDispatcher() { return Dispatchers.getMain(); }
+
 }

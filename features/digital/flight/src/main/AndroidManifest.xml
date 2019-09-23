@@ -78,6 +78,12 @@
             android:theme="@style/Theme.White.Flight"
             android:windowSoftInputMode="stateHidden" />
         <activity
+            android:name=".passenger.view.activity.FlightBookingPassengerActivity"
+            android:label="@string/flight_booking_passenger_toolbar_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.Flight"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".booking.view.activity.FlightBookingNationalityActivity"
             android:label="@string/activity_label_flight_nationality"
             android:screenOrientation="portrait"
