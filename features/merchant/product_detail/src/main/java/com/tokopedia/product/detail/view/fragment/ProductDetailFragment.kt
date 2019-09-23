@@ -406,12 +406,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         warehouseId?.let{
             productInfoViewModel.warehouseId = it
         }
-
-        productInfoViewModel.stickyLoginResp.observe(this, Observer {
-            it?.tickers?.first()?.run {
-                stickyLoginView.setContent(this)
-            }
-        })
     }
 
     private fun hideRecommendationView() {
@@ -497,16 +491,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         refreshLayout?.setOnRefreshListener {
             loadProductData(true)
             updateStickyState()
-
-            productInfoViewModel.getStickyLoginContent(
-                onSuccess = {
-                    stickyLoginView.setContent(it)
-                },
-                onError = {
-                    stickyLoginView.hide()
-                }
-            )
-            updateStickyState()
+            updateStickyContent()
         }
 
         if (isAffiliate) {
@@ -659,14 +644,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             updateStickyState()
         })
 
-        productInfoViewModel.getStickyLoginContent(
-                onSuccess = {
-                    stickyLoginView.setContent(it)
-                },
-                onError = {
-                    stickyLoginView.hide()
-                }
-        )
+        updateStickyContent()
         updateStickyState()
     }
 
@@ -682,15 +660,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     override fun onResume() {
         super.onResume()
-
-        productInfoViewModel.getStickyLoginContent(
-                onSuccess = {
-                    stickyLoginView.setContent(it)
-                },
-                onError = {
-                    stickyLoginView.hide()
-                }
-        )
+        updateStickyContent()
         updateStickyState()
     }
 
@@ -2288,6 +2258,17 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
+    private fun updateStickyContent() {
+        productInfoViewModel.getStickyLoginContent(
+            onSuccess = {
+                stickyLoginView.setContent(it)
+            },
+            onError = {
+                stickyLoginView.hide()
+            }
+        )
+    }
+
     private fun updateStickyState() {
         val isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_PDP, true)
         if (!isCanShowing) {
@@ -2299,14 +2280,17 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         if (userSession.isLoggedIn) {
             stickyLoginView.dismiss(StickyLoginConstant.Page.PDP)
         } else {
-            stickyLoginView.show()
+            stickyLoginView.show(StickyLoginConstant.Page.PDP)
             stickyLoginView.tracker.viewOnPage(StickyLoginConstant.Page.PDP)
         }
 
         val tv = TypedValue()
         var paddingBottom = 0
-        if (context!!.theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
-            paddingBottom = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+        val theme = context?.theme
+        if (theme != null) {
+            if (theme.resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+                paddingBottom = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+            }
         }
 
         if (stickyLoginView.isShowing()) {
@@ -2314,7 +2298,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             nested_scroll.setPadding(0, 0, 0, paddingBottom + stickyLoginView.height)
         } else {
             nested_scroll.setPadding(0, 0, 0, paddingBottom)
-            ContextCompat.getDrawable(context!!, R.drawable.bg_shadow_top)?.let { actionButtonView.setBackground(it) }
+            val drawable = context?.let { _context -> ContextCompat.getDrawable(_context, R.drawable.bg_shadow_top) }
+            drawable?.let { actionButtonView.setBackground(it) }
         }
     }
 }
