@@ -9,7 +9,6 @@ import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 
 import java.io.File;
 
-import okhttp3.Interceptor;
 import rx.Observable;
 
 public interface FlightModuleRouter {
@@ -27,8 +26,6 @@ public interface FlightModuleRouter {
     Intent getPhoneVerifIntent(Activity activity);
 
     Observable<ProfileInfo> getProfile();
-
-    Interceptor getChuckInterceptor();
 
     File writeImage(String filePath, int qualityProcentage);
 

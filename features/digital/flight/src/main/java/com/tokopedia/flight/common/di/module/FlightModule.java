@@ -4,15 +4,13 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.abstraction.AbstractionRouter;
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.flight.FlightModuleRouter;
-import com.tokopedia.flight.country.data.FlightCountryListDbSource;
-import com.tokopedia.flight.country.database.FlightAirportCountryDao;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
@@ -30,6 +28,8 @@ import com.tokopedia.flight.common.di.qualifier.FlightQualifier;
 import com.tokopedia.flight.common.di.scope.FlightScope;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.common.util.FlightDateUtil;
+import com.tokopedia.flight.country.data.FlightCountryListDbSource;
+import com.tokopedia.flight.country.database.FlightAirportCountryDao;
 import com.tokopedia.flight.dashboard.data.cloud.FlightClassesDataSource;
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource;
 import com.tokopedia.flight.orderlist.domain.model.mapper.FlightOrderMapper;
@@ -81,8 +81,8 @@ public class FlightModule {
     @FlightScope
     @Provides
     @FlightChuckQualifier
-    public Interceptor provideChuckInterceptory(FlightModuleRouter flightModuleRouter) {
-        return flightModuleRouter.getChuckInterceptor();
+    public Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
+        return new ChuckInterceptor(context);
     }
 
     @FlightScope
