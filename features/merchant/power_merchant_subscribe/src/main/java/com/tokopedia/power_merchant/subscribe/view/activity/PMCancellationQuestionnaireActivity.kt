@@ -21,6 +21,7 @@ import com.tokopedia.gm.common.data.source.cloud.model.PMCancellationQuestionnai
 import com.tokopedia.gm.common.utils.PowerMerchantTracking
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.power_merchant.subscribe.R
 import com.tokopedia.power_merchant.subscribe.di.DaggerPowerMerchantSubscribeComponent
@@ -294,7 +295,7 @@ class PMCancellationQuestionnaireActivity : BaseStepperActivity(), HasComponent<
         when {
             isFirstPage() -> {
                 val rating = pmCancellationQuestionnaireStepperModel
-                        .listQuestionnaireAnswer[currentPosition - 1].answers[0].toInt()
+                        .listQuestionnaireAnswer[currentPosition - 1].answers[0].toIntOrZero()
                 powerMerchantTracking.eventPMCancellationClickNextQuestionButtonFirstPage(rating)
             }
             else -> powerMerchantTracking.eventPMCancellationClickNextQuestionButtonMiddlePage()
