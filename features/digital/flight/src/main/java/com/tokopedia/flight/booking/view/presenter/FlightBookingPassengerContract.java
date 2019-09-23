@@ -84,8 +84,6 @@ public interface FlightBookingPassengerContract {
 
         void renderPassengerTitle(String passengerTitle);
 
-        void renderSelectedList(String passengerName);
-
         void renderPassportExpiredDate(String expiredDateStr);
 
         void navigateToLuggagePicker(List<FlightBookingAmenityViewModel> luggages, FlightBookingAmenityMetaViewModel selected);
@@ -93,8 +91,6 @@ public interface FlightBookingPassengerContract {
         void navigateToMealPicker(List<FlightBookingAmenityViewModel> viewModel, FlightBookingAmenityMetaViewModel selected);
 
         void navigateToSavedPassengerPicker(FlightBookingPassengerViewModel selected);
-
-        int getTitleSpinnerPosition();
 
         void showPassengerFirstNameShouldNoMoreThanMaxError(@StringRes int resId);
 
@@ -149,7 +145,6 @@ public interface FlightBookingPassengerContract {
         void showPassengerPassportNumberShouldAlphaNumericError(@StringRes int resId);
 
         String getMissTitle();
-
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -187,5 +182,7 @@ public interface FlightBookingPassengerContract {
         void onNationalityChanged(CountryPhoneCode flightPassportNationalityViewModel);
 
         void onIssuerCountryChanged(CountryPhoneCode flightPassportIssuerCountry);
+
+        void getTravelContactList(String query);
     }
 }

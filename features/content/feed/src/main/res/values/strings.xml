@@ -85,6 +85,9 @@
     <string name="create_post_as">Buat Sebagai</string>
     <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
     <string name="feed_create_post_shop">Buat Post Toko</string>
+    <string name="feed_delete_post">Hapus Post</string>
+    <string name="feed_after_delete_cant">Setelah dihapus, kamu tidak akan mendapat komisi dari kurasi ini</string>
+    <string name="feed_post_deleted">Post berhasil dihapus</string>
 
     <string name="feed_see_inspiration">Lihat Inspirasi Untukmu</string>
     <string name="feed_choose_topic_you_like">Pilih %s topik yang kamu suka:</string>

@@ -705,9 +705,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onPromoClick(int position, BannerSlidesModel slidesModel, String attribution) {
+    public void onPromoClick(int position, BannerSlidesModel slidesModel) {
         if (getActivity() != null && RouteManager.isSupportApplink(getActivity(), slidesModel.getApplink())) {
-            openApplink(slidesModel.getApplink(), attribution);
+            openApplink(slidesModel.getApplink());
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getActivity());
         }
