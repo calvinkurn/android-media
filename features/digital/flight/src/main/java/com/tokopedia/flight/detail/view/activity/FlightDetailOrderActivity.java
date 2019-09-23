@@ -10,6 +10,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.applink.ApplinkConstant;
@@ -45,7 +47,7 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
             UserSessionInterface userSession = new UserSession(context);
 
             if (!userSession.isLoggedIn()) {
-                return ((FlightModuleRouter) context.getApplicationContext()).getLoginIntent();
+                RouteManager.route(context, ApplinkConst.LOGIN);
             } else {
                 Intent intent = new Intent(context, FlightDetailOrderActivity.class);
                 intent.putExtra(EXTRA_ORDER_PASS_DETAIL, passData);

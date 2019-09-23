@@ -14,8 +14,6 @@ import rx.Observable;
 
 public interface FlightModuleRouter {
 
-    Intent getLoginIntent();
-
     Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel);
 
     Intent getWebviewActivity(Activity activity, String url);
