@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.tokopedia.discovery.search.view.DiscoverySearchView
+    <com.tokopedia.autocomplete.view.DiscoverySearchView
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
