@@ -16,14 +16,14 @@ class NotificationUpdateFilterItemViewModel(
         TAG_ID("tagId")
     }
 
+    override fun type(typeFactory: NotificationUpdateFilterTypeFactory?): Int {
+        return -1
+    }
+
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),
             parcel.createTypedArrayList(NotificationUpdateFilterSectionItemViewModel.CREATOR))
-
-    override fun type(typeFactory: NotificationUpdateFilterTypeFactory): Int {
-        return typeFactory.type(this)
-    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(filterType)
