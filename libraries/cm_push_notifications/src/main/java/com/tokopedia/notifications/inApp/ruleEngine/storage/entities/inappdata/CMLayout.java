@@ -44,6 +44,7 @@ public class CMLayout {
     @Expose
     public String btnOrientation;
 
+    @ColumnInfo(name = "inAppButtons")
     @SerializedName("inAppButtons")
     @Expose
     public ArrayList<CMButton> button;

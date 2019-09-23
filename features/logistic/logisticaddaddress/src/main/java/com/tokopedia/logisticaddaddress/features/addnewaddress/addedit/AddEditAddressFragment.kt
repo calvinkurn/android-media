@@ -14,6 +14,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
@@ -33,6 +34,7 @@ import com.tokopedia.logisticaddaddress.AddressConstants.ANA_POSITIVE
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
+import com.tokopedia.logisticaddaddress.domain.mapper.TokenMapper
 import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
@@ -87,6 +89,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var staticDimen8dp: Int? = 0
     private lateinit var labelAlamatChipsAdapter: LabelAlamatChipsAdapter
     private val FINISH_PINPOINT_FLAG = 8888
+    private val MINIMUM_CHARACTER = 8
     private var getView: View? = null
     private var getSavedInstanceState: Bundle? = null
     private var labelAlamatList: Array<String> = emptyArray()
@@ -126,8 +129,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (arguments != null) {
             isMismatch = arguments?.getBoolean(AddressConstants.EXTRA_IS_MISMATCH)!!
             saveAddressDataModel = arguments?.getParcelable(AddressConstants.EXTRA_SAVE_DATA_UI_MODEL)
-            token = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
+            val tempToken : com.tokopedia.logisticaddaddress.domain.model.Token? = arguments?.getParcelable(AddressConstants.KERO_TOKEN)
 
+            token = TokenMapper().convertTokenModel(tempToken)
             isLatitudeNotEmpty = saveAddressDataModel?.latitude?.isNotEmpty()
             isLatitudeNotEmpty?.let {
                 if (it) currentLat = saveAddressDataModel?.latitude?.toDouble()
@@ -543,6 +547,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         if (et_phone.text.isNullOrEmpty()) {
             validated = false
             setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel))
+            if (field.isNotEmpty()) field += ", "
+            field += "no ponsel"
+        }
+
+        if (et_phone?.text?.length?: 0 < MINIMUM_CHARACTER) {
+            validated = false
+            setWrapperError(et_phone_wrapper, getString(R.string.validate_no_ponsel_less_char))
             if (field.isNotEmpty()) field += ", "
             field += "no ponsel"
         }
@@ -1010,7 +1021,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private fun goToPinpointActivity(lat: Double?, long: Double?, isShowAutocomplete: Boolean, token: Token?, isPolygon: Boolean,
                                      isMismatchSolved: Boolean, isMismatch: Boolean, saveAddressDataModel: SaveAddressDataModel?) {
         startActivityForResult(context?.let {
-            PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, token, isPolygon,
+            val tempToken = TokenMapper().reverseTokenModel(token)
+            PinpointMapActivity.newInstance(it, lat, long, isShowAutocomplete, tempToken, isPolygon,
                     isMismatchSolved, isMismatch, saveAddressDataModel, true)
         }, FINISH_PINPOINT_FLAG)
     }
@@ -1077,6 +1089,10 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
             override fun afterTextChanged(text: Editable) {
             }
         }
+    }
+
+    override fun showError(t: Throwable) {
+        Toast.makeText(context, getString(R.string.something_wrong_happened), Toast.LENGTH_SHORT).show()
     }
 
     override fun onDetach() {

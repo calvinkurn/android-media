@@ -9,10 +9,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.applink.AppUtil
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMechant
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 
 import com.tokopedia.topads.auto.R
 import com.tokopedia.topads.auto.internal.TopAdsUserStatusInfo
-import com.tokopedia.topads.auto.router.TopAdsAutoRouter
 import com.tokopedia.topads.auto.view.activity.ConfirmationDialogActivity
 import com.tokopedia.topads.auto.view.widget.InfoAutoAdsSheet
 import com.tokopedia.topads.auto.view.widget.ManualAdsConfirmationSheet
@@ -70,12 +73,10 @@ class InitialBudgetFragment : DailyBudgetFragment(), View.OnClickListener, Manua
     }
 
     override fun onManualAdsClicked() {
-        if(GlobalConfig.isSellerApp()) {
-            val intent = (activity!!.application as TopAdsAutoRouter)
-                    .getTopAdsAddingPromoOptionIntent(activity!!)
-            startActivityForResult(intent, REQUEST_CODE_AD_OPTION)
+        if(AppUtil.isSellerInstalled(context)) {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_ADD_PROMO_OPTION), REQUEST_CODE_AD_OPTION)
         } else {
-            (activity!!.application as TopAdsAutoRouter).openTopAdsDashboardApplink(context!!)
+            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
         }
     }
 

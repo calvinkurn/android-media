@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.data.mapper.searchcatalog;
 
 import com.google.gson.Gson;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.result.domain.model.SearchCatalogModel;
 
 import dagger.Module;

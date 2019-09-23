@@ -1,6 +1,7 @@
 package com.tokopedia.flight.booking.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.domain.GetContactListUseCase;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
@@ -9,6 +10,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.util.FlightPassengerInfoValidator;
+import com.tokopedia.flight.common.util.FlightPassengerTitle;
 import com.tokopedia.flight.common.util.FlightPassengerTitleType;
 
 import java.util.ArrayList;
@@ -34,10 +36,13 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     private final int PLUS_TWENTY = 20;
 
     private FlightPassengerInfoValidator flightPassengerInfoValidator;
+    private GetContactListUseCase getContactListUseCase;
 
     @Inject
-    public FlightBookingPassengerPresenter(FlightPassengerInfoValidator flightPassengerInfoValidator) {
+    public FlightBookingPassengerPresenter(FlightPassengerInfoValidator flightPassengerInfoValidator,
+                                           GetContactListUseCase getContactListUseCase) {
         this.flightPassengerInfoValidator = flightPassengerInfoValidator;
+        this.getContactListUseCase = getContactListUseCase;
     }
 
     @Override
@@ -84,10 +89,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
 
         if (getView().getCurrentPassengerViewModel().getPassengerId() != null &&
                 !getView().getCurrentPassengerViewModel().getPassengerId().equals("")) {
-            getView().renderSelectedList(String.format("%s %s",
-                    getView().getCurrentPassengerViewModel().getPassengerFirstName(),
-                    getView().getCurrentPassengerViewModel().getPassengerLastName()
-            ));
+            //
         }
 
         renderPassport();
@@ -308,7 +310,6 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         flightBookingPassengerViewModel.setPassengerBirthdate("");
         flightBookingPassengerViewModel.setPassengerTitle("");
 
-        getView().renderSelectedList(getView().getString(R.string.flight_booking_passenger_saved_secondary_hint));
         getView().renderPassengerName("", "");
         getView().renderBirthdate("");
     }
@@ -322,9 +323,7 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
                 FlightDateUtil.stringToDate(getView().getDepartureDateString()),
                 Calendar.YEAR, PLUS_TWENTY);
 
-        getView().renderSelectedList(String.format("%s %s",
-                selectedPassenger.getPassengerFirstName(),
-                selectedPassenger.getPassengerLastName()));
+        //renderselectedlist
 
         FlightBookingPassengerViewModel currentPassengerViewModel = getView().getCurrentPassengerViewModel();
         currentPassengerViewModel.setPassengerId(selectedPassenger.getPassengerId());
@@ -460,6 +459,11 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
         getView().renderPassportIssuerCountry(flightPassportIssuerCountry.getCountryName());
     }
 
+    @Override
+    public void getTravelContactList(String query) {
+
+    }
+
     private boolean validateFields(String departureDateString) {
         boolean isValid = true;
         boolean isNeedPassport = !getView().isDomestic();
@@ -567,16 +571,16 @@ public class FlightBookingPassengerPresenter extends BaseDaggerPresenter<FlightB
     }
 
     private int getPassengerTitleId() {
-        switch (getView().getTitleSpinnerPosition()) {
-            case 1:
+        switch (getView().getPassengerTitle().toLowerCase()) {
+            case FlightPassengerTitle.TUAN:
                 return FlightPassengerTitleType.TUAN;
-            case 2:
+            case FlightPassengerTitle.NYONYA:
                 if (isChildPassenger() || isInfantPassenger()) {
                     return FlightPassengerTitleType.NONA;
                 } else {
                     return FlightPassengerTitleType.NYONYA;
                 }
-            case 3:
+            case  FlightPassengerTitle.NONA:
                 return FlightPassengerTitleType.NONA;
             default:
                 return 0;

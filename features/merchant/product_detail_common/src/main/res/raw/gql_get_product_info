@@ -23,6 +23,7 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             isEligibleCOD
             needPrescription
             catalogID
+            isLeasing
         }
         brand {
             brandID
@@ -83,6 +84,7 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
             endDate
             endDateUnix
             appLinks
+            hideGimmick
         }
         cashback {
             percentage
@@ -111,5 +113,14 @@ query getPDPInfo($productID:Int, $shopDomain: String, $productKey: String){
           value
           stockWording
         }
+        media {
+          type
+          URL300
+          URLOriginal
+          URLThumbnail
+          IsAutoplay
+          Description
+          VideoURLAndroid
+         }
     }
 }

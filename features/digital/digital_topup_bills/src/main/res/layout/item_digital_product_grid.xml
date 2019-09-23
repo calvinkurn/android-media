@@ -19,7 +19,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_4"
-            android:lines="1"
             android:textColor="@color/black_70"
             app:typographyType="heading_5"
             tools:text="Data 40.000" />
@@ -32,17 +31,32 @@
             android:lines="1"
             android:textColor="@color/clr_ae31353b"
             app:typographyType="body_3"
-            tools:text="Masa aktif 30 hari" />
+            tools:text="Masa aktif 30 hari"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/product_promo_price"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_4"
-            android:lines="1"
-            android:textColor="@color/Neutral_N700_44"
-            app:typographyType="small"
-            tools:text="Pulsa 40.000" />
+            android:orientation="horizontal">
+
+            <com.tokopedia.unifycomponents.Label
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_4"
+                android:visibility="gone"
+                app:textAllCaps="true"
+                tools:labelTitle="test" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/product_promo_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:lines="1"
+                android:textColor="@color/Neutral_N700_44"
+                app:typographyType="small"
+                tools:text="Pulsa 40.000" />
+
+        </LinearLayout>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/product_price"

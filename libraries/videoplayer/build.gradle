@@ -13,17 +13,10 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = 'videoplayer'
-    groupId = 'com.tokopedia.videoplayer'
-    versionName = "${tkpdVideoplayerVersion}"
-    artifactName ="videoplayer-release"
-}
-
 dependencies {
 
-    implementation project(rootProject.ext.libraries.abstraction)
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
@@ -36,6 +29,13 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
     implementation 'io.reactivex:rxkotlin:0.60.0'
+}
+
+project.ext {
+    artifactId = 'video-player'
+    groupId = 'com.tokopedia.library'
+    versionName = "1.0.0"
+    artifactName = "libraryvideoplayer-release"
 }
 
 apply from: '../../publish_local.gradle'
