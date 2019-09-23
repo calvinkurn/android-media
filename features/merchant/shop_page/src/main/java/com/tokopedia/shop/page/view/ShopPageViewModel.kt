@@ -4,11 +4,10 @@ import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -28,7 +27,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
-import javax.inject.Named
 
 class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
                                             private val userSessionInterface: UserSessionInterface,
@@ -39,7 +37,6 @@ class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatus
                                             private val getModerateShopUseCase: GetModerateShopUseCase,
                                             private val requestModerateShopUseCase: RequestModerateShopUseCase,
                                             private val stickyLoginUseCase: StickyLoginUseCase,
-                                            @Named(ShopPageConstant.SHOP_FAVORITE_QUERY) private val gqlFavorite: String,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
