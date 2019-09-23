@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.presentation.view.listener.NotificationUpdateItemListener
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateItemViewModel
@@ -32,14 +34,21 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
     protected val body: TextView = itemView.findViewById(R.id.body)
 
     override fun bind(element: NotificationUpdateItemViewModel) {
-        bindBackgroundColor(element)
+        bindNotificationBackgroundColor(element)
         bindNotificationHeader(element)
         bindNotificationContent(element)
         bindNotificationPayload(element)
         bindOnNotificationClick(element)
     }
 
-    protected open fun bindBackgroundColor(element: NotificationUpdateItemViewModel) {
+    override fun bind(element: NotificationUpdateItemViewModel?, payloads: MutableList<Any>) {
+        if (element == null || payloads.isEmpty()) return
+        when (payloads[0]) {
+            PAYLOAD_CHANGE_BACKGROUND -> bindNotificationBackgroundColor(element)
+        }
+    }
+
+    protected open fun bindNotificationBackgroundColor(element: NotificationUpdateItemViewModel) {
         val color: Int = if (element.isRead) {
             MethodChecker.getColor(container.context, R.color.white)
         } else {
@@ -64,9 +73,13 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
 
     protected open fun bindOnNotificationClick(element: NotificationUpdateItemViewModel) {
         container.setOnClickListener {
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
-            RouteManager.route(itemView.context, element.appLink)
+            if (element.body.length > 110) {
+                listener.showTextLonger(element)
+            } else {
+                RouteManager.route(itemView.context, element.appLink)
+            }
         }
     }
 
@@ -109,4 +122,8 @@ abstract class NotificationUpdateItemViewHolder(itemView: View, var listener: No
         return MethodChecker.getColor(itemView.context, colorId)
     }
 
+    companion object {
+        val PAYLOAD_CHANGE_BACKGROUND = "payload_change_background"
+        val MAX_CONTENT_LENGTH = 110
+    }
 }

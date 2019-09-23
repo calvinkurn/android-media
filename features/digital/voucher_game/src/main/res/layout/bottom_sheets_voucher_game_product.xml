@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/detail_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:text="@string/vg_product_detail_title"
+        android:textColor="@color/black_70"
+        app:typographyType="heading_3" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/detail_desc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:textColor="@color/black_70"
+        app:typographyType="body_1"
+        tools:text="Nomor User ID dan Server ID Dapat dilihat di halaman ini." />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/detail_url"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/vg_product_detail_url"
+        android:textColor="@color/tkpd_main_green"
+        app:typographyType="body_2"
+        app:typographyWeight="bold" />
+
+</LinearLayout>

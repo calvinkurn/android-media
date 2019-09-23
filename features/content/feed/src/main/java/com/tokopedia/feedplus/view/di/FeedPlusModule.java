@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.view.di;
 
 import android.content.Context;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -9,7 +10,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliatecommon.data.network.TopAdsApi;
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase;
-import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.data.FeedAuthInterceptor;
 import com.tokopedia.feedplus.data.api.FeedUrl;
@@ -91,10 +91,7 @@ public class FeedPlusModule {
     @FeedPlusChuckQualifier
     @Provides
     Interceptor provideChuckInterceptory(@ApplicationContext Context context) {
-        if (context instanceof FeedModuleRouter) {
-            return ((FeedModuleRouter) context).getChuckInterceptor();
-        }
-        throw new RuntimeException("App should implement " + FeedModuleRouter.class.getSimpleName());
+        return new ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools());
     }
 
     @FeedPlusScope

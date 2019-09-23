@@ -34,4 +34,6 @@
     <string name="code_voucher_blank_warning">Kode promo harus diisi</string>
     <string name="general_warning">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
     <string name="module_merchant_voucher_label_detail_promo">Detail Promo</string>
+    <string name="applied">Terpasang</string>
+    <string name="use_promo">Gunakan</string>
 </resources>

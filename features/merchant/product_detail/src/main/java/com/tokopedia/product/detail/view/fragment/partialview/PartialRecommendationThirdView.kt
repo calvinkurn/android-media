@@ -2,7 +2,6 @@ package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.product.detail.data.util.ProductDetailTracking
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
@@ -26,6 +25,6 @@ class PartialRecommendationThirdView private constructor(private val view: View,
 
     override fun getRecyclerView(): RecyclerView = view.product_recom_3
 
-    override fun getLayoutProgress(): ProgressBar = view.loading_recom_3
+    override fun getLayoutProgress(): View = view.loading_recom_3
 
 }

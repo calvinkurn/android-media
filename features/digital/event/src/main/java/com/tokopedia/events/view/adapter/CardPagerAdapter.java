@@ -36,6 +36,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
     private int MAX_TOP = 5;
     private EventsAnalytics eventsAnalytics;
     private Context context;
+    List<CategoryItemsViewModel> itemsForGA = new ArrayList<>();
 
     public CardPagerAdapter(EventHomePresenter presenter) {
         mData = new ArrayList<>();
@@ -89,6 +90,13 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
             mBaseElevation = cardView.getCardElevation();
         }
 
+        itemsForGA.add(mData.get(position));
+        int  itemsToSend = (mData.size() - 1) - position;
+        Log.d("Naveen", "items to send is +" + itemsToSend);
+        if (itemsForGA != null && (itemsToSend == 0 || itemsForGA.size() == Utils.MAX_ITEMS_FOR_GA)) {
+            eventsAnalytics.sendSearchProductImpressions(EventsAnalytics.EVENT_PRODUCT_VIEW, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.EVENT_TOP_EVENT_IMPRESSION, itemsForGA);
+            itemsForGA.clear();
+        }
         cardView.setMaxCardElevation(mBaseElevation * MAX_ELEVATION_FACTOR);
         cardView.setScaleY((float) (0.9));
         mViews.set(position, cardView);
@@ -159,6 +167,7 @@ public class CardPagerAdapter extends PagerAdapter implements CardAdapter, Event
             } else if (id == R.id.iv_event_thumb ||
                     id == R.id.tv4_event_title || id == R.id.tv4_location ||
                     id == R.id.tv4_date_time) {
+                eventsAnalytics.sendEventSuggestionClickEvent(EventsAnalytics.EVENT_PRODUCT_CLICK, EventsAnalytics.DIGITAL_EVENT, EventsAnalytics.ACTION_TOP_EVENT_CLICK, mData.get(currentDataIndex), currentDataIndex);
                 mPresenter.showEventDetails(mData.get(currentDataIndex));
             }
         }

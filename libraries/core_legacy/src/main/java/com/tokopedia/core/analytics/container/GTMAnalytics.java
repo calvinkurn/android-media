@@ -365,6 +365,8 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String PRODUCTCLICK = "productclick";
     private static final String VIEWPRODUCT = "viewproduct";
     private static final String ADDTOCART = "addtocart";
+    private static final String BEGINCHECKOUT = "begin_checkout";
+    private static final String CHECKOUT_PROGRESS = "checkout_progress";
 
     public void pushEECommerce(String keyEvent, Bundle bundle){
         // always allow sending gtm v5 in debug mode, and use remote config value in production
@@ -391,7 +393,12 @@ public class GTMAnalytics extends ContextAnalytics {
             case ADDTOCART:
                 keyEvent = FirebaseAnalytics.Event.ADD_TO_CART;
                 break;
-
+            case BEGINCHECKOUT:
+                keyEvent = FirebaseAnalytics.Event.BEGIN_CHECKOUT;
+                break;
+            case CHECKOUT_PROGRESS:
+                keyEvent = FirebaseAnalytics.Event.CHECKOUT_PROGRESS;
+                break;
         }
         logEvent(keyEvent, bundle, context);
     }
