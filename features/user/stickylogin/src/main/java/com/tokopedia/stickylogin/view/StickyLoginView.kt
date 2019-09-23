@@ -32,7 +32,7 @@ class StickyLoginView : BaseCustomView {
     private lateinit var imageViewLeft: ImageView
     private lateinit var imageViewRight: ImageView
     private lateinit var textContent: TextView
-    private lateinit var leftImage: Drawable
+    private var leftImage: Drawable? = null
     private var spannable: SpannableString? = null
 
     val tracker: StickyLoginTracking
@@ -68,7 +68,7 @@ class StickyLoginView : BaseCustomView {
     }
 
     private fun initAttributeSet(attributeSet: AttributeSet) {
-        val styleable = context!!.obtainStyledAttributes(attributeSet, R.styleable.StickyLoginView, 0, 0)
+        val styleable = context.obtainStyledAttributes(attributeSet, R.styleable.StickyLoginView, 0, 0)
         try {
             var text = styleable.getString(R.styleable.StickyLoginView_sticky_text)
             val textHighlight = styleable.getString(R.styleable.StickyLoginView_sticky_text_highlight)
@@ -87,11 +87,11 @@ class StickyLoginView : BaseCustomView {
             }
 
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-                leftImage = styleable.getDrawable(R.styleable.StickyLoginView_sticky_left_icon)!!
+                leftImage = styleable.getDrawable(R.styleable.StickyLoginView_sticky_left_icon)
             } else {
                 val leftImageId = styleable.getResourceId(R.styleable.StickyLoginView_sticky_left_icon, -1)
                 if (leftImageId != -1) {
-                    leftImage = AppCompatResources.getDrawable(context, leftImageId)!!
+                    leftImage = AppCompatResources.getDrawable(context, leftImageId)
                 }
             }
         } finally {
@@ -104,7 +104,9 @@ class StickyLoginView : BaseCustomView {
             textContent.text = spannable
         }
 
-        imageViewLeft.setImageDrawable(leftImage)
+        if (leftImage != null) {
+            imageViewLeft.setImageDrawable(leftImage)
+        }
     }
 
     override fun setBackgroundColor(color: Int) {
