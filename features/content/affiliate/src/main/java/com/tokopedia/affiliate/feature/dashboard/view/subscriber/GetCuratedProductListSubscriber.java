@@ -85,7 +85,8 @@ public class GetCuratedProductListSubscriber extends Subscriber<GraphqlResponse>
                     type,
                     pojo.getCreatePostAppLink(),
                     pojo.getReviewCount(),
-                    pojo.getProductRating());
+                    pojo.getProductRating(),
+                    type != null);
             itemList.add(item);
         }
         return itemList;

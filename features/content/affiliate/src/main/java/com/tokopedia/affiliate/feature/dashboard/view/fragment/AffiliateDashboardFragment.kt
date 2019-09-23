@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.dashboard.view.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.TabLayout
@@ -93,7 +94,6 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private val coachMarkIncome: CoachMark by lazy {
         with(CoachMarkBuilder()) {
             allowNextButton(false)
-            allowPreviousButton(false)
         }.build()
     }
 
@@ -107,15 +107,12 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
                 .build()
     }
 
-    private val coachMarkFirstTimeUserItem: CoachMarkItem by lazy {
-        val tabView: View? = try {
-            val tabListView: ViewGroup = tlCuratedProducts.getChildAt(0) as ViewGroup
-            tabListView.getChildAt(tabListView.childCount - 1)
-        } catch (e: Exception) {
-            null
-        }
+    private val coachMarkCuratedTrafficItem: CoachMarkItem by lazy {
+        CoachMarkItem(tabCuratedTraffic, getString(R.string.curated_from_traffic), getString(R.string.curated_from_traffic_info))
+    }
 
-        CoachMarkItem(tabView, getString(R.string.curated_from_traffic), getString(R.string.curated_from_traffic_info))
+    private val coachMarkCuratedPostItem: CoachMarkItem by lazy {
+        CoachMarkItem(tabCuratedPost, getString(R.string.curated_from_post), getString(R.string.curated_from_post_info))
     }
 
     private var startDate by Delegates.observable<Date?>(null) { _, _, newValue ->
@@ -142,8 +139,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private lateinit var tvEndDate: TextView
     private lateinit var llCheckBalance: LinearLayout
     private lateinit var tvSeeAll: TextView
-    private lateinit var rlViewedClicked: RelativeLayout
-    private lateinit var rlPostedProduct: RelativeLayout
+    private lateinit var clViewedClicked: ConstraintLayout
+    private lateinit var clPostedProduct: ConstraintLayout
     private lateinit var vPostedViewedSeparator: View
     private lateinit var llCuratedProductHistory: LinearLayout
     private lateinit var esShareNow: EmptyState
@@ -404,20 +401,20 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private fun closePage() = activity?.finish()
 
     private fun showEmptyState() {
-        rlViewedClicked.gone()
+        clViewedClicked.gone()
         vPostedViewedSeparator.gone()
         llCuratedProductHistory.gone()
         esShareNow.visible()
     }
 
     private fun showNonEmptyState() {
-        rlViewedClicked.visible()
+        clViewedClicked.visible()
         vPostedViewedSeparator.visible()
         llCuratedProductHistory.visible()
         esShareNow.gone()
 
         if (affiliatePrefs.isFirstTimeOpenDashboard(userSession.userId)) {
-            coachMarkFirstTimeUser.show(activity, "FirstTimeUser", arrayListOf(coachMarkFirstTimeUserItem))
+            coachMarkFirstTimeUser.show(activity, "FirstTimeUser", arrayListOf(coachMarkCuratedPostItem, coachMarkCuratedTrafficItem))
             affiliatePrefs.setFirstTimeOpenDashboard(userSession.userId)
         }
     }
@@ -455,8 +452,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
             tvEndDate = findViewById(R.id.tv_end_date)
             llCheckBalance = findViewById(R.id.ll_check_balance)
             tvSeeAll = findViewById(R.id.tv_see_all)
-            rlViewedClicked = findViewById(R.id.rl_viewed_clicked)
-            rlPostedProduct = findViewById(R.id.rl_posted_product)
+            clViewedClicked = findViewById(R.id.cl_viewed_clicked)
+            clPostedProduct = findViewById(R.id.cl_posted_product)
             vPostedViewedSeparator = findViewById(R.id.v_posted_viewed_separator)
             llCuratedProductHistory = findViewById(R.id.ll_curated_product_history)
             esShareNow = findViewById(R.id.es_share_now)

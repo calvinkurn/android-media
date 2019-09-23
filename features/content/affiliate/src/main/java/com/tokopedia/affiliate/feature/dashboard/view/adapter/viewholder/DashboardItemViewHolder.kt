@@ -78,6 +78,6 @@ class DashboardItemViewHolder(
         }
 
         llBtnCreatePost.setOnClickListener { onBuyClick(element.createPostApplink) }
-        if (element.isActive) llBtnCreatePost.visible() else llBtnCreatePost.gone()
+        if (element.isActive && element.isShouldShowButtonCreatePost) llBtnCreatePost.visible() else llBtnCreatePost.gone()
     }
 }

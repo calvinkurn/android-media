@@ -26,12 +26,13 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
     private String createPostApplink;
     private int reviewCount;
     private int productRating;
+    private boolean shouldShowButtonCreatePost;
 
     public DashboardItemViewModel(String id, String imageUrl, String title, String value,
                                   String itemClicked, String itemSold,
                                   String productCommission, String earnedComission, boolean isActive, String sectionName, boolean shouldShowSection,
                                   Integer type, String createPostApplink,
-                                  int reviewCount, int productRating) {
+                                  int reviewCount, int productRating, boolean shouldShowButtonCreatePost) {
         this.id = id;
         this.imageUrl = imageUrl;
         this.title = title;
@@ -47,6 +48,7 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
         this.createPostApplink = createPostApplink;
         this.reviewCount = reviewCount;
         this.productRating = productRating;
+        this.shouldShowButtonCreatePost = shouldShowButtonCreatePost;
     }
 
     public String getId() {
@@ -163,6 +165,14 @@ public class DashboardItemViewModel implements Visitable<DashboardItemTypeFactor
 
     public void setEarnedComission(String earnedComission) {
         this.earnedComission = earnedComission;
+    }
+
+    public boolean isShouldShowButtonCreatePost() {
+        return shouldShowButtonCreatePost;
+    }
+
+    public void setShouldShowButtonCreatePost(boolean shouldShowButtonCreatePost) {
+        this.shouldShowButtonCreatePost = shouldShowButtonCreatePost;
     }
 
     @Override

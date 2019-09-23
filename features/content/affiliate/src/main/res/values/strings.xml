@@ -125,6 +125,7 @@
     <string name="end_date">Tanggal Akhir</string>
     <string name="choose_date">Pilih Tanggal</string>
     <string name="curated_from_post">Dibeli dari Post</string>
+    <string name="curated_from_post_info">Lihat komisi yang kamu raih di sini saat pembeli membeli barang dari post-mu.</string>
     <string name="curated_from_traffic">Dibeli dari Traffic</string>
     <string name="curated_from_traffic_info">Lihat juga komisi yang kamu raih di sini saat pembeli membeli barang dari profilmu.</string>
     <string name="posted_product">Produk Dipost</string>
