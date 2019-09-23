@@ -96,23 +96,25 @@ public class URLGenerator {
         }
 
 
-        try {
-            String decodedUrl = URLDecoder.decode(url, "UTF-8");
+        if(isPassingGAClientIdEnable(context)) {
+            try {
+                String decodedUrl = URLDecoder.decode(url, "UTF-8");
 
-            //parse url
-            Uri uri = Uri.parse(decodedUrl);
+                //parse url
+                Uri uri = Uri.parse(decodedUrl);
 
-            //logic to append GA clientID in web URL to track app to web sessions
-            if (uri != null && isPassingGAClientIdEnable(context)) {
-                String clientID = TrackApp.getInstance().getGTM().getClientIDString();
+                //logic to append GA clientID in web URL to track app to web sessions
+                if (uri != null) {
+                    String clientID = TrackApp.getInstance().getGTM().getClientIDString();
 
-                if (clientID != null && url != null && url.contains(HOST_TOKOPEDIA)) {
-                    url = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString();
-                    url = URLEncoder.encode(url, "UTF-8");
+                    if (clientID != null && url != null && url.contains(HOST_TOKOPEDIA)) {
+                        url = uri.buildUpon().appendQueryParameter(PARAM_APPCLIENT_ID, clientID).build().toString();
+                        url = URLEncoder.encode(url, "UTF-8");
+                    }
                 }
+            } catch (Exception ex) {
+                //do nothing
             }
-        }catch (Exception ex){
-            //do nothing
         }
 
         return url;
