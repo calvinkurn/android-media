@@ -19,7 +19,7 @@ public class EventSearchContract {
 
         void setTopEvents(List<CategoryItemsViewModel> searchViewModels);
 
-        void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards);
+        void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards, boolean shouldFireEvent);
 
         void removeFooter();
 

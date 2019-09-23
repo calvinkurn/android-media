@@ -20,11 +20,11 @@ class ConfirmationDialogActivity : AppCompatActivity() {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT)
         }
         setContentView(R.layout.layout_dialog_autoads_confirmation)
-        findViewById<View>(R.id.negative_button).setOnClickListener {
+        findViewById<View>(com.tokopedia.abstraction.R.id.negative_button).setOnClickListener {
             setResult(Activity.RESULT_CANCELED)
             finish()
         }
-        findViewById<View>(R.id.positive_button).setOnClickListener {
+        findViewById<View>(com.tokopedia.abstraction.R.id.positive_button).setOnClickListener {
             setResult(Activity.RESULT_OK)
             finish()
         }

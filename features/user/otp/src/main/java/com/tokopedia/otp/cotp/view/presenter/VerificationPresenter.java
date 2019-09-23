@@ -113,7 +113,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
     }
 
     @Override
-    public void verifyOtp(int otpType, String phoneNumber, String email, String otpCode) {
+    public void verifyOtp(int otpType, String phoneNumber, String email, String otpCode, String otpMode) {
         getView().dropKeyboard();
         getView().showLoadingProgress();
 
@@ -130,7 +130,8 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
                         userSession.getUserId(),
                         otpType,
                         otpCode,
-                        phoneNumber
+                        phoneNumber,
+                        otpMode
                 ), new VerifyOtpSubscriber(getView()));
                 break;
 
