@@ -867,21 +867,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId) {
-        return LoyaltyActivity.newInstanceCouponActive(activity, platform, categoryId, cartId);
-    }
-
-    @Override
-    public Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId) {
-        return LoyaltyActivity.newInstanceCouponActiveAndSelected(activity, platform, categoryId, cartId);
-    }
-
-    @Override
-    public FlightVoucherCodeWrapper getFlightVoucherCodeWrapper() {
-        return new FlightVoucherCodeWrapperImpl();
-    }
-
-    @Override
     public Intent getHomeHotlistIntent(Context context) {
         return MainParentActivity.start(context);
     }
@@ -1031,19 +1016,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public long getMaxAmountFromRemoteConfig() {
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
         return remoteConfig.getLong(RemoteConfigKey.OVO_QR_MAX_AMOUNT, 10000000);
-    }
-
-    @Override
-    public Intent getContactUsIntent(Activity activity, FlightContactUsPassData passData) {
-        return ContactUsCreateTicketActivity.getCallingIntent(
-                activity,
-                passData.getToolbarTitle(),
-                passData.getSolutionId(),
-                passData.getOrderId(),
-                passData.getDescriptionTitle(),
-                passData.getAttachmentTitle(),
-                passData.getDescription()
-        );
     }
 
     @Override
@@ -1461,11 +1433,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public long getLongConfig(String flightAirport) {
-        return remoteConfig.getLong(flightAirport);
-    }
-
-    @Override
     public boolean isPromoNativeEnable() {
         return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST);
     }
@@ -1508,21 +1475,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         paymentPassData.setCallbackSuccessUrl(trainCheckoutViewModel.getCallbackURLSuccess());
         paymentPassData.setQueryString(trainCheckoutViewModel.getQueryString());
         return TopPayActivity.createInstance(activity, paymentPassData);
-    }
-
-    @Override
-    public int getTopPayPaymentSuccessCode() {
-        return TopPayActivity.PAYMENT_SUCCESS;
-    }
-
-    @Override
-    public int getTopPayPaymentFailedCode() {
-        return TopPayActivity.PAYMENT_FAILED;
-    }
-
-    @Override
-    public int getTopPayPaymentCancelCode() {
-        return TopPayActivity.PAYMENT_CANCELLED;
     }
 
     @Override
