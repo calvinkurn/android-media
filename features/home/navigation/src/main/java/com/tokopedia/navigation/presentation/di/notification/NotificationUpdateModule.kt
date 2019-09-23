@@ -9,9 +9,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.navigation.R
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -22,10 +20,6 @@ class NotificationUpdateModule {
     @Named(QUERY_IS_TAB_UPDATE)
     fun provideRawProductInfo(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_get_is_tab_update)
-            
-    @NotificationUpdateScope
-    @Provides
-    fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
     @NotificationUpdateScope
     @Provides
