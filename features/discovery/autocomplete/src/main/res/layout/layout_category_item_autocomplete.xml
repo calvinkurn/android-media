@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        app:drawableRightCompat="@drawable/ic_chevron_right"
+        app:drawableRightCompat="@drawable/autocomplete_ic_chevron_right"
         android:drawableTint="@color/white"
         android:fontFamily="sans-serif"
         android:gravity="center_vertical"
