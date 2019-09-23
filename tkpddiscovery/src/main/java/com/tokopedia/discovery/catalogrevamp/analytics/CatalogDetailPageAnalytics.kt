@@ -227,12 +227,12 @@ class CatalogDetailPageAnalytics {
 
         //14
         @JvmStatic
-        fun trackEvenFilterApplied(filterName: String, filterValue: String) {
+        fun trackEvenFilterApplied(title: String, filterName: String, filterValue: String) {
             TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CATALOG,
                     CATALOG_PAGE,
                     APPLY_FILTER,
-                    "$filterName-$filterValue"
+                    "$title-$filterName-$filterValue"
             ))
         }
 

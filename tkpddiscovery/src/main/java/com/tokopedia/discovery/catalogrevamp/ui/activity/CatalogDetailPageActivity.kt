@@ -31,10 +31,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import kotlinx.android.synthetic.main.activity_catalog_detail_page.*
-import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.Map
-import kotlin.collections.MutableMap
 
 class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.Listener, CategoryNavigationListener, BottomSheetListener {
     private var catalogId: String = ""
@@ -46,6 +42,7 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
     private lateinit var catalogDetailListingFragment : Fragment
     private var bottomSheetFilterView: BottomSheetFilterView? = null
     private var catalogName: String =""
+    private var filters: ArrayList<Filter> = ArrayList()
 
     object DeeplinkIntents {
         @JvmStatic
@@ -152,7 +149,17 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         if (presentFilterList.size < filterParameter.size) {
             for (i in filterParameter.entries) {
                 if (!presentFilterList.containsKey(i.key)) {
-                    CatalogDetailPageAnalytics.trackEvenFilterApplied(i.key, i.value)
+                    var title = ""
+                    for (filter in filters) {
+                        val option = filter.options.firstOrNull {
+                            it.key == i.key
+                        }
+                        if (option != null) {
+                            title = filter.title
+                            break
+                        }
+                    }
+                    CatalogDetailPageAnalytics.trackEvenFilterApplied(title, i.key, i.value)
                 }
             }
         }
@@ -283,7 +290,8 @@ class CatalogDetailPageActivity : BaseActivity(), CatalogDetailPageFragment.List
         searchNavContainer?.hide()
     }
 
-    override fun loadFilterItems(filters: ArrayList<Filter>?, searchParameter: MutableMap<String, String>?) {
+    override fun loadFilterItems(filters: ArrayList<Filter>, searchParameter: MutableMap<String, String>?) {
+        this.filters.addAll(filters)
         bottomSheetFilterView?.loadFilterItems(filters, searchParameter)
     }
 
