@@ -1433,6 +1433,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public long getLongConfig(String flightAirport) {
+        return remoteConfig.getLong(flightAirport);
+    }
+
+    @Override
     public boolean isPromoNativeEnable() {
         return remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_NATIVE_PROMO_LIST);
     }
@@ -1475,6 +1480,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         paymentPassData.setCallbackSuccessUrl(trainCheckoutViewModel.getCallbackURLSuccess());
         paymentPassData.setQueryString(trainCheckoutViewModel.getQueryString());
         return TopPayActivity.createInstance(activity, paymentPassData);
+    }
+
+    @Override
+    public int getTopPayPaymentSuccessCode() {
+        return TopPayActivity.PAYMENT_SUCCESS;
+    }
+
+    @Override
+    public int getTopPayPaymentFailedCode() {
+        return TopPayActivity.PAYMENT_FAILED;
+    }
+
+    @Override
+    public int getTopPayPaymentCancelCode() {
+        return TopPayActivity.PAYMENT_CANCELLED;
     }
 
     @Override
