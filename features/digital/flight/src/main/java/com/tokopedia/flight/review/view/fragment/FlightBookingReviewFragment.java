@@ -27,6 +27,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.common.payment.model.PaymentCode;
@@ -705,8 +706,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             taskStackBuilder.addNextIntent(intent);
         }
         Intent homepageFlight = FlightDashboardActivity.getCallingIntent(getActivity());
-        Intent ordersFlight = ((FlightModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity());
-        ordersFlight.putExtra(ORDER_CATEGORY, "FLIGHTS");
+        Intent ordersFlight = RouteManager.getIntent(getContext(), ApplinkConst.FLIGHT_ORDER);
         taskStackBuilder.addNextIntent(homepageFlight);
         taskStackBuilder.addNextIntent(ordersFlight);
         taskStackBuilder.startActivities();

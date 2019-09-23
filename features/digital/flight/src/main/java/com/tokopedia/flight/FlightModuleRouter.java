@@ -32,5 +32,4 @@ public interface FlightModuleRouter {
 
     File writeImage(String filePath, int qualityProcentage);
 
-    Intent getOrderListIntent(Context context);
 }
