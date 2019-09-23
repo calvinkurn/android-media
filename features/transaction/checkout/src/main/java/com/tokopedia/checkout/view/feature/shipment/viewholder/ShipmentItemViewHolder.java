@@ -803,15 +803,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 tvSelectedPriceRecommendation.setVisibility(View.GONE);
                 tvSelectedPriceOnly.setVisibility(View.VISIBLE);
                 tvSelectedPriceOnly.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
+                        courierData.getShipperPrice(), false));
             } else {
                 // Robinhood Phase 21a
                 tvSelectedPriceOnly.setVisibility(View.GONE);
                 tvSelectedCourierRecommendation.setVisibility(View.VISIBLE);
                 tvSelectedPriceRecommendation.setVisibility(View.VISIBLE);
-                tvSelectedCourierRecommendation.setText(shipmentDetailData.getSelectedCourier().getName());
+                tvSelectedCourierRecommendation.setText(courierData.getName());
                 tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                        shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
+                        courierData.getShipperPrice(), false));
             }
         } else {
             llSelectedShipmentRecommendation.setVisibility(View.GONE);
