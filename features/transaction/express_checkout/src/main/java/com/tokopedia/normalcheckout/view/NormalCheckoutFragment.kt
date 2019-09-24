@@ -1198,16 +1198,16 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
     }
 
     private fun onSuccessInsuranceRecommendation(insuranceRecommendation: InsuranceRecommendationGqlResponse) {
-        selectedProductInfo?.let {
-            Handler().postDelayed({
+        Handler().postDelayed({
+            selectedProductInfo?.let {
                 insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
                 fragmentViewModel.viewModels.add(insuranceViewModel)
                 adapter.addSingleDataViewModel(insuranceViewModel)
                 adapter.notifyDataSetChanged()
                 renderActionButton(it)
                 renderTotalPrice(it, viewModel.selectedwarehouse)
-            }, 500)
-        }
+            }
+        }, 600)
     }
 
     override fun onChangeQuantity(quantityViewModel: QuantityViewModel) {
