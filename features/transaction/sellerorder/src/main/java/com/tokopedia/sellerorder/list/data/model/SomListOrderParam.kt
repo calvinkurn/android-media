@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.writeIntList
  * Created by fwidjaja on 2019-08-28.
  */
 
+@Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 data class SomListOrderParam(
         @SerializedName("search")
         @Expose
@@ -30,11 +31,15 @@ data class SomListOrderParam(
 
         @SerializedName("status_list")
         @Expose
-        var statusList: List<Int> = listOf(),
+        var statusList: List<Int> = arrayListOf(),
 
         @SerializedName("shipping_list")
         @Expose
-        var shippingList: List<Int> = listOf(),
+        var shippingList: List<Int> = arrayListOf(),
+
+        @SerializedName("order_type_list")
+        @Expose
+        var orderTypeList: List<Int> = arrayListOf(),
 
         @SerializedName("sort_by")
         @Expose
@@ -47,8 +52,8 @@ data class SomListOrderParam(
                 parcel.readInt(),
                 parcel.createIntList(),
                 parcel.createIntList(),
-                parcel.readInt()) {
-        }
+                parcel.createIntList(),
+                parcel.readInt())
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeString(search)
@@ -57,6 +62,7 @@ data class SomListOrderParam(
                 parcel.writeInt(filterStatus)
                 parcel.writeIntList(statusList)
                 parcel.writeIntList(shippingList)
+                parcel.writeIntList(orderTypeList)
                 parcel.writeInt(sortBy)
         }
 

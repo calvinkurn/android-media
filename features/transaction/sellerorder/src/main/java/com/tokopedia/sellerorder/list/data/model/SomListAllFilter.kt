@@ -30,6 +30,10 @@ data class SomListAllFilter (
                 val statusList: List<StatusList> = listOf()
         ) {
             data class StatusList (
+                    @SerializedName("id")
+                    @Expose
+                    val id: Int = 0,
+
                     @SerializedName("value")
                     @Expose
                     val orderStatusIdList: List<Int> = listOf(),
@@ -40,7 +44,7 @@ data class SomListAllFilter (
 
                     @SerializedName("text")
                     @Expose
-                    val orderStatus: String = "",
+                    val text: String = "",
 
                     @SerializedName("counter")
                     @Expose

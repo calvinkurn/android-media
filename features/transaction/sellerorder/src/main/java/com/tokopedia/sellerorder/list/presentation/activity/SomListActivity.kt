@@ -19,6 +19,7 @@ class SomListActivity: BaseSimpleActivity(), HasComponent<SomListComponent> {
 
     override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun getNewFragment(): SomListFragment? {
         var bundle = Bundle()
         if (intent.extras != null) {

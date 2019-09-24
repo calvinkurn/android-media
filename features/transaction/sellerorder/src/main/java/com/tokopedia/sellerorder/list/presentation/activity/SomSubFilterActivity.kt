@@ -22,9 +22,11 @@ import kotlin.collections.ArrayList
  * Created by fwidjaja on 2019-09-13.
  */
 class SomSubFilterActivity : BaseSimpleActivity() {
-    private var listFilter: List<SomSubFilter> = listOf()
+    private var listFilter: List<SomSubFilter> = arrayListOf()
     private lateinit var actionListener: ActionListener
     private var currentFilterParam = SomListOrderParam()
+    private lateinit var subFilterAdapter: SomSubFilterAdapter
+    private lateinit var category: String
 
     override fun getLayoutRes(): Int = R.layout.activity_filter_sublist
     override fun getNewFragment(): Fragment? = null
@@ -37,12 +39,14 @@ class SomSubFilterActivity : BaseSimpleActivity() {
     companion object {
         private const val PARAM_LIST_FILTER = "LIST_FILTER"
         private const val CURRENT_FILTER_PARAM = "CURRENT_FILTER_PARAM"
+        private const val CATEGORY_PARAM  = "CATEGORY_PARAM"
 
         @JvmStatic
-        fun createIntent(context: Context, listFilter: ArrayList<SomSubFilter>, currentFilterParams: SomListOrderParam): Intent =
+        fun createIntent(context: Context, listFilter: ArrayList<SomSubFilter>, currentFilterParams: SomListOrderParam?, category: String): Intent =
                  Intent(context, SomSubFilterActivity::class.java)
                         .putParcelableArrayListExtra(PARAM_LIST_FILTER, ArrayList(listFilter))
                          .putExtra(CURRENT_FILTER_PARAM, currentFilterParams)
+                         .putExtra(CATEGORY_PARAM, category)
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -54,18 +58,17 @@ class SomSubFilterActivity : BaseSimpleActivity() {
             it.setDisplayHomeAsUpEnabled(true)
             it.title = getString(R.string.title_status)
         }
+        subFilterAdapter = SomSubFilterAdapter()
+        rv_sublist_filter.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = subFilterAdapter
+            setActionListener(adapter as SomSubFilterAdapter)
+        }
+        renderListSubFilter()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        listFilter = intent.getParcelableArrayListExtra(PARAM_LIST_FILTER) ?: listOf()
-        currentFilterParam = intent.getParcelableExtra(CURRENT_FILTER_PARAM)
-
         super.onCreate(savedInstanceState)
-        rv_sublist_filter.apply {
-            adapter = SomSubFilterAdapter(listFilter, currentFilterParam)
-            setActionListener(adapter as SomSubFilterAdapter)
-            layoutManager = LinearLayoutManager(context)
-        }
 
         label_reset.setOnClickListener {
             actionListener.onResetClicked()
@@ -78,6 +81,18 @@ class SomSubFilterActivity : BaseSimpleActivity() {
             })
             finish()
         }
+    }
+
+    private fun renderListSubFilter() {
+        listFilter = arrayListOf()
+        listFilter = intent.getParcelableArrayListExtra(PARAM_LIST_FILTER) ?: listOf()
+        currentFilterParam = intent.getParcelableExtra(CURRENT_FILTER_PARAM)
+        category = intent.getStringExtra(CATEGORY_PARAM)
+
+        subFilterAdapter.listSubFilter = listFilter.toMutableList()
+        subFilterAdapter.currentFilterParam = currentFilterParam
+        subFilterAdapter.category = category
+        subFilterAdapter.notifyDataSetChanged()
     }
 
     private fun setActionListener(adapter: SomSubFilterAdapter) {

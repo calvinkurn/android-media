@@ -1,5 +1,6 @@
 package com.tokopedia.sellerorder.list.presentation.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
@@ -20,6 +21,7 @@ import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.list.data.model.SomListFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
@@ -61,6 +63,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     companion object {
+        private const val REQUEST_FILTER = 2888
+
         @JvmStatic
         fun newInstance(bundle: Bundle): SomListFragment {
             return SomListFragment().apply {
@@ -117,7 +121,9 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
         search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
 
         filter_action_button.setOnClickListener {
-            startActivity(Intent(context, SomFilterActivity::class.java))
+            // startActivity(Intent(context, SomFilterActivity::class.java))
+            val intentFilter = context?.let { ctx -> SomFilterActivity.createIntent(ctx, paramOrder) }
+            startActivityForResult(intentFilter, REQUEST_FILTER)
         }
     }
 
@@ -338,5 +344,16 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     override fun onRefresh(view: View?) {
         isLoading = true
         loadOrderList()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_FILTER && resultCode == Activity.RESULT_OK) {
+            if (data != null) {
+                if (data.hasExtra(SomConsts.PARAM_LIST_ORDER)) {
+                    paramOrder = data.getParcelableExtra(SomConsts.PARAM_LIST_ORDER)
+                    refreshHandler?.startRefresh()
+                }
+            }
+        }
     }
 }
