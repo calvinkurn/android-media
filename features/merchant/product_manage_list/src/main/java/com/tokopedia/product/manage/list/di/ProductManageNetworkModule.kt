@@ -52,14 +52,12 @@ class ProductManageNetworkModule {
     @GMProductManageQualifier
     @Provides
     fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
-                              tkpdAuthInterceptor: TkpdAuthInterceptor,
                               httpLoggingInterceptor: HttpLoggingInterceptor,
                               errorResponseInterceptor: HeaderErrorResponseInterceptor,
                               cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
                 .addInterceptor(gmAuthInterceptor)
                 .addInterceptor(cacheApiInterceptor)
-                .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
                 .build()
