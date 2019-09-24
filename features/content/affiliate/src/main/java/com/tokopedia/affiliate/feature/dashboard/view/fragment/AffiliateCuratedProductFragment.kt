@@ -85,7 +85,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     override fun getAdapterTypeFactory(): DashboardItemTypeFactory {
         return DashboardItemTypeFactoryImpl(object : DashboardItemTypeFactoryImpl.OnClickListener {
             override fun onDashboardItemClickedListener(item: DashboardItemViewModel) {
-                onItemClicked(item)
+                onDashboardItemClicked(item)
             }
 
             override fun onBuyClick(appLink: String) {
@@ -134,14 +134,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     override fun onItemClicked(model: DashboardItemViewModel?) {
-        context?.let {
-            val affPostId = model?.id
-            if (affPostId != null) {
-                startActivity(
-                        CommissionDetailActivity.newInstance(it, affPostId)
-                )
-            }
-        }
+
     }
 
     override fun getScreenName(): String = "Curated Product List"
@@ -265,5 +258,16 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
 
     private fun shouldShareProfile() {
         listener?.shouldShareProfile()
+    }
+
+    private fun onDashboardItemClicked(item: DashboardItemViewModel) {
+        context?.let {
+            val affPostId = item.id
+            if (affPostId != null) {
+                startActivity(
+                        CommissionDetailActivity.newInstance(it, affPostId)
+                )
+            }
+        }
     }
 }

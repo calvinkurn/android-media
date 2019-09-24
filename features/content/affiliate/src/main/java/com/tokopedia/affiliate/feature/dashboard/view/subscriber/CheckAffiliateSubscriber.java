@@ -35,6 +35,5 @@ public class CheckAffiliateSubscriber extends Subscriber<Boolean> {
     @Override
     public void onNext(Boolean isAffiliate) {
         view.onSuccessCheckAffiliate(isAffiliate);
-        view.hideLoading();
     }
 }
