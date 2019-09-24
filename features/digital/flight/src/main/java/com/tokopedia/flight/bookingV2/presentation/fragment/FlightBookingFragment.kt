@@ -13,6 +13,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.presentation.activity.TravelContactDataActivity
 import com.tokopedia.common.travel.presentation.fragment.TravelContactDataFragment
 import com.tokopedia.common.travel.presentation.model.TravelContactData
@@ -23,7 +25,6 @@ import com.tokopedia.flight.FlightModuleRouter
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
-import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.adapter.*
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment
@@ -39,17 +40,18 @@ import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_flight_booking.*
 import rx.Observable
 import java.util.*
 import javax.inject.Inject
-import com.tokopedia.unifycomponents.Toaster
 
 /**
  * @author by furqan on 04/03/19
@@ -274,10 +276,7 @@ class FlightBookingFragment : BaseDaggerFragment(),
     }
 
     override fun navigateToOtpPage() {
-        if (activity!!.application is FlightModuleRouter) {
-            val intent = (activity!!.application as FlightModuleRouter).getPhoneVerifIntent(activity)
-            startActivityForResult(intent, REQUEST_CODE_OTP)
-        }
+        startActivityForResult(RouteManager.getIntent(context, ApplinkConst.FLIGHT_PHONE_VERIFICATION), REQUEST_CODE_OTP)
     }
 
     override fun closePage() {

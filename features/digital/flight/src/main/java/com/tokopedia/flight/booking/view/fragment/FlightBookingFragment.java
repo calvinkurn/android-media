@@ -28,8 +28,11 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.common.travel.presentation.activity.PhoneCodePickerActivity;
 import com.tokopedia.common.travel.presentation.fragment.PhoneCodePickerFragment;
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
@@ -40,7 +43,6 @@ import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
@@ -52,7 +54,6 @@ import com.tokopedia.flight.booking.view.presenter.FlightBookingPresenter;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.booking.widget.FlightInsuranceView;
@@ -65,6 +66,7 @@ import com.tokopedia.flight.common.util.FlightRequestUtil;
 import com.tokopedia.flight.common.view.FullDividerItemDecoration;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivity;
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
@@ -778,10 +780,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
     @Override
     public void navigateToOtpPage() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication()).getPhoneVerifIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_OTP);
-        }
+        startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.FLIGHT_PHONE_VERIFICATION), REQUEST_CODE_OTP);
     }
 
     @Override

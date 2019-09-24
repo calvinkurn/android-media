@@ -14,8 +14,6 @@ public interface FlightModuleRouter {
 
     Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel);
 
-    Intent getPhoneVerifIntent(Activity activity);
-
     Observable<ProfileInfo> getProfile();
 
     File writeImage(String filePath, int qualityProcentage);

@@ -1048,11 +1048,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getPhoneVerifIntent(Activity activity) {
-        return FlightPhoneVerificationActivity.getCallingIntent(activity);
-    }
-
-    @Override
     public Intent getSellerHomeIntent(Activity activity) {
         return null;
     }
