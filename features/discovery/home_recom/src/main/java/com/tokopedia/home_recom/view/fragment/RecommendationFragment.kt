@@ -241,14 +241,14 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
             if(isAddWishlist){
                 recommendationWidgetViewModel.addWishlist(item, callback)
                 if(productId.isNotBlank() || productId.isNotEmpty()){
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, getHeaderName(item), ref)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(true, ref)
                 }else {
                     RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(true, getHeaderName(item), ref)
                 }
             } else {
                 recommendationWidgetViewModel.removeWishlist(item, callback)
                 if(productId.isNotBlank() || productId.isNotEmpty()){
-                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, getHeaderName(item), ref)
+                    RecommendationPageTracking.eventUserClickRecommendationWishlistForLoginWithProductId(false, ref)
                 }else {
                     RecommendationPageTracking.eventUserClickRecommendationWishlistForLogin(false, getHeaderName(item), ref)
                 }
@@ -256,7 +256,7 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         }else{
             RouteManager.route(context, ApplinkConst.LOGIN)
             if(productId.isNotBlank() || productId.isNotEmpty()){
-               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLoginWithProductId(getHeaderName(item), ref)
+               RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLoginWithProductId(ref)
             } else {
                RecommendationPageTracking.eventUserClickRecommendationWishlistForNonLogin(getHeaderName(item), ref)
             }

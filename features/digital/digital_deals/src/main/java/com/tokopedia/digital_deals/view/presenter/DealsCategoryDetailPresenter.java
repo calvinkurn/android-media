@@ -15,11 +15,14 @@ import com.tokopedia.digital_deals.domain.getusecase.GetAllBrandsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetCategoryDetailRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetLocationListRequestUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetNextCategoryPageUseCase;
+import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.view.TopDealsCacheHandler;
 import com.tokopedia.digital_deals.view.contractor.DealsCategoryDetailContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.ProductItem;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
+import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
 import com.tokopedia.digital_deals.view.model.response.CategoryDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.LocationResponse;
@@ -57,6 +60,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
     private GetLocationListRequestUseCase getLocationListRequestUseCase;
     private GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase;
     private GetNextCategoryPageUseCase getNextCategoryPageUseCase;
+    private PostNsqEventUseCase postNsqEventUseCase;
     private List<ProductItem> productItems;
     private List<Brand> brands;
     private Page page;
@@ -65,11 +69,12 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
 
 
     @Inject
-    public DealsCategoryDetailPresenter(GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetNextCategoryPageUseCase getNextCategoryPageUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetLocationListRequestUseCase getLocationListRequestUseCase) {
+    public DealsCategoryDetailPresenter(GetCategoryDetailRequestUseCase getCategoryDetailRequestUseCase, GetNextCategoryPageUseCase getNextCategoryPageUseCase, GetAllBrandsUseCase getAllBrandsUseCase, GetLocationListRequestUseCase getLocationListRequestUseCase, PostNsqEventUseCase postNsqEventUseCase) {
         this.getCategoryDetailRequestUseCase = getCategoryDetailRequestUseCase;
         this.getNextCategoryPageUseCase = getNextCategoryPageUseCase;
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getLocationListRequestUseCase = getLocationListRequestUseCase;
+        this.postNsqEventUseCase = postNsqEventUseCase;
     }
 
     @Override
@@ -82,6 +87,7 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         getCategoryDetailRequestUseCase.unsubscribe();
         getNextCategoryPageUseCase.unsubscribe();
         getAllBrandsUseCase.unsubscribe();
+        postNsqEventUseCase.unsubscribe();
     }
 
     @Override
@@ -350,5 +356,31 @@ public class DealsCategoryDetailPresenter extends BaseDaggerPresenter<DealsCateg
         });
     }
 
+    public void sendNSQEvent(String userId, String action) {
+        NsqServiceModel nsqServiceModel = new NsqServiceModel();
+        nsqServiceModel.setService(Utils.NSQ_SERVICE);
+        NsqMessage nsqMessage = new NsqMessage();
+        nsqMessage.setUserId(Integer.parseInt(userId));
+        nsqMessage.setUseCase(Utils.NSQ_USE_CASE);
+        nsqMessage.setAction(action);
+        nsqServiceModel.setMessage(nsqMessage);
+        postNsqEventUseCase.setRequestModel(nsqServiceModel);
+        postNsqEventUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                CommonUtils.dumper(e);
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                Log.d("Naveen", "NSQ Event Sent category event");
+            }
+        });
+    }
 }
 

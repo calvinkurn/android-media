@@ -78,6 +78,8 @@ public interface DigitalBaseContract {
 
         String getClientNumber();
 
+        String getZoneId();
+
         boolean isInstantCheckout();
 
         int getProductId();

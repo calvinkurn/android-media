@@ -38,6 +38,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+
+
         </LinearLayout>
 
     </FrameLayout>
@@ -216,5 +218,13 @@
         android:background="@color/white"
         app:behavior_hideable="true"
         app:layout_behavior="com.tokopedia.filter.widget.UserLockBottomSheetBehavior" />
+
+    <include
+        android:id="@+id/layout_banned_screen"
+        layout="@layout/layout_nav_banned_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 
 </android.support.design.widget.CoordinatorLayout>

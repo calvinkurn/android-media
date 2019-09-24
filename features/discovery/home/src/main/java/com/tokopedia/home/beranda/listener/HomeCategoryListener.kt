@@ -34,7 +34,7 @@ interface HomeCategoryListener {
 
     fun onCloseTicker(pos: Int)
 
-    fun onPromoClick(position: Int, slidesModel: BannerSlidesModel, attribution: String)
+    fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
     fun openShop()
 
@@ -48,7 +48,7 @@ interface HomeCategoryListener {
 
     fun showNetworkError(message: String)
 
-    fun onDynamicChannelClicked(applink: String, trackingAttribution: String)
+    fun onDynamicChannelClicked(applink: String)
 
     fun onRefreshTokoPointButtonClicked()
 

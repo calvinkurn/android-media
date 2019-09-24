@@ -30,6 +30,7 @@ class GetNotificationUpdateMapper @Inject constructor(){
                     hasShop = item.userInfo.hasShop(),
                     typeLink = notificationUpdateItem.typeLink,
                     totalProduct = notificationUpdateItem.totalProducts,
+                    btnText = notificationUpdateItem.btnText,
                     products = notificationUpdateItem.productData
             )
             list.add(datum)

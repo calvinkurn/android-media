@@ -415,8 +415,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
             fetchProductData(getProductListParamMap(getPage()))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
-            productNavViewModel.fetchQuickFilters(getQuickFilterParams())
-        }
+            productNavViewModel.fetchQuickFilters(getQuickFilterParams())        }
         attachScrollListener()
     }
 

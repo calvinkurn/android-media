@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.common.analytics
 import android.app.Activity
 import android.content.Context
 import android.util.Patterns
-
 import com.crashlytics.android.Crashlytics
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.cashshield.CashShield
@@ -13,11 +12,10 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
-
-import java.util.HashMap
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -546,10 +544,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
     }
 
     fun eventSuccessRegisterEmail(context: Context?, userId: Int, name: String, email: String) {
-        context?.let {
-            getCashShield(it).send()
-        }
-
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,
@@ -599,9 +593,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
 
     fun eventSuccessLogin(context: Context?, actionLoginMethod: String, registerAnalytics: RegisterAnalytics) {
-        context?.let {
-            getCashShield(it).send()
-        }
 
         when (actionLoginMethod) {
             UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessLoginWithEmail(registerAnalytics)
@@ -769,9 +760,15 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     }
 
-    fun onCreate(context: Context?) {
+    fun initCashShield(context: Context?) {
         context?.let {
             getCashShield(it).refreshSession()
+        }
+    }
+
+    fun sendCashShield(context: Context?) {
+        context?.let {
+            getCashShield(it).send()
         }
     }
 
