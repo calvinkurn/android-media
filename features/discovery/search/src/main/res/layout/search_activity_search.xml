@@ -70,7 +70,7 @@
                     android:layout_height="@dimen/dp_24"
                     android:scaleType="centerInside"
                     android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginStart="@dimen/dp_8"
+                    android:layout_marginStart="@dimen/dp_16"
                     app:srcCompat="@drawable/search_ic_cart" />
 
                 <ImageView
