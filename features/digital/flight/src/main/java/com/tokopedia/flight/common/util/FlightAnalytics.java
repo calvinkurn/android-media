@@ -814,11 +814,11 @@ public class FlightAnalytics {
     public static final class Screen {
 
         public static String FLIGHT_CANCELLATION_STEP_TWO = "Flight Cancellation Reason and Proof";
-        public static String HOMEPAGE = "Homepage";
-        public static String SEARCH = "Search";
+        public static String HOMEPAGE = "/flight/homepage";
+        public static String SEARCH = "/flight/search";
         public static String SEARCH_RETURN = "Search Return";
-        public static String REVIEW = "Review";
-        public static String BOOKING = "Booking";
+        public static String REVIEW = "/flight/summary";
+        public static String BOOKING = "/flight/booking";
     }
 
     private static class Category {
