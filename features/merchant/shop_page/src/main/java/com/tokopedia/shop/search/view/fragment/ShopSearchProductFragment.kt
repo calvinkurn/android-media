@@ -263,13 +263,15 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private fun redirectToShopProductListPage() {
         shopInfo?.run {
-            startActivity(ShopProductListActivity.createIntent(
+            val intent = ShopProductListActivity.createIntent(
                     context,
                     shopCore.shopID,
                     searchQuery,
                     "",
                     shopAttribution
-            ))
+            )
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
         }
     }
 

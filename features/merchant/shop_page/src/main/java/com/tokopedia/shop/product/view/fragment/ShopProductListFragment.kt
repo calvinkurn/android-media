@@ -98,6 +98,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     private var remoteConfig: RemoteConfig? = null
 
     private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
+    private var onSuccessGetShopInfoListener: OnSuccessGetShopInfoListener? = null
     private var needReloadData: Boolean = false
     private val etalaseChipAdapter: EtalaseChipAdapter by lazy {
         EtalaseChipAdapter(null, null, this)
@@ -108,6 +109,10 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     interface OnShopProductListFragmentListener {
         fun updateUIByShopName(shopName: String)
         fun updateUIByEtalaseName(etalaseName: String?)
+    }
+
+    interface OnSuccessGetShopInfoListener{
+        fun updateShopInfo(shopInfo: ShopInfo)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -527,6 +532,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
         this.isGoldMerchant = shopInfo.goldOS.isGold == 1
         onShopProductListFragmentListener?.updateUIByShopName(shopInfo.shopCore.name)
+        onSuccessGetShopInfoListener?.updateShopInfo(shopInfo)
         loadInitialData()
     }
 
@@ -749,6 +755,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         onShopProductListFragmentListener = context as OnShopProductListFragmentListener
+        onSuccessGetShopInfoListener = context as OnSuccessGetShopInfoListener
         shopModuleRouter = context.applicationContext as ShopModuleRouter
     }
 

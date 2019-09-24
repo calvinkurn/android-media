@@ -15,6 +15,7 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     companion object {
         const val KEY_SHOP_INFO_CACHE_MANAGER_ID = "keyShopInfoCacheManagerId"
         const val KEY_SHOP_ATTRIBUTION = "keyShopAttribution"
+        @JvmStatic
         fun createIntent(context: Context, cacheManagerId: String, shopAttribution: String?): Intent {
             val intent = Intent(context, ShopSearchProductActivity::class.java)
             intent.putExtra(KEY_SHOP_INFO_CACHE_MANAGER_ID, cacheManagerId)
