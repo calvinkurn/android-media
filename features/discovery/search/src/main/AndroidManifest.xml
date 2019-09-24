@@ -23,6 +23,11 @@
                     android:scheme="@string/internal_scheme"
                     android:host="@string/host_discovery"
                     android:path="@string/path_search_result"/>
+
+                <data
+                    android:scheme="@string/tokopedia_scheme"
+                    android:host="@string/search_result_global_applink"
+                    android:pathPattern=".*"/>
             </intent-filter>
 
         </activity>

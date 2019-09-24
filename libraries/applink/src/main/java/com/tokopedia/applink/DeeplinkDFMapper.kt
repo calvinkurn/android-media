@@ -8,7 +8,9 @@ import com.google.android.play.core.splitinstall.SplitInstallManager
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.tokopedia.applink.ApplinkConst.*
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital.TELCO_DIGITAL
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.AUTOCOMPLETE
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SEARCH_RESULT
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery.SIMILAR_SEARCH_RESULT_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
@@ -48,6 +50,8 @@ object DeeplinkDFMapper {
     // it should have the same name with the folder of dynamic feature
     private val DFM_SIMILAR_SEARCH = "similarsearch"
     private val DFM_IMAGE_SEARCH = "image_search"
+    private val DFM_AUTOCOMPLETE = "autocomplete"
+    private val DFM_SEARCH_RESULT = "search"
     private val DFM_HOMEPAGE_DIGITAL = "homepage_digital"
     private val DFM_SHOP_SETTINGS_SELLERAPP = "shop_settings_sellerapp"
     private val DFM_SHOP_SETTINGS_CUSTOMERAPP = "shop_settings"
@@ -82,6 +86,10 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_SIMILAR_SEARCH, R.string.title_similar_search))
+            add(DFP({ it.startsWith(AUTOCOMPLETE) }, DFM_AUTOCOMPLETE, R.string.title_autocomplete))
+            add(DFP({ it.startsWith(DISCOVERY_SEARCH_AUTOCOMPLETE) }, DFM_AUTOCOMPLETE, R.string.title_autocomplete))
+            add(DFP({ it.startsWith(SEARCH_RESULT) }, DFM_SEARCH_RESULT, R.string.title_search_result))
+            add(DFP({ it.startsWith(DISCOVERY_SEARCH) }, DFM_SEARCH_RESULT, R.string.title_search_result))
             add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
         }
     }
