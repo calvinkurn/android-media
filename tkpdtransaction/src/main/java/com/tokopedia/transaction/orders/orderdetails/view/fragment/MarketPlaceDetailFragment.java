@@ -223,6 +223,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         statusLihat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                orderListAnalytics.sendLihatStatusClick(status.status());
                 startActivity(((UnifiedOrderListRouter) getActivity().getApplication()).getOrderHistoryIntent(
                         getActivity(), getArguments().getString(KEY_ORDER_ID)
                 ));
@@ -278,6 +279,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         }
         lihat.setOnClickListener(view -> {
             orderListAnalytics.sendViewInvoiceClickEvent();
+            orderListAnalytics.sendLihatInvoiceClick(status.status());
             try {
                 startActivity(((UnifiedOrderListRouter) getActivity()
                         .getApplication()).getWebviewActivityWithIntent(getContext(),
@@ -769,6 +771,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
             @Override
             public void onClick(View view) {
                 try {
+                    orderListAnalytics.sendHelpEventData(status.status());
                     startActivity(((UnifiedOrderListRouter) getActivity()
                             .getApplication()).getWebviewActivityWithIntent(getContext(),
                             URLEncoder.encode(helpLink, ORDER_LIST_URL_ENCODING)));

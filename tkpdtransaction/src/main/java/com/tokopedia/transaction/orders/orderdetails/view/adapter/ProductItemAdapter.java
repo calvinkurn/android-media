@@ -131,7 +131,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     public void onClick(View view) {
                         List<Items> itemsList = new ArrayList<>();
                         itemsList.add(items);
-                        presenter.onBuyAgainItems(itemsList);
+                        presenter.onBuyAgainItems(itemsList,"product");
                     }
                 });
             }
