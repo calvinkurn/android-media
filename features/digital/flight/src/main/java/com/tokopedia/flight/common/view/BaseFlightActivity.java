@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.common.di.component.FlightComponent;
 import com.tokopedia.flight.common.util.FlightAnalytics;
@@ -81,13 +80,7 @@ public abstract class BaseFlightActivity extends BaseSimpleActivity {
             }
             return true;
         } else if (item.getItemId() == R.id.menu_help) {
-            if (getApplication() instanceof FlightModuleRouter
-                    && ((FlightModuleRouter) getApplication())
-                    .getDefaultContactUsIntent(this) != null) {
-                startActivity(((FlightModuleRouter) getApplication())
-                        .getDefaultContactUsIntent(this, CONTACT_US_FLIGHT));
-            }
-
+            RouteManager.route(this, CONTACT_US_FLIGHT);
             return true;
         } else {
             return super.onOptionsItemSelected(item);

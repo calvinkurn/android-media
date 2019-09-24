@@ -1,7 +1,6 @@
 package com.tokopedia.flight;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -14,12 +13,6 @@ import rx.Observable;
 public interface FlightModuleRouter {
 
     Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel);
-
-    Intent getHomeIntent(Context context);
-
-    Intent getDefaultContactUsIntent(Activity activity);
-
-    Intent getDefaultContactUsIntent(Activity activity, String url);
 
     Intent getPhoneVerifIntent(Activity activity);
 

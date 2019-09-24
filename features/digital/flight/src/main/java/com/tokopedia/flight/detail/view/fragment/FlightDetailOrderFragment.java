@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -457,20 +458,14 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToWebview(String url) {
-        startActivity(flightModuleRouter
-                .getDefaultContactUsIntent(getActivity(), url));
+        RouteManager.route(getContext(), url);
     }
 
     @Override
     public void navigateToFlightHomePage() {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getHomeIntent(getActivity()) != null) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
-                    .getHomeIntent(getActivity());
-            taskStackBuilder.addNextIntent(intent);
-        }
+        Intent homeIntent = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
+        taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(FlightDashboardActivity.getCallingIntent(getActivity()));
         taskStackBuilder.startActivities();
     }

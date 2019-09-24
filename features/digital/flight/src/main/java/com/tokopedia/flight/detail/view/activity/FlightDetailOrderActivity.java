@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.applink.ApplinkConstant;
 import com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
@@ -57,8 +56,7 @@ public class FlightDetailOrderActivity extends BaseSimpleActivity implements Has
             }
         }
 
-        return ((FlightModuleRouter) context.getApplicationContext())
-                .getHomeIntent(context.getApplicationContext());
+        return RouteManager.getIntent(context, ApplinkConst.HOME);
     }
 
     @Override

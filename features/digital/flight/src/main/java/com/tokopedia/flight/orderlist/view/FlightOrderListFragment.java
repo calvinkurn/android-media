@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
@@ -199,12 +200,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void onHelpOptionClicked(String contactUsUrl) {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getDefaultContactUsIntent(getActivity(), contactUsUrl) != null) {
-            startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getDefaultContactUsIntent(getActivity(), contactUsUrl));
-        }
+        RouteManager.route(getContext(), contactUsUrl);
     }
 
     @Override
@@ -221,13 +217,8 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void onReBookingClicked(FlightOrderBaseViewModel item) {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getHomeIntent(getActivity()) != null) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
-                    .getHomeIntent(getActivity());
-            taskStackBuilder.addNextIntent(intent);
-        }
+        Intent homeIntent = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
+        taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(FlightDashboardActivity.getCallingIntent(getActivity()));
         taskStackBuilder.startActivities();
     }

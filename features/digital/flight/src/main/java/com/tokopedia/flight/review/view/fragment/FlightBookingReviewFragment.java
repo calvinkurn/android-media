@@ -698,15 +698,10 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     @Override
     public void navigateToOrderList() {
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(getActivity());
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getHomeIntent(getActivity()) != null) {
-            Intent intent = ((FlightModuleRouter) getActivity().getApplication())
-                    .getHomeIntent(getActivity());
-            taskStackBuilder.addNextIntent(intent);
-        }
+        Intent homeTokopedia = RouteManager.getIntent(getContext(), ApplinkConst.HOME);
         Intent homepageFlight = FlightDashboardActivity.getCallingIntent(getActivity());
         Intent ordersFlight = RouteManager.getIntent(getContext(), ApplinkConst.FLIGHT_ORDER);
+        taskStackBuilder.addNextIntent(homeTokopedia);
         taskStackBuilder.addNextIntent(homepageFlight);
         taskStackBuilder.addNextIntent(ordersFlight);
         taskStackBuilder.startActivities();
