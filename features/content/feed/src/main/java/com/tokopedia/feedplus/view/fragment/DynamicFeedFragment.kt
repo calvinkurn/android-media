@@ -93,6 +93,7 @@ class DynamicFeedFragment:
 
     override fun onSwipeRefresh() {
         hideSnackBarRetry()
+        updateCursor("")
         swipeToRefresh.isRefreshing = true
         presenter.getFeedFirstPage(true)
     }
