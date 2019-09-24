@@ -5,10 +5,10 @@ package com.tokopedia.travel.homepage.presentation.listener
  */
 
 interface OnItemBindListener {
-    fun onBannerVHItemBind()
-    fun onCategoryVHBind()
-    fun onDestinationVHBind()
-    fun onOrderListVHBind()
-    fun onRecentSearchVHBind()
-    fun onRecommendationVHBind()
+    fun onBannerVHItemBind(isFromCloud: Boolean?)
+    fun onCategoryVHBind(isFromCloud: Boolean?)
+    fun onDestinationVHBind(isFromCloud: Boolean?)
+    fun onOrderListVHBind(isFromCloud: Boolean?)
+    fun onRecentSearchVHBind(isFromCloud: Boolean?)
+    fun onRecommendationVHBind(isFromCloud: Boolean?)
 }

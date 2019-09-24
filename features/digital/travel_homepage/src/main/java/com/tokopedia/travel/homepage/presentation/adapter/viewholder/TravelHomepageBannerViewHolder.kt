@@ -48,7 +48,7 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
             } catch (e: Throwable) {
 
             }
-        } else onBindListener.onBannerVHItemBind()
+        } else onBindListener.onBannerVHItemBind(element.isLoadFromCloud)
 
         itemView.banner_shimmering.visibility = if (element.isLoaded) View.GONE else View.VISIBLE
     }
