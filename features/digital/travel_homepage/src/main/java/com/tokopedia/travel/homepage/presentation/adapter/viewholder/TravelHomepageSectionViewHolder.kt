@@ -61,9 +61,9 @@ class TravelHomepageSectionViewHolder(itemView: View,
             itemView.shimmering.visibility = View.VISIBLE
             itemView.section_layout.visibility = View.GONE
             when (element.type) {
-                TYPE_ORDER_LIST -> onItemBindListener.onOrderListVHBind()
-                TYPE_RECENT_SEARCH -> onItemBindListener.onRecentSearchVHBind()
-                TYPE_RECOMMENDATION -> onItemBindListener.onRecommendationVHBind()
+                TYPE_ORDER_LIST -> onItemBindListener.onOrderListVHBind(element.isLoadFromCloud)
+                TYPE_RECENT_SEARCH -> onItemBindListener.onRecentSearchVHBind(element.isLoadFromCloud)
+                TYPE_RECOMMENDATION -> onItemBindListener.onRecommendationVHBind(element.isLoadFromCloud)
             }
         }
     }
