@@ -55,6 +55,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -220,26 +221,11 @@ public class MainParentActivity extends BaseActivity implements
         super.onStart();
         if (presenter.isFirstTimeUser()) {
             setDefaultShakeEnable();
-            routeOnboarding();
+            Intent intent = RouteManager.getIntent(this,
+                    ApplinkConstInternalMarketplace.ONBOARDING);
+            startActivity(intent);
+            finish();
         }
-    }
-
-    /**
-     * this is temporary fix for crash MediaPlayer,
-     *  because we already fix it 5times, and still appear on specific device
-     */
-    private void routeOnboarding() {
-        if (Build.MODEL.contains("vivo Y35")
-            || Build.MODEL.contains("vivo Y51L")) {
-            if (Build.VERSION.RELEASE.contains("5.0.2")) {
-                return;
-            }
-        }
-
-        Intent intent = RouteManager.getIntent(this,
-                ApplinkConstInternalMarketplace.ONBOARDING);
-        startActivity(intent);
-        finish();
     }
 
     private void setDefaultShakeEnable() {
@@ -854,7 +840,7 @@ public class MainParentActivity extends BaseActivity implements
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentHome.setAction(Intent.ACTION_VIEW);
 
-                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchAutoCompletePage(this);
+                    Intent productIntent = RouteManager.getIntent(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
                     productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 

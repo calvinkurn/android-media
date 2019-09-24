@@ -295,7 +295,7 @@ class TanpaAgunanFragment : BaseDaggerFragment(), OnlineLoanContractor.View, Wid
             loanAmountWarning.visibility = View.INVISIBLE
             widgetAddRemove.setText(loanAmountList[currentQuantity].label)
             widgetAddRemove.setLoanValue(loanAmountList[currentQuantity].value.toLong())
-        } else {
+        } else if (!loanAmountList.isNullOrEmpty()) {
             loanAmountWarning.visibility = View.VISIBLE
             loanAmountWarning.text = String.format(getString(R.string.il_min_loan_amount_warning), loanAmountList[0].label)
         }

@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
@@ -397,7 +398,7 @@ public class DeepLinkChecker {
 
     private static String constructSearchApplink(String query, String departmentId) {
         String applink = TextUtils.isEmpty(query) ?
-                ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE :
+                ApplinkConstInternalDiscovery.AUTOCOMPLETE :
                 ApplinkConst.DISCOVERY_SEARCH;
 
         return applink

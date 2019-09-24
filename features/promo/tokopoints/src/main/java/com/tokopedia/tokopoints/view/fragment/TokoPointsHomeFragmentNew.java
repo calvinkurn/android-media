@@ -27,6 +27,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
@@ -49,7 +50,6 @@ import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.activity.PointHistoryActivity;
-import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 import com.tokopedia.tokopoints.view.adapter.ExploreSectionPagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter;
@@ -72,6 +72,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+/*
+ * Dynamic layout params are applied via
+ * function setLayoutParams() because configuration in statusBarHeight
+ * */
 
 public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements TokoPointsHomeContract.View, View.OnClickListener, TokoPointToolbar.OnTokoPointToolbarClickListener {
 
@@ -135,11 +140,25 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         collapsingToolbarLayout.setTitle(" ");
 
         appBarHeader.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> handleAppBarOffsetChange(verticalOffset));
+        setLayoutParams();
 
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) tokoPointToolbar.getLayoutParams();
-        layoutParams.topMargin = getStatusBarHeight(getActivity());
-        tokoPointToolbar.setLayoutParams(layoutParams);
         return view;
+    }
+
+
+    private void setLayoutParams() {
+        int statusBarHeight = getStatusBarHeight(getActivity());
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) tokoPointToolbar.getLayoutParams();
+        layoutParams.topMargin = statusBarHeight;
+        tokoPointToolbar.setLayoutParams(layoutParams);
+
+        RelativeLayout.LayoutParams imageEggLp = (RelativeLayout.LayoutParams) mImgEgg.getLayoutParams();
+        imageEggLp.topMargin = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.tp_top_margin_big_image));
+        mImgEgg.setLayoutParams(imageEggLp);
+
+        RelativeLayout.LayoutParams imageBigLp = (RelativeLayout.LayoutParams) mImgBackground.getLayoutParams();
+        imageBigLp.height = (int) (statusBarHeight + getActivity().getResources().getDimension(R.dimen.tp_home_top_bg_height));
+        mImgBackground.setLayoutParams(imageBigLp);
     }
 
     public static int getStatusBarHeight(Context context) {

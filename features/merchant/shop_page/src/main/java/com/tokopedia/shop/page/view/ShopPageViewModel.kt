@@ -4,9 +4,9 @@ import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
-import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
@@ -17,6 +17,9 @@ import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
 import com.tokopedia.shop.page.domain.interactor.GetModerateShopUseCase
 import com.tokopedia.shop.page.domain.interactor.RequestModerateShopUseCase
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -33,6 +36,7 @@ class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatus
                                             private val toggleFavouriteShopUseCase: ToggleFavouriteShopUseCase,
                                             private val getModerateShopUseCase: GetModerateShopUseCase,
                                             private val requestModerateShopUseCase: RequestModerateShopUseCase,
+                                            private val stickyLoginUseCase: StickyLoginUseCase,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -177,11 +181,31 @@ class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatus
                 })
     }
 
+    fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+        stickyLoginUseCase.execute(
+            onSuccess = {
+                if (it.response.tickers.isNotEmpty()) {
+                    onSuccess.invoke(it.response.tickers[0])
+                } else {
+                    onError?.invoke(Throwable(DATA_NOT_FOUND))
+                }
+            },
+            onError = {
+                onError?.invoke(it)
+            }
+        )
+    }
+
     override fun clear() {
         super.clear()
         getWhitelistUseCase.unsubscribe()
         toggleFavouriteShopUseCase.unsubscribe()
         getModerateShopUseCase.unsubscribe()
         requestModerateShopUseCase.unsubscribe()
+    }
+
+    companion object {
+        private const val DATA_NOT_FOUND = "Data not found"
     }
 }

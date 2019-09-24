@@ -41,7 +41,7 @@ class DynamicFeedPresenter @Inject constructor(val userSession: UserSessionInter
                 object : Subscriber<DynamicFeedDomainModel>() {
                     override fun onNext(t: DynamicFeedDomainModel?) {
                         t?.let {
-                            view.onSuccessGetFeed(t.postList, t.cursor)
+                            view.onSuccessGetFeedFirstPage(t.postList, t.cursor)
                         }
                     }
 

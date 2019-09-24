@@ -171,11 +171,12 @@ class DFInstallerActivity : BaseSimpleActivity() {
         // Load and install the requested feature module.
         manager.startInstall(request).addOnSuccessListener {
             sessionId = it
-        }.addOnFailureListener {
+        }.addOnFailureListener { exception ->
+            val errorCode = (exception as SplitInstallException).errorCode
             sessionId = null
             hideProgress()
             val message = getString(R.string.error_for_module_x, moduleName)
-            showFailedMessage(message)
+            showFailedMessage(message, errorCode.toString())
         }
     }
 

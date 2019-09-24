@@ -97,6 +97,12 @@ public interface ProductListSectionContract {
         void redirectSearchToAnotherPage(String applink);
 
         void sendTrackingForNoResult(String resultCode, String alternativeKeyword);
+
+        void setDefaultLayoutType(int defaultView);
+
+        void showErrorMessage(boolean isFullScreenMessage, String errorMessage);
+
+        void hideErrorMessage();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {
