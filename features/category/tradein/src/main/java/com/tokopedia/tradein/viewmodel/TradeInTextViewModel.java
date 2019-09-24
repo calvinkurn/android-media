@@ -46,7 +46,6 @@ public class TradeInTextViewModel extends AndroidViewModel implements ITradeInPa
             FragmentActivity activity = activityWeakReference.get();
 
             AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
-            accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
             accessDialog.setBodyText(activity.getString(R.string.tradein_text_permission_description));
             accessDialog.setTitle(activity.getString(R.string.tradein_text_request_access));
             accessDialog.setNegativeButton("");
