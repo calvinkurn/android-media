@@ -17,6 +17,9 @@
     <string name="title_add_phone">Tambah Nomor Ponsel</string>
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
 
+    <!--    Change Phone Number-->
+    <string name="change_phone_number_app_name">changephonenumber</string>
+
     <!-- Dynamic feature for Open Shop-->
     <string name="title_open_shop">Buka Toko Gratis</string>
     <string name="title_shop_postal_code">Kode Pos</string>

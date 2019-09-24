@@ -1,0 +1,11 @@
+<manifest xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.tokopedia.changephonenumber.customerapp">
+
+    <dist:module
+        dist:instant="false"
+        dist:onDemand="true"
+        dist:title="@string/change_phone_number_app_name">
+        <dist:fusing dist:include="true" />
+    </dist:module>
+</manifest>
+
