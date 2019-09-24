@@ -15,6 +15,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -105,8 +106,8 @@ class MoneyInCheckoutActivity : BaseTradeInActivity(), MoneyInScheduledTimeBotto
         mTvTnc.movementMethod = LinkMovementMethod.getInstance()
         val tvChangeRecipientAddress = findViewById<Typography>(R.id.tv_change_recipient_address) as Typography
         tvChangeRecipientAddress.setOnClickListener {
-            val intent = CartAddressChoiceActivity.createInstance(this,
-                    CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN)
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalMarketplace.CHECKOUT_ADDRESS_SELECTION)
+            intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN)
             startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS)
         }
     }

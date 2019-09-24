@@ -7,8 +7,6 @@ import java.util.Map;
  */
 public interface ICartListAnalyticsListener {
 
-    void sendAnalyticsOnButtonCheckoutClicked();
-
     void sendAnalyticsOnClickBackArrow();
 
     void sendAnalyticsOnClickRemoveButtonHeader();

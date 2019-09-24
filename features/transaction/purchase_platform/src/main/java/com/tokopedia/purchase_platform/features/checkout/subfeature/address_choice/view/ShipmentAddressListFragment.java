@@ -50,7 +50,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_TYPE_REQUEST;
 import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
@@ -113,7 +112,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
         bundle.putParcelable(EXTRA_CURRENT_ADDRESS, currentAddress);
         bundle.putBoolean(ARGUMENT_DISABLE_CORNER, false);
         bundle.putInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
-        bundle.putInt(EXTRA_TYPE_REQUEST, requestType);
+        bundle.putInt(CheckoutConstant.EXTRA_TYPE_REQUEST, requestType);
         ShipmentAddressListFragment shipmentAddressListFragment = new ShipmentAddressListFragment();
         shipmentAddressListFragment.setArguments(bundle);
         return shipmentAddressListFragment;
@@ -198,7 +197,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
             mCurrentAddress = getArguments().getParcelable(EXTRA_CURRENT_ADDRESS);
             isDisableCorner = getArguments().getBoolean(ARGUMENT_DISABLE_CORNER, false) ||
                     isDisableSampaiView();
-            requestType = getArguments().getInt(EXTRA_TYPE_REQUEST, 0);
+            requestType = getArguments().getInt(CheckoutConstant.EXTRA_TYPE_REQUEST, 0);
             originDirectionType = getArguments().getInt(ARGUMENT_ORIGIN_DIRECTION_TYPE, ORIGIN_DIRECTION_TYPE_DEFAULT);
         }
     }

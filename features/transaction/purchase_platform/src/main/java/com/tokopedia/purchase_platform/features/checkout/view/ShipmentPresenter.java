@@ -84,6 +84,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddr
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormOneClickShipementUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.purchase_platform.features.checkout.domain.usecase.SaveShipmentStateUseCase;
+import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.CheckShipmentPromoFirstStepAfterClashSubscriber;
 import com.tokopedia.purchase_platform.features.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;

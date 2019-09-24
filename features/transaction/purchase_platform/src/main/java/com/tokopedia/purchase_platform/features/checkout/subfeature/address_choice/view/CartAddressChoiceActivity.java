@@ -38,10 +38,10 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_
 public class CartAddressChoiceActivity extends BaseCheckoutActivity
         implements ShipmentAddressListFragment.ICartAddressChoiceActivityListener, CornerListFragment.ActionListener {
 
-    // If these constants will be used on other module, please move into CheckoutConstant.kt class
+    // Attention !!
+    // If these constants will be used on other module, please move into CheckoutConstant.kt class on package purchase_platform_common
     public static final int RESULT_CODE_ACTION_ADD_DEFAULT_ADDRESS = 102;
     public static final int RESULT_CODE_ACTION_EDIT_ADDRESS = 103;
-    public static final String EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST";
     public static final String EXTRA_CURRENT_ADDRESS = "CURRENT_ADDRESS";
     public static final String EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "DISTRICT_RECOMMENDATION_TOKEN";
     public static final String EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX = "EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX";
@@ -61,7 +61,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                                         ArrayList<MultipleAddressAdapterData> dataList,
                                         int parentPosition) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(EXTRA_TYPE_REQUEST, TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);
+        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT);
         intent.putExtra(EXTRA_MULTIPLE_ADDRESS_DATA_LIST, dataList);
         intent.putExtra(EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
         return intent;
@@ -73,7 +73,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                                         int childPosition,
                                         int parentPosition) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(EXTRA_TYPE_REQUEST, TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);
+        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS);
         intent.putExtra(EXTRA_MULTIPLE_ADDRESS_DATA_LIST, dataList);
         intent.putExtra(EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, childPosition);
         intent.putExtra(EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, parentPosition);
@@ -85,7 +85,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                                         RecipientAddressModel currentAddress,
                                         int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, typeRequest);
         if (currentAddress != null) {
             intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
         }
@@ -97,7 +97,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                                         Token token,
                                         int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, typeRequest);
         intent.putExtra(EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
         if (currentAddress != null) {
             intent.putExtra(EXTRA_CURRENT_ADDRESS, currentAddress);
@@ -108,7 +108,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
     public static Intent createInstance(Activity activity,
                                         int typeRequest) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, typeRequest);
         return intent;
     }
 
@@ -116,7 +116,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
                                         int typeRequest,
                                         Token token) {
         Intent intent = new Intent(activity, CartAddressChoiceActivity.class);
-        intent.putExtra(EXTRA_TYPE_REQUEST, typeRequest);
+        intent.putExtra(CheckoutConstant.EXTRA_TYPE_REQUEST, typeRequest);
         intent.putExtra(EXTRA_DISTRICT_RECOMMENDATION_TOKEN, token);
         return intent;
     }
@@ -140,7 +140,7 @@ public class CartAddressChoiceActivity extends BaseCheckoutActivity
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        this.typeRequest = extras.getInt(EXTRA_TYPE_REQUEST);
+        this.typeRequest = extras.getInt(CheckoutConstant.EXTRA_TYPE_REQUEST);
         this.token = extras.getParcelable(EXTRA_DISTRICT_RECOMMENDATION_TOKEN);
     }
 
