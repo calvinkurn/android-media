@@ -63,8 +63,8 @@ class SelectLoanParamActivity : BaseActivity() {
     }
 
     fun killActivity() {
-        finish()
-        onDestroy()
+        this.finish()
+//        onDestroy()
 //        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
     }
 
@@ -125,7 +125,7 @@ class SelectLoanParamActivity : BaseActivity() {
 
             init {
                 title = v.findViewById<View>(com.tokopedia.instantloan.R.id.il_rv_item_title) as TextView
-                title.setOnClickListener(this)
+//                title.setOnClickListener(this)
             }
 
             override fun onClick(v: View) {
