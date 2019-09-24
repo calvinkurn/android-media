@@ -1,16 +1,16 @@
 package com.tokopedia.product.manage.list.di
 
 import android.content.Context
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
+import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi
-import com.tokopedia.product.manage.list.utils.ProductManageGmInterceptor
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -44,19 +44,29 @@ class ProductManageNetworkModule {
 
     @ProductManageScope
     @Provides
-    fun provideProductManageInterceptor(userSessionInterface: UserSessionInterface): ProductManageGmInterceptor {
-        return ProductManageGmInterceptor(userSessionInterface)
+    fun provideGMAuthInterceptor(@ApplicationContext context: Context,
+                                 abstractionRouter: AbstractionRouter): GMAuthInterceptor {
+        return GMAuthInterceptor(context, abstractionRouter)
+    }
+
+    @ProductManageScope
+    @Provides
+    fun provideAbstractionRouter(@ApplicationContext context: Context): AbstractionRouter {
+        if (context is AbstractionRouter) {
+            return context
+        }
+        throw RuntimeException("App should implement " + AbstractionRouter::class.java.simpleName)
     }
 
     @GMProductManageQualifier
     @Provides
-    fun provideGMOkHttpClient(productManageGmInterceptor: ProductManageGmInterceptor,
+    fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
                               tkpdAuthInterceptor: TkpdAuthInterceptor,
                               httpLoggingInterceptor: HttpLoggingInterceptor,
                               errorResponseInterceptor: HeaderErrorResponseInterceptor,
                               cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
-                .addInterceptor(productManageGmInterceptor)
+                .addInterceptor(gmAuthInterceptor)
                 .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)
