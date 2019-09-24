@@ -77,8 +77,8 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PROMOTION_CLICK,
-                        EVENT_LABEL, String.format(getDefaultLocale(), "%s-%d-%s",
-                                Label.FLIGHT,
+                        EVENT_LABEL, String.format(getDefaultLocale(), "%s - %d - %s",
+                                Label.FLIGHT_SMALL,
                                 position,
                                 banner.getAttributes().getPromoCode()
                         ),
@@ -136,7 +136,7 @@ public class FlightAnalytics {
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH,
                 String.format("%s - %s-%s - %s - %s-%s-%s - %s - %s - %s",
-                        Label.FLIGHT,
+                        Label.FLIGHT_SMALL,
                         (dashboardViewModel.getDepartureAirport().getAirportCode() == null || dashboardViewModel.getDepartureAirport().getAirportCode().isEmpty()) ?
                                 dashboardViewModel.getDepartureAirport().getCityCode() : dashboardViewModel.getDepartureAirport().getAirportCode(),
                         (dashboardViewModel.getArrivalAirport().getAirportCode() == null || dashboardViewModel.getArrivalAirport().getAirportCode().isEmpty()) ?
@@ -146,8 +146,8 @@ public class FlightAnalytics {
                         dashboardViewModel.getFlightPassengerViewModel().getChildren(),
                         dashboardViewModel.getFlightPassengerViewModel().getInfant(),
                         dashboardViewModel.getFlightClass().getTitle(),
-                        dashboardViewModel.getDepartureDate(),
-                        dashboardViewModel.getReturnDate()
+                        FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getDepartureDate()),
+                        FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate())
                 )
         ));
     }
@@ -712,7 +712,7 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PROMO_VIEW_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PROMOTION_VIEW,
-                        EVENT_LABEL, String.format(getDefaultLocale(), "%s-%d-%s",
+                        EVENT_LABEL, String.format(getDefaultLocale(), "%s - %d - %s",
                                 Label.FLIGHT,
                                 position,
                                 banner.getAttributes().getPromoCode()
@@ -875,6 +875,7 @@ public class FlightAnalytics {
         static String NOT_REFUNDABLE = "- not refundable";
         static String PARTIALLY_REFUNDABLE = "- partially refundable";
         static String FLIGHT = "Flight";
+        static String FLIGHT_SMALL = "flight";
         static String PRODUCT_VIEW = "flight - %s-%s";
     }
 
