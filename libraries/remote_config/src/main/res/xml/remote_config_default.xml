@@ -332,4 +332,8 @@
         <key>app_enable_category_revamp</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>app_enable_catalog_revamp</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

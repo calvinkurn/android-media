@@ -8,4 +8,6 @@
     <color name="color_item_preview_border">#e0e0e0</color>
     <color name="charcoal_grey_88">#e131353b</color>
     <color name="white_70">#bfffffff</color>
+    <color name="tp_ticker_indicator_default_color">#3d9fa6b0</color>
+    <color name="clr_31353b">#31353b</color>
 </resources>

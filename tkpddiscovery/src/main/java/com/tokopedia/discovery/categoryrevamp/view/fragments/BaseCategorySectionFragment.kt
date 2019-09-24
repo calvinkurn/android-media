@@ -349,12 +349,13 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
                 clearDataFilterSort()
                 reloadData()
-                catAnalyticsInstance.eventSortApplied(getDepartMentId(),
-                        selectedSortName
-                                ?: "", selectedSort["ob"]?.toInt() ?: 0)
+                onSortAppliedEvent(selectedSortName ?: "",
+                        selectedSort["ob"]?.toInt() ?: 0)
             }
         })
     }
+
+    abstract fun onSortAppliedEvent(selectedSortName:String, sortValue:Int)
 
     fun clearDataFilterSort() {
         if (filters != null) {
