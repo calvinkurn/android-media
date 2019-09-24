@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GO_TO_MEMBERSHIP_DETAIL
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipQuests
 import com.tokopedia.shop.common.view.BaseMembershipViewHolder
 import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
@@ -16,6 +17,7 @@ class MembershipItemRegisteredViewHolder(private val view: View, private val dat
     override fun bind(element: MembershipQuests) {
         membershipView.setMembershipModel(element, dataSize)
         membershipView.setOnClickListener {
+            listener.goToVoucherOrRegister(url, GO_TO_MEMBERSHIP_DETAIL)
             RouteManager.route(view.context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
         }
         membershipView.btnClaim.setOnClickListener {
