@@ -64,8 +64,22 @@ class SelectLoanParamActivity : BaseActivity() {
 
     fun killActivity() {
         finish()
+        onDestroy()
 //        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
     }
+
+    override fun onPause() {
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
 
     private inner class ListAdapter(sortList: List<LoanPeriodType>?, private var selectedKey: Int, private var selectedValue: String?, internal var clickListener: OnItemClickListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {
         internal var sortList: List<LoanPeriodType>
