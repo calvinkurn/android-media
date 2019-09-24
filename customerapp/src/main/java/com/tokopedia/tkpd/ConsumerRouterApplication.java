@@ -1881,11 +1881,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public File writeImage(String filePath, int qualityProcentage) {
-        return FileUtils.writeImageToTkpdPath(filePath, qualityProcentage);
-    }
-
-    @Override
     public boolean isIndicatorVisible() {
         return remoteConfig.getBoolean(TkpdInboxRouter.INDICATOR_VISIBILITY, false);
     }

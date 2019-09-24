@@ -364,8 +364,7 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     }
 
     private RequestParams createParam(String cameraLoc) {
-        File photo = flightModuleRouter.writeImage(cameraLoc, 100);
-        Map<String, RequestBody> maps = new HashMap<String, RequestBody>();
+        Map<String, RequestBody> maps = new HashMap<>();
         RequestBody webService = RequestBody.create(MediaType.parse("text/plain"), "1");
         RequestBody resolution = RequestBody.create(MediaType.parse("text/plain"), RESOLUTION_300);
         RequestBody id = RequestBody.create(MediaType.parse("text/plain"), userSession.getUserId() + UUID.randomUUID() + System.currentTimeMillis());

@@ -14,6 +14,4 @@ public interface FlightModuleRouter {
 
     Observable<ProfileInfo> getProfile();
 
-    File writeImage(String filePath, int qualityProcentage);
-
 }
