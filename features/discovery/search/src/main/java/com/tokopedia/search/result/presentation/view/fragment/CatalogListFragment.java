@@ -190,7 +190,7 @@ public class CatalogListFragment extends SearchSectionFragment implements
                              @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
         presenter.initInjector(this);
-        return inflater.inflate(R.layout.search_fragment_base_discovery, container, false);
+        return inflater.inflate(R.layout.search_result_product_fragment_layout, container, false);
     }
 
     @Override

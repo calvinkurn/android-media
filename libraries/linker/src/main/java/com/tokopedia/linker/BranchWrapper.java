@@ -30,7 +30,7 @@ import io.branch.referral.util.LinkProperties;
 public class BranchWrapper implements WrapperInterface {
 
     private String deferredDeeplinkPath;
-    private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://tokopedia.link/playblog?";
+    private String DESKTOP_GROUPCHAT_URL = "https://www.tokopedia.com/play/redirect?plain=1&url=https://www.tokopedia.link/playblog?";
 
     @Override
     public void init(Context context) {

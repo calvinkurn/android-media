@@ -1039,8 +1039,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onDynamicChannelClicked(String actionLink, String trackingAttribution) {
-        onActionLinkClicked(actionLink, trackingAttribution);
+    public void onDynamicChannelClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
     }
 
     private void onActionLinkClicked(String actionLink) {
