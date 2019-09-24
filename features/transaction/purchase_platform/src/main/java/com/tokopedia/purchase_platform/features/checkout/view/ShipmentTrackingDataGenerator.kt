@@ -1,11 +1,11 @@
-package com.tokopedia.checkout.view.feature.shipment
+package com.tokopedia.purchase_platform.features.checkout.view
 
 import android.os.Bundle
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
-import com.tokopedia.transactiondata.entity.request.CheckoutRequest
-import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest
-import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.ProductDataCheckoutRequest
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.ShopProductCheckoutRequest
 import javax.inject.Inject
 
 /**
