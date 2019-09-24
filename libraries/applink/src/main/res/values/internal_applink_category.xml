@@ -5,4 +5,5 @@
     <string name="path_age_restriction" translatable="false">/age_restriction</string>
     <string name="path_tradein" translatable="false">/tradein</string>
     <string name="path_device_validation" translatable="false">/device_validation</string>
+    <string name="applink_title_age_restriction" >Konten Dewasa</string>
 </resources>
