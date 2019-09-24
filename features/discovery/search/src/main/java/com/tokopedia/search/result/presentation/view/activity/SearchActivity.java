@@ -264,7 +264,10 @@ public class SearchActivity extends BaseActivity
 
     private void moveToHomeActivity() {
         searchTracking.eventActionClickHomeButton(searchParameter.getSearchQuery());
-        RouteManager.route(this, ApplinkConst.HOME);
+
+        Intent gotoHomeIntent = RouteManager.getIntent(this, ApplinkConst.HOME);
+        gotoHomeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(gotoHomeIntent);
     }
 
     private void initViewPager() {
