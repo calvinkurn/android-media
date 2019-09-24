@@ -10,3 +10,12 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.libraries.track)
 }
+
+project.ext {
+    artifactId = 'common'
+    groupId = 'com.tokopedia.discovery'
+    versionName = "1.0.0"
+    artifactName ="discoverycommon-release"
+}
+
+apply from: '../../../publish_local.gradle'

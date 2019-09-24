@@ -12,14 +12,14 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.crashlytics.android.Crashlytics
 import com.google.android.play.core.splitinstall.*
+import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.unifycomponents.Toaster
+import java.io.File
 import timber.log.Timber
 
 /**
@@ -52,6 +52,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     private lateinit var moduleNameTranslated: String
     private lateinit var applink: String
     private var imageUrl: String? = null
+    private var initialDownloading = false
 
     companion object {
         private const val EXTRA_NAME = "dfname"
@@ -60,6 +61,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         private const val EXTRA_IMAGE = "dfimage"
         private const val defaultImageUrl = "https://ecs7.tokopedia.net/img/android/empty_profile/drawable-xxxhdpi/product_image_48_x_48.png"
         private const val CONFIRMATION_REQUEST_CODE = 1
+        private const val ONE_KB = 1024
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,11 +83,6 @@ class DFInstallerActivity : BaseSimpleActivity() {
             finish()
             return
         }
-        if (RouteManager.isApplinkDeclaredInManifest(this, applink)) {
-            launchAndForwardIntent(applink)
-            finish()
-            return
-        }
         if (moduleNameTranslated.isNotEmpty()) {
             setTitle(getString(R.string.installing_x, moduleNameTranslated))
         }
@@ -95,7 +92,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
             onSuccessfulLoad(moduleName, launch = true)
         } else {
             if (isAutoDownload) {
-                Timber.w("P1Download Module {$moduleName}")
+                Timber.w("P1Download Module {launch} {$moduleName}")
                 loadAndLaunchModule(moduleName)
             } else {
                 hideProgress()
@@ -131,6 +128,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
         closeButton = findViewById<View>(R.id.close_button)
 
         buttonDownload.setOnClickListener {
+            Timber.w("P1Download Module {button} {$moduleName}")
             loadAndLaunchModule(moduleName)
         }
         closeButton.setOnClickListener {
@@ -155,6 +153,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
     }
 
     private fun loadAndLaunchModule(name: String) {
+        initialDownloading = true
         displayProgress()
         progressText.text = getString(R.string.downloading_x, moduleNameTranslated)
 
@@ -212,6 +211,10 @@ class DFInstallerActivity : BaseSimpleActivity() {
             SplitInstallSessionStatus.DOWNLOADING -> {
                 //  In order to see this, the application has to be uploaded to the Play Store.
                 displayLoadingState(state, getString(R.string.downloading_x, moduleNameTranslated))
+                if (initialDownloading) {
+                    initialDownloadStatus(names, state.totalBytesToDownload())
+                    initialDownloading = false
+                }
             }
             SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                 /*
@@ -241,8 +244,14 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     private fun showFailedMessage(message: String, errorCode: String = "") {
         Timber.w("P1Failed Module {$moduleName} - {$errorCode}")
+        val userMessage:String
+        if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
+            userMessage = getString(R.string.error_install_df_insufficient_storate)
+        } else {
+            userMessage = message
+        }
         Toaster.showErrorWithAction(this.findViewById(android.R.id.content),
-            message,
+            userMessage,
             Snackbar.LENGTH_INDEFINITE,
             getString(R.string.general_label_ok), View.OnClickListener { })
     }
@@ -258,8 +267,18 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         progressText.text = String.format("%.2f KB / %.2f KB",
-            (bytesDownloaded.toFloat() / 1024), totalBytesToDowload.toFloat() / 1024)
+                (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
+    }
+
+    private fun initialDownloadStatus(moduleName: String, moduleSize: Long){
+        var totalFreeSpaceSizeInMB = "-"
+        applicationContext?.filesDir?.absoluteFile?.toString()?.let {
+            val totalSize = File(it).freeSpace.toDouble()
+            totalFreeSpaceSizeInMB = String.format("%.2fMB", totalSize / (ONE_KB * ONE_KB))
+        }
+        val moduleSizeinMB = String.format("%.2fMB", moduleSize.toDouble() / (ONE_KB * ONE_KB))
+        Timber.w("P1Downloading Module {$moduleName} {$moduleSizeinMB:$totalFreeSpaceSizeInMB}")
     }
 
     private fun displayProgress() {

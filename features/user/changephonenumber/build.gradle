@@ -2,13 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-project.ext {
-    artifactId = 'changephonenumber'
-    groupId = 'com.tokopedia.changephonenumber'
-    versionName = "${tkpdChangePhoneNumberVersion}"
-    artifactName ="change_phone_number-release"
-}
-
 buildscript {
     repositories {
         mavenCentral()
@@ -25,9 +18,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation project(rootProject.ext.libraries.track)
 
-    implementation project(rootProject.ext.libraries.abstraction)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.applink)
@@ -43,3 +36,12 @@ dependencies {
         exclude group: 'com.android.support'
     }
 }
+
+project.ext {
+    artifactId = 'change-phone-number'
+    groupId = 'com.tokopedia.user'
+    versionName = "1.0.0"
+    artifactName ="userchangephonenumber-release"
+}
+
+apply from: '../../../publish_local.gradle'
