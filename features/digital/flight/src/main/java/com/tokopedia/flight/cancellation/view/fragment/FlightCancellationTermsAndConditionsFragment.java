@@ -14,10 +14,7 @@ import android.widget.CompoundButton;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.component.TextViewCompat;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-
-import static com.tokopedia.flight.common.constant.FlightUrl.TNC_LINK;
 
 /**
  * @author by furqan on 16/04/18.
@@ -87,13 +84,6 @@ public class FlightCancellationTermsAndConditionsFragment extends BaseDaggerFrag
 
     private void setDescText() {
         txtDescription.setText(MethodChecker.fromHtml(getString(R.string.flight_cancellation_review_description)));
-    }
-
-    private void navigateToWebview() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter) {
-            startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getWebviewActivity(getActivity(), TNC_LINK));
-        }
     }
 
     private void requestCancellation() {

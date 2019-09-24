@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
@@ -702,17 +703,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     }
 
     private void navigateToShowEticket() {
-        if (flightOrder.getEticketUri() != null) {
-            startActivity(flightModuleRouter.getWebviewActivity(
-                    getActivity(), flightOrder.getEticketUri()));
-        }
-    }
-
-    private void navigateToShowInvoice() {
-        if (flightOrder.getInvoiceUri() != null) {
-            startActivity(flightModuleRouter.getWebviewActivity(
-                    getActivity(), flightOrder.getInvoiceUri()));
-        }
+        RouteManager.route(getContext(), flightOrder.getEticketUri());
     }
 
     private void showGreenSnackbar(int resId) {

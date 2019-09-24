@@ -15,8 +15,6 @@ public interface FlightModuleRouter {
 
     Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel);
 
-    Intent getWebviewActivity(Activity activity, String url);
-
     Intent getHomeIntent(Context context);
 
     Intent getDefaultContactUsIntent(Activity activity);

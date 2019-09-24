@@ -1,6 +1,5 @@
 package com.tokopedia.flight.orderlist.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -24,6 +23,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
@@ -33,19 +33,18 @@ import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
-import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.view.activity.FlightDetailOrderActivity;
 import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
-import com.tokopedia.flight.orderlist.view.presenter.FlightOrderListPresenter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapter;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderAdapterTypeFactory;
 import com.tokopedia.flight.orderlist.view.adapter.FlightOrderTypeFactory;
 import com.tokopedia.flight.orderlist.view.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.view.fragment.FlightResendETicketDialogFragment;
+import com.tokopedia.flight.orderlist.view.presenter.FlightOrderListPresenter;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderBaseViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
@@ -367,6 +366,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     @Override
     public void navigateToWebview(String url) {
-        startActivity(flightModuleRouter.getWebviewActivity(getActivity(), url));
+        RouteManager.route(getContext(), url);
     }
 }
