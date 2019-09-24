@@ -1,41 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/parent"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:animateLayoutChanges="true"
-        android:background="@android:color/white">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <com.tokopedia.searchbar.HomeMainToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="top"
-            android:minHeight="?actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp"
-            app:screenName="/" />
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
 
         <View
-            android:id="@+id/status_bar_bg"
+            android:visibility="invisible"
+            app:layout_collapseMode="pin"
+            android:id="@+id/statusbar"
+            android:background="@color/white"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_25"
-            android:layout_gravity="top"
-            android:background="@color/green_600"
-            android:visibility="invisible" />
+            android:layout_height="25dp"/>
 
-    </FrameLayout>
+        <com.tokopedia.searchbar.MainToolbar
+            android:id="@+id/maintoolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            app:layout_anchor="@id/statusbar"
+            app:layout_scrollFlags="scroll|enterAlways"/>
 
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tablayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?actionBarSize"
+            android:background="@color/white"
+            app:tabMode="scrollable"
+            app:tabSelectedTextColor="@color/Purple_P600"
+            app:tabTextColor="@color/Neutral_N700_96"
+            app:tabIndicatorColor="@color/Purple_P600" />
 
-</android.support.v4.widget.SwipeRefreshLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</android.support.design.widget.CoordinatorLayout>

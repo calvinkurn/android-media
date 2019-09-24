@@ -20,6 +20,9 @@ import javax.inject.Inject
 class OfficialHomeFragment : BaseDaggerFragment(), OfficialHomeView {
 
     companion object {
+
+        val BUNDLE_CATEGORY = "category_os"
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
@@ -32,7 +35,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), OfficialHomeView {
     @Inject lateinit var presenter: OfficialHomePresenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_official_home, container, false)
+        val view = inflater.inflate(R.layout.fragment_official_home_child, container, false)
         init(view)
         return view
     }
