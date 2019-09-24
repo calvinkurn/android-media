@@ -8,6 +8,7 @@ import com.tokopedia.track.TrackAppUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 /**
  * Created by henrypriyono on 1/5/18.
  */
@@ -17,14 +18,24 @@ public class FilterTracking {
     public static void eventSearchResultFilterJourney(String trackingPrefix,
                                                       String filterName,
                                                       String filterValue,
-                                                      boolean isInsideDetail, boolean isActive) {
+                                                      boolean isInsideDetail,
+                                                      boolean isActive,
+                                                      String keyValue) {
+        String filterType = "";
+        if (keyValue != null) {
+            if (keyValue.equals("annotation_id")) {
+                filterType = "annotation";
+            } else {
+                filterType = "standard";
+            }
+        }
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 FilterEventTracking.Event.SEARCH_RESULT,
                 trackingPrefix + " - " + FilterEventTracking.Category.FILTER_JOURNEY,
                 FilterEventTracking.Action.CLICK.toLowerCase() + " - "
                         + filterName + ": " + filterValue + " - "
-                        + (isInsideDetail ? "inside lihat semua" : "outside lihat semua"),
+                        + (isInsideDetail ? "inside lihat semua" : "outside lihat semua") + " - " + filterType,
                 Boolean.toString(isActive)
         ));
     }

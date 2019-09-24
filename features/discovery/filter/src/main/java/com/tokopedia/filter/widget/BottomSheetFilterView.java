@@ -156,7 +156,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     }
 
     public void saveCheckedState(Option option, Boolean isChecked, String filterTitle) {
-        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, filterTitle, option.getName(), false, isChecked);
+        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, filterTitle, option.getName(), false, isChecked,option.getKey());
         filterController.setFilter(option, isChecked);
         applyFilter();
     }
@@ -169,10 +169,11 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void removeSavedTextInput(String uniqueId) {
-        filterController.setFilter(OptionHelper.generateOptionFromUniqueId(uniqueId), false, true);
+        Option option = OptionHelper.generateOptionFromUniqueId(uniqueId);
+        filterController.setFilter(option, false, true);
 
         String key = OptionHelper.parseKeyFromUniqueId(uniqueId);
-        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, key, "", false, false);
+        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, key, "", false, false,option.getKey());
         updateResetButtonVisibility();
     }
 
@@ -183,7 +184,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
         filterController.setFilter(textInputOption, true, true);
 
         String key = textInputOption.getKey();
-        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, key, textInput, false, true);
+        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, key, textInput, false, true,textInputOption.getKey());
         updateResetButtonVisibility();
     }
 
@@ -200,7 +201,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
     @Override
     public void removeSelectedOption(Option option, String filterTitle) {
         if (Option.KEY_CATEGORY.equals(option.getKey())) {
-            FilterTracking.eventSearchResultFilterJourney(trackingPrefix, filterTitle, option.getName(), false, false);
+            FilterTracking.eventSearchResultFilterJourney(trackingPrefix, filterTitle, option.getName(), false, false,option.getKey());
             filterController.setFilter(option, false, true);
             applyFilter();
         } else {
@@ -302,7 +303,7 @@ public class BottomSheetFilterView extends BaseCustomView implements BottomSheet
 
     @Override
     public void selectCategory(Option option, String filterTitle) {
-        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, filterTitle, option.getName(), false, true);
+        FilterTracking.eventSearchResultFilterJourney(trackingPrefix, filterTitle, option.getName(), false, true,option.getKey());
         filterController.setFilter(option, true, true);
         applyFilter();
     }

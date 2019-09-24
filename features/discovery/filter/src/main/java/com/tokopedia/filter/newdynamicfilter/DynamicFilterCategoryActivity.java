@@ -157,7 +157,7 @@ public class DynamicFilterCategoryActivity extends AppCompatActivity
                 FilterTracking.eventSearchResultFilterJourney(
                         trackingPrefix,
                         getResources().getString(R.string.title_category),
-                        category.getName(), true, true);
+                        category.getName(), true, true,category.getKey());
             }
             applyFilter(category);
         }

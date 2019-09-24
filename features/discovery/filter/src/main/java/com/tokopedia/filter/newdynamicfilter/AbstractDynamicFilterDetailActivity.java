@@ -235,7 +235,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         option.setInputState(Boolean.toString(isChecked));
         hideKeyboard();
         if (isUsingTracking) {
-            FilterTracking.eventSearchResultFilterJourney(trackingPrefix, pageTitle, option.getName(), true, isChecked);
+            FilterTracking.eventSearchResultFilterJourney(trackingPrefix, pageTitle, option.getName(), true, isChecked,option.getKey());
         }
     }
 
