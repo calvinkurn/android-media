@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ScrollView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -157,6 +156,10 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     override fun loadData(page: Int) {
+        if (view == null || !::presenter.isInitialized) {
+            return
+        }
+
         if (page == 1) resetState()
         presenter.loadCuratedProductByType(type, cursor, currentSort, startDate, endDate)
     }
@@ -231,7 +234,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
     }
 
     private fun initSortDialogView(): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.bottomsheet_af_sort_curated, null, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_af_sort_curated, null, false)
         val tvSave = view.findViewById<TextView>(R.id.tv_save)
         tvSave.setOnClickListener { onSaveSortOption() }
 
@@ -257,7 +260,7 @@ class AffiliateCuratedProductFragment : BaseListFragment<DashboardItemViewModel,
         cursor = ""
         adapter.clearAllElements()
         svEmptyState.gone()
-        getRecyclerView(view).visible()
+        getRecyclerView(view)?.visible()
     }
 
     private fun shouldShareProfile() {

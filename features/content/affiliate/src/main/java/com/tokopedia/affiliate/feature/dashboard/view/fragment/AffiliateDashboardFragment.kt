@@ -16,13 +16,13 @@ import android.view.ViewGroup
 import android.widget.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.R
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent
 import com.tokopedia.affiliate.feature.dashboard.view.activity.AffiliateCuratedProductActivity
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.viewpager.AffiliateCuratedProductPagerAdapter
+import com.tokopedia.affiliate.feature.dashboard.view.bottomsheet.NoConnectionBottomSheetDialog
 import com.tokopedia.affiliate.feature.dashboard.view.custom.AffiliateDashboardTab
 import com.tokopedia.affiliate.feature.dashboard.view.listener.AffiliateDashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.AffiliateDashboardPresenter
@@ -52,7 +52,11 @@ import kotlin.properties.Delegates
 /**
  * Created by jegul on 2019-09-02.
  */
-class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContract.View, ShareBottomSheets.OnShareItemClickListener, AffiliateCuratedProductFragment.CuratedProductListener {
+class AffiliateDashboardFragment :
+        BaseDaggerFragment(),
+        AffiliateDashboardContract.View,
+        ShareBottomSheets.OnShareItemClickListener,
+        AffiliateCuratedProductFragment.CuratedProductListener {
 
     companion object {
         fun newInstance(bundle: Bundle): AffiliateDashboardFragment {
@@ -115,6 +119,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
         CoachMarkItem(tabCuratedPost, getString(R.string.curated_from_post), getString(R.string.curated_from_post_info))
     }
 
+    private val noConnectionDialog: NoConnectionBottomSheetDialog by lazy { NoConnectionBottomSheetDialog.createInstance(context) }
+
     private var startDate by Delegates.observable<Date?>(null) { _, _, newValue ->
         if (::tvStartDate.isInitialized) tvStartDate.text = newValue?.let(dateFormatter::format).orEmpty()
     }
@@ -125,6 +131,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     private var tempStartDate = startDate
     private var tempEndDate = endDate
 
+    private lateinit var llFullDashboardPage: LinearLayout
     private lateinit var clDashboard: CoordinatorLayout
     private lateinit var tvTotalSaldo: TextView
     private lateinit var tvAffiliateIncome: TextView
@@ -184,7 +191,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     override fun onSuccessGetDashboardItem(header: DashboardHeaderViewModel, byMeHeader: ShareableByMeProfileViewModel) {
-        srlRefresh.visible()
+        clDashboard.visible()
 
         tvTotalSaldo.text = MethodChecker.fromHtml(header.totalSaldoAktif)
         tvAffiliateIncome.text = MethodChecker.fromHtml(header.affiliateIncome)
@@ -204,11 +211,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     override fun onErrorCheckAffiliate(error: String) {
-        srlRefresh.gone()
-        NetworkErrorHelper.showEmptyState(activity,
-                view,
-                error
-        ) { presenter.checkAffiliate() }
+        clDashboard.gone()
+        noConnectionDialog.showWithListener(presenter::checkAffiliate)
     }
 
     override fun onSuccessCheckAffiliate(isAffiliate: Boolean) {
@@ -231,19 +235,16 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     override fun onErrorGetDashboardItem(error: String) {
-        srlRefresh.gone()
-        NetworkErrorHelper.showEmptyState(activity,
-                view,
-                error
-        ) { presenter.loadDashboardDetail(startDate, endDate) }
+        clDashboard.gone()
+        noConnectionDialog.showWithListener { presenter.loadDashboardDetail(startDate, endDate) }
     }
 
     override fun showLoading() {
-        view?.showLoading()
+        llFullDashboardPage.showLoading()
     }
 
     override fun hideLoading() {
-        view?.hideLoading()
+        llFullDashboardPage.hideLoading()
     }
 
     override fun onDestroy() {
@@ -282,7 +283,8 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
     }
 
     private fun onRefresh() {
-        srlRefresh.gone()
+        srlRefresh.isRefreshing = false
+        clDashboard.gone()
         presenter.checkAffiliate()
         onDateChanged()
     }
@@ -438,6 +440,7 @@ class AffiliateDashboardFragment : BaseDaggerFragment(), AffiliateDashboardContr
 
     private fun initView(view: View) {
         view.run {
+            llFullDashboardPage = findViewById(R.id.ll_full_dashboard_page)
             clDashboard = findViewById(R.id.cl_dashboard)
             tvTotalSaldo = findViewById(R.id.tv_total_saldo)
             tvAffiliateIncome = findViewById(R.id.tv_affiliate_income)

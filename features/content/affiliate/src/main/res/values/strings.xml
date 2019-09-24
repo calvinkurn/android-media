@@ -170,4 +170,8 @@
     <string name="af_tab_curated_from_post">Dibeli dari Post</string>
     <string name="af_tab_curated_from_traffic">Dibeli dari Traffic</string>
 
+    <string name="af_no_connection_title">Nggak ada koneksi internet</string>
+    <string name="af_no_connection_detail">Pastikan ada jaringan internet di tempatmu atau cek paket data / WiFi</string>
+    <string name="af_try_again">Coba Lagi</string>
+
 </resources>

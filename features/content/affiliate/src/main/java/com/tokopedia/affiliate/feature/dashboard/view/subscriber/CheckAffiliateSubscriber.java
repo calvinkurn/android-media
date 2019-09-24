@@ -29,10 +29,12 @@ public class CheckAffiliateSubscriber extends Subscriber<Boolean> {
         view.onErrorCheckAffiliate(
                 ErrorHandler.getErrorMessage(view.getCtx(), e)
         );
+        view.hideLoading();
     }
 
     @Override
     public void onNext(Boolean isAffiliate) {
         view.onSuccessCheckAffiliate(isAffiliate);
+        view.hideLoading();
     }
 }

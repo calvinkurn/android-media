@@ -33,11 +33,12 @@ class AffiliateDashboardPresenter
         get() = job + Dispatchers.IO
 
     override fun checkAffiliate() {
+        view?.showLoading()
         checkAffiliateUseCase.execute(CheckAffiliateSubscriber(view))
     }
 
     override fun loadDashboardDetail(startDate: Date?, endDate: Date?) {
-        view.showLoading()
+        view?.showLoading()
         getAffiliateDashboardUseCase.run {
             clearRequest()
             addRequest(getRequest(startDate, endDate))
