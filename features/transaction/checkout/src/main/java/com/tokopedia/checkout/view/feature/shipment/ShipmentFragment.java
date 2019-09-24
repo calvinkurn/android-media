@@ -554,7 +554,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         int isDonation = shipmentPresenter.getShipmentDonationModel() != null && shipmentPresenter.getShipmentDonationModel().isChecked() ? 1 : 0;
         CheckoutRequest checkoutRequest = shipmentPresenter.generateCheckoutRequest(
-                dataCheckoutRequests, checkPromoParam, isDonation, getCheckoutLeasingId()
+                dataCheckoutRequests, hasInsurance, checkPromoParam, isDonation, getCheckoutLeasingId()
         );
 
         Bundle eCommerceBundle = shipmentTrackingDataGenerator.generateBundleEnhancedEcommerce(checkoutRequest, shipmentPresenter.getShipmentCartItemModelList());
