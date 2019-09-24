@@ -29,8 +29,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.common.payment.model.PaymentCode;
+import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
 import com.tokopedia.common.travel.widget.CountdownTimeView;
@@ -95,13 +97,12 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
     public static final String RESULT_ERROR_CODE = "RESULT_ERROR_CODE";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String FLIGHT_CHECKOUT_TRACE = "tr_flight_checkout";
+    private static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
+
     private static final int REQUEST_CODE_NEW_PRICE_DIALOG = 3;
     private static final int REQUEST_CODE_TOPPAY = 100;
-    private static final int REQUEST_CODE_PROMO_LIST = ConstantKt.getREQUST_CODE_PROMO_LIST();
-    private static final int REQUEST_CODE_PROMO_DETAIL = ConstantKt.getREQUEST_CODE_PROMO_DETAIL();
     public static final int DEFAULT_IS_COUPON_ZERO = 0;
     public static final int DEFAULT_IS_COUPON_ONE = 1;
-    private static final String ORDER_CATEGORY = "orderCategory";
 
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
@@ -350,17 +351,15 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
                 case REQUEST_CODE_TOPPAY:
                     hideCheckoutLoading();
                     reviewTime.start();
-                    if (getActivity().getApplication() instanceof FlightModuleRouter) {
-                        int paymentSuccess = PaymentCode.PAYMENT_SUCCESS;
-                        int paymentFailed = PaymentCode.PAYMENT_FAILED;
-                        int paymentCancel = PaymentCode.PAYMENT_CANCELLED;
-                        if (resultCode == paymentSuccess) {
-                            flightBookingReviewPresenter.onPaymentSuccess();
-                        } else if (resultCode == paymentFailed) {
-                            flightBookingReviewPresenter.onPaymentFailed();
-                        } else if (resultCode == paymentCancel) {
-                            flightBookingReviewPresenter.onPaymentCancelled();
-                        }
+                    int paymentSuccess = PaymentCode.PAYMENT_SUCCESS;
+                    int paymentFailed = PaymentCode.PAYMENT_FAILED;
+                    int paymentCancel = PaymentCode.PAYMENT_CANCELLED;
+                    if (resultCode == paymentSuccess) {
+                        flightBookingReviewPresenter.onPaymentSuccess();
+                    } else if (resultCode == paymentFailed) {
+                        flightBookingReviewPresenter.onPaymentFailed();
+                    } else if (resultCode == paymentCancel) {
+                        flightBookingReviewPresenter.onPaymentCancelled();
                     }
                     break;
             }
@@ -688,11 +687,17 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Override
     public void navigateToTopPay(FlightCheckoutViewModel flightCheckoutViewModel) {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel) != null) {
-            reviewTime.cancel();
-            startActivityForResult(((FlightModuleRouter) getActivity().getApplication()).getTopPayIntent(getActivity(), flightCheckoutViewModel), REQUEST_CODE_TOPPAY);
-        }
+        PaymentPassData paymentPassData = new PaymentPassData();
+        paymentPassData.setPaymentId(flightCheckoutViewModel.getPaymentId());
+        paymentPassData.setTransactionId(flightCheckoutViewModel.getTransactionId());
+        paymentPassData.setRedirectUrl(flightCheckoutViewModel.getRedirectUrl());
+        paymentPassData.setCallbackFailedUrl(flightCheckoutViewModel.getCallbackFailedUrl());
+        paymentPassData.setCallbackSuccessUrl(flightCheckoutViewModel.getCallbackSuccessUrl());
+        paymentPassData.setQueryString(flightCheckoutViewModel.getQueryString());
+
+        Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalPayment.PAYMENT_CHECKOUT);
+        intent.putExtra(EXTRA_PARAMETER_TOP_PAY_DATA, paymentPassData);
+        startActivityForResult(intent, REQUEST_CODE_TOPPAY);
     }
 
     @Override

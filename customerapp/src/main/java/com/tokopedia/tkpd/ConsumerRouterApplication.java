@@ -1427,18 +1427,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel) {
-        PaymentPassData paymentPassData = new PaymentPassData();
-        paymentPassData.setPaymentId(flightCheckoutViewModel.getPaymentId());
-        paymentPassData.setTransactionId(flightCheckoutViewModel.getTransactionId());
-        paymentPassData.setRedirectUrl(flightCheckoutViewModel.getRedirectUrl());
-        paymentPassData.setCallbackFailedUrl(flightCheckoutViewModel.getCallbackFailedUrl());
-        paymentPassData.setCallbackSuccessUrl(flightCheckoutViewModel.getCallbackSuccessUrl());
-        paymentPassData.setQueryString(flightCheckoutViewModel.getQueryString());
-        return TopPayActivity.createInstance(activity, paymentPassData);
-    }
-
-    @Override
     public Intent getTopPayIntent(Activity activity, TrainCheckoutViewModel trainCheckoutViewModel) {
         PaymentPassData paymentPassData = new PaymentPassData();
         paymentPassData.setPaymentId(trainCheckoutViewModel.getTransactionId());

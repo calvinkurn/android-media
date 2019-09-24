@@ -12,8 +12,6 @@ import rx.Observable;
 
 public interface FlightModuleRouter {
 
-    Intent getTopPayIntent(Activity activity, FlightCheckoutViewModel flightCheckoutViewModel);
-
     Observable<ProfileInfo> getProfile();
 
     File writeImage(String filePath, int qualityProcentage);
