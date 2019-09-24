@@ -9,6 +9,8 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi
+import com.tokopedia.product.manage.list.utils.ProductManageGmInterceptor
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -40,13 +42,21 @@ class ProductManageNetworkModule {
         return retrofit.create(TomeProductApi::class.java)
     }
 
+    @ProductManageScope
+    @Provides
+    fun provideProductManageInterceptor(userSessionInterface: UserSessionInterface): ProductManageGmInterceptor {
+        return ProductManageGmInterceptor(userSessionInterface)
+    }
+
     @GMProductManageQualifier
     @Provides
-    fun provideGMOkHttpClient(tkpdAuthInterceptor: TkpdAuthInterceptor,
+    fun provideGMOkHttpClient(productManageGmInterceptor: ProductManageGmInterceptor,
+                              tkpdAuthInterceptor: TkpdAuthInterceptor,
                               httpLoggingInterceptor: HttpLoggingInterceptor,
                               errorResponseInterceptor: HeaderErrorResponseInterceptor,
                               cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
+                .addInterceptor(productManageGmInterceptor)
                 .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(errorResponseInterceptor)

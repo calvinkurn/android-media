@@ -760,8 +760,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun onPromoTopAdsClicked(productManageViewModel: ProductManageViewModel) {
         context?.let {
             val uri = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
-                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, productManageViewModel.itemId)
-                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, userSession.userId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productManageViewModel.itemId)
                     .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
                             if (GlobalConfig.isSellerApp())
                                 TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
