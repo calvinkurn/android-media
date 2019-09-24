@@ -155,7 +155,7 @@ class CatalogDetailPageFragment : Fragment(),
         for (specs in topthreespec) {
             val textView = TextView(context)
             textView.textSize = 12f
-            textView.text = resources.getString(R.string.bullet_string, specs.value)
+            textView.text = MethodChecker.fromHtml(resources.getString(R.string.bullet_string, specs.value)).toString()
             textView.setTextColor(MethodChecker.getColor(context, R.color.grey_796))
             top_three_specs.addView(textView)
         }
