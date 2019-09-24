@@ -182,9 +182,11 @@ class DynamicFeedFragment:
     }
 
     override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+        presenter.likeKol(id, positionInFeed, columnNumber)
     }
 
     override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
+        startActivityForResult(KolCommentActivity.getCallingIntent(activity, id, positionInFeed, columnNumber), KOL_COMMENT_CODE)
     }
 
     override fun onFooterActionClick(positionInFeed: Int, redirectUrl: String) {

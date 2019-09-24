@@ -283,6 +283,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     @Override
     public void onCategoryClicked(int position, int categoryId, String categoryName) {
+        NetworkErrorHelper.removeEmptyState(getView());
         clearSearch();
         resetDataParam();
         imageAdapter.clearData();
