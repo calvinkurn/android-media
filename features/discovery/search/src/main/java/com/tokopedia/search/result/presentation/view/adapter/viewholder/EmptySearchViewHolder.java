@@ -63,7 +63,7 @@ public class EmptySearchViewHolder extends AbstractViewHolder<EmptySearchViewMod
     private EmptySearchViewModel boundedEmptySearchModel;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.list_empty_search_product;
+    public static final int LAYOUT = R.layout.search_list_empty_search_product;
 
     public EmptySearchViewHolder(View view, EmptyStateListener emptyStateListener,
                                  BannerAdsListener bannerAdsListener, Config topAdsConfig) {
