@@ -987,7 +987,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
                     productManageFilterModel = it.getParcelableExtra(EXTRA_FILTER_SELECTED)
                     loadInitialData()
-                    ProductManageTracking.trackingFilter(productManageFilterModel, context)
+                    ProductManageTracking.trackingFilter(productManageFilterModel)
                 }
                 ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                     val etalaseId = it.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
@@ -1005,13 +1005,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 }
                 REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
                     val productManageSortModel: ProductManageSortModel = it.getParcelableExtra(EXTRA_SORT_SELECTED)
-                    sortProductOption = productManageSortModel.id
+                    sortProductOption = productManageSortModel.sortId
                     loadInitialData()
                     ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
                 }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
-            else -> super.onActivityResult(requestCode, resultCode, intent)
         }
     }
 
