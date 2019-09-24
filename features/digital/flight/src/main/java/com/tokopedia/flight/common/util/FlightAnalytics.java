@@ -145,7 +145,7 @@ public class FlightAnalytics {
                         dashboardViewModel.getFlightPassengerViewModel().getAdult(),
                         dashboardViewModel.getFlightPassengerViewModel().getChildren(),
                         dashboardViewModel.getFlightPassengerViewModel().getInfant(),
-                        dashboardViewModel.getClass(),
+                        dashboardViewModel.getFlightClass().getTitle(),
                         dashboardViewModel.getDepartureDate(),
                         dashboardViewModel.getReturnDate()
                 )
@@ -248,11 +248,9 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PRODUCT_CLICK_SEARCH_LIST,
-                        EVENT_LABEL, String.format(getDefaultLocale(), "%s - %s-%s",
-                                Label.FLIGHT,
-                                viewModel.getArrivalAirportCity(),
-                                viewModel.getDepartureAirportCity()
-                        ),
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                viewModel.getDepartureAirport(),
+                                viewModel.getArrivalAirport()),
                         ECOMMERCE, DataLayer.mapOf(
                                 CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                                 "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/flight"),
@@ -268,11 +266,9 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PRODUCT_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PRODUCT_CLICK_SEARCH_LIST,
-                        EVENT_LABEL, String.format(getDefaultLocale(), "%s - %s-%s",
-                                Label.FLIGHT,
-                                viewModel.getArrivalAirportCity(),
-                                viewModel.getDepartureAirportCity()
-                        ),
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                viewModel.getDepartureAirport(),
+                                viewModel.getArrivalAirport()),
                         ECOMMERCE, DataLayer.mapOf(
                                 CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                                 "click", DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/flight"),
@@ -524,9 +520,9 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, CHECKOUT_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Category.BOOKING_NEXT,
-                        EVENT_LABEL, String.format("%s - %s-%s", Label.FLIGHT,
-                                flightBookingCartData.getDepartureTrip().getDepartureAirportCity(),
-                                flightBookingCartData.getDepartureTrip().getArrivalAirportCity()),
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                flightBookingCartData.getDepartureTrip().getDepartureAirport(),
+                                flightBookingCartData.getDepartureTrip().getArrivalAirport()),
                         ECOMMERCE, DataLayer.mapOf(
                                 CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                                 "actionField", DataLayer.mapOf("step", 1,
@@ -564,9 +560,9 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, CHECKOUT_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Category.REVIEW_NEXT,
-                        EVENT_LABEL, String.format("%s - %s-%s", Label.FLIGHT,
-                                flightBookingReviewModel.getDetailViewModelListDeparture().getDepartureAirportCity(),
-                                flightBookingReviewModel.getDetailViewModelListDeparture().getArrivalAirportCity()),
+                        EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                flightBookingReviewModel.getDetailViewModelListDeparture().getDepartureAirport(),
+                                flightBookingReviewModel.getDetailViewModelListDeparture().getArrivalAirport()),
                         ECOMMERCE, DataLayer.mapOf(
                                 CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                                 "actionField", DataLayer.mapOf("step", 2,
@@ -657,7 +653,9 @@ public class FlightAnalytics {
                     DataLayer.mapOf(EVENT, ATC_EVENT,
                             EVENT_CATEGORY, GENERIC_CATEGORY,
                             EVENT_ACTION, Category.ADD_TO_CART,
-                            EVENT_LABEL, String.format("%s - %s-%s", Label.FLIGHT, departureViewModel.getDepartureAirportCity(), departureViewModel.getArrivalAirportCity()),
+                            EVENT_LABEL, String.format(Label.PRODUCT_VIEW,
+                                    departureViewModel.getDepartureAirport(),
+                                    departureViewModel.getArrivalAirport()),
                             ECOMMERCE, DataLayer.mapOf(
                                     CURRENCY_CODE, DEFAULT_CURRENCY_CODE,
                                     "add", DataLayer.mapOf(
