@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 class SendNotifUseCase @Inject constructor(
         private val rawQueries: Map<String, String>,
-        private val userSession: UserSession,
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<SendNotification>(graphqlRepository) {
 
@@ -35,8 +34,7 @@ class SendNotifUseCase @Inject constructor(
         return mapOf(
                 NotificationQueriesConstant.PARAM_SECTION_TYPE to SECTION_TYPE,
                 NotificationQueriesConstant.PARAM_TEMPLATE_KEY to TEMPLATE_KEY,
-                NotificationQueriesConstant.PARAM_EXPIRED_TIME to EXPIRED_TIME,
-                NotificationQueriesConstant.PARAM_UNIQUE_ID to userSession.userId.toIntOrZero())
+                NotificationQueriesConstant.PARAM_EXPIRED_TIME to EXPIRED_TIME)
     }
 
     companion object {
