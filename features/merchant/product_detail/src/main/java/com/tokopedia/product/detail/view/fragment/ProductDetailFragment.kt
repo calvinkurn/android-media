@@ -1140,7 +1140,6 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     if (data.hasExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)) {
                         val successMessage = data.getStringExtra(ApplinkConst.Transaction.RESULT_ATC_SUCCESS_MESSAGE)
                         showAddToCartDoneBottomSheet(successMessage)
-                        shouldShowCartAnimation = true
                         updateCartNotification()
                     }
 
@@ -1236,6 +1235,10 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
             val bundleData = Bundle()
             bundleData.putParcelable(KEY_ADDED_PRODUCT_DATA_MODEL, addedProductDataModel)
             addToCartDoneBottomSheet.arguments = bundleData
+            addToCartDoneBottomSheet.setDismissListener {
+                shouldShowCartAnimation = true
+                updateCartNotification()
+            }
             addToCartDoneBottomSheet.show(
                     fragmentManager, "TAG"
             )
