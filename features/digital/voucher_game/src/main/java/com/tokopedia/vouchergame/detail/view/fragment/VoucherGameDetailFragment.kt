@@ -413,7 +413,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         }
     }
 
-    override fun getScreenName(): String = getString(R.string.app_label)
+    override fun getScreenName(): String = ""
 
     override fun initInjector() {
         getComponent(VoucherGameDetailComponent::class.java).inject(this)
