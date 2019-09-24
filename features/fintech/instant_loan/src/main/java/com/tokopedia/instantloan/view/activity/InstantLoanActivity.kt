@@ -530,7 +530,7 @@ class InstantLoanActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>
     }
 
     private fun sendBannerImpressionEvent(position: Int) {
-        val bannerPagerAdapter = mBannerPager!!.adapter as BannerPagerAdapter?
+        val bannerPagerAdapter = mBannerPager.adapter as BannerPagerAdapter?
 
         if (bannerPagerAdapter != null &&
                 bannerPagerAdapter.bannerEntityList != null &&

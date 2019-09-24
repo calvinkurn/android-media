@@ -41,7 +41,7 @@ class SelectLoanParamActivity : BaseActivity() {
                 val intent = Intent()
                 intent.putExtra(EXTRA_SELECTED_NAME, loanType)
                 setResult(Activity.RESULT_OK, intent)
-                finish()
+                killActivity()
             }
         })
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -57,12 +57,12 @@ class SelectLoanParamActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == com.tokopedia.instantloan.R.id.il_action_close) {
-            finish()
+            killActivity()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun finish() {
+    fun killActivity() {
         super.finish()
         overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
     }
