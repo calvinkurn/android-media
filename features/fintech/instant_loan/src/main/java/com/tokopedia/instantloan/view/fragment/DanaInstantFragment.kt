@@ -158,7 +158,7 @@ class DanaInstantFragment : BaseDaggerFragment(), DanaInstanLoanContractor.View 
         val view = layoutInflater.inflate(com.tokopedia.instantloan.R.layout.dialog_intro_instnat_loan, null)
         val pager = view.findViewById<ViewPager>(com.tokopedia.instantloan.R.id.view_pager_il_intro)
         val pageIndicator = view.findViewById<CirclePageIndicator>(com.tokopedia.instantloan.R.id.page_indicator_il_intro)
-        val btnNext = view.findViewById<FloatingActionButton>(com.tokopedia.seller.R.id.button_next)
+        val btnNext = view.findViewById<FloatingActionButton>(com.tokopedia.instantloan.R.id.button_next)
 
         val layouts = intArrayOf(com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_1, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_2, com.tokopedia.instantloan.R.layout.intro_instant_loan_slide_3)
 
