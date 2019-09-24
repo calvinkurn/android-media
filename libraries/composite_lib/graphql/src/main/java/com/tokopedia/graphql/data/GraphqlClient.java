@@ -46,7 +46,7 @@ public class GraphqlClient {
                 Request.Builder newRequest = chain.request().newBuilder();
                 newRequest.addHeader("User-Agent", getUserAgent());
                 return chain.proceed(newRequest.build());
-            })
+            });
 
             sRetrofit = CommonNetwork.createRetrofit(
                     GraphqlUrl.BASE_URL,
