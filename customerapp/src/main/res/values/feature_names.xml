@@ -65,4 +65,8 @@
     <string name="title_similar_search_module_name" >Pencarian Serupa</string>
     <string name="similar_search_app_name">similarsearch</string>
     <string name="detail_report">Detail Laporan</string>
+
+    <!--Age Restriction-->
+    <string name="title_module_age_restriction">Konten Dewasa</string>
+    <string name="label_dob">Tanggal Lahir</string>
 </resources>

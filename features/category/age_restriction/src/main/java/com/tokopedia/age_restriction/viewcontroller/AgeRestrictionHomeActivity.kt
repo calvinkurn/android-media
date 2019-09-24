@@ -122,7 +122,7 @@ class AgeRestrictionHomeActivity : BaseARActivity<ARHomeViewModel>(), IAccessReq
                     "before login - $event/$destinationUrlGtm")
             showDialogFragment(R.layout.age_restriction_verifcation_dialog, "",
                     getString(R.string.ar_text_login_first),
-                    getString(R.string.label_login_button),
+                    getString(com.tokopedia.design.R.string.label_login_button),
                     getString(R.string.ar_label_back))
         })
 
