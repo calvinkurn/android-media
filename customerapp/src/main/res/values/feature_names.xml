@@ -37,7 +37,6 @@
 
     <!-- Dynamic feature for Voucher Game -->
     <string name="voucher_game_app_name">Cari Voucher</string>
-    <string name="title_voucher_game">Cari Voucher</string>
 
     <!-- Dynamic feature for Discovery-->
     <string name="title_image_search" >Pencarian Gambar</string>
