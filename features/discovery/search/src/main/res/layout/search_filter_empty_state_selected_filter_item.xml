@@ -5,7 +5,7 @@
     android:orientation="horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/quick_filter_item_background_neutral"
+    android:background="@drawable/search_quick_filter_item_background_neutral"
     android:paddingTop="@dimen/empty_state_selected_filter_padding_vertical"
     android:paddingBottom="@dimen/empty_state_selected_filter_padding_vertical"
     android:paddingLeft="@dimen/empty_state_selected_filter_padding_left"
