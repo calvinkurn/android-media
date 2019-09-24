@@ -4,7 +4,7 @@ import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.support.v7.widget.RecyclerView
 import com.tokopedia.abstraction.R
-import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductFixedResultDataModel
+import com.tokopedia.shop.search.view.adapter.viewholder.ShopSearchProductFixResultViewHolder
 
 class ShopSearchProductDividerItemDecoration(
         private val dividerDrawable: Drawable
@@ -15,7 +15,7 @@ class ShopSearchProductDividerItemDecoration(
             val right = parent.width - parent.paddingRight
             val childCount = parent.childCount
             for (i in 0 until childCount) {
-                val left = if (getItemViewType(i) == ShopSearchProductFixedResultDataModel.LAYOUT) {
+                val left = if (getItemViewType(i) == ShopSearchProductFixResultViewHolder.LAYOUT) {
                     parent.context.resources.getDimensionPixelOffset(R.dimen.dp_16)
                 } else {
                     parent.context.resources.getDimensionPixelOffset(R.dimen.dp_72)

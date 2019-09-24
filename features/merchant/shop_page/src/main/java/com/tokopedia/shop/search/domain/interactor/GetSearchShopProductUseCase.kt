@@ -1,4 +1,4 @@
-package com.tokopedia.shop.search.domain
+package com.tokopedia.shop.search.domain.interactor
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest

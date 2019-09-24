@@ -15,11 +15,14 @@ public class ShopPageTrackingConstant {
     public static final String PROMO_CLICK = "promoClick";
     public static final String CLICK_SHOP_MANAGE = "clickManageShop";
     public static final String CLICK_SHOP_MESSAGE = "clickMessageShop";
+    public static final String CLICK_TOP_NAV = "clickTopNav";
+
 
     //category
     public static final String SHOP_PAGE_SELLER = "shop page - seller";
     public static final String SHOP_PAGE_BUYER = "shop page - buyer";
     public static final String SHOP_PAGE = "shop page";
+    public static final String TOP_NAV = "top nav - %s";
 
     //ACTION
     public static final String TOP_SECTION = "top section";
@@ -39,6 +42,18 @@ public class ShopPageTrackingConstant {
     public static final String EVENT_ACTION_CLICK_ON_LOGIN_STICKY_WIDGET = "click on login sticky widget";
     public static final String EVENT_ACTION_CLICK_ON_CLOSE_STICKY_LOGIN = "click on button close login sticky widget";
     public static final String EVENT_VIEW_LOGIN_STICKY_WIDGET = "view login sticky widget";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_CART_BUTTON = "click cart button - search result";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_SHARE_BUTTON = "click share button - search result";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_SEARCH_BOX = "click search box";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_SEARCH = "click - search";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_ETALASE_AUTOCOMPLETE = "click - etalase autocomplete";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click - global autocomplete";
+    public static final String SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete";
+
+
+
+
+
 
     //label
     public static final String CLICK_TAB = "click tab";
@@ -77,6 +92,10 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_DISCUSSION = "click discussion";
     public static final String CLICK_MANAGE_SHOP = "click manage shop";
     public static final String SHOP_INFO = "Shop Info";
+    public static final String LABEL_SHOP_SEARCH_PRODUCT_KEYWORD_PAGEURL= "keyword:  %s - page: %s";
+    public static final String LABEL_SHOP_SEARCH_PRODUCT_KEYWORD_VALUE_PAGEURL= "keyword:  %s - value: %s - page:%s";
+
+
 
     //key
     public static final String EVENT = "event";
@@ -114,4 +133,18 @@ public class ShopPageTrackingConstant {
     public static final String PRODUCT_VIEW = "productView";
     public static final String ALL_ETALASE = "Semua Etalase";
     public static final String PROMOTIONS = "promotions";
+
+    //SCREEN/PAGES
+    public static final String SCREEN_SHOP_PAGE = "Shop Page";
+    public static final String SCREEN_SEARCH_BAR = "Search Bar";
+
+    //value
+    public static final String VALUE_PRODUCT = "Product";
+
+    //page_url
+    public static final String ETALASE_SHOPNAME = "etalase-%s";
+    public static final String SRP_SHOPNAME = "srp-%s";
+
+
+
 }

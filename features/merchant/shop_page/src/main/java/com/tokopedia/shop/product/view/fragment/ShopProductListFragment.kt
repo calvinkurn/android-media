@@ -146,7 +146,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.ic_empty_list_search
+        emptyModel.urlRes = EMPTY_PRODUCT_SEARCH_IMAGE_URL
         if (TextUtils.isEmpty(keyword)) {
             if (TextUtils.isEmpty(selectedEtalaseId)) {
                 emptyModel.title = getString(R.string.shop_product_empty_title_desc)
@@ -154,17 +154,9 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
                 emptyModel.title = getString(R.string.shop_product_empty_title_etalase_desc)
             }
         } else {
-            if (TextUtils.isEmpty(selectedEtalaseId)) {
-                emptyModel.title = getString(R.string.shop_product_empty_product_title_no_etalase)
-            } else {
-                emptyModel.title = getString(R.string.shop_product_empty_product_title_etalase)
-            }
+            emptyModel.title = getString(R.string.shop_product_empty_product_title)
         }
-        if (TextUtils.isEmpty(selectedEtalaseId)) {
-            emptyModel.content = getString(R.string.shop_product_empty_product_title_owner_no_etalase)
-        } else {
-            emptyModel.content = getString(R.string.shop_product_empty_product_title_owner_etalase)
-        }
+        emptyModel.content = getString(R.string.shop_product_empty_product_content)
         return emptyModel
     }
 
@@ -519,7 +511,14 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
     }
 
     override fun onEmptyButtonClicked() {
-        RouteManager.route(activity, ApplinkConst.PRODUCT_ADD)
+        redirectToSearchResultPage()
+    }
+
+    private fun redirectToSearchResultPage() {
+        RouteManager.route(
+                context,
+                "${ApplinkConst.DISCOVERY_SEARCH}?q=$keyword"
+        )
     }
 
     private fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
@@ -782,6 +781,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
         private val LIST_SPAN_COUNT = 1
         private val GRID_SPAN_COUNT = 2
+        private const val EMPTY_PRODUCT_SEARCH_IMAGE_URL = "https://ecs7.tokopedia.net/img/android/others/product_search_not_found.png"
 
         val SAVED_SELECTED_ETALASE_LIST = "saved_etalase_list"
         val SAVED_SELECTED_ETALASE_ID = "saved_etalase_id"

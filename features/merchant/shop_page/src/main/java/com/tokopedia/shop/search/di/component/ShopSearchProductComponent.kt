@@ -9,9 +9,7 @@ import dagger.Component;
 
 @ShopSearchProductScope
 @Component(
-        modules = [
-            ShopSearchProductModule::class
-        ],
+        modules = [ShopSearchProductModule::class],
         dependencies = [ShopComponent::class])
 interface ShopSearchProductComponent {
     fun inject(shopSearchProductFragment: ShopSearchProductFragment)

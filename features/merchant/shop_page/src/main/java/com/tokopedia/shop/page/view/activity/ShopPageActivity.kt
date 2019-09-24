@@ -50,6 +50,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
@@ -335,6 +336,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         searchInputView.searchTextView.movementMethod = null
         searchInputView.searchTextView.keyListener = null
         searchInputView.setOnClickListener {
+            shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE)
             (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
                 saveShopInfoModelToCacheManager(it)?.let {
                     goToShopSearchProduct(it)
@@ -350,7 +352,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun goToShopSearchProduct(cacheManagerId: String) {
-        startActivity(ShopSearchProductActivity.createIntent(this,cacheManagerId))
+        startActivity(ShopSearchProductActivity.createIntent(this,cacheManagerId, shopAttribution))
     }
 
     override fun onResume() {

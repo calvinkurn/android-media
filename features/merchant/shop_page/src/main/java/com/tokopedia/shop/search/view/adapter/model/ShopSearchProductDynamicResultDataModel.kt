@@ -8,6 +8,7 @@ class ShopSearchProductDynamicResultDataModel(
         var name: String = "",
         var price: String = "",
         var appLink: String = "",
+        var url: String = "",
         var searchQuery: String = "",
         override var type: Type = Type.TYPE_PDP
 ) : ShopSearchProductDataModel() {

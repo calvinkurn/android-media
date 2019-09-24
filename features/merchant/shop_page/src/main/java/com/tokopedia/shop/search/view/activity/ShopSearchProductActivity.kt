@@ -12,22 +12,27 @@ import com.tokopedia.shop.search.view.fragment.ShopSearchProductFragment
 
 class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
-    companion object{
-        const val SHOP_INFO_CACHE_MANAGER_ID_KEY = "shop_info_cache_manager_id_key"
-        fun  createIntent(context: Context, cacheManagerId: String): Intent {
+    companion object {
+        const val KEY_SHOP_INFO_CACHE_MANAGER_ID = "keyShopInfoCacheManagerId"
+        const val KEY_SHOP_ATTRIBUTION = "keyShopAttribution"
+        fun createIntent(context: Context, cacheManagerId: String, shopAttribution: String?): Intent {
             val intent = Intent(context, ShopSearchProductActivity::class.java)
-            intent.putExtra(SHOP_INFO_CACHE_MANAGER_ID_KEY,cacheManagerId)
+            intent.putExtra(KEY_SHOP_INFO_CACHE_MANAGER_ID, cacheManagerId)
+            intent.putExtra(KEY_SHOP_ATTRIBUTION, shopAttribution)
             return intent
         }
     }
 
-    private var shopInfoCacheManagerId : String = ""
+    private var shopInfoCacheManagerId: String = ""
+
+    private var shopAttribution: String = ""
 
     private var component: ShopComponent? = null
 
     private fun getIntentData() {
         intent?.run {
-            shopInfoCacheManagerId = getStringExtra(SHOP_INFO_CACHE_MANAGER_ID_KEY)
+            shopInfoCacheManagerId = getStringExtra(KEY_SHOP_INFO_CACHE_MANAGER_ID).orEmpty()
+            shopAttribution = getStringExtra(KEY_SHOP_ATTRIBUTION).orEmpty()
         }
     }
 
@@ -36,7 +41,10 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
         super.onCreate(savedInstanceState)
     }
 
-    override fun getNewFragment() = ShopSearchProductFragment.createInstance(shopInfoCacheManagerId)
+    override fun getNewFragment() = ShopSearchProductFragment.createInstance(
+            shopInfoCacheManagerId,
+            shopAttribution
+    )
 
     override fun getComponent(): ShopComponent = component
             ?: ShopComponentInstance.getComponent(application)

@@ -43,8 +43,5 @@ data class UniverseSearchResponse(
             )
         }
     }
-
-
-
 }
 

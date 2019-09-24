@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDynamicResultDataModel
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.R
+import com.tokopedia.shop.search.util.SpanTextHelper
 import kotlinx.android.synthetic.main.shop_search_product_dynamic_result_layout.view.*
 
 class ShopSearchProductDynamicResultViewHolder(
@@ -21,26 +22,15 @@ class ShopSearchProductDynamicResultViewHolder(
 
     override fun bind(element: ShopSearchProductDynamicResultDataModel) {
         with(view) {
-            ImageHandler.loadImageCircle2(view.context, iv_product, element.imageUri)
-            val prodName = element.name
-            val startIndex = prodName.indexOf(element.searchQuery, ignoreCase = true)
-            val endIndex = startIndex + element.searchQuery.length
-            val spannableString = SpannableString(prodName)
-            if(startIndex >=0) {
-                spannableString.setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        0,
-                        startIndex,
-                        Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-                spannableString.setSpan(
-                        StyleSpan(Typeface.BOLD),
-                        endIndex,
-                        element.name.length,
-                        Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-                )
+            ImageHandler.loadImage(context, iv_product, element.imageUri,R.drawable.ic_loading_image)
+            val sourceString = element.name
+            val targetString = element.searchQuery
+            val isTargetStringExists = sourceString.indexOf(targetString, ignoreCase = true) != -1
+            tv_label_product_name.text = if (isTargetStringExists) {
+                SpanTextHelper(sourceString).bold(targetString, true, true)
+            } else {
+                SpanTextHelper(sourceString).bold(sourceString, false, true)
             }
-            tv_label_product_name.text = spannableString
             tv_label_price.text = element.price
         }
     }

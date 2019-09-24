@@ -9,11 +9,11 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.shop.R
 
 class ShopShare(private val activity: Activity) {
 
     companion object {
-        private const val SHARE_SHOP_TITLE = "Bagikan Produk Ini"
         private const val TYPE = "text/plain"
     }
 
@@ -30,7 +30,7 @@ class ShopShare(private val activity: Activity) {
             putExtra(Intent.EXTRA_TEXT, shareContent)
             putExtra(Intent.EXTRA_SUBJECT, title)
         }
-        activity.startActivity(Intent.createChooser(shareIntent, SHARE_SHOP_TITLE))
+        activity.startActivity(Intent.createChooser(shareIntent, activity.getString(R.string.other)))
     }
 
     private fun generateBranchLink(data: ShopShareData) {
