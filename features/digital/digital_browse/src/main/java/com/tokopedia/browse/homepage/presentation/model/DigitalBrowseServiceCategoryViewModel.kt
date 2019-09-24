@@ -18,7 +18,8 @@ class DigitalBrowseServiceCategoryViewModel(val id: Int = 0,
                                             val categoryId: Int = 0,
                                             val appLinks: String? = null,
                                             val categoryLabel: String? = null,
-                                            val isTitle: Boolean = false) :
+                                            val isTitle: Boolean = false,
+                                            val buIdentifier: String? = null) :
         Visitable<DigitalBrowseServiceAdapterTypeFactory>, Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -30,8 +31,9 @@ class DigitalBrowseServiceCategoryViewModel(val id: Int = 0,
         parcel.readInt(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readByte() != 0.toByte()
-    )
+        parcel.readByte() != 0.toByte(),
+            parcel.readString()
+            )
 
     override fun type(typeFactory: DigitalBrowseServiceAdapterTypeFactory): Int {
         return typeFactory.type(this)
@@ -47,6 +49,7 @@ class DigitalBrowseServiceCategoryViewModel(val id: Int = 0,
         parcel.writeString(appLinks)
         parcel.writeString(categoryLabel)
         parcel.writeByte(if (isTitle) 1 else 0)
+        parcel.writeString(buIdentifier)
     }
 
     override fun describeContents(): Int {

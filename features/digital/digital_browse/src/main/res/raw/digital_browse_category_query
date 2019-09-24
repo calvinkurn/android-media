@@ -12,6 +12,7 @@ query dynamicHomeIcon($type: Int!) {
             categoryId
             applinks
             categoryLabel
+            bu_identifier
           }
         }
       }

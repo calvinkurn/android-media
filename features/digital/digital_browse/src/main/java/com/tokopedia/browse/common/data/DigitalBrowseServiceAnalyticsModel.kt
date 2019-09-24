@@ -10,7 +10,8 @@ class DigitalBrowseServiceAnalyticsModel (
     var headerName: String = "",
     var headerPosition: Int = 0,
     var iconName: String = "",
-    var iconPosition: Int = 0
+    var iconPosition: Int = 0,
+    var buIdentifier: String = ""
 ) {
     val TRACKING_FIELD_ID = "id"
     val TRACKING_FIELD_NAME = "name"
@@ -22,7 +23,7 @@ class DigitalBrowseServiceAnalyticsModel (
         return DataLayer.mapOf(
                 TRACKING_FIELD_ID, iconPosition.toString(),
                 TRACKING_FIELD_NAME, String.format(TRACKING_VALUE_NAME, headerName, headerPosition),
-                TRACKING_FIELD_CREATIVE, iconName,
+                TRACKING_FIELD_CREATIVE, buIdentifier,
                 TRACKING_FIELD_POSITION, iconPosition.toString()
         )
     }

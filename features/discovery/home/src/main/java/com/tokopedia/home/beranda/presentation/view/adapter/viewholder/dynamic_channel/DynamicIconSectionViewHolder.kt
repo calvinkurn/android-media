@@ -103,8 +103,7 @@ class DynamicIconSectionViewHolder(val view: View,
         }
 
         private fun eventClickDynamicIcon(context: Context, homeIconItem: HomeIconItem, position: Int) {
-            HomePageTracking.eventEnhancedClickDynamicIconHomePage(context,
-                    homeIconItem.getEnhanceClickDynamicIconHomePage(position))
+            HomePageTracking.eventEnhancedClickDynamicIconHomePage(context, homeIconItem, position);
 
             HomeTrackingUtils.homeUsedCaseClick(context,
                     homeIconItem.title, position + 1, homeIconItem.applink)
