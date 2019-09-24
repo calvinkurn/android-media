@@ -28,7 +28,7 @@ import com.tokopedia.topads.sdk.widget.TopAdsWidgetView;
 public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements TopAdsItemClickListener, TopAdsSwitcher {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.search_result_item_ads;
+    public static final int LAYOUT = R.layout.search_result_item_top_ads;
 
     private TopAdsWidgetView adsWidgetView;
     private Context context;
