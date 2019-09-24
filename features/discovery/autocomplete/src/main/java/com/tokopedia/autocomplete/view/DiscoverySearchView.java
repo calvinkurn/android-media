@@ -394,7 +394,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                 .titleTextColorRes(com.tokopedia.design.R.color.white)
                 .spacingRes(R.dimen.spacing_show_case)
                 .arrowWidth(R.dimen.arrow_width_show_case)
-                .textColorRes(R.color.grey_400)
+                .textColorRes(com.tokopedia.design.R.color.grey_400)
                 .shadowColorRes(R.color.shadow)
                 .backgroundContentColorRes(com.tokopedia.design.R.color.black)
                 .textSizeRes(R.dimen.fontvs)
