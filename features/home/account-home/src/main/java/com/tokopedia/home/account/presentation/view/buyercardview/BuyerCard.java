@@ -12,19 +12,30 @@ public class BuyerCard implements Parcelable {
     private String username;
     private String tokopointAmount;
     private String couponAmount;
+    private String tokoMemberAmount;
+    private String eggImageUrl;
     private boolean isAffiliate;
 
     public BuyerCard() {
 
     }
 
-    BuyerCard(String avatar, String username, int progress, String tokopointAmount, String couponAmount, boolean isAffiliate) {
+    BuyerCard(String avatar,
+              String username,
+              int progress,
+              String tokopointAmount,
+              String couponAmount,
+              boolean isAffiliate,
+              String tokoMemberAmount,
+              String eggImageUrl) {
         this.avatar = avatar;
         this.progress = progress;
         this.username = username;
         this.tokopointAmount = tokopointAmount;
         this.couponAmount = couponAmount;
         this.isAffiliate = isAffiliate;
+        this.tokoMemberAmount = tokoMemberAmount;
+        this.eggImageUrl = eggImageUrl;
     }
 
     public String getAvatar() {
@@ -75,6 +86,13 @@ public class BuyerCard implements Parcelable {
         this.couponAmount = couponAmount;
     }
 
+    public String getEggImageUrl() {
+        return eggImageUrl;
+    }
+
+    public void setEggImageUrl(String eggImageUrl) {
+        this.eggImageUrl = eggImageUrl;
+    }
 
     public static class Builder {
         private String avatar;
@@ -82,6 +100,8 @@ public class BuyerCard implements Parcelable {
         private int progress;
         private String tokopoint;
         private String coupon;
+        private String tokomember;
+        private String eggImageUrl;
         private boolean isAffiliate;
 
         public Builder avatar(String avatar) {
@@ -114,8 +134,18 @@ public class BuyerCard implements Parcelable {
             return this;
         }
 
+        public Builder tokomember(String tokomember) {
+            this.tokomember = tokomember;
+            return this;
+        }
+
+        public Builder eggImageUrl(String eggImageUrl) {
+            this.eggImageUrl = eggImageUrl;
+            return this;
+        }
+
         public BuyerCard build() {
-            return new BuyerCard(avatar, username, progress, tokopoint, coupon, isAffiliate);
+            return new BuyerCard(avatar, username, progress, tokopoint, coupon, isAffiliate, tokomember, eggImageUrl);
         }
     }
 
@@ -131,6 +161,8 @@ public class BuyerCard implements Parcelable {
         dest.writeString(this.username);
         dest.writeString(this.tokopointAmount);
         dest.writeString(this.couponAmount);
+        dest.writeString(this.tokoMemberAmount);
+        dest.writeString(this.eggImageUrl);
         dest.writeByte(this.isAffiliate ? (byte) 1 : (byte) 0);
     }
 
@@ -140,6 +172,8 @@ public class BuyerCard implements Parcelable {
         this.username = in.readString();
         this.tokopointAmount = in.readString();
         this.couponAmount = in.readString();
+        this.tokoMemberAmount = in.readString();
+        this.eggImageUrl = in.readString();
         this.isAffiliate = in.readByte() != 0;
     }
 
@@ -154,4 +188,12 @@ public class BuyerCard implements Parcelable {
             return new BuyerCard[size];
         }
     };
+
+    public String getTokoMemberAmount() {
+        return tokoMemberAmount;
+    }
+
+    public void setTokoMemberAmount(String tokoMemberAmount) {
+        this.tokoMemberAmount = tokoMemberAmount;
+    }
 }

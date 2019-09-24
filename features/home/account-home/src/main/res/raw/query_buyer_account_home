@@ -16,6 +16,10 @@ query {
         name
         nameDesc
         imageURL
+        eggImageURL
+        eggImageHomepageURL
+        backgroundImgURL
+        backgroundImgURLMobile
       }
       points {
         reward
@@ -41,6 +45,10 @@ query {
   tokopointsSumCoupon {
       sumCoupon
       sumCouponStr
+    }
+  membershipSumUserCard {
+      sumUserCard
+      sumUserCardStr
     }
   vcc_user_status(){
       status
