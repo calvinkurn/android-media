@@ -92,7 +92,10 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
                 when(it) {
                     is Success -> {
                         with (it.data) {
-                            if (catalog.label.isNotEmpty())  (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
+                            if (catalog.label.isNotEmpty()) {
+                                (activity as BaseVoucherGameActivity).updateTitle(catalog.label)
+                                voucherGameAnalytics.categoryName = catalog.label
+                            }
 
                             if (banners.isEmpty()) promo_banner.visibility = View.GONE
                             else {
@@ -120,6 +123,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
             voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
                     voucherGameViewModel.createMenuDetailParams(it))
         }
+        voucherGameAnalytics.eventPDPLanding()
         initView()
     }
 
@@ -264,7 +268,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
+        hideSnackBarRetry()
+        swipeToRefresh.isRefreshing = true
         searchInputView.searchText = ""
     }
 
@@ -289,15 +294,12 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun onSearchSubmitted(text: String?) {
-        text?.let {
-            voucherGameAnalytics.eventClickSearchResult(it)
-            searchVoucherGame(it)
-        }
+        text?.let { if(text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it) }
     }
 
     override fun onSearchTextChanged(text: String?) {
         text?.let {
-            voucherGameAnalytics.eventClickSearchResult(it)
+            if (text.isNotEmpty()) voucherGameAnalytics.eventClickSearchResult(it)
             searchVoucherGame(it)
         }
     }
