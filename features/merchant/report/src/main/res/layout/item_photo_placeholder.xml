@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="center"
-        android:src="@drawable/ic_report_camera_add"
+        android:src="@drawable/report_ic_report_camera_add"
         android:background="@drawable/report_bg_photo_placeholder"
         tools:ignore="ContentDescription" />
 </FrameLayout>

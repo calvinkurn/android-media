@@ -15,8 +15,8 @@ class ProductReportActivity: BaseSimpleActivity(), HasComponent<MerchantReportCo
     private lateinit var fragment : ProductReportFragment
 
     override fun getNewFragment(): Fragment {
-        val productId = intent.data?.pathSegments?.let {
-            it[it.size - 2]
+        val productId = intent.data?.lastPathSegment?.let {
+            it
         } ?: (intent.extras?.getString(ARG_PRODUCT_ID) ?: "-1")
         fragment = ProductReportFragment.createInstance(productId)
         return fragment

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.topads.auto">
+    package="com.tokopedia.topads.auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <application
         android:allowBackup="true"
+        tools:replace="android:label"
         android:label="@string/auto_ads_app_name">
         <activity
             android:name=".view.activity.AutoAdsRouteActivity"
-            android:label=""
-            android:theme="@style/Theme.AutoAds.Transparent"  >
+            android:label="" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -51,8 +52,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".view.activity.ConfirmationDialogActivity"
-            android:theme="@style/AppTheme.NoActionBar.ActivityDialog" />
+            android:name=".view.activity.ConfirmationDialogActivity" />
     </application>
 
 </manifest>
