@@ -10,7 +10,7 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+            android:id="@+id/profile_list_recycler_view"
             android:paddingLeft="@dimen/dp_12"
             android:paddingRight="@dimen/dp_12"
             android:divider="@android:color/transparent"

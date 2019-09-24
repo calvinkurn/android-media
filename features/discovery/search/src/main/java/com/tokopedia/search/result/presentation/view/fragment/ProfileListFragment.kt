@@ -79,6 +79,10 @@ class ProfileListFragment :
         }
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.profile_list_recycler_view
+    }
+
     private fun attachNavigationListener(context: Context) {
         if (context is SearchNavigationListener) {
             this.searchNavigationListener = context

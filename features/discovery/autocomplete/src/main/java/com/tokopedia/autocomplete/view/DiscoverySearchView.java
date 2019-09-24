@@ -390,7 +390,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
-                .customView(R.layout.view_showcase)
                 .titleTextColorRes(com.tokopedia.design.R.color.white)
                 .spacingRes(R.dimen.spacing_show_case)
                 .arrowWidth(R.dimen.arrow_width_show_case)
