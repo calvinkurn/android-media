@@ -133,10 +133,10 @@ public class ShopListFragment
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16),
-                        getContext().getResources().getDimensionPixelSize(R.dimen.dp_16)
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                        getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
                 )
         );
 

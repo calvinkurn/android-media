@@ -64,8 +64,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         guidedSearchRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         guidedSearchRecyclerView.setAdapter(guidedSearchAdapter);
         guidedSearchRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
-                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         ));
         initQuickFilterRecyclerView();
         adsBannerView.setTopAdsBannerClickListener((position, applink, data) -> {
@@ -88,8 +88,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         quickFilterListView.setAdapter(quickFilterAdapter);
         quickFilterListView.addItemDecoration(new LinearHorizontalSpacingDecoration(
-                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
-                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
         ));
     }
 

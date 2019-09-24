@@ -57,7 +57,7 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
                         : 1;
             }
 
-            int spacing = context.getResources().getDimensionPixelSize(R.dimen.dp_16);
+            int spacing = context.getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16);
 
             @Override
             public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
