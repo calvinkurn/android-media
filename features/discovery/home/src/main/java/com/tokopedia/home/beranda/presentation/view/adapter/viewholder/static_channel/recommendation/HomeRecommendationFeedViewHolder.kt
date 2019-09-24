@@ -43,21 +43,13 @@ class HomeRecommendationFeedViewHolder(itemView: View,
         container.layoutParams = layoutParams
 
         feedTabModelList = homeRecommendationFeedViewModel.feedTabModel
-        homeFeedPagerAdapter = HomeFeedPagerAdapter(
-                listener.eggListener,
-                this,
-                listener.childFragmentManager,
-                feedTabModelList,
-                listener.trackingQueue)
 
         homeFeedsTabLayout.visibility = View.VISIBLE
         homeFeedsViewPager.visibility = View.VISIBLE
 
-        homeFeedPagerAdapter?.run {
-            if (homeRecommendationFeedViewModel.isNewData) {
-                initViewPagerAndTablayout()
-                homeRecommendationFeedViewModel.isNewData = false
-            }
+        if (homeFeedPagerAdapter == null || homeRecommendationFeedViewModel.isNewData) {
+            initViewPagerAndTablayout()
+            homeRecommendationFeedViewModel.isNewData = false
         }
     }
 

@@ -36,9 +36,10 @@ public class ValidateUserDataSubscriber extends Subscriber<GraphqlResponse> {
 
             GqlValidateUserDataResponse gqlValidateUserDataResponse =
                     graphqlResponse.getData(GqlValidateUserDataResponse.class);
+            String userId = String.valueOf(gqlValidateUserDataResponse.getValidateUserDataResponse().getUserId());
 
             if (gqlValidateUserDataResponse.getValidateUserDataResponse().isSuccess()) {
-                view.onUserDataValidated();
+                view.onUserDataValidated(userId);
             } else {
                 view.dismissLoading();
                 resolveError(gqlValidateUserDataResponse.getValidateUserDataResponse().getError());
