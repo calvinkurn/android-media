@@ -117,7 +117,7 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
         voucherGameExtraParam.menuId.toIntOrNull()?.let {
             togglePromoBanner(false)
-            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, R.raw.query_menu_detail),
+            voucherGameViewModel.getVoucherGameMenuDetail(GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_menu_detail),
                     voucherGameViewModel.createMenuDetailParams(it))
         }
         initView()
@@ -318,8 +318,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
 
     companion object {
 
-        val BANNER_SEE_ALL_TEXT_SIZE = R.dimen.sp_16
-        val ITEM_DECORATOR_SIZE = R.dimen.dp_8
+        val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.design.R.dimen.sp_16
+        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_8
 
         const val FULL_SCREEN_SPAN_SIZE = 1
         const val OPERATOR_ITEM_SPAN_SIZE = 3

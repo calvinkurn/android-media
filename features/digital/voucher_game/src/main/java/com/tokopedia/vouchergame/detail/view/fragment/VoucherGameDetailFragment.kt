@@ -540,7 +540,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         var inputFieldCount = 0
 
-        val ITEM_DECORATOR_SIZE = R.dimen.dp_6
+        val ITEM_DECORATOR_SIZE = com.tokopedia.design.R.dimen.dp_6
         const val INFO_TOUCH_AREA_SIZE_PX = 20
 
         const val FULL_SCREEN_SPAN_SIZE = 1
