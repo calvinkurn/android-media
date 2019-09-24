@@ -31,6 +31,7 @@ dependencies {
         exclude group: "com.android.support"
     }
     implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation rootProject.ext.firebase.core
     implementation rootProject.ext.miscDependencies.apacheLang
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.flexBoxLayout

@@ -15,6 +15,7 @@ buildscript {
     }
 }
 dependencies {
+    implementation rootProject.ext.firebase.core
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.playServicesDependencies.analytics
