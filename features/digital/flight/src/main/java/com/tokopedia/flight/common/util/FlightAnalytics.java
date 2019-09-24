@@ -713,7 +713,7 @@ public class FlightAnalytics {
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PROMOTION_VIEW,
                         EVENT_LABEL, String.format(getDefaultLocale(), "%s - %d - %s",
-                                Label.FLIGHT,
+                                Label.FLIGHT_SMALL,
                                 position,
                                 banner.getAttributes().getPromoCode()
                         ),
