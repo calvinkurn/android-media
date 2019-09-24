@@ -115,7 +115,7 @@ public interface OrderListDetailContract {
 
         void onBuyAgainAllItems();
 
-        void onBuyAgainItems(List<Items> item);
+        void onBuyAgainItems(List<Items> item, String type);
 
         void assignInvoiceDataTo(Intent intent);
 

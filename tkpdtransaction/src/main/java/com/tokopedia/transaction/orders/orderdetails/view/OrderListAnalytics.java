@@ -32,7 +32,14 @@ public class OrderListAnalytics {
     private static final String PRODUCT_EVENT_ACTION = "click product";
     private static final String FILTER_EVENT_ACTION = "click quick filter";
     private static final String DATE_EVENT_ACTION = "submit date filter";
+    private static final String DATE_FILTER_CLICK_EVENT_ACTION = "click filter button";
+    private static final String EVENT_ACTION_CLICK_HELP = "click disini for help";
+    private static final String EVENT_ACTION_LIHAT_INVOICE = "click lihat on invoice";
+    private static final String EVENT_ACTION_LIHAT_STATUS = "click lihat on status order";
+
+
     private static final String SEARCH_EVENT_ACTION = "submit search";
+    private static final String SEARCH_EVENT_CANCEL_ACTION = "click cancel search";
     private static final String INVOICE_EVENT_ACTION = "click view invoice";
     private static final String LOAD_MORE_EVENT_ACTION = "scroll load more";
     private static final String EVENT_ADD_TO_CART = "addToCart";
@@ -44,7 +51,8 @@ public class OrderListAnalytics {
     private static final String EVENT_TRANSACTION = "transaction";
     private static final String EVENT_CARTEGORY = "digital-deals";
     private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list detail - mp";
-    private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi order";
+    private static final String EVENT_ACTION_BUY_AGAIN_ORDER = "click beli lagi - order";
+    private static final String EVENT_ACTION_BUY_AGAIN_PRODUCT = "click beli lagi - product";
     private static final String EVENT_LABEL_BUY_AGAIN_SUCCESS = "success";
     private static final String EVENT_LABEL_BUY_AGAIN_FAILURE = "failure";
     private static final String KEY_ADD = "add";
@@ -95,25 +103,47 @@ public class OrderListAnalytics {
     private static final String PRODUCTS = "products";
     private static final String CLICK = "click";
     private static final String IMPRESSIONS = "impressions";
+    private static final String BUY_AGAIN_OPTION_PRODUCT = "product";
 
     @Inject
     public OrderListAnalytics() {
+    }
+
+    public void sendHelpEventData(String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, EVENT_ACTION_CLICK_HELP, eventLabel));
     }
 
     public void sendProductClickEvent(String eventLabel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, PRODUCT_EVENT_ACTION, eventLabel));
     }
 
+    public void sendLihatStatusClick(String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, EVENT_ACTION_LIHAT_STATUS, eventLabel));
+    }
+
+    public void sendDateFilterClickEvent() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, DATE_FILTER_CLICK_EVENT_ACTION, ""));
+    }
+
+    public void sendLihatInvoiceClick(String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, EVENT_ACTION_LIHAT_INVOICE, eventLabel));
+    }
+
     public void sendQuickFilterClickEvent(String filterLabel) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, FILTER_EVENT_ACTION, filterLabel));
     }
 
-    public void sendDateFilterClickEvent() {
+    public void sendDateFilterSubmitEvent() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, DATE_EVENT_ACTION, ""));
     }
 
-    public void sendSearchFilterClickEvent() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, SEARCH_EVENT_ACTION, ""));
+
+    public void sendSearchFilterClickEvent(String keyword) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, SEARCH_EVENT_ACTION, keyword));
+    }
+
+    public void sendSearchFilterCancelClickEvent() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, SEARCH_EVENT_CANCEL_ACTION, ""));
     }
 
     public void sendViewInvoiceClickEvent() {
@@ -166,7 +196,7 @@ public class OrderListAnalytics {
         TrackApp.getInstance().getGTM().sendScreenAuthenticated(SCREEN_NAME);
     }
 
-    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess) {
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, String type) {
         ArrayList<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -207,7 +237,11 @@ public class OrderListAnalytics {
         Map<String, Object> map = new HashMap<>();
         map.put("event", EVENT_ADD_TO_CART);
         map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
-        map.put("eventAction", EVENT_ACTION_BUY_AGAIN);
+        if (type.contains(BUY_AGAIN_OPTION_PRODUCT))
+            map.put("eventAction", EVENT_ACTION_BUY_AGAIN_PRODUCT);
+        else
+            map.put("eventAction", EVENT_ACTION_BUY_AGAIN_ORDER);
+
         map.put("eventLabel", isSuccess ? EVENT_LABEL_BUY_AGAIN_SUCCESS : EVENT_LABEL_BUY_AGAIN_FAILURE);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);

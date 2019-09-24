@@ -30,6 +30,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private OrderListDetailPresenter presenter;
     private boolean isOrderTradeIn;
     public static final String ORDER_LIST_URL_ENCODING = "UTF-8";
+    private static final String BUY_AGAIN_OPTION_PRODUCT = "product";
 
     public ProductItemAdapter(Context context, List<Items> itemsList, OrderListDetailPresenter presenter, boolean isTradeIn) {
         this.context = context;
@@ -131,7 +132,7 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     public void onClick(View view) {
                         List<Items> itemsList = new ArrayList<>();
                         itemsList.add(items);
-                        presenter.onBuyAgainItems(itemsList);
+                        presenter.onBuyAgainItems(itemsList,BUY_AGAIN_OPTION_PRODUCT);
                     }
                 });
             }
