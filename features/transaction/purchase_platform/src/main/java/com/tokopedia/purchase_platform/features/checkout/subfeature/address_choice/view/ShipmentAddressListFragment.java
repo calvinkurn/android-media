@@ -35,16 +35,13 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeA
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsMultipleAddress;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.features.checkout.analytics.CornerAnalytics;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.mapper.AddressModelMapper;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.di.DaggerAddressChoiceComponent;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.recyclerview.ShipmentAddressListAdapter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
-import com.tokopedia.transactionanalytics.CheckoutAnalyticsMultipleAddress;
-import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
-import com.tokopedia.transactionanalytics.CornerAnalytics;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,8 +50,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.EXTRA_TYPE_REQUEST;
-import static com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN;
+import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_TYPE_REQUEST;
 import static com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.EXTRA_CURRENT_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_EXISTING_USER;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
@@ -447,7 +443,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         address.setStreet(intentModel.getAddressStreet());
                         address.setPostalCode(intentModel.getPostalCode());
                     }
-                    if (requestType == TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
+                    if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
                         mPresenter.getAddress();
                         mCurrentAddress = address;
                     } else
@@ -468,7 +464,7 @@ public class ShipmentAddressListFragment extends BaseCheckoutFragment implements
                         newAddress.setStreet(intentModel.getFormattedAddress());
                         newAddress.setPostalCode(intentModel.getPostalCode());
                     }
-                    if (requestType == TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
+                    if (requestType == CheckoutConstant.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN) {
                         mPresenter.getAddress();
                         mCurrentAddress = newAddress;
                     } else

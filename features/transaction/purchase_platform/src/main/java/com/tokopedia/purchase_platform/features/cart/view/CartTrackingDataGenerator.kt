@@ -1,10 +1,10 @@
-package com.tokopedia.checkout.view.feature.cartlist
+package com.tokopedia.purchase_platform.features.cart.view
 
 import android.os.Bundle
 import android.text.TextUtils
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData
-import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import javax.inject.Inject
 
 /**

@@ -83,6 +83,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.CheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
@@ -729,7 +730,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     CartAddressChoiceActivity.TYPE_REQUEST_ADD_SHIPMENT_DEFAULT_ADDRESS);
         }
 
-        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
+        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
     @Deprecated
@@ -1205,7 +1206,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else if ((requestCode == REQUEST_CHOOSE_PICKUP_POINT)
                 && resultCode == Activity.RESULT_OK) {
             onResultFromRequestCodeCourierOptions(requestCode, data);
-        } else if (requestCode == CartAddressChoiceActivity.REQUEST_CODE) {
+        } else if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
             onResultFromRequestCodeAddressOptions(resultCode, data);
         } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
             onResultFromRequestCodeLoyalty(resultCode, data);
@@ -1322,10 +1323,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     private void onResultFromRequestCodeAddressOptions(int resultCode, Intent data) {
         switch (resultCode) {
-            case CartAddressChoiceActivity.RESULT_CODE_ACTION_SELECT_ADDRESS:
+            case CheckoutConstant.RESULT_CODE_ACTION_SELECT_ADDRESS:
                 RecipientAddressModel currentAddress = shipmentAdapter.getAddressShipmentData();
                 RecipientAddressModel newAddress = data.getParcelableExtra(
-                        CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+                        CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA);
 
                 if (currentAddress != null && newAddress != null) {
                     if (!currentAddress.getId().equals(newAddress.getId()) ||
@@ -1370,7 +1371,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 shipmentPresenter.getRecipientAddressModel(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
-        startActivityForResult(intent, CartAddressChoiceActivity.REQUEST_CODE);
+        startActivityForResult(intent, CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS);
     }
 
     @Override

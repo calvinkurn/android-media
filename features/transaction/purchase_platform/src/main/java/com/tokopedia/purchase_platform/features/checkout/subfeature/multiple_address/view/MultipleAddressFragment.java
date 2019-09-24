@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.purchase_platform.R;
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressAdapterData;
 import com.tokopedia.purchase_platform.features.checkout.subfeature.multiple_address.domain.model.MultipleAddressItemData;
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData;
@@ -180,7 +181,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == TYPE_REQUEST_MULTIPLE_ADDRESS_CHANGE_ADDRESS) {
                 ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
-                RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+                RecipientAddressModel newAddress = data.getParcelableExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA);
                 int childPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_CHILD_INDEX, -1);
                 int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
                 setNewShipmentRecipientAddress(dataList, newAddress, childPosition, parentPosition);
@@ -189,7 +190,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                 setRecyclerViewAdapter(dataList, parentPosition, false, false);
             } else if (requestCode == TYPE_REQUEST_MULTIPLE_ADDRESS_ADD_SHIPMENT) {
                 ArrayList<MultipleAddressAdapterData> dataList = data.getParcelableArrayListExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_DATA_LIST);
-                RecipientAddressModel newAddress = data.getParcelableExtra(CartAddressChoiceActivity.EXTRA_SELECTED_ADDRESS_DATA);
+                RecipientAddressModel newAddress = data.getParcelableExtra(CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA);
                 int parentPosition = data.getIntExtra(CartAddressChoiceActivity.EXTRA_MULTIPLE_ADDRESS_PARENT_INDEX, -1);
                 if (newAddress != null && dataList != null && parentPosition != -1) {
                     MultipleAddressItemData newShipmentData = null;

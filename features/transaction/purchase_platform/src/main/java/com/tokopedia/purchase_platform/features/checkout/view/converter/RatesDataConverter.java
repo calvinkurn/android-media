@@ -141,4 +141,10 @@ public class RatesDataConverter {
         return TextUtils.join(",", shippingServices);
     }
 
+    public static String getLogisticPromoCode(ShipmentCartItemModel itemModel) {
+        if (itemModel != null && itemModel.getVoucherLogisticItemUiModel() != null) {
+            return itemModel.getVoucherLogisticItemUiModel().getCode();
+        } else return "";
+    }
+
 }
