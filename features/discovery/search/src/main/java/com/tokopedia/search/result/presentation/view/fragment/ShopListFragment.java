@@ -110,7 +110,7 @@ public class ShopListFragment
         presenter.attachView(this);
         presenter.initInjector(this);
 
-        return inflater.inflate(R.layout.fragment_shop_list_search, null);
+        return inflater.inflate(R.layout.search_result_shop_fragment_layout, null);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class ShopListFragment
         adapter = new ShopListAdapter(this,
                 new ShopListTypeFactoryImpl(this, this, this));
 
-        recyclerView = rootView.findViewById(R.id.recyclerview);
+        recyclerView = rootView.findViewById(R.id.recyclerViewSearchShop);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(

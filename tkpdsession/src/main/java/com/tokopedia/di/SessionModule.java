@@ -46,7 +46,10 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import retrofit2.Retrofit;
+
+import static com.tokopedia.network.utils.AuthUtil.getUserAgent;
 
 
 /**
@@ -149,6 +152,11 @@ public class SessionModule {
                 .addInterceptor(authInterceptor)
                 .addInterceptor(accountsAuthInterceptor)
                 .addInterceptor(chuckInterceptor)
+                .addInterceptor(chain -> {
+                    Request.Builder newRequest = chain.request().newBuilder();
+                    newRequest.addHeader("User-Agent", getUserAgent());
+                    return chain.proceed(newRequest.build());
+                })
                 .addInterceptor(new AkamaiBotInterceptor())
                 .build();
     }

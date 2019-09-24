@@ -4,10 +4,9 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 project.ext {
     artifactId = 'network'
     groupId = 'com.tokopedia.network'
-    versionName = "1.0.3"
+    versionName = "1.0.4"
     artifactName = "network"
 }
-
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])

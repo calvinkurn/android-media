@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_20">
+
+    <ImageView
+        android:id="@+id/img_no_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cat_ic_banned_item" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold"
+        tools:text="Oops, Produk Nggak Ditemukan" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/txt_no_data_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="@dimen/dp_5"
+        app:typographyType="heading_5"
+        tools:text="Coba kurangi salah satu filter yang kamu gunakan :" />
+
+</LinearLayout>

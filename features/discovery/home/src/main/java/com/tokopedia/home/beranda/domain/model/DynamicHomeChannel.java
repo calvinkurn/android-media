@@ -700,14 +700,6 @@ public class DynamicHomeChannel {
                 return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
             return "";
         }
-
-        public void setHomeAttribution(String homeAttribution) {
-            this.homeAttribution = homeAttribution;
-        }
-
-        public String getHomeAttribution() {
-            return homeAttribution;
-        }
     }
 
     public class Hero {

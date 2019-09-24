@@ -375,6 +375,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     @Override
     public void setAdditionalTickerInfo(List<AdditionalTickerInfo> tickerInfos, @Nullable String url) {
         if (getContext()!= null && tickerInfos.size() > 0) {
+            mTickerInfos.setTickerTitle(tickerInfos.get(0).getTitle());
             mTickerInfos.setHtmlDescription(tickerInfos.get(0).getNotes());
             mTickerInfos.setVisibility(View.VISIBLE);
             if (url != null) {
