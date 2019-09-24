@@ -380,7 +380,7 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                     remoteConfig.getString(RemoteConfigKey.IMAGE_SEARCH_ONBOARD_DESC,
                             mContext.getResources().getString(R.string.on_board_desc)),
                     ShowCaseContentPosition.UNDEFINED,
-                    R.color.tkpd_main_green));
+                    com.tokopedia.design.R.color.tkpd_main_green));
             if(activity != null) {
                 showCaseDialog.show(activity, showCaseTag, showCaseObjectList);
             }
@@ -391,12 +391,12 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
     private ShowCaseDialog createShowCase() {
         return new ShowCaseBuilder()
                 .customView(R.layout.view_showcase)
-                .titleTextColorRes(R.color.white)
+                .titleTextColorRes(com.tokopedia.design.R.color.white)
                 .spacingRes(R.dimen.spacing_show_case)
                 .arrowWidth(R.dimen.arrow_width_show_case)
                 .textColorRes(R.color.grey_400)
                 .shadowColorRes(R.color.shadow)
-                .backgroundContentColorRes(R.color.black)
+                .backgroundContentColorRes(com.tokopedia.design.R.color.black)
                 .textSizeRes(R.dimen.fontvs)
                 .circleIndicatorBackgroundDrawableRes(R.drawable.selector_circle_green)
                 .prevStringRes(R.string.navigate_back)
