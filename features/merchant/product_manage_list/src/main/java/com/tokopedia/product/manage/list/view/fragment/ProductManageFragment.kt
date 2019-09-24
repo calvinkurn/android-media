@@ -770,7 +770,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun onSetCashbackClicked(productManageViewModel: ProductManageViewModel) {
         activity?.let {
             if (!GlobalConfig.isSellerApp()) {
-                RouteManager.route(context,ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
+                RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
                 return
             }
             showOptionCashback(productManageViewModel.productId, productManageViewModel.productPricePlain,

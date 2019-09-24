@@ -1,11 +1,13 @@
 package com.tokopedia.product.manage.list.di
 
 import android.content.Context
+import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.gm.common.constant.GMCommonUrl
 import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor
@@ -19,6 +21,12 @@ import retrofit2.Retrofit
 
 @Module
 class ProductManageNetworkModule {
+
+    @Provides
+    @ProductManageScope
+    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
+        return ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
+    }
 
     @GMProductManageQualifier
     @ProductManageScope
@@ -52,26 +60,42 @@ class ProductManageNetworkModule {
     @GMProductManageQualifier
     @Provides
     fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
+                              chuckInterceptor: ChuckInterceptor,
                               httpLoggingInterceptor: HttpLoggingInterceptor,
-                              errorResponseInterceptor: HeaderErrorResponseInterceptor,
                               cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
+        val builder = OkHttpClient.Builder()
                 .addInterceptor(gmAuthInterceptor)
                 .addInterceptor(cacheApiInterceptor)
-                .addInterceptor(errorResponseInterceptor)
+                .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
                 .addInterceptor(httpLoggingInterceptor)
-                .build()
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(chuckInterceptor)
+                    .addInterceptor(httpLoggingInterceptor.apply
+                    { level = HttpLoggingInterceptor.Level.BODY })
+        }
+
+        return builder.build()
     }
 
     @ProductManageQualifier
     @Provides
     fun provideOkHttpClientTomeBearerAuth(httpLoggingInterceptor: HttpLoggingInterceptor,
+                                          chuckInterceptor: ChuckInterceptor,
                                           tkpdAuthInterceptor: TkpdAuthInterceptor
     ): OkHttpClient {
-        return OkHttpClient.Builder()
+
+        val builder = OkHttpClient.Builder()
                 .addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
                 .addInterceptor(tkpdAuthInterceptor)
-                .build()
+
+
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(chuckInterceptor)
+                    .addInterceptor(httpLoggingInterceptor.apply
+                    { level = HttpLoggingInterceptor.Level.BODY })
+        }
+        return builder.build()
     }
 
     @Provides
