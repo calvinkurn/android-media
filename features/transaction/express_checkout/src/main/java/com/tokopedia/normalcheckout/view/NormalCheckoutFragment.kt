@@ -48,7 +48,6 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.*
-import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
 import com.tokopedia.normalcheckout.model.Fail
 import com.tokopedia.normalcheckout.model.InsuranceRecommendationContainer
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
@@ -1199,16 +1198,14 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, CheckoutVariantAda
 
     private fun onSuccessInsuranceRecommendation(insuranceRecommendation: InsuranceRecommendationGqlResponse) {
         selectedProductInfo?.let {
-
-            insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
-            fragmentViewModel.viewModels.add(insuranceViewModel)
-            adapter.addSingleDataViewModel(insuranceViewModel)
             Handler().postDelayed({
+                insuranceViewModel = ModelMapper.convertToInsuranceRecommendationViewModel(insuranceRecommendation)
+                fragmentViewModel.viewModels.add(insuranceViewModel)
+                adapter.addSingleDataViewModel(insuranceViewModel)
                 adapter.notifyDataSetChanged()
-            }, 200)
-
-            renderActionButton(it)
-            renderTotalPrice(it, viewModel.selectedwarehouse)
+                renderActionButton(it)
+                renderTotalPrice(it, viewModel.selectedwarehouse)
+            }, 500)
         }
     }
 

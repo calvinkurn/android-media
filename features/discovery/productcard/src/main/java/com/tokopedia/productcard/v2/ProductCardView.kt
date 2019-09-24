@@ -156,9 +156,10 @@ abstract class ProductCardView: BaseCustomView {
         setProductNameMarginTop()
         setPriceMarginTop()
         setLocationMarginLeft()
+        setLocationConstraintEnd()
         setReviewCountMarginLeft()
         setLabelOffersConstraint()
-        setImageTopAdsConstraint()
+        setTopAdsTopConstraint()
     }
 
     protected open fun setProductNameMarginTop() {
@@ -195,6 +196,32 @@ abstract class ProductCardView: BaseCustomView {
     protected open fun getLocationMarginLeft(): Int {
         return if (linearLayoutShopBadges.isNotNullAndVisible) R.dimen.dp_4
         else R.dimen.dp_8
+    }
+
+    protected open fun setLocationConstraintEnd() {
+        textViewShopLocation?.doIfVisible { textViewShopLocation ->
+            imageTopAds?.doIfVisible { imageTopAds ->
+                configureTextViewLocationConstraintBasedOnPosition(imageTopAds, textViewShopLocation)
+            }
+        }
+    }
+
+    protected open fun configureTextViewLocationConstraintBasedOnPosition(imageTopAds: View, textViewShopLocation: View) {
+        if(isTextLocationIsAtBottomOfCard()) {
+            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
+        }
+        else {
+            imageProduct?.doIfVisible { imageProduct ->
+                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageProduct.id, ConstraintSet.END, R.dimen.dp_8)
+            }
+        }
+    }
+
+    protected open fun isTextLocationIsAtBottomOfCard(): Boolean {
+        return labelCredibility.isNullOrNotVisible
+                && linearLayoutImageRating.isNullOrNotVisible
+                && textViewReviewCount.isNullOrNotVisible
+                && labelOffers.isNullOrNotVisible
     }
 
     protected open fun setReviewCountMarginLeft() {
@@ -239,33 +266,37 @@ abstract class ProductCardView: BaseCustomView {
         }
     }
 
-    protected open fun setImageTopAdsConstraint() {
+    protected open fun setTopAdsTopConstraint() {
         imageTopAds?.doIfVisible { imageTopAds ->
-            textViewShopLocation?.doIfVisible { textViewShopLocation ->
-                configureImageTopAdsConstraintBasedOnTextLocation(imageTopAds, textViewShopLocation)
+            val imageTopAdsTopConstraintView = getImageTopAdsTopConstraintView()
+
+            imageTopAdsTopConstraintView?.let {
+                setViewConstraint(
+                        imageTopAds.id, ConstraintSet.TOP, it.id, ConstraintSet.TOP, R.dimen.dp_0
+                )
             }
         }
     }
 
-    protected open fun configureImageTopAdsConstraintBasedOnTextLocation(imageTopAds: View, textViewShopLocation: View) {
-        if(isTextLocationIsAtBottomOfCard()) {
-            setViewConstraint(imageTopAds.id, ConstraintSet.TOP, textViewShopLocation.id, ConstraintSet.TOP, R.dimen.dp_0)
-            setViewConstraint(textViewShopLocation.id, ConstraintSet.END, imageTopAds.id, ConstraintSet.START, R.dimen.dp_4)
-        }
-        else {
-            clearViewConstraint(imageTopAds.id, ConstraintSet.TOP)
-
-            imageProduct?.doIfVisible { constraintLayoutProductCard ->
-                setViewConstraint(textViewShopLocation.id, ConstraintSet.END, constraintLayoutProductCard.id, ConstraintSet.END, R.dimen.dp_8)
+    private fun getImageTopAdsTopConstraintView(): View? {
+        return when {
+            labelOffers.isNotNullAndVisible -> {
+                labelOffers
             }
+            labelCredibility.isNotNullAndVisible -> {
+                labelCredibility
+            }
+            linearLayoutImageRating.isNotNullAndVisible -> {
+                linearLayoutImageRating
+            }
+            textViewReviewCount.isNotNullAndVisible -> {
+                textViewReviewCount
+            }
+            textViewShopLocation.isNotNullAndVisible -> {
+                textViewShopLocation
+            }
+            else -> null
         }
-    }
-
-    protected open fun isTextLocationIsAtBottomOfCard(): Boolean {
-        return labelCredibility.isNullOrNotVisible
-                && linearLayoutImageRating.isNullOrNotVisible
-                && textViewReviewCount.isNullOrNotVisible
-                && labelOffers.isNullOrNotVisible
     }
 
     open fun getCardViewRadius(): Float {
@@ -567,12 +598,4 @@ abstract class ProductCardView: BaseCustomView {
             constraintSet.connect(startLayoutId, startSide, endLayoutId, endSide, marginPixel)
         }
     }
-
-    protected open fun clearViewConstraint(@IdRes layoutId: Int, side: Int) {
-        constraintLayoutProductCard.applyConstraintSet { constraintSet ->
-            constraintSet.clear(layoutId, side)
-        }
-    }
-
-
 }

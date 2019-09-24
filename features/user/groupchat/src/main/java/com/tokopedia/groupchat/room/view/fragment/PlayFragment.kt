@@ -479,7 +479,11 @@ class PlayFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), P
         if (generateLink.isBlank())
             return
 
-        RouteManager.route(activity, ApplinkConst.WEBVIEW, generateLink)
+        if(RouteManager.isSupportApplink(activity, generateLink)) {
+            RouteManager.route(activity, generateLink)
+        } else {
+            RouteManager.route(activity, ApplinkConst.WEBVIEW, generateLink)
+        }
     }
 
     private fun getInboxChannelsIntent(): Intent? {

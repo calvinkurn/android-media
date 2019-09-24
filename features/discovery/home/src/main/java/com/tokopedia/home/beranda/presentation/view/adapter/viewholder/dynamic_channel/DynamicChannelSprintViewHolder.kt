@@ -128,7 +128,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                         }
                     }
 
-                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid), attr)
+                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid))
                 }
             } catch (e: Exception) {
                 e.printStackTrace()

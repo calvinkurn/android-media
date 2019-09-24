@@ -6,12 +6,13 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@id/swipe_refresh_layout"
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview"
+            android:id="@+id/recyclerViewSearchShop"
+            android:clipToPadding="false"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@android:color/transparent"
