@@ -577,7 +577,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                     deleteMacroInsurance(insuranceCartShopsArrayList, false);
                 }
 
-                dPresenter.processToUpdateCartData(getSelectedCartDataList(), cartAdapter.getSelectedCartShopHolderData());
+                dPresenter.processToUpdateCartData(getSelectedCartDataList());
             } else {
                 showToastMessageRed(message);
                 sendAnalyticsOnButtonCheckoutClickedFailed();
