@@ -316,6 +316,18 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         voucherGameAnalytics.eventClickBackButton()
     }
 
+    override fun getRecyclerViewResourceId(): Int {
+        return R.id.recycler_view
+    }
+
+    override fun getSwipeRefreshLayoutResourceId(): Int {
+        return R.id.swipe_refresh_layout
+    }
+
+    override fun getSearchInputView(view: View?): SearchInputView {
+        return view!!.findViewById(R.id.search_input_view)
+    }
+
     companion object {
 
         val BANNER_SEE_ALL_TEXT_SIZE = com.tokopedia.design.R.dimen.sp_16
