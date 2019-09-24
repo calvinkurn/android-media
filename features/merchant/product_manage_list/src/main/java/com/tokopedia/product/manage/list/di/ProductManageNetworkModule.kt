@@ -49,15 +49,6 @@ class ProductManageNetworkModule {
         return GMAuthInterceptor(context, abstractionRouter)
     }
 
-    @ProductManageScope
-    @Provides
-    fun provideAbstractionRouter(@ApplicationContext context: Context): AbstractionRouter {
-        if (context is AbstractionRouter) {
-            return context
-        }
-        throw RuntimeException("App should implement " + AbstractionRouter::class.java.simpleName)
-    }
-
     @GMProductManageQualifier
     @Provides
     fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
