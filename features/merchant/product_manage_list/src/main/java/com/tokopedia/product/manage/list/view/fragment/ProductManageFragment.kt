@@ -222,13 +222,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
         bulkCheckBox.setOnCheckedChangeListener { _, isChecked ->
             productManageViewModels.forEachIndexed { index, _ ->
-                if (!isChecked) {
+                if (!isChecked || !adapter.isChecked(index)) {
                     adapter.updateListByCheck(isChecked, index)
-                } else {
-                    // If products are already checked just ignore
-                    if (!adapter.isChecked(index)) {
-                        adapter.updateListByCheck(isChecked, index)
-                    }
                 }
             }
         }
@@ -980,43 +975,41 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        var intentResult = Intent()
         intent?.let {
-            intentResult = it
-        }
-        when (requestCode) {
-            INSTAGRAM_SELECT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val imageUrls = intentResult.getStringArrayListExtra(PICKER_RESULT_PATHS)
-                val imageDescList = intentResult.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
-                if (imageUrls != null && imageUrls.size > 0) {
-                    ProductDraftListActivity.startInstagramSaveBulkFromLocal(context, imageUrls, imageDescList)
+            when (requestCode) {
+                INSTAGRAM_SELECT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                    val imageUrls = it.getStringArrayListExtra(PICKER_RESULT_PATHS)
+                    val imageDescList = it.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
+                    if (imageUrls != null && imageUrls.size > 0) {
+                        ProductDraftListActivity.startInstagramSaveBulkFromLocal(context, imageUrls, imageDescList)
+                    }
                 }
-            }
-            REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
-                productManageFilterModel = intentResult.getParcelableExtra(EXTRA_FILTER_SELECTED)
-                        ?: ProductManageFilterModel()
-                loadInitialData()
-                ProductManageTracking.trackingFilter(productManageFilterModel)
-            }
-            ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val etalaseId = intentResult.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
-                val etalaseNameString = intentResult.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME)
-                etalaseType.etalaseId = etalaseId
-                etalaseType.etalaseValue = etalaseNameString
-                editProductBottomSheet.setResultValue(etalaseType, null)
-            }
-            STOCK_EDIT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                val isActive = intentResult.getBooleanExtra(EXTRA_STOCK, false)
-                val productStock: Int
-                productStock = if (isActive) 1 else 0
-                stockType.stockStatus = productStock
-                editProductBottomSheet.setResultValue(null, stockType)
-            }
-            REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
-                val productManageSortModel: ProductManageSortModel = intentResult.getParcelableExtra(EXTRA_SORT_SELECTED)
-                sortProductOption = productManageSortModel.sortId
-                loadInitialData()
-                ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
+                REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
+                    productManageFilterModel = it.getParcelableExtra(EXTRA_FILTER_SELECTED)
+                    loadInitialData()
+                    ProductManageTracking.trackingFilter(productManageFilterModel, context)
+                }
+                ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                    val etalaseId = it.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
+                    val etalaseNameString = it.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME)
+                    etalaseType.etalaseId = etalaseId
+                    etalaseType.etalaseValue = etalaseNameString
+                    editProductBottomSheet.setResultValue(etalaseType, null)
+                }
+                STOCK_EDIT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
+                    val isActive = it.getBooleanExtra(EXTRA_STOCK, false)
+                    val productStock: Int
+                    productStock = if (isActive) 1 else 0
+                    stockType.stockStatus = productStock
+                    editProductBottomSheet.setResultValue(null, stockType)
+                }
+                REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
+                    val productManageSortModel: ProductManageSortModel = it.getParcelableExtra(EXTRA_SORT_SELECTED)
+                    sortProductOption = productManageSortModel.id
+                    loadInitialData()
+                    ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
+                }
+                else -> super.onActivityResult(requestCode, resultCode, it)
             }
             else -> super.onActivityResult(requestCode, resultCode, intent)
         }
