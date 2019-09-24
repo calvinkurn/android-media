@@ -48,6 +48,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.normalcheckout.adapter.NormalCheckoutAdapterTypeFactory
 import com.tokopedia.normalcheckout.constant.*
+import com.tokopedia.normalcheckout.di.DaggerNormalCheckoutComponent
 import com.tokopedia.normalcheckout.model.Fail
 import com.tokopedia.normalcheckout.model.InsuranceRecommendationContainer
 import com.tokopedia.normalcheckout.model.ProductInfoAndVariant
