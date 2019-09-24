@@ -37,6 +37,6 @@ public class ValidateNumberSubscriber extends Subscriber<Boolean> {
         if (isSuccess)
             view.onValidateNumberSuccess();
         else
-            view.onValidateNumberError(view.getContext().getString(R.string.default_request_error_unknown));
+            view.onValidateNumberError(view.getContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown));
     }
 }

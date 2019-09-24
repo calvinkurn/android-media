@@ -197,7 +197,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton.setEnabled(true);
         nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable
                 .green_button_rounded));
-        nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.white));
+        nextButton.setTextColor(MethodChecker.getColor(getContext(), com.tokopedia.design.R.color.white));
     }
 
     @Override
@@ -206,7 +206,7 @@ public class ChangePhoneNumberInputFragment extends BaseDaggerFragment implement
         nextButton.setEnabled(false);
         nextButton.setBackground(MethodChecker.getDrawable(getContext(), R.drawable
                 .grey_button_rounded));
-        nextButton.setTextColor(MethodChecker.getColor(getContext(), R.color.black_12));
+        nextButton.setTextColor(MethodChecker.getColor(getContext(), com.tokopedia.abstraction.R.color.black_12));
     }
 
     @Override

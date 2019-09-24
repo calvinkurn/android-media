@@ -104,7 +104,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         warningRecyclerView = view.findViewById(R.id.warning_rv);
         nextButton = view.findViewById(R.id.next_button);
         withdrawButton = view.findViewById(R.id.withdraw_button);
-        mainView = view.findViewById(R.id.main_view);
+        mainView = view.findViewById(com.tokopedia.otp.R.id.main_view);
         loadingView = view.findViewById(R.id.loading_view);
         warningRecyclerView.setFocusable(false);
         return view;
