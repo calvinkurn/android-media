@@ -12,7 +12,10 @@ import dagger.Component
 
 @NotificationUpdateScope
 @Component(
-        modules = [(NotificationUpdateModule::class)],
+        modules = [
+            (NotificationUpdateModule::class),
+            (NotificationQueryModule::class)
+        ],
         dependencies = [(BaseAppComponent::class)]
 )
 interface NotificationUpdateComponent {
