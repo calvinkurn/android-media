@@ -90,8 +90,6 @@ import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomA
 import com.tokopedia.logisticaddaddress.features.manage.ManagePeopleAddressActivity;
 import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
-import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouter;
 import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
@@ -206,7 +204,7 @@ public abstract class SellerRouterApplication extends MainApplication
         IPaymentModuleRouter, IDigitalModuleRouter, TkpdInboxRouter, TransactionRouter,
         ReputationRouter, LogisticRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, ShopModuleRouter,
-        ApplinkRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
+        ApplinkRouter, ImageUploaderRouter,
         NetworkRouter, TopChatRouter, TopAdsWebViewRouter, ContactUsModuleRouter,
         ChangePasswordRouter, WithdrawRouter,
         PaymentSettingRouter, TalkRouter, PhoneVerificationRouter,
@@ -906,12 +904,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public String logisticUploadRouterGetApplicationBuildFlavor() {
-        return BuildConfig.FLAVOR;
-    }
-
-
-    @Override
     public void goToApplinkActivity(Context context, String applink) {
         DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
         Intent intent = new Intent(context, DeepLinkHandlerActivity.class);
@@ -1338,12 +1330,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public boolean isEnable() {
         return false;
-    }
-
-
-    @Override
-    public Intent transactionOrderDetailRouterGetIntentUploadAwb(String urlUpload) {
-        return UploadAwbLogisticActivity.newInstance(this, urlUpload);
     }
 
     @Override

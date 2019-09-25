@@ -34,8 +34,10 @@ class DigitalCheckVoucherUseCase(private val context: Context, private val graph
         val requestParams = RequestParams.create()
         requestParams.putString(INPUT_CODE, promoCode)
         requestParams.putInt(PRODUCT_ID, promoDigitalModel.productId)
-        requestParams.putString(CLIENT_NUMBER, promoDigitalModel.clientNumber)
-        requestParams.putLong(PRICE, promoDigitalModel.price)
+        if (promoDigitalModel.clientNumber.isNotEmpty()) {
+            requestParams.putString(CLIENT_NUMBER, promoDigitalModel.clientNumber)
+        }
+        if (promoDigitalModel.price > 0) requestParams.putLong(PRICE, promoDigitalModel.price)
         return requestParams
     }
 

@@ -132,6 +132,7 @@ public class EventReviewTicketPresenter
                 isBook = true;
                 verifyCart();
             }
+            eventsAnalytics.sendProceedToPaymentEvent(checkoutData);
         } else {
             mView.showSnackBar(mView.getViewResources().getString(R.string.enter_additional_data), false);
         }

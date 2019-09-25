@@ -118,10 +118,17 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         RequestBodyAtcDigital requestBodyAtcDigital = new RequestBodyAtcDigital();
         List<Field> fieldList = new ArrayList<>();
         String clientNumber = getView().getClientNumber();
+        String zoneId = getView().getZoneId();
         if (clientNumber != null && !clientNumber.isEmpty()) {
             Field field = new Field();
             field.setName("client_number");
             field.setValue(clientNumber);
+            fieldList.add(field);
+        }
+        if (zoneId != null && !zoneId.isEmpty()) {
+            Field field = new Field();
+            field.setName("zone_id");
+            field.setValue(zoneId);
             fieldList.add(field);
         }
         Attributes attributes = new Attributes();

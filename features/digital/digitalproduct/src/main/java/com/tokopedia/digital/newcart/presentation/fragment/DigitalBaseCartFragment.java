@@ -54,6 +54,7 @@ import com.tokopedia.track.interfaces.AFAdsIDCallback;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Presenter> extends BaseDaggerFragment
         implements DigitalBaseContract.View,
@@ -227,26 +228,32 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void onClickUsePromo() {
-        digitalAnalytics.eventclickUseVoucher(cartDigitalInfoData.getAttributes().getCategoryName());
+        digitalAnalytics.eventclickUseVoucher(getCategoryName());
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
-        intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+        intent.putExtra("EXTRA_COUPON_ACTIVE",
+                Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
+        );
         intent.putExtra("EXTRA_PROMO_DIGITAL_MODEL", getPromoDigitalModel());
         startActivityForResult(intent, ConstantKt.getREQUST_CODE_PROMO_LIST());
     }
 
     private PromoDigitalModel getPromoDigitalModel() {
         return new PromoDigitalModel(
-                Integer.parseInt(cartPassData.getCategoryId()),
+                Integer.parseInt(Objects.requireNonNull(cartPassData.getCategoryId())),
                 getProductId(),
-                cartPassData.getClientNumber(),
-                cartDigitalInfoData.getAttributes().getPricePlain()
+                cartPassData.getClientNumber() != null ? cartPassData.getClientNumber() : "",
+                cartDigitalInfoData.getAttributes() != null ? cartDigitalInfoData.getAttributes().getPricePlain() : 0
         );
     }
 
     @Override
     public void onDisablePromoDiscount() {
-        digitalAnalytics.eventclickCancelApplyCoupon(cartDigitalInfoData.getAttributes().getCategoryName(), promoData.getPromoCode());
+        digitalAnalytics.eventclickCancelApplyCoupon(getCategoryName(), promoData.getPromoCode());
         promoData.setPromoCode("");
+    }
+
+    private String getCategoryName() {
+        return Objects.requireNonNull(Objects.requireNonNull(cartDigitalInfoData.getAttributes()).getCategoryName());
     }
 
     @Override
@@ -258,7 +265,9 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
             if (promoData.getTypePromo() == PromoData.CREATOR.getTYPE_VOUCHER()) {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_DIGITAL);
                 intent.putExtra("EXTRA_PROMO_CODE", promoCode);
-                intent.putExtra("EXTRA_COUPON_ACTIVE", cartDigitalInfoData.getAttributes().isCouponActive());
+                intent.putExtra("EXTRA_COUPON_ACTIVE",
+                        Objects.requireNonNull(cartDigitalInfoData.getAttributes()).isCouponActive()
+                );
                 requestCode = ConstantKt.getREQUST_CODE_PROMO_LIST();
             } else {
                 intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_DETAIL_DIGITAL);
@@ -391,6 +400,11 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     @Override
     public String getClientNumber() {
         return cartPassData.getClientNumber();
+    }
+
+    @Override
+    public String getZoneId() {
+        return cartPassData.getZoneId();
     }
 
     @Override

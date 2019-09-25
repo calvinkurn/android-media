@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.banner.BannerView;
 import com.tokopedia.common.travel.ticker.TravelTickerUtils;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
@@ -679,8 +680,7 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
                         && ((FlightModuleRouter) getActivity().getApplication())
                         .getBannerWebViewIntent(getActivity(), url) != null) {
                     presenter.onBannerItemClick(position, getBannerData(position));
-                    startActivity(((FlightModuleRouter) getActivity().getApplication())
-                            .getBannerWebViewIntent(getActivity(), url));
+                    RouteManager.route(getContext(), url);
                 }
             }
         }
