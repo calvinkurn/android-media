@@ -54,9 +54,9 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
         }
     }
 
-    fun submitInterestPickData(dataList: List<OnboardingDataViewModel>, source: String) {
+    fun submitInterestPickData(dataList: List<OnboardingDataViewModel>, source: String, requestInt: Int) {
         launchCatchError(block = {
-            val result = submitInterestPickDeferred(dataList.map { it.id }, source)
+            val result = submitInterestPickDeferred(dataList.map { it.id }, source, requestInt)
             submitInterestPickResp.value = Success(result.await())
         }) {
             it.printStackTrace()
@@ -82,10 +82,12 @@ class FeedOnboardingViewModel @Inject constructor(baseDispatcher: CoroutineDispa
         }
     }
 
-    private suspend fun submitInterestPickDeferred(idList: List<Int>, source: String): Deferred<SubmitInterestResponseViewModel> {
+    private suspend fun submitInterestPickDeferred(idList: List<Int>, source: String, requestInt: Int): Deferred<SubmitInterestResponseViewModel> {
         return async(Dispatchers.IO) {
             var resultData = SubmitInterestResponseViewModel()
             resultData.source = source
+            resultData.requestInt = requestInt
+            resultData.idList = idList
             val param = mapOf(PARAM_ACTION to "", PARAM_INTEREST_ID to idList)
             val request = GraphqlRequest(rawQueries[RawQueryKeyConstant.MUTATION_SUBMIT_INTEREST_ID],
                     SubmitInterestResponse::class.java, param)

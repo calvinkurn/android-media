@@ -117,6 +117,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAd
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED
 import com.tokopedia.feedplus.FeedPlusConstant.KEY_FEED_FIRSTPAGE_LAST_CURSOR
+import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingViewHolder
@@ -576,6 +577,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     onErrorReportContent(
                             data.getStringExtra(ContentReportActivity.RESULT_ERROR_MSG)
                     )
+                }
+            }
+            OPEN_INTERESTPICK_DETAIL, OPEN_INTERESTPICK_RECOM_PROFILE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
                 }
             }
             else -> {
@@ -1567,12 +1573,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
         view?.showLoadingTransparent()
-        feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_SEE_ALL_CLICK)
+        feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_SEE_ALL_CLICK, OPEN_INTERESTPICK_DETAIL)
     }
 
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
         view?.showLoadingTransparent()
-        feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK)
+        feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK, OPEN_INTERESTPICK_RECOM_PROFILE)
     }
 
     private fun onSuccessGetOnboardingData(data: OnboardingViewModel) {
@@ -1594,9 +1600,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         context?.let {
             when (data.source) {
                 FeedOnboardingViewModel.PARAM_SOURCE_SEE_ALL_CLICK -> {
-                    startActivity(FeedOnboardingActivity.getCallingIntent(it, Bundle()))
+                    startActivityForResult(FeedOnboardingActivity.getCallingIntent(it, Bundle()), OPEN_INTERESTPICK_DETAIL)
                 }
                 FeedOnboardingViewModel.PARAM_SOURCE_RECOM_PROFILE_CLICK -> {
+                    startActivityForResult(FollowRecomActivity.createIntent(it, data.idList.toIntArray()), OPEN_INTERESTPICK_RECOM_PROFILE)
                 }
 
             }
@@ -1839,6 +1846,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private val OPEN_KOL_PROFILE = 13
         private val OPEN_CONTENT_REPORT = 1310
         private val CREATE_POST = 888
+        private val OPEN_INTERESTPICK_DETAIL = 1234
+        private val OPEN_INTERESTPICK_RECOM_PROFILE = 1235
         private val DEFAULT_VALUE = -1
         val REQUEST_LOGIN = 345
 

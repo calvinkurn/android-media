@@ -227,8 +227,12 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
     }
 
     private fun openFeed() {
-        if (RouteManager.isSupportApplink(context, ApplinkConst.FEED)) {
-            RouteManager.route(context, ApplinkConst.FEED)
+//        if (RouteManager.isSupportApplink(context, ApplinkConst.FEED)) {
+//            RouteManager.route(context, ApplinkConst.FEED)
+//        }
+        activity?.let{
+            it.setResult(Activity.RESULT_OK)
+            it.finish()
         }
     }
 

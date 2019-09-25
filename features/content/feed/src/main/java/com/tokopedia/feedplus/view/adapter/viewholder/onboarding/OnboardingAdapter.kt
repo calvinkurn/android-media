@@ -65,7 +65,7 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
 
     class Holder(v: View, val listener: InterestPickItemListener) : RecyclerView.ViewHolder(v) {
 
-        private val VAL_ICON_SIZE = 30
+        private val VAL_ICON_SIZE = 20
 
         fun bind(item: OnboardingDataViewModel, positionInAdapter: Int, list: List<OnboardingDataViewModel>) {
             initView(item, positionInAdapter)

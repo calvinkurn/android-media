@@ -1,8 +1,10 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.view.LayoutInflater
@@ -12,11 +14,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
+import com.tokopedia.feedplus.view.viewmodel.onboarding.SubmitInterestResponseViewModel
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.Toaster
@@ -30,6 +34,11 @@ import javax.inject.Inject
  * @author by milhamj on 2019-09-20.
  */
 class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestPickItemListener {
+
+    companion object {
+        private val OPEN_RECOM_PROFILE = 1236
+    }
+
 
     private val adapter : OnboardingAdapter by lazy {
         OnboardingAdapter(this)
@@ -62,7 +71,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         feedOnboardingPresenter.submitInterestPickResp.observe(this, Observer {
             view?.hideLoadingTransparent()
             when (it) {
-                is Success -> onSuccessSubmitInterestData()
+                is Success -> onSuccessSubmitInterestData(it.data)
                 is Fail -> onErrorSubmitInterestPickData(it.throwable)
             }
         })
@@ -76,6 +85,24 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         super.onViewCreated(view, savedInstanceState)
         initView()
         loadData()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (data == null) {
+            return
+        }
+        when(requestCode) {
+            OPEN_RECOM_PROFILE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    activity?.let {
+                        it.setResult(Activity.RESULT_OK)
+                        it.finish()
+                    }
+                }
+            }
+        }
+
     }
 
     override fun getScreenName(): String =  ""
@@ -104,7 +131,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         interestList.addItemDecoration(OnboardingAdapter.getItemDecoration())
         saveInterest.setOnClickListener {
             view?.showLoadingTransparent()
-            feedOnboardingPresenter.submitInterestPickData(adapter.getSelectedItems(), "")
+            feedOnboardingPresenter.submitInterestPickData(adapter.getSelectedItems(), "", OPEN_RECOM_PROFILE)
         }
     }
 
@@ -142,8 +169,10 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
         }
     }
 
-    private fun onSuccessSubmitInterestData() {
-
+    private fun onSuccessSubmitInterestData(data: SubmitInterestResponseViewModel) {
+        context?.let {
+            startActivityForResult(FollowRecomActivity.createIntent(it, data.idList.toIntArray()), OPEN_RECOM_PROFILE)
+        }
     }
 
     private fun onErrorSubmitInterestPickData(throwable: Throwable) {

@@ -6,5 +6,7 @@ package com.tokopedia.feedplus.view.viewmodel.onboarding
 data class SubmitInterestResponseViewModel (
         var success: Boolean = false,
         var error: String = "",
-        var source: String = ""
+        var source: String = "",
+        var requestInt: Int = 0,
+        var idList: List<Int> = ArrayList()
 )
