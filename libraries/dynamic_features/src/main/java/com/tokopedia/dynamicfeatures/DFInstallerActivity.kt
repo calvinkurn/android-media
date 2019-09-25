@@ -19,8 +19,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.unifycomponents.Toaster
-import java.io.File
 import timber.log.Timber
+import java.io.File
 
 /**
  * Activity that handles for installing new dynamic feature module
