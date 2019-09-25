@@ -35,20 +35,23 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     private lateinit var itemTab: HomeWidget.TabItem
     private lateinit var trackingQueue: TrackingQueue
+    private lateinit var businessUnitContainer: View
     private var positionWidget: Int = 0
     private var nameTab: String = ""
+    private var backgroundColor: String = ""
 
     companion object {
         const val ITEM_EXTRAS = "ITEM_EXTRAS"
         const val ITEM_POSITION = "ITEM_POSITION"
         const val ITEM_NAME = "ITEM_NAME"
+        const val ITEM_BACKGROUND = "ITEM_BACKGROUND"
 
-        fun newInstance(item: HomeWidget.TabItem, position: Int, name: String) : Fragment {
+        fun newInstance(item: HomeWidget.TabItem, backgroundColor: String, position: Int, name: String) : Fragment {
             val fragment = BusinessUnitItemFragment()
             val bundle = Bundle()
             bundle.putParcelable(ITEM_EXTRAS, item)
             bundle.putInt(ITEM_POSITION, position)
-            bundle.putString(ITEM_NAME, name)
+            bundle.putString(ITEM_BACKGROUND, backgroundColor)
             fragment.arguments = bundle
             return fragment
         }
@@ -63,6 +66,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
             itemTab = it?.getParcelable(ITEM_EXTRAS)!!
             nameTab = it?.getString(ITEM_NAME)!!
             positionWidget = it.getInt(ITEM_POSITION)
+            backgroundColor = it?.getString(ITEM_BACKGROUND) ?: ""
         }
     }
 
@@ -155,6 +159,10 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if(!this::businessUnitContainer.isInitialized){
+            businessUnitContainer = view.findViewById(R.id.business_unit_container)
+        }
+
         getRecyclerView(view).addItemDecoration(
                 SpacingItemDecoration(
                         convertDpToPixel(8.toFloat(), activity),

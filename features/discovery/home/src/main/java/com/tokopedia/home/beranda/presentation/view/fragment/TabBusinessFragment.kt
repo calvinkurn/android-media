@@ -117,7 +117,7 @@ class TabBusinessFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedListene
         addChildTabLayout(homeWidget.tabBusinessList)
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
-        adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList, positionWidget)
+        adapter = TabBusinessViewPagerAdapter(childFragmentManager, homeWidget.tabBusinessList, homeWidget.widgetHeader?.backColor ?: "" ,positionWidget)
         viewPager.adapter = adapter
         viewPager.offscreenPageLimit = homeWidget.tabBusinessList.size
         viewPager.setCanScrollHorizontal(false)
