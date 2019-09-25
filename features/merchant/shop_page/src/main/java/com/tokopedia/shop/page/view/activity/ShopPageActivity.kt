@@ -339,7 +339,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE)
             (shopViewModel.shopInfoResp.value as? Success)?.data?.let {
                 saveShopInfoModelToCacheManager(it)?.let {
-                    goToShopSearchProduct(it)
+                    redirectToShopSearchProduct(it)
                 }
             }
         }
@@ -351,8 +351,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         return cacheManager.id
     }
 
-    private fun goToShopSearchProduct(cacheManagerId: String) {
-        startActivity(ShopSearchProductActivity.createIntent(this,cacheManagerId, shopAttribution))
+    private fun redirectToShopSearchProduct(cacheManagerId: String) {
+        startActivity(ShopSearchProductActivity.createIntent(
+                this,
+                "",
+                cacheManagerId,
+                shopAttribution
+        ))
     }
 
     override fun onResume() {
@@ -511,22 +516,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             shopPageViewPagerAdapter.shopId = shopCore.shopID
             shopPageViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID))
             updateUIByShopName(shopCore.name)
-            searchInputView.setListener(object : SearchInputView.Listener {
-                override fun onSearchSubmitted(text: String?) {
-                    if (TextUtils.isEmpty(text)) {
-                        return
-                    }
-                    startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity,
-                            shopCore.shopID, text, "", shopAttribution))
-                    //reset the search, since the result will go to another activity.
-                    searchInputView.searchTextView.text = null
-
-                }
-
-                override fun onSearchTextChanged(text: String?) {}
-
-            })
-
             val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(if (isOfficialStore) TAB_POSITION_HOME + 1 else TAB_POSITION_HOME)
             if (productListFragment != null && productListFragment is ShopProductListLimitedFragment) {
                 productListFragment.displayProduct(this)

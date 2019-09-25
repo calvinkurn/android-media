@@ -38,6 +38,7 @@ import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule
+import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_KEYWORD
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_ATTRIBUTION
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_INFO_CACHE_MANAGER_ID
 import com.tokopedia.shop.search.view.adapter.ShopSearchProductAdapterTypeFactory
@@ -64,11 +65,16 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         private const val REQUEST_CODE_USER_LOGIN_CART = 102
         private const val KEY_SHOP_INFO_CACHE_MANAGER_SAVED_INSTANCE_STATE_ID = "keyShopInfoCacheManagerSavedInstanceStateId"
 
-        fun createInstance(shopInfoCacheManagerId: String, shopAttribution: String): Fragment {
+        fun createInstance(
+                keyword: String,
+                shopInfoCacheManagerId: String,
+                shopAttribution: String
+        ): Fragment {
             return ShopSearchProductFragment().apply {
                 val bundleData = Bundle()
                 bundleData.putString(KEY_SHOP_INFO_CACHE_MANAGER_ID, shopInfoCacheManagerId)
                 bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
+                bundleData.putString(KEY_KEYWORD, keyword)
                 arguments = bundleData
             }
         }
@@ -345,6 +351,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                     R.string.shop_product_search_hint_2,
                     MethodChecker.fromHtml(shopInfo?.shopCore?.name.orEmpty()).toString()
             ))
+            searchText = searchQuery
             searchTextView.requestFocus()
             showKeyboard()
         }
@@ -387,6 +394,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 getString(KEY_SHOP_INFO_CACHE_MANAGER_SAVED_INSTANCE_STATE_ID).orEmpty()
             } ?: getString(KEY_SHOP_INFO_CACHE_MANAGER_ID).orEmpty()
             shopAttribution = getString(KEY_SHOP_ATTRIBUTION).orEmpty()
+            searchQuery = getString(KEY_KEYWORD).orEmpty()
         }
     }
 

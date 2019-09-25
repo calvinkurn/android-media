@@ -99,6 +99,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
     private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
     private var onSuccessGetShopInfoListener: OnSuccessGetShopInfoListener? = null
+    private var onInitTrackingListener: OnInitTrackingListener? = null
     private var needReloadData: Boolean = false
     private val etalaseChipAdapter: EtalaseChipAdapter by lazy {
         EtalaseChipAdapter(null, null, this)
@@ -113,6 +114,10 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
 
     interface OnSuccessGetShopInfoListener{
         fun updateShopInfo(shopInfo: ShopInfo)
+    }
+
+    interface OnInitTrackingListener{
+        fun updateShopPageTracking(shopPageTracking: ShopPageTrackingBuyer?)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -190,7 +195,10 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         setHasOptionsMenu(true)
 
         super.onCreate(savedInstanceState)
-        context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
+        context?.let {
+            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            onInitTrackingListener?.updateShopPageTracking(shopPageTracking)
+        }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopProductListViewModel::class.java)
     }
 
@@ -756,6 +764,7 @@ class ShopProductListFragment : BaseListFragment<BaseShopProductViewModel, ShopP
         super.onAttachActivity(context)
         onShopProductListFragmentListener = context as OnShopProductListFragmentListener
         onSuccessGetShopInfoListener = context as OnSuccessGetShopInfoListener
+        onInitTrackingListener = context as OnInitTrackingListener
         shopModuleRouter = context.applicationContext as ShopModuleRouter
     }
 

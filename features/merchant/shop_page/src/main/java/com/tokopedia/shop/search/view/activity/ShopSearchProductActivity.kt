@@ -15,11 +15,14 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     companion object {
         const val KEY_SHOP_INFO_CACHE_MANAGER_ID = "keyShopInfoCacheManagerId"
         const val KEY_SHOP_ATTRIBUTION = "keyShopAttribution"
+        const val KEY_KEYWORD = "keyKeyword"
+
         @JvmStatic
-        fun createIntent(context: Context, cacheManagerId: String, shopAttribution: String?): Intent {
+        fun createIntent(context: Context, keyword: String, cacheManagerId: String, shopAttribution: String?): Intent {
             val intent = Intent(context, ShopSearchProductActivity::class.java)
             intent.putExtra(KEY_SHOP_INFO_CACHE_MANAGER_ID, cacheManagerId)
             intent.putExtra(KEY_SHOP_ATTRIBUTION, shopAttribution)
+            intent.putExtra(KEY_KEYWORD, keyword)
             return intent
         }
     }
@@ -28,12 +31,15 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
 
     private var shopAttribution: String = ""
 
+    private var keyword: String = ""
+
     private var component: ShopComponent? = null
 
     private fun getIntentData() {
         intent?.run {
             shopInfoCacheManagerId = getStringExtra(KEY_SHOP_INFO_CACHE_MANAGER_ID).orEmpty()
             shopAttribution = getStringExtra(KEY_SHOP_ATTRIBUTION).orEmpty()
+            keyword = getStringExtra(KEY_KEYWORD).orEmpty()
         }
     }
 
@@ -43,6 +49,7 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     }
 
     override fun getNewFragment() = ShopSearchProductFragment.createInstance(
+            keyword,
             shopInfoCacheManagerId,
             shopAttribution
     )

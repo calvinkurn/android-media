@@ -17,13 +17,17 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
+import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.fragment.ShopProductListFragment;
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity;
+
 import java.util.concurrent.TimeUnit;
+
+import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE;
 
 /**
  * Created by nathan on 2/15/18.
@@ -32,7 +36,8 @@ import java.util.concurrent.TimeUnit;
 public class ShopProductListActivity extends BaseSimpleActivity
         implements HasComponent<ShopComponent>,
         ShopProductListFragment.OnShopProductListFragmentListener,
-        ShopProductListFragment.OnSuccessGetShopInfoListener{
+        ShopProductListFragment.OnSuccessGetShopInfoListener,
+        ShopProductListFragment.OnInitTrackingListener {
 
     public static final String SAVED_KEYWORD = "svd_keyword";
 
@@ -47,6 +52,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     private SearchInputView searchInputView;
     private ShopInfo shopInfo;
+    private ShopPageTrackingBuyer shopPageTracking;
 
     public static Intent createIntent(Context context, String shopId, String keyword,
                                       String etalaseId, String attribution, String sortId) {
@@ -117,19 +123,21 @@ public class ShopProductListActivity extends BaseSimpleActivity
         searchInputView.getSearchTextView().setMovementMethod(null);
         searchInputView.getSearchTextView().setKeyListener(null);
         searchInputView.setOnClickListener(view -> {
-//            shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE)
+            if (null != shopPageTracking)
+                shopPageTracking.clickSearchBox(SCREEN_SHOP_PAGE);
             if (null != shopInfo) {
                 String cacheManagerId = saveShopInfoModelToCacheManager(shopInfo);
                 if (null != cacheManagerId) {
-                    goToShopSearchProduct(cacheManagerId);
+                    redirectToShopSearchProduct(cacheManagerId);
                 }
             }
         });
     }
 
-    private void goToShopSearchProduct(String cacheManagerId) {
+    private void redirectToShopSearchProduct(String cacheManagerId) {
         startActivity(ShopSearchProductActivity.createIntent(
                 this,
+                keyword,
                 cacheManagerId,
                 attribution
         ));
@@ -198,5 +206,10 @@ public class ShopProductListActivity extends BaseSimpleActivity
     @Override
     public void updateShopInfo(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
+    }
+
+    @Override
+    public void updateShopPageTracking(ShopPageTrackingBuyer shopPageTracking) {
+        this.shopPageTracking = shopPageTracking;
     }
 }
