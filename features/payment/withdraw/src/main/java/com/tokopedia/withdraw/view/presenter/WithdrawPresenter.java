@@ -71,7 +71,7 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
         int balance = (int) StringUtils.convertToNumeric(totalBalance, false);
         int withdrawal = (int) StringUtils.convertToNumeric(totalWithdrawal, false);
         if (balance < withdrawal) {
-            getView().showErrorWithdrawal(getView().getStringResource(R.string.error_withdraw_exceed_balance));
+            getView().showErrorWithdrawal(getView().getStringResource(R.string.saldo_exceeding_withdraw_balance));
             return;
         }
 
