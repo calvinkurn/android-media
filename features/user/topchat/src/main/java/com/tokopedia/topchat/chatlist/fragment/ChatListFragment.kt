@@ -43,7 +43,7 @@ import com.tokopedia.topchat.chatlist.model.EmptyChatModel
 import com.tokopedia.topchat.chatlist.model.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.model.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.pojo.ChatListDataPojo
-import com.tokopedia.topchat.chatlist.pojo.ChatMarkAsReadResponse
+import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.pojo.ItemChatAttributesPojo
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.viewmodel.ChatItemListViewModel
@@ -354,11 +354,11 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         itemPositionLongClicked = itemPosition
     }
 
-    override fun markChatAsRead(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit) {
+    override fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit) {
         chatItemListViewModel.markChatAsRead(msgIds, result)
     }
 
-    override fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit) {
+    override fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit) {
         chatItemListViewModel.markChatAsUnread(msgIds, result)
     }
 

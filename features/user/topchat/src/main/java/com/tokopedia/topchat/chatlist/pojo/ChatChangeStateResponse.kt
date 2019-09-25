@@ -3,7 +3,7 @@ package com.tokopedia.topchat.chatlist.pojo
 
 import com.google.gson.annotations.SerializedName
 
-data class ChatMarkAsReadResponse(
+data class ChatChangeStateResponse(
     @SerializedName(value = "", alternate = ["chatMarkRead", "chatMarkUnread"])
-    val chatMarkRead: ChatMarkRead = ChatMarkRead()
+    val chatState: ChatState = ChatState()
 )

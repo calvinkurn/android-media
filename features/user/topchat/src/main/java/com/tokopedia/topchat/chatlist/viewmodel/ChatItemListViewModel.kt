@@ -8,7 +8,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER
@@ -24,7 +23,7 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
-import com.tokopedia.topchat.chatlist.pojo.ChatMarkAsReadResponse
+import com.tokopedia.topchat.chatlist.pojo.ChatChangeStateResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -39,8 +38,8 @@ import javax.inject.Inject
 interface ChatItemListContract {
     fun getChatListMessage(page: Int, filterIndex: Int, tab: String)
     fun chatMoveToTrash(messageId: Int)
-    fun markChatAsRead(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit)
-    fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit)
+    fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
+    fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
 }
 
 class ChatItemListViewModel @Inject constructor(
@@ -111,12 +110,12 @@ class ChatItemListViewModel @Inject constructor(
         }
     }
 
-    override fun markChatAsRead(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit) {
+    override fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit) {
         val query = queries[MUTATION_MARK_CHAT_AS_READ] ?: return
         changeMessageState(query, msgIds, result)
     }
 
-    override fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit) {
+    override fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit) {
         val query = queries[MUTATION_MARK_CHAT_AS_UNREAD] ?: return
         changeMessageState(query, msgIds, result)
     }
@@ -124,15 +123,15 @@ class ChatItemListViewModel @Inject constructor(
     private fun changeMessageState(
             query: String,
             msgIds: List<String>,
-            result: (Result<ChatMarkAsReadResponse>) -> Unit
+            result: (Result<ChatChangeStateResponse>) -> Unit
     ) {
         val params = mapOf(PARAM_MESSAGE_IDS to msgIds)
 
         launchCatchError(block = {
             val data = withContext(dispatcher) {
-                val request = GraphqlRequest(query, ChatMarkAsReadResponse::class.java, params)
+                val request = GraphqlRequest(query, ChatChangeStateResponse::class.java, params)
                 repository.getReseponse(listOf(request))
-            }.getSuccessData<ChatMarkAsReadResponse>()
+            }.getSuccessData<ChatChangeStateResponse>()
             result(Success(data))
         }
         ) {

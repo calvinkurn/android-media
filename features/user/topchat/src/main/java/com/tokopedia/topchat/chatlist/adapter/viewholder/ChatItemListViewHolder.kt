@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 import android.graphics.Typeface.ITALIC
 import android.graphics.Typeface.NORMAL
 import android.support.annotation.LayoutRes
+import android.support.design.widget.Snackbar
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView
@@ -15,12 +16,15 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
 import com.tokopedia.topchat.chatlist.pojo.MarkAsReadItem
 import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 
@@ -94,7 +98,8 @@ class ChatItemListViewHolder(
     private fun markAsRead(element: ItemChatListPojo) {
         listener.markChatAsRead(element.ids()) { result ->
             when (result) {
-                is Success -> successMarkAsRead(result.data.chatMarkRead.list, element)
+                is Success -> successMarkAsRead(result.data.chatState.list, element)
+                is Fail -> failChangeChatState(result.throwable)
             }
         }
     }
@@ -102,9 +107,15 @@ class ChatItemListViewHolder(
     private fun markAsUnRead(element: ItemChatListPojo) {
         listener.markChatAsUnread(element.ids()) { result ->
             when (result) {
-                is Success -> successMarkAsUnread(result.data.chatMarkRead.list, element)
+                is Success -> successMarkAsUnread(result.data.chatState.list, element)
+                is Fail -> failChangeChatState(result.throwable)
             }
         }
+    }
+
+    private fun failChangeChatState(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(itemView.context, throwable)
+        Toaster.showError(itemView, errorMessage, Snackbar.LENGTH_LONG)
     }
 
     private fun successMarkAsRead(list: MarkAsReadItem, element: ItemChatListPojo) {
@@ -133,7 +144,7 @@ class ChatItemListViewHolder(
             val markAsUnread = getString(R.string.menu_mark_as_unread)
 
             if (element.hasUnreadItem()) {
-                menus.add(Menus.ItemMenus(markAsRead, R.drawable.ic_chat_unread_filled_grey))
+                menus.add(Menus.ItemMenus(markAsRead, R.drawable.ic_chat_read_filled_grey))
             } else {
                 menus.add(Menus.ItemMenus(markAsUnread, R.drawable.ic_chat_unread_filled_grey))
             }
