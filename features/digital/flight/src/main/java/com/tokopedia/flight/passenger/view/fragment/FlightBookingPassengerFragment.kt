@@ -583,7 +583,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 passengerModel.passengerTitle = contact.title
                 renderPassengerTitle(contact.title.toLowerCase())
             }
-            if (contact.birthDate.isNotBlank()) {
+            if (contact.birthDate.isNotBlank() && (!isDomestic || isMandatoryDoB())) {
                 passengerModel.passengerBirthdate = contact.birthDate
                 et_birth_date.setText(FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT,
                         FlightDateUtil.DEFAULT_VIEW_FORMAT, contact.birthDate))
@@ -783,7 +783,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         til_passport_expiration_date.error = ""
         til_nationality.error = ""
         til_passport_issuer_country.error = ""
-        birthdate_helper_text.visibility = View.VISIBLE
+        if (isMandatoryDoB() || !isDomestic) birthdate_helper_text.visibility = View.VISIBLE
         passport_expiration_helper_text.visibility = View.VISIBLE
     }
 

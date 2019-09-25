@@ -59,7 +59,7 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
 
         fun selectChip() {
             chips.isSelected = true
-            setTextColor(selectedColor)
+            this.setTextColor(com.tokopedia.design.R.color.snackbar_border_normal)
         }
     }
 
