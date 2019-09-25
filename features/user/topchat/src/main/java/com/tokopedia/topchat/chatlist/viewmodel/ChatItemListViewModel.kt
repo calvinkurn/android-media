@@ -8,12 +8,15 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.debug
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_READ
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.MUTATION_MARK_CHAT_AS_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_ALL
-import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_READ
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREAD
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_FILTER_UNREPLIED
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_ID
+import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_MESSAGE_IDS
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_PAGE
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.PARAM_TAB
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_CHAT_LIST_MESSAGE
@@ -21,6 +24,7 @@ import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant.QUERY_DELETE_
 import com.tokopedia.topchat.chatlist.pojo.ChatDelete
 import com.tokopedia.topchat.chatlist.pojo.ChatDeleteStatus
 import com.tokopedia.topchat.chatlist.pojo.ChatListPojo
+import com.tokopedia.topchat.chatlist.pojo.ChatMarkAsReadResponse
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -35,6 +39,8 @@ import javax.inject.Inject
 interface ChatItemListContract {
     fun getChatListMessage(page: Int, filterIndex: Int, tab: String)
     fun chatMoveToTrash(messageId: Int)
+    fun markChatAsRead(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit)
+    fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit)
 }
 
 class ChatItemListViewModel @Inject constructor(
@@ -45,6 +51,7 @@ class ChatItemListViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher), ChatItemListContract {
 
     private val _mutateChatList = MutableLiveData<Result<ChatListPojo>>()
+
     val mutateChatList: LiveData<Result<ChatListPojo>>
         get() = _mutateChatList
 
@@ -52,7 +59,7 @@ class ChatItemListViewModel @Inject constructor(
     val deleteChat: LiveData<Result<ChatDelete>>
         get() = _deleteChat
 
-    companion object{
+    companion object {
         val arrayFilterParam = arrayListOf(
                 PARAM_FILTER_ALL,
                 PARAM_FILTER_UNREAD,
@@ -95,7 +102,7 @@ class ChatItemListViewModel @Inject constructor(
                     repository.getReseponse(listOf(request))
                 }.getSuccessData<ChatDeleteStatus>()
 
-                if(data.chatMoveToTrash.list.isNotEmpty()) {
+                if (data.chatMoveToTrash.list.isNotEmpty()) {
                     _deleteChat.value = Success(data.chatMoveToTrash.list.first())
                 }
             }) {
@@ -104,4 +111,32 @@ class ChatItemListViewModel @Inject constructor(
         }
     }
 
+    override fun markChatAsRead(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit) {
+        val query = queries[MUTATION_MARK_CHAT_AS_READ] ?: return
+        changeMessageState(query, msgIds, result)
+    }
+
+    override fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatMarkAsReadResponse>) -> Unit) {
+        val query = queries[MUTATION_MARK_CHAT_AS_UNREAD] ?: return
+        changeMessageState(query, msgIds, result)
+    }
+
+    private fun changeMessageState(
+            query: String,
+            msgIds: List<String>,
+            result: (Result<ChatMarkAsReadResponse>) -> Unit
+    ) {
+        val params = mapOf(PARAM_MESSAGE_IDS to msgIds)
+
+        launchCatchError(block = {
+            val data = withContext(dispatcher) {
+                val request = GraphqlRequest(query, ChatMarkAsReadResponse::class.java, params)
+                repository.getReseponse(listOf(request))
+            }.getSuccessData<ChatMarkAsReadResponse>()
+            result(Success(data))
+        }
+        ) {
+            result(Fail(it))
+        }
+    }
 }
