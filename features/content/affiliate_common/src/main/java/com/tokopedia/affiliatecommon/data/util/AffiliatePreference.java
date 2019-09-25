@@ -16,6 +16,7 @@ public class AffiliatePreference {
     private static final String FORMAT_EDUCATION = "education_%s";
     private static final String FORMAT_FIRST_POST = "first_post_%s";
     private static final String FORMAT_COACHMARK_SUGGESTION = "coachmark_suggestion_%s";
+    private static final String FORMAT_CREATE_POST_ENTRY_ONBOARDING = "create_post_entry_onboarding_%s";
 
     private final SharedPreferences sharedPrefs;
 
@@ -49,5 +50,13 @@ public class AffiliatePreference {
 
     public void setCoachmarkSuggestionShown(String tag) {
         sharedPrefs.edit().putBoolean(String.format(FORMAT_COACHMARK_SUGGESTION, tag), true).apply();
+    }
+
+    public boolean isCreatePostEntryOnboardingShown(String tag) {
+        return sharedPrefs.getBoolean(String.format(FORMAT_CREATE_POST_ENTRY_ONBOARDING, tag), false);
+    }
+
+    public void setCreatePostEntryOnboardingShown(String tag) {
+        sharedPrefs.edit().putBoolean(String.format(FORMAT_CREATE_POST_ENTRY_ONBOARDING, tag), true).apply();
     }
 }
