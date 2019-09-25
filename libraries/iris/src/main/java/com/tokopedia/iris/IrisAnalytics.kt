@@ -31,6 +31,8 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
     private val session: Session = IrisSession(context)
     private var cache: Cache = Cache(context)
+    private var configuration: Configuration? = null
+    private var isAlarmOn: Boolean = false
 
     private lateinit var remoteConfig: RemoteConfig
 
@@ -41,21 +43,20 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     private var remoteConfigListener: RemoteConfig.Listener = object : RemoteConfig.Listener {
 
         override fun onError(e: java.lang.Exception?) {
-            val configuration = Configuration(
-                    DEFAULT_MAX_ROW,
-                    DEFAULT_SERVICE_TIME,
-                    true
-            )
+            val configuration = Configuration()
             setService(configuration)
         }
 
         override fun onComplete(remoteConfig: RemoteConfig?) {
-            val irisEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true)?: true
-            val irisConfig = remoteConfig?.getString(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG)?: ""
+            val irisEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_GTM_ENABLED_TOGGLE, true)
+                ?: true
+            val irisConfig = remoteConfig?.getString(RemoteConfigKey.IRIS_GTM_CONFIG_TOGGLE, DEFAULT_CONFIG)
+                ?: ""
 
             setService(irisConfig, irisEnable)
 
-            val irisLogEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_LOG_ENABLED_TOGGLE, false)?: false
+            val irisLogEnable = remoteConfig?.getBoolean(RemoteConfigKey.IRIS_LOG_ENABLED_TOGGLE, false)
+                ?: false
             cache.setEnableLogEntries(irisLogEnable)
         }
     }
@@ -71,28 +72,20 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
             if (cache.isEnabled()) {
                 val configuration = ConfigurationMapper().parse(config)
                 if (configuration != null) {
-                    setWorkManager(configuration)
+                    this.configuration = configuration
                 }
             }
-        } catch(ignored: Exception) { }
+        } catch (ignored: Exception) {
+        }
     }
 
     override fun setService(config: Configuration) {
         try {
             cache.setEnabled(config.isEnabled)
             if (cache.isEnabled()) {
-                setWorkManager(config)
-            }
-        } catch(ignored: Exception) { }
-    }
-
-    override fun resetService(config: Configuration) {
-        try {
-            if (cache.isEnabled()) {
-                setWorkManager(config)
+                this.configuration = config
             }
         } catch (ignored: Exception) {
-
         }
     }
 
@@ -104,6 +97,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                 val event = JSONObject(map).toString()
                 val resultEvent = TrackingMapper.reformatEvent(event, session.getSessionId())
                 trackingRepository.saveEvent(resultEvent.toString(), session)
+                setAlarm(true)
             }
         }
     }
@@ -117,7 +111,7 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
                     logIris(cache, "Success Send Single Event")
                 }
             }
-         }
+        }
     }
 
     override fun setUserId(userId: String) {
@@ -128,33 +122,44 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
         session.setDeviceId(deviceId)
     }
 
-    private fun setWorkManager(config: Configuration) {
+    override fun setAlarm(isTurnOn: Boolean) {
+        if (isTurnOn == isAlarmOn) {
+            return
+        }
         val pendingIntent: PendingIntent?
         pendingIntent = if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             val intent = Intent(context, IrisService::class.java)
-            intent.putExtra(MAX_ROW, config.maxRow)
+            intent.putExtra(MAX_ROW, this.configuration?.maxRow ?: DEFAULT_MAX_ROW)
             PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        } else{
+        } else {
             val intent = Intent(context, IrisBroadcastReceiver::class.java)
-            intent.putExtra(MAX_ROW, config.maxRow)
+            intent.putExtra(MAX_ROW, this.configuration?.maxRow ?: DEFAULT_MAX_ROW)
             PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
 
         pendingIntent?.let {
             val alarm = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), TimeUnit.MINUTES.toMillis(config.intervals), pendingIntent)
+            if (isTurnOn) {
+                alarm.setRepeating(AlarmManager.RTC, System.currentTimeMillis(),
+                    TimeUnit.MINUTES.toMillis(this.configuration?.intervals
+                        ?: DEFAULT_SERVICE_TIME), pendingIntent)
+            } else {
+                alarm.cancel(pendingIntent)
+            }
         }
+        isAlarmOn = isTurnOn
     }
 
     companion object {
 
         private val lock = Any()
 
-        @Volatile private var iris: Iris? = null
+        @Volatile
+        private var iris: Iris? = null
 
         @JvmStatic
-        fun getInstance(context: Context) : Iris {
-            return iris?: synchronized(lock) {
+        fun getInstance(context: Context): Iris {
+            return iris ?: synchronized(lock) {
                 IrisAnalytics(context).also {
                     iris = it
                 }

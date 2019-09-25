@@ -70,9 +70,9 @@ class TrackingRepository (
         return false
     }
 
-    suspend fun sendRemainingEvent(maxRow: Int) {
+    suspend fun sendRemainingEvent(maxRow: Int):Int {
         if (!cache.isEnabled())
-            return
+            return 0
 
         val data: List<Tracking> = getFromOldest(maxRow)
 
@@ -86,5 +86,6 @@ class TrackingRepository (
                 delete(data)
             }
         }
+        return data.size
     }
 }

@@ -3,6 +3,7 @@ package com.tokopedia.iris.worker
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.BaseJobIntentService
+import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.util.Cache
 import com.tokopedia.iris.util.DEFAULT_MAX_ROW
 import com.tokopedia.iris.util.JOB_IRIS_ID
@@ -50,9 +51,13 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
                 val cache = Cache(applicationContext)
                 if (cache.isEnabled()) {
                     val trackingRepository = TrackingRepository(applicationContext)
-                    trackingRepository.sendRemainingEvent(maxRow)
+                    val dataSize = trackingRepository.sendRemainingEvent(maxRow)
+                    if (dataSize == 0) {
+                        IrisAnalytics.getInstance(applicationContext).setAlarm(false)
+                    }
                 }
-            } catch (ignored: Exception) { }
+            } catch (ignored: Exception) {
+            }
         }
     }
 }
