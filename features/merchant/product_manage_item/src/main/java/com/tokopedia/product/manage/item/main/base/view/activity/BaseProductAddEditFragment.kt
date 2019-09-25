@@ -391,11 +391,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
             labelViewWeightLogisticProduct.setSubTitle("")
         }
         if (currentProductViewModel.productStock?.isActive == true) {
-            if ((currentProductViewModel.productStock?.stockCount ?: 0) > 0) {
-                labelViewStockProduct.setContent(getString(R.string.product_label_stock_limited))
-            } else {
-                labelViewStockProduct.setContent(getString(R.string.label_always_available))
-            }
+            labelViewStockProduct.setContent(getString(R.string.label_always_available))
         } else {
             labelViewStockProduct.setContent(getString(R.string.product_label_stock_empty))
         }

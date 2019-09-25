@@ -195,4 +195,6 @@
     <string name="product_action_view_error">Lihat</string>
     <string name="product_category_locked">Kategori Terkunci</string>
     <string name="product_category_locked_description">Tidak dapat mengubah kategori dari produk yang sudah memiliki varian.</string>
+
+    <string name="product_stock_available_label">Tersedia</string>
 </resources>
