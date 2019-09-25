@@ -10,6 +10,9 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.sellerorder.R
+import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
+import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
+import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomSubFilter
@@ -26,7 +29,7 @@ class SomSubFilterActivity : BaseSimpleActivity() {
     private lateinit var actionListener: ActionListener
     private var currentFilterParam = SomListOrderParam()
     private lateinit var subFilterAdapter: SomSubFilterAdapter
-    private lateinit var category: String
+    private var category: String = ""
 
     override fun getLayoutRes(): Int = R.layout.activity_filter_sublist
     override fun getNewFragment(): Fragment? = null
@@ -51,13 +54,6 @@ class SomSubFilterActivity : BaseSimpleActivity() {
 
     override fun setupLayout(savedInstanceState: Bundle?) {
         setContentView(layoutRes)
-        toolbar = findViewById<View>(R.id.toolbar_filter) as Toolbar
-        setSupportActionBar(toolbar)
-
-        supportActionBar?.let {
-            it.setDisplayHomeAsUpEnabled(true)
-            it.title = getString(R.string.title_status)
-        }
         subFilterAdapter = SomSubFilterAdapter()
         rv_sublist_filter.apply {
             layoutManager = LinearLayoutManager(context)
@@ -65,6 +61,18 @@ class SomSubFilterActivity : BaseSimpleActivity() {
             setActionListener(adapter as SomSubFilterAdapter)
         }
         renderListSubFilter()
+        toolbar = findViewById<View>(R.id.toolbar_filter) as Toolbar
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.let {
+            it.setDisplayHomeAsUpEnabled(true)
+            when {
+                category.equals(CATEGORY_ORDER_STATUS, true) -> it.title = getString(R.string.title_status)
+                category.equals(CATEGORY_ORDER_TYPE, true) -> it.title = getString(R.string.title_type)
+                category.equals(CATEGORY_COURIER_TYPE, true) -> it.title = getString(R.string.title_courier)
+            }
+
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

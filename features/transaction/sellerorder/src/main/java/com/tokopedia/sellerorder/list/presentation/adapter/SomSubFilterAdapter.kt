@@ -26,6 +26,7 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
     var currentFilterParam = SomListOrderParam()
     var category: String = ""
     private var allCleared = false
+    private var isRadioButtonSelected = false
     private var listId: ArrayList<Int> = ArrayList()
 
     var selectedRadio = -1
@@ -91,7 +92,16 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
                 radioBtn.isChecked = false
 
             } else {
-                radioBtn.isChecked = position == selectedRadio
+                if (!isRadioButtonSelected) {
+                    if (currentFilterParam.statusList.isNotEmpty()) {
+                        if (currentFilterParam.statusList == item.listValue) {
+                            selectedRadio = adapterPosition
+                            radioBtn.isChecked = true
+                        }
+                    }
+                } else {
+                    radioBtn.isChecked = position == selectedRadio
+                }
             }
 
             when {
@@ -116,6 +126,7 @@ class SomSubFilterAdapter : RecyclerView.Adapter<SomSubFilterAdapter.BaseViewHol
         }
 
         private val clickHandlerRadio: (View) -> Unit = {
+            isRadioButtonSelected = true
             allCleared = false
             selectedRadio = adapterPosition
 

@@ -17,4 +17,6 @@ object SomConsts {
     const val FILTER_TYPE_RADIO = "radio"
     const val FILTER_TYPE_LABEL = "label"
     const val FILTER_TYPE_SEPARATOR = "separator"
+
+    const val STATUS_ALL_ORDER = "all_order"
 }

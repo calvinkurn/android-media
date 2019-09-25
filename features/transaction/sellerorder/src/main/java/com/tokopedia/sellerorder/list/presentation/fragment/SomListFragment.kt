@@ -19,9 +19,11 @@ import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.TAB_ACTIVE
 import com.tokopedia.sellerorder.list.data.model.SomListFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrder
@@ -128,7 +130,11 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
     }
 
     private fun setInitialValue() {
+        paramOrder.startDate = getCalculatedFormattedDate("dd/MM/yyyy", -90)
         paramOrder.endDate = Date().toFormattedString("dd/MM/yyyy")
+
+        println("++ paramOrder.startDate = ${paramOrder.startDate}")
+        println("++ paramOrder.endDate = ${paramOrder.endDate}")
     }
 
     private fun loadInitial() {
@@ -153,7 +159,6 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             when (it) {
                 is Success -> {
                     filterList = it.data
-                    refreshHandler?.startRefresh()
                     renderFilter()
                 }
                 is Fail -> {
@@ -185,7 +190,8 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                             println("++ linkUrl = $linkUrl, itemData = ${itemData.toString()}")
                             val index = itemData as Int
-                            showTickerBottomSheet(listTickerData[index].description)
+                            // showTickerBottomSheet(listTickerData[index].description)
+                            RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                         }
                     })
                     /*adapter.setDescriptionClickEvent(object: TickerCallback {
@@ -238,17 +244,17 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
 
             filterItem.type = it.key
 
-            if (it.isChecked || tabActive.equals(it.key, true)) {
+            if (it.isChecked || tabActive.equals(it.key, true) || paramOrder.statusList == it.orderStatusIdList) {
                 currentIndex = index
                 filterItem.setColorBorder(R.color.tkpd_main_green)
                 filterItem.isSelected = true
                 paramOrder.statusList = it.orderStatusIdList
-                refreshHandler?.startRefresh()
 
-            } else {
+            }  else {
                 filterItem.setColorBorder(R.color.gray_background)
                 filterItem.isSelected = false
             }
+            refreshHandler?.startRefresh()
 
             listQuickFilter.add(filterItem)
             mapOrderStatus[it.key] = it.orderStatusIdList
@@ -267,6 +273,13 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                     }
                 }
             }
+
+            var intervalDays = -60
+            if (keySelected == STATUS_ALL_ORDER) intervalDays = -90
+            paramOrder.startDate = getCalculatedFormattedDate("dd/MM/yyyy", intervalDays)
+
+            println("++ paramOrder.startDate = ${paramOrder.startDate}")
+            println("++ paramOrder.endDate = ${paramOrder.endDate}")
         }
     }
 
@@ -351,7 +364,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
             if (data != null) {
                 if (data.hasExtra(SomConsts.PARAM_LIST_ORDER)) {
                     paramOrder = data.getParcelableExtra(SomConsts.PARAM_LIST_ORDER)
-                    refreshHandler?.startRefresh()
+                    renderFilter()
                 }
             }
         }

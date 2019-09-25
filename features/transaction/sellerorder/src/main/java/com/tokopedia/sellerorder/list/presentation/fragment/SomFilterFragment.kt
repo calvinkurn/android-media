@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.design.quickfilter.QuickFilterItem
 import com.tokopedia.design.quickfilter.custom.CustomViewQuickFilterItem
+import com.tokopedia.kotlin.extensions.getCalculatedFormattedDate
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_COURIER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.CATEGORY_ORDER_STATUS
@@ -21,6 +22,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_CHECKBOX
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_RADIO
 import com.tokopedia.sellerorder.common.util.SomConsts.FILTER_TYPE_SEPARATOR
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_LIST_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.STATUS_ALL_ORDER
 import com.tokopedia.sellerorder.list.data.model.SomListAllFilter
 import com.tokopedia.sellerorder.list.data.model.SomListOrderParam
 import com.tokopedia.sellerorder.list.data.model.SomSubFilter
@@ -30,6 +32,7 @@ import com.tokopedia.sellerorder.list.presentation.viewmodel.SomFilterViewModel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_som_filter.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 /**
  * Created by fwidjaja on 2019-09-11.
@@ -223,14 +226,23 @@ class SomFilterFragment : BaseDaggerFragment() {
     private fun renderStatusList() {
         listStatusRadioBtn.clear()
         var statusTextFilled = false
+        var intervalDays = -90
         statusList.forEach { status ->
             listStatusRadioBtn.add(SomSubFilter(status.id, status.text, status.key, status.type, FILTER_TYPE_RADIO, status.orderStatusIdList))
             if (status.orderStatusIdList == currentFilterParams?.statusList && !status.type.equals(FILTER_TYPE_SEPARATOR, true)) {
                 label_substatus.text = status.text
                 statusTextFilled = true
+
+                if (!status.key.equals(STATUS_ALL_ORDER, true)) intervalDays = -60
             }
         }
-        if (!statusTextFilled) label_substatus.setText(R.string.subtitle_status)
+        if (!statusTextFilled) {
+            label_substatus.setText(R.string.subtitle_status)
+        }
+        currentFilterParams?.startDate = getCalculatedFormattedDate("dd/MM/yyyy", intervalDays)
+
+        println("++ currentFilterParams.startDate = ${currentFilterParams?.startDate}")
+        println("++ currentFilterParams.endDate = ${currentFilterParams?.endDate}")
 
         rl_status?.isClickable = true
         rl_status?.setOnClickListener {
