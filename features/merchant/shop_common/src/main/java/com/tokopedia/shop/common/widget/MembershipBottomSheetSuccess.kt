@@ -90,7 +90,7 @@ class MembershipBottomSheetSuccess : BottomSheets() {
             ImageHandler.LoadImage(view.findViewById(R.id.img_membership_success), IMG_BS_MEMBERSHIP_SUCCESS)
             btnClaim.text = context?.getString(R.string.bs_button_txt)
             btnClaim.setOnClickListener {
-                listener?.goToVoucherOrRegister(null, null)
+                listener?.goToVoucherOrRegister()
             }
         }
 

@@ -24,7 +24,7 @@ class MembershipStampAdapter(private val context: Context, private val listener:
 
     interface MembershipStampAdapterListener {
         fun onButtonClaimClicked(questId: Int)
-        fun goToVoucherOrRegister(url: String?, clickOrigin: String?)
+        fun goToVoucherOrRegister(url: String? = null, clickOrigin: String? = null)
     }
 
     private var membershipData: List<BaseMembershipViewModel> = listOf()
