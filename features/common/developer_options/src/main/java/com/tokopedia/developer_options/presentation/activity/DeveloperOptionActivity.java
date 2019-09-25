@@ -93,7 +93,7 @@ public class DeveloperOptionActivity extends BaseActivity {
             userSession = new UserSession(this);
             setupView();
             initListener();
-            TranslatorManager.init(this.getApplication(), "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49");
+            new TranslatorManager().init(this.getApplication(), "trnsl.1.1.20190508T115205Z.10630ca1780c554e.a7a33e218b8e806e8d38cb32f0ef91ae07d7ae49");
         } else {
             finish();
         }

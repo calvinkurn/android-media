@@ -38,9 +38,9 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
             Log.i(TAG, "onActivityResumed() invoked of :" + activity.localClassName)
             val weakActivity = WeakReference<Activity>(activity)
             val translatorManager = TranslatorManager.getInstance()
-            translatorManager.clearSelectors()
-            translatorManager.prepareSelectors(activity)
-            translatorManager.attachBubbleViewInstanceHandler(activity)
+            translatorManager?.clearSelectors()
+            translatorManager?.prepareSelectors(activity)
+            translatorManager?.attachBubbleViewInstanceHandler(activity)
             TranslatorManager.setCurrentActivity(weakActivity)
         }
     }

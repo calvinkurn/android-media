@@ -90,7 +90,9 @@ class TranslatorManager() {
         val DELIM = "#"
 
         private var mCurrentActivity: WeakReference<Activity>? = null
-        private lateinit var sInstance: TranslatorManager
+
+        @JvmStatic
+        private var sInstance: TranslatorManager? = null
 
         fun getCurrentActivity(): Activity? {
             return mCurrentActivity?.let {
@@ -107,7 +109,7 @@ class TranslatorManager() {
         @JvmStatic
         fun init(application: Application, apiKey: String): TranslatorManager? {
 
-            if (!::sInstance.isInitialized) {
+            if (sInstance == null) {
                 synchronized(LOCK) {
                     sInstance = TranslatorManager(application, apiKey)
                     application.registerActivityLifecycleCallbacks(ActivityTranslatorCallbacks())
@@ -117,9 +119,9 @@ class TranslatorManager() {
             return sInstance
         }
 
-        internal fun getInstance(): TranslatorManager {
+        internal fun getInstance(): TranslatorManager? {
             synchronized(LOCK) {
-                if (!::sInstance.isInitialized) {
+                if (sInstance == null) {
                     throw IllegalStateException(
                         "Default TranslatorManager is not initialized in this "
                                 + "process "
@@ -251,17 +253,21 @@ class TranslatorManager() {
         var stringPoolItem: StringPoolItem?
         var tv: TextView?
         for (selector in mSelectors) {
-            tv = ViewTreeManager.findViewByDOMIdentifier(
-                selector.value,
-                getCurrentActivity()!!
-            ) as TextView
-            stringPoolItem = mStringPoolManager.get(tv.text.toString())
-            if (stringPoolItem == null || stringPoolItem.demandedText.isEmpty()) {
-                continue
-            }
+            try {
+                tv = ViewTreeManager.findViewByDOMIdentifier(
+                        selector.value,
+                        getCurrentActivity()!!
+                ) as TextView
+                stringPoolItem = mStringPoolManager.get(tv.text.toString())
+                if (stringPoolItem == null || stringPoolItem.demandedText.isEmpty()) {
+                    continue
+                }
 
-            tv.text = stringPoolItem.demandedText
-            tv.tag = true
+                tv.text = stringPoolItem.demandedText
+                tv.tag = true
+            } catch (e: Exception){
+                e.printStackTrace()
+            }
 
         }
     }
