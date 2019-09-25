@@ -9,9 +9,8 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.list.model.listcoupon.DataPromoCheckoutList
-import com.tokopedia.promocheckout.list.model.listexchangecoupon.ResponseExchangeCoupon
-import com.tokopedia.promocheckout.list.model.listexchangecoupon.TokopointsCatalogHighlight
 import com.tokopedia.promocheckout.list.model.listlastseen.PromoCheckoutLastSeenModel
+import com.tokopedia.promocheckout.list.model.listpromocatalog.ResponseExchangeCoupon
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 import java.util.HashMap
@@ -39,10 +38,12 @@ class PromoCheckoutListPresenter(val getListCouponUseCase: GraphqlUseCase) : Bas
 
             override fun onNext(objects: GraphqlResponse) {
                 val dataDetailCheckoutPromo = objects.getData<DataPromoCheckoutList>(DataPromoCheckoutList::class.java)
-                view.renderList(dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsCouponData
-                        ?: ArrayList(),
-                        dataDetailCheckoutPromo?.tokopointsCouponList?.tokopointsPaging?.isHasNext
-                                ?: false)
+                if (dataDetailCheckoutPromo != null) {
+                    view.renderList(dataDetailCheckoutPromo.tokopointsCouponList?.tokopointsCouponData
+                            ?: ArrayList(),
+                            dataDetailCheckoutPromo.tokopointsCouponList?.tokopointsPaging?.isHasNext
+                                    ?: false)
+                }
             }
         })
     }

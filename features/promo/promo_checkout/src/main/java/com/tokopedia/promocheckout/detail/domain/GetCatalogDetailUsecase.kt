@@ -15,8 +15,6 @@ import java.util.*
 class GetCatalogDetailUsecase(val resources: Resources)
     : GraphqlUseCase() {
 
-    val ONE_CLICK_SHIPMENT = "oneClickShipment"
-    val INPUT_CODE = "code"
     val SLUG_CODE="slug"
     val CATALOG_ID="catalog_id"
 
@@ -31,13 +29,4 @@ class GetCatalogDetailUsecase(val resources: Resources)
 
         super.execute(requestParams, subscriber)
     }
-
-    fun createRequestParams(slug: String, catalogID:Int,skipApply: Boolean = false, suggestedPromo: Boolean = false, oneClickShipment: Boolean = false): RequestParams {
-        val requestParams = RequestParams.create()
-        requestParams.putString(SLUG_CODE, slug)
-        requestParams.putInt(CATALOG_ID,catalogID)
-        // requestParams.putBoolean(ONE_CLICK_SHIPMENT, oneClickShipment)
-        return requestParams
-    }
-
 }

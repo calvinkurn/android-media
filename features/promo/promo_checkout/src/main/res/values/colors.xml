@@ -9,4 +9,9 @@
     <color name="gf_tint_close_color">#6C727C</color>
     <color name="charcoal_gray_88">#e131353b</color>
     <color name="coupon_detail_tint_close_color">#6C727C</color>
+    <color name="promo_checkout_catalogtitle_color">#f531353b</color>
+    <color name="promo_checkout_catalogsubtitle_color">#8f000000</color>
+    <color name="promo_checkout_bottom_separator_color">#f3f4f5</color>
+    <color name="promo_checkout_mid_separator_color">#f3f4f5</color>
+    <color name="promo_checkout_top_separator_color">#fef4f5</color>
 </resources>

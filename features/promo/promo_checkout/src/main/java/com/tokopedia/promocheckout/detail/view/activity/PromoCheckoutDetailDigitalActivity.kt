@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent

@@ -4,11 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
@@ -21,8 +21,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.detail.model.PromoCheckoutDetailModel
-import com.tokopedia.promocheckout.detail.model.detailmodel.CouponDetailsResponse
-import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
 import com.tokopedia.promocheckout.detail.view.presenter.CheckPromoCodeDetailException
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailContract
 import com.tokopedia.promocheckout.widget.TimerCheckoutWidget
@@ -31,22 +29,16 @@ import kotlinx.android.synthetic.main.fragment_checkout_detail_layout.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.*
 import kotlinx.android.synthetic.main.include_period_tnc_promo.view.*
 
-abstract class BasePromoCheckoutDetailFragment : BottomSheetDialogFragment(), PromoCheckoutDetailContract.View {
+abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetailContract.View {
 
     var isLoadingFinished = false
     var codeCoupon = ""
-    var slug="TESTCOUPON"
-    var catalog_id=158
     open var isUse = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_checkout_detail_layout, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL,R.style.TransparentBottomSheetDialogTheme)
-    }
     private lateinit var timerUsage: TimerPromoCheckout
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,7 +68,7 @@ abstract class BasePromoCheckoutDetailFragment : BottomSheetDialogFragment(), Pr
     override fun onSuccessGetDetailPromo(promoCheckoutDetailModel: PromoCheckoutDetailModel) {
         promoCheckoutDetailModel.let {
             ImageHandler.LoadImage(imageBannerPromo, it.imageUrlMobile)
-           // view?.titlePeriod?.text = promoCheckoutDetailModel.usage?.text
+            view?.titlePeriod?.text = promoCheckoutDetailModel.usage.text
             view?.titleMinTrans?.text = promoCheckoutDetailModel.minimumUsageLabel
             if (TextUtils.isEmpty(promoCheckoutDetailModel.minimumUsage)) {
                 view?.textMinTrans?.visibility = View.GONE
@@ -94,18 +86,18 @@ abstract class BasePromoCheckoutDetailFragment : BottomSheetDialogFragment(), Pr
                 view?.textMinTrans?.text = promoCheckoutDetailModel.minimumUsage
             }
             textTitlePromo?.text = it.title
-          /*  hideTimerView()
-            if ((it.usage?.activeCountDown ?: 0 > 0 &&
-                            it.usage?.activeCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-                setActiveTimerUsage(it.usage?.activeCountDown?.toLong() ?: 0)
-            } else if ((it.usage?.expiredCountDown ?: 0 > 0 &&
-                            it.usage?.expiredCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
-                setExpiryTimerUsage(it.usage?.expiredCountDown?.toLong() ?: 0)
+            hideTimerView()
+            if ((it.usage.activeCountDown ?: 0 > 0 &&
+                            it.usage.activeCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setActiveTimerUsage(it.usage.activeCountDown?.toLong() ?: 0)
+            } else if ((it.usage.expiredCountDown ?: 0 > 0 &&
+                            it.usage.expiredCountDown ?: 0 < TimerPromoCheckout.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_ONE_DAY)) {
+                setExpiryTimerUsage(it.usage.expiredCountDown?.toLong() ?: 0)
             }
-            view?.textPeriod?.text = it.usage?.usageStr*/
+            view?.textPeriod?.text = it.usage.usageStr
             webviewTnc?.settings?.javaScriptEnabled = true
             webviewTnc?.loadData(getFormattedHtml(it.tnc), "text/html", "UTF-8")
-           // enableOrDisableViews(it)
+            enableOrDisableViews(it)
         }
     }
 
@@ -124,12 +116,13 @@ abstract class BasePromoCheckoutDetailFragment : BottomSheetDialogFragment(), Pr
 
     }
 
-    private fun enableOrDisableViews(item: HachikoCatalogDetail) {
-    /*    if (item.usage?.activeCountDown!! > 0 || item.usage?.expiredCountDown!! <= 0) {
+    private fun enableOrDisableViews(item: PromoCheckoutDetailModel) {
+
+       if (item.usage.activeCountDown > 0 || item.usage.expiredCountDown <= 0) {
             disableViews()
         } else {
             enableViews()
-        }*/
+        }
     }
 
 
@@ -147,10 +140,10 @@ abstract class BasePromoCheckoutDetailFragment : BottomSheetDialogFragment(), Pr
 
 
     private fun setActiveTimerUsage(countDown: Long) {
-        timerUsage?.cancel()
-        timerUsage?.expiredTimer = countDown
+        timerUsage.cancel()
+        timerUsage.expiredTimer = countDown
         buttonUse?.isEnabled = false
-        timerUsage?.listener = object : TimerPromoCheckout.Listener {
+        timerUsage.listener = object : TimerPromoCheckout.Listener {
             override fun onTick(l: Long) {
                 buttonUse?.text = timerUsage.formatMilliSecondsToTime(l * 1000)
             }
@@ -161,7 +154,7 @@ abstract class BasePromoCheckoutDetailFragment : BottomSheetDialogFragment(), Pr
                 enableViews()
             }
         }
-        timerUsage?.start()
+        timerUsage.start()
     }
 
     private fun setExpiryTimerUsage(countDown: Long) {

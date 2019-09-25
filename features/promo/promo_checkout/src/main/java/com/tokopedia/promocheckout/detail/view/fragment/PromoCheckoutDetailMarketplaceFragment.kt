@@ -17,8 +17,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailModule
-import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
-import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import javax.inject.Inject
 
@@ -32,6 +30,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
     private var isOneClickShipment: Boolean = false
     var pageTracking: Int = 1
     var promo: Promo? = null
+    lateinit var codeslug:String
     lateinit var progressDialog: ProgressDialog
     lateinit var promoCheckoutDetailComponent:PromoCheckoutDetailComponent
 
@@ -62,7 +61,7 @@ class PromoCheckoutDetailMarketplaceFragment : BasePromoCheckoutDetailFragment()
 
     override fun loadData() {
         super.loadData()
-        promoCheckoutDetailPresenter.getDetailPromo(slug, isOneClickShipment, promo)
+        promoCheckoutDetailPresenter.getDetailPromo(codeCoupon, isOneClickShipment, promo)
     }
 
     override fun onClickUse() {

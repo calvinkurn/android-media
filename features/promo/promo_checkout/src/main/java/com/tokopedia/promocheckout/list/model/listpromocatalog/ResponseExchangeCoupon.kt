@@ -1,9 +1,9 @@
-package com.tokopedia.promocheckout.list.model.listexchangecoupon
+package com.tokopedia.promocheckout.list.model.listpromocatalog
 
 import com.google.gson.annotations.SerializedName
 
 data class ResponseExchangeCoupon(
 
-	@field:SerializedName("tokopointsCatalogHighlight")
+	@SerializedName("tokopointsCatalogHighlight")
 	val tokopointsCatalogHighlight: TokopointsCatalogHighlight? = null
 )

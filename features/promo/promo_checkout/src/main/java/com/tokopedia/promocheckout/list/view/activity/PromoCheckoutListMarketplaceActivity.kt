@@ -11,14 +11,18 @@ import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketpla
 
 class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity() {
 
+
+    lateinit var promocheckoutlistfragment:PromoCheckoutListMarketplaceFragment
+
     override fun getNewFragment(): Fragment {
-        return PromoCheckoutListMarketplaceFragment.createInstance(
+        promocheckoutlistfragment= PromoCheckoutListMarketplaceFragment.createInstance(
                 intent?.extras?.getBoolean(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.EXTRA_COUPON_ACTIVE, true),
                 intent?.extras?.getString(PromoCheckoutListMarketplaceFragment.PROMO_CODE, ""),
                 intent?.extras?.getBoolean(PromoCheckoutListMarketplaceFragment.ONE_CLICK_SHIPMENT, false),
                 intent?.extras?.getInt(PromoCheckoutListMarketplaceFragment.PAGE_TRACKING, 1) ?: 1,
                 intent?.extras?.getParcelable(PromoCheckoutListMarketplaceFragment.CHECK_PROMO_FIRST_STEP_PARAM) as Promo
         )
+        return promocheckoutlistfragment
     }
 
     companion object {
@@ -36,12 +40,14 @@ class PromoCheckoutListMarketplaceActivity : BaseSimpleActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-    }
+    override fun onBackPressed() {
 
-    override fun onPause() {
-        super.onPause()
+        val hasFragment=promocheckoutlistfragment.childFragmentManager.backStackEntryCount>0
+        if(hasFragment){
+            promocheckoutlistfragment.childFragmentManager.popBackStack()
+        }
+        else {
+            super.onBackPressed()
+        }
     }
-
 }

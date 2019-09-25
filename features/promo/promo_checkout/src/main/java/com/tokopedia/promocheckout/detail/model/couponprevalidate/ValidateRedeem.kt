@@ -2,7 +2,7 @@ package com.tokopedia.promocheckout.detail.model.couponprevalidate
 
 import com.google.gson.annotations.SerializedName
 
-data class HachikoValidateRedeem(
+data class ValidateRedeem(
 
 	@SerializedName("message_success")
 	val messageSuccess: String? = null,

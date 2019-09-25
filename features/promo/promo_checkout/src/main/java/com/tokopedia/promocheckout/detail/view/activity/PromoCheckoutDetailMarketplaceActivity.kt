@@ -51,4 +51,5 @@ class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity(),HasComponent
     override fun isShowCloseButton(): Boolean {
         return true
     }
+
 }

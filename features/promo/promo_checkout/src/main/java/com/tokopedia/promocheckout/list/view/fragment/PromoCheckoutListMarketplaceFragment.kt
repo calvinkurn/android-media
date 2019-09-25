@@ -2,18 +2,16 @@ package com.tokopedia.promocheckout.list.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.constant.IRouterConstant
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
@@ -23,8 +21,8 @@ import com.tokopedia.promocheckout.common.util.*
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
+import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
-import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailMarketplaceFragment
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
@@ -33,28 +31,19 @@ import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketpl
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import javax.inject.Inject
 
+
 class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), PromoCheckoutListMarketplaceContract.View {
 
-    lateinit var bottomSheetView: View
+    private var containerParent: ViewGroup? = null
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         this.containerParent = container
         return super.onCreateView(inflater, container, savedInstanceState)
     }
-    @Inject
-    lateinit var mPresenter: CheckoutCatalogDetailPresenter
 
     override fun onClickRedeemCoupon(catalog_id: Int, slug: String?) {
-
-        val bundle = Bundle()
-        bundle.putString("slug", slug)
-        bundle.putInt("catalog_id",catalog_id)
-        bundle.putBoolean("isuse", false)
-        bundle.putBoolean("onclickshipment", false)
-        bundle.putInt("pagetracking", pageTracking)
-        bundle.putParcelable("promos", promo)
-        val fragment=CheckoutCatalogDetailFragment()
-        fragment.arguments=bundle
-        fragment.show(childFragmentManager,"")
+        childFragmentManager.
+                beginTransaction().
+                add(R.id.ppp,CheckoutCatalogDetailFragment.newInstance(slug=slug!!, catalog_id = catalog_id,promoCode = promoCode,oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo!!)).addToBackStack(null).commit()
     }
 
     @Inject
@@ -89,19 +78,19 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-        if (pageTracking == FROM_CART) {
+       if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickCoupon(promoCheckoutListModel?.code ?: "")
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
         }
-        val promoCheckoutDetailMarketplaceFragment=PromoCheckoutDetailMarketplaceFragment.createInstance(promoCheckoutListModel?.code
-                ?: "", false, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = this.promo!!)
-        promoCheckoutDetailMarketplaceFragment.show(childFragmentManager,"")
+        startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
+                activity, promoCheckoutListModel?.code, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo), REQUEST_CODE_DETAIL_PROMO)
     }
 
     override fun onPromoCodeUse(promoCode: String) {
         promoCheckoutListMarketplacePresenter.checkPromoStackingCode(promoCode, isOneClickShipment, promo)
     }
+
 
     override fun showProgressLoading() {
         progressDialog.show()
@@ -214,6 +203,13 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
             bundle.putParcelable(CHECK_PROMO_FIRST_STEP_PARAM, promo)
             promoCheckoutListMarketplaceFragment.arguments = bundle
             return promoCheckoutListMarketplaceFragment
+        }
+    }
+
+    override fun loadData(page: Int) {
+        if (isCouponActive) {
+            promoCheckoutListPresenter.getListPromo(serviceId, categoryId, page, resources)
+            promoCheckoutListMarketplacePresenter.getListExchangeCoupon(resources)
         }
     }
 

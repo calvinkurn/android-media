@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.constant.IRouterConstant
-import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.R
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
@@ -24,7 +23,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
-import com.tokopedia.promocheckout.detail.view.fragment.CheckoutCatalogDetailFragment
 import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
@@ -33,17 +31,10 @@ import com.tokopedia.promocheckout.list.view.fragment.PromoCheckoutListMarketpla
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListDigitalPresenter
 import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
-import kotlinx.android.synthetic.main.promo_coupon_detail_bottomsheet.view.*
 import javax.inject.Inject
 
 class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListDigitalContract.View {
     override fun onClickRedeemCoupon(position: Int,slug:String?) {
-        var closeableBottomSheetDialog:CloseableBottomSheetDialog= CloseableBottomSheetDialog.createInstance(activity)
-        var bottomSheetView:View= View.inflate(this.context,R.layout.promo_coupon_detail_bottomsheet,null)
-        //childFragmentManager?.beginTransaction()?.add(bottomSheetView.catalog_detail_unique.id,CheckoutCatalogDetailFragment())?.commit()
-        closeableBottomSheetDialog.setCustomContentView(bottomSheetView,"Redeem Couon",true)
-        closeableBottomSheetDialog.show()
-
     }
 
     @Inject
