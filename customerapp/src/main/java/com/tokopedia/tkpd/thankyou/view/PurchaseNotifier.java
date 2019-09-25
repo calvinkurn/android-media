@@ -3,12 +3,10 @@ package com.tokopedia.tkpd.thankyou.view;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.beloo.widget.chipslayoutmanager.util.log.Log;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.pms.common.Constant;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
-import com.tokopedia.transaction.applink.TransactionAppLink;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

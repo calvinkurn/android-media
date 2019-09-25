@@ -16,7 +16,7 @@ buildscript {
 }
 
 dependencies {
-    
+    implementation rootProject.ext.firebase.core
     implementation project(rootProject.ext.libraries.track)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.tkpdabstraction)

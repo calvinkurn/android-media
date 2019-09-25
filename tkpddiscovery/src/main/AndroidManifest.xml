@@ -55,13 +55,6 @@
             android:label="Hotlist"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".autocomplete.presentation.activity.AutoCompleteActivity"
-            android:screenOrientation="portrait"
-            android:label="@string/search_title"
-            android:windowSoftInputMode="adjustNothing">
-
-        </activity>
 
         <activity android:name=".newdiscovery.category.presentation.CategoryActivity"
             android:launchMode="singleTask"

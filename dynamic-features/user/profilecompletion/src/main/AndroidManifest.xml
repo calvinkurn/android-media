@@ -1,11 +1,14 @@
 <manifest xmlns:dist="http://schemas.android.com/apk/distribution"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.profilecompletion.customerapp">
 
     <dist:module
         dist:instant="false"
-        dist:onDemand="true"
+        dist:onDemand="false"
         dist:title="@string/title_module_setting_profile">
         <dist:fusing dist:include="true" />
     </dist:module>
+
+    <application android:hasCode="false"/>
 </manifest>
 

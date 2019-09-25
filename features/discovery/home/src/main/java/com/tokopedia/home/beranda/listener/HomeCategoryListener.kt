@@ -48,7 +48,7 @@ interface HomeCategoryListener {
 
     fun showNetworkError(message: String)
 
-    fun onDynamicChannelClicked(applink: String, trackingAttribution: String)
+    fun onDynamicChannelClicked(applink: String)
 
     fun onRefreshTokoPointButtonClicked()
 

@@ -145,6 +145,9 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
 
         mPresenter.getCategoryDetails(true);
         mPresenter.getBrandsList(true);
+        if (userSession.isLoggedIn()) {
+            mPresenter.sendNSQEvent(userSession.getUserId(), "category-page");
+        }
         return view;
     }
 

@@ -101,7 +101,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
             if (!TextUtils.isEmpty(DynamicLinkHelper.getActionLink(channel.header))) {
                 seeAllButton.visibility = View.VISIBLE
                 seeAllButton.setOnClickListener {
-                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header), channel.homeAttribution)
+                    listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channel.header))
                     HomeTrackingUtils.homeDiscoveryWidgetViewAll(context,
                             DynamicLinkHelper.getActionLink(channel.header))
                     onSeeAllClickTracker(channel, DynamicLinkHelper.getActionLink(channel.getHeader()))
@@ -164,7 +164,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 TYPE_SPRINT_SALE -> {
                     listener.putEEToIris(
                             HomePageTracking.getEnhanceImpressionSprintSaleHomePage(
-                                    channel.id, channel.grids, channel.homeAttribution, position
+                                    channel.id, channel.grids, position
                             )
                     )
                 }

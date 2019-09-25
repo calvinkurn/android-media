@@ -108,8 +108,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
                 context,
                 evenMap);
 
-        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid),
-                String.valueOf(evenMap.get(ATTRIBUTION)));
+        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(grid));
         HomeTrackingUtils.homeSprintSaleClick(context,
                 pos+1,channels,grid,DynamicLinkHelper.getActionLink(grid));
     }
@@ -156,7 +155,7 @@ public class SprintSaleCarouselViewHolder extends AbstractViewHolder<DynamicChan
     }
 
     private void onClickSeeAll() {
-        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()), channels.getHomeAttribution());
+        listener.onDynamicChannelClicked(DynamicLinkHelper.getActionLink(channels.getHeader()));
         HomePageTracking.eventClickSeeAllProductSprintBackground(context, channels.getId());
         HomeTrackingUtils.homeSprintSaleViewAll(context,
                 DynamicLinkHelper.getActionLink(channels.getHeader()));
