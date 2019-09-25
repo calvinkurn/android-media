@@ -1,6 +1,7 @@
 package com.tokopedia.flight.common.di.component;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -55,6 +56,8 @@ public interface FlightComponent {
     FlightJourneyDao flightJourneyDao();
 
     FlightRouteDao flightRouteDao();
+
+    Resources resources();
 
     void inject(BaseFlightActivity baseFlightActivity);
 
