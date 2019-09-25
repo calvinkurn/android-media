@@ -893,7 +893,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         private const val CATEGORY = "category"
         private const val LIST_DEFAULT = "/product - "
         private const val LIST_RECOMMENDATION = " - rekomendasi untuk anda - "
-        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc"
+        private const val LIST_PRODUCT_AFTER_ATC = "/productafteratc  - "
         private const val CURRENCY_CODE = "currencyCode"
         private const val CURRENCY_DEFAULT_VALUE = "IDR"
     }
