@@ -3,11 +3,15 @@ package com.tokopedia.globalnavwidget
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
+import org.spekframework.spek2.Spek
+import org.spekframework.spek2.style.specification.describe
 
-class GlobalNavWidgetTest {
+class GlobalNavWidgetTest: Spek({
 
-    @Test
-    fun `test unit test`() {
-        assertThat(2 + 2, `is`(4))
+    describe("global nav widget") {
+
+        it("should do something") {
+            assertThat(2 + 2, `is`(3))
+        }
     }
-}
+})
