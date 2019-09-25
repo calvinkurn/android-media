@@ -179,22 +179,23 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                 var indexTicker = 0
                 tickerList.forEach {
                     if (it.isActive) {
-                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true, indexTicker))
+                        // listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true, indexTicker))
+                        listTickerData.add(TickerData("", it.body, Ticker.TYPE_ANNOUNCEMENT, true))
                         indexTicker++
                     }
                 }
 
                 context?.let {
                     val adapter = TickerPagerAdapter(it, listTickerData)
-                    adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+                    /*adapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
                         override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                             println("++ linkUrl = $linkUrl, itemData = ${itemData.toString()}")
                             val index = itemData as Int
                             // showTickerBottomSheet(listTickerData[index].description)
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                         }
-                    })
-                    /*adapter.setDescriptionClickEvent(object: TickerCallback {
+                    })*/
+                    adapter.setDescriptionClickEvent(object: TickerCallback {
                         override fun onDescriptionViewClick(link: CharSequence?) {
                             // changed to open bottomsheet
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, link))
@@ -202,7 +203,7 @@ class SomListFragment: BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerList
                         }
 
                         override fun onDismiss() {}
-                    })*/
+                    })
                     ticker_info?.addPagerView(adapter, listTickerData)
                 }
             } else {
