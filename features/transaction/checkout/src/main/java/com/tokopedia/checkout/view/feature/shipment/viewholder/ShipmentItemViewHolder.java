@@ -777,7 +777,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                     courierData.getOntimeDelivery().getAvailable()
                     && shipmentCartItemModel.getVoucherLogisticItemUiModel() == null) {
                 OntimeDelivery otd = courierData.getOntimeDelivery();
-                String html = otd.getText_detail();
+                String html = (otd.getText_detail() != null) ? otd.getText_detail() : "";
                 String url = otd.getUrl_detail();
                 tickerOtd.setVisibility(View.VISIBLE);
                 tickerOtd.setHtmlDescription(html);
