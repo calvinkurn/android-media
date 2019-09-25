@@ -52,11 +52,11 @@ public class AffiliatePreference {
         sharedPrefs.edit().putBoolean(String.format(FORMAT_COACHMARK_SUGGESTION, tag), true).apply();
     }
 
-    public boolean isCreatePostEntryOnboardingShown(String tag) {
+    public boolean isCreatePostEntryOnBoardingShown(String tag) {
         return sharedPrefs.getBoolean(String.format(FORMAT_CREATE_POST_ENTRY_ONBOARDING, tag), false);
     }
 
-    public void setCreatePostEntryOnboardingShown(String tag) {
+    public void setCreatePostEntryOnBoardingShown(String tag) {
         sharedPrefs.edit().putBoolean(String.format(FORMAT_CREATE_POST_ENTRY_ONBOARDING, tag), true).apply();
     }
 }

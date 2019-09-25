@@ -230,9 +230,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun renderFab(whitelistDomain: WhitelistDomain) {
         if (userSession.isLoggedIn && whitelistDomain.authors.isNotEmpty()) {
             showFeedFab(whitelistDomain)
-            if (!affiliatePreference.isCreatePostEntryOnboardingShown(userSession.userId)) {
-                showCreatePostOnboarding()
-                affiliatePreference.setCreatePostEntryOnboardingShown(userSession.userId)
+            if (!affiliatePreference.isCreatePostEntryOnBoardingShown(userSession.userId)) {
+                showCreatePostOnBoarding()
+                affiliatePreference.setCreatePostEntryOnBoardingShown(userSession.userId)
             }
         }
     }
@@ -343,12 +343,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun onGoToLogin() {
         activity?.let {
-            val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+            val intent = RouteManager.getIntent(it, ApplinkConst.LOGIN)
             it.startActivityForResult(intent, FeedPlusFragment.REQUEST_LOGIN)
         }
     }
 
-    private fun showCreatePostOnboarding() {
+    private fun showCreatePostOnBoarding() {
         fab_feed.addOneTimeGlobalLayoutListener {
             val x1: Int = fab_feed.x.toInt()
             val y1: Int = fab_feed.y.toInt()
