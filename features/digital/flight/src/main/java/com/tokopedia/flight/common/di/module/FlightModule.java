@@ -1,6 +1,7 @@
 package com.tokopedia.flight.common.di.module;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -211,6 +212,12 @@ public class FlightModule {
     @Provides
     public UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
+    }
+
+    @FlightScope
+    @Provides
+    Resources provideResources(@ApplicationContext Context context) {
+        return context.getResources();
     }
 
 }
