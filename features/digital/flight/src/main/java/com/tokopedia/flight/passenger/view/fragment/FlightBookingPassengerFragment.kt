@@ -736,7 +736,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             birthdate_helper_text.visibility = View.GONE
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years)
         }
-        
+
         if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(getPassportNumber())) {
             isValid = false
             til_passport_no.error = getString(R.string.flight_booking_passport_number_empty_error)
