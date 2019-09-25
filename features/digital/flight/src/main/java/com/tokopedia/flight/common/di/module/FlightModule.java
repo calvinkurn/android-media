@@ -216,7 +216,7 @@ public class FlightModule {
 
     @FlightScope
     @Provides
-    Resources provideResources(@ApplicationContext Context context) {
+    public Resources provideResources(@ApplicationContext Context context) {
         return context.getResources();
     }
 
