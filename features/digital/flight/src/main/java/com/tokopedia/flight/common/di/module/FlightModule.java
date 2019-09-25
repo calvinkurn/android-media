@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.banner.data.source.BannerDataSource;
 import com.tokopedia.flight.booking.data.cloud.FlightCartDataSource;
 import com.tokopedia.flight.bookingV2.data.FlightBookingCartDataSource;
@@ -68,15 +67,6 @@ public class FlightModule {
     private static final int NET_CONNECT_TIMEOUT = 30;
     private static final int NET_RETRY = 1;
     private static final String GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-
-    @FlightScope
-    @Provides
-    public FlightModuleRouter provideFlightModuleRouter(@ApplicationContext Context context) {
-        if (context instanceof FlightModuleRouter) {
-            return ((FlightModuleRouter) context);
-        }
-        throw new RuntimeException("App should implement " + FlightModuleRouter.class.getSimpleName());
-    }
 
     @FlightScope
     @Provides

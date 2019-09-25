@@ -29,7 +29,6 @@ import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
@@ -75,8 +74,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
 
     private String selectedFilter = "";
 
-    @Inject
-    FlightModuleRouter flightModuleRouter;
     @Inject
     FlightOrderListPresenter presenter;
 

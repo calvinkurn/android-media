@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.cancellation.domain.model.AttachmentImageModel;
@@ -61,15 +60,12 @@ public class FlightCancellationReasonAndProofPresenter extends BaseDaggerPresent
     private UploadImageUseCase<AttachmentImageModel> uploadImageUseCase;
     private CompositeSubscription compositeSubscription;
     private UserSessionInterface userSession;
-    private FlightModuleRouter flightModuleRouter;
 
     @Inject
     public FlightCancellationReasonAndProofPresenter(UploadImageUseCase<AttachmentImageModel> uploadImageUseCase,
-                                                     UserSessionInterface userSession,
-                                                     FlightModuleRouter flightModuleRouter) {
+                                                     UserSessionInterface userSession) {
         this.uploadImageUseCase = uploadImageUseCase;
         this.userSession = userSession;
-        this.flightModuleRouter = flightModuleRouter;
         this.compositeSubscription = new CompositeSubscription();
     }
 

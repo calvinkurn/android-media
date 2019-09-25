@@ -38,7 +38,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
@@ -71,8 +70,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import rx.Observable;
-
 import static android.app.Activity.RESULT_OK;
 
 /**
@@ -90,8 +87,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
-    @Inject
-    FlightModuleRouter flightModuleRouter;
 
     private TextView orderId;
     private ImageView copyOrderId;

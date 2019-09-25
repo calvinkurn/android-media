@@ -39,10 +39,8 @@ import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerActionListener;
 import com.tokopedia.flight.booking.view.adapter.FlightBookingPassengerAdapter;
@@ -80,8 +78,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import rx.Observable;
 
 /**
  * A simple {@link Fragment} subclass.

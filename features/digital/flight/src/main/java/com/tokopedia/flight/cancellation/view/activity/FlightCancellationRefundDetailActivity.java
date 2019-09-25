@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
@@ -60,14 +59,11 @@ public class FlightCancellationRefundDetailActivity extends BaseFlightActivity i
     }
 
     private void initInjector() {
-        if (getApplication() instanceof FlightModuleRouter) {
-            cancellationComponent = DaggerFlightCancellationComponent.builder()
-                    .flightComponent(getFlightComponent())
-                    .build();
-        } else {
-            throw new RuntimeException("Application must implement FlightModuleRouter");
-        }
+        cancellationComponent = DaggerFlightCancellationComponent.builder()
+                .flightComponent(getFlightComponent())
+                .build();
     }
+
     private void setupToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setSubtitleTextColor(ContextCompat.getColor(this, R.color.grey_500));

@@ -8,7 +8,6 @@ import android.support.v4.content.ContextCompat;
 import android.view.Menu;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.cancellation.di.DaggerFlightCancellationComponent;
 import com.tokopedia.flight.cancellation.di.FlightCancellationComponent;
@@ -58,11 +57,8 @@ public class FlightCancellationChooseReasonActivity extends BaseFlightActivity
 
     @Override
     public FlightCancellationComponent getComponent() {
-        if (getApplication() instanceof FlightModuleRouter) {
-            return DaggerFlightCancellationComponent.builder()
-                    .flightComponent(getFlightComponent())
-                    .build();
-        }
-        throw new RuntimeException("Application must implement FlightModuleRouter");
+        return DaggerFlightCancellationComponent.builder()
+                .flightComponent(getFlightComponent())
+                .build();
     }
 }

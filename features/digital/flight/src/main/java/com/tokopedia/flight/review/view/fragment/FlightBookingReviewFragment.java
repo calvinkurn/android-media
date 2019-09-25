@@ -38,7 +38,6 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewMod
 import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.di.FlightBookingComponent;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
@@ -106,8 +105,6 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
 
     @Inject
     FlightBookingReviewPresenter flightBookingReviewPresenter;
-    @Inject
-    FlightModuleRouter flightModuleRouter;
 
     FlightBookingReviewModel flightBookingReviewModel;
     private LinearLayout fullPageLoading;

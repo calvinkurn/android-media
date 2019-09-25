@@ -150,7 +150,6 @@ import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.fingerprint.view.FingerPrintDialog;
 import com.tokopedia.flight.FlightComponentInstance;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.common.domain.FlightRepository;
@@ -408,7 +407,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         LoyaltyRouter,
         ReputationRouter,
         AbstractionRouter,
-        FlightModuleRouter,
         LogisticRouter,
         IHomeRouter,
         DiscoveryRouter,

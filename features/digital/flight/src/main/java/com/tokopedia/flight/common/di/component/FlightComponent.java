@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.booking.view.fragment.FlightInsuranceWebViewFragment;
 import com.tokopedia.flight.common.data.source.cloud.api.FlightApi;
 import com.tokopedia.flight.common.di.module.FlightModule;
@@ -29,7 +28,7 @@ import retrofit2.Retrofit;
  * @author sebastianuskh on 4/13/17.
  */
 @FlightScope
-@Component(modules = FlightModule.class,  dependencies = BaseAppComponent.class)
+@Component(modules = FlightModule.class, dependencies = BaseAppComponent.class)
 public interface FlightComponent {
     @ApplicationContext
     Context context();
@@ -48,8 +47,6 @@ public interface FlightComponent {
     CacheManager cacheManager();
 
     FlightDateUtil flightdateutlil();
-
-    FlightModuleRouter flightModuleRouter();
 
     FlightSearchRoomDb flightSearchRoomDb();
 
