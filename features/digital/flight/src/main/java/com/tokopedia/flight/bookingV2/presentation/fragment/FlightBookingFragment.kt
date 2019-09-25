@@ -23,7 +23,6 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewMod
 import com.tokopedia.common.travel.widget.TravellerInfoWidget
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.di.FlightBookingComponent
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.activity.FlightInsuranceWebviewActivity
 import com.tokopedia.flight.booking.view.adapter.*
 import com.tokopedia.flight.booking.view.fragment.FlightBookingNewPriceDialogFragment

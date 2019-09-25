@@ -2,12 +2,11 @@ package com.tokopedia.flight.booking.view.presenter;
 
 import android.support.annotation.StringRes;
 
+import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingParamViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewModel;
-import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
@@ -17,8 +16,6 @@ import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewMo
 
 import java.util.Date;
 import java.util.List;
-
-import rx.Observable;
 
 /**
  * Created by alvarisi on 11/8/17.
