@@ -85,5 +85,10 @@
     <string name="saldo_withdraw_tnc_original">Dengan klik tombol di bawah, kamu telah setuju dengan</string>
     <string name="saldo_withdraw_tnc_clickable">ketentuan penarikan saldo.</string>
     <string name="saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
+    <string name="continue_pull">Lanjut Tarik</string>
+    <string name="back">Kembali</string>
+    <string name="max_saldo_withdraw_hint">Maks. penarikan saldo %s</string>
+    <string name="min_saldo_withdraw_hint">Min. penarikan %s</string>
+
 
 </resources>

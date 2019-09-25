@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -20,6 +21,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -35,6 +37,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -70,6 +73,7 @@ import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
+import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpWithdrawal;
 import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
 import com.tokopedia.withdraw.view.adapter.BankAdapter;
 import com.tokopedia.withdraw.view.decoration.SpaceItemDecoration;
@@ -151,6 +155,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     //private LinearLayout withdrawButtonWrapper;
 
     private CompositeSubscription subscription;
+    private AlertDialog alertDialog;
 
     @Override
     protected String getScreenName() {
@@ -396,7 +401,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
 
-    private void addObserverToWithdrawalEditText(EditText editText){
+    private void addObserverToWithdrawalEditText(EditText editText) {
         Observable<String> nominalObservable = EventsWatcher.text(totalWithdrawal);
         Observable<Boolean> nominalMapper = nominalObservable.map(new Func1<String, Boolean>() {
             @Override
@@ -546,97 +551,49 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     private boolean checkWithdrawalAmount(long withdrawal) {
         BankAccount bankAccount = bankAdapter.getSelectedBank();
-        if (bankAccount == null)
+        if (bankAccount == null) {
+            changeHintTextColor(R.color.grey_button_compat, R.color.tkpd_main_green, "");
             return false;
-        if (withdrawal == 0) {
+        } else if (withdrawal == 0) {
             String minStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(bankAccount.getMinAmount(), false);
-            saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minStr));
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.tkpd_main_green), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_button_compat));
+            changeHintTextColor(R.color.grey_button_compat, R.color.tkpd_main_green,
+                    String.format(getString(R.string.min_saldo_withdraw_hint), minStr));
             return false;
         } else if (withdrawal < bankAccount.getMinAmount()) {
             String minStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(bankAccount.getMinAmount(), false);
-            saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minStr));
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
+            changeHintTextColor(R.color.hint_red, R.color.hint_red,
+                    String.format(getString(R.string.min_saldo_withdraw_hint), minStr));
             return false;
         } else if (withdrawal > bankAccount.getMaxAmount()) {
-            String maxStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(bankAccount.getMaxAmount(), false);
-            saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), maxStr));
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
+            String maxStr = CurrencyFormatUtil
+                    .convertPriceValueToIdrFormat(bankAccount.getMaxAmount(), false);
+            changeHintTextColor(R.color.hint_red, R.color.hint_red,
+                    String.format(getString(R.string.max_saldo_withdraw_hint), maxStr));
             return false;
         } else if (sellerWithdrawal && withdrawal > sellerSaldoBalance) {
-            String maxStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(bankAccount.getMaxAmount(), false);
-            saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), maxStr));
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
+            changeHintTextColor(R.color.hint_red, R.color.hint_red, getString(R.string.saldo_exceeding_withdraw_balance));
             return false;
         } else if (!sellerWithdrawal && withdrawal > buyerSaldoBalance) {
-            String maxStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(bankAccount.getMaxAmount(), false);
-            saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), maxStr));
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
+            changeHintTextColor(R.color.hint_red, R.color.hint_red, getString(R.string.saldo_exceeding_withdraw_balance));
             return false;
         } else {
             String minStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(bankAccount.getMinAmount(), false);
-            saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minStr));
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.tkpd_main_green), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_button_compat));
+            changeHintTextColor(R.color.grey_button_compat, R.color.tkpd_main_green,
+                    String.format(getString(R.string.min_saldo_withdraw_hint), minStr));
             return true;
         }
     }
 
-
-    private boolean checkMaximumWithdrawal(int withdrawal) {
-        BankAccount bankAccount = bankAdapter.getSelectedBank();
-        if (bankAccount == null)
-            return true;
-        long maxAmount = bankAccount.getMaxAmount();
-        if (withdrawal == 0) {
-            showErrorWithdrawal(null);
-            return false;
-        }
-        if (withdrawal > maxAmount) {
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
-            return false;
-        } else {
-
-            return true;
-        }
+    private void changeHintTextColor(@ColorRes int hintColor, @ColorRes int underLineColor, String hintText) {
+        totalWithdrawal.getBackground().mutate().
+                setColorFilter(getResources().getColor(underLineColor), PorterDuff.Mode.SRC_ATOP);
+        saldoWithdrawHintTV.setTextColor(getResources().getColor(hintColor));
+        saldoWithdrawHintTV.setText(hintText);
     }
 
 
-    private boolean checkMinimumWithdrawal(int withdrawal) {
-        int min = checkSelectedBankMinimumWithdrawal();
-        String minAmount = CurrencyFormatUtil.convertPriceValueToIdrFormat(min, false);
-        saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minAmount));
 
-        if (withdrawal == 0) {
-            showErrorWithdrawal(null);
-            return false;
-        }
-
-        if (withdrawal < min) {
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
-            return false;
-        } else {
-            return true;
-        }
-
-    }
-
-    private long getMaxTransferForCurrentBank(){
+    private long getMaxTransferForCurrentBank() {
         BankAccount selectedBank = bankAdapter.getSelectedBank();
         if (selectedBank == null) {
             return 0;
@@ -644,12 +601,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         return selectedBank.getMaxAmount();
     }
 
-    private long getMinTransferForCurrentBank(){
+    private long getMinTransferForCurrentBank() {
         BankAccount selectedBank = bankAdapter.getSelectedBank();
         if (selectedBank == null) {
             return 0;
         }
-        return selectedBank.getMaxAmount();
+        return selectedBank.getMinAmount();
     }
 
     private int checkSelectedBankMinimumWithdrawal() {
@@ -725,8 +682,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         if (!userSession.isMsisdnVerified()) {
             showMustVerify();
         }
-        //checkMinimumWithdrawal(0);
         checkWithdrawalAmount(0);
+    }
+
+    @Override
+    public void onSuccessValidatePopUp(ValidatePopUpWithdrawal validatePopUpWithdrawal) {
+        //todo by lalit
+        Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
     }
 
     private void showMustVerify() {
@@ -793,6 +755,39 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
     @Override
+    public void showConfirmationDialog(ValidatePopUpWithdrawal validatePopUpWithdrawal) {
+        if (validatePopUpWithdrawal.getData().isNeedShow()) {
+            alertDialog = getConfirmationDialog(validatePopUpWithdrawal.getData().getTitle(),
+                    validatePopUpWithdrawal.getData().getNote(),
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            int viewId = v.getId();
+                            if (viewId == R.id.continue_btn) {
+                                showConfirmPassword();
+                                alertDialog.cancel();
+                            } else {
+                                alertDialog.cancel();
+                            }
+                        }
+                    }).create();
+            alertDialog.show();
+        } else
+            showConfirmPassword();
+    }
+
+    public AlertDialog.Builder getConfirmationDialog(String heading, String description, View.OnClickListener onClickListener) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.confirmation_dialog, null);
+        ((TextView) dialogView.findViewById(R.id.heading)).setText(heading);
+        ((TextView) dialogView.findViewById(R.id.description)).setText(Html.fromHtml(description));
+        dialogView.findViewById(R.id.continue_btn).setOnClickListener(onClickListener);
+        dialogView.findViewById(R.id.back_btn).setOnClickListener(onClickListener);
+        return dialogBuilder.setView(dialogView);
+    }
+
+    @Override
     public void goToAddBank() {
         Intent intent = new Intent(getActivity(), AddEditBankActivity.class);
         Bundle bundle = new Bundle();
@@ -835,20 +830,8 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         switch (requestCode) {
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    //todo add bank account...lalit
-                    /*BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-                    BankAccount bankAccount = new BankAccount();
-                    bankAccount.setBankAccountId(parcelable.getAccountId());
-                    bankAccount.setBankAccountName(parcelable.getAccountName());
-                    bankAccount.setBankAccountNumber(parcelable.getAccountNumber());
-                    bankAccount.setBankId(parcelable.getBankId());
-                    bankAccount.setBankName(parcelable.getBankName());
-
-                    bankAdapter.addItem(bankAccount);
-                    bankAdapter.changeItemSelected(listBank.size() - 2);
-                    itemSelected();
-                    snackBarInfo.setText(R.string.success_add_bank);
-                    snackBarInfo.show();*/
+                    presenter.refreshBankList();
+                    //todo add bank account...lalit show toast after bank added
                 }
                 break;
             case BANK_SETTING_INTENT:
@@ -953,7 +936,63 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return SpannableStringBuilder.valueOf(originalText).append(" ").append(spannableString);
     }
+
+
+    private boolean checkMaximumWithdrawal(int withdrawal) {
+        BankAccount bankAccount = bankAdapter.getSelectedBank();
+        if (bankAccount == null)
+            return true;
+        long maxAmount = bankAccount.getMaxAmount();
+        if (withdrawal == 0) {
+            showErrorWithdrawal(null);
+            return false;
+        }
+        if (withdrawal > maxAmount) {
+            totalWithdrawal.getBackground().mutate().
+                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
+            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
+            return false;
+        } else {
+
+            return true;
+        }
+    }
+
+    private boolean checkMinimumWithdrawal(int withdrawal) {
+        int min = checkSelectedBankMinimumWithdrawal();
+        String minAmount = CurrencyFormatUtil.convertPriceValueToIdrFormat(min, false);
+        saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minAmount));
+
+        if (withdrawal == 0) {
+            showErrorWithdrawal(null);
+            return false;
+        }
+
+        if (withdrawal < min) {
+            totalWithdrawal.getBackground().mutate().
+                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
+            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
+            return false;
+        } else {
+            return true;
+        }
+
+    }
 }
+
+/*BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
+                    BankAccount bankAccount = new BankAccount();
+                    bankAccount.setBankAccountId(parcelable.getAccountId());
+                    bankAccount.setBankAccountName(parcelable.getAccountName());
+                    bankAccount.setBankAccountNumber(parcelable.getAccountNumber());
+                    bankAccount.setBankId(parcelable.getBankId());
+                    bankAccount.setBankName(parcelable.getBankName());
+
+                    bankAdapter.addItem(bankAccount);
+                    bankAdapter.changeItemSelected(listBank.size() - 2);
+                    itemSelected();
+                    snackBarInfo.setText(R.string.success_add_bank);
+                    snackBarInfo.show();*/
 
 
 /*SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));

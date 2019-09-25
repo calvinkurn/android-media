@@ -5,9 +5,13 @@ import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.domain.model.GqlGetBankDataResponse;
+import com.tokopedia.withdraw.domain.model.validatePopUp.GqlGetValidatePopUpResponse;
 import com.tokopedia.withdraw.domain.usecase.GqlGetBankDataUseCase;
+import com.tokopedia.withdraw.domain.usecase.GqlGetValidatePopupUseCase;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
 import com.tokopedia.withdraw.domain.model.BankAccount;
+
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -21,10 +25,13 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
         implements WithdrawContract.Presenter {
 
     private GqlGetBankDataUseCase gqlGetBankDataUseCase;
+    private GqlGetValidatePopupUseCase gqlGetValidatePopupUseCase;
+
 
     @Inject
-    public WithdrawPresenter(GqlGetBankDataUseCase gqlGetBankDataUseCase) {
+    public WithdrawPresenter(GqlGetBankDataUseCase gqlGetBankDataUseCase, GqlGetValidatePopupUseCase gqlGetValidatePopupUseCase) {
         this.gqlGetBankDataUseCase = gqlGetBankDataUseCase;
+        this.gqlGetValidatePopupUseCase = gqlGetValidatePopupUseCase;
     }
 
     @Override
@@ -66,6 +73,38 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
     }
 
     @Override
+    public void getValidatePopUp(long bankId) {
+        getView().showLoading();
+        HashMap<String, Object> requestParams = new HashMap<>();
+        requestParams.put("bankID",""+bankId);
+        requestParams.put("language","ID");
+        gqlGetValidatePopupUseCase.setQuery(getView().loadRawString(R.raw.query_popup));
+        gqlGetValidatePopupUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+                getView().hideLoading();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                getView().hideLoading();
+                getView().showError(throwable.getMessage());
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                GqlGetValidatePopUpResponse response = graphqlResponse.getData(GqlGetValidatePopUpResponse.class);
+                if (response != null) {
+                    getView().showConfirmationDialog(response.getValidatePopUpWithdrawal());
+                }
+                getView().hideLoading();
+
+            }
+        }, requestParams);
+    }
+
+
+    @Override
     public void doWithdraw(String totalBalance, String totalWithdrawal, BankAccount selectedBank) {
         getView().resetView();
         int balance = (int) StringUtils.convertToNumeric(totalBalance, false);
@@ -84,8 +123,7 @@ public class WithdrawPresenter extends BaseDaggerPresenter<WithdrawContract.View
             getView().showError(getView().getStringResource(R.string.has_no_bank));
             return;
         }
-
-        getView().showConfirmPassword();
+        getValidatePopUp(selectedBank.getBankID());
     }
 
     @Override
