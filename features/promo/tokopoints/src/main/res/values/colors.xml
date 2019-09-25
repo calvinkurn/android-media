@@ -20,4 +20,6 @@
     <color name="disabled_color">#5131353b</color>
     <color name="tp_bottom_shadow_color">#1e31353b</color>
     <color name="tp_tint_close_color">#6C727C</color>
+    <color name="tp_no_connection_title_color">#f531353b</color>
+    <color name="tp_no_connection_subtitle_color">#ae31353b</color>
 </resources>

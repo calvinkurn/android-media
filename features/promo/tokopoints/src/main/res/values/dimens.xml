@@ -21,6 +21,7 @@
     <dimen name="tp_margin_xxxlarge">64dp</dimen>
     <dimen name="tp_margin_bottom_membership_and_egg">118dp</dimen>
     <dimen name="tp_margin_bottom_egg">80dp</dimen>
+    <dimen name="tp_margin_top_error_button">42dp</dimen>
 
     <!-- padding values-->
     <dimen name="tp_padding_xxsmall">2dp</dimen>
