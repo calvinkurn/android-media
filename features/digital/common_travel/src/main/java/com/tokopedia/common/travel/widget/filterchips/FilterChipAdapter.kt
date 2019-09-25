@@ -29,7 +29,9 @@ class FilterChipAdapter(val list: List<String>, val listener: OnClickListener,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         with(holder) {
             chips.text = list.get(position)
-            if (initialPositionSelected != null) selectChip() else chips.isSelected = false
+            if (initialPositionSelected != null && position == initialPositionSelected) selectChip()
+            else chips.isSelected = false
+
             chips.setOnClickListener {
                 if (selectOnlyOneChip && !chips.isSelected) onResetChipListener.onResetChip()
                 if (canDiselectAfterSelect) chips.isSelected = !chips.isSelected

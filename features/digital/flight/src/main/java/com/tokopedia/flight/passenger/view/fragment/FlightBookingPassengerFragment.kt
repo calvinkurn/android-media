@@ -467,7 +467,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     fun renderViewBasedOnType() {
         if (isAdultPassenger()) {
             (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_adult_title))
-            if (isMandatoryDoB() || isDomestic) til_birth_date.visibility = View.VISIBLE else View.GONE
+            if (isMandatoryDoB() || !isDomestic) til_birth_date.visibility = View.VISIBLE else View.GONE
             birthdate_helper_text.text = getString(R.string.flight_booking_passenger_birthdate_adult_helper_text)
         } else {
             if (isChildPassenger()) {
