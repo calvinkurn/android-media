@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -75,6 +76,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -188,7 +190,7 @@ public class ProductListFragment
         presenter.initInjector(this);
         presenter.setWishlistActionListener(this);
 
-        return inflater.inflate(R.layout.search_fragment_base_discovery, null);
+        return inflater.inflate(R.layout.search_result_product_fragment_layout, null);
     }
 
     @Override
@@ -1088,6 +1090,55 @@ public class ProductListFragment
             default:
                 switchLayoutTypeTo(SMALL_GRID);
                 break;
+        }
+    }
+
+    @Override
+    public void showErrorMessage(boolean isFullScreenMessage, String errorMessage) {
+        if (getView() == null) return;
+
+        if (isFullScreenMessage) {
+            showFullScreenErrorMessage(getView(), errorMessage);
+        }
+        else {
+            showSnackbarErroMessage(errorMessage);
+        }
+    }
+
+    private void showFullScreenErrorMessage(@NotNull View rootView, String errorMessage) {
+        View relativeLayoutErrorMessageContainer  = rootView.findViewById(R.id.relativeLayoutErrorMessageContainer);
+
+        if (relativeLayoutErrorMessageContainer != null) {
+            relativeLayoutErrorMessageContainer.setVisibility(View.VISIBLE);
+
+            TextView textViewErrorMessage = relativeLayoutErrorMessageContainer.findViewById(R.id.custom_text_view_empty_content_text);
+
+            if (textViewErrorMessage != null) {
+                textViewErrorMessage.setText(errorMessage);
+            }
+
+            View actionButton  = rootView.findViewById(R.id.custom_button_add_promo);
+            actionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showSearchInputView();
+                }
+            });
+        }
+    }
+
+    private void showSnackbarErroMessage(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void hideErrorMessage() {
+        if (getView() == null) return;
+
+        View relativeLayoutErrorMessageContainer  = getView().findViewById(R.id.relativeLayoutErrorMessageContainer);
+
+        if (relativeLayoutErrorMessageContainer != null) {
+            relativeLayoutErrorMessageContainer.setVisibility(View.GONE);
         }
     }
 }

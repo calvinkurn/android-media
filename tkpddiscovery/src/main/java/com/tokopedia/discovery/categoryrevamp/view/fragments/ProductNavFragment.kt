@@ -65,6 +65,19 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         SubCategoryListener,
         WishListActionListener {
 
+    override fun onListItemImpressionEvent(element: Visitable<Any>, position: Int) {
+
+        val item = element as ProductsItem
+
+        catAnalyticsInstance.eventProductListImpression(getDepartMentId(),
+                item.name,
+                item.id.toString(),
+                CurrencyFormatHelper.convertRupiahToInt(item.price),
+                position,
+                getProductItemPath(item.categoryBreadcrumb ?: "", item.id.toString()),
+                item.categoryBreadcrumb ?: "")
+    }
+
     override fun getDepartMentId(): String {
         return mDepartmentId
     }
@@ -226,11 +239,13 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         product_recyclerview.layoutManager = getStaggeredGridLayoutManager()
         productNavListAdapter?.addShimmer()
 
-        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this)
+    }
+
+    private fun setQuickFilterAdapter(productCount:String){
+        quickFilterAdapter = QuickFilterAdapter(quickFilterList, this, productCount)
         quickfilter_recyclerview.adapter = quickFilterAdapter
         quickfilter_recyclerview.layoutManager = LinearLayoutManager(activity,
                 RecyclerView.HORIZONTAL, false)
-
     }
 
     private fun attachScrollListener() {
@@ -278,7 +293,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                         product_recyclerview.adapter?.notifyDataSetChanged()
                         isPagingAllowed = true
                     } else {
-                        if(list.isEmpty()){
+                        if (list.isEmpty()) {
                             showNoDataScreen(true)
                         }
                     }
@@ -289,7 +304,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
                 is Fail -> {
                     productNavListAdapter?.removeLoading()
                     hideRefreshLayout()
-                    if(list.isEmpty()) {
+                    if (list.isEmpty()) {
                         showNoDataScreen(true)
                     }
                     isPagingAllowed = true
@@ -301,10 +316,10 @@ class ProductNavFragment : BaseCategorySectionFragment(),
         productNavViewModel.mProductCount.observe(this, Observer {
             it?.let {
                 setTotalSearchResultCount(it)
-                if (it.toInt() > 0) {
-                    txt_product_count.text = it
+                if (!TextUtils.isEmpty(it)) {
+                    setQuickFilterAdapter(getString(R.string.result_count_template_text, it))
                 } else {
-                    txt_product_count.text = ""
+                    setQuickFilterAdapter("")
                 }
             }
         })
@@ -400,8 +415,7 @@ class ProductNavFragment : BaseCategorySectionFragment(),
             productNavViewModel = viewModelProvider.get(ProductNavViewModel::class.java)
             fetchProductData(getProductListParamMap(getPage()))
             productNavViewModel.fetchSubCategoriesList(getSubCategoryParam())
-            productNavViewModel.fetchQuickFilters(getQuickFilterParams())
-        }
+            productNavViewModel.fetchQuickFilters(getQuickFilterParams())        }
         attachScrollListener()
     }
 
@@ -615,6 +629,11 @@ class ProductNavFragment : BaseCategorySectionFragment(),
     override fun onDetach() {
         super.onDetach()
         productNavViewModel.onDetach()
+    }
+
+    override fun onSortAppliedEvent(selectedSortName: String, sortValue: Int) {
+        catAnalyticsInstance.eventSortApplied(getDepartMentId(),
+                selectedSortName, sortValue)
     }
 
 }

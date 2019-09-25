@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.ProductData
 import com.tokopedia.navigation.presentation.view.viewmodel.NotificationUpdateFilterItemViewModel
