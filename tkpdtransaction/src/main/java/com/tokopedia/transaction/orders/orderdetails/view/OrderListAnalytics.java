@@ -109,53 +109,64 @@ public class OrderListAnalytics {
     public OrderListAnalytics() {
     }
 
+    private void sendGtmData(String action, String eventLable) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, action, eventLable));
+    }
+
     public void sendHelpEventData(String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, EVENT_ACTION_CLICK_HELP, eventLabel));
+        sendGtmData(EVENT_ACTION_CLICK_HELP, eventLabel);
     }
 
     public void sendProductClickEvent(String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, PRODUCT_EVENT_ACTION, eventLabel));
+        sendGtmData(PRODUCT_EVENT_ACTION, eventLabel);
     }
 
     public void sendLihatStatusClick(String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, EVENT_ACTION_LIHAT_STATUS, eventLabel));
+        sendGtmData(EVENT_ACTION_LIHAT_STATUS, eventLabel);
     }
 
     public void sendDateFilterClickEvent() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, DATE_FILTER_CLICK_EVENT_ACTION, ""));
+        sendGtmData(DATE_FILTER_CLICK_EVENT_ACTION, "");
     }
 
     public void sendLihatInvoiceClick(String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, EVENT_ACTION_LIHAT_INVOICE, eventLabel));
+        sendGtmData(EVENT_ACTION_LIHAT_INVOICE, eventLabel);
     }
 
     public void sendQuickFilterClickEvent(String filterLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, FILTER_EVENT_ACTION, filterLabel));
+
+        sendGtmData(FILTER_EVENT_ACTION, filterLabel);
     }
 
     public void sendDateFilterSubmitEvent() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, DATE_EVENT_ACTION, ""));
+
+        sendGtmData(DATE_EVENT_ACTION, "");
     }
 
 
     public void sendSearchFilterClickEvent(String keyword) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, SEARCH_EVENT_ACTION, keyword));
+
+        sendGtmData(SEARCH_EVENT_ACTION, keyword);
     }
 
     public void sendSearchFilterCancelClickEvent() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, SEARCH_EVENT_CANCEL_ACTION, ""));
+
+        sendGtmData(SEARCH_EVENT_CANCEL_ACTION, "");
     }
 
     public void sendViewInvoiceClickEvent() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, INVOICE_EVENT_ACTION, ""));
+
+        sendGtmData(INVOICE_EVENT_ACTION, "");
     }
 
     public void sendActionButtonClickEvent(String eventAction) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, eventAction, ""));
+
+        sendGtmData(eventAction, "");
     }
 
     public void sendLoadMoreEvent(String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, LOAD_MORE_EVENT_ACTION, eventLabel));
+
+        sendGtmData(LOAD_MORE_EVENT_ACTION, eventLabel);
     }
 
     public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId) {
