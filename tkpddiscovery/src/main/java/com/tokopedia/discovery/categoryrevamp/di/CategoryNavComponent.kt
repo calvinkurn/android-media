@@ -1,6 +1,7 @@
 package com.tokopedia.discovery.categoryrevamp.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity
 import com.tokopedia.discovery.categoryrevamp.view.fragments.CatalogNavFragment
 import com.tokopedia.discovery.categoryrevamp.view.fragments.ProductNavFragment
 import dagger.Component
@@ -12,5 +13,5 @@ import dagger.Component
 interface CategoryNavComponent {
     fun inject(productNavFragment: ProductNavFragment)
     fun inject(catalogNavFragment: CatalogNavFragment)
-
+    fun inject(categoryNavActivity: CategoryNavActivity)
 }

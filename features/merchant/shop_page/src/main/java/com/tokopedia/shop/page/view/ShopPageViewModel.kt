@@ -4,12 +4,12 @@ import android.arch.lifecycle.MutableLiveData
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
@@ -27,9 +27,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
-import javax.inject.Named
 
-class ShopPageViewModel @Inject constructor(private val userSessionInterface: UserSessionInterface,
+class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase,
+                                            private val userSessionInterface: UserSessionInterface,
                                             private val getShopInfoUseCase: GQLGetShopInfoUseCase,
                                             private val getWhitelistUseCase: GetWhitelistUseCase,
                                             private val getShopReputationUseCase: GetShopReputationUseCase,
@@ -37,7 +37,6 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
                                             private val getModerateShopUseCase: GetModerateShopUseCase,
                                             private val requestModerateShopUseCase: RequestModerateShopUseCase,
                                             private val stickyLoginUseCase: StickyLoginUseCase,
-                                            @Named(ShopPageConstant.SHOP_FAVORITE_QUERY) private val gqlFavorite: String,
                                             dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
@@ -50,7 +49,6 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
     val shopBadgeResp = MutableLiveData<Pair<Boolean, ShopBadge>>()
     val shopModerateResp = MutableLiveData<Result<ShopModerateRequestData>>()
     val shopFavourite = MutableLiveData<ShopInfo.FavoriteData>()
-    val stickyLoginResp = MutableLiveData<StickyLoginTickerPojo>()
 
     fun getShop(shopId: String? = null, shopDomain: String? = null, isRefresh: Boolean = false) {
         val id = shopId?.toIntOrNull() ?: 0
@@ -77,10 +75,8 @@ class ShopPageViewModel @Inject constructor(private val userSessionInterface: Us
             var favoritInfo = ShopInfo.FavoriteData()
 
             try {
-                getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
-                getShopInfoUseCase.isFromCacheFirst = false
-                getShopInfoUseCase.gqlFavoriteQuery = gqlFavorite
-                favoritInfo = getShopInfoUseCase.executeOnBackground().favoriteData
+                gqlGetShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(if (id == 0) listOf() else listOf(id), shopDomain)
+                favoritInfo = gqlGetShopFavoriteStatusUseCase.executeOnBackground().favoriteData
             } catch (t: Throwable) {
             }
 
