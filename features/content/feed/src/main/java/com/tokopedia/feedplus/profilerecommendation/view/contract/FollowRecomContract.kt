@@ -24,6 +24,8 @@ interface FollowRecomContract {
 
         fun onFinishSetOnboardingStatus()
 
+        fun onErrorSetOnboardingStatus(throwable: Throwable)
+
         fun onGetError(error: Throwable)
 
         fun onGetError(error: String)

@@ -3,6 +3,7 @@ package com.tokopedia.feedplus.profilerecommendation.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -144,6 +145,15 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
 
     override fun onFinishSetOnboardingStatus() {
         openFeed()
+    }
+
+    override fun onErrorSetOnboardingStatus(throwable: Throwable) {
+        view?.let{
+            Toaster.showError(it,
+                    ErrorHandler.getErrorMessage(activity, throwable),
+                    Snackbar.LENGTH_LONG
+            )
+        }
     }
 
     override fun onGetError(error: Throwable) {

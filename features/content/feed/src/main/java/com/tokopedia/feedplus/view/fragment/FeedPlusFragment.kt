@@ -29,7 +29,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -132,6 +131,7 @@ import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES
 import com.tokopedia.track.TrackApp
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
