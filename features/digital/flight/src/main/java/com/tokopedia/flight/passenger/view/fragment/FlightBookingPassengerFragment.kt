@@ -468,9 +468,16 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         if (isAdultPassenger()) {
             (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_adult_title))
             if (isMandatoryDoB() || isDomestic) til_birth_date.visibility = View.VISIBLE else View.GONE
+            birthdate_helper_text.text = getString(R.string.flight_booking_passenger_birthdate_adult_helper_text)
         } else {
-            if (isChildPassenger()) (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_child_title))
-            else (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_infant_title))
+            if (isChildPassenger()) {
+                (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_child_title))
+                birthdate_helper_text.text = getString(R.string.flight_booking_passenger_birthdate_child_helper_text)
+            }
+            else {
+                (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_infant_title))
+                birthdate_helper_text.text = getString(R.string.flight_booking_passenger_birthdate_infant_helper_text)
+            }
             til_birth_date.visibility = View.VISIBLE
         }
 
@@ -691,19 +698,23 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
         if ((isChildPassenger() || isInfantPassenger()) && !flightPassengerInfoValidator.validateBirthdateNotEmpty(getPassengerBirthDate())) {
             isValid = false
+            birthdate_helper_text.visibility = View.GONE
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_empty_error)
         } else if (isAdultPassenger() && !flightPassengerInfoValidator.validateBirthdateNotEmpty(
                         getPassengerBirthDate()) && (isMandatoryDoB() || !isDomestic)) {
             isValid = false
+            birthdate_helper_text.visibility = View.GONE
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_empty_error)
         } else if (isAdultPassenger() && flightPassengerInfoValidator.validateBirthdateNotEmpty(
                         getPassengerBirthDate()) && (isMandatoryDoB() || !isDomestic) &&
                 flightPassengerInfoValidator.validateDateMoreThan(getPassengerBirthDate(), twelveYearsAgo)) {
             isValid = false
+            birthdate_helper_text.visibility = View.GONE
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_adult_shoud_more_than_twelve_years)
         } else if (isChildPassenger() && flightPassengerInfoValidator.validateDateMoreThan(
                         getPassengerBirthDate(), twoYearsAgo)) {
             isValid = false
+            birthdate_helper_text.visibility = View.GONE
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_child_shoud_more_than_two_years)
         } else if (isChildPassenger() && flightPassengerInfoValidator.validateDateNotLessThan(
                         twelveYearsAgo,
@@ -713,6 +724,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         } else if (isInfantPassenger() && flightPassengerInfoValidator.validateDateLessThan(
                         getPassengerBirthDate(), twoYearsAgo)) {
             isValid = false
+            birthdate_helper_text.visibility = View.GONE
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years)
         }
         if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(getPassportNumber())) {
@@ -724,15 +736,19 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
         if (isNeedPassport && passengerModel.getPassportExpiredDate() == null) {
             isValid = false
+            passport_expiration_helper_text.visibility = View.GONE
             til_passport_expiration_date.error = getString(R.string.flight_booking_passport_expired_date_empty_error)
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportAtLeast6Month(
                         getPassportExpiryDate(), sixMonthFromDeparture)) {
             isValid = false
+            passport_expiration_helper_text.visibility = View.GONE
             til_passport_expiration_date.error = getString(
                     R.string.flight_passenger_passport_expired_date_less_than_6_month_error,
                     FlightDateUtil.dateToString(sixMonthFromDeparture, FlightDateUtil.DEFAULT_VIEW_FORMAT))
         } else if (isNeedPassport && !flightPassengerInfoValidator.validateExpiredDateOfPassportMax20Years(
                         getPassportExpiryDate(), twentyYearsFromToday)) {
+            isValid = false
+            passport_expiration_helper_text.visibility = View.GONE
             til_passport_expiration_date.error = getString(
                     R.string.flight_passenger_passport_expired_date_more_than_20_year_error,
                     FlightDateUtil.dateToString(twentyYearsFromToday, FlightDateUtil.DEFAULT_VIEW_FORMAT))
@@ -757,6 +773,8 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         til_passport_expiration_date.error = ""
         til_nationality.error = ""
         til_passport_issuer_country.error = ""
+        birthdate_helper_text.visibility = View.VISIBLE
+        passport_expiration_helper_text.visibility = View.VISIBLE
     }
 
     fun showMessageErrorInSnackBar(resId: Int) {
