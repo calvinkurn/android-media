@@ -29,6 +29,7 @@ class OfficialHomeFragment : BaseDaggerFragment(), OfficialHomeView {
 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var recyclerView: RecyclerView? = null
+    private var layoutManager: LinearLayoutManager? = null
 
     private var adapter: OfficialHomeAdapter? = null
 
@@ -44,7 +45,9 @@ class OfficialHomeFragment : BaseDaggerFragment(), OfficialHomeView {
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout)
         recyclerView = view.findViewById(R.id.recycler_view)
 
-        recyclerView?.layoutManager = LinearLayoutManager(context)
+
+        layoutManager = LinearLayoutManager(context)
+        recyclerView?.layoutManager = layoutManager
 
         val adapterTypeFactory = OfficialHomeAdapterTypeFactory()
         adapter = OfficialHomeAdapter(adapterTypeFactory)
@@ -59,6 +62,28 @@ class OfficialHomeFragment : BaseDaggerFragment(), OfficialHomeView {
         swipeRefreshLayout?.setOnRefreshListener {
             swipeRefreshLayout?.isRefreshing = false
         }
+
+        if (parentFragment is RecyclerViewScrollListener) {
+            val scrollListener = parentFragment as RecyclerViewScrollListener
+            layoutManager?.let {
+                var firstVisibleInListview = it.findFirstVisibleItemPosition()
+                recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        val currentFirstVisible = it.findFirstVisibleItemPosition()
+
+                        // scroll up
+                        if (currentFirstVisible > firstVisibleInListview) {
+                            scrollListener.onScrollUp()
+                        } else { // scroll down
+                            scrollListener.onScrollDown()
+                        }
+                        firstVisibleInListview = currentFirstVisible
+                    }
+                })
+            }
+        }
+
     }
 
     fun dummy(): List<Visitable<OfficialHomeAdapterTypeFactory>> {

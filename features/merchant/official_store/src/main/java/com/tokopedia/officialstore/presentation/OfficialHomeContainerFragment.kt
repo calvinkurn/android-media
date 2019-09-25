@@ -19,7 +19,10 @@ import com.tokopedia.officialstore.presentation.model.Category
 import com.tokopedia.searchbar.MainToolbar
 import javax.inject.Inject
 
-class OfficialHomeContainerFragment : BaseDaggerFragment(), OfficialHomeContainerView, AllNotificationListener {
+class OfficialHomeContainerFragment : BaseDaggerFragment(),
+        OfficialHomeContainerView,
+        AllNotificationListener,
+        RecyclerViewScrollListener {
 
     companion object {
         @JvmStatic
@@ -66,6 +69,8 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), OfficialHomeContaine
 
         viewPager?.adapter = tabAdapter
         tabLayout?.setupWithViewPager(viewPager)
+
+        dummyIcons() // TODO set icons from categoryList
     }
 
     private fun dummy() {
@@ -73,7 +78,20 @@ class OfficialHomeContainerFragment : BaseDaggerFragment(), OfficialHomeContaine
         categoryList.add(Category("2", "Fashion", "", "fasion-os-home"))
         categoryList.add(Category("3", "Groceries", "", "groceries-os-home"))
         categoryList.add(Category("4", "Electronic", "", "electronic-os-home"))
-        tabAdapter.notifyDataSetChanged()
+    }
+
+    private fun dummyIcons() {
+        for (i in 0 until categoryList.size) {
+            tabLayout?.getTabAt(i)?.setIcon(R.drawable.dummy)
+        }
+    }
+
+    override fun onScrollDown() {
+        // visible icon tab layout
+    }
+
+    override fun onScrollUp() {
+        // gone icon tab layout
     }
 
     //status bar background compability
