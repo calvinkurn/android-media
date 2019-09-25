@@ -189,7 +189,7 @@ class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatus
                     for(tickerDetail in it.response.tickers) {
                         if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
                             onSuccess.invoke(tickerDetail)
-                            break
+                            return@execute
                         }
                     }
                     onError?.invoke(Throwable(""))

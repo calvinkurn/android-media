@@ -658,7 +658,7 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
                     for(tickerDetail in it.response.tickers) {
                         if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
                             onSuccess.invoke(tickerDetail)
-                            break
+                            return@execute
                         }
                     }
                     onError?.invoke(Throwable(""))
