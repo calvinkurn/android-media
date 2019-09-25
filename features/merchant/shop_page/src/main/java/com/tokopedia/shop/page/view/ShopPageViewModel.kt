@@ -186,7 +186,13 @@ class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatus
         stickyLoginUseCase.execute(
             onSuccess = {
                 if (it.response.tickers.isNotEmpty()) {
-                    onSuccess.invoke(it.response.tickers[0])
+                    for(tickerDetail in it.response.tickers) {
+                        if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                            onSuccess.invoke(tickerDetail)
+                            break
+                        }
+                    }
+                    onError?.invoke(Throwable(""))
                 } else {
                     onError?.invoke(Throwable(DATA_NOT_FOUND))
                 }

@@ -655,9 +655,15 @@ class ProductInfoViewModel @Inject constructor(private val graphqlRepository: Gr
         stickyLoginUseCase.execute(
             onSuccess = {
                 if (it.response.tickers.isNotEmpty()) {
-                    onSuccess.invoke(it.response.tickers[0])
+                    for(tickerDetail in it.response.tickers) {
+                        if (tickerDetail.layout == StickyLoginConstant.LAYOUT_FLOATING) {
+                            onSuccess.invoke(tickerDetail)
+                            break
+                        }
+                    }
+                    onError?.invoke(Throwable(""))
                 } else {
-                    onError?.invoke(Throwable("Data not found"))
+                    onError?.invoke(Throwable(""))
                 }
             },
             onError = {
