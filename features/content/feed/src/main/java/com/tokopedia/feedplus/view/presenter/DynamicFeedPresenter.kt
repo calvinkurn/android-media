@@ -1,6 +1,5 @@
 package com.tokopedia.feedplus.view.presenter
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
@@ -11,8 +10,6 @@ import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kol.feature.post.view.listener.KolPostListener
-import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
 import java.util.ArrayList

@@ -93,6 +93,7 @@ class DynamicFeedFragment:
 
     override fun onSwipeRefresh() {
         hideSnackBarRetry()
+        updateCursor("")
         swipeToRefresh.isRefreshing = true
         presenter.getFeedFirstPage(true)
     }
@@ -108,6 +109,7 @@ class DynamicFeedFragment:
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String) {
         isLoading = false
+        clearAllData()
         renderList(element, lastCursor.isNotEmpty())
         updateCursor(lastCursor)
     }
