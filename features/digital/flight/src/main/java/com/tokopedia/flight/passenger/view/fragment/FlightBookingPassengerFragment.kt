@@ -67,6 +67,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.item_flight_booking_passenger.*
 
 /**
  * @author by jessica on 2019-09-05
@@ -467,7 +468,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     fun renderViewBasedOnType() {
         if (isAdultPassenger()) {
             (activity as FlightBookingPassengerActivity).updateTitle(getString(R.string.flight_booking_passenger_adult_title))
-            if (isMandatoryDoB() || !isDomestic) til_birth_date.visibility = View.VISIBLE else View.GONE
+            if (isMandatoryDoB() || !isDomestic) {
+                birthdate_helper_text.visibility =  View.VISIBLE
+                til_birth_date.visibility = View.VISIBLE
+            } else {
+                birthdate_helper_text.visibility =  View.GONE
+                til_birth_date.visibility = View.GONE
+            }
+
             birthdate_helper_text.text = getString(R.string.flight_booking_passenger_birthdate_adult_helper_text)
         } else {
             if (isChildPassenger()) {
@@ -696,6 +704,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             isValid = false
             showMessageErrorInSnackBar(R.string.flight_bookingpassenger_title_error)
         }
+
         if ((isChildPassenger() || isInfantPassenger()) && !flightPassengerInfoValidator.validateBirthdateNotEmpty(getPassengerBirthDate())) {
             isValid = false
             birthdate_helper_text.visibility = View.GONE
@@ -727,6 +736,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             birthdate_helper_text.visibility = View.GONE
             til_birth_date.error = getString(R.string.flight_booking_passenger_birthdate_infant_should_no_more_than_two_years)
         }
+        
         if (isNeedPassport && !flightPassengerInfoValidator.validatePassportNumberNotEmpty(getPassportNumber())) {
             isValid = false
             til_passport_no.error = getString(R.string.flight_booking_passport_number_empty_error)
