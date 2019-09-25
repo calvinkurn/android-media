@@ -663,12 +663,14 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         } else if (flightPassengerInfoValidator.validateNameIsNotAlphabetAndSpaceOnly(getFirstName())) {
             isValid = false
             til_first_name.error = getString(R.string.flight_booking_passenger_first_name_alpha_space_error)
-        }
-        if (flightPassengerInfoValidator.validateNameIsMoreThanMaxLength(
-                        getFirstName(), getLastName())) {
+        } else if (flightPassengerInfoValidator.validateFirstNameIsMoreThanMaxLength(getFirstName())) {
             isValid = false
-            til_first_name.error = getString(R.string.flight_booking_passenger_first_last_name_max_error)
-            til_last_name.error = getString(R.string.flight_booking_passenger_first_last_name_max_error)
+            til_first_name.error = getString(R.string.flight_booking_passenger_first_name_max_error)
+        }
+
+        if (flightPassengerInfoValidator.validateLastNameIsMoreThanMaxLength(getLastName())) {
+            isValid = false
+            til_last_name.error = getString(R.string.flight_booking_passenger_last_name_max_error)
         } else if (flightPassengerInfoValidator.validateNameIsEmpty(getLastName())) {
             isValid = false
             til_last_name.error = getString(R.string.flight_booking_passenger_last_name_should_same_error)
@@ -682,6 +684,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             isValid = false
             til_last_name.error = getString(R.string.flight_booking_passenger_last_name_alpha_space_error)
         }
+
         if (flightPassengerInfoValidator.validateTitleIsEmpty(getPassengerTitle())) {
             isValid = false
             showMessageErrorInSnackBar(R.string.flight_bookingpassenger_title_error)
