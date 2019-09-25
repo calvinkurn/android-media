@@ -1,6 +1,7 @@
 package com.tokopedia.feedplus.profilerecommendation.view.fragment
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -231,7 +232,7 @@ class FollowRecomFragment : BaseDaggerFragment(), FollowRecomContract.View, Foll
 //            RouteManager.route(context, ApplinkConst.FEED)
 //        }
         activity?.let{
-            it.setResult(Activity.RESULT_OK)
+            it.setResult(Activity.RESULT_OK, Intent())
             it.finish()
         }
     }

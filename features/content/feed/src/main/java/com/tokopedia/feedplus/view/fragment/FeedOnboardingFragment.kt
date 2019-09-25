@@ -96,7 +96,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
             OPEN_RECOM_PROFILE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     activity?.let {
-                        it.setResult(Activity.RESULT_OK)
+                        it.setResult(Activity.RESULT_OK, Intent())
                         it.finish()
                     }
                 }
