@@ -1,7 +1,7 @@
 package com.tokopedia.loginregister.login.view.listener
 
 import android.content.Context
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.facebook.CallbackManager

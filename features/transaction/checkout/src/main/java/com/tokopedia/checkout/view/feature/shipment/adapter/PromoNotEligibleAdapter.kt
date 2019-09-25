@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.checkout.view.feature.shipment.viewholder.PromoNotEligibleViewHolder

@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder;
 
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.FrameLayout;

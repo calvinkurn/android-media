@@ -2,7 +2,7 @@ package com.tokopedia.notifications.receiver
 
 import android.app.Activity
 import android.content.*
-import android.support.v4.app.NotificationManagerCompat
+import androidx.core.app.NotificationManagerCompat
 import android.text.TextUtils
 import android.widget.Toast
 import com.tokopedia.applink.ApplinkConst

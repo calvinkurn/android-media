@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.URLGenerator
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.ChatroomViewModel
@@ -171,13 +170,18 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     }
 
     override fun handleBranchIOLinkClick(url: String) {
-        activity?.run {
-            val applinkRouter = this.applicationContext as ApplinkRouter
-            var intent = applinkRouter.getApplinkIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
+        if (GlobalConfig.isCustomerApp()) {
+            val intent = RouteManager.getIntent(activity, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)
+        } else {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         }
+    }
+
+    private fun openWebview(url: String) {
+        RouteManager.route(activity, String.format("%s?url=%s", ApplinkConst.WEBVIEW, url))
     }
 
     override fun isBranchIOLink(url: String): Boolean {
@@ -253,7 +257,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         if(bottomChatMenu.isAdded) {
             return
         }
-        bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
+            bottomChatMenu.show(childFragmentManager, BottomChatMenuFragment.TAG)
+        }
     }
 
     override fun onClickAttachProduct() {}

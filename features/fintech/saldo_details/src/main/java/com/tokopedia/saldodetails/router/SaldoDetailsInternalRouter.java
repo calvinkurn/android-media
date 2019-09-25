@@ -2,7 +2,7 @@ package com.tokopedia.saldodetails.router;
 
 import android.content.Context;
 
-import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
+import com.tokopedia.saldodetails.view.activity.SaldoDepositActivity;
 
 public class SaldoDetailsInternalRouter {
 

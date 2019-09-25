@@ -3,7 +3,7 @@ package com.tokopedia.tokocash;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeModelData;

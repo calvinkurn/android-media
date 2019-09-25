@@ -13,8 +13,8 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.RequiresApi;
+import com.google.android.material.snackbar.Snackbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -317,7 +317,7 @@ public class Utils {
         final Snackbar snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
 
-        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 
         LayoutInflater inflater = LayoutInflater.from(context);

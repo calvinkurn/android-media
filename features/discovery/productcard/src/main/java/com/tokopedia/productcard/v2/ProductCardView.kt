@@ -2,13 +2,13 @@ package com.tokopedia.productcard.v2
 
 import android.content.Context
 import android.graphics.Paint
-import android.support.annotation.DimenRes
-import android.support.annotation.DrawableRes
-import android.support.annotation.IdRes
-import android.support.annotation.LayoutRes
-import android.support.constraint.ConstraintLayout
-import android.support.constraint.ConstraintSet
-import android.support.v7.widget.CardView
+import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView

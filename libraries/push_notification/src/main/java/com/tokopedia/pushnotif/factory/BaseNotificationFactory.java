@@ -22,9 +22,7 @@ import com.tokopedia.pushnotif.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @author ricoharisin .
@@ -78,9 +76,10 @@ public abstract class BaseNotificationFactory {
 
     protected Bitmap getBitmap(String url) {
         try {
-            return Glide.with(context).load(url)
+            return Glide.with(context)
                     .asBitmap()
-                    .into(getImageWidth(), getImageHeight())
+                    .load(url)
+                    .submit(getImageWidth(), getImageHeight())
                     .get(3, TimeUnit.SECONDS);
         } catch (InterruptedException | ExecutionException | TimeoutException | IllegalArgumentException e) {
             return BitmapFactory.decodeResource(context.getResources(), getDrawableLargeIcon());

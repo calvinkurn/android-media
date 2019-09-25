@@ -1,7 +1,7 @@
 package com.tokopedia.expresscheckout.view.variant
 
 import android.graphics.Rect
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.expresscheckout.R
 

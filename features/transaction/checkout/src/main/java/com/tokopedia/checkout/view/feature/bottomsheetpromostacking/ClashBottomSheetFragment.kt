@@ -1,7 +1,7 @@
 package com.tokopedia.checkout.view.feature.bottomsheetpromostacking
 
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.checkout.R
@@ -10,7 +10,7 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOptionUiModel
-import android.support.v7.widget.SimpleItemAnimator
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.gson.Gson
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart

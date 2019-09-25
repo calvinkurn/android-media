@@ -1,1 +1,10 @@
 <manifest package="com.tokopedia.saldodetails" />
+
+    <application>
+        <activity android:name=".view.activity.SaldoWebViewActivity"
+            android:label="@string/saldo_webview_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
+    </application>
+

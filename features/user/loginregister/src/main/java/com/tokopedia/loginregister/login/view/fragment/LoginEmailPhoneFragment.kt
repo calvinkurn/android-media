@@ -8,8 +8,8 @@ import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
-import android.support.v4.app.Fragment
+import com.google.android.material.textfield.TextInputEditText
+import androidx.fragment.app.Fragment
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils

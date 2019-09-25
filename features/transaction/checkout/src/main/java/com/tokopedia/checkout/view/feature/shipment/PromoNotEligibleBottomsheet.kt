@@ -1,8 +1,8 @@
 package com.tokopedia.checkout.view.feature.shipment
 
 import android.app.Dialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import android.widget.FrameLayout

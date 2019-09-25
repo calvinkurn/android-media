@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.CalendarContract;
-import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 
 import com.facebook.react.bridge.Promise;

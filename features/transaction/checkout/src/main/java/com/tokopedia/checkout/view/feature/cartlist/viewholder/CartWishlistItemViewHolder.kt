@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.cartlist.viewholder
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler

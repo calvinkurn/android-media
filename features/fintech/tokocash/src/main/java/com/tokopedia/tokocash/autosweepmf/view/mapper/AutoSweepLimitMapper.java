@@ -1,7 +1,7 @@
 package com.tokopedia.tokocash.autosweepmf.view.mapper;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.tokocash.autosweepmf.domain.model.AutoSweepLimitDomain;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;

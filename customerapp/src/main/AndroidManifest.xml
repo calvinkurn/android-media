@@ -327,14 +327,14 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.saldodetails.activity.SaldoDepositActivity"
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoDepositActivity"
             android:label="@string/title_activity_people_deposit"
             android:theme="@style/Theme.White"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
         <activity
-            android:name="com.tokopedia.saldodetails.activity.SaldoIntroActivity"
+            android:name="com.tokopedia.saldodetails.view.activity.SaldoIntroActivity"
             android:screenOrientation="portrait"
             android:label="@string/title_header_saldo_intro"
             android:theme="@style/Theme.White.PopupTransparent" />
@@ -353,7 +353,7 @@
         </activity>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
+            android:name="androidx.core.content.FileProvider"
             android:authorities="com.tokopedia.tkpd.provider"
             android:grantUriPermissions="true"
             android:exported="false"

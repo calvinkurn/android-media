@@ -29,7 +29,7 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_label_alamat_chips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

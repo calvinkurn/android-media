@@ -1,6 +1,6 @@
 package com.tokopedia.chat_common.domain.mapper
 
-import android.support.annotation.NonNull
+import androidx.annotation.NonNull
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable

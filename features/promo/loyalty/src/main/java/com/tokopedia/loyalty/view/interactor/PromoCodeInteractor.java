@@ -1,6 +1,6 @@
 package com.tokopedia.loyalty.view.interactor;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.loyalty.domain.repository.ITokoPointRepository;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;

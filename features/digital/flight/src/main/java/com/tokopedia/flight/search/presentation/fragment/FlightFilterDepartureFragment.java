@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search.presentation.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.tokopedia.flight.search.presentation.adapter.FlightFilterDepartureTimeAdapterTypeFactory;
 import com.tokopedia.flight.search.presentation.fragment.base.BaseFlightFilterFragment;

@@ -7,9 +7,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.BottomSheetDialogFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.util.DisplayMetrics
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -88,7 +88,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
 
         temp.setOnShowListener { dialog ->
             var finalDialog = dialog as BottomSheetDialog
-            val bottomSheet = finalDialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+            val bottomSheet = finalDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             var behavior = BottomSheetBehavior.from(bottomSheet)
             this.behavior = behavior
             behavior.peekHeight = 600

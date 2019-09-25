@@ -2,26 +2,26 @@ package com.tokopedia.imagepicker.picker.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.imagepicker.R;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
  * Created by hendry on 02/05/18.
@@ -109,8 +109,8 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
 
         public void bind(String imagePath, int position) {
             Glide.with(context)
-                    .load(imagePath)
                     .asBitmap()
+                    .load(imagePath)
                     .override(thumbnailSize, thumbnailSize)
                     .centerCrop()
                     .into(new BitmapImageViewTarget(imageView) {
@@ -122,7 +122,7 @@ public class ImagePickerThumbnailAdapter extends RecyclerView.Adapter<RecyclerVi
                             imageView.setImageDrawable(circularBitmapDrawable);
                         }
                     });
-            if (position == 0 && primaryImageStringRes > 0) {
+            if (position == 0 && primaryImageStringRes != -1 && primaryImageStringRes != 0) {
                 tvCounterPrimary.setText(primaryImageStringRes);
                 tvCounterPrimary.setVisibility(View.VISIBLE);
                 tvCounter.setVisibility(View.GONE);

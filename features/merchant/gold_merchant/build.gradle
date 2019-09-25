@@ -41,7 +41,6 @@ dependencies {
 
     implementation project(rootProject.ext.features.goldMerchantCommon)
     implementation project(rootProject.ext.features.goldMerchantResource)
-    implementation project(rootProject.ext.features.goldMerchantSubscribe)
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 

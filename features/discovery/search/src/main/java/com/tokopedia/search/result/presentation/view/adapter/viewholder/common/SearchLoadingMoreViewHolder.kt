@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.common
 
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.view.View
 import com.tokopedia.abstraction.R
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel

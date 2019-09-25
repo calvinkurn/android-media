@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_history"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -23,7 +23,7 @@
             tools:listitem="@layout/item_af_dashboard"/>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/item_recommendation_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,5 +46,5 @@
             android:layout_marginLeft="@dimen/dp_30"
             android:layout_marginRight="@dimen/dp_30"
             />
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

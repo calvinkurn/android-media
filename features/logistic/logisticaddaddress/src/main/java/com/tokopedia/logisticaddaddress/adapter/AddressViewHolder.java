@@ -1,7 +1,6 @@
 package com.tokopedia.logisticaddaddress.adapter;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.TextView;
 

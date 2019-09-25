@@ -220,7 +220,7 @@ android {
     }
 
     configurations.all {
-        resolutionStrategy.force 'com.android.support:multidex:1.0.3'
+        resolutionStrategy.force 'androidx.multidex:multidex:2.0.0'
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         resolutionStrategy.force 'com.squareup.okio:okio:2.2.2'
         resolutionStrategy.force 'com.facebook.soloader:soloader:0.6.0'
@@ -267,7 +267,6 @@ dependencies {
     implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
-    implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.goldMerchantResource)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
@@ -388,7 +387,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.videoRecorder)
-    implementation project(rootProject.ext.features.productDraftDatabase)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.datePickerRange)

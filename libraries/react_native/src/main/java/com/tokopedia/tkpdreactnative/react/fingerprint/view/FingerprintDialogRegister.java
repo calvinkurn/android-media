@@ -3,7 +3,7 @@ package com.tokopedia.tkpdreactnative.react.fingerprint.view;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 import com.tokopedia.fingerprint.view.FingerPrintDialog;

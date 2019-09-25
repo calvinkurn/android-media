@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.addressoptions.recyclerview;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.TextView;

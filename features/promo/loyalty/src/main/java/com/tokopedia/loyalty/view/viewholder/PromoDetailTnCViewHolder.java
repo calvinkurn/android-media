@@ -1,7 +1,7 @@
 package com.tokopedia.loyalty.view.viewholder;
 
 import android.net.Uri;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;

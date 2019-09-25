@@ -1,6 +1,6 @@
 package com.tokopedia.tradein.view.viewcontrollers;
 
-import android.arch.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProvider;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;

@@ -5,7 +5,6 @@ import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintLayout.LayoutParams.PARENT_ID
 import android.support.constraint.ConstraintLayout.LayoutParams.UNSET
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
 import android.view.View
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse

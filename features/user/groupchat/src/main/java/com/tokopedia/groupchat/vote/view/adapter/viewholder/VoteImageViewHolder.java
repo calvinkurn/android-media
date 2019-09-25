@@ -3,7 +3,7 @@ package com.tokopedia.groupchat.vote.view.adapter.viewholder;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.support.annotation.LayoutRes;
+import androidx.annotation.LayoutRes;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;

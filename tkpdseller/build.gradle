@@ -52,7 +52,6 @@ dependencies {
     implementation project(rootProject.ext.features.commonPayment)
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.productManageItem)
-    implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.categoryCommon)
@@ -75,7 +74,6 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
 
-    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
     implementation rootProject.ext.viewDependencies.appIntro
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
@@ -122,6 +120,10 @@ dependencies {
     
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.permissionchecker)
+
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
 }
 
 apply from: '../publish_local.gradle'

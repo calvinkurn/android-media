@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -25,12 +25,12 @@
                 android:layout_gravity="center"
                 android:theme="@style/TPProgressBar" />
 
-            <android.support.design.widget.CoordinatorLayout
+            <androidx.coordinatorlayout.widget.CoordinatorLayout
                 android:id="@+id/col_header"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <android.support.design.widget.AppBarLayout
+                <com.google.android.material.appbar.AppBarLayout
                     android:id="@+id/app_bar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
                     android:theme="@style/AppTheme.AppBarOverlay"
                     app:elevation="0dp">
 
-                    <android.support.design.widget.CollapsingToolbarLayout
+                    <com.google.android.material.appbar.CollapsingToolbarLayout
                         android:id="@+id/collapsing_toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -110,7 +110,7 @@
                                 android:textStyle="bold"
                                 tools:text="Classic Member" />
 
-                            <android.support.v7.widget.CardView
+                            <androidx.cardview.widget.CardView
                                 android:id="@+id/card_point"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
 
                                 <include layout="@layout/tp_home_point" />
 
-                            </android.support.v7.widget.CardView>
+                            </androidx.cardview.widget.CardView>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -158,12 +158,12 @@
                             app:layout_anchor="@id/list"
                             app:layout_collapseMode="pin" />
 
-                    </android.support.design.widget.CollapsingToolbarLayout>
+                    </com.google.android.material.appbar.CollapsingToolbarLayout>
 
 
                     <include layout="@layout/tp_content_homepage_pager" />
 
-                </android.support.design.widget.AppBarLayout>
+                </com.google.android.material.appbar.AppBarLayout>
 
 
                 <com.tokopedia.tokopoints.view.customview.CustomViewPager
@@ -195,7 +195,7 @@
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <android.support.v7.widget.CardView
+                    <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/dp_16"
@@ -204,11 +204,11 @@
 
                         <include layout="@layout/tp_bottomview_membership_new" />
 
-                    </android.support.v7.widget.CardView>
+                    </androidx.cardview.widget.CardView>
                 </LinearLayout>
 
 
-            </android.support.design.widget.CoordinatorLayout>
+            </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
             <include
                 layout="@layout/layout_tp_network_error_large"
@@ -216,4 +216,4 @@
 
         </ViewFlipper>
     </FrameLayout>
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

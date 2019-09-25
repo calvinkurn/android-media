@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
 import android.widget.CheckBox;

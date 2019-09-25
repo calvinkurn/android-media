@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import com.tokopedia.product.detail.data.util.ProductDetailTracking

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         tools:ignore="UnusedAttribute">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/productLayout"
             android:layout_width="@dimen/dp_85"
             android:layout_height="@dimen/dp_85"
@@ -44,7 +44,7 @@
                 android:scaleType="centerCrop"
                 tools:ignore="ContentDescription"
                 tools:src="@tools:sample/avatars" />
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
             android:id="@+id/productNameSection"
@@ -133,4 +133,4 @@
         </FrameLayout>
 
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

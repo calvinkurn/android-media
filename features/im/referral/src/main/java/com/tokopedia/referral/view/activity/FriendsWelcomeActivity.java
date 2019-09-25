@@ -67,7 +67,7 @@ public class FriendsWelcomeActivity extends BaseSimpleActivity implements HasCom
     }
 
     @Override
-    protected android.support.v4.app.Fragment getNewFragment() {
+    protected androidx.fragment.app.Fragment getNewFragment() {
         return FragmentReferralFriendsWelcome.newInstance();
     }
 }

@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SimpleItemAnimator;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -606,8 +606,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
                 if (!snackbarError.isShownOrQueued()) {
                     snackbarError.setText(message);
-                    TextView snackbarTextView = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_text);
-                    Button snackbarActionButton = snackbarError.getView().findViewById(android.support.design.R.id.snackbar_action);
+                    TextView snackbarTextView = snackbarError.getView().findViewById(com.google.android.material.R.id.snackbar_text);
+                    Button snackbarActionButton = snackbarError.getView().findViewById(com.google.android.material.R.id.snackbar_action);
                     snackbarError.getView().setBackground(ContextCompat.getDrawable(getView().getContext(), com.tokopedia.design.R.drawable.bg_snackbar_error));
                     snackbarTextView.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_secondary_54));
                     snackbarActionButton.setTextColor(ContextCompat.getColor(getView().getContext(), R.color.font_black_primary_70));

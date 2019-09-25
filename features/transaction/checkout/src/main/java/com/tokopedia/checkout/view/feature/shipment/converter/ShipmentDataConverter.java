@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.feature.shipment.converter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;

@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.explore.view.adapter.viewholder.recommendation
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup

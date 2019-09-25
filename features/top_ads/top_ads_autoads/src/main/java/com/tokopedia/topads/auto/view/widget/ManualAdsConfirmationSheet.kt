@@ -3,8 +3,8 @@ package com.tokopedia.topads.auto.view.widget
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.view.View
 import android.widget.FrameLayout
 

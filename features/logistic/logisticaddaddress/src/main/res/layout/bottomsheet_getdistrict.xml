@@ -9,7 +9,7 @@
     android:clickable="true"
     app:behavior_hideable="false"
     app:behavior_peekHeight="600dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <LinearLayout
         android:id="@+id/whole_loading_container"
@@ -245,4 +245,4 @@
 
     </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
