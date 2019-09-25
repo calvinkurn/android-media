@@ -170,7 +170,11 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
         // Load and install the requested feature module.
         manager.startInstall(request).addOnSuccessListener {
-            sessionId = it
+            if (it == 0) {
+                onSuccessfulLoad(moduleName, true)
+            } else {
+                sessionId = it
+            }
         }.addOnFailureListener { exception ->
             val errorCode = (exception as SplitInstallException).errorCode
             sessionId = null
@@ -245,7 +249,7 @@ class DFInstallerActivity : BaseSimpleActivity() {
 
     private fun showFailedMessage(message: String, errorCode: String = "") {
         Timber.w("P1Failed Module {$moduleName} - {$errorCode}")
-        val userMessage:String
+        val userMessage: String
         if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
             userMessage = getString(R.string.error_install_df_insufficient_storate)
         } else {
@@ -268,11 +272,11 @@ class DFInstallerActivity : BaseSimpleActivity() {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         progressText.text = String.format("%.2f KB / %.2f KB",
-                (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
+            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
     }
 
-    private fun initialDownloadStatus(moduleName: String, moduleSize: Long){
+    private fun initialDownloadStatus(moduleName: String, moduleSize: Long) {
         var totalFreeSpaceSizeInMB = "-"
         applicationContext?.filesDir?.absoluteFile?.toString()?.let {
             val totalSize = File(it).freeSpace.toDouble()

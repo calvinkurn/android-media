@@ -32,6 +32,7 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
     }
 
     companion object {
+        var isRunning = false
         fun enqueueWork(context: Context, work: Intent) {
             enqueueWork(context, IrisService::class.java, JOB_IRIS_ID, work)
         }
@@ -48,6 +49,10 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
     private fun startService(maxRow: Int) {
         launch(coroutineContext + Dispatchers.IO) {
             try {
+                if (isRunning) {
+                    return@launch
+                }
+                isRunning = true
                 val cache = Cache(applicationContext)
                 if (cache.isEnabled()) {
                     val trackingRepository = TrackingRepository(applicationContext)
@@ -56,6 +61,7 @@ class IrisService : BaseJobIntentService(), CoroutineScope {
                         IrisAnalytics.getInstance(applicationContext).setAlarm(false)
                     }
                 }
+                isRunning = false
             } catch (ignored: Exception) {
             }
         }

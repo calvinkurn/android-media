@@ -64,6 +64,9 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
     override fun initialize() {
         remoteConfig = FirebaseRemoteConfigImpl(context)
         remoteConfig.fetch(remoteConfigListener)
+
+        isAlarmOn = context.getSharedPreferences(IRIS_SHARED_PREF,Context.MODE_PRIVATE)
+            .getBoolean(IRIS_PREF_IS_ALARM_ON, false)
     }
 
     override fun setService(config: String, isEnabled: Boolean) {
@@ -148,11 +151,17 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
             }
         }
         isAlarmOn = isTurnOn
+        context.getSharedPreferences(IRIS_SHARED_PREF,Context.MODE_PRIVATE)
+            .edit()
+            .putBoolean(IRIS_PREF_IS_ALARM_ON, isAlarmOn)
+            .apply()
     }
 
     companion object {
 
         private val lock = Any()
+        val IRIS_SHARED_PREF = "iris_pref"
+        val IRIS_PREF_IS_ALARM_ON = "is_alarm_on"
 
         @Volatile
         private var iris: Iris? = null
