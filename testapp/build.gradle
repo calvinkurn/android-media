@@ -154,7 +154,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
 
-    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
 
@@ -212,7 +211,6 @@ dependencies {
     implementation rootProject.ext.firebase.core
 
     // TO BE ADDED AS FEATURE REQUIREMENT
-    implementation project(rootProject.ext.features.shopSettings)
 
     implementation project(rootProject.ext.libraries.logger)
     implementation (rootProject.ext.debugToolsDependencies.timber){
