@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'io.hansel.preprocessor'
 
 kapt {
     correctErrorTypes = true
@@ -56,12 +57,14 @@ buildscript {
     repositories {
         maven { url 'https://maven.fabric.io/public' }
         maven { url "https://maven.google.com" }
+        maven { url 'https://hansel.io/maven' }
         mavenCentral()
         jcenter()
     }
     dependencies{
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.gradlePlugin.googleServices
+        classpath rootProject.ext.miscDependencies.hansel
     }
 }
 android {
@@ -200,9 +203,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation project(rootProject.ext.libraries.cacheApi)
 
-    implementation rootProject.ext.libraries.unifyComponents
-    implementation rootProject.ext.libraries.unifyIcon
-    implementation rootProject.ext.libraries.unifyPrinciples
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.icon
+    implementation rootProject.ext.unifyDependencies.principles
 
     implementation rootProject.ext.playServicesDependencies.base
 
