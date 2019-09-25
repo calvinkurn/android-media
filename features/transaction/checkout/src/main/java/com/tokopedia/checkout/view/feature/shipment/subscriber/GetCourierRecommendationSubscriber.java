@@ -90,6 +90,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                     if (shippingRecommendationData.getLogisticPromo() != null) {
                                         String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
                                         courierItemData.setLogPromoMsg(disableMsg);
+                                        courierItemData.setLogPromoCode(shippingRecommendationData.getLogisticPromo().getPromoCode());
                                     }
                                     view.renderCourierStateSuccess(courierItemData, itemPosition);
                                     return;
