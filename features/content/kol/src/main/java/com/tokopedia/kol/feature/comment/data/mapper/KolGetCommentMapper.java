@@ -50,6 +50,7 @@ public class KolGetCommentMapper
                 postKol.getCreateTime() == null ? "" :
                         TimeConverter.generateTime(context, postKol.getCreateTime()),
                 String.valueOf(postKol.getUserId()),
+                postKol.getUserUrl(),
                 getTagsLink(postKol),
                 !postKol.getUserBadges().isEmpty() ? postKol.getUserBadges().get(0) : ""
         );
@@ -91,6 +92,7 @@ public class KolGetCommentMapper
             KolCommentViewModel kolCommentViewModel = new KolCommentViewModel(
                     String.valueOf(comment.getId()),
                     String.valueOf(comment.getUserID()),
+                    null,
                     comment.getUserPhoto() == null ? "" : comment.getUserPhoto(),
                     comment.getUserName() == null ? "" : comment.getUserName(),
                     comment.getComment() == null ? "" : comment.getComment(),
