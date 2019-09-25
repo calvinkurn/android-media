@@ -4,30 +4,28 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.quickfilter.QuickFilterItem;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.constant.FlightUrl;
-import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.orderlist.domain.FlightGetOrdersUseCase;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrder;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.view.contract.FlightOrderListContract;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.mapper.FlightOrderViewModelMapper;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -41,6 +39,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     private FlightGetOrdersUseCase flightGetOrdersUseCase;
     private FlightOrderViewModelMapper flightOrderViewModelMapper;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
+    private GetProfileUseCase getProfileUseCase;
     private CompositeSubscription compositeSubscription;
 
     private String userResendEmail = "";
@@ -49,11 +48,13 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     public FlightOrderListPresenter(UserSessionInterface userSession,
                                     FlightGetOrdersUseCase flightGetOrdersUseCase,
                                     FlightOrderViewModelMapper flightOrderViewModelMapper,
-                                    FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper) {
+                                    FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
+                                    GetProfileUseCase getProfileUseCase) {
         this.userSession = userSession;
         this.flightGetOrdersUseCase = flightGetOrdersUseCase;
         this.flightOrderViewModelMapper = flightOrderViewModelMapper;
         this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
+        this.getProfileUseCase = getProfileUseCase;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -91,6 +92,7 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
     public void onDestroyView() {
         detachView();
         flightGetOrdersUseCase.unsubscribe();
+        getProfileUseCase.unsubscribe();
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }
@@ -144,30 +146,26 @@ public class FlightOrderListPresenter extends BaseDaggerPresenter<FlightOrderLis
 
     @Override
     public void onGetProfileData() {
-        compositeSubscription.add(getView().getProfileObservable()
-                .onBackpressureDrop()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ProfileInfo>() {
-                    @Override
-                    public void onCompleted() {
+        getProfileUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
-                    }
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
 
-                    @Override
-                    public void onNext(ProfileInfo profileInfo) {
-                        if (profileInfo != null && isViewAttached()) {
-                            userResendEmail = profileInfo.getEmail();
-                        }
-                    }
-                })
-        );
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                ProfilePojo profilePojo = graphqlResponse.getData(ProfilePojo.class);
+                ProfileInfo profileInfo = profilePojo.getProfileInfo();
+                if (profileInfo.getEmail().length() > 0 && isViewAttached()) {
+                    userResendEmail = profileInfo.getEmail();
+                }
+            }
+        });
     }
 
     @Override

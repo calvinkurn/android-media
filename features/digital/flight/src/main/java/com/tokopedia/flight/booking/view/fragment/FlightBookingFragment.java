@@ -448,17 +448,6 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
     }
 
     @Override
-    public Observable<ProfileInfo> getProfileObservable() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getProfile() != null) {
-            return ((FlightModuleRouter) getActivity().getApplication())
-                    .getProfile();
-        }
-        return Observable.empty();
-    }
-
-    @Override
     public FlightBookingParamViewModel getCurrentBookingParamViewModel() {
         return paramViewModel;
     }

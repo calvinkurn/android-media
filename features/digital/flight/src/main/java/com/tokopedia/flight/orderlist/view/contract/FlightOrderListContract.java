@@ -33,8 +33,6 @@ public interface FlightOrderListContract {
 
         void navigateToInputEmailForm(String invoiceId, String userId, String userEmail);
 
-        Observable<ProfileInfo> getProfileObservable();
-
         void showNonRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, List<FlightOrderJourney> orderJourneyList);
 
         void showRefundableCancelDialog(String invoiceId, List<FlightCancellationJourney> item, List<FlightOrderJourney> orderJourneyList);

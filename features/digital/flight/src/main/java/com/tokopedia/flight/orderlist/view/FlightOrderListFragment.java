@@ -31,7 +31,6 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
@@ -53,8 +52,6 @@ import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderSuccessViewModel
 import java.util.List;
 
 import javax.inject.Inject;
-
-import rx.Observable;
 
 import static android.app.Activity.RESULT_OK;
 import static com.tokopedia.flight.detail.view.fragment.FlightDetailOrderFragment.EXTRA_IS_AFTER_CANCELLATION;
@@ -164,17 +161,6 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         DialogFragment dialogFragment = FlightResendETicketDialogFragment.newInstace(invoiceId, userId, userEmail);
         dialogFragment.setTargetFragment(this, REQUEST_CODE_RESEND_ETICKET_DIALOG);
         dialogFragment.show(getFragmentManager().beginTransaction(), RESEND_ETICKET_DIALOG_TAG);
-    }
-
-    @Override
-    public Observable<ProfileInfo> getProfileObservable() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getProfile() != null) {
-            return ((FlightModuleRouter) getActivity().getApplication())
-                    .getProfile();
-        }
-        return Observable.empty();
     }
 
     @Override

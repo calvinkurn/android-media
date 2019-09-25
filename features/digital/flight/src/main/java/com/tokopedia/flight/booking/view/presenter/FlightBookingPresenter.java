@@ -16,7 +16,6 @@ import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.data.cloud.entity.NewFarePrice;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.BaseCartData;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityMetaViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
@@ -38,6 +37,10 @@ import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -75,6 +78,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
     private FlightAnalytics flightAnalytics;
     private UserSessionInterface userSession;
     private TravelTickerUseCase travelTickerUseCase;
+    private GetProfileUseCase getProfileUseCase;
 
     private static final int GENDER_MAN = 1;
     private static final int GENDER_WOMAN = 2;
@@ -88,7 +92,8 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
                                   FlightAnalytics flightAnalytics,
                                   UserSessionInterface userSession,
                                   FlightSearchJourneyByIdUseCase flightSearchJourneyByIdUseCase,
-                                  TravelTickerUseCase travelTickerUseCase) {
+                                  TravelTickerUseCase travelTickerUseCase,
+                                  GetProfileUseCase getProfileUseCase) {
         super(flightAddToCartUseCase, flightBookingCartDataMapper);
         this.flightAddToCartUseCase = flightAddToCartUseCase;
         this.flightBookingCartDataMapper = flightBookingCartDataMapper;
@@ -97,6 +102,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         this.userSession = userSession;
         this.flightSearchJourneyByIdUseCase = flightSearchJourneyByIdUseCase;
         this.travelTickerUseCase = travelTickerUseCase;
+        this.getProfileUseCase = getProfileUseCase;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -585,49 +591,41 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
 
     @Override
     public void onGetProfileData() {
-        compositeSubscription.add(getView().getProfileObservable()
-                .onBackpressureDrop()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ProfileInfo>() {
-                    @Override
-                    public void onCompleted() {
+        getProfileUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                ProfilePojo data = graphqlResponse.getData(ProfilePojo.class);
+                ProfileInfo profileInfo = data.getProfileInfo();
+                if (profileInfo != null && isViewAttached()) {
+                    if (getView().getContactName().length() == 0) {
+                        getView().setContactName(profileInfo.getFullName());
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (isViewAttached()) {
-
-                        }
-
+                    if (getView().getContactEmail().length() == 0) {
+                        getView().setContactEmail(profileInfo.getEmail());
                     }
-
-                    @Override
-                    public void onNext(ProfileInfo profileInfo) {
-                        if (profileInfo != null && isViewAttached()) {
-                            if (getView().getContactName().length() == 0) {
-                                getView().setContactName(profileInfo.getFullname());
-                            }
-                            if (getView().getContactEmail().length() == 0) {
-                                getView().setContactEmail(profileInfo.getEmail());
-                            }
-                            if (getView().getContactPhoneNumber().length() == 0) {
-                                getView().setContactPhoneNumber(transform(profileInfo.getPhoneNumber()));
-                            }
-                            getView().setContactBirthdate(
-                                    FlightDateUtil.dateToString(
-                                            FlightDateUtil.stringToDate(profileInfo.getBday()),
-                                            FlightDateUtil.DEFAULT_FORMAT
-                                    )
-                            );
-                            getView().setContactGender(profileInfo.getGender());
-                        }
+                    if (getView().getContactPhoneNumber().length() == 0) {
+                        getView().setContactPhoneNumber(transform(profileInfo.getPhone()));
                     }
-                })
-        );
+                    getView().setContactBirthdate(
+                            FlightDateUtil.dateToString(
+                                    FlightDateUtil.stringToDate(profileInfo.getBirthday()),
+                                    FlightDateUtil.DEFAULT_FORMAT
+                            )
+                    );
+                    getView().setContactGender(Integer.parseInt(profileInfo.getGender()));
+                }
+            }
+        });
     }
 
     @Override
@@ -664,6 +662,7 @@ public class FlightBookingPresenter extends FlightBaseBookingPresenter<FlightBoo
         flightAddToCartUseCase.unsubscribe();
         getPhoneCodeUseCase.unsubscribe();
         flightSearchJourneyByIdUseCase.unsubscribe();
+        getProfileUseCase.unsubscribe();
         detachView();
     }
 

@@ -11,7 +11,6 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewMod
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.flight.R
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo
 import com.tokopedia.flight.booking.view.viewmodel.*
 import com.tokopedia.flight.bookingV2.data.entity.AddToCartEntity
 import com.tokopedia.flight.bookingV2.domain.FlightAddToCartV11UseCase
@@ -29,6 +28,9 @@ import com.tokopedia.flight.search.data.api.single.response.Fare
 import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase
 import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
 import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Observable
@@ -50,6 +52,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
                                                  val userSession: UserSessionInterface,
                                                  val flightSearchJourneyByIdUseCase: FlightSearchJourneyByIdUseCase,
                                                  private val travelTickerUseCase: TravelTickerUseCase,
+                                                 private val getProfileUseCase: GetProfileUseCase,
                                                  flightGetCartDataUseCase: FlightGetCartDataUseCase,
                                                  flightBookingCartDataMapper: FlightBookingCartDataMapper)
     : FlightBaseBookingPresenter<FlightBookingContract.View>(flightGetCartDataUseCase, flightBookingCartDataMapper), FlightBookingContract.Presenter {
@@ -116,42 +119,42 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
 
     override fun onGetProfileData() {
         view.showContactDataProgressBar()
-        compositeSubscription.add(view.getProfileObservable()
-                .onBackpressureDrop()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<ProfileInfo>() {
-                    override fun onNext(profileInfo: ProfileInfo?) {
-                        if (profileInfo != null && isViewAttached) {
-                            view.hideContactDataProgressBar()
-                            if (view.getContactName().isEmpty()) {
-                                view.setContactName(profileInfo.fullname)
-                            }
-                            if (view.getContactEmail().isEmpty()) {
-                                view.setContactEmail(profileInfo.email)
-                            }
-                            if (view.getContactPhoneNumber().isEmpty()) {
-                                view.setContactPhoneNumber(transform(profileInfo.phoneNumber))
-                            }
-                            view.setContactBirthdate(
-                                    FlightDateUtil.dateToString(
-                                            FlightDateUtil.stringToDate(profileInfo.bday),
-                                            FlightDateUtil.DEFAULT_FORMAT
-                                    )
-                            )
-                            view.setContactGender(profileInfo.gender)
-                        }
+        getProfileUseCase.execute(object : Subscriber<GraphqlResponse>() {
+            override fun onNext(graphqlResponse: GraphqlResponse) {
+                val data = graphqlResponse.getData<ProfilePojo>(ProfilePojo::class.java)
+                val profileInfo = data.profileInfo
+                if (isViewAttached) {
+                    if (view.getContactName().isEmpty()) {
+                        view.setContactName(profileInfo.fullName)
                     }
+                    if (view.getContactEmail().isEmpty()) {
+                        view.setContactEmail(profileInfo.email)
+                    }
+                    if (view.getContactPhoneNumber().isEmpty()) {
+                        view.setContactPhoneNumber(transform(profileInfo.phone))
+                    }
+                    if (profileInfo.birthday.isNotEmpty()) {
+                        view.setContactBirthdate(
+                                FlightDateUtil.dateToString(
+                                        FlightDateUtil.stringToDate(profileInfo.birthday),
+                                        FlightDateUtil.DEFAULT_FORMAT
+                                )
+                        )
+                    }
+                    if (profileInfo.gender.isNotEmpty()) {
+                        view.setContactGender(profileInfo.gender.toInt())
+                    }
+                }
+            }
 
-                    override fun onCompleted() {
-                    }
+            override fun onCompleted() {
+            }
 
-                    override fun onError(e: Throwable?) {
-                        view.hideContactDataProgressBar()
-                        e?.printStackTrace()
-                    }
-                }))
+            override fun onError(e: Throwable?) {
+                view.hideContactDataProgressBar()
+                e?.printStackTrace()
+            }
+        })
     }
 
     override fun onButtonSubmitClicked() {
@@ -396,6 +399,7 @@ class FlightBookingPresenter @Inject constructor(val flightAddToCartUseCase: Fli
         flightAddToCartUseCase.unsubscribe()
         getPhoneCodeUseCase.unsubscribe()
         flightSearchJourneyByIdUseCase.unsubscribe()
+        getProfileUseCase.unsubscribe()
         detachView()
     }
 

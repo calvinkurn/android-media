@@ -9,7 +9,6 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingAmenityViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.domain.mapper.FlightOrderToCancellationJourneyMapper;
@@ -31,6 +30,10 @@ import com.tokopedia.flight.orderlist.domain.model.FlightOrderJourney;
 import com.tokopedia.flight.orderlist.domain.model.FlightOrderPassengerViewModel;
 import com.tokopedia.flight.orderlist.view.viewmodel.FlightOrderDetailPassData;
 import com.tokopedia.flight.review.view.model.FlightDetailPassenger;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.sessioncommon.data.profile.ProfileInfo;
+import com.tokopedia.sessioncommon.data.profile.ProfilePojo;
+import com.tokopedia.sessioncommon.domain.usecase.GetProfileUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
@@ -41,8 +44,6 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -57,6 +58,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     private final FlightGetOrderUseCase flightGetOrderUseCase;
     private FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper;
     private UserSessionInterface userSession;
+    private GetProfileUseCase getProfileUseCase;
     private CompositeSubscription compositeSubscription;
     private int totalPrice = 0;
     private String userResendEmail = "";
@@ -64,10 +66,12 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Inject
     public FlightDetailOrderPresenter(FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
                                       UserSessionInterface userSession,
-                                      FlightGetOrderUseCase flightGetOrderUseCase) {
+                                      FlightGetOrderUseCase flightGetOrderUseCase,
+                                      GetProfileUseCase getProfileUseCase) {
         this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
+        this.getProfileUseCase = getProfileUseCase;
         compositeSubscription = new CompositeSubscription();
     }
 
@@ -200,30 +204,26 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Override
     public void onGetProfileData() {
-        compositeSubscription.add(getView().getProfileObservable()
-                .onBackpressureDrop()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<ProfileInfo>() {
-                    @Override
-                    public void onCompleted() {
+        getProfileUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
 
-                    }
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
 
-                    @Override
-                    public void onNext(ProfileInfo profileInfo) {
-                        if (profileInfo != null && isViewAttached()) {
-                            userResendEmail = profileInfo.getEmail();
-                        }
-                    }
-                })
-        );
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+                ProfilePojo data = graphqlResponse.getData(ProfilePojo.class);
+                ProfileInfo profileInfo = data.getProfileInfo();
+                if (profileInfo.getEmail().length() > 0 && isViewAttached()) {
+                    userResendEmail = profileInfo.getEmail();
+                }
+            }
+        });
     }
 
     @Override
@@ -563,6 +563,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
     @Override
     public void detachView() {
         flightGetOrderUseCase.unsubscribe();
+        getProfileUseCase.unsubscribe();
         if (compositeSubscription.hasSubscriptions()) {
             compositeSubscription.unsubscribe();
         }

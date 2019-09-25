@@ -87,8 +87,6 @@ public interface FlightDetailOrderContract {
 
         void navigateToInputEmailForm(String userId, String userEmail);
 
-        Observable<ProfileInfo> getProfileObservable();
-
         void setTransactionDate(String transactionDate);
 
         void showRefundableCancelDialog(String id, List<FlightCancellationJourney> items);

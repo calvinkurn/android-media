@@ -107,8 +107,6 @@ public interface FlightBookingContract {
                                            boolean isAirAsiaAirline, String departureDate,
                                            String requestId);
 
-        Observable<ProfileInfo> getProfileObservable();
-
         void setContactBirthdate(String birthdate);
 
         String getContactBirthdate();

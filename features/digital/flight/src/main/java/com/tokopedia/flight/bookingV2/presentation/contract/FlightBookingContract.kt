@@ -96,8 +96,6 @@ interface FlightBookingContract {
                                           isMandatoryDoB: Boolean, departureDate: String,
                                           requestId: String)
 
-        fun getProfileObservable(): Observable<ProfileInfo>
-
         fun setContactBirthdate(birthdate: String)
 
         fun getContactBirthdate(): String

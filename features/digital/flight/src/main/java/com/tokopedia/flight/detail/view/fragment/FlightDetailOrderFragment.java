@@ -40,7 +40,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
-import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
@@ -612,17 +611,6 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
                 }
                 break;
         }
-    }
-
-    @Override
-    public Observable<ProfileInfo> getProfileObservable() {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getProfile() != null) {
-            return ((FlightModuleRouter) getActivity().getApplication())
-                    .getProfile();
-        }
-        return Observable.empty();
     }
 
     @NonNull

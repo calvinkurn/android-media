@@ -335,14 +335,6 @@ class FlightBookingFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun getProfileObservable(): Observable<ProfileInfo> {
-        return if (activity!!.application is FlightModuleRouter && (activity!!
-                        .application as FlightModuleRouter).profile != null) {
-            (activity!!.application as FlightModuleRouter)
-                    .profile
-        } else Observable.empty()
-    }
-
     override fun getCurrentBookingParamViewModel(): FlightBookingParamViewModel = paramViewModel
 
     override fun showAndRenderDepartureTripCardDetail(searchParam: FlightSearchPassDataViewModel, departureTrip: FlightDetailViewModel) {
