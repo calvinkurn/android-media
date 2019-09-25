@@ -182,7 +182,7 @@ class ShopPageViewModel @Inject constructor(private val gqlGetShopFavoriteStatus
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
-        stickyLoginUseCase.setParams(StickyLoginConstant.Page.PDP)
+        stickyLoginUseCase.setParams(StickyLoginConstant.Page.SHOP)
         stickyLoginUseCase.execute(
             onSuccess = {
                 if (it.response.tickers.isNotEmpty()) {
