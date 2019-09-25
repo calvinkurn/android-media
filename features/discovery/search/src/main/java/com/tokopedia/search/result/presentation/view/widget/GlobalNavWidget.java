@@ -53,11 +53,11 @@ public class GlobalNavWidget extends BaseCustomView {
     }
 
     private void init() {
-        final View view = inflate(getContext(), R.layout.widget_global_nav, this);
-        globalNavContainerLayout = view.findViewById(R.id.globalNavContainerLayout);
-        globalNavTitle = view.findViewById(R.id.globalNavTitle);
-        globalNavSeeAllButton = view.findViewById(R.id.globalNavSeeAllButton);
-        globalNavRecyclerView = view.findViewById(R.id.globalNavRecyclerView);
+//        final View view = inflate(getContext(), R.layout.widget_global_nav, this);
+//        globalNavContainerLayout = view.findViewById(R.id.globalNavContainerLayout);
+//        globalNavTitle = view.findViewById(R.id.globalNavTitle);
+//        globalNavSeeAllButton = view.findViewById(R.id.globalNavSeeAllButton);
+//        globalNavRecyclerView = view.findViewById(R.id.globalNavRecyclerView);
         setupBackground();
     }
 
@@ -96,8 +96,10 @@ public class GlobalNavWidget extends BaseCustomView {
 
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_global_nav_item, parent, false);
-            return new ViewHolder(view, itemClickListener);
+//            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.widget_global_nav_item, parent, false);
+//            return new ViewHolder(view, itemClickListener);
+
+            return null;
         }
 
         @Override
@@ -123,10 +125,10 @@ public class GlobalNavWidget extends BaseCustomView {
         public ViewHolder(View itemView, ClickListener itemClickListener) {
             super(itemView);
             context = itemView.getContext();
-            globalNavItemContainer = itemView.findViewById(R.id.globalNavItemContainer);
-            globalNavItemImage = itemView.findViewById(R.id.globalNavItemImage);
-            globalNavItemName = itemView.findViewById(R.id.globalNavItemName);
-            globalNavItemInfo = itemView.findViewById(R.id.globalNavItemInfo);
+//            globalNavItemContainer = itemView.findViewById(R.id.globalNavItemContainer);
+//            globalNavItemImage = itemView.findViewById(R.id.globalNavItemImage);
+//            globalNavItemName = itemView.findViewById(R.id.globalNavItemName);
+//            globalNavItemInfo = itemView.findViewById(R.id.globalNavItemInfo);
             this.itemClickListener = itemClickListener;
         }
 
