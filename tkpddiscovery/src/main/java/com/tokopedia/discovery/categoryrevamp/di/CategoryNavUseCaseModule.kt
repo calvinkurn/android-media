@@ -57,12 +57,12 @@ class CategoryNavUseCaseModule {
         return SubCategoryUseCase(context, graphqlUseCase)
     }
 
-    @CategoryNavScope
+    /*@CategoryNavScope
     @Provides
     fun provideCatatlogUseCase(context: Context, @Named("catalogGqlUseCase") graphqlUseCase
     : GraphqlUseCase): CatalogUseCase {
         return CatalogUseCase(context, graphqlUseCase)
-    }
+    }*/
 
     @CategoryNavScope
     @Provides

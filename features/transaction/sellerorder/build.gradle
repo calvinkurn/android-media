@@ -23,18 +23,11 @@ buildscript {
     }
 }
 
-project.ext {
-    artifactId = "${artifactIdSellerOrder}"
-    groupId = "${groupIdTransaction}"
-    versionName = "${transactionGroupVersion}"
-    artifactName = "${artifactIdCheckout}-release"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
@@ -51,4 +44,12 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.miscDependencies.coroutineCore
 }
+
+project.ext {
+    artifactId = "sellerorder"
+    groupId = "com.tokopedia.sellerorder"
+    versionName = "1.0.0"
+    artifactName = "transactionsellerorder-release"
+}
+
 apply from: "$rootProject.projectDir/publish_local.gradle"
