@@ -19,8 +19,6 @@ import rx.Observable
 import rx.Observer
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import timber.log.Timber
-import java.net.UnknownHostException
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -193,6 +191,7 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
+
     }
 
 }
