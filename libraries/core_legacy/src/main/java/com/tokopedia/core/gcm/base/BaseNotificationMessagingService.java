@@ -8,6 +8,7 @@ import com.google.firebase.messaging.RemoteMessage;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
+import java.util.Date;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -18,10 +19,7 @@ import timber.log.Timber;
 
 public abstract class BaseNotificationMessagingService extends FirebaseMessagingService {
 
-    UserSessionInterface userSession;
-
     public BaseNotificationMessagingService() {
-        userSession = new UserSession(getApplicationContext());
     }
 
     protected Bundle convertMap(RemoteMessage message){
@@ -39,8 +37,9 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     public void onNewToken(String newToken) {
         super.onNewToken(newToken);
         try {
+            String timestamp = new Date().toString();
             Timber.w("P2" + "Notification New Token - " + newToken + " | "
-                    + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
+                    + timestamp + " | "
                     + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                     + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
                     + " | " + Build.TAGS);
