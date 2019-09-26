@@ -14,7 +14,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;

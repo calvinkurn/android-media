@@ -1,8 +1,8 @@
 package com.tokopedia.affiliate.feature.createpost.view.type
 
 import android.content.Context
-import android.support.annotation.DrawableRes
-import android.support.annotation.StringRes
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import com.tokopedia.affiliate.R
 import com.tokopedia.kotlin.extensions.view.toCompactAmountString
 

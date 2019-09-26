@@ -5,9 +5,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.util.SparseArrayCompat;
-import android.support.v4.view.PagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.collection.SparseArrayCompat;
+import androidx.viewpager.widget.PagerAdapter;
 import android.view.ViewGroup;
 
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;

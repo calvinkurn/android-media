@@ -1,7 +1,7 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate
 
 import android.graphics.drawable.GradientDrawable
-import android.support.constraint.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView

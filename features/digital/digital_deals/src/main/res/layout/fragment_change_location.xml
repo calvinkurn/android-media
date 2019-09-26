@@ -67,7 +67,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:background="@color/grey_300" />
 
-            <android.support.v4.widget.NestedScrollView
+            <androidx.core.widget.NestedScrollView
                 android:id="@+id/nested_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
                         android:textSize="@dimen/sp_12"
                         tools:visibility="visible" />
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_city_results"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -123,7 +123,7 @@
                         android:textColor="#313531"
                         android:textSize="@dimen/sp_12" />
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv_location_results"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -131,10 +131,10 @@
                         android:layout_marginBottom="@dimen/dp_20"
                         android:clipToPadding="false"
                         android:paddingBottom="@dimen/dp_16"
-                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         tools:listitem="@layout/popular_location_item" />
                 </LinearLayout>
-            </android.support.v4.widget.NestedScrollView>
+            </androidx.core.widget.NestedScrollView>
         </LinearLayout>
     </RelativeLayout>
 

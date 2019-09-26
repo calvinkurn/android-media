@@ -3,7 +3,7 @@ package com.tokopedia.groupchat.room.view.viewstate
 import android.content.Context
 import android.os.Build
 import android.os.Handler
-import android.support.constraint.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager

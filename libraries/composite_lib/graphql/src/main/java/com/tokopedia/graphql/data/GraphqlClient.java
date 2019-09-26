@@ -1,7 +1,7 @@
 package com.tokopedia.graphql.data;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.example.akamai_bot_lib.interceptor.AkamaiBotInterceptor;
 import com.example.akamai_bot_lib.interceptor.GqlAkamaiBotInterceptor;

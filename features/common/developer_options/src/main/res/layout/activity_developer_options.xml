@@ -124,7 +124,7 @@
             android:padding="@dimen/margin_small"
             android:text="Enable ANR Debugger" />
 
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/remote_config_prefix"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -136,7 +136,7 @@
             android:hint="@string/remote_config_prefix_placeholder"
             app:backgroundTint="@color/Green_G500" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/remote_config_start"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

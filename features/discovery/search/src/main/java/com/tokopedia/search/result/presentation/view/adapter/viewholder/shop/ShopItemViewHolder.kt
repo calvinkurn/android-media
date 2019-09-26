@@ -1,10 +1,10 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.shop
 
-import android.support.annotation.DimenRes
-import android.support.annotation.IdRes
-import android.support.constraint.ConstraintSet
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.annotation.DimenRes
+import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.text.Spanned
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

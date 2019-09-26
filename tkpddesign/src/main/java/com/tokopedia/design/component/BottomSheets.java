@@ -5,7 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import android.support.design.widget.BottomSheetDialog;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import androidx.fragment.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -212,7 +212,7 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
 
         if (state() == BottomSheetsState.FLEXIBLE) {
             bottomSheetDialog.setOnShowListener(dialog -> {
-                FrameLayout bottomSheet = bottomSheetDialog.findViewById(android.support.design.R.id.design_bottom_sheet);
+                FrameLayout bottomSheet = bottomSheetDialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
 
                 if (bottomSheet != null) {
                     BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);

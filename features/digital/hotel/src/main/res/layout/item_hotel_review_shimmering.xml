@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16">
@@ -39,14 +39,14 @@
             app:layout_constraintTop_toTopOf="@+id/loader_image_view_1"
             app:layout_constraintBottom_toBottomOf="@+id/loader_image_view_1"
             />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:background="@drawable/bg_line_separator"/>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_32"
@@ -119,7 +119,7 @@
             app:layout_constraintTop_toBottomOf="@+id/loader_text_view_4"
             app:width_weight="0.1"
             />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </LinearLayout>

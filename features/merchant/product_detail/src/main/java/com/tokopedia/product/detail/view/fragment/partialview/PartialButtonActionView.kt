@@ -1,9 +1,9 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.PorterDuff
-import android.support.constraint.ConstraintLayout
-import android.support.constraint.ConstraintLayout.LayoutParams.PARENT_ID
-import android.support.constraint.ConstraintLayout.LayoutParams.UNSET
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
+import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
 import android.graphics.drawable.Drawable
 import android.view.View
 import com.tokopedia.abstraction.common.utils.GlobalConfig

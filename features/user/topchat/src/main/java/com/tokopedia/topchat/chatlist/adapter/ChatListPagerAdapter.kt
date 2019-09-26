@@ -1,10 +1,10 @@
 package com.tokopedia.topchat.chatlist.adapter
 
-import android.support.annotation.DrawableRes
-import android.support.annotation.LayoutRes
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import java.util.*
 
 /**

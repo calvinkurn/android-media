@@ -1,7 +1,7 @@
 package com.tokopedia.filter.newdynamicfilter;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.tokopedia.filter.common.data.Option;
 import com.tokopedia.filter.newdynamicfilter.adapter.DynamicFilterDetailAdapter;

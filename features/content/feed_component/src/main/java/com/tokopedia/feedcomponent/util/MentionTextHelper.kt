@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.util
 
-import android.support.annotation.ColorInt
+import androidx.annotation.ColorInt
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import com.tokopedia.feedcomponent.view.span.MentionSpan

@@ -2,7 +2,7 @@ package com.tokopedia.topchat.chatlist.adapter.viewholder
 
 import android.graphics.Typeface.ITALIC
 import android.graphics.Typeface.NORMAL
-import android.support.annotation.LayoutRes
+import androidx.annotation.LayoutRes
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.ImageView

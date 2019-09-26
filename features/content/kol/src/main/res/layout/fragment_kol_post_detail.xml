@@ -34,7 +34,7 @@
             android:clipToPadding="false"
             android:focusable="false"
             android:paddingTop="@dimen/dp_10"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"

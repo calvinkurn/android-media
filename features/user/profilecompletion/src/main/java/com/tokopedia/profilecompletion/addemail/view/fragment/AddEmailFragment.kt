@@ -2,12 +2,12 @@ package com.tokopedia.profilecompletion.addemail.view.fragment
 
 //import com.tokopedia.unifycomponents.Toaster
 import android.app.Activity
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
