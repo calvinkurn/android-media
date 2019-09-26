@@ -60,6 +60,20 @@
             tools:visibility="visible"
             tools:text="Promo Label" />
 
+        <ImageView
+            android:id="@+id/imageFreeOngkirPromo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:gravity="center"
+            android:scaleType="fitXY"
+            android:visibility="gone"
+            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            app:layout_constraintBottom_toBottomOf="@id/imageProduct"
+            tools:visibility="visible" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/textViewShopName"
             android:layout_width="wrap_content"

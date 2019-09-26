@@ -1,11 +1,12 @@
 package com.tokopedia.productcard.v2
 
-class ProductCardModel (
+data class ProductCardModel (
     val productImageUrl: String = "",
     val isWishlisted: Boolean = false,
     val isWishlistVisible: Boolean = false,
     val labelPromo: String = "",
     val labelPromoType: String = "",
+    val freeOngkir: FreeOngkir = FreeOngkir(),
     val shopImageUrl: String = "",
     val shopName: String = "",
     val productName: String = "",
@@ -20,4 +21,10 @@ class ProductCardModel (
     val labelOffers: String = "",
     val labelOffersType: String = "",
     val isTopAds: Boolean = false
-)
+) {
+
+    data class FreeOngkir(
+            val isActive: Boolean = false,
+            val imageUrl: String = ""
+    )
+}

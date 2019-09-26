@@ -58,6 +58,7 @@ abstract class ProductCardView: BaseCustomView {
     protected var imageProduct: SquareImageView? = null
     protected var buttonWishlist: ImageView? = null
     protected var labelPromo: Label? = null
+    protected var imageFreeOngkirPromo: ImageView? = null
     protected var textViewShopName: Typography? = null
     protected var textViewProductName: Typography? = null
     protected var labelDiscount: Label? = null
@@ -121,6 +122,7 @@ abstract class ProductCardView: BaseCustomView {
         imageProduct = inflatedView.findViewById(R.id.imageProduct)
         buttonWishlist = inflatedView.findViewById(R.id.buttonWishlist)
         labelPromo = inflatedView.findViewById(R.id.labelPromo)
+        imageFreeOngkirPromo = inflatedView.findViewById(R.id.imageFreeOngkirPromo)
         textViewShopName = inflatedView.findViewById(R.id.textViewShopName)
         textViewProductName = inflatedView.findViewById(R.id.textViewProductName)
         labelDiscount = inflatedView.findViewById(R.id.labelDiscount)
@@ -314,6 +316,7 @@ abstract class ProductCardView: BaseCustomView {
 
         initProductImage(productCardModel.productImageUrl)
         initProductName(productCardModel.productName)
+        initFreeOngkir(productCardModel.freeOngkir)
         initProductPrice(productCardModel.formattedPrice)
         initLabelDiscount(productCardModel.discountPercentage)
         initSlashedPrice(productCardModel.slashedPrice)
@@ -325,14 +328,21 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     private fun initProductImage(productImageUrl: String) {
-        imageProduct.configureVisibilityWithBlankSpaceConfig(
-                productImageUrl.isNotEmpty(), blankSpaceConfig.imageProduct) {
+        imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
             ImageHandler.loadImageThumbs(context, it, productImageUrl)
         }
     }
 
     private fun initProductName(productName: String) {
         textViewProductName.setTextWithBlankSpaceConfig(productName, blankSpaceConfig.productName)
+    }
+
+    private fun initFreeOngkir(freeOngkir: ProductCardModel.FreeOngkir) {
+        val shouldShowFreeOngkirImage = freeOngkir.isActive && freeOngkir.imageUrl.isNotEmpty()
+
+        imageFreeOngkirPromo.shouldShowWithAction(shouldShowFreeOngkirImage) {
+            ImageHandler.loadImageThumbs(context, it, freeOngkir.imageUrl)
+        }
     }
 
     private fun initProductPrice(formattedPrice: String) {
@@ -366,7 +376,7 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     private fun initWishlist(isWishlistVisible: Boolean, isWishlisted: Boolean) {
-        buttonWishlist.configureVisibilityWithBlankSpaceConfig(isWishlistVisible, blankSpaceConfig.buttonWishlist) {
+        buttonWishlist.shouldShowWithAction(isWishlistVisible) {
             if (isWishlisted) {
                 it.setImageResource(R.drawable.product_card_ic_wishlist_red)
             } else {
