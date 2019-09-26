@@ -68,7 +68,7 @@ class SelectLoanCategoryActivity : BaseActivity() {
 
     override fun finish() {
         super.finish()
-        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
+//        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
     }
 
     private inner class ListAdapter(sortList: List<GqlLendingCategoryData>?, private var selectedKey: Int, private var selectedValue: String?, internal var clickListener: OnItemClickListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {

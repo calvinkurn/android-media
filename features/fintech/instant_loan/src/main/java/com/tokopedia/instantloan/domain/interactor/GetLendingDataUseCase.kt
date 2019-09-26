@@ -8,7 +8,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.instantloan.R
 import com.tokopedia.instantloan.data.model.response.GqlLendingDataResponse
 import rx.Subscriber
 import java.util.*
