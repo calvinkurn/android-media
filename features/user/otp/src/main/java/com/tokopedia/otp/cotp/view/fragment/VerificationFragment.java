@@ -74,7 +74,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private static final CharSequence PIN_ERR_MSG = "PIN";
 
     protected ImageView icon;
-    protected TextView message;
+    protected TextView message, title;
     protected PinInputEditText inputOtp;
     protected TextView countdownText;
     protected TextView verifyButton;
@@ -212,22 +212,35 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         noCodeText = view.findViewById(R.id.no_code);
         errorImage = view.findViewById(R.id.error_image);
         progressDialog = view.findViewById(R.id.progress_bar);
-        prepareView();
+        title = view.findViewById(R.id.title);
+        if (isPin) {
+            preparePinView();
+        } else {
+            prepareView();
+        }
         presenter.attachView(this);
         return view;
     }
 
-    protected void prepareView() {
-        if(isPin){
-            setLimitReachedCountdownText();
-        }else {
-            if (!isCountdownFinished()) {
-                startTimer();
-            } else {
-                setLimitReachedCountdownText();
-            }
-        }
 
+    protected void preparePinView() {
+        title.setText(R.string.pin_tokopedia_title);
+        setLimitReachedCountdownText();
+        setupGeneralView();
+        inputOtp.setMask(PinInputEditText.MASK_BLACK_DOT);
+        verifyButton.setVisibility(View.GONE);
+    }
+
+    protected void prepareView() {
+        if (!isCountdownFinished()) {
+            startTimer();
+        } else {
+            setLimitReachedCountdownText();
+        }
+        setupGeneralView();
+    }
+
+    private void setupGeneralView(){
         limitOtp.setVisibility(View.GONE);
         inputOtp.addTextChangedListener(new TextWatcher() {
             @Override
@@ -432,8 +445,17 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         errorImage.setVisibility(View.VISIBLE);
         errorOtp.setVisibility(View.VISIBLE);
 
-        if(errorMessage.contains(PIN_ERR_MSG) && errorMessage.length() > 0){
+        if (errorMessage.contains(PIN_ERR_MSG) && errorMessage.length() > 0) {
             errorOtp.setText(errorMessage.substring(0, errorMessage.indexOf("(")));
+
+            if(errorMessage.contains("3")) {
+                verifyButton.setVisibility(View.VISIBLE);
+                verifyButton.setText(R.string.other_method);
+                verifyButton.setOnClickListener(v -> {
+                    onOtherMethodClick();
+                });
+                countdownText.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -544,16 +566,20 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             useOtherMethod.setVisibility(View.VISIBLE);
 
             useOtherMethod.setOnClickListener(v -> {
-                if (analytics != null && viewModel != null) {
-                    analytics.eventClickUseOtherMethod(viewModel.getOtpType());
-                }
-                dropKeyboard();
-                goToOtherVerificationMethod();
+                onOtherMethodClick();
             });
         } else {
             or.setVisibility(View.GONE);
             useOtherMethod.setVisibility(View.GONE);
         }
+    }
+
+    protected void onOtherMethodClick(){
+        if (analytics != null && viewModel != null) {
+            analytics.eventClickUseOtherMethod(viewModel.getOtpType());
+        }
+        dropKeyboard();
+        goToOtherVerificationMethod();
     }
 
     protected void removeErrorOtp() {
