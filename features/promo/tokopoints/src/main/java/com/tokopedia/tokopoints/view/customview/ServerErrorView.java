@@ -1,11 +1,13 @@
 package com.tokopedia.tokopoints.view.customview;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -19,6 +21,8 @@ public class ServerErrorView extends NestedScrollView {
     private AppCompatTextView tvTitleError;
     private AppCompatTextView tvLabelError;
     private RoundButton btnError;
+    private CharSequence errorTitle;
+    private CharSequence errorSubTitle;
 
     public ServerErrorView(@NonNull Context context) {
         super(context);
@@ -35,12 +39,35 @@ public class ServerErrorView extends NestedScrollView {
         init(null);
     }
 
-    private void init(AttributeSet attributeSet) {
+    private void init(AttributeSet attrs) {
+        readAttributes(attrs);
         inflateLayout();
+        setDefaultValues();
+    }
+
+    private void readAttributes(AttributeSet attrs) {
+        if (attrs != null) {
+
+            TypedArray array = getContext().getTheme()
+                    .obtainStyledAttributes(attrs, R.styleable.ServerErrorView, 0, 0);
+            errorTitle = array.getString(R.styleable.ServerErrorView_errorTitle);
+            errorSubTitle = array.getString(R.styleable.ServerErrorView_errorSubtitle);
+            array.recycle();
+        }
+    }
+
+    private void setDefaultValues() {
+        if (TextUtils.isEmpty(errorTitle)) {
+            errorTitle = getResources().getText(R.string.tp_label_server_error);
+        }
+
+        if (TextUtils.isEmpty(errorSubTitle)) {
+            errorSubTitle = getResources().getText(R.string.tp_label_try_again);
+        }
     }
 
     private void inflateLayout() {
-        LayoutInflater.from(getContext()).inflate(R.layout.layout_tp_server_error, this,true);
+        LayoutInflater.from(getContext()).inflate(R.layout.layout_tp_server_error, this, true);
         imageError = findViewById(R.id.img_error);
         tvTitleError = findViewById(R.id.text_title_error);
         tvLabelError = findViewById(R.id.text_label_error);
@@ -49,24 +76,21 @@ public class ServerErrorView extends NestedScrollView {
 
     public void showErrorUi(boolean hasInternet) {
 
-        int noConnectionImageId = R.drawable.ic_tp_no_connection;
+        int noConnectionImageId = R.drawable.ic_tp_toped_sorry;
+        int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
+        int buttonColor = MethodChecker.getColor(getContext(), R.color.transparent);
+        int buttonFontColor = MethodChecker.getColor(getContext(), R.color.tkpd_main_green);
 
-        int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
-        int buttonColor = MethodChecker.getColor(getContext(), R.color.bg_button_green_border_outline);
-        int buttonFontColor = MethodChecker.getColor(getContext(), R.color.white);
+        if (!hasInternet) {
 
-        CharSequence titleText = getResources().getText(R.string.tp_no_internet_title);
-        CharSequence labelText = getResources().getText(R.string.tp_no_internet_label);
-        if (hasInternet) {
+            noConnectionImageId = R.drawable.ic_tp_no_connection;
+            buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
 
-            noConnectionImageId = R.drawable.ic_tp_toped_sorry;
+            buttonColor = MethodChecker.getColor(getContext(), R.color.bg_button_green_border_outline);
 
-            buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
-            buttonColor = MethodChecker.getColor(getContext(), R.color.transparent);
-            buttonFontColor = MethodChecker.getColor(getContext(), R.color.tkpd_main_green);
-
-            titleText = getResources().getText(R.string.tp_label_server_error);
-            labelText = getResources().getText(R.string.tp_label_try_again);
+            buttonFontColor = MethodChecker.getColor(getContext(), R.color.white);
+            errorTitle = getResources().getText(R.string.tp_no_internet_title);
+            errorSubTitle = getResources().getText(R.string.tp_no_internet_label);
         }
 
         imageError.setImageResource(noConnectionImageId);
@@ -75,7 +99,7 @@ public class ServerErrorView extends NestedScrollView {
         btnError.setButtonColor(buttonColor);
         btnError.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonFontSize);
 
-        tvTitleError.setText(titleText);
-        tvLabelError.setText(labelText);
+        tvTitleError.setText(errorTitle);
+        tvLabelError.setText(errorSubTitle);
     }
 }

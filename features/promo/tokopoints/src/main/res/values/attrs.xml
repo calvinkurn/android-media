@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="RoundButton">
-        <attr name="cornerRadius" format="dimension"/>
-        <attr name="buttonColor" format="integer"/>
+        <attr name="cornerRadius" format="dimension" />
+        <attr name="buttonColor" format="integer" />
+    </declare-styleable>
+    <declare-styleable name="ServerErrorView">
+        <attr name="errorTitle" format="string" />
+        <attr name="errorSubtitle" format="string" />
     </declare-styleable>
 </resources>
