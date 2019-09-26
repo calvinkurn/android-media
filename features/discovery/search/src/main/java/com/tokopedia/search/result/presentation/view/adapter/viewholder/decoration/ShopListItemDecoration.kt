@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration
 
 import android.graphics.Rect
-import android.support.v7.widget.CardView
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.search.R
 import kotlin.math.cos

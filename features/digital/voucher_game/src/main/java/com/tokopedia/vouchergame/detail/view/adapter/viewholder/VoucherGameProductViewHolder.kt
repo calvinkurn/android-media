@@ -1,7 +1,7 @@
 package com.tokopedia.vouchergame.detail.view.adapter.viewholder
 
 import android.graphics.Paint
-import android.support.v7.content.res.AppCompatResources
+import androidx.appcompat.content.res.AppCompatResources
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.vouchergame.R

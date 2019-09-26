@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
 import androidx.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import androidx.cardview.widget.CardView
 import android.util.DisplayMetrics
 import android.view.View

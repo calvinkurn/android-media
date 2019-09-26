@@ -9,7 +9,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import android.text.SpannableString

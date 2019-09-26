@@ -1,6 +1,6 @@
 package com.tokopedia.digital.home.presentation.viewmodel
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.domain.GetSortListHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel

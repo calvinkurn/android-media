@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.support.annotation.Nullable
+import androidx.annotation.Nullable
 import android.text.TextUtils
 import com.bumptech.glide.Glide
 import com.tokopedia.notifications.model.Carousel

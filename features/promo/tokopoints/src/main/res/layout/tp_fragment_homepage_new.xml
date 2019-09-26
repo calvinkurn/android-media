@@ -54,7 +54,7 @@
                             android:layout_height="wrap_content"
                             android:background="@color/white">
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/img_bg_header"
                                 android:layout_width="match_parent"
                                 android:layout_height="@dimen/tp_home_top_bg_height"
@@ -62,7 +62,7 @@
                                 android:layout_alignParentTop="true"
                                 android:scaleType="fitXY" />
 
-                            <android.support.v7.widget.AppCompatImageView
+                            <androidx.appcompat.widget.AppCompatImageView
                                 android:id="@+id/img_egg"
                                 android:layout_width="@dimen/dp_64"
                                 android:layout_height="@dimen/dp_64"

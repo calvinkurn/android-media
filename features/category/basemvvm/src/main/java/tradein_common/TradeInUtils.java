@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.core.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.telephony.TelephonyManager;
 
 import com.tokopedia.user.session.UserSession;

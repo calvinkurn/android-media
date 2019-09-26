@@ -2,7 +2,7 @@ package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
 import android.os.Handler
 import androidx.annotation.LayoutRes
-import android.support.v4.content.ContextCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.SpannableString

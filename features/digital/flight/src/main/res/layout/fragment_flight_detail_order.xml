@@ -359,7 +359,7 @@
                 android:textColor="@color/green_nob"
                 android:textSize="@dimen/sp_18" />
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_8"
                 android:layout_height="@dimen/dp_8"
                 android:layout_gravity="center"

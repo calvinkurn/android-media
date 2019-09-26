@@ -2,14 +2,14 @@ package com.tokopedia.flight.passenger.view.fragment
 
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.arch.lifecycle.ViewModelProvider
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.design.widget.Snackbar
-import android.support.v7.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -134,15 +134,15 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        passengerViewModel.contactListResult.observe(this, android.arch.lifecycle.Observer { contactList ->
+        passengerViewModel.contactListResult.observe(this, androidx.lifecycle.Observer { contactList ->
             contactList?.let { travelContactArrayAdapter.updateItem(it.toMutableList()) }
         })
 
-        passengerViewModel.nationalityData.observe(this, android.arch.lifecycle.Observer { value ->
+        passengerViewModel.nationalityData.observe(this, androidx.lifecycle.Observer { value ->
             value?.let { onNationalityChanged(it) }
         })
 
-        passengerViewModel.passportIssuerCountryData.observe(this, android.arch.lifecycle.Observer { value ->
+        passengerViewModel.passportIssuerCountryData.observe(this, androidx.lifecycle.Observer { value ->
             value?.let { onIssuerCountryChanged(it) }
         })
     }

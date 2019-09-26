@@ -2,7 +2,7 @@ package com.tokopedia.discovery.categoryrevamp.adapters.viewHolders.product
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.support.annotation.Nullable
+import androidx.annotation.Nullable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View

@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/dp_16"
         android:clipToPadding="false"
-        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_marginTop="?attr/actionBarSize"
         android:paddingBottom="@dimen/dp_20" />
 

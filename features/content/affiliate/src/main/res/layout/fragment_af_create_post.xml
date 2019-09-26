@@ -146,7 +146,7 @@
             app:typographyType="body_2"
             app:typographyWeight="bold" />
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_product_suggestion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -156,7 +156,7 @@
             android:paddingLeft="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
             android:paddingRight="@dimen/dp_8"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_af_product_suggestion" />
 
     </LinearLayout>

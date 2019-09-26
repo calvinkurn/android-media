@@ -1,8 +1,8 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder
 
 import android.app.Activity
-import android.support.annotation.LayoutRes
-import android.support.design.widget.Snackbar
+import androidx.annotation.LayoutRes
+import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

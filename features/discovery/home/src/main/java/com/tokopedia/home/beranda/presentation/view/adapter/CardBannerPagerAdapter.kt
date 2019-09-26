@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.home.R
-import android.support.v7.widget.CardView
+import androidx.cardview.widget.CardView
 import com.tokopedia.banner.BannerView
 import com.tokopedia.banner.BannerViewPagerAdapter
 
