@@ -49,6 +49,7 @@ import com.tokopedia.abstraction.common.utils.view.PropertiesEventsWatcher;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
 import com.tokopedia.design.component.ToasterError;
@@ -66,6 +67,7 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
@@ -73,6 +75,8 @@ import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.domain.model.BankAccount;
+import com.tokopedia.withdraw.domain.model.premiumAccount.CheckEligible;
+import com.tokopedia.withdraw.domain.model.premiumAccount.Data;
 import com.tokopedia.withdraw.domain.model.validatePopUp.ValidatePopUpWithdrawal;
 import com.tokopedia.withdraw.view.activity.WithdrawPasswordActivity;
 import com.tokopedia.withdraw.view.adapter.BankAdapter;
@@ -95,6 +99,7 @@ import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.tokopedia.abstraction.common.utils.GraphqlHelper.streamToString;
+import static com.tokopedia.withdraw.constant.WithdrawConstant.WEB_REKENING_PREMIUM_URL;
 
 public class WithdrawFragment extends BaseDaggerFragment implements WithdrawContract.View {
 
@@ -156,6 +161,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     private CompositeSubscription subscription;
     private AlertDialog alertDialog;
+
+    private View premiumAccountView;
+    private View mainView;
 
     @Override
     protected String getScreenName() {
@@ -219,7 +227,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawAll = view.findViewById(R.id.withdrawal_all_tv);
         totalWithdrawal = view.findViewById(R.id.total_withdrawal);
         loadingLayout = view.findViewById(R.id.loading_layout);
-
+        mainView = view.findViewById(R.id.mainView);
         withdrawBuyerSaldoTV = view.findViewById(R.id.withdraw_refund_saldo);
         withdrawSellerSaldoTV = view.findViewById(R.id.withdraw_seller_saldo);
 
@@ -235,6 +243,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         ivDismissTicker = view.findViewById(R.id.iv_dismiss_ticker);
         ivLockButton = view.findViewById(R.id.ivButtonLeft);
         tabLayout = view.findViewById(R.id.tab_withdraw);
+        premiumAccountView = view.findViewById(R.id.layout_premium_account);
 
         return view;
     }
@@ -243,10 +252,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-
         listBank = new ArrayList<>();
         bankAdapter = BankAdapter.createAdapter(this, listBank, analytics);
-        bankRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        bankRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()) {
+            @Override
+            public boolean canScrollVertically() {
+                return false;
+            }
+        });
         bankRecyclerView.setAdapter(bankAdapter);
         bankAdapter.setList(listBank);
 
@@ -394,7 +407,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 });
 
         presenter.getWithdrawForm();
-
+        presenter.getPremiumAccountData();
         tvWithDrawInfo.setText(createTermsAndConditionSpannable());
         tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
         tvWithDrawInfo.setVisibility(View.VISIBLE);
@@ -519,34 +532,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         saldoValueTV.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(sellerSaldoBalance, false));
     }
 
-    private void checkDepositIsSufficient(int withdrawal) {
-        float deposit;
-        if (currentState == SELLER_STATE) {
-            deposit = sellerSaldoBalance;
-        } else {
-            deposit = buyerSaldoBalance;
-        }
-
-        if (withdrawal > deposit) {
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
-
-            if (currentState == SELLER_STATE) {
-                saldoWithdrawHintTV.setText(getString(R.string.saldo_exceeding_total_value_seller));
-            } else {
-                saldoWithdrawHintTV.setText(getString(R.string.saldo_exceeding_total_value_buyer));
-            }
-
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
-        } else {
-            totalWithdrawal.getBackground().mutate().
-                    setColorFilter(getResources().getColor(R.color.tkpd_main_green), PorterDuff.Mode.SRC_ATOP);
-            String minAmount = CurrencyFormatUtil.convertPriceValueToIdrFormat(checkSelectedBankMinimumWithdrawal(), false);
-            saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minAmount));
-            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_button_compat));
-        }
-
-    }
 
 
     private boolean checkWithdrawalAmount(long withdrawal) {
@@ -592,7 +577,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
 
-
     private long getMaxTransferForCurrentBank() {
         BankAccount selectedBank = bankAdapter.getSelectedBank();
         if (selectedBank == null) {
@@ -609,27 +593,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         return selectedBank.getMinAmount();
     }
 
-    private int checkSelectedBankMinimumWithdrawal() {
-        BankAccount selectedBank = bankAdapter.getSelectedBank();
-        if (selectedBank == null) {
-            return DEFAULT_MIN_FOR_SELECTED_BANK;
-        }
-        String selectedBankName = selectedBank.getBankName().toLowerCase();
-        if (inBankGroup(selectedBankName)) {
-            return DEFAULT_MIN_FOR_SELECTED_BANK;
-        } else {
-            return DEFAULT_SALDO_MIN;
-        }
-    }
 
-    private boolean inBankGroup(String selectedBankName) {
-        for (String s : bankWithMinimumWithdrawal) {
-            if (selectedBankName.contains(s)) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     private boolean isBankSelected() {
         if (bankAdapter == null) {
@@ -642,7 +606,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
 
     public void canProceed(boolean can) {
-
         if (can && !sellerSaldoWithDrawTvStatus) {
             withdrawButton.getBackground().setColorFilter(MethodChecker.getColor(getActivity(), R.color.medium_green), PorterDuff.Mode.SRC_IN);
             withdrawButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
@@ -685,11 +648,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         checkWithdrawalAmount(0);
     }
 
-    @Override
-    public void onSuccessValidatePopUp(ValidatePopUpWithdrawal validatePopUpWithdrawal) {
-        //todo by lalit
-        Toast.makeText(getActivity(), "Success", Toast.LENGTH_SHORT).show();
-    }
+
 
     private void showMustVerify() {
         new AlertDialog.Builder(getActivity())
@@ -776,6 +735,59 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             showConfirmPassword();
     }
 
+    @Override
+    public void showCheckProgramData(CheckEligible checkEligible) {
+        Data data = checkEligible.getData();
+        boolean isShown = PersistentCacheManager.instance
+                .get(WithdrawConstant.KEY_PREMIUM_ACCOUNT_NEW_TAG, boolean.class, false);
+        if (data != null && data.isIsPowerMerchant()) {
+            if (!isShown) {
+                premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.VISIBLE);
+            } else
+                premiumAccountView.findViewById(R.id.tv_baru_tag).setVisibility(View.GONE);
+
+            premiumAccountView.setVisibility(View.VISIBLE);
+            if (data.isIsPowerWD()) {
+                if (data.getWdPoints() == 0) {
+                    setProgramStatus(getString(R.string.active_bri_Account, data.getProgram()),
+                            getString(R.string.withdrawal_info));
+                } else {
+                    setProgramStatus(getString(R.string.active_bri_Account_point,
+                            data.getProgram(), data.getWdPoints()),
+                            getString(R.string.withdraw_help));
+                }
+            } else {
+                if (data.getStatusInt() == 0)
+                    setProgramStatus(getString(R.string.withdraw_with_more),
+                            getString(R.string.bri_cek));
+                else
+                    setProgramStatus(getString(R.string.account_in_progress, data.getProgram()),
+                            getString(R.string.bri_cek));
+            }
+            premiumAccountView.findViewById(R.id.tv_briProgramButton)
+                    .setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            PersistentCacheManager.instance
+                                    .put(WithdrawConstant.KEY_PREMIUM_ACCOUNT_NEW_TAG, true);
+                            RouteManager.route(getContext(), String.format("%s?url=%s",
+                                    ApplinkConst.WEBVIEW, WEB_REKENING_PREMIUM_URL));
+                        }
+                    });
+
+        } else {
+            premiumAccountView.setVisibility(View.GONE);
+        }
+    }
+
+    private void setProgramStatus(String description, String btnText) {
+        ((TextView) premiumAccountView.findViewById(R.id.tv_briProgramDescription))
+                .setText(Html.fromHtml(description));
+        ((TextView) premiumAccountView.findViewById(R.id.tv_briProgramButton))
+                .setText(btnText);
+    }
+
+
     public AlertDialog.Builder getConfirmationDialog(String heading, String description, View.OnClickListener onClickListener) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -831,7 +843,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             case BANK_INTENT:
                 if (resultCode == Activity.RESULT_OK) {
                     presenter.refreshBankList();
-                    //todo add bank account...lalit show toast after bank added
+                    Toaster.Companion.showNormal(mainView, getString(R.string.swd_bank_added_success), Snackbar.LENGTH_LONG);
                 }
                 break;
             case BANK_SETTING_INTENT:
@@ -938,6 +950,53 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     }
 
 
+    enum ProgramStatus {
+        Pending_In(0), Pending_Out(1), In_Progress_In(2), In_Progress_Out(3), Approved_In(4),
+        Approved_Out(5), Rejected(6);
+        int status;
+
+        ProgramStatus(int status) {
+            this.status = status;
+        }
+    }
+}
+
+/*BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
+                    BankAccount bankAccount = new BankAccount();
+                    bankAccount.setBankAccountId(parcelable.getAccountId());
+                    bankAccount.setBankAccountName(parcelable.getAccountName());
+                    bankAccount.setBankAccountNumber(parcelable.getAccountNumber());
+                    bankAccount.setBankId(parcelable.getBankId());
+                    bankAccount.setBankName(parcelable.getBankName());
+
+                    bankAdapter.addItem(bankAccount);
+                    bankAdapter.changeItemSelected(listBank.size() - 2);
+                    itemSelected();
+                    snackBarInfo.setText(R.string.success_add_bank);
+                    snackBarInfo.show();*/
+
+
+/*SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));
+                    String tickerMsg = getString(R.string.saldolock_info_text);
+                    int startIndex = tickerMsg.indexOf("di sini");
+                    tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
+                    ss.setSpan(new ClickableSpan() {
+                        @Override
+                        public void onClick(@NonNull View view) {
+                            RouteManager.route(getContext(), String.format("%s?url=%s",
+                                    ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_INFO));
+                        }
+
+                        @Override
+                        public void updateDrawState(@NonNull TextPaint ds) {
+                            super.updateDrawState(ds);
+                            ds.setUnderlineText(false);
+                            ds.setColor(getResources().getColor(R.color.tkpd_main_green));
+                        }
+                    }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+*/
+
+/*
     private boolean checkMaximumWithdrawal(int withdrawal) {
         BankAccount bankAccount = bankAdapter.getSelectedBank();
         if (bankAccount == null)
@@ -978,39 +1037,60 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         }
 
     }
-}
+*/
 
-/*BankFormModel parcelable = data.getExtras().getParcelable(AddEditBankActivity.PARAM_DATA);
-                    BankAccount bankAccount = new BankAccount();
-                    bankAccount.setBankAccountId(parcelable.getAccountId());
-                    bankAccount.setBankAccountName(parcelable.getAccountName());
-                    bankAccount.setBankAccountNumber(parcelable.getAccountNumber());
-                    bankAccount.setBankId(parcelable.getBankId());
-                    bankAccount.setBankName(parcelable.getBankName());
+/*private void checkDepositIsSufficient(int withdrawal) {
+        float deposit;
+        if (currentState == SELLER_STATE) {
+            deposit = sellerSaldoBalance;
+        } else {
+            deposit = buyerSaldoBalance;
+        }
 
-                    bankAdapter.addItem(bankAccount);
-                    bankAdapter.changeItemSelected(listBank.size() - 2);
-                    itemSelected();
-                    snackBarInfo.setText(R.string.success_add_bank);
-                    snackBarInfo.show();*/
+        if (withdrawal > deposit) {
+            totalWithdrawal.getBackground().mutate().
+                    setColorFilter(getResources().getColor(R.color.hint_red), PorterDuff.Mode.SRC_ATOP);
+
+            if (currentState == SELLER_STATE) {
+                saldoWithdrawHintTV.setText(getString(R.string.saldo_exceeding_total_value_seller));
+            } else {
+                saldoWithdrawHintTV.setText(getString(R.string.saldo_exceeding_total_value_buyer));
+            }
+
+            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.hint_red));
+        } else {
+            totalWithdrawal.getBackground().mutate().
+                    setColorFilter(getResources().getColor(R.color.tkpd_main_green), PorterDuff.Mode.SRC_ATOP);
+            String minAmount = CurrencyFormatUtil.convertPriceValueToIdrFormat(checkSelectedBankMinimumWithdrawal(), false);
+            saldoWithdrawHintTV.setText(String.format(getString(R.string.saldo_withdraw_hint), minAmount));
+            saldoWithdrawHintTV.setTextColor(getResources().getColor(R.color.grey_button_compat));
+        }
+
+    }
+*/
+
+/*private int checkSelectedBankMinimumWithdrawal() {
+        BankAccount selectedBank = bankAdapter.getSelectedBank();
+        if (selectedBank == null) {
+            return DEFAULT_MIN_FOR_SELECTED_BANK;
+        }
+        String selectedBankName = selectedBank.getBankName().toLowerCase();
+        if (inBankGroup(selectedBankName)) {
+            return DEFAULT_MIN_FOR_SELECTED_BANK;
+        } else {
+            return DEFAULT_SALDO_MIN;
+        }
+    }*/
 
 
-/*SpannableString ss = new SpannableString(getString(R.string.saldolock_info_text));
-                    String tickerMsg = getString(R.string.saldolock_info_text);
-                    int startIndex = tickerMsg.indexOf("di sini");
-                    tvWithDrawInfo.setMovementMethod(LinkMovementMethod.getInstance());
-                    ss.setSpan(new ClickableSpan() {
-                        @Override
-                        public void onClick(@NonNull View view) {
-                            RouteManager.route(getContext(), String.format("%s?url=%s",
-                                    ApplinkConst.WEBVIEW, WithdrawConstant.SALDOLOCK_INFO));
-                        }
+/*
 
-                        @Override
-                        public void updateDrawState(@NonNull TextPaint ds) {
-                            super.updateDrawState(ds);
-                            ds.setUnderlineText(false);
-                            ds.setColor(getResources().getColor(R.color.tkpd_main_green));
-                        }
-                    }, startIndex, tickerMsg.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    private boolean inBankGroup(String selectedBankName) {
+        for (String s : bankWithMinimumWithdrawal) {
+            if (selectedBankName.contains(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
 */

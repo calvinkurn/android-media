@@ -169,10 +169,20 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                     analytics.eventClickAccountBank();
                     changeItemSelected(position);
                 };
-                holder.itemView.setOnClickListener(l);
+                if (thisItem.getStatus() == 0) {
+                    viewHolder.bankName.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
+                    viewHolder.bankAccountName.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
+                    holder.itemView.setOnClickListener(null);
+                } else {
+                    viewHolder.bankName.setTextColor(context.getResources().getColor(R.color.grey_796));
+                    viewHolder.bankAccountName.setTextColor(context.getResources().getColor(R.color.grey_button_compat));
+                    holder.itemView.setOnClickListener(l);
+                }
 
                 Drawable drawabl;
-                if (listBank.get(position).isChecked()) {
+                if (thisItem.getStatus() == 0) {
+                    drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_disabled);
+                } else if (listBank.get(position).isChecked()) {
                     drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_button_selected);
                 } else {
                     drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_button_default);

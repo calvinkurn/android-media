@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentTop="true"
+    android:id="@+id/mainView"
     android:scrollbars="none">
 
     <android.support.constraint.ConstraintLayout
@@ -125,7 +126,7 @@
             android:layout_height="@dimen/dp_8"
             android:layout_below="@id/saldo_title"
             android:layout_marginTop="@dimen/dp_16"
-            android:background="@color/grey_300"
+            android:background="@color/grey_200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/saldo_withdraw_hint" />
@@ -165,7 +166,7 @@
             android:paddingBottom="@dimen/dp_0"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/saldo_title"
-            app:layout_constraintTop_toBottomOf="@id/layout_ticker"
+            app:layout_constraintTop_toBottomOf="@id/layout_premium_account"
             app:tabIndicatorColor="@color/tkpd_main_green"
             app:tabMode="fixed"
             app:tabSelectedTextColor="@color/tkpd_main_green"
@@ -302,10 +303,18 @@
             layout="@layout/layout_holdwithdrawl_ticker"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintStart_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/layout_premium_account"
+            layout="@layout/sdw_layout_premium_account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/layout_ticker"/>
 
         <include
             android:id="@+id/loading_layout"
