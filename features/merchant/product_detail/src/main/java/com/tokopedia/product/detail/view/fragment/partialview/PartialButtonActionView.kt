@@ -1,11 +1,12 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
 import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
+import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
-import android.graphics.drawable.Drawable
-import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.kotlin.extensions.view.gone

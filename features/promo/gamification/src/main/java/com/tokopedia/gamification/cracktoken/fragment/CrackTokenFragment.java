@@ -57,21 +57,21 @@ import com.tokopedia.gamification.cracktoken.contract.CrackTokenContract;
 import com.tokopedia.gamification.cracktoken.presenter.CrackTokenPresenter;
 import com.tokopedia.gamification.cracktoken.util.TokenMarginUtil;
 import com.tokopedia.gamification.data.entity.CrackBenefitEntity;
+import com.tokopedia.gamification.data.entity.CrackResultEntity;
 import com.tokopedia.gamification.data.entity.HomeActionButton;
 import com.tokopedia.gamification.data.entity.HomeSmallButton;
 import com.tokopedia.gamification.data.entity.TokenDataEntity;
 import com.tokopedia.gamification.data.entity.TokenUserEntity;
 import com.tokopedia.gamification.di.GamificationComponent;
 import com.tokopedia.gamification.di.GamificationComponentInstance;
+import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.List;
 
 import javax.inject.Inject;
-
-import com.tokopedia.gamification.taptap.compoundview.NetworkErrorHelper;
-import com.tokopedia.unifyprinciples.Typography;
 
 
 /**

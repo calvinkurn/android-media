@@ -57,12 +57,11 @@ dependencies {
     api (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-}
-
-
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+}
+
 project.ext {
     artifactId = 'product-manage-item'
     groupId = 'com.tokopedia.merchant'

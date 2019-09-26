@@ -58,9 +58,6 @@
 
     </RelativeLayout>
 
-<<<<<<< HEAD
-=======
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -140,8 +137,5 @@
             android:textSize="@dimen/sp_14"
             android:textStyle="bold"/>
     </RelativeLayout>
-
-
-
->>>>>>> release_candidate_sellerapp
+    
 </RelativeLayout>

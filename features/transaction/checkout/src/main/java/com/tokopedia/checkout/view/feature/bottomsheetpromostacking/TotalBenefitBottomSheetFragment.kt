@@ -1,12 +1,13 @@
 package com.tokopedia.checkout.view.feature.bottomsheetpromostacking
 
 import android.app.Dialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.TextUtils
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.promocheckout.common.view.uimodel.BenefitSummaryInfoUiModel

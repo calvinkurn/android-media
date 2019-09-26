@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;

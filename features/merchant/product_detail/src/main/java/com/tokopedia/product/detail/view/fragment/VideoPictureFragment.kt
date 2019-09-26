@@ -115,18 +115,18 @@ class VideoPictureFragment : BaseDaggerFragment() {
             if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
                 img_pdp_video.scaleType = ImageView.ScaleType.FIT_CENTER
                 if (mediaSource.isNotEmpty()) {
-                    Glide.with(context)
+                    Glide.with(view.context)
                             .load(mediaSource)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                             .fitCenter()
                             .into(img_pdp_video)
                 }
             } else {
                 img_pdp_video.scaleType = ImageView.ScaleType.CENTER_CROP
                 if (mediaSource.isNotEmpty()) {
-                    Glide.with(context)
+                    Glide.with(view.context)
                             .load(mediaSource)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                             .centerCrop()
                             .into(img_pdp_video)
                 }

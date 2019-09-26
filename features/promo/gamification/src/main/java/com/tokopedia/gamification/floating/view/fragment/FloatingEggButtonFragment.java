@@ -58,8 +58,6 @@ import javax.inject.Inject;
 
 import static android.content.Context.MODE_PRIVATE;
 
-//import com.bumptech.glide.request.animation.GlideAnimation;
-
 /**
  * Created by hendry on 28/03/18.
  */

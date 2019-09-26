@@ -97,6 +97,7 @@
                 android:layout_height="0dp"
                 app:barrierDirection="end"
                 app:constraint_referenced_ids="tv_popular" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -2,9 +2,6 @@ package com.tokopedia.tracking.view;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
@@ -16,6 +13,11 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -34,7 +36,6 @@ import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.viewmodel.TrackingViewModel;
 import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 import com.tokopedia.unifycomponents.UnifyButton;
-import com.tokopedia.unifyprinciples.Typography;
 
 import java.util.concurrent.TimeUnit;
 

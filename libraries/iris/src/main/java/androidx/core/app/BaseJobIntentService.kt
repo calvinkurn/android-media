@@ -1,4 +1,4 @@
-package android.support.v4.app
+package androidx.core.app
 
 /**
  * This fix should be tracked from time to time as any change in the support libraries might break it.

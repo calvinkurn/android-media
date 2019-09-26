@@ -101,8 +101,8 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
         bannerDescription.setTextColor(Color.parseColor(bannerItem.textColor))
 
         Glide.with(itemView.context)
-                .load(bannerItem.imageUrl)
                 .asBitmap()
+                .load(bannerItem.imageUrl)
                 .centerCrop()
                 .dontAnimate()
                 .into(getRoundedImageViewTarget(bannerImage, 16f))
@@ -238,7 +238,7 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
 
     private fun getRoundedImageViewTarget(imageView: ImageView, radius: Float): BitmapImageViewTarget {
         return object : BitmapImageViewTarget(imageView) {
-            override fun setResource(resource: Bitmap) {
+            override fun setResource(resource: Bitmap?) {
                 val circularBitmapDrawable = RoundedBitmapDrawableFactory.create(imageView.context.resources, resource)
                 circularBitmapDrawable.cornerRadius = radius
                 imageView.setImageDrawable(circularBitmapDrawable)

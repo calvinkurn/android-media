@@ -41,8 +41,6 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_IMAGE;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
 
-//import com.bumptech.glide.request.animation.GlideAnimation;
-
 /**
  * @author by alvarisi on 1/11/17.
  */

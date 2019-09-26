@@ -22,7 +22,9 @@ import com.tokopedia.pushnotif.DismissBroadcastReceiver;
 import com.tokopedia.pushnotif.R;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author ricoharisin .
