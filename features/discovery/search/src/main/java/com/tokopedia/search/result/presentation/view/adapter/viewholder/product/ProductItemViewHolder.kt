@@ -1,24 +1,16 @@
 package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.support.annotation.Nullable
 import android.text.TextUtils
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.ImageView
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardView
-import com.tokopedia.search.R
-import com.tokopedia.search.result.presentation.model.BadgeItemViewModel
 import com.tokopedia.search.result.presentation.model.LabelGroupViewModel
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
+import kotlin.math.roundToInt
 
 const val LABEL_GROUP_POSITION_PROMO = "promo"
 const val LABEL_GROUP_POSITION_CREDIBILITY = "credibility"
@@ -34,23 +26,10 @@ abstract class ProductItemViewHolder(
     override fun bind(productItem: ProductItemViewModel?) {
         if (productItem == null) return
 
-        val promoLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_PROMO)
-        val productCardLabelPromoModel = ProductCardModel.Label(promoLabelViewModel?.title ?: "", promoLabelViewModel?.type ?: "")
-
-        val credibilityLabelViewModel : LabelGroupViewModel? = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY)
-        val productCardLabelCredibilityModel =
-                if (productItem.rating == 0 && productItem.countReview == 0)
-                    ProductCardModel.Label(credibilityLabelViewModel?.title ?: "", credibilityLabelViewModel?.type ?: "")
-                else
-                    ProductCardModel.Label()
-
-        val offersLabelViewModel = getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_OFFERS)
-        val productCardLabelOffersModel = ProductCardModel.Label(offersLabelViewModel?.title ?: "", offersLabelViewModel?.type ?: "")
-
-        val shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>()
-        productItem.badgesList.forEach {
-            shopBadgeList.add(ProductCardModel.ShopBadge(it.isShown, it.imageUrl))
-        }
+        val productCardLabelPromoModel = createProductCardLabelPromo(productItem)
+        val productCardLabelCredibilityModel = createProductCardLabelCredibility(productItem)
+        val productCardLabelOffersModel = createProductCardLabelOffers(productItem)
+        val productCardShopBadgesList = createProductCardShopBadges(productItem)
 
         val productCardModel = ProductCardModel(
                 productImageUrl = if (isUsingBigImageUrl()) productItem.imageUrl700 else productItem.imageUrl,
@@ -62,7 +41,7 @@ abstract class ProductItemViewHolder(
                 discountPercentage = if (isLabelDiscountVisible(productItem)) "${productItem.discountPercentage}%" else "",
                 slashedPrice = if (isLabelDiscountVisible(productItem)) productItem.originalPrice else "",
                 formattedPrice = getPriceText(productItem),
-                shopBadgeList = shopBadgeList,
+                shopBadgeList = productCardShopBadgesList,
                 shopLocation = productItem.shopCity,
                 ratingCount = getStarCount(productItem),
                 reviewCount = productItem.countReview,
@@ -89,6 +68,49 @@ abstract class ProductItemViewHolder(
                 productListener.onWishlistButtonClicked(productItem)
             }
         }
+    }
+
+    private fun createProductCardLabelPromo(productItem: ProductItemViewModel): ProductCardModel.Label {
+        val promoLabelViewModel =
+                getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_PROMO)
+                        ?: return ProductCardModel.Label()
+
+        return ProductCardModel.Label(promoLabelViewModel.title, promoLabelViewModel.type)
+    }
+
+    private fun createProductCardLabelCredibility(productItem: ProductItemViewModel): ProductCardModel.Label {
+        val credibilityLabelViewModel =
+                getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_CREDIBILITY)
+                        ?: return ProductCardModel.Label()
+
+        val isLabelCredibilityShown = isLabelCredibilityShown(productItem)
+
+        val title = if (isLabelCredibilityShown) credibilityLabelViewModel.title else ""
+        val type = if (isLabelCredibilityShown) credibilityLabelViewModel.type else ""
+
+        return ProductCardModel.Label(title, type)
+    }
+
+    private fun isLabelCredibilityShown(productItem: ProductItemViewModel): Boolean {
+        return productItem.rating == 0 && productItem.countReview == 0
+    }
+
+    private fun createProductCardLabelOffers(productItem: ProductItemViewModel): ProductCardModel.Label {
+        val offersLabelViewModel =
+                getFirstLabelGroupOfPosition(productItem, LABEL_GROUP_POSITION_OFFERS)
+                        ?: return ProductCardModel.Label()
+
+        return ProductCardModel.Label(offersLabelViewModel.title, offersLabelViewModel.type)
+    }
+
+    private fun createProductCardShopBadges(productItem: ProductItemViewModel): List<ProductCardModel.ShopBadge> {
+        val shopBadgeList = mutableListOf<ProductCardModel.ShopBadge>()
+
+        productItem.badgesList.forEach {
+            shopBadgeList.add(ProductCardModel.ShopBadge(it.isShown, it.imageUrl))
+        }
+
+        return shopBadgeList
     }
 
     protected abstract fun getProductCardView(): ProductCardView?
@@ -130,8 +152,8 @@ abstract class ProductItemViewHolder(
 
     protected fun getStarCount(productItem: ProductItemViewModel): Int {
         return if (productItem.isTopAds)
-            Math.round(productItem.rating / 20f)
+            (productItem.rating / 20f).roundToInt()
         else
-            Math.round(productItem.rating.toFloat())
+            productItem.rating
     }
 }
