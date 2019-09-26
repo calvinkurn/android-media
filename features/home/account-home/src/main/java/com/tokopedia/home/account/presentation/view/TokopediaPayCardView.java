@@ -33,12 +33,15 @@ public class TokopediaPayCardView extends BaseCustomView {
     private TextView actionText;
     private TextView textAmountLeft;
     private TextView textDescLeft;
+    private TextView textAmountCentre;
+    private TextView textDescCentre;
     private TextView textAmountRight;
     private TextView textDesctRight;
     private LinearLayout layoutLeft;
+    private LinearLayout layoutCentre;
     private LinearLayout layoutRight;
     private View container;
-    private ImageView iconLeft, iconRight;
+    private ImageView iconLeft, iconCentre, iconRight;
 
     public TokopediaPayCardView(@NonNull Context context) {
         super(context);
@@ -62,11 +65,15 @@ public class TokopediaPayCardView extends BaseCustomView {
         actionText = view.findViewById(R.id.text_action);
         textAmountLeft = view.findViewById(R.id.text_amount_left);
         textDescLeft = view.findViewById(R.id.text_desc_left);
+        textAmountCentre = view.findViewById(R.id.text_amount_centre);
+        textDescCentre= view.findViewById(R.id.text_desc_centre);
         textAmountRight = view.findViewById(R.id.text_amount_right);
         textDesctRight = view.findViewById(R.id.text_desc_right);
         layoutLeft = view.findViewById(R.id.layout_left);
+        layoutCentre = view.findViewById(R.id.layout_centre);
         layoutRight = view.findViewById(R.id.layout_right);
         iconLeft = view.findViewById(R.id.card_icon_left);
+        iconCentre = view.findViewById(R.id.card_icon_centre);
         iconRight = view.findViewById(R.id.card_icon_right);
 
         ImageHandler.loadImageBitmap2(getContext(),
