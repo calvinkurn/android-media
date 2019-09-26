@@ -127,12 +127,17 @@ public class DynamicFilterItemPriceViewHolder extends DynamicFilterViewHolder {
 
         pricePillsRecyclerView.setVisibility(View.VISIBLE);
 
-        pricePillsRecyclerView.setLayoutManager(
+        if (pricePillsRecyclerView.getLayoutManager() == null) {
+            pricePillsRecyclerView.setLayoutManager(
                 new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        }
 
         int spacingBetween = itemView.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8);
         int edgeMargin = itemView.getContext().getResources().getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16);
-        pricePillsRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(spacingBetween, edgeMargin));
+
+        if (pricePillsRecyclerView.getItemDecorationCount() == 0) {
+            pricePillsRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(spacingBetween, edgeMargin));
+        }
 
         pricePillsAdapter = new PricePillsAdapter(new PricePillsAdapter.Callback() {
             @Override

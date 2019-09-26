@@ -75,7 +75,7 @@ public class PricePillsAdapter extends
                 pricePillItem.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.unify_G500));
                 pricePillItem.setBackground(context.getResources().getDrawable(R.drawable.filter_price_pill_item_background_selected));
             } else {
-                pricePillItem.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.white));
+                pricePillItem.setTextColor(context.getResources().getColor(R.color.price_pills_text_color_normal));
                 pricePillItem.setBackground(context.getResources().getDrawable(R.drawable.filter_price_pill_item_background_neutral));
             }
             pricePillItem.setText(pricePillOption.getName());
