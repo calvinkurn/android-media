@@ -27,6 +27,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.permissionchecker)
+    implementation project(rootProject.ext.features.sessioncommon)
+
+    implementation rootProject.ext.unifyDependencies.components
 
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.affiliateCommon)
@@ -48,6 +51,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.unifyDependencies.principles
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

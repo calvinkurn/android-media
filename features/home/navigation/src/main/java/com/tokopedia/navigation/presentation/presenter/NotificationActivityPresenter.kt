@@ -7,6 +7,8 @@ import com.tokopedia.navigation.domain.ClearCounterNotificationUpdateUseCase
 import com.tokopedia.navigation.domain.GetIsTabUpdateUseCase
 import com.tokopedia.navigation.domain.GetNotificationTotalUnreadUseCase
 import com.tokopedia.navigation.domain.GetNotificationUpdateUnreadUseCase
+import com.tokopedia.navigation.domain.SendNotificationUseCase
+import com.tokopedia.navigation.domain.pojo.NotifCenterSendNotifData
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateUnread
 import com.tokopedia.navigation.presentation.view.listener.NotificationActivityContract
 import com.tokopedia.navigation.presentation.view.subscriber.GetNotificationUpdateUnreadSubscriber
@@ -17,8 +19,9 @@ class NotificationActivityPresenter @Inject constructor(
         private var getNotificationTotalUnreadUseCase: GetNotificationTotalUnreadUseCase,
         private var getNotificationUpdateUnreadUseCase: GetNotificationUpdateUnreadUseCase,
         private var clearCounterNotificationUpdateUseCase: ClearCounterNotificationUpdateUseCase,
-        private var getIsTabUpdateUseCase: GetIsTabUpdateUseCase
-) : BaseDaggerPresenter<NotificationActivityContract.View>()
+        private var getIsTabUpdateUseCase: GetIsTabUpdateUseCase,
+        private var sendNotificationUseCase: SendNotificationUseCase)
+    : BaseDaggerPresenter<NotificationActivityContract.View>()
         , NotificationActivityContract.Presenter {
 
     override fun getUpdateUnreadCounter(onSuccess: (NotificationUpdateUnread) -> Unit) {
@@ -38,5 +41,9 @@ class NotificationActivityPresenter @Inject constructor(
                     }
                 }, {}
         )
+    }
+
+    override fun sendNotif(onSuccessSendNotif: (NotifCenterSendNotifData) -> Unit, onErrorSendNotif: (Throwable) -> Unit){
+        sendNotificationUseCase.executeCoroutines(onSuccessSendNotif, onErrorSendNotif)
     }
 }

@@ -23,6 +23,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_AUTOADS
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory.AGE_RESTRICTION
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -64,6 +65,7 @@ object DeeplinkDFMapper {
     private val DFM_SELLER_TOPADS_AUTOADS = "seller_topads_autoads"
     private val DFM_CUSTOMER_REPORT_PRODUCT = "customer_report_product"
     private val DFM_SELLER_REPORT_PRODUCT = "seller_report_product"
+    private val DFM_AGE_RESTRICTION = "age_restriction"
     private var DFM_MODULE_FINTECH_INSTANT_LOAN = "instantloan"
 
 
@@ -79,10 +81,11 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(OPEN_SHOP) }, DFM_SHOP_OPEN_CUSTOMERAPP, R.string.title_open_shop))
             add(DFP({ it.startsWith(SETTING_PROFILE) }, DFM_USER_PROFILE_COMPLETION, R.string.applink_profile_completion_title))
             add(DFP({ it.startsWith(SETTING_BANK) }, DFM_USER_SETTING_BANK, R.string.applink_setting_bank_title))
-            add(DFP({ it.startsWith(REPORT_PRODUCT) }, DFM_CUSTOMER_REPORT_PRODUCT, R.string.applink_report_title))
+            add(DFP({ it.startsWithPattern(REPORT_PRODUCT) }, DFM_CUSTOMER_REPORT_PRODUCT, R.string.applink_report_title))
             add(DFP({ it.startsWith(TOPADS_DASHBOARD_CUSTOMER) || it.startsWith(TOPADS_DASHBOARD_INTERNAL) }, DFM_CUSTOMER_TOPADS_DASHBOARD, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(TOPADS_AUTOADS) }, DFM_CUSTOMER_TOPADS_AUTOADS, R.string.applink_topads_dashboard_title))
             add(DFP({ it.startsWith(SIMILAR_SEARCH_RESULT_BASE) }, DFM_SIMILAR_SEARCH, R.string.title_similar_search))
+            add(DFP({ it.startsWith(AGE_RESTRICTION) }, DFM_AGE_RESTRICTION, R.string.applink_title_age_restriction))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
             add(DFP({ it.startsWith(GLOBAL_INTERNAL_INSTANT_LOAN_TAB) }, DFM_MODULE_FINTECH_INSTANT_LOAN, R.string.instant_loan_title))
 
@@ -233,3 +236,7 @@ class DFP(
         val moduleId: String,
         val moduleNameResourceId: Int
 )
+
+fun String.startsWithPattern(prefix: String): Boolean {
+    return startsWith(prefix.substringBefore("{"))
+}

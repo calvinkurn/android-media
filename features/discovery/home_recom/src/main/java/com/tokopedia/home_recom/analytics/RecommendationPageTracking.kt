@@ -837,7 +837,6 @@ class RecommendationPageTracking {
         // No 83
         fun eventUserClickRecommendationWishlistForLoginWithProductId(
                 isAdded: Boolean,
-                headerName: String,
                 ref: String
         ){
             val tracker = getTracker()
@@ -845,21 +844,20 @@ class RecommendationPageTracking {
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, String.format(EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_WISHLIST_LOGIN, if(isAdded) "add" else "remove"),
-                    EVENT_LABEL, "$headerName - ${String.format(EVENT_LABEL_SOURCE, ref)}"
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }
 
         // No 84
         fun eventUserClickRecommendationWishlistForNonLoginWithProductId(
-                headerName: String,
                 ref: String){
             val tracker = getTracker()
             val data = DataLayer.mapOf(
                     EVENT, EVENT_CLICK_RECOMMENDATION,
                     EVENT_CATEGORY, EVENT_CATEGORY_RECOMMENDATION_PAGE_WITH_PRODUCT_ID,
                     EVENT_ACTION, EVENT_ACTION_CLICK_PRODUCT_RECOMMENDATION_WISHLIST_NON_LOGIN,
-                    EVENT_LABEL, "$headerName - ${String.format(EVENT_LABEL_SOURCE, ref)}"
+                    EVENT_LABEL, String.format(EVENT_LABEL_SOURCE, ref)
             )
             tracker.sendEnhanceEcommerceEvent(data)
         }

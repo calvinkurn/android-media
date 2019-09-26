@@ -45,6 +45,7 @@ include 'features:discovery:productcard'
 include 'features:discovery:filter'
 include 'features:discovery:image_search'
 include 'features:discovery:similarsearch'
+include 'features:discovery:autocomplete'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:home"
 //include "features:discovery:home_no_op"

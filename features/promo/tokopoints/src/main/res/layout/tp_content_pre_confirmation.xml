@@ -5,7 +5,7 @@
     android:id="@+id/pre_confirmation_parent_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_custom_dialog"
+    android:background="@drawable/bg_tp_custom_dialog"
     android:padding="@dimen/tp_padding_medium">
 
     <ImageView
