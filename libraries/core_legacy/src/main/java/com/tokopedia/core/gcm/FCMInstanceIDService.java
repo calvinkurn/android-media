@@ -16,8 +16,6 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 
-import java.util.Date;
-
 import io.hansel.hanselsdk.Hansel;
 import rx.Observable;
 import timber.log.Timber;
@@ -41,13 +39,13 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
         ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(refreshedToken);
 
         try {
-            String timestamp = new Date().toString();
+            UserSessionInterface userSession = new UserSession(this);
             Timber.w("P2" + "Notification Refresh Token - " + refreshedToken + " | "
-                    + timestamp + " | "
+                    + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
                     + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                     + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
                     + " | " + Build.TAGS);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
