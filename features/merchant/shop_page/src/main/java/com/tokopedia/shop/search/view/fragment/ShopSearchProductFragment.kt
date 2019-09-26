@@ -112,7 +112,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         initViewModel()
         getArgumentsData(savedInstanceState)
         getShopInfoFromCacheManager()
-        observeShopSearchProductResult()
     }
 
     override fun onCreateView(
@@ -127,6 +126,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         super.onViewCreated(view, savedInstanceState)
         viewFragment = view
         initView(view)
+        observeShopSearchProductResult()
     }
 
     override fun onPause() {
@@ -134,6 +134,11 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             hideKeyboard(this)
         }
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        viewModel.shopSearchProductResult.removeObservers(this)
+        super.onDestroy()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -145,6 +150,8 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         }
         super.onSaveInstanceState(outState)
     }
+
+    override fun loadData(page: Int) {}
 
     override fun getAdapterTypeFactory(): ShopSearchProductAdapterTypeFactory {
         return ShopSearchProductAdapterTypeFactory()
@@ -204,10 +211,6 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             redirectToShopProductListPage()
             activity?.finish()
         }
-    }
-
-    override fun loadData(page: Int) {
-        adapter.clearAllElements()
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -308,34 +311,35 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun populateFixedSearchResult() {
-        with(adapter) {
-            addElement(ShopSearchProductFixedResultDataModel(
+        val listData = mutableListOf<ShopSearchProductDataModel>().apply {
+            add(ShopSearchProductFixedResultDataModel(
                     searchQuery,
                     getString(R.string.shop_search_product_in_this_shop_etalase),
                     ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE
             ))
-            addElement(ShopSearchProductFixedResultDataModel(
+            add(ShopSearchProductFixedResultDataModel(
                     searchQuery,
                     getString(R.string.shop_search_product_in_tokopedia),
                     ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP
             ))
         }
+        renderList(listData, false)
     }
 
     private fun populateDynamicSearchResult(universeSearchResponse: UniverseSearchResponse) {
+        val listData: MutableList<ShopSearchProductDataModel> = arrayListOf()
         universeSearchResponse.universeSearch.data[0].items.forEach {
-            with(adapter) {
-                addElement(ShopSearchProductDynamicResultDataModel(
-                        it.imageUri,
-                        it.keyword,
-                        it.affiliateUsername,
-                        it.appLink,
-                        it.url,
-                        searchQuery,
-                        ShopSearchProductDataModel.Type.TYPE_PDP
-                ))
-            }
+            listData.add(ShopSearchProductDynamicResultDataModel(
+                    it.imageUri,
+                    it.keyword,
+                    it.affiliateUsername,
+                    it.appLink,
+                    it.url,
+                    searchQuery,
+                    ShopSearchProductDataModel.Type.TYPE_PDP
+            ))
         }
+        renderList(listData, false)
     }
 
     private fun initView(view: View) {
