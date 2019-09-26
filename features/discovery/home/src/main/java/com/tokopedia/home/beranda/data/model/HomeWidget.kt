@@ -18,7 +18,7 @@ class HomeWidget(
         val contentItemTabList: List<ContentItemTab> = listOf(),
         @SerializedName("widget_header")
         @Expose
-        val widgetHeader: WidgetHeader? = null
+        val widgetHeader: WidgetHeader = WidgetHeader("")
 ) {
 
     data class Data (
