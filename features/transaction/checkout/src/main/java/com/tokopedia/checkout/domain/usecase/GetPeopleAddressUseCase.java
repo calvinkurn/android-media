@@ -1,13 +1,11 @@
 package com.tokopedia.checkout.domain.usecase;
 
-import android.content.Context;
-
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.checkout.data.mapper.PeopleAddressWithCornerMapper;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.datamodel.addresscorner.AddressCornerResponse;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.PeopleAddressModel;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
@@ -58,7 +56,7 @@ public class GetPeopleAddressUseCase extends UseCase<PeopleAddressModel> {
         // Create network auth params from plain params using auth util generator,
         // which will retrieve another params such as device id, os type and timestamp
         final HashMap<String, Object> authParams = new HashMap<String, Object>() {{
-            putAll(AuthUtil.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>()));
+            putAll(AuthHelper.generateParamsNetwork(userSessionInterface.getUserId(), userSessionInterface.getDeviceId(), new TKPDMapParam<>()));
         }};
 
         // Create request params which contains the auth params

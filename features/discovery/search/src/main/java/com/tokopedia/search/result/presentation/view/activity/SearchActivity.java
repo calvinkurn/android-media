@@ -33,6 +33,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.authentication.AuthHelperJava;
 import com.tokopedia.design.drawable.CountDrawable;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
@@ -42,7 +43,6 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking;
 import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.filter.widget.BottomSheetFilterView;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.search.R;
@@ -419,8 +419,8 @@ public class SearchActivity extends BaseActivity
 
     private void setSearchParameterUniqueId() {
         String uniqueId = userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(getRegistrationId(this));
+                AuthHelperJava.md5(userSession.getUserId()) :
+                AuthHelperJava.md5(getRegistrationId(this));
 
         searchParameter.set(SearchApiConst.UNIQUE_ID, uniqueId);
     }

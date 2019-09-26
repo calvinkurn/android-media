@@ -1,9 +1,9 @@
 package com.tokopedia.logisticaddaddress.data;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.logisticdata.data.apiservice.PeopleActApi;
 import com.tokopedia.logisticdata.data.entity.address.GetPeopleAddress;
 import com.tokopedia.logisticdata.data.module.qualifier.AddressScope;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.network.utils.TKPDMapParam;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -41,7 +41,7 @@ public class ManageAddressRepository implements DataSource {
     private Map<String, String> generateParams(RequestParams useCaseParams) {
         Map<String, String> tkpdMapParam = new TKPDMapParam<>();
         tkpdMapParam.putAll(useCaseParams.getParamsAllValueInString());
-        return AuthUtil.generateParamsNetwork(
+        return AuthHelper.generateParamsNetwork(
                 userSession.getUserId(),
                 userSession.getDeviceId(),
                 tkpdMapParam);
