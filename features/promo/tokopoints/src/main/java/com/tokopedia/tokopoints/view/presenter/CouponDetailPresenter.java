@@ -23,6 +23,7 @@ import com.tokopedia.tokopoints.view.model.CouponSwipeUpdateOuter;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.NetworkDetector;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -203,7 +204,7 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
             @Override
             public void onError(Throwable e) {
                 getView().hideLoader();
-                boolean hasInternet = isNetworkConnected(getView().getAppContext());
+                boolean hasInternet = NetworkDetector.isConnectedToInternet(getView().getAppContext());
                 getView().showError(hasInternet);
             }
 
@@ -293,35 +294,5 @@ public class CouponDetailPresenter extends BaseDaggerPresenter<CouponDetailContr
                 }
             }
         });
-    }
-
-    public static boolean isNetworkConnected(Context context) {
-        boolean result = false;
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (cm != null) {
-                NetworkCapabilities capabilities = cm.getNetworkCapabilities(cm.getActiveNetwork());
-                if (capabilities != null) {
-                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                        result = true;
-                    } else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                        result = true;
-                    }
-                }
-            }
-        } else {
-            if (cm != null) {
-                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-                if (activeNetwork != null) {
-                    // connected to the internet
-                    if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
-                        result = true;
-                    } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
-                        result = true;
-                    }
-                }
-            }
-        }
-        return result;
     }
 }

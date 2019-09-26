@@ -56,6 +56,7 @@ import com.tokopedia.tokopoints.view.adapter.SectionCategoryAdapter;
 import com.tokopedia.tokopoints.view.adapter.SectionTickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract;
 import com.tokopedia.tokopoints.view.customview.CustomViewPager;
+import com.tokopedia.tokopoints.view.customview.ServerErrorView;
 import com.tokopedia.tokopoints.view.customview.TokoPointToolbar;
 import com.tokopedia.tokopoints.view.interfaces.onAppBarCollapseListener;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
@@ -110,6 +111,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
 
     private View statusBarBgView;
     private TokoPointToolbar tokoPointToolbar;
+    private ServerErrorView serverErrorView;
 
 
     public static TokoPointsHomeFragmentNew newInstance() {
@@ -410,6 +412,7 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
         dynamicLinksContainer = view.findViewById(R.id.container_dynamic_links);
         statusBarBgView = view.findViewById(R.id.status_bar_bg);
         tokoPointToolbar = view.findViewById(R.id.toolbar_tokopoint);
+        serverErrorView = view.findViewById(R.id.server_error_view);
         setStatusBarViewHeight();
     }
 
@@ -476,9 +479,10 @@ public class TokoPointsHomeFragmentNew extends BaseDaggerFragment implements Tok
     }
 
     @Override
-    public void onError(String error) {
+    public void onError(String error, boolean hasInternet) {
         if (mContainerMain != null) {
             mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+            serverErrorView.showErrorUi(hasInternet);
         }
     }
 
