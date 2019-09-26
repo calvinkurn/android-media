@@ -801,36 +801,35 @@ public class CouponDetailFragment extends BaseDaggerFragment implements CouponDe
     }
 
 
-    private void updateErrorUi(boolean showNetworkError) {
-        if (showNetworkError) {
+    private void updateErrorUi(boolean hasInternet) {
 
-            imageError.setImageResource(R.drawable.ic_tp_no_connection);
+        int noConnectionImageId = R.drawable.ic_tp_no_connection;
 
-            int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
-            int buttonColor = MethodChecker.getColor(getActivity(), R.color.bg_button_green_border_outline);
-            int buttonFontColor = MethodChecker.getColor(getActivity(), R.color.white);
+        int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_large);
+        int buttonColor = MethodChecker.getColor(getActivity(), R.color.bg_button_green_border_outline);
+        int buttonFontColor = MethodChecker.getColor(getActivity(), R.color.white);
 
-            btnError.setTextColor(buttonFontColor);
-            btnError.setButtonColor(buttonColor);
-            btnError.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonFontSize);
+        CharSequence titleText = getResources().getText(R.string.tp_no_internet_title);
+        CharSequence labelText = getResources().getText(R.string.tp_no_internet_label);
+        if (hasInternet) {
 
-            tvTitleError.setText(getResources().getText(R.string.tp_no_internet_title));
-            tvLabelError.setText(getResources().getText(R.string.tp_no_internet_label));
+            noConnectionImageId = R.drawable.ic_tp_toped_sorry;
 
-        } else {
+            buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
+            buttonColor = MethodChecker.getColor(getActivity(), R.color.transparent);
+            buttonFontColor = MethodChecker.getColor(getActivity(), R.color.tkpd_main_green);
 
-            imageError.setImageResource(R.drawable.ic_tp_toped_sorry);
-
-            int buttonFontSize = getResources().getInteger(R.integer.tp_error_btn_medium);
-            int buttonColor = MethodChecker.getColor(getActivity(), R.color.transparent);
-            int buttonFontColor = MethodChecker.getColor(getActivity(), R.color.tkpd_main_green);
-
-            btnError.setTextColor(buttonFontColor);
-            btnError.setButtonColor(buttonColor);
-            btnError.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonFontSize);
-
-            tvTitleError.setText(getResources().getText(R.string.tp_label_server_error));
-            tvLabelError.setText(getResources().getText(R.string.tp_label_try_again));
+            titleText = getResources().getText(R.string.tp_label_server_error);
+            labelText = getResources().getText(R.string.tp_label_try_again);
         }
+
+        imageError.setImageResource(noConnectionImageId);
+
+        btnError.setTextColor(buttonFontColor);
+        btnError.setButtonColor(buttonColor);
+        btnError.setTextSize(TypedValue.COMPLEX_UNIT_SP, buttonFontSize);
+
+        tvTitleError.setText(titleText);
+        tvLabelError.setText(labelText);
     }
 }

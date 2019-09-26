@@ -53,6 +53,7 @@ public class RoundButton extends AppCompatButton {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        setBackgroundColor(MethodChecker.getColor(getContext(), R.color.transparent));
         drawRoundBackground(canvas);
         super.onDraw(canvas);
     }
