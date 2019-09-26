@@ -1,9 +1,6 @@
 package com.tokopedia.officialstore.presentation.adapter
 
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.BrandPopulerViewModel
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.CategoryViewModel
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.ExclusiveBrandViewModel
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.OfficialBannerViewModel
+import com.tokopedia.officialstore.presentation.adapter.viewmodel.*
 
 interface OfficialHomeTypeFactory {
 
@@ -14,4 +11,6 @@ interface OfficialHomeTypeFactory {
     fun type(categoryViewModel: CategoryViewModel): Int
 
     fun type(exclusiveBrandViewModel: ExclusiveBrandViewModel): Int
+
+    fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int
 }
