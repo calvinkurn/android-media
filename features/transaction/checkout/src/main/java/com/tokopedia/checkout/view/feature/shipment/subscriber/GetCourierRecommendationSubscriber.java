@@ -90,7 +90,13 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                     if (shippingRecommendationData.getLogisticPromo() != null) {
                                         String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
                                         courierItemData.setLogPromoMsg(disableMsg);
-                                        courierItemData.setLogPromoCode(shippingRecommendationData.getLogisticPromo().getPromoCode());
+
+                                        // Auto apply Promo Stacking Logistic
+                                        if (shippingRecommendationData.getLogisticPromo().getShipperId() == shipperId
+                                                && shippingRecommendationData.getLogisticPromo().getShipperProductId() == spId
+                                                && !shippingRecommendationData.getLogisticPromo().getPromoCode().isEmpty()){
+                                            courierItemData.setLogPromoCode(shippingRecommendationData.getLogisticPromo().getPromoCode());
+                                        }
                                     }
                                     view.renderCourierStateSuccess(courierItemData, itemPosition);
                                     return;
