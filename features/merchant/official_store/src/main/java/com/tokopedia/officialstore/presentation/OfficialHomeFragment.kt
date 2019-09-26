@@ -92,6 +92,15 @@ class OfficialHomeFragment : BaseDaggerFragment(), OfficialHomeView {
         return dummy
     }
 
+    private fun loadDataProduct() {
+        // Get Product Recommendation
+
+    }
+
+    private fun onErrorGetRecommendation(errorMessage: String?) {
+        // Show error
+    }
+
     override fun getScreenName(): String {
         return ""
     }

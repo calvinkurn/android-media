@@ -4,17 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.officialstore.presentation.adapter.viewholder.BrandPopulerViewHolder
-import com.tokopedia.officialstore.presentation.adapter.viewholder.CategoryViewHolder
-import com.tokopedia.officialstore.presentation.adapter.viewholder.ExclusiveBrandViewHolder
-import com.tokopedia.officialstore.presentation.adapter.viewholder.OfficialBannerViewHolder
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.BrandPopulerViewModel
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.CategoryViewModel
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.ExclusiveBrandViewModel
-import com.tokopedia.officialstore.presentation.adapter.viewmodel.OfficialBannerViewModel
+import com.tokopedia.officialstore.presentation.adapter.viewholder.*
+import com.tokopedia.officialstore.presentation.adapter.viewmodel.*
 
 class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTypeFactory {
-
 
     override fun type(brandPopulerViewModel: BrandPopulerViewModel): Int {
         return BrandPopulerViewHolder.LAYOUT
@@ -29,7 +22,11 @@ class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTyp
     }
 
     override fun type(officialBannerViewModel: OfficialBannerViewModel): Int {
-        return  OfficialBannerViewHolder.LAYOUT
+        return OfficialBannerViewHolder.LAYOUT
+    }
+
+    override fun type(productRecommendationViewModel: ProductRecommendationViewModel): Int {
+        return ProductRecommendationViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -41,6 +38,8 @@ class OfficialHomeAdapterTypeFactory : BaseAdapterTypeFactory(), OfficialHomeTyp
             return ExclusiveBrandViewHolder(parent)
         } else if (type == OfficialBannerViewHolder.LAYOUT) {
             return OfficialBannerViewHolder(parent)
+        } else if (type == ProductRecommendationViewHolder.LAYOUT) {
+            return ProductRecommendationViewHolder(parent)
         }
         return super.createViewHolder(parent, type)
     }
