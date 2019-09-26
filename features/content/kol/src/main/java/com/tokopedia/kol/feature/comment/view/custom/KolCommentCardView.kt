@@ -96,12 +96,10 @@ class KolCommentCardView : LinearLayout {
 
         if (canComment) btnReply.visible() else btnReply.gone()
         btnReply.setOnClickListener {
-            val userId: String? = if (!element.userId.isNullOrEmpty()) element.userId
-            else if (!element.userUrl.isNullOrEmpty()) {
+            val userId = if (!element.userUrl.isNullOrEmpty()) {
                 val paramList = UriUtil.destructureUri(ApplinkConst.PROFILE, Uri.parse(element.userUrl))
                 paramList.firstOrNull()
-            }
-            else null
+            } else element.userId
 
             userId?.let { id ->
                 listener?.onReplyClicked(
