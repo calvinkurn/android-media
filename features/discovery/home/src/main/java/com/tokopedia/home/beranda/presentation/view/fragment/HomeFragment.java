@@ -370,7 +370,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
-        updateStickyState();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1551,12 +1550,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void setStickyContent(StickyLoginTickerPojo stickyContent) {
-        if (stickyContent.getTickers().size() > 0) {
-            stickyLoginView.setContent(stickyContent.getTickers().get(0));
-        } else {
-            stickyLoginView.setVisibility(View.GONE);
-        }
+    public void setStickyContent(StickyLoginTickerPojo.TickerDetail tickerDetail) {
+        stickyLoginView.setContent(tickerDetail);
+        updateStickyState();
+    }
+
+    @Override
+    public void hideStickyLogin() {
+        stickyLoginView.setVisibility(View.GONE);
     }
 
     private void updateStickyState() {

@@ -115,7 +115,7 @@ class HomeRecommendationActivity : BaseSimpleActivity(), HasComponent<HomeRecomm
      */
     override fun onBackPressed() {
         if(!isSimilarProduct(intent?.data?.toString() ?: "")) {
-            if(intent?.data?.pathSegments?.isNotEmpty() == true && isNumber(intent?.data?.pathSegments?.get(1) ?: "")){
+            if(intent?.data?.pathSegments?.size ?: 0 > 1 && isNumber(intent?.data?.pathSegments?.get(1) ?: "")){
                 RecommendationPageTracking.eventUserClickBackWithProductId()
             }else{
                 RecommendationPageTracking.eventUserClickBack()
