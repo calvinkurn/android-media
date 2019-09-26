@@ -89,6 +89,7 @@
 
     <string name="label_profile_completion">Kelengkapan Profile %1$d%%</string>
     <string name="label_tokopedia_pay_title">Tokopedia Pay</string>
+    <string name="label_tokopedia_pay_title_new">Dana di Tokopedia</string>
     <string name="label_tokopedia_pay_see_all">Lihat Semua</string>
     <string name="label_tokopedia_pay_deposit">Saldo</string>
     <string name="label_tokopedia_pay_wallet">TokoCash</string>

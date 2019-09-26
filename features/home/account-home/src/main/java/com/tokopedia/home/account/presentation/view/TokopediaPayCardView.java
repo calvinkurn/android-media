@@ -66,7 +66,7 @@ public class TokopediaPayCardView extends BaseCustomView {
         textAmountLeft = view.findViewById(R.id.text_amount_left);
         textDescLeft = view.findViewById(R.id.text_desc_left);
         textAmountCentre = view.findViewById(R.id.text_amount_centre);
-        textDescCentre= view.findViewById(R.id.text_desc_centre);
+        textDescCentre = view.findViewById(R.id.text_desc_centre);
         textAmountRight = view.findViewById(R.id.text_amount_right);
         textDesctRight = view.findViewById(R.id.text_desc_right);
         layoutLeft = view.findViewById(R.id.layout_left);
@@ -106,6 +106,10 @@ public class TokopediaPayCardView extends BaseCustomView {
         this.textAmountLeft.setText(text);
     }
 
+    public void setTextAmountCentre(@NonNull String text) {
+        this.textAmountCentre.setText(text);
+    }
+
     public void setAmountColorLeft(@ColorRes int color) {
         this.textAmountLeft.setTextColor(ContextCompat.getColor(getContext(), color));
     }
@@ -128,6 +132,10 @@ public class TokopediaPayCardView extends BaseCustomView {
         this.textAmountRight.setText(text);
     }
 
+    public void setTextDesctCentre(@NonNull String text) {
+        textDescCentre.setText(text);
+    }
+
     public void setTextDesctRight(@NonNull String text) {
         textDesctRight.setText(text);
     }
@@ -138,6 +146,14 @@ public class TokopediaPayCardView extends BaseCustomView {
         }
 
         ImageHandler.loadImageFitCenter(iconLeft.getContext(), iconLeft, url);
+    }
+
+    public void setIconCentre(String url) {
+        if (!URLUtil.isValidUrl(url)) {
+            return;
+        }
+
+        ImageHandler.loadImageFitCenter(iconCentre.getContext(), iconCentre, url);
     }
 
     public void setIconRight(String url) {
@@ -156,8 +172,15 @@ public class TokopediaPayCardView extends BaseCustomView {
         layoutLeft.setOnClickListener(listener);
     }
 
+    public void setCentreItemClickListener(View.OnClickListener listener) {
+        layoutCentre.setOnClickListener(listener);
+    }
+
     public void setRightItemClickListener(View.OnClickListener listener) {
         layoutRight.setOnClickListener(listener);
     }
 
+    public void setCenterLayoutVisibility(int visibility) {
+        layoutCentre.setVisibility(visibility);
+    }
 }

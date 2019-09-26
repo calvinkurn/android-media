@@ -16,6 +16,7 @@ import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
+import com.tokopedia.navigation_common.model.VccUserStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,14 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.functions.Func1;
+
+import static com.tokopedia.home.account.AccountConstants.VccStatus.ACTIVE;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.BLOCKED;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.DEACTIVATED;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.ELIGIBLE;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.HOLD;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.KYC_PENDING;
+import static com.tokopedia.home.account.AccountConstants.VccStatus.REJECTED;
 
 /**
  * @author by alvinatin on 10/08/18.
@@ -153,6 +162,58 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             items.add(tokopediaPayViewModel);
         }
 
+        if (accountModel.getVccUserStatus() != null &&
+                accountModel.getVccUserStatus().getTitle() != null &&
+                accountModel.getVccUserStatus().getTitle().equalsIgnoreCase("OVO PayLater")) {
+            VccUserStatus vccUserStatus = accountModel.getVccUserStatus();
+            TokopediaPayBSModel tokopediaPayBSModel = new TokopediaPayBSModel();
+
+            tokopediaPayViewModel.setIconUrlCentre(vccUserStatus.getIcon());
+            tokopediaPayViewModel.setApplinkCentre(vccUserStatus.getRedirectionUrl());
+
+            tokopediaPayViewModel.setAmountCentre(accountModel.getVccUserStatus().getBody());
+
+            switch (vccUserStatus.getStatus()) {
+                case ELIGIBLE:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre("Aktifkan");
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case HOLD:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre("Sedang Diproses");
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case ACTIVE:
+                    tokopediaPayViewModel.setLabelCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getBody());
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case REJECTED:
+                    tokopediaPayViewModel.setLabelCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setBsDataCentre(null);
+                    break;
+                case BLOCKED:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre("Layanan Terblokir");
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case DEACTIVATED:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre("Dinonaktifkan");
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+                case KYC_PENDING:
+                    tokopediaPayViewModel.setAmountCentre(vccUserStatus.getTitle());
+                    tokopediaPayViewModel.setLabelCentre("Selasekan Pengajuan Aplikasimu");
+                    tokopediaPayViewModel.setBsDataCentre(tokopediaPayBSModel);
+                    break;
+
+            }
+
+        } else {
+            tokopediaPayViewModel.setBsDataCentre(null);
+        }
         items.addAll(StaticBuyerModelGenerator.Companion.getModel(context, accountModel));
         model.setItems(items);
 

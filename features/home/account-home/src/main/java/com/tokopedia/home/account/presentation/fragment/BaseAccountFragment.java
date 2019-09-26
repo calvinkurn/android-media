@@ -42,6 +42,8 @@ import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user_identification_common.KycCommonUrl;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.HashMap;
 
 import static com.tokopedia.affiliatecommon.AffiliateCommonConstantKt.DISCOVERY_BY_ME;
@@ -257,6 +259,13 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
         } else if (applink != null && applink.startsWith("tokopedia")) {
             openApplink(applink);
         }
+    }
+
+    @Override
+    public void onTokopediaPayCentreItemClicked(@NotNull String label, @NotNull String applink,
+                                                @NotNull TokopediaPayBSModel bsData, boolean isLinked,
+                                                @NotNull String walletType) {
+        sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
     }
 
     @Override
