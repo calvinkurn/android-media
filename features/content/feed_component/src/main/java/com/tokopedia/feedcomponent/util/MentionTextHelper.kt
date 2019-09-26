@@ -25,7 +25,7 @@ object MentionTextHelper {
 
     private const val ID_NAME_DELIMITER = "|"
 
-    private const val ALLOWED_CHARS_REGEX = "[A-Za-z0-9-_ ]"
+    private const val ALLOWED_CHARS_REGEX = "[\\s\\S]"
     private const val TOKENIZER_FULL_EDIT_REGEX = "($MENTION_CHAR$OPENING_MENTION_TAG\\{(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?\\}$CLOSING_MENTION_TAG)"
     private const val TOKENIZER_CONTENT_ONLY_REGEX = "(?<=($MENTION_CHAR)?$OPENING_MENTION_TAG\\{)(@[0-9]+\\$ID_NAME_DELIMITER$ALLOWED_CHARS_REGEX+@)?(?=\\}$CLOSING_MENTION_TAG)"
 
@@ -39,9 +39,20 @@ object MentionTextHelper {
     private val readContentOnlyPattern = Pattern.compile(READ_CONTENT_ONLY_REGEX)
 
     /**
+     * Create mention text with format @<mention>$params</mention>
+     * @param mentioned the text to be enclosed by <mention> tag
+     * @return Valid mention text format that will be rendered as Mention User on {@link MentionEditText}
+     */
+    @JvmStatic
+    fun createValidMentionText(mentioned: CharSequence): CharSequence {
+        return "$MENTION_CHAR${createMentionTag(mentioned)}"
+    }
+
+    /**
      * Create mention tag with format <mention>$params</mention>
      * @param mentioned the text to be enclosed by <mention> tag
      */
+    @JvmStatic
     fun createMentionTag(mentioned: CharSequence): CharSequence {
         return "$OPENING_MENTION_TAG$mentioned$CLOSING_MENTION_TAG"
     }

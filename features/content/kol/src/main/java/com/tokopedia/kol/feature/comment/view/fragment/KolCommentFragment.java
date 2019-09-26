@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.feedcomponent.util.MentionTextHelper;
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter;
 import com.tokopedia.feedcomponent.view.custom.MentionEditText;
 import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
@@ -279,6 +280,17 @@ public class KolCommentFragment extends BaseDaggerFragment
             adapter.notifyItemChanged(0);
         }
         presenter.loadMoreComments(getArguments().getInt(KolCommentActivity.ARGS_ID));
+    }
+
+    @Override
+    public void replyToUser(MentionableUserViewModel user) {
+        CharSequence userToMention = MentionTextHelper.createValidMentionText(user.toString());
+        String currentText = kolComment.getText().toString();
+        if (
+                !TextUtils.isEmpty(currentText) &&
+                        currentText.charAt(currentText.length() - 1) != ' ') userToMention = " " + userToMention;
+
+        kolComment.append(userToMention);
     }
 
     @Override

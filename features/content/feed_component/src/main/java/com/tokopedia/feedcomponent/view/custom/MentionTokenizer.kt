@@ -32,6 +32,9 @@ class MentionTokenizer : MultiAutoCompleteTextView.Tokenizer {
 
         var movingTempCursor = cursor
 
+        /**
+         * Move Cursor back until first occurence of '@'
+         */
         while (movingTempCursor > 0 && text[movingTempCursor - 1] != '@') {
             movingTempCursor--
         }

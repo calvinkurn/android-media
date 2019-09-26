@@ -47,6 +47,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder;
 import com.tokopedia.feedcomponent.view.adapter.viewholder.relatedpost.RelatedPostAdapter;
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel;
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel;
@@ -524,6 +525,11 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onClickMentionedProfile(String id) {
         onGoToLink(ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, id));
+    }
+
+    @Override
+    public void replyToUser(MentionableUserViewModel user) {
+        
     }
 
     @Override

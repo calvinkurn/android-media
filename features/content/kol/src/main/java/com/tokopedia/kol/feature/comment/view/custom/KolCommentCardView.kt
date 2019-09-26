@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.comment.view.custom
 
 import android.content.Context
+import android.net.Uri
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.TextUtils
@@ -15,14 +16,19 @@ import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.feedcomponent.util.MentionTextHelper
 import com.tokopedia.feedcomponent.view.custom.MentionEditText
 import com.tokopedia.feedcomponent.view.span.MentionSpan
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.util.UrlUtil
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentHeaderViewModel
 import com.tokopedia.kol.feature.comment.view.viewmodel.KolCommentViewModel
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.unifycomponents.UnifyButton
 
 /**
  * Created by jegul on 2019-09-25.
@@ -30,7 +36,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 class KolCommentCardView : LinearLayout {
 
     private companion object {
-        const val SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+        const val SPACE = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
     }
 
     constructor(context: Context) : super(context)
@@ -43,6 +49,7 @@ class KolCommentCardView : LinearLayout {
     private val time: TextView
     private val avatar: ImageView
     private val badge: ImageView
+    private val btnReply: UnifyButton
 
     private val onMentionClicked = object: MentionSpan.OnClickListener {
         override fun onClick(userId: String) {
@@ -59,6 +66,7 @@ class KolCommentCardView : LinearLayout {
             time = findViewById(R.id.time)
             comment = findViewById(R.id.comment)
             badge = findViewById(R.id.badge)
+            btnReply = findViewById(R.id.btn_reply)
         }
         orientation = VERTICAL
         setBackgroundColor(MethodChecker.getColor(context, R.color.white))
@@ -68,7 +76,7 @@ class KolCommentCardView : LinearLayout {
         return LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
     }
 
-    fun setModel(element: KolCommentViewModel) {
+    fun setModel(element: KolCommentViewModel, canComment: Boolean) {
         ImageHandler.loadImageCircle2(avatar.context, avatar, element.avatarUrl)
         time.text = element.time
 
@@ -84,6 +92,26 @@ class KolCommentCardView : LinearLayout {
         if (!TextUtils.isEmpty(element.userBadges)) {
             badge.visibility = View.VISIBLE
             ImageHandler.loadImageCircle2(badge.context, badge, element.userBadges)
+        }
+
+        if (canComment) btnReply.visible() else btnReply.gone()
+        btnReply.setOnClickListener {
+            val userId: String? = if (!element.userId.isNullOrEmpty()) element.userId
+            else if (!element.userUrl.isNullOrEmpty()) {
+                val paramList = UriUtil.destructureUri(ApplinkConst.PROFILE, Uri.parse(element.userUrl))
+                paramList.firstOrNull()
+            }
+            else null
+
+            userId?.let { id ->
+                listener?.onReplyClicked(
+                        MentionableUserViewModel(
+                                id,
+                                "",
+                                element.name,
+                                "")
+                )
+            }
         }
 
         when (element) {
@@ -162,5 +190,6 @@ class KolCommentCardView : LinearLayout {
         fun onMentionedProfileClicked(authorId: String)
         fun onDeleteComment(commentId: String, canDeleteComment: Boolean): Boolean
         fun onTokopediaUrlClicked(url: String)
+        fun onReplyClicked(mentionableUser: MentionableUserViewModel)
     }
 }
