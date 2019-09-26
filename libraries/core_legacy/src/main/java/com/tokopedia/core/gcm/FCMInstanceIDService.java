@@ -39,13 +39,13 @@ public class FCMInstanceIDService extends FirebaseInstanceIdService implements I
         ((TkpdCoreRouter) this.getApplicationContext()).refreshFCMFromInstantIdService(refreshedToken);
 
         try {
-            UserSessionInterface userSession = new UserSession(getApplicationContext());
+            UserSessionInterface userSession = new UserSession(this);
             Timber.w("P2" + "Notification Refresh Token - " + refreshedToken + " | "
                     + userSession.getUserId() + " | " + userSession.getAccessToken() + " | "
                     + Build.FINGERPRINT + " | " + Build.MANUFACTURER + " | "
                     + Build.BRAND + " | " + Build.DEVICE + " | " + Build.PRODUCT + " | " + Build.MODEL
                     + " | " + Build.TAGS);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

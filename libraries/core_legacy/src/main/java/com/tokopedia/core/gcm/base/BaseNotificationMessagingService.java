@@ -21,7 +21,15 @@ public abstract class BaseNotificationMessagingService extends FirebaseMessaging
     UserSessionInterface userSession;
 
     public BaseNotificationMessagingService() {
-        userSession = new UserSession(getApplicationContext());
+        initUseSession();
+    }
+
+    private void initUseSession() {
+        try {
+            userSession = new UserSession(this);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     protected Bundle convertMap(RemoteMessage message){
