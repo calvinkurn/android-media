@@ -1098,7 +1098,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition) {
         if (courierItemData.getLogPromoCode() != null) {
             String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).getCartString();
-            shipmentPresenter.processCheckPromoStackingLogisticPromo(itemPosition, cartString, cartString);
+            shipmentPresenter.processCheckPromoStackingLogisticPromo(itemPosition, cartString, courierItemData.getLogPromoCode());
         }
         checkCourierPromo(courierItemData, itemPosition);
         shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
