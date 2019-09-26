@@ -503,4 +503,12 @@ public class SearchTracking {
                 "click - long press product",
                 String.format("Keyword: %s - product id: %s", keyword, productId));
     }
+
+    public static void trackEventClickSearchBar() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                SearchEventTracking.Event.CLICK_TOP_NAV,
+                SearchEventTracking.Category.EVENT_TOP_NAV_SEARCH_SRP,
+                SearchEventTracking.Action.CLICK_SEARCH_BOX,
+                "");
+    }
 }
