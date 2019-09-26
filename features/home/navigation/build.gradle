@@ -37,6 +37,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.analytics)
     implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.coach_mark
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
 
     implementation rootProject.ext.playServicesDependencies.analytics

@@ -23,11 +23,14 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.navigation.R
 import com.tokopedia.navigation.analytics.NotificationUpdateAnalytics
 import com.tokopedia.navigation.domain.pojo.NotificationUpdateTotalUnread
 import com.tokopedia.navigation.domain.pojo.ProductData
+import com.tokopedia.navigation.listener.NotificationActivityListener
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.navigation.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.navigation.presentation.adapter.typefactory.NotificationUpdateFilterSectionTypeFactoryImpl
@@ -51,7 +54,8 @@ import javax.inject.Inject
  */
 class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         , NotificationUpdateContract.View, NotificationUpdateItemListener,
-        NotificationUpdateFilterAdapter.FilterAdapterListener {
+        NotificationUpdateFilterAdapter.FilterAdapterListener,
+        NotificationActivityListener {
 
     private var cursor = ""
     private var lastItem = 0
@@ -142,6 +146,20 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         filterRecyclerView = view.findViewById(R.id.filter_list)
         filterRecyclerView.adapter = filterAdapter
         filterRecyclerView.addItemDecoration(ChipFilterItemDivider(context))
+    }
+
+    override fun showOnBoarding(coachMarkItems: ArrayList<CoachMarkItem>) {
+        val tag = "NotifcenterOnboarding"
+        coachMarkItems.add(
+                1 ,
+                CoachMarkItem(
+                        filterRecyclerView,
+                        getString(R.string.coachicon_title_filter),
+                        getString(R.string.coachicon_description_filter)
+                )
+        )
+        val coachMark = CoachMarkBuilder().build()
+        coachMark.show(activity, tag, coachMarkItems)
     }
 
     override fun updateFilter(filter: HashMap<String, Int>) {
