@@ -13,9 +13,9 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightRequestUtil
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
-import com.tokopedia.flight.search.domain.usecase.*
-import com.tokopedia.flight.search.presentation.model.*
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV3.domain.*
+import com.tokopedia.flight.searchV3.presentation.model.*
+import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment
 import rx.Observable

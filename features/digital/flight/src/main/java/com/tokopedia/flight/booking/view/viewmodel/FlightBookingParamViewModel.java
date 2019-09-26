@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.common.travel.presentation.model.CountryPhoneCode;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV3.presentation.model.FlightSearchPassDataViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -68,8 +68,8 @@ import com.tokopedia.flight.passenger.view.activity.FlightBookingPassengerActivi
 import com.tokopedia.flight.review.view.activity.FlightBookingReviewActivity;
 import com.tokopedia.flight.review.view.fragment.FlightBookingReviewFragment;
 import com.tokopedia.flight.review.view.model.FlightBookingReviewModel;
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV3.presentation.model.FlightPriceViewModel;
+import com.tokopedia.flight.searchV3.presentation.model.FlightSearchPassDataViewModel;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 

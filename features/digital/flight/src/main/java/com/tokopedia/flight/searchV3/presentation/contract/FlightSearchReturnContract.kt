@@ -1,8 +1,8 @@
 package com.tokopedia.flight.searchV3.presentation.contract
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
+import com.tokopedia.flight.searchV3.presentation.model.FlightJourneyViewModel
+import com.tokopedia.flight.searchV3.presentation.model.FlightPriceViewModel
 
 /**
  * @author by furqan on 14/01/19

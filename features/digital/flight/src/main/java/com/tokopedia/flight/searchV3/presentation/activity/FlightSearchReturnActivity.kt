@@ -10,8 +10,8 @@ import com.tokopedia.flight.common.constant.FlightFlowExtraConstant
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
-import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
+import com.tokopedia.flight.searchV3.presentation.model.FlightPriceViewModel
+import com.tokopedia.flight.searchV3.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.searchV3.presentation.fragment.FlightSearchReturnFragment
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl

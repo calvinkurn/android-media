@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.flight.detail.view.adapter.FlightDetailRouteTypeFactory;
-import com.tokopedia.flight.search.data.api.single.response.Amenity;
+import com.tokopedia.flight.searchV3.data.api.single.response.Amenity;
 
 import java.util.List;
 

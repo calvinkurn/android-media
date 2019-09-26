@@ -8,7 +8,7 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingVoucherViewModel
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightBookingAmenityViewModelMapper
 import com.tokopedia.flight.booking.view.viewmodel.mapper.FlightInsuranceViewModelMapper
 import com.tokopedia.flight.bookingV2.data.entity.GetCartEntity
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum
+import com.tokopedia.flight.searchV3.presentation.model.filter.RefundableEnum
 import com.tokopedia.flight.orderlist.data.cloud.entity.RouteEntity
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel
 import javax.inject.Inject

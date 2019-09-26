@@ -20,10 +20,10 @@ import com.tokopedia.flight.passenger.data.cloud.requestbody.UpdatePassengerRequ
 import com.tokopedia.flight.review.data.model.AttributesVoucher;
 import com.tokopedia.flight.review.data.model.FlightCheckoutEntity;
 import com.tokopedia.flight.review.domain.checkout.FlightCheckoutRequest;
-import com.tokopedia.flight.search.data.api.combined.request.FlightSearchCombinedRequestData;
-import com.tokopedia.flight.search.data.api.combined.response.FlightSearchCombinedResponse;
-import com.tokopedia.flight.search.data.api.single.request.FlightSearchSingleRequestData;
-import com.tokopedia.flight.search.data.api.single.response.FlightDataResponse;
+import com.tokopedia.flight.searchV3.data.api.combined.request.FlightSearchCombinedRequestData;
+import com.tokopedia.flight.searchV3.data.api.combined.response.FlightSearchCombinedResponse;
+import com.tokopedia.flight.searchV3.data.api.single.request.FlightSearchSingleRequestData;
+import com.tokopedia.flight.searchV3.data.api.single.response.FlightDataResponse;
 
 import java.util.HashMap;
 import java.util.List;

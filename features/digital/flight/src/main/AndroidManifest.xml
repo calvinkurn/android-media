@@ -19,7 +19,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
         <activity
-            android:name=".search.presentation.activity.FlightSearchFilterActivity"
+            android:name=".searchV3.presentation.activity.FlightSearchFilterActivity"
             android:label="@string/filter"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />

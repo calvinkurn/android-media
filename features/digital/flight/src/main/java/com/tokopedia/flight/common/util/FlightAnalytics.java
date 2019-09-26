@@ -9,11 +9,11 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.data.api.single.response.Route;
-import com.tokopedia.flight.search.presentation.model.FlightAirlineViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel;
-import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel;
-import com.tokopedia.flight.search.presentation.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV3.data.api.single.response.Route;
+import com.tokopedia.flight.searchV3.presentation.model.FlightAirlineViewModel;
+import com.tokopedia.flight.searchV3.presentation.model.FlightJourneyViewModel;
+import com.tokopedia.flight.searchV3.presentation.model.FlightSearchPassDataViewModel;
+import com.tokopedia.flight.searchV3.presentation.model.filter.RefundableEnum;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 

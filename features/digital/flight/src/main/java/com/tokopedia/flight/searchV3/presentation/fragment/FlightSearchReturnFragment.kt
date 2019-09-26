@@ -9,9 +9,9 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
-import com.tokopedia.flight.search.di.DaggerFlightSearchComponent
-import com.tokopedia.flight.search.presentation.model.*
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV3.di.DaggerFlightSearchComponent
+import com.tokopedia.flight.searchV3.presentation.model.*
+import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchActivity.Companion.EXTRA_PASS_DATA
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_DEPARTURE_ID
 import com.tokopedia.flight.searchV3.presentation.activity.FlightSearchReturnActivity.Companion.EXTRA_IS_BEST_PAIRING

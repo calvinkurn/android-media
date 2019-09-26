@@ -3,8 +3,8 @@ package com.tokopedia.flight.searchV3.presentation.contract
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.common.travel.constant.TravelSortOption
 import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerViewModel
-import com.tokopedia.flight.search.presentation.model.*
-import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.searchV3.presentation.model.*
+import com.tokopedia.flight.searchV3.presentation.model.filter.FlightFilterModel
 
 /**
  * @author by furqan on 07/01/19

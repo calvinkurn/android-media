@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
-import com.tokopedia.flight.search.domain.usecase.FlightGetComboKeyUseCase
-import com.tokopedia.flight.search.domain.usecase.FlightSearchJourneyByIdUseCase
-import com.tokopedia.flight.search.presentation.model.FlightFareViewModel
-import com.tokopedia.flight.search.presentation.model.FlightJourneyViewModel
+import com.tokopedia.flight.searchV3.domain.FlightGetComboKeyUseCase
+import com.tokopedia.flight.searchV3.domain.FlightSearchJourneyByIdUseCase
+import com.tokopedia.flight.searchV3.presentation.model.FlightFareViewModel
+import com.tokopedia.flight.searchV3.presentation.model.FlightJourneyViewModel
 import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.searchV3.presentation.contract.FlightSearchReturnContract
 import rx.Observable

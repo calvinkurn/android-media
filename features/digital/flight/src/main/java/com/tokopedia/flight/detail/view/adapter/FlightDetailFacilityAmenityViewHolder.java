@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.detail.util.FlightAmenityIconUtil;
-import com.tokopedia.flight.search.data.api.single.response.Amenity;
+import com.tokopedia.flight.searchV3.data.api.single.response.Amenity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 
 /**
