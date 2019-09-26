@@ -147,7 +147,7 @@ public class FlightAnalytics {
                         dashboardViewModel.getFlightPassengerViewModel().getInfant(),
                         dashboardViewModel.getFlightClass().getTitle(),
                         FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getDepartureDate()),
-                        FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate())
+                        dashboardViewModel.isOneWay()? "" : FlightDateUtil.formatDate(FlightDateUtil.DEFAULT_FORMAT, FlightDateUtil.YYYYMMDD, dashboardViewModel.getReturnDate())
                 )
         ));
     }
@@ -688,7 +688,7 @@ public class FlightAnalytics {
                 EnhanceEccomerce.DIMENSION71, flightViewModel.getTotalTransit() > 0 ? "true" : "false",
                 EnhanceEccomerce.DIMENSION72, flightViewModel.getBeforeTotal().equals("") ? "normal" : "strike",
                 EnhanceEccomerce.DIMENSION73, flightViewModel.getCountAdult() + " - " + flightViewModel.getCountChild() + " - " + flightViewModel.getCountInfant(),
-                EnhanceEccomerce.DIMENSION74, flightViewModel.getRouteList().get(0).getFlightNumber(),
+                EnhanceEccomerce.DIMENSION74, flightViewModel.getRouteList().get(0).getAirlineCode() + " - " + flightViewModel.getRouteList().get(0).getFlightNumber(),
                 EnhanceEccomerce.DIMENSION75, flightViewModel.getDepartureTime(),
                 EnhanceEccomerce.DIMENSION76, flightViewModel.getArrivalTime(),
                 EnhanceEccomerce.VARIANT, (flightViewModel.getAdultNumericPrice() * flightViewModel.getCountAdult()) + " - " +
@@ -706,7 +706,7 @@ public class FlightAnalytics {
                         banner.getAttributes().getPromoCode(), "slider banner"),
                 "creative", banner.getAttributes().getDescription().toLowerCase(),
                 "creative_url", banner.getAttributes().getLinkUrl(),
-                "position", String.valueOf(position)
+                "position", String.valueOf(position + 1)
         ));
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, PROMO_VIEW_EVENT,
