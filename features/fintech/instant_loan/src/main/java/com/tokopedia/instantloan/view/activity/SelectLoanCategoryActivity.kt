@@ -45,7 +45,7 @@ class SelectLoanCategoryActivity : BaseActivity() {
                 val intent = Intent()
                 intent.putExtra(EXTRA_SELECTED_NAME, categoryType)
                 setResult(Activity.RESULT_OK, intent)
-                finish()
+                killActivity()
             }
         })
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -61,14 +61,14 @@ class SelectLoanCategoryActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == com.tokopedia.instantloan.R.id.il_action_close) {
-            finish()
+            killActivity()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun finish() {
-        super.finish()
-//        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
+    fun killActivity() {
+        this.finish()
+        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
     }
 
     private inner class ListAdapter(sortList: List<GqlLendingCategoryData>?, private var selectedKey: Int, private var selectedValue: String?, internal var clickListener: OnItemClickListener) : RecyclerView.Adapter<ListAdapter.ViewHolder>() {

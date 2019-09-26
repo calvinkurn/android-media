@@ -64,8 +64,7 @@ class SelectLoanParamActivity : BaseActivity() {
 
     fun killActivity() {
         this.finish()
-//        onDestroy()
-//        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
+        overridePendingTransition(android.R.anim.fade_in, com.tokopedia.instantloan.R.anim.instant_loan_push_down)
     }
 
     override fun onPause() {
