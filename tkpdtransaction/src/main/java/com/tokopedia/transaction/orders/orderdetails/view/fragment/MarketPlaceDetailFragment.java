@@ -79,12 +79,9 @@ import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
-import com.tokopedia.unifycomponents.ticker.TickerData;
-import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -553,7 +550,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 textView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        presenter.onBuyAgainAllItems();
+                        presenter.onBuyAgainAllItems(" - order");
                     }
                 });
             } else {
@@ -577,8 +574,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 if (!actionButton.getActionColor().getBorder().equals("")) {
                     shape.setStroke(getResources().getDimensionPixelSize(R.dimen.dp_2), Color.parseColor(actionButton.getActionColor().getBorder()));
                 }
+                LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 stickyTextView.setBackground(shape);
-                stickyTextView.setLayoutParams(params);
+                stickyTextView.setLayoutParams(params1);
                 if (!actionButton.getActionColor().getTextColor().equals("")) {
                     stickyTextView.setTextColor(Color.parseColor(actionButton.getActionColor().getTextColor()));
                 }
@@ -586,7 +584,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     stickyTextView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            presenter.onBuyAgainAllItems();
+                            presenter.onBuyAgainAllItems(" - order");
                         }
                     });
                 } else {

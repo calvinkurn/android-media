@@ -625,7 +625,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
                     } else {
                         getView().showFailureMessage(StringUtils.convertListToStringDelimiter(responseBuyAgain.getAddToCartMulti().getData().getMessage(), ","));
                     }
-                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1);
+                    orderListAnalytics.sendBuyAgainEvent(orderDetails.getItems(), orderDetails.getShopInfo(), responseBuyAgain.getAddToCartMulti().getData().getData(), responseBuyAgain.getAddToCartMulti().getData().getSuccess() == 1, false, "");
                 }
 
             }
