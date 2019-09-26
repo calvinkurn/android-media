@@ -202,10 +202,11 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     override fun onSearchSubmitted(keyword: String) {
-        if (keyword.isNotEmpty()) {
+        searchQuery = keyword
+        if (searchQuery.isNotEmpty()) {
             shopPageTrackingShopSearchProduct.clickManualSearch(
                     SCREEN_SHOP_PAGE,
-                    keyword,
+                    searchQuery,
                     String.format(ETALASE_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
             )
             redirectToShopProductListPage()
