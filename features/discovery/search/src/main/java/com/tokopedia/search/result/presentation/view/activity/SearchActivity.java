@@ -192,6 +192,7 @@ public class SearchActivity extends BaseActivity
     private void initToolbar() {
         configureSupportActionBar();
         setSearchTextViewDrawableLeft();
+        configureButtonCart();
         configureToolbarOnClickListener();
     }
 
@@ -210,24 +211,24 @@ public class SearchActivity extends BaseActivity
         searchTextView.setCompoundDrawablesWithIntrinsicBounds(iconSearch, null, null, null);
     }
 
+    private void configureButtonCart() {
+        if (isCartIconInSearchEnabled()) {
+            showButtonCart();
+        } else {
+            hideButtonCart();
+        }
+    }
+
+    private boolean isCartIconInSearchEnabled() {
+        return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true);
+    }
+
     private void configureToolbarOnClickListener() {
         searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
         buttonCart.setOnClickListener(v -> moveToCartActivity());
         buttonHome.setOnClickListener(v -> moveToHomeActivity());
-    }
-
-    private void configureButtonCart() {
-        if (!userSession.isLoggedIn()) {
-            hideButtonCart();
-        } else {
-            if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_CART_ICON_IN_SEARCH, true)) {
-                showButtonCart();
-            } else {
-                hideButtonCart();
-            }
-        }
     }
 
     private void showButtonCart() {
@@ -579,7 +580,6 @@ public class SearchActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        configureButtonCart();
         unregisterShake();
     }
 
