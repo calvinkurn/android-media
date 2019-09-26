@@ -123,6 +123,7 @@ class ChatItemListViewHolder(
             with (it) {
                 readStatus = STATE_CHAT_READ
                 bindReadState(readStatus, unreads)
+                listener.decreaseNotificationCounter()
             }
         }
     }
@@ -132,6 +133,7 @@ class ChatItemListViewHolder(
             with (it) {
                 readStatus = STATE_CHAT_UNREAD
                 bindReadState(readStatus, unreads)
+                listener.increaseNotificationCounter()
             }
         }
     }

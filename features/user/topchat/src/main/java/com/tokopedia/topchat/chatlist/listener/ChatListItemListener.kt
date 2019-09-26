@@ -12,4 +12,6 @@ interface ChatListItemListener {
     fun deleteChat(element: ItemChatListPojo, itemPosition: Int)
     fun markChatAsRead(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
     fun markChatAsUnread(msgIds: List<String>, result: (Result<ChatChangeStateResponse>) -> Unit)
+    fun increaseNotificationCounter()
+    fun decreaseNotificationCounter()
 }

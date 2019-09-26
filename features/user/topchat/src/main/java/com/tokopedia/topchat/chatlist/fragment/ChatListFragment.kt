@@ -5,6 +5,7 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -75,6 +76,8 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
     private lateinit var performanceMonitoring: PerformanceMonitoring
     private lateinit var viewState: ChatListViewState
 
+    private var activityContract: ChatListContract.Activity? = null
+
     private var mUserSeen = false
     private var mViewCreated = false
     private var sightTag = ""
@@ -85,6 +88,12 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     @Inject
     lateinit var chatListAnalytics: ChatListAnalytic
+
+    override fun onAttachActivity(context: Context?) {
+        if (context is ChatListContract.Activity) {
+            activityContract = context
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -362,6 +371,20 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
         chatItemListViewModel.markChatAsUnread(msgIds, result)
     }
 
+    override fun increaseNotificationCounter() {
+        when (sightTag) {
+            PARAM_TAB_USER -> activityContract?.increaseUserNotificationCounter()
+            PARAM_TAB_SELLER -> activityContract?.increaseSellerNotificationCounter()
+        }
+    }
+
+    override fun decreaseNotificationCounter() {
+        when (sightTag) {
+            PARAM_TAB_USER -> activityContract?.decreaseUserNotificationCounter()
+            PARAM_TAB_SELLER -> activityContract?.decreaseSellerNotificationCounter()
+        }
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == OPEN_DETAIL_MESSAGE
@@ -438,9 +461,7 @@ class ChatListFragment : BaseListFragment<Visitable<*>,
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        if (activity is ChatListContract.Activity) {
-            (activity as ChatListContract.Activity).loadNotificationCounter()
-        }
+        activityContract?.loadNotificationCounter()
     }
 
     companion object {
