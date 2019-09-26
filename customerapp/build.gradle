@@ -253,7 +253,7 @@ android {
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-//    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
@@ -410,8 +410,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.miscDependencies.bcaxcoWidget
-    implementation rootProject.ext.viewDependencies.appIntro
-//    implementation rootProject.ext.miscDependencies.bcaOneClick
 
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.shopCommon)

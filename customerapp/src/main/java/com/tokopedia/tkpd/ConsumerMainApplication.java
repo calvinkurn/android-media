@@ -100,7 +100,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     @Override
     public void onCreate() {
         UIBlockDebugger.init(this);
-     //   com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
+        com.example.akamai_bot_lib.UtilsKt.initAkamaiBotManager(this);
         setVersionCode();
 
         initializeSdk();
