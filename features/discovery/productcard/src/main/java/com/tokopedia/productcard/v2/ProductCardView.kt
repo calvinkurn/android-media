@@ -1,7 +1,9 @@
 package com.tokopedia.productcard.v2
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Paint
+import android.graphics.drawable.Drawable
 import android.support.annotation.DimenRes
 import android.support.annotation.DrawableRes
 import android.support.annotation.IdRes
@@ -9,10 +11,14 @@ import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
 import android.support.v7.widget.CardView
+import android.text.TextUtils
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.bumptech.glide.request.animation.GlideAnimation
+import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseCustomView
@@ -323,6 +329,13 @@ abstract class ProductCardView: BaseCustomView {
         initRating(productCardModel.ratingCount)
         initReview(productCardModel.reviewCount)
         initWishlist(productCardModel.isWishlistVisible, productCardModel.isWishlisted)
+        initLabelPromo(productCardModel.labelPromo)
+        initShopName(productCardModel.shopName)
+        initShopLocation(productCardModel.shopLocation)
+        initLabelCredibility(productCardModel.labelCredibility)
+        initLabelOffers(productCardModel.labelOffers)
+        initShopBadgeList(productCardModel.shopBadgeList)
+        initTopAdsIcon(productCardModel.isTopAds)
 
         realignLayout()
     }
@@ -383,6 +396,94 @@ abstract class ProductCardView: BaseCustomView {
                 it.setImageResource(R.drawable.product_card_ic_wishlist)
             }
         }
+    }
+
+    private fun initLabelPromo(labelPromoModel: ProductCardModel.Label) {
+        labelPromo.shouldShowWithAction(labelPromoModel.title.isNotEmpty()) {
+            it.text = labelPromoModel.title
+            it.setLabelType(getLabelTypeFromString(labelPromoModel.type))
+        }
+    }
+
+    private fun initShopName(shopName: String) {
+        textViewShopName.setTextWithBlankSpaceConfig(shopName, blankSpaceConfig.shopName)
+    }
+
+    private fun initShopLocation(shopLocation: String) {
+        textViewShopLocation.setTextWithBlankSpaceConfig(shopLocation, blankSpaceConfig.shopLocation)
+    }
+
+    private fun initLabelCredibility(labelCredibilityModel: ProductCardModel.Label) {
+        labelCredibility.configureVisibilityWithBlankSpaceConfig(
+                labelCredibilityModel.title.isNotEmpty(), blankSpaceConfig.labelCredibility) {
+            it.text = labelCredibilityModel.title
+            it.setLabelType(getLabelTypeFromString(labelCredibilityModel.type))
+        }
+    }
+
+    private fun initLabelOffers(labelOffersModel: ProductCardModel.Label) {
+        labelOffers.configureVisibilityWithBlankSpaceConfig(
+                labelOffersModel.title.isNotEmpty(), blankSpaceConfig.labelOffers) {
+            it.text = labelOffersModel.title
+            it.setLabelType(getLabelTypeFromString(labelOffersModel.type))
+        }
+    }
+
+    private fun initShopBadgeList(shopBadgeList: List<ProductCardModel.ShopBadge>) {
+        removeAllShopBadges()
+
+        linearLayoutShopBadges.shouldShowWithAction(hasAnyBadgesShown(shopBadgeList)) {
+            loopBadgesListToLoadShopBadgeIcon(shopBadgeList)
+        }
+    }
+
+    private fun hasAnyBadgesShown(shopBadgeList: List<ProductCardModel.ShopBadge>): Boolean {
+        return shopBadgeList.any { badge -> badge.isShown }
+    }
+
+    private fun loopBadgesListToLoadShopBadgeIcon(shopBadgeList: List<ProductCardModel.ShopBadge>) {
+        for (badgeItem in shopBadgeList) {
+            if (badgeItem.isShown) {
+                loadShopBadgesIcon(badgeItem.imageUrl)
+            }
+        }
+    }
+
+    private fun loadShopBadgesIcon(url: String) {
+        if(!TextUtils.isEmpty(url)) {
+            val view = LayoutInflater.from(context).inflate(R.layout.product_card_badge_layout, null)
+
+            ImageHandler.loadImageBitmap2(context, url, object : SimpleTarget<Bitmap>() {
+                override fun onResourceReady(bitmap: Bitmap, glideAnimation: GlideAnimation<in Bitmap>) {
+                    loadShopBadgeSuccess(view, bitmap)
+                }
+
+                override fun onLoadFailed(e: Exception?, errorDrawable: Drawable?) {
+                    super.onLoadFailed(e, errorDrawable)
+                    loadShopBadgeFailed(view)
+                }
+            })
+        }
+    }
+
+    private fun loadShopBadgeSuccess(view: View, bitmap: Bitmap) {
+        val image = view.findViewById<ImageView>(R.id.badge)
+
+        if (bitmap.height <= 1 && bitmap.width <= 1) {
+            view.visibility = View.GONE
+        } else {
+            image.setImageBitmap(bitmap)
+            view.visibility = View.VISIBLE
+            addShopBadge(view)
+        }
+    }
+
+    private fun loadShopBadgeFailed(view: View) {
+        view.visibility = View.GONE
+    }
+
+    private fun initTopAdsIcon(isTopAds: Boolean) {
+        imageTopAds?.visibility = if (isVisible) View.VISIBLE else View.GONE
     }
 
     open fun setImageProductVisible(isVisible: Boolean) {
@@ -468,7 +569,7 @@ abstract class ProductCardView: BaseCustomView {
     }
 
     open fun setLabelDiscountText(discount: Int) {
-        val discountText = Integer.toString(discount) + "%"
+        val discountText = "$discount%"
         labelDiscount?.text = discountText
     }
 

@@ -11,7 +11,6 @@ class BlankSpaceConfig (
     val discountPercentage: Boolean = false,
     val slashedPrice: Boolean = false,
     val price: Boolean = false,
-    val shopBadges: Boolean = false,
     val shopLocation: Boolean = false,
     val ratingCount: Boolean = false,
     val reviewCount: Boolean = false,
