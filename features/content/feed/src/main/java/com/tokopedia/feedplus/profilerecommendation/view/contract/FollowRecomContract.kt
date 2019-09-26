@@ -32,7 +32,11 @@ interface FollowRecomContract {
 
         fun showLoading()
 
+        fun showListLoading()
+
         fun hideLoading()
+
+        fun hideListLoading()
     }
 
     interface Presenter {
