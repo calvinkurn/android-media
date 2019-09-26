@@ -606,7 +606,7 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                 default:
                     break;
             }
-            orderListAnalytics.sendActionButtonClickEvent(orderStatusEvent);
+      //      orderListAnalytics.sendActionButtonClickEvent(orderStatusEvent);
         }
         return view -> {
             if (actionButton.getActionButtonPopUp() != null && !TextUtils.isEmpty(actionButton.getActionButtonPopUp().getTitle())) {

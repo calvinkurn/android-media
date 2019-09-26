@@ -110,12 +110,22 @@ public class QuickSingleFilterView extends BaseCustomView {
                     int indexOf = items.indexOf(defaultItem);
                     if (indexOf != -1) {
                         items.get(indexOf).setSelected(true);
+                        String str = items.get(indexOf).getName();
+                        if (str.contains("(")) {
+                            int i = str.indexOf("(");
+                            str = str.substring(0, i - 1);
+                        }
                         setSelectedFilter(items.get(indexOf).getType());
-                        setSelectedFilterName(items.get(indexOf).getName());
+                        setSelectedFilterName(str);
                     }
                 } else {
+                    String str = quickFilterItem.getName();
+                    if (str.contains("(")) {
+                        int i = str.indexOf("(");
+                        str = str.substring(0, i - 1);
+                    }
                     setSelectedFilter(getDefaultSelectedFilterType(quickFilterItem));
-                    setSelectedFilterName(quickFilterItem.getName());
+                    setSelectedFilterName(str);
                 }
                 adapterFilter.notifyDataSetChanged();
             }
