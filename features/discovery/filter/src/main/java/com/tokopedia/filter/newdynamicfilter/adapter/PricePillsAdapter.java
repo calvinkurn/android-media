@@ -3,6 +3,7 @@ package com.tokopedia.filter.newdynamicfilter.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +12,10 @@ import android.widget.TextView;
 import com.tokopedia.design.item.DeletableItemView;
 import com.tokopedia.filter.R;
 import com.tokopedia.filter.common.data.Option;
+import com.tokopedia.filter.common.helper.NumberParseHelper;
 import com.tokopedia.filter.newdynamicfilter.helper.RatingHelper;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,8 +84,8 @@ public class PricePillsAdapter extends
                 public void onClick(View v) {
                     if (callback != null) {
                         callback.onPriceRangeClicked(
-                                Integer.parseInt(pricePillOption.getValMin()),
-                                Integer.parseInt(pricePillOption.getValMax())
+                                NumberParseHelper.safeParseInt(pricePillOption.getValMin()),
+                                NumberParseHelper.safeParseInt(pricePillOption.getValMax())
                         );
                     }
                 }
@@ -89,8 +93,15 @@ public class PricePillsAdapter extends
         }
 
         private boolean isValueRangeMatch(Option pricePillOption) {
-            return Integer.parseInt(pricePillOption.getValMin()) == callback.getCurrentPriceMin()
-                    && Integer.parseInt(pricePillOption.getValMax()) == callback.getCurrentPriceMax();
+            String valMin = pricePillOption.getValMin();
+            String valMax = pricePillOption.getValMax();
+
+            if (TextUtils.isEmpty(valMin) || TextUtils.isEmpty(valMax)) {
+                return false;
+            }
+
+            return Integer.parseInt(valMin) == callback.getCurrentPriceMin()
+                    && Integer.parseInt(valMax) == callback.getCurrentPriceMax();
         }
     }
 
