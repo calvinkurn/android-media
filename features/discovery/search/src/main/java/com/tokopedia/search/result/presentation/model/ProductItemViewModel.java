@@ -54,7 +54,7 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
     private List<LabelGroupViewModel> labelGroupList = new ArrayList<>();
     private boolean isShopPowerBadge;
     private boolean isShopOfficialStore;
-    private FreeOngkirViewModel freeOngkirViewModel;
+    private FreeOngkirViewModel freeOngkirViewModel = new FreeOngkirViewModel();
 
     public boolean isTopAds() {
         return isTopAds;
