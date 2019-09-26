@@ -133,6 +133,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private CategoryItem categoryItem;
     private boolean isFirstTime = false;
     private TextView promoheading;
+    private UserSession userSession;
 
     public static DealsHomeFragment createInstance(boolean isLocationUpdated) {
         DealsHomeFragment fragment = new DealsHomeFragment();
@@ -160,6 +161,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         checkLocationStatus();
 
         categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
+        userSession = new UserSession(getActivity());
+        if (userSession.isLoggedIn()) {
+            mPresenter.sendNSQEvent(userSession.getUserId(), "home-page");
+        }
         return view;
     }
 

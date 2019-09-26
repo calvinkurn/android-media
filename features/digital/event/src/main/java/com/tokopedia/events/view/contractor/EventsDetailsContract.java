@@ -29,6 +29,10 @@ public class EventsDetailsContract {
 
         String getSCREEN_NAME();
         void bookBtnClick();
+
+        void sendNsqEvent(String userId, EventsDetailsViewModel data);
+
+        void sendNsqTravelEvent(String userId, EventsDetailsViewModel data);
     }
 
 }

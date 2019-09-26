@@ -54,6 +54,7 @@ dependencies {
     implementation project(rootProject.ext.features.loyaltyCommon)
     implementation project(rootProject.ext.features.tokopointsNotification)
     implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.features.stickyLogin)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.tkpddesign)

@@ -79,7 +79,6 @@ import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerVie
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
-import com.tokopedia.home.widget.StickyTextView;
 import com.tokopedia.home.widget.ToggleableSwipeRefreshLayout;
 import com.tokopedia.iris.Iris;
 import com.tokopedia.iris.IrisAnalytics;
@@ -97,6 +96,9 @@ import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.searchbar.HomeMainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
+import com.tokopedia.stickylogin.internal.StickyLoginConstant;
+import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
@@ -165,7 +167,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private SnackbarRetry messageSnackbar;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
-    private StickyTextView stickyLoginTextView;
+    private StickyLoginView stickyLoginView;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
@@ -327,7 +329,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         });
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
-        stickyLoginTextView = view.findViewById(R.id.sticky_login_text);
+        stickyLoginView = view.findViewById(R.id.sticky_login_text);
 
         root = view.findViewById(R.id.root);
 
@@ -389,7 +391,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             }
         });
 
-        stickyLoginTextView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+        stickyLoginView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 updateStickyState();
@@ -400,18 +402,18 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 }
             }
         });
-        stickyLoginTextView.setOnClickListener(new View.OnClickListener() {
+        stickyLoginView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                stickyLoginView.getTracker().clickOnLogin(StickyLoginConstant.Page.HOME);
                 onGoToLogin();
-                HomePageTracking.eventClickOnStickyLogin(true);
             }
         });
-        stickyLoginTextView.setOnDismissListener(new View.OnClickListener() {
+        stickyLoginView.setOnDismissListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stickyLoginTextView.dismiss();
-                HomePageTracking.eventClickOnStickyLogin(false);
+                stickyLoginView.dismiss(StickyLoginConstant.Page.HOME);
+                stickyLoginView.getTracker().clickOnDismiss(StickyLoginConstant.Page.HOME);
 
                 FloatingEggButtonFragment floatingEggButtonFragment = getFloatingEggButtonFragment();
                 if (floatingEggButtonFragment != null) {
@@ -774,6 +776,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             presenter.getSearchHint();
             presenter.getHomeData();
             presenter.getHeaderData(false);
+            presenter.getStickyContent();
         }
 
         if (getActivity() instanceof RefreshNotificationListener) {
@@ -1036,8 +1039,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
-    public void onDynamicChannelClicked(String actionLink, String trackingAttribution) {
-        onActionLinkClicked(actionLink, trackingAttribution);
+    public void onDynamicChannelClicked(String actionLink) {
+        onActionLinkClicked(actionLink);
     }
 
     private void onActionLinkClicked(String actionLink) {
@@ -1547,29 +1550,38 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    @Override
+    public void setStickyContent(StickyLoginTickerPojo stickyContent) {
+        if (stickyContent.getTickers().size() > 0) {
+            stickyLoginView.setContent(stickyContent.getTickers().get(0));
+        } else {
+            stickyLoginView.setVisibility(View.GONE);
+        }
+    }
+
     private void updateStickyState() {
-        boolean isCanShowing = remoteConfig.getBoolean(StickyTextView.STICKY_LOGIN_VIEW_KEY, true);
+        boolean isCanShowing = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
         if (!isCanShowing) {
-            stickyLoginTextView.setVisibility(View.GONE);
+            stickyLoginView.setVisibility(View.GONE);
             return;
         }
 
-        if (stickyLoginTextView.isShowing()) {
-            positionSticky = stickyLoginTextView.getLocation();
+        if (stickyLoginView.isShowing()) {
+            positionSticky = stickyLoginView.getLocation();
         }
 
         if (isUserLoggedIn()) {
-            stickyLoginTextView.dismiss();
+            stickyLoginView.setVisibility(View.GONE);
         } else {
-            stickyLoginTextView.show();
-            HomePageTracking.eventOnStickyLoginShowing();
+            stickyLoginView.show(StickyLoginConstant.Page.HOME);
+            stickyLoginView.getTracker().viewOnPage(StickyLoginConstant.Page.HOME);
         }
     }
 
     private void updateEggBottomMargin(FloatingEggButtonFragment floatingEggButtonFragment) {
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) floatingEggButtonFragment.getView().getLayoutParams();
-        if (stickyLoginTextView.isShowing()) {
-            params.setMargins(0, 0, 0, stickyLoginTextView.getHeight());
+        if (stickyLoginView.isShowing()) {
+            params.setMargins(0, 0, 0, stickyLoginView.getHeight());
 
             int[] positionEgg = new int[2];
             int eggHeight = floatingEggButtonFragment.getEgg().getHeight();

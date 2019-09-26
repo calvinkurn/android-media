@@ -1,7 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.di.component;
 
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.discovery.autocomplete.presentation.activity.AutoCompleteActivity;
 import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryCatalogFragment;
 import com.tokopedia.discovery.newdiscovery.di.module.DiscoveryModule;
 import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
@@ -16,8 +15,6 @@ import dagger.Component;
 @DiscoveryScope
 @Component(modules = DiscoveryModule.class, dependencies = AppComponent.class)
 public interface DiscoveryComponent {
-
-    void inject(AutoCompleteActivity autoCompleteActivity);
 
     void inject(CategoryCatalogFragment catalogFragment);
 
