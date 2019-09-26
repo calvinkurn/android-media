@@ -10,6 +10,7 @@ import com.tokopedia.promocheckout.detail.model.couponprevalidate.PromoCouponPre
 import com.tokopedia.promocheckout.detail.model.couponredeem.PromoRedeemCouponResponse
 import com.tokopedia.promocheckout.detail.model.detailmodel.CouponDetailsResponse
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
+import com.tokopedia.promocheckout.detail.model.userpoints.UserPointsResponse
 
 import java.util.HashMap
 
@@ -123,6 +124,9 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
                 variables, false)
         mGetCouponDetail!!.clearRequest()
         mGetCouponDetail.addRequest(request)
+
+        val graphqlRequestPoints = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().resources, R.raw.promo_gql_current_points),UserPointsResponse::class.java, false)
+        mGetCouponDetail.addRequest(graphqlRequestPoints)
         mGetCouponDetail.execute(object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
@@ -140,8 +144,20 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
                     view.hideLoader()
                     data = response.getData(CouponDetailsResponse::class.java)
                     view.populateDetail(data.hachikoCatalogDetail!!)
+                    handlePointQuery(response.getData<UserPointsResponse>(UserPointsResponse::class.java))
+
                 }
             }
         })
+    }
+
+    private fun handlePointQuery(pointDetailEntity: UserPointsResponse?) {
+        if (pointDetailEntity?.tokopoints?.resultStatus == null
+                || pointDetailEntity.tokopoints.status == null
+                || pointDetailEntity.tokopoints.status.points == null) {
+            //Need to handle error
+        } else if (pointDetailEntity.tokopoints.resultStatus.code =="200") {
+            pointDetailEntity.tokopoints.status.points.rewardStr?.let { view.onSuccessPoints(it) }
+        }
     }
 }

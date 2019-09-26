@@ -23,6 +23,8 @@ interface CheckoutCatalogDetailContract {
 
         fun showValidationMessageDialog(item: HachikoCatalogDetail, title: String, message: String, resCode: Int)
 
+        fun onSuccessPoints(point: String)
+
     }
 
     interface Presenter : CustomerPresenter<View> {

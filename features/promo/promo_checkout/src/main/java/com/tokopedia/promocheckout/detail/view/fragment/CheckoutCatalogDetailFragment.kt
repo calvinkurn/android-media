@@ -26,6 +26,7 @@ import com.tokopedia.promocheckout.common.util.RESULT_CLASHING
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.model.detailmodel.HachikoCatalogDetail
+import com.tokopedia.promocheckout.detail.model.userpoints.UserPointsResponse
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailContract
 import com.tokopedia.promocheckout.detail.view.presenter.CheckoutCatalogDetailPresenter
@@ -227,14 +228,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         }
 
 
-        val points = view!!.findViewById<Typography>(R.id.text_point_value)
-        if (data.pointsStr == null || data.pointsStr.isEmpty()) {
-            points.visibility = View.GONE
-        } else {
-            points.visibility = View.VISIBLE
-            points.text = data.points.toString()
-        }
-
         //Quota text handling
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
             quota.visibility = View.GONE
@@ -290,6 +283,14 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         }
     }
 
+    override fun onSuccessPoints(point: String) {
+        if (view == null) {
+            return
+        }
+
+        val textUserPoint = view!!.findViewById<Typography>(R.id.text_point_value)
+        textUserPoint.text=(point)
+    }
     companion object {
         private val UTF_ENCODING = "UTF-8"
         private val COUPON_MIME_TYPE = "text/html"
