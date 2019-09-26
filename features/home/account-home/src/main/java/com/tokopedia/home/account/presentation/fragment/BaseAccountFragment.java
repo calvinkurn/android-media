@@ -266,6 +266,14 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
                                                 @NotNull TokopediaPayBSModel bsData, boolean isLinked,
                                                 @NotNull String walletType) {
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
+
+        if (applink != null && applink.startsWith("http")) {
+            openApplink(String.format("%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    applink));
+        } else if (applink != null && applink.startsWith("tokopedia")) {
+            openApplink(applink);
+        }
     }
 
     @Override
