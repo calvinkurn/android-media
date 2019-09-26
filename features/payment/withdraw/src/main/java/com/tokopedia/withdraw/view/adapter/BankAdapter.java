@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
-    private static final String DEFAULT_BANK_ID = "1";
+    private static final int DEFAULT_BANK_ID = 1;
     WithdrawAnalytics analytics;
 
 
@@ -169,10 +169,20 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                     analytics.eventClickAccountBank();
                     changeItemSelected(position);
                 };
-                holder.itemView.setOnClickListener(l);
+                if (thisItem.getStatus() == 0) {
+                    viewHolder.bankName.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
+                    viewHolder.bankAccountName.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
+                    holder.itemView.setOnClickListener(null);
+                } else {
+                    viewHolder.bankName.setTextColor(context.getResources().getColor(R.color.grey_796));
+                    viewHolder.bankAccountName.setTextColor(context.getResources().getColor(R.color.grey_button_compat));
+                    holder.itemView.setOnClickListener(l);
+                }
 
                 Drawable drawabl;
-                if (listBank.get(position).isChecked()) {
+                if (thisItem.getStatus() == 0) {
+                    drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_disabled);
+                } else if (listBank.get(position).isChecked()) {
                     drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_button_selected);
                 } else {
                     drawabl = MethodChecker.getDrawable(context, R.drawable.bank_withdraw_radio_button_default);
@@ -184,7 +194,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 } else {
                     viewHolder.bankName.setText(thisItem.getBankName());
                     viewHolder.bankAccountName.setText(
-                            String.format("%s • %s", thisItem.getBankAccountNumber(), thisItem.getBankAccountName()));
+                            String.format("%s • %s", thisItem.getAccountNo(), thisItem.getAccountName()));
                 }
                 break;
         }
@@ -220,7 +230,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     public void setDefault() {
         if (listBank.size() > 0) {
             for (int i = 0; i < listBank.size(); i++) {
-                if (DEFAULT_BANK_ID.equalsIgnoreCase(listBank.get(i).getType())) {
+                if (DEFAULT_BANK_ID == listBank.get(i).getIsDefaultBank()) {
                     selectedItem = i;
                     listBank.get(selectedItem).setChecked(true);
                     break;
@@ -255,8 +265,8 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
             if (oldItem instanceof BankAccount) {
                 return newItem instanceof BankAccount
-                        && ((BankAccount) oldItem).getBankAccountId() != null
-                        && ((BankAccount) oldItem).getBankAccountId().equals(((BankAccount) newItem).getBankAccountId());
+                        && ((BankAccount) oldItem).getBankAccountID() != 0
+                        && (((BankAccount) oldItem).getBankAccountID() == ((BankAccount) newItem).getBankAccountID());
             }
             return false;
         }
@@ -272,10 +282,10 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
                 return oldPost.getBankName() != null &&
                         oldPost.getBankName().equalsIgnoreCase(newPost.getBankName()) &&
-                        oldPost.getBankAccountNumber() != null &&
-                        oldPost.getBankAccountNumber().equalsIgnoreCase(newPost.getBankAccountNumber()) &&
-                        oldPost.getBankAccountName() != null &&
-                        oldPost.getBankAccountName().equalsIgnoreCase(newPost.getBankAccountName());
+                        oldPost.getAccountNo() != null &&
+                        oldPost.getAccountNo().equalsIgnoreCase(newPost.getAccountNo()) &&
+                        oldPost.getAccountNo() != null &&
+                        oldPost.getAccountNo().equalsIgnoreCase(newPost.getAccountNo());
             }
             return oldItem.equals(newItem);
         }

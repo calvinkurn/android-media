@@ -39,10 +39,10 @@
         android:textSize="@dimen/sp_14" />
 
 
-    <Button
+    <TextView
         android:id="@+id/back_btn"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_40"
         android:layout_below="@+id/description"
         android:layout_marginTop="@dimen/dp_32"
         android:layout_marginRight="@dimen/dp_8"
@@ -56,10 +56,10 @@
         android:textColor="@color/green_nob"
         android:textSize="@dimen/sp_14" />
 
-    <Button
+    <TextView
         android:id="@+id/continue_btn"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_40"
         android:layout_below="@+id/description"
         android:layout_marginTop="@dimen/dp_32"
         android:background="@drawable/btn_bg_green_curved_corners"
