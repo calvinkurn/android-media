@@ -102,7 +102,15 @@ object MentionTextHelper {
         }
     }
 
-    fun getAllMentionSpansFromText(text: Spannable, start: Int = 0, end: Int = text.length): Array<MentionSpan> {
+    fun getRenewedMentionSpans(text: Spannable, start: Int = 0, end: Int = text.length): Array<MentionSpan> {
+        val currentMentionSpan = getAllMentionSpansFromText(text, start, end)
+        currentMentionSpan.forEach {
+            it.start = text.getSpanStart(it)
+        }
+        return currentMentionSpan
+    }
+
+    private fun getAllMentionSpansFromText(text: Spannable, start: Int = 0, end: Int = text.length): Array<MentionSpan> {
         return text.getSpans(start, end, MentionSpan::class.java)
     }
 
@@ -119,7 +127,11 @@ object MentionTextHelper {
                         spanEnd,
                         ""
                 )
-                if (spanStart != text.indexOf(replacingText) ||
+
+                /**
+                 * Replace text with the char that user writes
+                 */
+                if (spanStart != text.indexOf(replacingText, startIndex = spanStart) ||
                         replacingText.length != span.length - 1)
                     spannableStringBuilder.insert(spanStart, replacingText)
             }
@@ -144,6 +156,8 @@ object MentionTextHelper {
             )
         } else null
     }
+
+
 
     fun deSpanMentionTag(text: Spannable): String {
         val spannableStringBuilder = SpannableStringBuilder(text)
