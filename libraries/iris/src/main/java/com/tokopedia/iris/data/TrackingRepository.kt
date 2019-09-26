@@ -26,6 +26,9 @@ class TrackingRepository(
 
     private val cache: Cache = Cache(context)
     private val trackingDao: TrackingDao = IrisDb.getInstance(context).trackingDao()
+    private val apiService by lazy {
+        ApiService(context).makeRetrofitService()
+    }
 
     suspend fun saveEvent(data: String, session: Session) = withContext(Dispatchers.IO) {
         try {
@@ -57,9 +60,8 @@ class TrackingRepository(
 
     suspend fun sendSingleEvent(data: String, session: Session): Boolean {
         val dataRequest = TrackingMapper().transformSingleEvent(data, session.getSessionId(), session.getUserId(), session.getDeviceId())
-        val service = ApiService(context).makeRetrofitService()
         val requestBody = ApiService.parse(dataRequest)
-        val request = service.sendSingleEventAsync(requestBody)
+        val request = apiService.sendSingleEventAsync(requestBody)
         val response = request.await()
         return response.isSuccessful
     }
@@ -88,7 +90,6 @@ class TrackingRepository(
         val maxLoop = 5
         var totalSentData = 0
 
-        var service: ApiInterface? = null
         var lastSuccessSent = true
 
         // we want to send {maxLoop} times, or until the data is empty.
@@ -104,11 +105,8 @@ class TrackingRepository(
             }
             // transform and send the data to server
             val request: String = TrackingMapper().transformListEvent(data)
-            if (service == null) {
-                service = ApiService(context).makeRetrofitService()
-            }
             val requestBody = ApiService.parse(request)
-            val response = service.sendMultiEventAsync(requestBody).await()
+            val response = apiService.sendMultiEventAsync(requestBody).await()
             if (response.isSuccessful && response.code() == 200) {
                 delete(data)
                 totalSentData += data.size

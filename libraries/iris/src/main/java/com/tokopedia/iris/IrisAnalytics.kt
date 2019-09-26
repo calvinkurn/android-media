@@ -162,8 +162,9 @@ class IrisAnalytics(val context: Context) : Iris, CoroutineScope {
 
         @JvmStatic
         fun getInstance(context: Context): Iris {
+            val applicationContext = context.applicationContext
             return iris ?: synchronized(lock) {
-                IrisAnalytics(context).also {
+                IrisAnalytics(applicationContext).also {
                     iris = it
                 }
             }
