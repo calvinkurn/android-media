@@ -9,6 +9,7 @@ import com.tokopedia.settingnotif.usersetting.view.viewmodel.UserSettingViewMode
 
 class PushNotifFieldFragment : SettingFieldFragment() {
 
+    private val txtButton = "Push Notification Troubleshooting"
     override fun getScreenName(): String = "Push Notification"
     override fun getNotificationType(): String  = "pushnotif"
 
@@ -19,7 +20,7 @@ class PushNotifFieldFragment : SettingFieldFragment() {
     override fun onSuccessGetUserSetting(data: UserSettingViewModel) {
         val settingFieldTypeFactory = arrayListOf<Visitable<SettingFieldTypeFactory>>()
         settingFieldTypeFactory.addAll(data.data)
-        settingFieldTypeFactory.add(PushNotifierTroubleshooterSetting("Push Notification Troubleshooting"))
+        settingFieldTypeFactory.add(PushNotifierTroubleshooterSetting(txtButton))
         data.data = settingFieldTypeFactory
         super.onSuccessGetUserSetting(data)
     }
