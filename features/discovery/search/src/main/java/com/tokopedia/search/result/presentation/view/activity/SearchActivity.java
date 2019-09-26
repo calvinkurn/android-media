@@ -212,10 +212,15 @@ public class SearchActivity extends BaseActivity
     }
 
     private void configureToolbarOnClickListener() {
-        searchTextView.setOnClickListener(v -> moveToAutoCompleteActivity());
+        searchTextView.setOnClickListener(v -> onSearchBarClicked());
         backButton.setOnClickListener(v -> onBackPressed());
         buttonChangeGrid.setOnClickListener(v -> changeGrid());
         buttonCart.setOnClickListener(v -> moveToCartActivity());
+    }
+    
+    private void onSearchBarClicked() {
+        SearchTracking.trackEventClickSearchBar();
+        moveToAutoCompleteActivity();
     }
 
     private void configureButtonCart() {
