@@ -5,13 +5,13 @@ import android.text.TextUtils
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.authentication.AuthKey
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.instantdebitbca.R
 import com.tokopedia.instantdebitbca.data.data.ResponseAccessTokenBca
 import com.tokopedia.instantdebitbca.data.view.model.TokenInstantDebitBca
-import com.tokopedia.network.utils.AuthUtil
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 
@@ -51,8 +51,8 @@ constructor(@param:ApplicationContext private val context: Context, private val 
 
     fun createRequestParam(): RequestParams {
         val requestParams = RequestParams.create()
-        requestParams.putString(MERCHANT_CODE, AuthUtil.KEY.INSTANT_DEBIT_BCA_MERCHANT_CODE)
-        requestParams.putString(PROFILE_CODE, AuthUtil.KEY.INSTANT_DEBIT_BCA_PROFILE_CODE)
+        requestParams.putString(MERCHANT_CODE, AuthKey.INSTANT_DEBIT_BCA_MERCHANT_CODE)
+        requestParams.putString(PROFILE_CODE, AuthKey.INSTANT_DEBIT_BCA_PROFILE_CODE)
         return requestParams
     }
 

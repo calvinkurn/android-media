@@ -5,9 +5,10 @@ import android.os.Build;
 import android.support.v4.util.ArrayMap;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.authentication.AuthHelper;
+import com.tokopedia.authentication.AuthKey;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -66,11 +67,11 @@ public class TkpdOldAuthInterceptor extends TkpdAuthInterceptor {
     public static Map<String, String> getDefaultHeaderMap(String path, String strParam, String method,
                                                           String contentType, String authKey,
                                                           String dateFormat, String userId) {
-        String date = AuthUtil.generateDate(dateFormat);
-        String contentMD5 = AuthUtil.generateContentMd5(strParam);
+        String date = AuthHelper.generateDate(dateFormat);
+        String contentMD5 = AuthHelper.generateContentMd5(strParam);
 
         String authString = method + "\n" + contentMD5 + "\n" + contentType + "\n" + date + "\n" + path;
-        String signature = AuthUtil.calculateRFC2104HMAC(authString, AuthUtil.KEY.KEY_WSV4);
+        String signature = AuthHelper.calculateRFC2104HMAC(authString, AuthKey.KEY_WSV4);
 
         Map<String, String> headerMap = new ArrayMap<>();
         headerMap.put(HEADER_CONTENT_TYPE, contentType);
