@@ -70,7 +70,7 @@ class HomeWidget(
     }
 
     class WidgetHeader(
-            @SerializedName("widget_header")
+            @SerializedName("back_color")
             @Expose
             val backColor: String)
     {

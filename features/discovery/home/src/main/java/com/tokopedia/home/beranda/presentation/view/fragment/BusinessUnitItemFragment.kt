@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.view.fragment
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -9,6 +10,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -22,7 +24,9 @@ import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SpacingItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
+import com.tokopedia.home.util.CustomGradientDrawable
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.ContainerUnify
 import kotlinx.android.synthetic.main.layout_recyclerview_business_widget.*
 import javax.inject.Inject
 
@@ -35,7 +39,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
 
     private lateinit var itemTab: HomeWidget.TabItem
     private lateinit var trackingQueue: TrackingQueue
-    private lateinit var businessUnitContainer: View
+    private lateinit var businessUnitContainer: LinearLayout
     private var positionWidget: Int = 0
     private var nameTab: String = ""
     private var backgroundColor: String = ""
@@ -52,6 +56,7 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
             bundle.putParcelable(ITEM_EXTRAS, item)
             bundle.putInt(ITEM_POSITION, position)
             bundle.putString(ITEM_BACKGROUND, backgroundColor)
+            bundle.putString(ITEM_NAME, name)
             fragment.arguments = bundle
             return fragment
         }
@@ -161,8 +166,8 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         super.onViewCreated(view, savedInstanceState)
         if(!this::businessUnitContainer.isInitialized){
             businessUnitContainer = view.findViewById(R.id.business_unit_container)
+            businessUnitContainer.background = CustomGradientDrawable.generate(view.context, Color.parseColor(backgroundColor))
         }
-
         getRecyclerView(view).addItemDecoration(
                 SpacingItemDecoration(
                         convertDpToPixel(8.toFloat(), activity),
