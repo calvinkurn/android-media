@@ -16,9 +16,10 @@ import kotlinx.android.synthetic.main.item_feed_onboarding.view.*
 /**
  * @author by yoasfs on 2019-09-18
  */
-class OnboardingAdapter(private val listener: InterestPickItemListener) : RecyclerView.Adapter<OnboardingAdapter.Holder>() {
+class OnboardingAdapter(private val listener: InterestPickItemListener, val source: String) : RecyclerView.Adapter<OnboardingAdapter.Holder>() {
 
     companion object {
+        val SOURCE_FEED = "feeds"
         fun getItemDecoration(): RecyclerView.ItemDecoration {
             return object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView,
@@ -44,17 +45,25 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
     }
 
     private val list: MutableList<OnboardingDataViewModel> = arrayListOf()
+    private var selectedListId : List<Int> = arrayListOf()
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): Holder {
         return Holder(LayoutInflater.from(p0.context).inflate(R.layout.item_feed_onboarding, p0, false), listener)
     }
 
     override fun getItemCount(): Int {
+        when (source) {
+            SOURCE_FEED -> return 6
+        }
         return list.size
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(list[position], position, list)
+        var data = list[position]
+        if (source.equals(SOURCE_FEED) && position == 5)  {
+            data = getOnboardingDataSeeAll()
+        }
+        holder.bind(data, position, list)
     }
 
     fun setList(list: List<OnboardingDataViewModel>) {
@@ -114,8 +123,30 @@ class OnboardingAdapter(private val listener: InterestPickItemListener) : Recycl
         }
     }
 
+    private fun getOnboardingDataSeeAll(): OnboardingDataViewModel {
+        return OnboardingDataViewModel(
+                0,
+                OnboardingDataViewModel.defaultLihatSemuaText,
+                "",
+                false,
+                true)
+    }
+
     fun getSelectedItems(): List<OnboardingDataViewModel> {
         return list.filter { it.isSelected }
+    }
+
+    fun getSelectedItemIdList(): List<Int> {
+        selectedListId = getSelectedItems().map{ it.id }
+        return selectedListId
+    }
+
+    fun setSelectedItemIds(selectedIds: List<Int>) {
+        selectedListId = selectedIds
+        for (item in list) {
+            item.isSelected = selectedIds.contains(item.id)
+        }
+        notifyDataSetChanged()
     }
 
     interface InterestPickItemListener {

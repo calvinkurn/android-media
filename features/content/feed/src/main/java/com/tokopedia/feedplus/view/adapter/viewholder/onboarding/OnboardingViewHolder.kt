@@ -24,6 +24,7 @@ class OnboardingViewHolder(
     var countMinimumPick = 0
 
     companion object {
+        val PAYLOAD_UPDATE_ADAPTER = 1234
         @LayoutRes
         val LAYOUT = R.layout.item_layout_onboarding
     }
@@ -33,6 +34,18 @@ class OnboardingViewHolder(
     override fun bind(element: OnboardingViewModel) {
         initView(element)
         initViewListener(element)
+    }
+
+    override fun bind(element: OnboardingViewModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        if (element == null || payloads.isEmpty() || payloads[0] !is Int) {
+            return
+        }
+
+        when (payloads[0] as Int) {
+            PAYLOAD_UPDATE_ADAPTER -> initView(element)
+            else -> bind(element)
+        }
     }
 
     private fun initView(element: OnboardingViewModel) {
@@ -45,10 +58,11 @@ class OnboardingViewHolder(
 
         itemView.rv_interest_pick.layoutManager = GridLayoutManager(itemView.context, 3)
 
-        adapter = OnboardingAdapter(this)
+        adapter = OnboardingAdapter(this, OnboardingAdapter.SOURCE_FEED)
         adapter.setList(element.dataList)
         itemView.rv_interest_pick.adapter = adapter
         itemView.rv_interest_pick.addItemDecoration(OnboardingAdapter.getItemDecoration())
+        updateButtonCheckRecommendation()
     }
 
     private fun initViewListener(element: OnboardingViewModel) {
@@ -58,7 +72,7 @@ class OnboardingViewHolder(
     }
 
     private fun updateButtonCheckRecommendation() {
-        itemView.btn_onboarding.isEnabled = countMinimumPick <= adapter.getSelectedItems().size
+        itemView.btn_onboarding.isEnabled = countMinimumPick <= adapter.getSelectedItemIdList().size
     }
 
 

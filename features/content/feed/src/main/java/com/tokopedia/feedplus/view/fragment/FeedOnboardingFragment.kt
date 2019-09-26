@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.profilerecommendation.view.activity.FollowRecomActivity
+import com.tokopedia.feedplus.view.activity.FeedOnboardingActivity
 import com.tokopedia.feedplus.view.adapter.viewholder.onboarding.OnboardingAdapter
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedOnboardingViewModel
@@ -27,21 +28,27 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_feed_onboarding.*
-import kotlinx.android.synthetic.main.item_layout_onboarding.view.*
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 2019-09-20.
  */
-class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestPickItemListener {
+class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestPickItemListener, FeedOnboardingActivity.FeedOnboardingActivityListener {
 
     companion object {
         private val OPEN_RECOM_PROFILE = 1236
+        val EXTRA_SELECTED_IDS = "EXTRA_SELECTED_IDS"
+        fun getInstance(bundle: Bundle): FeedOnboardingFragment {
+            val fragment = FeedOnboardingFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
+    private var selectedIdList: List<Int> = arrayListOf()
 
     private val adapter : OnboardingAdapter by lazy {
-        OnboardingAdapter(this)
+        OnboardingAdapter(this, "")
     }
 
     lateinit var data: OnboardingViewModel
@@ -52,6 +59,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        selectedIdList = arguments?.getIntegerArrayList(EXTRA_SELECTED_IDS)?.toList() ?: arrayListOf()
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             feedOnboardingPresenter = viewModelProvider.get(FeedOnboardingViewModel::class.java)
@@ -102,7 +110,6 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
                 }
             }
         }
-
     }
 
     override fun getScreenName(): String =  ""
@@ -124,6 +131,10 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     }
 
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
+    }
+
+    override fun onBackPressedOnActivity(): Intent {
+        return getIntentResult()
     }
 
     private fun initView() {
@@ -155,6 +166,7 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
     private fun onSuccessGetData(data: OnboardingViewModel) {
         this.data = data
         adapter.setList(data.dataList)
+        adapter.setSelectedItemIds(selectedIdList)
         titleTextView.text = String.format(data.titleFull, data.minimumPick)
         checkButtonSaveInterest()
     }
@@ -182,5 +194,11 @@ class FeedOnboardingFragment : BaseDaggerFragment(), OnboardingAdapter.InterestP
                     Snackbar.LENGTH_LONG
             )
         }
+    }
+
+    fun getIntentResult() : Intent {
+        val intent = Intent()
+        intent.putIntegerArrayListExtra(EXTRA_SELECTED_IDS, ArrayList(adapter.getSelectedItemIdList()))
+        return intent
     }
 }

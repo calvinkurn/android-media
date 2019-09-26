@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -33,6 +34,23 @@ class FeedOnboardingActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment? {
+        intent?.extras?.let {
+            return FeedOnboardingFragment.getInstance(it)
+        }
         return FeedOnboardingFragment()
+    }
+
+    override fun onBackPressed() {
+        var intentResult = Intent()
+        val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+        fragment?.let {
+            intentResult = (it as FeedOnboardingActivityListener).onBackPressedOnActivity()
+        }
+        setResult(Activity.RESULT_CANCELED, intentResult)
+        finish()
+    }
+
+    interface FeedOnboardingActivityListener {
+        fun onBackPressedOnActivity(): Intent
     }
 }

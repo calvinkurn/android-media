@@ -579,10 +579,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     )
                 }
             }
-            OPEN_INTERESTPICK_DETAIL, OPEN_INTERESTPICK_RECOM_PROFILE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    feedOnboardingPresenter.getOnboardingData(GetDynamicFeedUseCase.SOURCE_FEEDS, true)
+            OPEN_INTERESTPICK_DETAIL -> {
+                val selectedIdList = data.getIntegerArrayListExtra(FeedOnboardingFragment.EXTRA_SELECTED_IDS)
+                adapter.getlist().firstOrNull { it is OnboardingViewModel }?.let {
+                    (it as? OnboardingViewModel)?.dataList?.forEach {
+                        it.isSelected = selectedIdList.contains(it.id)
+                    }
                 }
+                adapter.notifyItemChanged(0, OnboardingViewHolder.PAYLOAD_UPDATE_ADAPTER)
+
             }
             else -> {
             }
@@ -1572,8 +1577,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onLihatSemuaItemClicked(selectedItemList: List<OnboardingDataViewModel>) {
-        view?.showLoadingTransparent()
-        feedOnboardingPresenter.submitInterestPickData(selectedItemList, FeedOnboardingViewModel.PARAM_SOURCE_SEE_ALL_CLICK, OPEN_INTERESTPICK_DETAIL)
+        activity?.let {
+            val bundle = Bundle()
+            bundle.putIntegerArrayList(FeedOnboardingFragment.EXTRA_SELECTED_IDS, ArrayList(selectedItemList.map { it.id }))
+            startActivityForResult(FeedOnboardingActivity.getCallingIntent(it, bundle), OPEN_INTERESTPICK_DETAIL)
+        }
     }
 
     override fun onCheckRecommendedProfileButtonClicked(selectedItemList: List<OnboardingDataViewModel>) {
@@ -1588,8 +1596,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             finishLoading()
             clearData()
             val feedOnboardingData: MutableList<OnboardingDataViewModel> = ArrayList()
-            feedOnboardingData.addAll(data.dataList.take(5))
-            feedOnboardingData.add(getOnboardingDataSeeAll())
+            feedOnboardingData.addAll(data.dataList)
             data.dataList = feedOnboardingData
             adapter.addItem(data)
         }
@@ -1618,16 +1625,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
         }
 
-    }
-
-
-    private fun getOnboardingDataSeeAll(): OnboardingDataViewModel {
-        return OnboardingDataViewModel(
-                0,
-                OnboardingDataViewModel.defaultLihatSemuaText,
-                "",
-                false,
-                true)
     }
 
     private fun doShare(body: String, title: String) {
