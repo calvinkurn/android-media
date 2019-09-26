@@ -317,15 +317,15 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
     }
 
     override fun getRecyclerViewResourceId(): Int {
-        return R.id.recycler_view
+        return com.tokopedia.vouchergame.R.id.recycler_view
     }
 
     override fun getSwipeRefreshLayoutResourceId(): Int {
-        return R.id.swipe_refresh_layout
+        return com.tokopedia.vouchergame.R.id.swipe_refresh_layout
     }
 
     override fun getSearchInputView(view: View?): SearchInputView {
-        return view!!.findViewById(R.id.search_input_view)
+        return view!!.findViewById(com.tokopedia.vouchergame.R.id.search_input_view)
     }
 
     companion object {

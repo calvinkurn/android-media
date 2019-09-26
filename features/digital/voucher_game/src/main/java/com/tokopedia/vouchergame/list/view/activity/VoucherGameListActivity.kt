@@ -38,7 +38,7 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
     }
 
     override fun getParentViewResourceID(): Int {
-        return R.id.parent_view
+        return com.tokopedia.vouchergame.R.id.parent_view
     }
 
     override fun shouldShowOptionMenu(): Boolean { return true }
