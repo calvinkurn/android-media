@@ -2,9 +2,9 @@ package com.tokopedia.search.result.network.interceptor;
 
 import android.content.Context;
 
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.user.session.UserSessionInterface;
 
 import java.text.SimpleDateFormat;
@@ -32,7 +32,7 @@ public class TopAdsAuthInterceptor extends TkpdAuthInterceptor {
                 // do nothing
                 break;
         }
-        Map headerMap = AuthUtil.getDefaultHeaderMap(path, strParam, method, contentType, authKey, "dd MMM yy HH:mm ZZZ", userSession.getUserId(), userSession);
+        Map headerMap = AuthHelper.getDefaultHeaderMap(path, strParam, method, contentType, authKey, "dd MMM yy HH:mm ZZZ", userSession.getUserId(), userSession);
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM yy HH:mm ZZZ", Locale.ENGLISH);
         String date = dateFormat.format(new Date());
         headerMap.put("X-Date", date);
