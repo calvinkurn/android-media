@@ -121,11 +121,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(ORDER_CATEGORY, orderCategory);
             variables.put(ORDER_ID, orderId);
             variables.put(DETAIL, 1);
-            if (fromPayment != null && fromPayment.equalsIgnoreCase("true")) {
-                variables.put(ACTION, 0);
-            } else {
-                variables.put(ACTION, 1);
-            }
+            variables.put(ACTION, 1);
             variables.put(UPSTREAM, "");
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
