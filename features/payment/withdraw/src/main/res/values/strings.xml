@@ -105,7 +105,6 @@
     <string name="dstn_actn">Rekening Tujuan</string>
     <string name="ttl_withdraw_dtl">Detail penarikan saldo</string>
     <string name="withdrawal_being_processed">Penarikanmu sedang diproses, harap tunggu maks. 1x24 jam di hari kerja</string>
-    <string name="noincome_to_withdraw">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
 
 
     <string name="swd_admin_fee">Dikenai biaya admin %s</string>
@@ -118,6 +117,7 @@
     <string name="swd_rekening_premium_btn">Lihat Program</string>
     <string name="swd_rekening_premium_description">Saldo hanya bisa ditarik ke bank tertentu, sesuai Rekening Premium yang kamu ikuti.</string>
 
-
+    <string name="swd_refund_empty_msg">Kamu tidak punya Saldo Refund untuk ditarik</string>
+    <string name="swd_penghasilan_empty_msg">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
 
 </resources>

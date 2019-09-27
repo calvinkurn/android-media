@@ -335,7 +335,6 @@
             android:layout_marginTop="@dimen/dp_16"
             android:gravity="center"
             android:paddingBottom="@dimen/dp_30"
-            android:text="@string/noincome_to_withdraw"
             android:textColor="@color/clr_f531353b"
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"

@@ -121,10 +121,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private static final String BUNDLE_SALDO_BUYER_TOTAL_BALANCE_INT = "buyer_total_balance_int";
 
     private List<BankAccount> listBank;
-    private List<String> bankWithMinimumWithdrawal;
-
-    private TextView withdrawBuyerSaldoTV;
-    private TextView withdrawSellerSaldoTV;
 
     private float buyerSaldoBalance;
     private float sellerSaldoBalance;
@@ -165,6 +161,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private Group editableGroup;
     private Group emptyScreenGroup;
     private CheckEligible checkEligible;
+
+
+    private TextView tvEmptySaldo;
 
     @Override
     protected String getScreenName() {
@@ -210,22 +209,19 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         totalWithdrawal = view.findViewById(R.id.total_withdrawal);
         loadingLayout = view.findViewById(R.id.loading_layout);
         mainView = view.findViewById(R.id.mainView);
-        withdrawBuyerSaldoTV = view.findViewById(R.id.withdraw_refund_saldo);
-        withdrawSellerSaldoTV = view.findViewById(R.id.withdraw_seller_saldo);
 
         saldoTitleTV = view.findViewById(R.id.saldo_title);
-        //saldoTypeCV = view.findViewById(R.id.saldo_type_card_view);
         saldoValueTV = view.findViewById(R.id.total_saldo_value);
         saldoWithdrawHintTV = view.findViewById(R.id.saldo_withdraw_hint);
         tickerLayout = view.findViewById(R.id.layout_ticker);
         tvTickerMessage = view.findViewById(R.id.tv_desc_info);
 
-        //  withdrawButtonWrapper = view.findViewById(R.id.custom_button);
         tvWithDrawInfo = view.findViewById(R.id.tv_info);
         ivDismissTicker = view.findViewById(R.id.iv_dismiss_ticker);
         ivLockButton = view.findViewById(R.id.ivButtonLeft);
         tabLayout = view.findViewById(R.id.tab_withdraw);
         premiumAccountView = view.findViewById(R.id.layout_premium_account);
+        tvEmptySaldo = view.findViewById(R.id.empty_saldo_description);
         emptyScreenGroup = view.findViewById(R.id.emptyGroup);
         editableGroup = view.findViewById(R.id.editable_group);
 
@@ -264,9 +260,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         // saldoTypeCV.setVisibility(View.VISIBLE);
         //new Handler().postDelayed(this::startShowCase, SHOW_CASE_DELAY);
 
-        bankWithMinimumWithdrawal = Arrays.asList("bca", "bri", "mandiri", "bni", "bank central asia", "bank negara indonesia",
+        /*bankWithMinimumWithdrawal = Arrays.asList("bca", "bri", "mandiri", "bni", "bank central asia", "bank negara indonesia",
                 "bank rakyat indonesia");
-
+*/
         SpaceItemDecoration itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.dp_16)
                 , MethodChecker.getDrawable(getActivity(), R.drawable.swd_divider));
         bankRecyclerView.addItemDecoration(itemDecoration);
@@ -389,8 +385,12 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
 
     private void checkForEmptyView(int currentTab) {
-        if ((currentTab == 0 && buyerSaldoBalance == 0)
-                || (currentTab == 1 && sellerSaldoBalance == 0)) {
+        if (currentTab == 0 && buyerSaldoBalance == 0) {
+            tvEmptySaldo.setText(R.string.swd_refund_empty_msg);
+            editableGroup.setVisibility(View.GONE);
+            emptyScreenGroup.setVisibility(View.VISIBLE);
+        }else if(currentTab == 1 && sellerSaldoBalance == 0){
+            tvEmptySaldo.setText(R.string.swd_penghasilan_empty_msg);
             editableGroup.setVisibility(View.GONE);
             emptyScreenGroup.setVisibility(View.VISIBLE);
         } else {
@@ -398,7 +398,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             emptyScreenGroup.setVisibility(View.GONE);
         }
     }
-
 
     private void setWithdrawBuyerSaldo() {
         if (currentState != BUYER_STATE) {
