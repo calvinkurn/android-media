@@ -102,9 +102,6 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
     private static final long SHOW_CASE_DELAY = 500;
 
 
-    private static final String UTF_ENCODING = "UTF-8";
-    private static final String COUPON_MIME_TYPE = "text/html";
-
     private int SELLER_STATE = 2;
     private int BUYER_STATE = 1;
     private TkpdHintTextInputLayout wrapperTotalWithdrawal;
