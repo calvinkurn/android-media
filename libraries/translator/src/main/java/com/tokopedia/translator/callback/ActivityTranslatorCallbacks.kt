@@ -34,7 +34,7 @@ class ActivityTranslatorCallbacks : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
-        if(SharedPrefsUtils.getBooleanPreference(activity, TranslatorSettingView.IS_ENABLE, true)) {
+        if(SharedPrefsUtils.getBooleanPreference(activity, TranslatorSettingView.IS_ENABLE, false)) {
             Log.i(TAG, "onActivityResumed() invoked of :" + activity.localClassName)
             val weakActivity = WeakReference<Activity>(activity)
             val translatorManager = TranslatorManager.getInstance()
