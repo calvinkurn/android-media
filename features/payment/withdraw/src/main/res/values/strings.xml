@@ -105,6 +105,8 @@
     <string name="dstn_actn">Rekening Tujuan</string>
     <string name="ttl_withdraw_dtl">Detail penarikan saldo</string>
     <string name="withdrawal_being_processed">Penarikanmu sedang diproses, harap tunggu maks. 1x24 jam di hari kerja</string>
+    <string name="noincome_to_withdraw">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
+    <string name="sucs_pg_ttl">Penirikan Diproses</string>
 
 
     <string name="swd_admin_fee">Dikenai biaya admin %s</string>

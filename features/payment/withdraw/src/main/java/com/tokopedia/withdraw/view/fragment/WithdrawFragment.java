@@ -846,6 +846,13 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                     }
 
                 }
+                else if (resultCode == WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE){
+                    getActivity().finish();
+                }
+                else if(resultCode == WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE){
+                    getActivity().finish();
+                    RouteManager.route(getContext(), ApplinkConst.HOME, "");
+                }
                 break;
             default:
                 break;
