@@ -589,6 +589,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     }
 
     private void buyAgainItem() {
+        if (getView() == null || getView().getAppContext() == null)
+            return;
         Map<String, Object> variables = new HashMap<>();
         JsonObject passenger = new JsonObject();
         variables.put(PARAM, generateInputQueryBuyAgain(orderDetails.getItems()));
@@ -635,7 +637,6 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
     public void setOrderDetails(String orderId, String orderCategory, String buttonLabel) {
         if (getView() == null || getView().getAppContext() == null)
             return;
-
         getView().displayLoadMore(true);
         GraphqlRequest graphqlRequest;
         Map<String, Object> variables = new HashMap<>();
@@ -677,6 +678,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onNext(GraphqlResponse response) {
+                if (getView() == null || getView().getAppContext() == null)
+                    return;
                 if (response != null) {
                     DetailsData data = response.getData(DetailsData.class);
                     orderDetails = data.orderDetails();

@@ -96,6 +96,11 @@ public class OrderListFragment extends BaseDaggerFragment implements
     public static final int REJECT_BUYER_REQUEST = 102;
     public static final int CANCEL_BUYER_REQUEST = 103;
     private static final long KEYBOARD_SEARCH_WAITING_TIME = 300;
+    private static final String ACTION_BUY_AGAIN = "beli lagi";
+    private static final String ACTION_ASK_SELLER = "tanya penjual";
+    private static final String ACTION_TRACK_IT = "lacak";
+    private static final String ACTION_SUBMIT_CANCELLATION = "ajukan pembatalan";
+    private static final String ACTION_DONE = "selesai";
     OrderListComponent orderListComponent;
     RecyclerView recyclerView;
     SwipeToRefresh swipeToRefresh;
@@ -684,15 +689,15 @@ public class OrderListFragment extends BaseDaggerFragment implements
         this.selectedOrderId = order.id();
 
         switch (actionButton.label().toLowerCase()) {
-            case "beli lagi":
-            case "ajukan pembatalan":
-            case "tanya penjual":
+            case ACTION_BUY_AGAIN:
+            case ACTION_SUBMIT_CANCELLATION:
+            case ACTION_ASK_SELLER:
                 presenter.setOrderDetails(selectedOrderId, mOrderCategory, actionButton.label().toLowerCase());
                 break;
-            case "lacak":
+            case ACTION_TRACK_IT:
                 trackOrder();
                 break;
-            case "selesai":
+            case ACTION_DONE:
                 presenter.finishOrder(selectedOrderId, actionButtonUri);
                 break;
             default:
