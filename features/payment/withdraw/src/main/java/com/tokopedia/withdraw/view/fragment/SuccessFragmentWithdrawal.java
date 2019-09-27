@@ -3,6 +3,7 @@ package com.tokopedia.withdraw.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +11,16 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.constant.WithdrawConstant;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
-import com.tokopedia.withdraw.view.listener.WithdrawSuccessPageContract;
-import com.tokopedia.withdraw.view.presenter.WithdrawSuccessPresenter;
+import com.tokopedia.withdraw.domain.model.BankAccount;
 
-public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements View.OnClickListener, WithdrawSuccessPageContract.View {
+import java.util.Objects;
+
+public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements View.OnClickListener{
 
     private TextView titleTxtv;
     private TextView bankName;
@@ -24,7 +28,6 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
     private TextView totalAmt;
     private TextView backToSaldoDetail;
     private TextView backToAppShopping;
-    private WithdrawSuccessPresenter withdrawSuccessPresenter;
 
     @Override
     protected void initInjector() {
@@ -32,7 +35,6 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
                 .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                 .build();
         withdrawComponent.inject(this);
-        withdrawSuccessPresenter.attachView(this);
     }
 
     @Override
@@ -56,45 +58,39 @@ public class SuccessFragmentWithdrawal extends BaseDaggerFragment implements Vie
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(getArguments() != null) {
+            BankAccount bankAccount = getArguments().getParcelable(WithdrawConstant.Keys.BANK_ACCOUNT);
+            String message = getArguments().getString(WithdrawConstant.Keys.MESSAGE);
+            titleTxtv.setText(message);
+            bankName.setText(bankAccount.getBankName());
+            accountNum.setText(bankAccount.getAccountNo() + "-" + bankAccount.getAccountName());
+            double amount = getArguments().getDouble(WithdrawConstant.Keys.AMOUNT);
+            totalAmt.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(amount, false));
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         int id = v.getId();
         if(id == R.id.backto_saldo_dtl){
             if(getActivity() != null){
+                Objects.requireNonNull(getActivity()).setResult(WithdrawConstant.ResultCode.GOTO_SALDO_DETAIL_PAGE);
                 getActivity().finish();
-                //launch the detail page
             }
         }
         else if(id == R.id.backto_shop){
             if(getActivity() != null){
+                Objects.requireNonNull(getActivity()).setResult(WithdrawConstant.ResultCode.GOTO_TOKOPEDIA_HOME_PAGE);
                 getActivity().finish();
-                //launch home page
             }
         }
     }
 
-    @Override
-    public void setSuccessTtlTxt(String ttlTxt) {
-        this.titleTxtv.setText(ttlTxt);
-    }
-
-    @Override
-    public void setBankName(String bankName) {
-        this.bankName.setText(bankName);
-    }
-
-    @Override
-    public void setAccountNumber(String accountNumber) {
-        this.accountNum.setText(accountNumber);
-    }
-
-    @Override
-    public void setWithdrawAmount(String withdrawAmount) {
-        this.totalAmt.setText(withdrawAmount);
-    }
-
-    @Override
-    public void onDestroy() {
-        withdrawSuccessPresenter.detachView();
-        super.onDestroy();
+    public static Fragment getInstance(Bundle bundle){
+        Fragment successFragment = new SuccessFragmentWithdrawal();
+        successFragment.setArguments(bundle);
+        return successFragment;
     }
 }

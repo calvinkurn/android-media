@@ -5,7 +5,6 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.domain.model.BaseFormSubmitResponse;
-import com.tokopedia.withdraw.domain.model.GqlSubmitWithDrawalResponse;
 import com.tokopedia.withdraw.domain.usecase.GqlSubmitWithdrawUseCase;
 import com.tokopedia.withdraw.view.listener.WithdrawPasswordContract;
 import com.tokopedia.withdraw.domain.model.BankAccount;
@@ -91,7 +90,7 @@ public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPassw
 
                 if (baseFormSubmitResponse != null) {
                     if ("success".equalsIgnoreCase(baseFormSubmitResponse.getFormSubmitResponse().getStatus())) {
-                        getView().showSuccessWithdraw();
+                        getView().goToSuccessPage(bankAccount, baseFormSubmitResponse.getFormSubmitResponse().getMessage().get(0), withdrawal);
 
                     } else {
                         getView().showError(baseFormSubmitResponse.getFormSubmitResponse().getMessageError());

@@ -4,7 +4,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.withdraw.domain.model.BankAccount;
-import com.tokopedia.withdraw.domain.model.GqlSubmitWithDrawalResponse;
+import com.tokopedia.withdraw.domain.model.BaseFormSubmitResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -68,7 +68,7 @@ public class GqlSubmitWithdrawUseCase {
     public void execute(Subscriber<GraphqlResponse> subscriber) {
         graphqlUseCase.clearRequest();
         GraphqlRequest graphqlRequestForUsable = new GraphqlRequest(query,
-                GqlSubmitWithDrawalResponse.class, params, SALDO_OPERATION_NAME);
+                BaseFormSubmitResponse.class, params);
         graphqlUseCase.addRequest(graphqlRequestForUsable);
         graphqlUseCase.execute(subscriber);
     }
@@ -84,12 +84,9 @@ public class GqlSubmitWithdrawUseCase {
         params.put(PARAM_ACTION_USER, "user");
         params.put(PARAM_DEVICE_TYPE, MOBILE_DEVICE);
         params.put(EMAIL, email);
-        params.put(PARAM_WITHDRAW, String.valueOf(withdrawal));
-        params.put(ACCOUNT_ID, bankAccount.getBankAccountID());
-        params.put(PARAM_SELECT_OTP, "password");
+        params.put(ACCOUNT_ID, bankAccount.getBankAccountID()+"");
         params.put(PARAM_LANG, "ID");
         params.put(PARAM_IS_SELLER, isSellerWithdrawal);
-        params.put(PARAM_WITHDRAW_TYPE, 1);
 
 
         params.put(USERID, userId);
@@ -107,9 +104,8 @@ public class GqlSubmitWithdrawUseCase {
 
         params.put(PARAM_BANK_ACC_NAME, bankAccount.getAccountName());
         params.put(PARAM_BANK_ACC_NUMBER, bankAccount.getAccountNo());
-        params.put(PARAM_BANK_ID, bankAccount.getBankID());
+        params.put(PARAM_BANK_ID, bankAccount.getBankID()+"");
         params.put(PARAM_BANK_NAME, bankAccount.getBankName());
-        params.put(PARAM_BANK_BRANCH, bankAccount.getBankName());
         params.put(AMOUNT, String.valueOf(withdrawal));
 
         params.put(PARAM_PASSWORD, password);
