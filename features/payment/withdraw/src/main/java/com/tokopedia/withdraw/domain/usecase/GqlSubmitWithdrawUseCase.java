@@ -78,7 +78,7 @@ public class GqlSubmitWithdrawUseCase {
     }
 
     public void setRequestParams(String email, int withdrawal
-            , BankAccount bankAccount, String password, boolean isSellerWithdrawal, String userId) {
+            , BankAccount bankAccount, String password, boolean isSellerWithdrawal, String userId, String programName) {
         //todo lalit
 //        HashMap<String, Object> params = new HashMap<>();
         params.put(PARAM_ACTION_USER, "user");
@@ -95,7 +95,7 @@ public class GqlSubmitWithdrawUseCase {
         params.put(MASTER_EMAIL, "");
         params.put(MASTER_ID, "");
         params.put(VALIDATE_TOKEN, "");
-        params.put(PROGRAM, "test123");
+        params.put(PROGRAM, programName);
         /*params.put(PARAM_DEVICE_ID, deviceId);
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");

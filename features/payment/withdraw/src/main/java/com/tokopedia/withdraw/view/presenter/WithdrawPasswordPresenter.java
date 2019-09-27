@@ -49,10 +49,11 @@ public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPassw
     }
 
     @Override
-    public void doWithdraw(int withdrawal, BankAccount bankAccount, String password, boolean isSellerWithdrawal) {
+    public void doWithdraw(int withdrawal, BankAccount bankAccount, String password, boolean isSellerWithdrawal, String programName) {
 
         gqlSubmitWithdrawUseCase.setQuery(getView().loadRawString(R.raw.query_success_page));
-        gqlSubmitWithdrawUseCase.setRequestParams(userSession.getEmail(), withdrawal, bankAccount, password, isSellerWithdrawal, userSession.getUserId());
+        gqlSubmitWithdrawUseCase.setRequestParams(userSession.getEmail(), withdrawal, bankAccount,
+                password, isSellerWithdrawal, userSession.getUserId(), programName);
         gqlSubmitWithdrawUseCase.execute(new Subscriber<GraphqlResponse>() {
             @Override
             public void onCompleted() {
@@ -90,7 +91,12 @@ public class WithdrawPasswordPresenter extends BaseDaggerPresenter<WithdrawPassw
 
                 if (baseFormSubmitResponse != null) {
                     if ("success".equalsIgnoreCase(baseFormSubmitResponse.getFormSubmitResponse().getStatus())) {
-                        getView().goToSuccessPage(bankAccount, baseFormSubmitResponse.getFormSubmitResponse().getMessage().get(0), withdrawal);
+                        if(baseFormSubmitResponse.getFormSubmitResponse().getMessage() != null && baseFormSubmitResponse.getFormSubmitResponse().getMessage().size() > 0) {
+                            getView().goToSuccessPage(bankAccount, baseFormSubmitResponse.getFormSubmitResponse().getMessage().get(0), withdrawal);
+                        }
+                        else {
+                            getView().goToSuccessPage(bankAccount, "", withdrawal);
+                        }
 
                     } else {
                         getView().showError(baseFormSubmitResponse.getFormSubmitResponse().getMessageError());

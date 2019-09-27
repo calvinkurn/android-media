@@ -113,10 +113,11 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                     Objects.requireNonNull(getArguments()).getString(WithdrawPasswordActivity.BUNDLE_WITHDRAW)
                     , false);
             boolean isSellerWithdrawal = getArguments().getBoolean(WithdrawPasswordActivity.BUNDLE_IS_SELLER_WITHDRAWAL);
+            String programName = getArguments().getString(WithdrawPasswordActivity.BUNDLE_IS_PROGRAM_NAME);
             wrapperPassword.setError(null);
             presenter.doWithdraw(withdrawal, (BankAccount) getArguments()
                             .get(WithdrawPasswordActivity.BUNDLE_BANK)
-                    , passwordView.getText().toString(), isSellerWithdrawal);
+                    , passwordView.getText().toString(), isSellerWithdrawal, programName);
         });
 
         forgotPassword.setOnClickListener(v -> {
