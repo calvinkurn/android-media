@@ -131,7 +131,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/saldo_withdraw_hint" />
 
-
         <View
             android:id="@+id/view_divider"
             android:layout_width="match_parent"
@@ -147,7 +146,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/saldo_title" />
 
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view_bank"
             android:layout_width="0dp"
@@ -156,7 +154,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/saldo_title"
             app:layout_constraintTop_toBottomOf="@+id/view_divider3" />
-
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_withdraw"
@@ -241,7 +238,6 @@
             app:typographyType="heading_5"
             tools:text="Rp5.000.000" />
 
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title_nominal_withdrawal"
             android:layout_width="0dp"
@@ -284,7 +280,6 @@
             app:layout_constraintTop_toBottomOf="@+id/view_divider2"
             app:typographyType="heading_4" />
 
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/saldo_withdraw_hint"
             android:layout_width="wrap_content"
@@ -321,7 +316,48 @@
             layout="@layout/loading_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
+        <ImageView
+            android:id="@+id/iv_emptySaldo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/no_saldo_copy"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/dp_40"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tab_withdraw" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/empty_saldo_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:gravity="center"
+            android:paddingBottom="@dimen/dp_30"
+            android:text="@string/noincome_to_withdraw"
+            android:textColor="@color/clr_f531353b"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingEnd="@dimen/dp_16"
+            android:paddingStart="@dimen/dp_16"
+            app:layout_constraintEnd_toEndOf="@+id/tab_withdraw"
+            app:layout_constraintStart_toStartOf="@+id/tab_withdraw"
+            app:layout_constraintTop_toBottomOf="@id/iv_emptySaldo"
+            app:typographyType="heading_2" />
+
+        <android.support.constraint.Group
+            android:id="@+id/editable_group"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="wrapper_total_withdrawal,title_choose_bank,recycler_view_bank,withdrawal_all_tv,view_divider3,saldo_withdraw_hint,title_nominal_withdrawal,view_divider,view_divider2,saldo_title,tv_info,total_saldo_value,ivButtonLeft,add_account,withdraw_button" />
+
+        <android.support.constraint.Group
+            android:id="@+id/emptyGroup"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="empty_saldo_description,iv_emptySaldo" />
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

@@ -26,6 +26,7 @@ public class WithdrawPasswordActivity extends BaseSimpleActivity {
     public final static String BUNDLE_BANK = "bank";
     public final static String BUNDLE_WITHDRAW = "withdraw";
     public final static String BUNDLE_IS_SELLER_WITHDRAWAL = "isSellerWithdrawal";
+    public final static String BUNDLE_IS_PROGRAM_NAME = "programName";
 
     @Inject
     WithdrawAnalytics analytics;
