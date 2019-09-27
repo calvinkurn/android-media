@@ -256,7 +256,11 @@ abstract class ProductCardViewHolder(itemView: View,
         getProductCardView()?.setReviewCountVisible(isReviewCountVisible)
 
         if(productItem.isTopAds){
-            getProductCardView()?.setReviewCount(productItem.topAdsReviewCount)
+            if(productItem.topAdsReviewCount != "0"){
+                getProductCardView()?.setReviewCount(productItem.topAdsReviewCount)
+            }else{
+                getProductCardView()?.setReviewCountVisible(false)
+            }
         }else if (isReviewCountVisible) {
             getProductCardView()?.setReviewCount(productItem.countReview)
         }
