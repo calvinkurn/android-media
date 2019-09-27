@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.domain.model.BankAccount;
@@ -28,6 +29,10 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     private static final int DEFAULT_BANK_ID = 1;
     WithdrawAnalytics analytics;
 
+    public static final int REFUND = 0;
+    public static final int PENGHASILAN = 1;
+
+    private int currentTab = 0;
 
     int selectedItem;
 
@@ -108,11 +113,13 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         ImageView mRadio;
         TextView bankName;
         TextView bankAccountName;
+        TextView adminFee;
 
         public ItemBankViewHolder(View itemView) {
             super(itemView);
             bankName = itemView.findViewById(R.id.bank_name);
             bankAccountName = itemView.findViewById(R.id.bank_acc_name);
+            adminFee = itemView.findViewById(R.id.tvAdminFee);
             mRadio = itemView.findViewById(R.id.radio);
         }
     }
@@ -134,6 +141,11 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
         parentView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_bank_withdraw, parent, false);
         return new ItemBankViewHolder(parentView);
+    }
+
+    public void setCurrentTab(int currentTab) {
+        this.currentTab = currentTab;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -165,6 +177,14 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 Context context = viewHolder.itemView.getContext();
                 BankAccount thisItem = listBank.get(position);
 
+                if (currentTab == 1) {
+                    String adminFeeStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(thisItem.getAdminFee(), false);
+                    viewHolder.adminFee.setText(context.getString(R.string.swd_admin_fee, adminFeeStr));
+                    viewHolder.adminFee.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.adminFee.setText("");
+                    viewHolder.adminFee.setVisibility(View.GONE);
+                }
                 View.OnClickListener l = (View v) -> {
                     analytics.eventClickAccountBank();
                     changeItemSelected(position);
@@ -172,10 +192,12 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 if (thisItem.getStatus() == 0) {
                     viewHolder.bankName.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
                     viewHolder.bankAccountName.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
+                    viewHolder.adminFee.setTextColor(context.getResources().getColor(R.color.swd_grey_100));
                     holder.itemView.setOnClickListener(null);
                 } else {
                     viewHolder.bankName.setTextColor(context.getResources().getColor(R.color.grey_796));
                     viewHolder.bankAccountName.setTextColor(context.getResources().getColor(R.color.grey_button_compat));
+                    viewHolder.adminFee.setTextColor(context.getResources().getColor(R.color.black_40));
                     holder.itemView.setOnClickListener(l);
                 }
 
@@ -290,4 +312,5 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
             return oldItem.equals(newItem);
         }
     }
+
 }

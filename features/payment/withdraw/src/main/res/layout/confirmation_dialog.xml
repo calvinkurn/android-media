@@ -62,7 +62,7 @@
         android:layout_height="@dimen/dp_40"
         android:layout_below="@+id/description"
         android:layout_marginTop="@dimen/dp_32"
-        android:background="@drawable/btn_bg_green_curved_corners"
+        android:background="@drawable/swd_btn_bg_green_curved_corners"
         android:gravity="center"
         android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20"

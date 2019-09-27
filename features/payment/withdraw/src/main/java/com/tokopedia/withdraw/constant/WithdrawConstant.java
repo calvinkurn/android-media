@@ -9,6 +9,7 @@ public class WithdrawConstant {
 
     public static final String KEY_PREMIUM_ACCOUNT_NEW_TAG = "swd_new_tag";
     public static final String WEB_REKENING_PREMIUM_URL= "https://m.tokopedia.com/payment/rekening-premium";
+    public static final String WEB_TNC_URL= "https://m.tokopedia.com/terms/withdrawal-sla";
     public interface Keys{
         String BANK_ACCOUNT = "bank_account";
         String MESSAGE = "message";
