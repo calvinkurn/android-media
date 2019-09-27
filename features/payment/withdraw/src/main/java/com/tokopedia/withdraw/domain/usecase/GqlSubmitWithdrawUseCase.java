@@ -36,6 +36,16 @@ public class GqlSubmitWithdrawUseCase {
     private static final String PARAM_BANK_NAME = "bankName";
     private static final String PARAM_BANK_BRANCH = "branch";
     private static final String PARAM_PASSWORD = "password";
+    private static final String AMOUNT = "amount";
+    private static final String USERID = "userId";
+    private static final String EMAIL = "email";
+    private static final String TYPE = "type";
+    private static final String TOKEN = "token";
+    private static final String MASTER_EMAIL = "masterEmail";
+    private static final String MASTER_ID = "masterID";
+    private static final String ACCOUNT_ID = "accountID";
+    private static final String VALIDATE_TOKEN = "validateToken";
+    private static final String PROGRAM = "program";
 
     /*private static final String PARAM_USER_ID = "user_id";
     private static final String PARAM_DEVICE_ID = "device_id";
@@ -68,22 +78,28 @@ public class GqlSubmitWithdrawUseCase {
     }
 
     public void setRequestParams(String email, int withdrawal
-            , BankAccount bankAccount, String password, boolean isSellerWithdrawal) {
+            , BankAccount bankAccount, String password, boolean isSellerWithdrawal, String userId) {
         //todo lalit
 //        HashMap<String, Object> params = new HashMap<>();
         params.put(PARAM_ACTION_USER, "user");
         params.put(PARAM_DEVICE_TYPE, MOBILE_DEVICE);
-        params.put(PARAM_EMAIL, email);
+        params.put(EMAIL, email);
         params.put(PARAM_WITHDRAW, String.valueOf(withdrawal));
-        params.put(PARAM_BANK_ACC_ID, bankAccount.getBankAccountID());
+        params.put(ACCOUNT_ID, bankAccount.getBankAccountID());
         params.put(PARAM_SELECT_OTP, "password");
-        params.put(PARAM_LANG, "EN");
+        params.put(PARAM_LANG, "ID");
         params.put(PARAM_IS_SELLER, isSellerWithdrawal);
         params.put(PARAM_WITHDRAW_TYPE, 1);
 
 
-        /*params.put(PARAM_USER_ID, userId);
-        params.put(PARAM_DEVICE_ID, deviceId);
+        params.put(USERID, userId);
+        params.put(TYPE, 1);
+        params.put(TOKEN, "");
+        params.put(MASTER_EMAIL, "");
+        params.put(MASTER_ID, "");
+        params.put(VALIDATE_TOKEN, "");
+        params.put(PROGRAM, "test123");
+        /*params.put(PARAM_DEVICE_ID, deviceId);
         params.put(PARAM_HASH, hash);
         params.put(PARAM_OS_TYPE, "1");
         params.put(PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));*/
@@ -94,6 +110,7 @@ public class GqlSubmitWithdrawUseCase {
         params.put(PARAM_BANK_ID, bankAccount.getBankID());
         params.put(PARAM_BANK_NAME, bankAccount.getBankName());
         params.put(PARAM_BANK_BRANCH, bankAccount.getBankName());
+        params.put(AMOUNT, String.valueOf(withdrawal));
 
         params.put(PARAM_PASSWORD, password);
 

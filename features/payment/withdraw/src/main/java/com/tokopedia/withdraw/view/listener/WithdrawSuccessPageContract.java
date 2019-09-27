@@ -1,7 +1,11 @@
 package com.tokopedia.withdraw.view.listener;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+
+import java.util.HashMap;
 
 public class WithdrawSuccessPageContract {
 
@@ -13,6 +17,6 @@ public class WithdrawSuccessPageContract {
     }
 
     public interface Presenter extends CustomerPresenter<View> {
-        void executeSuccessUseCase(Object withdrawFormData);
+        void executeSuccessUseCase(HashMap<String, Object> withdrawFormData, Context context);
     }
 }
