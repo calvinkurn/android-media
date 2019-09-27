@@ -84,6 +84,7 @@
     <string name="saldolock_info_text">Tidak bisa tarik Saldo Penghasilan karena belum lunasi tagihan Modal Toko. Bantuan? Klik di sini</string>
     <string name="saldo_withdraw_tnc_original">Dengan klik tombol di bawah, kamu telah setuju dengan</string>
     <string name="saldo_withdraw_tnc_clickable">ketentuan penarikan saldo.</string>
+    <string name="saldo_withdraw_tnc_title">Ketentuan penarikan saldo</string>
     <string name="saldo_exceeding_withdraw_balance">Nominal melebihi saldo milikmu</string>
     <string name="continue_pull">Lanjut Tarik</string>
     <string name="back">Kembali</string>
@@ -105,5 +106,18 @@
     <string name="ttl_withdraw_dtl">Detail penarikan saldo</string>
     <string name="withdrawal_being_processed">Penarikanmu sedang diproses, harap tunggu maks. 1x24 jam di hari kerja</string>
     <string name="noincome_to_withdraw">Kamu tidak punya Saldo Penghasilan untuk ditarik</string>
+
+
+    <string name="swd_admin_fee">Dikenai biaya admin %s</string>
+
+    <string name="swd_program_tarik_saldo">Program Tarik Saldo</string>
+    <string name="swd_program_tarik_saldo_description">Gabung program dan nikmati berbagai macam keuntungan setiap penarikan</string>
+    <string name="swd_program_tarik_btn">Cek Sekarang</string>
+
+    <string name="swd_rekening_premium">Rekening Premium</string>
+    <string name="swd_rekening_premium_btn">Lihat Program</string>
+    <string name="swd_rekening_premium_description">Saldo hanya bisa ditarik ke bank tertentu, sesuai Rekening Premium yang kamu ikuti.</string>
+
+
 
 </resources>

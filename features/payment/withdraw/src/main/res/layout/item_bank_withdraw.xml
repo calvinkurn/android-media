@@ -53,5 +53,23 @@
         android:textSize="@dimen/sp_12"
         tools:text="5678908730 • Alexandra " />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvAdminFee"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/bank_acc_name"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/radio"
+        android:ellipsize="marquee"
+        android:lineSpacingExtra="@dimen/sp_4"
+        android:singleLine="true"
+        app:typographyType="body_3"
+        android:textColor="@color/black_40"
+        android:textSize="@dimen/sp_12"
+        tools:text="5678908730 • Alexandra " />
+
 
 </RelativeLayout>

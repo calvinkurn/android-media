@@ -310,7 +310,7 @@
 
         <include
             android:id="@+id/layout_premium_account"
-            layout="@layout/sdw_layout_premium_account"
+            layout="@layout/swd_layout_premium_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
