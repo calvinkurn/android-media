@@ -543,6 +543,10 @@ abstract class ProductCardView: BaseCustomView {
         textViewReviewCount?.text = getReviewCountFormattedAsText(reviewCount)
     }
 
+    open fun setReviewCount(reviewCount: String){
+        textViewReviewCount?.text = reviewCount
+    }
+
     open fun getReviewCountFormattedAsText(reviewCount: Int): String {
         return "($reviewCount)"
     }

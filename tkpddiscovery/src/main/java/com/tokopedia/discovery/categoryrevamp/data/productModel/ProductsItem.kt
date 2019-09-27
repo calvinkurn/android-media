@@ -97,8 +97,12 @@ data class ProductsItem(
         val preorder: Boolean? = null,
 
         @field:SerializedName("isTopAds")
-        var isTopAds: Boolean = false
-) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
+        var isTopAds: Boolean = false,
+
+        @field:SerializedName("topAdsReviewCount")
+        var topAdsReviewCount: String = ""
+
+        ) : ImpressHolder(), Parcelable, Visitable<ProductTypeFactory> {
 
 
     override fun type(typeFactory: ProductTypeFactory?): Int {
