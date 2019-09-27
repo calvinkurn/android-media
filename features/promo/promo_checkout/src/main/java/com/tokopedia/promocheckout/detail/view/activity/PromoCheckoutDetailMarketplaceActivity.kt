@@ -11,22 +11,13 @@ import com.tokopedia.promocheckout.detail.di.DaggerPromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailMarketplaceFragment
 
-class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity(),HasComponent<PromoCheckoutDetailComponent> {
+class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutDetailComponent> {
 
 
-     var promoCheckoutDetailComponent: PromoCheckoutDetailComponent?=null
-    override fun getComponent(): PromoCheckoutDetailComponent {
-        if (promoCheckoutDetailComponent==null)
-        { initInjector()}
+    override fun getComponent(): PromoCheckoutDetailComponent = DaggerPromoCheckoutDetailComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
 
-        return promoCheckoutDetailComponent!!
-    }
-
-    private fun initInjector() {
-        promoCheckoutDetailComponent = DaggerPromoCheckoutDetailComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-    }
     override fun getNewFragment(): Fragment {
         return PromoCheckoutDetailMarketplaceFragment.createInstance(intent.getStringExtra(PromoCheckoutDetailMarketplaceFragment.EXTRA_KUPON_CODE),
                 intent.getBooleanExtra(PromoCheckoutDetailMarketplaceFragment.EXTRA_IS_USE, false),
@@ -51,5 +42,4 @@ class PromoCheckoutDetailMarketplaceActivity : BaseSimpleActivity(),HasComponent
     override fun isShowCloseButton(): Boolean {
         return true
     }
-
 }

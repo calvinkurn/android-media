@@ -127,8 +127,8 @@ abstract class BasePromoCheckoutDetailFragment : Fragment(), PromoCheckoutDetail
 
 
     private fun disableViews() {
-        imageMinTrans?.setImageResource(R.drawable.ic_tp_rp_grey)
-        imagePeriod?.setImageResource(R.drawable.ic_tp_time)
+        imageMinTrans?.setImageResource(R.drawable.ic_promo_rp_grey)
+        imagePeriod?.setImageResource(R.drawable.ic_promo_time)
         buttonUse?.isEnabled = false
     }
 

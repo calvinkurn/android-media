@@ -36,21 +36,29 @@ import javax.inject.Inject
 
 class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetailContract.View {
 
-    override fun getScreenName() = " "
     private var mCouponName: String? = null
     var mTimer: CountDownTimer? = null
     lateinit var progressBar: ProgressBar
-    lateinit var slug: String
-    var catalog_id: Int=0
-    lateinit var promo:Promo
+    var slug: String? = null
+    var catalog_id: Int = 0
+    lateinit var promo: Promo
+    val textColorIndex = 1
+    private val couponRedemptionCode_LOW_POINT = 42020
+    private val couponRedemptionCode_QUOTA_LIMIT_REACHED = 42022
+    private val couponRedemptionCode_PROFILE_INCOMPLETE = 42021
+    private val couponRedemptionCode_SUCCESS = 200
 
     @Inject
     lateinit var mPresenter: CheckoutCatalogDetailPresenter
 
+    override fun getScreenName() = " "
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        slug=arguments?.getString(SLUG)!!
-        catalog_id=arguments?.getInt(CATALOG_ID)!!
-        promo=arguments?.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)!!
+        arguments?.let {
+            slug = it.getString(SLUG)
+            catalog_id = it.getInt(CATALOG_ID)
+            promo = it.getParcelable(CHECK_PROMO_CODE_FIRST_STEP_PARAM)
+        }
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
@@ -65,7 +73,6 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mPresenter.attachView(this)
-        initListener()
 
         if (arguments == null) {
             if (activity != null) {
@@ -74,22 +81,20 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
             return
         }
 
-        mPresenter.getCatalogDetail(slug, catalog_id)
+        slug?.let { mPresenter.getCatalogDetail(it, catalog_id) }
     }
 
     override fun onDestroy() {
         mPresenter.destroyView()
-
-        if (mTimer != null) {
-            mTimer!!.cancel()
+        mTimer?.let { countDownTimer ->
+            countDownTimer.cancel()
             mTimer = null
         }
-
         super.onDestroy()
     }
 
-    override fun getAppContext(): Context {
-        return activity!!.applicationContext
+    override fun getAppContext(): Context? {
+        return activity?.applicationContext
     }
 
     override fun showLoader() {
@@ -123,22 +128,15 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         progressBar = view.findViewById(R.id.progressbar)
     }
 
-    private fun initListener() {
-        if (view == null) {
-            return
-        }
-    }
-
     override fun showCouponDetail(cta: String?, code: String?, title: String?) {
         startActivityForResult(PromoCheckoutDetailMarketplaceActivity.createIntent(
                 activity, code, oneClickShipment = false, pageTracking = 0, promo = promo), REQUEST_CODE_DETAIL_PROMO)
-
     }
 
     override fun showValidationMessageDialog(item: HachikoCatalogDetail, title: String, message: String, resCode: Int) {
         val viewRedeemCoupon = View.inflate(this.context, R.layout.popup_redeem_coupon, null)
-        val adb = AlertDialog.Builder(getActivityContext()!!)
-        adb.setView(viewRedeemCoupon)
+        val adb = getActivityContext()?.let { AlertDialog.Builder(it) }
+        adb?.setView(viewRedeemCoupon)
 
         val tvTitlePopup = viewRedeemCoupon.findViewById<TextView>(R.id.tv_titlepopup)
         val tvContentPopup = viewRedeemCoupon.findViewById<TextView>(R.id.tv_contentpopup)
@@ -146,16 +144,16 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val buttonDismiss = viewRedeemCoupon.findViewById<TextView>(R.id.button1)
 
         when (resCode) {
-            42020 -> button.text =getString(R.string.promo_popup_ok)
-            42021 -> {
+            couponRedemptionCode_LOW_POINT -> button.text = getString(R.string.promo_popup_ok)
+            couponRedemptionCode_PROFILE_INCOMPLETE -> {
                 button.text = getString(R.string.promo_popup_button_positive_one)
-                buttonDismiss.text =getString(R.string.promo_popup_button_negative_one)
+                buttonDismiss.text = getString(R.string.promo_popup_button_negative_one)
             }
-            200 -> {
+            couponRedemptionCode_SUCCESS -> {
                 button.text = getString(R.string.promo_popup_button_positive)
                 buttonDismiss.text = getString(R.string.promo_popoup_batal)
             }
-            42022 -> {
+            couponRedemptionCode_QUOTA_LIMIT_REACHED -> {
                 button.text = getString(R.string.promo_popup_ok)
             }
             else -> {
@@ -170,19 +168,21 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         }
 
         tvContentPopup.text = MethodChecker.fromHtml(message)
-        val dialog = adb.create()
-        dialog.window!!.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
+        val dialog = adb?.create()
+        dialog?.let { alertDialog ->
+            alertDialog.window.setBackgroundDrawableResource(android.R.color.transparent)
+            dialog.show()
+        }
 
-        buttonDismiss.setOnClickListener { view -> dialog.dismiss() }
+        buttonDismiss.setOnClickListener { view -> dialog?.dismiss() }
         button.setOnClickListener { v ->
-            dialog.dismiss()
+            dialog?.dismiss()
             when (resCode) {
-                200 -> {
+                couponRedemptionCode_SUCCESS -> {
                     mPresenter.startSaveCoupon(item)
                 }
-                42021 -> {
-                  //   startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
+                couponRedemptionCode_PROFILE_INCOMPLETE -> {
+                    //   startActivity(Intent(appContext, ProfileCompletionActivity::class.java))
                 }
             }
         }
@@ -194,25 +194,25 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         }
 
         mCouponName = data.title
-        val quota = view!!.findViewById<Typography>(R.id.text_quota_count)
-        val description = view!!.findViewById<Typography>(R.id.text_description)
-        val disabledError = view!!.findViewById<Typography>(R.id.text_disabled_error)
-        val bottomSeparator = view!!.findViewById<View>(R.id.bottom_separator)
-        val btnAction2 = view!!.findViewById<Typography>(R.id.button_action_2)
-        val imgBanner = view!!.findViewById<ImageView>(R.id.img_banner)
-        val labelPoint = view!!.findViewById<Typography>(R.id.text_point_label)
-        val textDiscount = view!!.findViewById<Typography>(R.id.text_point_discount)
-        val titleMinTrans = view!!.findViewById<Typography>(R.id.titleMinTrans)
-        val textMinTrans = view!!.findViewById<Typography>(R.id.textMinTrans)
+        val quota = view?.findViewById<Typography>(R.id.text_quota_count)
+        val description = view?.findViewById<Typography>(R.id.text_description)
+        val disabledError = view?.findViewById<Typography>(R.id.text_disabled_error)
+        val bottomSeparator = view?.findViewById<View>(R.id.bottom_separator)
+        val btnAction2 = view?.findViewById<Typography>(R.id.button_action_2)
+        val imgBanner = view?.findViewById<ImageView>(R.id.img_banner)
+        val labelPoint = view?.findViewById<Typography>(R.id.text_point_label)
+        val textDiscount = view?.findViewById<Typography>(R.id.text_point_discount)
+        val titleMinTrans = view?.findViewById<Typography>(R.id.titleMinTrans)
+        val textMinTrans = view?.findViewById<Typography>(R.id.textMinTrans)
 
-        btnAction2.visibility = View.VISIBLE
-        description.text = data.title
-        titleMinTrans.text = data.minimumUsageLabel
-        textMinTrans.text = data.minimumUsage
-        btnAction2.text = data.buttonStr
-        btnAction2.setBackgroundResource(R.drawable.bg_button_orange_enabled)
+        btnAction2?.visibility = View.VISIBLE
+        description?.text = data.title
+        titleMinTrans?.text = data.minimumUsageLabel
+        textMinTrans?.text = data.minimumUsage
+        btnAction2?.text = data.buttonStr
+        btnAction2?.setBackgroundResource(R.drawable.bg_button_orange_enabled)
 
-        ImageHandler.loadImageFitCenter(imgBanner.context, imgBanner, data.imageUrlMobile)
+        ImageHandler.loadImageFitCenter(imgBanner?.context, imgBanner, data.imageUrlMobile)
 
         val tvTnc = view!!.findViewById<WebView>(R.id.tnc_content)
         if (data.tnc != null) {
@@ -230,27 +230,27 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
 
         //Quota text handling
         if (data.upperTextDesc == null || data.upperTextDesc.isEmpty()) {
-            quota.visibility = View.GONE
+            quota?.visibility = View.GONE
         } else {
-            quota.visibility = View.VISIBLE
+            quota?.visibility = View.VISIBLE
             var upperText = StringBuilder()
             for (i in 0 until data.upperTextDesc.size) {
-                if (i == 1) {
+                if (i == textColorIndex) {
                     //exclusive case for handling font color of second index.
                     upperText.append("<font color='#ff5722'>" + data.upperTextDesc[i] + "</font>")
                 } else {
                     upperText.append(data.upperTextDesc[i]).append(" ")
                 }
             }
-            quota.text = MethodChecker.fromHtml(upperText.toString())
+            quota?.text = MethodChecker.fromHtml(upperText.toString())
         }
 
         //Quota text handling
         if (data.disableErrorMessage == null || data.disableErrorMessage.isEmpty()) {
-            disabledError.visibility = View.GONE
+            disabledError?.visibility = View.GONE
         } else {
-            disabledError.visibility = View.VISIBLE
-            disabledError.text = data.disableErrorMessage
+            disabledError?.visibility = View.VISIBLE
+            disabledError?.text = data.disableErrorMessage
         }
 
         //disabling the coupons if not eligible for current membership
@@ -263,21 +263,21 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         }
 
         if (data.pointsSlash!! <= 0) {
-            labelPoint.visibility = View.GONE
+            labelPoint?.visibility = View.GONE
         } else {
-            labelPoint.visibility = View.VISIBLE
-            labelPoint.text = data.pointsSlashStr
-            labelPoint.paintFlags = labelPoint.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            labelPoint?.visibility = View.VISIBLE
+            labelPoint?.text = data.pointsSlashStr
+            labelPoint?.paintFlags = labelPoint?.paintFlags?.or(Paint.STRIKE_THRU_TEXT_FLAG)!!
         }
 
         if (data.discountPercentage!! <= 0) {
-            textDiscount.visibility = View.GONE
+            textDiscount?.visibility = View.GONE
         } else {
-            textDiscount.visibility = View.VISIBLE
-            textDiscount.text = data.discountPercentageStr
+            textDiscount?.visibility = View.VISIBLE
+            textDiscount?.text = data.discountPercentageStr
         }
 
-        btnAction2.setOnClickListener { v ->
+        btnAction2?.setOnClickListener { v ->
             mPresenter.startValidateCoupon(data)
 
         }
@@ -287,10 +287,10 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         if (view == null) {
             return
         }
-
-        val textUserPoint = view!!.findViewById<Typography>(R.id.text_point_value)
-        textUserPoint.text=(point)
+        val textUserPoint = view?.findViewById<Typography>(R.id.text_point_value)
+        textUserPoint?.text = (point)
     }
+
     companion object {
         private val UTF_ENCODING = "UTF-8"
         private val COUPON_MIME_TYPE = "text/html"
@@ -301,7 +301,7 @@ class CheckoutCatalogDetailFragment : BaseDaggerFragment(), CheckoutCatalogDetai
         val ONE_CLICK_SHIPMENT = "ONE_CLICK_SHIPMENT"
         val PAGE_TRACKING = "PAGE_TRACKING"
         val CHECK_PROMO_CODE_FIRST_STEP_PARAM = "CHECK_PROMO_CODE_FIRST_STEP_PARAM"
-        val REQUEST_CODE_DETAIL_PROMO=231
+        val REQUEST_CODE_DETAIL_PROMO = 231
         fun newInstance(slug: String, catalog_id: Int, promoCode: String?, oneClickShipment: Boolean?, pageTracking: Int,
                         promo: Promo): CheckoutCatalogDetailFragment {
             val checkoutcatalogfragment = CheckoutCatalogDetailFragment()

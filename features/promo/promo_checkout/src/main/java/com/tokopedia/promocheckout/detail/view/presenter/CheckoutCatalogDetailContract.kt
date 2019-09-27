@@ -11,7 +11,7 @@ interface CheckoutCatalogDetailContract {
 
         fun getActivityContext(): Context?
 
-        fun getAppContext(): Context
+        fun getAppContext(): Context?
 
         fun showLoader()
 

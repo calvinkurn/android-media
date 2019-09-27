@@ -34,8 +34,6 @@ import kotlinx.android.synthetic.main.fragment_promo_checkout_list.*
 import javax.inject.Inject
 
 class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoCheckoutListDigitalContract.View {
-    override fun onClickRedeemCoupon(position: Int,slug:String?) {
-    }
 
     @Inject
     lateinit var promoCheckoutListDigitalPresenter: PromoCheckoutListDigitalPresenter
@@ -48,6 +46,9 @@ class PromoCheckoutListDigitalFragment : BasePromoCheckoutListFragment(), PromoC
     var pageTracking: Int = 1
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.DIGITAL_STRING
+
+    override fun onClickRedeemCoupon(catalog_id: Int,slug:String?) {
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isCouponActive = arguments?.getBoolean(EXTRA_IS_COUPON_ACTIVE) ?: true

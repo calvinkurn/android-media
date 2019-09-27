@@ -11,7 +11,6 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.domain.mapper.CheckVoucherDigitalMapper
-import com.tokopedia.promocheckout.detail.domain.GetCatalogDetailUsecase
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailPresenter
 import dagger.Module
@@ -54,12 +53,6 @@ class PromoCheckoutDetailModule {
     @Provides
     fun provideGetDetailMarketplaceUseCase(@ApplicationContext context: Context): GetDetailCouponMarketplaceUseCase {
         return GetDetailCouponMarketplaceUseCase(context.resources)
-    }
-
-    @PromoCheckoutDetailScope
-    @Provides
-    fun provideCatalogDetailUseCase(@ApplicationContext context: Context): GetCatalogDetailUsecase {
-        return GetCatalogDetailUsecase(context.resources)
     }
 
     @PromoCheckoutDetailScope

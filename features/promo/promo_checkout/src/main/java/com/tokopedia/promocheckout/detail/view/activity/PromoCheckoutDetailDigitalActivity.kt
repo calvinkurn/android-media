@@ -14,19 +14,9 @@ import com.tokopedia.promocheckout.detail.view.fragment.PromoCheckoutDetailDigit
 
 class PromoCheckoutDetailDigitalActivity : BaseSimpleActivity(), HasComponent<PromoCheckoutDetailComponent> {
 
-     var promoCheckoutDetailComponent:PromoCheckoutDetailComponent?=null
-    override fun getComponent(): PromoCheckoutDetailComponent {
-          if (promoCheckoutDetailComponent==null)
-          {initInjector()}
-
-        return promoCheckoutDetailComponent!!
-    }
-
-    private fun initInjector() {
-        promoCheckoutDetailComponent = DaggerPromoCheckoutDetailComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
-    }
+    override fun getComponent(): PromoCheckoutDetailComponent=DaggerPromoCheckoutDetailComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .build()
 
     override fun getNewFragment(): Fragment {
         return PromoCheckoutDetailDigitalFragment.createInstance(

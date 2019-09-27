@@ -25,14 +25,13 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
         mGetCouponDetail?.unsubscribe()
     }
 
-    //    @Override
     fun startValidateCoupon(item: HachikoCatalogDetail) {
         val variables = HashMap<String, Any>()
-        variables["catalog_id"] = item.id!!
+        variables["catalog_id"] = item.id?:0
         variables["is_gift"] = 0
         variables["gift_user_id"] = 0
         variables["gift_email"] = ""
-        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().resources, R.raw.promo_checkout_prevalidate_coupon),
+        val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources, R.raw.promo_checkout_prevalidate_coupon),
                 PromoCouponPreValidateResponse::class.java, variables, false)
         mValidateCouponUseCase.clearRequest()
         mValidateCouponUseCase.addRequest(graphqlRequest)
@@ -42,7 +41,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
             }
 
             override fun onError(e: Throwable) {
-                //NA
+
             }
 
             override fun onNext(response: GraphqlResponse) {
@@ -68,10 +67,10 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
 
     fun startSaveCoupon(item: HachikoCatalogDetail) {
         val variables = HashMap<String, Any>()
-        variables["catalog_id"] = item.id!!
+        variables["catalog_id"] = item.id?:0
         variables["is_gift"] = 0
 
-        val request = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().resources,
+        val request = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources,
                 R.raw.promo_checkout_redeem_coupon),
                 PromoRedeemCouponResponse::class.java,
                 variables, false)
@@ -83,12 +82,12 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
             }
 
             override fun onError(e: Throwable) {
-                //NA
+
             }
 
             override fun onNext(response: GraphqlResponse) {
                 val redeemCouponBaseEntity = response.getData<PromoRedeemCouponResponse>(PromoRedeemCouponResponse::class.java)
-                if (redeemCouponBaseEntity != null && redeemCouponBaseEntity.hachikoRedeem != null && redeemCouponBaseEntity.hachikoRedeem.coupons != null) {
+                if (redeemCouponBaseEntity?.hachikoRedeem?.coupons != null) {
                     view.showCouponDetail(redeemCouponBaseEntity.hachikoRedeem.coupons[0]?.cta,
                             redeemCouponBaseEntity.hachikoRedeem.coupons[0]?.code,
                             redeemCouponBaseEntity.hachikoRedeem.coupons[0]?.title)
@@ -118,14 +117,14 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
         variables["slug"] = uniqueCatalogCode
         variables["catalog_id"] = catalog_id
 
-        val request = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().resources,
+        val request = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources,
                 R.raw.promo_checkout_catalog_detail),
                 CouponDetailsResponse::class.java,
                 variables, false)
         mGetCouponDetail!!.clearRequest()
         mGetCouponDetail.addRequest(request)
 
-        val graphqlRequestPoints = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext().resources, R.raw.promo_gql_current_points),UserPointsResponse::class.java, false)
+        val graphqlRequestPoints = GraphqlRequest(GraphqlHelper.loadRawString(view.getAppContext()?.resources, R.raw.promo_gql_current_points),UserPointsResponse::class.java, false)
         mGetCouponDetail.addRequest(graphqlRequestPoints)
         mGetCouponDetail.execute(object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
@@ -133,7 +132,7 @@ class CheckoutCatalogDetailPresenter @Inject constructor(private val mGetCouponD
             }
 
             override fun onError(e: Throwable) {
-                //NA
+
                 if (view != null) {
                     view.hideLoader()
                 }

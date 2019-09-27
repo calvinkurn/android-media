@@ -35,23 +35,11 @@ import javax.inject.Inject
 class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), PromoCheckoutListMarketplaceContract.View {
 
     private var containerParent: ViewGroup? = null
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        this.containerParent = container
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    override fun onClickRedeemCoupon(catalog_id: Int, slug: String?) {
-        childFragmentManager.
-                beginTransaction().
-                add(R.id.ppp,CheckoutCatalogDetailFragment.newInstance(slug=slug!!, catalog_id = catalog_id,promoCode = promoCode,oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo!!)).addToBackStack(null).commit()
-    }
-
     @Inject
     lateinit var promoCheckoutListMarketplacePresenter: PromoCheckoutListMarketplacePresenter
 
     @Inject
     lateinit var trackingPromoCheckoutUtil: TrackingPromoCheckoutUtil
-
 
     private var isOneClickShipment: Boolean = false
     lateinit var progressDialog: ProgressDialog
@@ -59,6 +47,10 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     private var promo: Promo? = null
 
     override var serviceId: String = IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING
+
+    override fun onClickRedeemCoupon(catalog_id: Int, slug: String?) {
+        childFragmentManager.beginTransaction().add(R.id.list_parent_container, CheckoutCatalogDetailFragment.newInstance(slug = slug!!, catalog_id = catalog_id, promoCode = promoCode, oneClickShipment = isOneClickShipment, pageTracking = pageTracking, promo = promo!!)).addToBackStack(null).commit()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         isCouponActive = arguments?.getBoolean(IS_COUPON_ACTIVE) ?: true
@@ -70,6 +62,11 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         promoCheckoutListMarketplacePresenter.attachView(this)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        this.containerParent = container
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressDialog = ProgressDialog(activity)
@@ -78,7 +75,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun onItemClicked(promoCheckoutListModel: PromoCheckoutListModel?) {
-       if (pageTracking == FROM_CART) {
+        if (pageTracking == FROM_CART) {
             trackingPromoCheckoutUtil.cartClickCoupon(promoCheckoutListModel?.code ?: "")
         } else {
             trackingPromoCheckoutUtil.checkoutClickCoupon(promoCheckoutListModel?.code ?: "")
@@ -213,4 +210,8 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
         }
     }
 
+    override fun onDestroyView() {
+        promoCheckoutListMarketplacePresenter.detachView()
+        super.onDestroyView()
+    }
 }
