@@ -46,6 +46,8 @@ import com.tokopedia.transaction.common.sharedata.buyagain.ResponseBuyAgain;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSession;
 
+import org.w3c.dom.Text;
+
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -91,6 +93,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private String Insurance_File_Name = "Invoice";
     public String pdfUri = " ";
     private boolean isdownloadable = false;
+    private OrderDetails details;
 
     @Inject
     public OrderListDetailPresenter(GraphqlUseCase orderDetailsUseCase) {
@@ -118,11 +121,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
             variables.put(ORDER_CATEGORY, orderCategory);
             variables.put(ORDER_ID, orderId);
             variables.put(DETAIL, 1);
-            if (fromPayment != null && fromPayment.equalsIgnoreCase("true")) {
-                variables.put(ACTION, 0);
-            } else {
-                variables.put(ACTION, 1);
-            }
+            variables.put(ACTION, 1);
             variables.put(UPSTREAM, "");
             graphqlRequest = new
                     GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
@@ -329,6 +328,7 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
     private void setDetailsData(OrderDetails details) {
         if (getView() == null || getView().getAppContext() == null)
             return;
+        this.details = details;
         getView().hideProgressBar();
         getView().setStatus(details.status());
         getView().clearDynamicViews();
@@ -580,9 +580,16 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
         return (matcher.find() || this.isdownloadable);
     }
 
-    public void sendThankYouEvent(MetaDataInfo metaDataInfo) {
+    public void sendThankYouEvent(MetaDataInfo metaDataInfo, int categoryType) {
         if ("true".equalsIgnoreCase(this.fromPayment)) {
-            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId);
+            String paymentStatus = "", paymentMethod = "";
+            if (details != null && details.status() != null && !TextUtils.isEmpty(details.status().statusText())) {
+                paymentStatus = details.status().statusText();
+            }
+            if (details != null && details.getPayMethods() != null && details.getPayMethods().size() > 0 && !TextUtils.isEmpty(details.getPayMethods().get(0).getValue())) {
+                paymentMethod = details.getPayMethods().get(0).getValue();
+            }
+            orderListAnalytics.sendThankYouEvent(metaDataInfo.getEntityProductId(), metaDataInfo.getEntityProductName(), metaDataInfo.getTotalTicketPrice(), metaDataInfo.getTotalTicketCount(), metaDataInfo.getEntityBrandName(), orderId, categoryType, paymentMethod, paymentStatus);
         }
     }
 

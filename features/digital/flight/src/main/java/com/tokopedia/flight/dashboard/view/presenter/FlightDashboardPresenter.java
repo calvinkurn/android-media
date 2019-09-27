@@ -136,14 +136,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     @Override
     public void initialize() {
-        if (userSession.isLoggedIn()) {
-            onInitialize();
-        } else {
-            getView().navigateToLoginPage();
-        }
-    }
-
-    private void onInitialize() {
         setupViewModel();
         getBannerData();
 
@@ -436,7 +428,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
     @Override
     public void onSearchTicketButtonClicked() {
         if (validateSearchParam(getView().getCurrentDashboardViewModel())) {
-            flightAnalytics.eventSearchClick(getView().getScreenName());
+            flightAnalytics.eventSearchClick(getView().getCurrentDashboardViewModel());
             flightDeleteAllFlightSearchDataUseCase.execute(new Subscriber<Boolean>() {
                 @Override
                 public void onCompleted() {
@@ -466,15 +458,6 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
         flightDeleteAllFlightSearchDataUseCase.unsubscribe();
         getFlightClassByIdUseCase.unsubscribe();
         detachView();
-    }
-
-    @Override
-    public void onLoginResultReceived() {
-        if (userSession.isLoggedIn()) {
-            onInitialize();
-        } else {
-            getView().closePage();
-        }
     }
 
     private void transformExtras() {
@@ -770,7 +753,7 @@ public class FlightDashboardPresenter extends BaseDaggerPresenter<FlightDashboar
 
     private String getAirportListString(List<String> airports) {
         String airportsString = "";
-        for (int i=0;i<airports.size();i++) {
+        for (int i = 0; i < airports.size(); i++) {
             airportsString += airports.get(i);
             if (i < airports.size() - 1) {
                 airportsString += ",";

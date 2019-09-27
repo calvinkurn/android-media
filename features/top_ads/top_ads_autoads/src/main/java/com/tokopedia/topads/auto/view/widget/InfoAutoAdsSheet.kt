@@ -19,7 +19,7 @@ class InfoAutoAdsSheet {
     private fun setupView(context: Context) {
         dialog!!.setOnShowListener { dialogInterface ->
             val dialog = dialogInterface as BottomSheetDialog
-            val frameLayout = dialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+            val frameLayout = dialog.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
             if (frameLayout != null) {
                 val behavior = BottomSheetBehavior.from(frameLayout)
                 behavior.isHideable = false
@@ -45,7 +45,7 @@ class InfoAutoAdsSheet {
             val fragment = InfoAutoAdsSheet()
             fragment.dialog = BottomSheetDialog(context, R.style.AutoAdsBottomSheetDialogTheme)
             fragment.dialog!!.setContentView(R.layout.layout_info_autoads)
-            fragment.closeButton = fragment.dialog!!.findViewById(R.id.btn_close)
+            fragment.closeButton = fragment.dialog!!.findViewById(com.tokopedia.design.R.id.btn_close)
             fragment.agreeButton = fragment.dialog!!.findViewById(R.id.btn_agree)
             fragment.setupView(context)
             return fragment

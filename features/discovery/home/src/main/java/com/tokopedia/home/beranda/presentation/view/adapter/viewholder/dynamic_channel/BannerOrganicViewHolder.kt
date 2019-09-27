@@ -162,6 +162,11 @@ class BannerOrganicViewHolder(itemView: View, val homeCategoryListener: HomeCate
     }
 
     private fun mappingCtaButton(cta: DynamicHomeChannel.CtaData) {
+        if (cta.text.isEmpty()) {
+            bannerUnifyButton.visibility = View.GONE
+            return
+        }
+        bannerUnifyButton.visibility = View.VISIBLE
         when (cta.mode) {
             CTA_MODE_MAIN -> bannerUnifyButton.buttonType = UnifyButton.Type.MAIN
             CTA_MODE_TRANSACTION -> bannerUnifyButton.buttonType = UnifyButton.Type.TRANSACTION

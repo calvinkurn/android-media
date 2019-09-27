@@ -11,12 +11,31 @@ import com.tokopedia.travel.homepage.presentation.fragment.TravelHomepageFragmen
 
 class GetEmptyViewModelsUseCase {
 
-    fun requestEmptyViewModels(): List<TravelHomepageItemModel> {
-        return listOf(TravelHomepageBannerModel(),
-                TravelHomepageCategoryListModel(),
-                TravelHomepageSectionViewModel(type = TYPE_ORDER_LIST),
-                TravelHomepageSectionViewModel(type = TYPE_RECENT_SEARCH),
-                TravelHomepageSectionViewModel(type = TYPE_RECOMMENDATION),
-                TravelHomepageDestinationModel())
+    fun requestEmptyViewModels(loadFromCloud: Boolean): List<TravelHomepageItemModel> {
+
+        val travelHomepageBannerModel = TravelHomepageBannerModel()
+        travelHomepageBannerModel.isLoadFromCloud = loadFromCloud
+
+        val categoryListModel = TravelHomepageCategoryListModel()
+        categoryListModel.isLoadFromCloud = loadFromCloud
+
+        val orderListModel = TravelHomepageSectionViewModel(type = TYPE_ORDER_LIST)
+        orderListModel.isLoadFromCloud = loadFromCloud
+
+        val recentSearchModel = TravelHomepageSectionViewModel(type = TYPE_RECENT_SEARCH)
+        recentSearchModel.isLoadFromCloud = loadFromCloud
+
+        val recommendationModel = TravelHomepageSectionViewModel(type = TYPE_RECOMMENDATION)
+        recommendationModel.isLoadFromCloud = loadFromCloud
+
+        val destinationModel = TravelHomepageDestinationModel()
+        destinationModel.isLoadFromCloud = loadFromCloud
+
+        return listOf(travelHomepageBannerModel,
+                categoryListModel,
+                orderListModel,
+                recentSearchModel,
+                recommendationModel,
+                destinationModel)
     }
 }

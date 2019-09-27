@@ -1,13 +1,12 @@
 package com.tokopedia.navigation.presentation.adapter.viewholder.notificationupdate
 
-import android.content.Intent
 import android.support.annotation.LayoutRes
 import android.support.constraint.ConstraintLayout
+import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.navigation.R
@@ -30,10 +29,12 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
 
     override fun bindNotificationPayload(element: NotificationUpdateItemViewModel) {
         val product = element.getAtcProduct() ?: return
+        val atcDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.ic_add_to_cart)
 
         with(product) {
             productName.text = name
             productPrice.text = priceFormat
+            btnCart.setImageDrawable(atcDrawable)
             productCampaign.setupCampaign(campaign)
             productVariant.setupVariant(variant)
             ImageHandler.loadImage2(thumbnail, imageUrl, R.drawable.ic_loading_toped_new)
@@ -47,9 +48,16 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
         val product = element.getAtcProduct() ?: return
         btnCart.setOnClickListener {
             listener.getAnalytic().trackAtcOnClick(product)
-            listener.addProductToCart(product)
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.addProductToCart(product, onSuccessAddToCart())
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
+        }
+    }
+
+    private fun onSuccessAddToCart(): () -> Unit {
+        return {
+            val checkDrawable = ContextCompat.getDrawable(itemView.context, R.drawable.ic_add_to_cart_check_grey)
+            btnCart.setImageDrawable(checkDrawable)
         }
     }
 
@@ -65,7 +73,7 @@ class WishListNotificationViewHolder(itemView: View, listener: NotificationUpdat
 
     private fun getItemClickListener(product: ProductData, element: NotificationUpdateItemViewModel): View.OnClickListener {
         return View.OnClickListener {
-            listener.itemClicked(element.notificationId, adapterPosition, !element.isRead, element.templateKey)
+            listener.itemClicked(element, adapterPosition)
             element.isRead = true
             listener.getAnalytic().trackAtcToPdpClick(product)
             RouteManager.route(

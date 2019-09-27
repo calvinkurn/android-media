@@ -142,6 +142,11 @@ public class TkpdApplinkDelegate implements ApplinkDelegate {
                 if (newIntent.getData() == null) {
                     newIntent.setData(sourceIntent.getData());
                 }
+                for (String key : parameters.keySet()) {
+                    if (newIntent.hasExtra(key)) {
+                        parameters.remove(key);
+                    }
+                }
                 newIntent.putExtras(parameters);
                 newIntent.putExtra(DeepLink.IS_DEEP_LINK, true);
                 newIntent.putExtra(DeepLink.REFERRER_URI, uri);

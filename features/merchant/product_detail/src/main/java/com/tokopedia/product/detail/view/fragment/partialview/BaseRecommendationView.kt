@@ -4,7 +4,6 @@ import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -54,6 +53,7 @@ abstract class BaseRecommendationView(context: Context,
         }
         getRecyclerView().adapter = RecommendationProductAdapter(product, getListener(), pageName, productDetailTracking)
         getRecyclerView().visible()
+        getLayoutProgress().gone()
     }
 
     fun startLoading() {
@@ -68,6 +68,6 @@ abstract class BaseRecommendationView(context: Context,
     abstract fun getLayoutTitle(): TextView
     abstract fun getView(): View
     abstract fun getRecyclerView(): RecyclerView
-    abstract fun getLayoutProgress(): ProgressBar
+    abstract fun getLayoutProgress(): View
 
 }

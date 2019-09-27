@@ -136,6 +136,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private View dividerTnC;
     private boolean forceRefresh;
     private DealsCategoryAdapter dealsAdapter;
+    private UserSession userSession;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();
@@ -149,7 +150,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         View view = inflater.inflate(R.layout.fragment_deal_details, container, false);
         setViewIds(view);
         setHasOptionsMenu(true);
-
+        userSession = new UserSession(getActivity());
 
         mPresenter.getDealDetails();
         return view;
@@ -251,6 +252,10 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void renderDealDetails(DealsDetailsResponse detailsViewModel) {
         dealsAnalytics.sendScreenNameEvent(getScreenName());
         this.dealDetail = detailsViewModel;
+        if (userSession.isLoggedIn()) {
+            mPresenter.sendNsqEvent(userSession.getUserId(), detailsViewModel);
+            mPresenter.sendNsqTravelEvent(userSession.getUserId(), detailsViewModel);
+        }
         collapsingToolbarLayout.setTitle(detailsViewModel.getDisplayName());
         tvDealDetails.setText(detailsViewModel.getDisplayName());
         tvDealDetails.setVisibility(View.VISIBLE);

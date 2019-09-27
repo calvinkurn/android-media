@@ -14,6 +14,8 @@ import com.tokopedia.navigation.domain.GetNewFeedCheckerUseCase
 import com.tokopedia.navigation.listener.CartListener
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -93,5 +95,11 @@ class GlobalNavModule {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
+    }
+
+
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+        return FirebaseRemoteConfigImpl(context)
     }
 }
