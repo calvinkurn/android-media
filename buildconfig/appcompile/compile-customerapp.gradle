@@ -26,7 +26,9 @@ include "features:digital:common_travel"
 include "features:digital:digital_browse"
 include "features:digital:digital_deals"
 include "features:digital:digitalproduct"
+include "features:digital:common_topup_bills"
 include "features:digital:digital_topup_bills"
+include "features:digital:voucher_game"
 include "features:digital:event"
 include "features:digital:flight"
 //include "features:digital:flight_no_op"
@@ -43,6 +45,7 @@ include 'features:discovery:productcard'
 include 'features:discovery:filter'
 include 'features:discovery:image_search'
 include 'features:discovery:similarsearch'
+include 'features:discovery:autocomplete'
 include 'features:discovery:recommendation_widget_common'
 include "features:discovery:home"
 //include "features:discovery:home_no_op"
@@ -75,15 +78,9 @@ include "features:im:referral"
 include "features:kyc"
 
 include "features:logistic:tracking"
-//include 'features:logistic:tracking_no_op'
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:logisticcart"
-include "features:logistic:logisticuploadawb"
-//include "features:logistic:logisticuploadawb_no_op"
-include "features:logistic:logisticinputreceiptshipment"
-//include 'features:logistic:logisticinputreceiptshipment_no_op'
-//include "features:logistic:logisticinsurance_no_op"
 
 include "features:merchant:gold_merchant_common"
 include "features:merchant:gold_merchant_resource"
@@ -172,6 +169,7 @@ include 'features:user:profilecompletion'
 include "features:user:settingbank"
 include "features:user:settingnotif"
 include "features:user:sessioncommon"
+include "features:user:stickylogin"
 include "features:user:talk"
 include "features:user:topchat"
 //include "features:user:topchat_no_op"

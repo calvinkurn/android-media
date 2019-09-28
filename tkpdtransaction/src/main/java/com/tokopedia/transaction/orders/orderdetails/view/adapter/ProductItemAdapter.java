@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.UriUtil;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.orders.orderdetails.data.Items;
@@ -132,7 +131,9 @@ public class ProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     public void onClick(View view) {
                         List<Items> itemsList = new ArrayList<>();
                         itemsList.add(items);
-                        presenter.onBuyAgainItems(itemsList,BUY_AGAIN_OPTION_PRODUCT);
+
+                        presenter.onBuyAgainItems(itemsList, " - product");
+
                     }
                 });
             }

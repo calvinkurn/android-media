@@ -2,8 +2,8 @@ package com.tokopedia.promocheckout.detail.view.presenter
 
 import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase

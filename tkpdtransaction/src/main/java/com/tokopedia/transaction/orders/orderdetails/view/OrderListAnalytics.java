@@ -45,14 +45,16 @@ public class OrderListAnalytics {
     private static final String EVENT_ADD_TO_CART = "addToCart";
 
     private static final String ID = "id";
-    private static final String CATEGORY = "deals";
+    private static final String CATEGORY_DEALS = "deals";
+    private static final String CATEGORY_EVENTS = "hiburan";
     private static final String NAME = "name";
     private static final String PRICE = "price";
     private static final String EVENT_TRANSACTION = "transaction";
     private static final String EVENT_CARTEGORY = "digital-deals";
-    private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list detail - mp";
-    private static final String EVENT_ACTION_BUY_AGAIN_ORDER = "click beli lagi - order";
-    private static final String EVENT_ACTION_BUY_AGAIN_PRODUCT = "click beli lagi - product";
+    private static final String EVENT_CATEGORY_BUY_AGAIN_DETAIL = "my purchase list detail - mp";
+    private static final String EVENT_CATEGORY_BUY_AGAIN = "my purchase list - mp";
+    private static final String EVENT_ACTION_BUY_AGAIN = "click beli lagi";
+
     private static final String EVENT_LABEL_BUY_AGAIN_SUCCESS = "success";
     private static final String EVENT_LABEL_BUY_AGAIN_FAILURE = "failure";
     private static final String KEY_ADD = "add";
@@ -69,6 +71,8 @@ public class OrderListAnalytics {
     private static final String CURRENCY_CODE = "currencyCode";
     private static final String IDR = "IDR";
     private static final String QUANTITY = "quantity";
+    private static final String PAYMENT_TYPE = "payment_type";
+    private static final String PAYMENT_STATUS = "payment_status";
     private static final String REVENUE = "revenue";
     private static final String AFFILIATION = "affiliation";
     private static final String BRAND = "brand";
@@ -79,7 +83,8 @@ public class OrderListAnalytics {
     private static final String KEY_PRODUCTS = "products";
     private static final String KEY_PURCHASE = "purchase";
     private static final String KEY_ACTION_FIELD = "actionField";
-    private static final String SCREEN_NAME = "/digital/deals/thanks";
+    private static final String DEALS_SCREEN_NAME = "/digital/deals/thanks";
+    private static final String Events_SCREEN_NAME = "/digital/events/thanks";
     private static final String ACTION_CLICK_SEE_BUTTON_ON_ATC_SUCCESS_TOASTER = "click lihat button on atc success toaster";
     private static final String NONE = "none/other";
     private static final String RECOMMENDATION_PRODUCT_EVENT_CATEGORY = "my purchase list - mp - bom_empty";
@@ -87,6 +92,7 @@ public class OrderListAnalytics {
     private static final String REMOVE_WISHLIST = "click remove - wishlist on product recommendation";
     private List<Object> dataLayerList = new ArrayList<>();
     private String recomTitle;
+    public static String DIGITAL_EVENT = "digital - event";
 
     private static final String PRODUCT_CLICK = "ProductClick";
     private static final String CLICK_ON_WIDGET_RECOMMENDATION = "click on widget recommendation";
@@ -169,7 +175,7 @@ public class OrderListAnalytics {
         sendGtmData(LOAD_MORE_EVENT_ACTION, eventLabel);
     }
 
-    public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId) {
+    public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId, int categoryType, String paymentType, String paymentStatus) {
         Map<String, Object> products = new HashMap<>();
         Map<String, Object> purchase = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -178,7 +184,11 @@ public class OrderListAnalytics {
         products.put(ID, String.valueOf(entityProductId));
         products.put(NAME, entityProductName);
         products.put(PRICE, totalTicketPrice);
-        products.put("Category", CATEGORY);
+        if (categoryType == 1) {
+            products.put("Category", CATEGORY_DEALS);
+        } else {
+            products.put("Category", CATEGORY_EVENTS);
+        }
         products.put(QUANTITY, quantity);
         products.put(BRAND, brandName);
         products.put(COUPON_CODE, "none");
@@ -198,16 +208,27 @@ public class OrderListAnalytics {
 
         Map<String, Object> map = new HashMap<>();
         map.put("event", EVENT_TRANSACTION);
-        map.put("eventCategory", EVENT_CARTEGORY);
+        if (categoryType == 1) {
+            map.put("eventCategory", EVENT_CARTEGORY);
+            map.put("eventLabel", brandName);
+        } else {
+            map.put("eventCategory", DIGITAL_EVENT);
+            map.put("eventLabel", String.format("%s - %s", CATEGORY_EVENTS, entityProductName));
+        }
         map.put("eventAction", ACTION);
-        map.put("eventLabel", brandName);
         map.put("currentSite", "tokopediadigital");
+        map.put(PAYMENT_STATUS, paymentStatus);
+        map.put(PAYMENT_TYPE, paymentType);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);
-        TrackApp.getInstance().getGTM().sendScreenAuthenticated(SCREEN_NAME);
+        if (categoryType == 1) {
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(DEALS_SCREEN_NAME);
+        } else{
+            TrackApp.getInstance().getGTM().sendScreenAuthenticated(Events_SCREEN_NAME);
+        }
     }
 
-    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, String type) {
+    public void sendBuyAgainEvent(List<Items> items, ShopInfo shopInfo, List<Datum> responseBuyAgainList, boolean isSuccess, boolean fromDetail, String eventActionLabel) {
         ArrayList<Map<String, Object>> products = new ArrayList<>();
         Map<String, Object> add = new HashMap<>();
         Map<String, Object> ecommerce = new HashMap<>();
@@ -247,12 +268,11 @@ public class OrderListAnalytics {
 
         Map<String, Object> map = new HashMap<>();
         map.put("event", EVENT_ADD_TO_CART);
-        map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
-        if (type.contains(BUY_AGAIN_OPTION_PRODUCT))
-            map.put("eventAction", EVENT_ACTION_BUY_AGAIN_PRODUCT);
+        if(fromDetail)
+            map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN_DETAIL);
         else
-            map.put("eventAction", EVENT_ACTION_BUY_AGAIN_ORDER);
-
+            map.put("eventCategory", EVENT_CATEGORY_BUY_AGAIN);
+        map.put("eventAction", EVENT_ACTION_BUY_AGAIN + eventActionLabel);
         map.put("eventLabel", isSuccess ? EVENT_LABEL_BUY_AGAIN_SUCCESS : EVENT_LABEL_BUY_AGAIN_FAILURE);
         map.put("ecommerce", ecommerce);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(map);

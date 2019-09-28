@@ -3,7 +3,6 @@ package com.tokopedia.discovery.newdiscovery.di.module;
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
-import com.tokopedia.discovery.autocomplete.presentation.presenter.AutoCompletePresenter;
 import com.tokopedia.discovery.newdiscovery.analytics.DiscoveryTracking;
 import com.tokopedia.discovery.newdiscovery.di.scope.DiscoveryScope;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
@@ -27,12 +26,6 @@ import dagger.Provides;
         AttributeModule.class
 })
 public class DiscoveryModule {
-
-    @DiscoveryScope
-    @Provides
-    AutoCompletePresenter provideAutoCompletePresenter(GetProductUseCase getProductUseCase) {
-        return new AutoCompletePresenter(getProductUseCase);
-    }
 
     @DiscoveryScope
     @Provides

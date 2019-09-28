@@ -22,6 +22,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
+    implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
@@ -55,6 +56,7 @@ dependencies {
     implementation project(rootProject.ext.features.recommendationWidgetCommon)
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.discoveryCommon)
+    implementation project(rootProject.ext.features.stickyLogin)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation rootProject.ext.playServicesDependencies.tagManager
 
@@ -66,6 +68,12 @@ dependencies {
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
+
+    //video player
+    implementation project(rootProject.ext.libraries.videoplayer)
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.playServicesDependencies.analytics

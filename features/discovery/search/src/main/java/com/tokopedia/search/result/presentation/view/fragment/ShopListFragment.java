@@ -15,11 +15,11 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.authentication.AuthHelperJava;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.model.SearchParameter;
 import com.tokopedia.filter.common.data.Option;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.SearchTracking;
 import com.tokopedia.search.result.presentation.SearchSectionContract;
@@ -110,7 +110,7 @@ public class ShopListFragment
         presenter.attachView(this);
         presenter.initInjector(this);
 
-        return inflater.inflate(R.layout.fragment_shop_list_search, null);
+        return inflater.inflate(R.layout.search_result_shop_fragment_layout, null);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class ShopListFragment
         adapter = new ShopListAdapter(this,
                 new ShopListTypeFactoryImpl(this, this, this));
 
-        recyclerView = rootView.findViewById(R.id.recyclerview);
+        recyclerView = rootView.findViewById(R.id.recyclerViewSearchShop);
         recyclerView.setLayoutManager(getGridLayoutManager());
         recyclerView.addItemDecoration(
                 new ShopListItemDecoration(
@@ -210,8 +210,8 @@ public class ShopListFragment
         if(userSession == null) return "";
 
         return userSession.isLoggedIn() ?
-                AuthUtil.md5(userSession.getUserId()) :
-                AuthUtil.md5(getRegistrationId());
+                AuthHelperJava.md5(userSession.getUserId()) :
+                AuthHelperJava.md5(getRegistrationId());
     }
 
     private void loadDataFromPresenter() {
