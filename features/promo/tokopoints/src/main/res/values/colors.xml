@@ -20,4 +20,10 @@
     <color name="disabled_color">#5131353b</color>
     <color name="tp_bottom_shadow_color">#1e31353b</color>
     <color name="tp_tint_close_color">#6C727C</color>
+    <color name="tp_toolbar_subtitle_color">#70ffffff</color>
+    <color name="tp_loyalty_color">#f531353b</color>
+    <color name="tp_toolbar_navigation_white_color">#FFFFFF</color>
+    <color name="tp_toolbar_navigation_grey_color">#666666</color>
+    <color name="tp_no_connection_title_color">#f531353b</color>
+    <color name="tp_no_connection_subtitle_color">#ae31353b</color>
 </resources>

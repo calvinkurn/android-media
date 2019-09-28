@@ -35,6 +35,7 @@ public class DynamicHomeChannel {
         public static final String LAYOUT_SPRINT_LEGO = "sprint_lego";
         public static final String LAYOUT_ORGANIC = "organic";
         public static final String LAYOUT_6_IMAGE = "6_image";
+        public static final String LAYOUT_BANNER_GIF = "banner_image";
         public static final String LAYOUT_LEGO_3_IMAGE = "lego_3_image";
         public static final String LAYOUT_SPRINT_CAROUSEL = "sprint_carousel";
         public static final String LAYOUT_DIGITAL_WIDGET = "digital_widget";
@@ -698,14 +699,6 @@ public class DynamicHomeChannel {
             if (homeAttribution != null)
                 return homeAttribution.replace("$1", Integer.toString(position)).replace("$2", (creativeName != null) ? creativeName : "");
             return "";
-        }
-
-        public void setHomeAttribution(String homeAttribution) {
-            this.homeAttribution = homeAttribution;
-        }
-
-        public String getHomeAttribution() {
-            return homeAttribution;
         }
     }
 

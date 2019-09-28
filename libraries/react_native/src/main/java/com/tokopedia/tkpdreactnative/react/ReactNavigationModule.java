@@ -16,12 +16,12 @@ import com.facebook.react.bridge.ReadableMap;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.authentication.AuthHelper;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.network.utils.AuthUtil;
 import com.tokopedia.tkpdreactnative.R;
 import com.tokopedia.tkpdreactnative.react.app.ReactNativeView;
 import com.tokopedia.tkpdreactnative.react.fingerprint.view.FingerPrintUIHelper;
@@ -209,7 +209,7 @@ public class ReactNavigationModule extends ReactContextBaseJavaModule implements
 
     @ReactMethod
     public void getGraphQLRequestHeader(Promise promise) {
-        promise.resolve(AuthUtil.getHeaderRequestReactNative(context));
+        promise.resolve(AuthHelper.getHeaderRequestReactNative(context));
     }
 
     @ReactMethod

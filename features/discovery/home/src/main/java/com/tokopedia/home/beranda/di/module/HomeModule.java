@@ -27,6 +27,7 @@ import com.tokopedia.home.common.HomeAceApi;
 import com.tokopedia.home.common.HomeDataApi;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.stickylogin.domain.usecase.StickyLoginUseCase;
 import com.tokopedia.topads.sdk.di.TopAdsWishlistModule;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -207,5 +208,11 @@ public class HomeModule {
     @HomeScope
     protected HomeVisitableFactory provideHomeVisitableFactory() {
         return new HomeVisitableFactoryImpl();
+    }
+  
+    @Provides
+    @HomeScope
+    protected StickyLoginUseCase provideStickyLoginUseCase(@ApplicationContext Context context, GraphqlRepository graphqlRepository) {
+        return new StickyLoginUseCase(context.getResources(), graphqlRepository);
     }
 }

@@ -192,9 +192,9 @@ class HomeMainToolbar : MainToolbar {
         editTextSearch.setOnClickListener {
             searchBarAnalytics.eventTrackingSearchBar(screenName)
             if(placeholder.isEmpty()){
-                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE)
+                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
             }else{
-                RouteManager.route(context, ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE_WITH_NAVSOURCE_AND_HINT, HOME_SOURCE, keyword)
+                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, keyword)
             }
         }
     }

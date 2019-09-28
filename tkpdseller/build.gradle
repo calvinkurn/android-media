@@ -38,7 +38,6 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
-    implementation project(rootProject.ext.features.logisticinputreceiptshipment)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation rootProject.ext.playServicesDependencies.analytics
 

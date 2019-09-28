@@ -8,8 +8,8 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -32,7 +32,7 @@ import javax.inject.Inject
 class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
     private lateinit var telcoTelcoProductView: DigitalTelcoProductWidget
-    private lateinit var emptyStateProductView: LinearLayout
+    private lateinit var emptyStateProductView: RelativeLayout
     private lateinit var titleEmptyState: TextView
     private lateinit var descEmptyState: TextView
     private lateinit var progressBar: ProgressBar
