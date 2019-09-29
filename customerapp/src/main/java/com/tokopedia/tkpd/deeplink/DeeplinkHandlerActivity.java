@@ -123,8 +123,6 @@ import com.tokopedia.search.applink.SearchApplinkModule;
 import com.tokopedia.search.applink.SearchApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
-import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
-import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.talk.common.applink.InboxTalkApplinkModule;
@@ -137,10 +135,6 @@ import com.tokopedia.tokocash.applink.TokoCashApplinkModule;
 import com.tokopedia.tokocash.applink.TokoCashApplinkModuleLoader;
 import com.tokopedia.tokopoints.TokopointApplinkModule;
 import com.tokopedia.tokopoints.TokopointApplinkModuleLoader;
-import com.tokopedia.topads.auto.internal.AutoAdsLinkModule;
-import com.tokopedia.topads.auto.internal.AutoAdsLinkModuleLoader;
-import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModule;
-import com.tokopedia.topads.dashboard.data.applink.TopAdsDashboardApplinkModuleLoader;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModule;
 import com.tokopedia.topchat.deeplink.TopChatAppLinkModuleLoader;
 import com.tokopedia.track.TrackApp;
@@ -209,7 +203,6 @@ import rx.schedulers.Schedulers;
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         AffiliateApplinkModule.class,
-        SettingBankApplinkModule.class,
         ChallengesDeepLinkModule.class,
         InboxTalkApplinkModule.class,
         ProductManageApplinkModule.class,
@@ -226,8 +219,6 @@ import rx.schedulers.Schedulers;
         OvoPayWithQrApplinkModule.class,
         WebViewApplinkModule.class,
         RecommendationDeeplinkModule.class,
-        TopAdsDashboardApplinkModule.class,
-        AutoAdsLinkModule.class,
         PowerMerchantSubscribeDeeplinkModule.class
 })
 
@@ -282,7 +273,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new RecentViewApplinkModuleLoader(),
                     new ChangePasswordDeeplinkModuleLoader(),
                     new AffiliateApplinkModuleLoader(),
-                    new SettingBankApplinkModuleLoader(),
                     new ChallengesDeepLinkModuleLoader(),
                     new InboxTalkApplinkModuleLoader(),
                     new ProductManageApplinkModuleLoader(),
@@ -299,8 +289,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity implements Deffer
                     new OvoPayWithQrApplinkModuleLoader(),
                     new WebViewApplinkModuleLoader(),
                     new RecommendationDeeplinkModuleLoader(),
-                    new TopAdsDashboardApplinkModuleLoader(),
-                    new AutoAdsLinkModuleLoader(),
                     new PowerMerchantSubscribeDeeplinkModuleLoader()
             );
         }

@@ -310,7 +310,9 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
         } else {
             CommonUtils.UniversalToast(activity, getString(R.string.product_draft_product_has_been_saved_as_draft))
         }
-        RouteManager.route(context, ApplinkConst.PRODUCT_MANAGE)
+        val intent = RouteManager.getIntent(context, ApplinkConst.PRODUCT_MANAGE)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        startActivity(intent)
         activity?.finish()
     }
 

@@ -52,6 +52,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import static com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase.OTP_TYPE_REGISTER_PHONE_NUMBER;
+import static com.tokopedia.otp.cotp.domain.interactor.ValidateOtpUseCase.MODE_PIN;
 
 /**
  * @author by nisie on 11/30/17.
@@ -70,6 +71,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     private static final String HAS_TIMER = "has_timer";
 
     private static final CharSequence VERIFICATION_CODE = "Kode verifikasi";
+    private static final CharSequence PIN_ERR_MSG = "PIN";
 
     protected ImageView icon;
     protected TextView message;
@@ -85,6 +87,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     CountDownTimer countDownTimer;
     ProgressBar progressDialog;
+
+    private Boolean isPin = false;
 
     private boolean isRunningTimer = false;
     protected LocalCacheHandler cacheHandler;
@@ -129,6 +133,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         if (getArguments() != null
                 && getArguments().getParcelable(ARGS_PASS_DATA) != null) {
             viewModel = parseViewModel(getArguments());
+            isPin = viewModel.getMode().equals(MODE_PIN);
         } else {
             getActivity().finish();
         }
@@ -213,10 +218,14 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     protected void prepareView() {
-        if (!isCountdownFinished()) {
-            startTimer();
-        } else {
+        if(isPin){
             setLimitReachedCountdownText();
+        }else {
+            if (!isCountdownFinished()) {
+                startTimer();
+            } else {
+                setLimitReachedCountdownText();
+            }
         }
 
         limitOtp.setVisibility(View.GONE);
@@ -269,7 +278,7 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
 
     protected void verifyOtp() {
         presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
-                .getEmail(), inputOtp.getText().toString());
+                .getEmail(), inputOtp.getText().toString(), viewModel.getMode());
     }
 
     private void disableVerifyButton() {
@@ -293,8 +302,10 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         super.onViewCreated(view, savedInstanceState);
         initData();
         updateViewFromServer();
-        smsRetrieverClient.startSmsRetriever();
-        requestOtp();
+        if (!isPin) {
+            smsRetrieverClient.startSmsRetriever();
+            requestOtp();
+        }
     }
 
     private void updateViewFromServer() {
@@ -404,29 +415,35 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         }
     }
 
+    private void setErrorView(String errorMessage) {
+        if (viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER) {
+            analytics.eventFailedClickVerificationButton(errorMessage);
+        }
+
+        inputOtp.setError(true);
+        inputOtp.setFocusableInTouchMode(true);
+        inputOtp.post(new Runnable() {
+            public void run() {
+                inputOtp.requestFocusFromTouch();
+                InputMethodManager lManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                lManager.showSoftInput(inputOtp, 0);
+            }
+        });
+        errorImage.setVisibility(View.VISIBLE);
+        errorOtp.setVisibility(View.VISIBLE);
+
+        if(errorMessage.contains(PIN_ERR_MSG) && errorMessage.length() > 0){
+            errorOtp.setText(errorMessage.substring(0, errorMessage.indexOf("(")));
+        }
+    }
+
     @Override
     public void onErrorVerifyOtpCode(String errorMessage) {
-        if (errorMessage.contains(VERIFICATION_CODE)) {
-
-            if (viewModel.getOtpType() == OTP_TYPE_REGISTER_PHONE_NUMBER) {
-                analytics.eventFailedClickVerificationButton(errorMessage);
-            }
-
-            inputOtp.setError(true);
-            inputOtp.setFocusableInTouchMode(true);
-            inputOtp.post(new Runnable() {
-                public void run() {
-                    inputOtp.requestFocusFromTouch();
-                    InputMethodManager lManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                    lManager.showSoftInput(inputOtp, 0);
-                }
-            });
-            errorImage.setVisibility(View.VISIBLE);
-            errorOtp.setVisibility(View.VISIBLE);
+        if (errorMessage.contains(VERIFICATION_CODE) || errorMessage.contains(PIN_ERR_MSG)) {
+            setErrorView(errorMessage);
         } else {
             onErrorVerifyLogin(errorMessage);
         }
-
     }
 
     @Override

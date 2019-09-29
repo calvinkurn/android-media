@@ -119,8 +119,6 @@ public interface TkpdCoreRouter {
 
     Intent getActivitySellingTransactionListReal(Context mContext);
 
-    String getDesktopLinkGroupChat();
-
     Intent getHomeIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;

@@ -1,0 +1,16 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
+project.ext {
+    artifactId = 'akamai_bot_lib'
+    groupId = 'com.tokopedia.akamai'
+    versionName = "1.0.2"
+    artifactName = "akamai_bot_lib"
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "com.tokopedia.config:global_config:1.0.3"
+}
+
+apply from: '../publish_local.gradle'

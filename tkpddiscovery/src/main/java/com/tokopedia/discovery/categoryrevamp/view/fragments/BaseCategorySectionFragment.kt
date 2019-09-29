@@ -1,6 +1,5 @@
 package com.tokopedia.discovery.categoryrevamp.view.fragments
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
@@ -12,15 +11,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.View
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.discovery.R
 import com.tokopedia.discovery.categoryrevamp.adapters.BaseCategoryAdapter
 import com.tokopedia.discovery.categoryrevamp.analytics.CategoryPageAnalytics.Companion.catAnalyticsInstance
 import com.tokopedia.discovery.categoryrevamp.constants.CategoryNavConstants
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.CategoryNavigationListener
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.newdiscovery.search.model.SearchParameter
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -352,12 +349,13 @@ abstract class BaseCategorySectionFragment : BaseDaggerFragment() {
 
                 clearDataFilterSort()
                 reloadData()
-                catAnalyticsInstance.eventSortApplied(getDepartMentId(),
-                        selectedSortName
-                                ?: "", selectedSort["ob"]?.toInt() ?: 0)
+                onSortAppliedEvent(selectedSortName ?: "",
+                        selectedSort["ob"]?.toInt() ?: 0)
             }
         })
     }
+
+    abstract fun onSortAppliedEvent(selectedSortName:String, sortValue:Int)
 
     fun clearDataFilterSort() {
         if (filters != null) {

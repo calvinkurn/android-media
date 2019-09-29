@@ -33,6 +33,10 @@ public class GqlValidateUserDataResponse {
         @Expose
         private boolean success;
 
+        @SerializedName("user_id")
+        @Expose
+        private int userId;
+
         @SerializedName("error")
         @Expose
         private String error;
@@ -55,6 +59,10 @@ public class GqlValidateUserDataResponse {
 
         public void setError(String error) {
             this.error = error;
+        }
+
+        public int getUserId() {
+            return userId;
         }
 
         @Override

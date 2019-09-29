@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.data.mapper;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse;
 import com.tokopedia.home.beranda.domain.gql.feed.RecommendationTab;
-import com.tokopedia.home.beranda.presentation.view.viewmodel.FeedTabModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 
 import java.util.ArrayList;
 import java.util.List;

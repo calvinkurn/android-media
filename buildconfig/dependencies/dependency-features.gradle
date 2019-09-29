@@ -31,7 +31,9 @@ ext {
             commonTravel                    : ":features:digital:common_travel",
             digitalHomepage                 : ":features:digital:digital_homepage",
             digitalproduct                  : ":features:digital:digitalproduct",
+            commonTopupBills                : ":features:digital:common_topup_bills",
             digitalTopupBills               : ":features:digital:digital_topup_bills",
+            voucherGame                     : ":features:digital:voucher_game",
             event                           : ":features:digital:event",
             flight                          : ":features:digital:flight",
 //            flight                          : ":features:digital:flight_no_op",
@@ -57,6 +59,9 @@ ext {
             wishlistCommon                  : ":features:discovery:wishlist_common",
             productCard                     : ":features:discovery:productcard",
             filter                          : ":features:discovery:filter",
+            imageSearch                     : ":features:discovery:image_search",
+            similarSearch                   : ":features:discovery:similarsearch",
+            autocomplete                    : ":features:discovery:autocomplete",
             recommendationWidgetCommon      : ":features:discovery:recommendation_widget_common",
 
             homecredit                      : ":features:fintech:home_credit",
@@ -79,13 +84,8 @@ ext {
 //            challenges                    : ":features:im:challenges_no_op",
 
             logisticdata                    : ":features:logistic:logisticdata",
-            logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment",
-//            logisticinputreceiptshipment    : ":features:logistic:logisticinputreceiptshipment_no_op",
             logisticaddaddress              : ":features:logistic:logisticaddaddress",
             tracking                        : ":features:logistic:tracking",
-//            tracking                      : ":features:logistic:tracking_no_op",
-            logisticuploadawb               : ":features:logistic:logisticuploadawb",
-//            logisticuploadawb               : ":features:logistic:logisticuploadawb_no_op",
             logisticcart                    : ":features:logistic:logisticcart",
 
             goldMerchant                    : ":features:merchant:gold_merchant",
@@ -186,6 +186,7 @@ ext {
             updateinactivephone             : ":features:user:updateinactivephone",
             userIdentification              : ":features:user:user_identification",
 //            userIdentification              : ":features:user:user_identification_no_op",
+            stickyLogin                     : ":features:user:stickylogin",
             userIdentificationCommon        : ":features:user:user_identification_common",
             vote                            : ":features:user:vote",
 

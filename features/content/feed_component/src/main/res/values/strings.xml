@@ -52,5 +52,7 @@
     <string name="share_instagram_feed">Instagram Feed</string>
     <string name="share_instagram_story">Instagram Story</string>
 
-
+    <!--Create Post-->
+    <string name="feed_create_post_byme">Buat Rekomendasi ByMe</string>
+    <string name="feed_create_post_shop">Buat Post Toko</string>
 </resources>

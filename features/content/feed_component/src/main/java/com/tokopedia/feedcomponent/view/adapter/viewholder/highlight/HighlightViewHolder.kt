@@ -57,7 +57,7 @@ class HighlightViewHolder(val v: View,
 
     private fun bindTitle(title: Title, template: TemplateTitle) {
         itemView.cardTitle.shouldShowWithAction(shouldShowTitle(template)) {
-            itemView.cardTitle.bind(title, template)
+            itemView.cardTitle.bind(title, template, adapterPosition)
         }
         itemView.cardTitle.listener = cardTitleListener
     }

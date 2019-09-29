@@ -15,6 +15,8 @@ public interface ShopListSectionContract {
         void onSearchShopSuccessEmptyResult();
 
         void onSearchShopFailed();
+
+        void removeLoading();
     }
 
     interface Presenter extends SearchSectionContract.Presenter<View> {

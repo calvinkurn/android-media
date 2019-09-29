@@ -5,7 +5,8 @@ if (!project.hasProperty("disable-performance-plugin")) {
     apply plugin: 'com.google.firebase.firebase-perf'
 }
 apply plugin: 'io.hansel.preprocessor'
-apply plugin: 'com.frogermcs.androiddevmetrics'
+
+apply from: '../tools/dynamic_feature_inclusion.gradle'
 
 def getDpiId(String density) {
 
@@ -243,18 +244,15 @@ android {
         }
     }
 
-    dynamicFeatures = [
-            rootProject.ext.dynamicFeatures.shopSettings,
-//          rootProject.ext.dynamicFeatures.digitalTopup
-//          rootProject.ext.dynamicFeatures.profileCompletion,
-//          rootProject.ext.dynamicFeatures.shopOpen
-    ]
+    // put Dynamic Feature Modules in dynamic-feature-customerapp.cfg
+    // to disable dynamic feature, use command option -Pdisable-dynamic-feature
+    dynamicFeatures = getDynamicFeatureIfEnabled(project)
+    generateAssetFile(project, dynamicFeatures)
 }
 
 dependencies {
 
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(rootProject.ext.libraries.akamai_bot_lib)
     implementation project(rootProject.ext.features.tkpdcore)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
@@ -300,6 +298,7 @@ dependencies {
     implementation project(rootProject.ext.features.reputationCommon)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.digitalTopupBills)
+    implementation project(rootProject.ext.features.voucherGame)
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.otp)
     implementation project(rootProject.ext.features.logout)
@@ -319,11 +318,9 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.tracking)
     implementation project(rootProject.ext.features.logisticaddaddress)
-    implementation project(rootProject.ext.features.logisticuploadawb)
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.chatbot)
     implementation project(rootProject.ext.features.chatcommon)
-    implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.settingnotif)
     implementation project(rootProject.ext.features.changepassword)
     implementation project(rootProject.ext.features.nps)
@@ -337,7 +334,6 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
-    implementation project(rootProject.ext.features.report)
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.digitalBrowse)
     implementation project(rootProject.ext.features.notifCenter)
@@ -366,7 +362,6 @@ dependencies {
     implementation project(rootProject.ext.features.userIdentificationCommon)
     implementation project(rootProject.ext.features.gallery)
     implementation project(rootProject.ext.features.categoryCommon)
-    implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.onboarding)
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
@@ -381,6 +376,9 @@ dependencies {
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.oms)
     implementation project(rootProject.ext.libraries.fingerprint)
+    implementation project(rootProject.ext.features.imageSearch)
+    implementation project(rootProject.ext.features.similarSearch)
+    implementation project(rootProject.ext.features.autocomplete)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
@@ -411,7 +409,6 @@ dependencies {
     implementation project(rootProject.ext.features.challenges)
     implementation project(rootProject.ext.features.saldodetails)
     implementation project(rootProject.ext.libraries.cmPushNotifications)
-    implementation rootProject.ext.serviceDependencies.anrWatchDogs
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.referral)
     implementation project(rootProject.ext.features.kyc)
@@ -443,12 +440,14 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
+    implementation rootProject.ext.tkpdInternalLibDependencies.akamaiBotLib
 
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.playServicesDependencies.core
     implementation rootProject.ext.playServicesDependencies.auth
     implementation rootProject.ext.supportLibDependencies.kotlinSupport
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+    implementation rootProject.ext.serviceDependencies.anrWatchDogs
     implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.viewDependencies.appIntro
     implementation rootProject.ext.miscDependencies.bcaxcoWidget

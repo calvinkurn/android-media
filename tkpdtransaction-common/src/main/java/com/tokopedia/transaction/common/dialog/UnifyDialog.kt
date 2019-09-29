@@ -151,6 +151,7 @@ open class UnifyDialog(private val activity: Activity,
 
     fun setCancelable(cancelable: Boolean) {
         alertDialog?.setCancelable(cancelable)
+        alertDialog?.setCanceledOnTouchOutside(cancelable)
     }
 
     companion object{

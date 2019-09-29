@@ -107,6 +107,16 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADD_BOD = "$INTERNAL_GLOBAL/add-bod"
 
+    // AddPinActivity
+    // tokopedia-android-internal://global/add-pin
+    @JvmField
+    val ADD_PIN = "$INTERNAL_GLOBAL/add-pin"
+
+    // PinOnboardingActivity
+    // tokopedia-android-internal://global/add-pin-onboarding
+    @JvmField
+    val ADD_PIN_ONBOARDING = "$INTERNAL_GLOBAL/add-pin-onboarding"
+
     // VerificationActivity
     // tokopedia-android-internal://global/cotp
     @JvmField
@@ -127,6 +137,26 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-profile-phone-verification
     @JvmField
     val SETTING_PROFILE_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-profile-phone-verification"
+
+    // SettingBankActivity
+    // tokopedia-android-internal://global/setting-bank
+    @JvmField
+    val SETTING_BANK = "$INTERNAL_GLOBAL/setting-bank"
+
+    // PhoneVerificationProfileActivity
+    // tokopedia-android-internal://global/setting-bank
+    @JvmField
+    val ADD_BANK = "$INTERNAL_GLOBAL/add-bank"
+    @JvmField
+    val PARAM_ACCOUNT_ID = "account_id"
+    @JvmField
+    val PARAM_ACCOUNT_NAME = "account_name"
+    @JvmField
+    val PARAM_ACCOUNT_NO = "account_number"
+    @JvmField
+    val PARAM_BANK_ID = "bank_id"
+    @JvmField
+    val PARAM_BANK_NAME = "bank_name"
 
     @JvmField
     val DYNAMIC_FEATURE_INSTALL_BASE= "$INTERNAL_GLOBAL/dynamic-features-install/"

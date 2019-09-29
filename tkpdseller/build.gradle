@@ -25,7 +25,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.coreNetwork)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.features.logisticinputreceiptshipment)
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.topAdsManagementCommon)

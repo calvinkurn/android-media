@@ -1,7 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.discovery.newdiscovery.di.scope.SearchScope;
+import com.tokopedia.search.di.scope.SearchScope;
 import com.tokopedia.search.di.module.AddWishListUseCaseModule;
 import com.tokopedia.search.di.module.RemoteConfigModule;
 import com.tokopedia.search.di.module.RemoveWishListUseCaseModule;

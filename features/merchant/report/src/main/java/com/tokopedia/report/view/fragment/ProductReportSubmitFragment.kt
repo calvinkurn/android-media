@@ -105,7 +105,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         if (!isSuccess){
             view?.let {
                 Toaster.showErrorWithAction(it, getString(R.string.fail_to_report),
-                        Snackbar.LENGTH_LONG, getString(R.string.OK), View.OnClickListener {})
+                        Snackbar.LENGTH_LONG, getString(com.tokopedia.imagepicker.R.string.OK), View.OnClickListener {})
             }
         } else {
             sendResult()
@@ -124,7 +124,7 @@ class ProductReportSubmitFragment : BaseDaggerFragment() {
         tracking.eventReportLaporDisclaimer(adapter.trackingReasonLabel, false)
         view?.let {
             Toaster.showErrorWithAction(it, ErrorHandler.getErrorMessage(activity, throwable),
-                    Snackbar.LENGTH_LONG, getString(R.string.OK), View.OnClickListener {})
+                    Snackbar.LENGTH_LONG, getString(com.tokopedia.imagepicker.R.string.OK), View.OnClickListener {})
         }
     }
 

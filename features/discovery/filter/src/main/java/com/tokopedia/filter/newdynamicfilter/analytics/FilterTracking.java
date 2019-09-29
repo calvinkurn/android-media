@@ -1,16 +1,11 @@
 package com.tokopedia.filter.newdynamicfilter.analytics;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.trackingoptimizer.TrackingQueue;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 /**

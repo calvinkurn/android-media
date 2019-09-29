@@ -86,7 +86,7 @@ class AddEmailFragment : BaseDaggerFragment() {
                 setErrorText(getString(R.string.wrong_email_format))
             } else {
                 showLoading()
-                goToVerificationActivity(email.trim())
+                context?.run { viewModel.checkEmail(this, email) }
             }
         }
     }
@@ -133,14 +133,24 @@ class AddEmailFragment : BaseDaggerFragment() {
                 Observer {
                     when (it) {
                         is Success -> onSuccessAddEmail(it.data)
-                        is Fail -> onErrorAddEmail(it.throwable)
+                        is Fail -> onErrorShowSnackbar(it.throwable)
+                    }
+                }
+        )
+
+        viewModel.mutateCheckEmailResponse.observe(
+                this,
+                Observer {
+                    when (it) {
+                        is Success -> goToVerificationActivity(it.data)
+                        is Fail -> onErrorShowSnackbar(it.throwable)
                     }
                 }
         )
 
     }
 
-    private fun onErrorAddEmail(throwable: Throwable) {
+    private fun onErrorShowSnackbar(throwable: Throwable) {
         dismissLoading()
         view?.run {
             Toaster.showError(
@@ -177,19 +187,19 @@ class AddEmailFragment : BaseDaggerFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_ADD_EMAIL_COTP && resultCode == Activity.RESULT_OK) {
             onSuccessVerifyAddEmail(data)
-        }else{
+        } else {
             dismissLoading()
         }
     }
 
     private fun onSuccessVerifyAddEmail(data: Intent?) {
-        data?.extras?.run{
+        data?.extras?.run {
             val otpCode = getString(ApplinkConstInternalGlobal.PARAM_OTP_CODE, "")
-            if(otpCode.isNotBlank()) {
+            if (otpCode.isNotBlank()) {
                 val email = et_email.text.toString().trim()
                 viewModel.mutateAddEmail(context!!, email, otpCode)
-            }else{
-                onErrorAddEmail(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
+            } else {
+                onErrorShowSnackbar(MessageErrorException(getString(com.tokopedia.abstraction.R.string.default_request_error_unknown),
                         ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW.toString()))
             }
         }

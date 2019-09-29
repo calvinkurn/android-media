@@ -98,6 +98,7 @@ import com.tokopedia.profile.view.adapter.viewholder.ProfileHeaderViewHolder
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.preference.ProfilePreference
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.profile.view.viewmodel.*
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -597,7 +598,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             presenter.trackPostClick(uniqueTrackingId, url)
         }
 
-        profileRouter.openRedirectUrl(activity as Activity, url)
+        onGoToLink(url)
     }
 
     override fun trackContentClick(hasMultipleContent: Boolean, activityId: String,
@@ -828,6 +829,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         context?.let { RouteManager.route(it, ApplinkConstInternalContent.AFFILIATE_EDIT, postId.toString()) }
     }
 
+    private fun getShopIntent(
+            context: Context,
+            shopId: String
+    ) = RouteManager.getIntent(context,ApplinkConst.SHOP,shopId)
+
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
     }
@@ -903,8 +909,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
-        val intent = profileRouter.getShopPageIntent(activity!!, shop.id)
-        startActivity(intent)
+        context?.let {
+            startActivity(getShopIntent(it, shop.id))
+        }
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
@@ -927,7 +934,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         onGoToLink(redirectUrl)
     }
 
-    override fun onTitleCtaClick(redirectUrl: String) {
+    override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
     }
 
@@ -975,7 +982,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, redirectUrl: String) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
 
     }
 
@@ -1596,7 +1603,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             affiliatePreference.setFirstTimeEducation(userSession.userId)
 
         } else {
-            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_CREATE_POST, "-1", "-1")
+            val intent = RouteManager.getIntent(context, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
@@ -1617,12 +1624,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun goToLogin() {
-        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_CODE)
+        context?.let {
+            startActivityForResult(getLoginIntent(it), LOGIN_CODE)
+        }
     }
 
     private fun followAfterLogin() {
-        startActivityForResult(profileRouter.getLoginIntent(context!!), LOGIN_FOLLOW_CODE)
+        context?.let {
+            startActivityForResult(getLoginIntent(it), LOGIN_FOLLOW_CODE)
+        }
     }
+
+    private fun getLoginIntent(context: Context) = RouteManager.getIntent(context, ApplinkConst.LOGIN)
 
     private fun doFollowAfterLogin() {
         swipeToRefresh.isRefreshing = true
@@ -1687,9 +1700,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun onGoToLink(link: String) {
-        activity?.let {
-            if (!TextUtils.isEmpty(link)) {
-                profileRouter.openRedirectUrl(it, link)
+        if (context != null && !TextUtils.isEmpty(link)) {
+            if (RouteManager.isSupportApplink(context, link)) {
+                RouteManager.route(context, link)
+            } else {
+                RouteManager.route(
+                        context,
+                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                )
             }
         }
     }

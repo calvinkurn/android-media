@@ -87,6 +87,9 @@ public class SearchProductModel {
         @SerializedName("shareUrl")
         @Expose
         private String shareUrl;
+        @SerializedName("errorMessage")
+        @Expose
+        private String errorMessage;
         @SerializedName("isFilter")
         @Expose
         private boolean isFilter;
@@ -108,6 +111,9 @@ public class SearchProductModel {
         @SerializedName("autocomplete_applink")
         @Expose
         private String autocompleteApplink;
+        @SerializedName("default_view")
+        @Expose
+        private int defaultView = 0;
         @SerializedName("redirection")
         @Expose
         private Redirection redirection = new Redirection();
@@ -137,6 +143,10 @@ public class SearchProductModel {
             return isFilter;
         }
 
+        public String getErrorMessage() {
+            return this.errorMessage;
+        }
+
         public boolean isQuerySafe() {
             return isQuerySafe;
         }
@@ -159,6 +169,10 @@ public class SearchProductModel {
 
         public String getAutocompleteApplink() {
             return autocompleteApplink;
+        }
+
+        public int getDefaultView() {
+            return defaultView;
         }
 
         public Redirection getRedirection() {

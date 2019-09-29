@@ -33,13 +33,18 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
     private TextView passengerName;
     private TextView passengerCategory;
     private AppCompatTextView passengerCancellationStatus;
+    private AppCompatTextView secondPassengerCancellationStatus;
     private RecyclerView recyclerViewPassengerDetail;
 
     @Override
     public void bind(FlightDetailPassenger flightDetailPassenger) {
 
-        if (shouldShowCancellationStatus(flightDetailPassenger.getPassengerStatus(), flightDetailPassenger.getPassengerCancellationStr())) {
+        if (shouldShowCancellationStatus(flightDetailPassenger.getPassengerStatus(), flightDetailPassenger.getPassengerCancellationStr(), passengerCancellationStatus)) {
             passengerCancellationStatus.setVisibility(View.VISIBLE);
+        }
+
+        if (shouldShowCancellationStatus(flightDetailPassenger.getSecondPassengerStatus(), flightDetailPassenger.getSecondPassengerCancellationStr(), secondPassengerCancellationStatus)) {
+            secondPassengerCancellationStatus.setVisibility(View.VISIBLE);
         }
 
         passengerNumber.setText(String.format("%d.", getAdapterPosition() + 1));
@@ -71,18 +76,19 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
 
         context = layoutView.getContext();
 
-        passengerNumber = (TextView) layoutView.findViewById(R.id.passenger_number);
-        passengerName = (TextView) layoutView.findViewById(R.id.passenger_name);
-        passengerCategory = (TextView) layoutView.findViewById(R.id.passenger_category);
+        passengerNumber = layoutView.findViewById(R.id.passenger_number);
+        passengerName = layoutView.findViewById(R.id.passenger_name);
+        passengerCategory = layoutView.findViewById(R.id.passenger_category);
         passengerCancellationStatus = layoutView.findViewById(R.id.txt_passenger_cancellation_status);
-        recyclerViewPassengerDetail = (RecyclerView) layoutView.findViewById(R.id.recycler_view_passenger_detail);
+        secondPassengerCancellationStatus = layoutView.findViewById(R.id.txt_second_passenger_cancellation_status);
+        recyclerViewPassengerDetail = layoutView.findViewById(R.id.recycler_view_passenger_detail);
 
         recyclerViewPassengerDetail.setLayoutManager(new LinearLayoutManager(itemView.getContext()));
         reviewPassengerDetailAdapter = new ReviewPassengerDetailAdapter();
         recyclerViewPassengerDetail.setAdapter(reviewPassengerDetailAdapter);
     }
 
-    private boolean shouldShowCancellationStatus(int status, String cancellationStr) {
+    private boolean shouldShowCancellationStatus(int status, String cancellationStr, AppCompatTextView txtStatus) {
         String cancellationStatusString = "";
         if (cancellationStr != null) {
             cancellationStatusString = cancellationStr;
@@ -92,26 +98,26 @@ public class FlightBookingReviewPassengerViewHolder extends AbstractViewHolder<F
             case 0:
                 return false;
             case FlightCancellationStatus.REQUESTED:
-                passengerCancellationStatus.setText(cancellationStatusString);
-                passengerCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
+                txtStatus.setText(cancellationStatusString);
+                txtStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
+                txtStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;
             case FlightCancellationStatus.PENDING:
-                passengerCancellationStatus.setText(cancellationStatusString);
-                passengerCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
+                txtStatus.setText(cancellationStatusString);
+                txtStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
+                txtStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;
             case FlightCancellationStatus.REFUNDED:
-                passengerCancellationStatus.setText(cancellationStatusString);
-                passengerCancellationStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle);
-                passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_success));
+                txtStatus.setText(cancellationStatusString);
+                txtStatus.setTextAppearance(context, R.style.CardSuccessStatusStyle);
+                txtStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_success));
                 return true;
             case FlightCancellationStatus.ABORTED:
                 return false;
             default:
-                passengerCancellationStatus.setText(cancellationStatusString);
-                passengerCancellationStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
-                passengerCancellationStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
+                txtStatus.setText(cancellationStatusString);
+                txtStatus.setTextAppearance(context, R.style.CardProcessStatusStyle);
+                txtStatus.setBackground(context.getResources().getDrawable(R.drawable.bg_card_process));
                 return true;
         }
     }

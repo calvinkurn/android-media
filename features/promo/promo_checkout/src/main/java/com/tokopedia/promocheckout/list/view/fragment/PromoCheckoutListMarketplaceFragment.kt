@@ -3,7 +3,6 @@ package com.tokopedia.promocheckout.list.view.fragment
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.constant.IRouterConstant
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.util.*
@@ -11,8 +10,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.DataUiModel
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailMarketplaceActivity
-import com.tokopedia.promocheckout.list.di.DaggerPromoCheckoutListComponent
-import com.tokopedia.promocheckout.list.di.PromoCheckoutListModule
+import com.tokopedia.promocheckout.list.di.PromoCheckoutListComponent
 import com.tokopedia.promocheckout.list.model.listcoupon.PromoCheckoutListModel
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplaceContract
 import com.tokopedia.promocheckout.list.view.presenter.PromoCheckoutListMarketplacePresenter
@@ -95,12 +93,7 @@ class PromoCheckoutListMarketplaceFragment : BasePromoCheckoutListFragment(), Pr
     }
 
     override fun initInjector() {
-        super.initInjector()
-        DaggerPromoCheckoutListComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .promoCheckoutListModule(PromoCheckoutListModule())
-                .build()
-                .inject(this)
+        getComponent(PromoCheckoutListComponent::class.java).inject(this)
     }
 
     override fun onDestroyView() {

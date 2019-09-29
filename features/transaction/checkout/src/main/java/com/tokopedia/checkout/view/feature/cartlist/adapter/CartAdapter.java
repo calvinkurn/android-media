@@ -69,20 +69,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private CartLoadingHolderData cartLoadingHolderData;
     private CartWishlistAdapter cartWishlistAdapter;
     private CartRecentViewAdapter cartRecentViewAdapter;
-    private RecyclerView recyclerView;
     private int cartSelectAllViewHolderPosition = -1;
-
-    @Override
-    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
-        this.recyclerView = recyclerView;
-    }
-
-    @Override
-    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
-        super.onDetachedFromRecyclerView(recyclerView);
-        this.recyclerView = null;
-    }
 
     @Inject
     public CartAdapter(ActionListener actionListener, PromoActionListener promoActionListener,
@@ -188,7 +175,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         } else if (viewType == CartTickerViewHolder.Companion.getLAYOUT()) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTickerViewHolder.Companion.getLAYOUT(), parent, false);
-            return new CartTickerViewHolder(view, recyclerView, actionListener);
+            return new CartTickerViewHolder(view, actionListener);
         }
         throw new RuntimeException("No view holder type found");
     }
@@ -363,6 +350,25 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         return cartItemDataList;
+    }
+
+
+    public List<String> getAllCartItemProductId() {
+        List<String> productIdList = new ArrayList<>();
+        if (cartDataList != null) {
+            for (Object data : cartDataList) {
+                if (data instanceof CartShopHolderData) {
+                    CartShopHolderData cartShopHolderData = (CartShopHolderData) data;
+                    if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            productIdList.add(cartItemHolderData.getCartItemData().getOriginData().getProductId());
+                        }
+                    }
+                }
+            }
+        }
+
+        return productIdList;
     }
 
     public List<CartItemHolderData> getAllCartItemHolderData() {
@@ -807,6 +813,19 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }
                 }
                 break;
+            }
+        }
+    }
+
+    public void notifyRecommendation(String productId, boolean isWishlist) {
+        for (int i = cartDataList.size() - 1; i >= 0; i--) {
+            Object object = cartDataList.get(i);
+            if (object instanceof CartRecommendationItemHolderData) {
+                if (String.valueOf(((CartRecommendationItemHolderData) object).getRecommendationItem().getProductId()).equals(productId)) {
+                    ((CartRecommendationItemHolderData) object).getRecommendationItem().setWishlist(isWishlist);
+                    notifyItemChanged(i);
+                    break;
+                }
             }
         }
     }

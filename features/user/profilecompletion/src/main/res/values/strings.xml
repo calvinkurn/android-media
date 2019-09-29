@@ -96,7 +96,6 @@
     <string name="ticker_phone_verification">Jaga akun kamu tetap aman dengan &lt;font color=\'#42b549\'&gt;&lt;a href=\'tokopedia-android-internal://global/setting-profile-phone-verification\'&gt;Verifikasi Nomor Ponsel&lt;/a&gt;&lt;/font&gt;.</string>
     <string name="error_oversize_avatar_image">Ukuran gambar maksimal 2Mb</string>
 
-
     <!-- ADD BOD -->
     <string name="title_add_bod">Tambah Tanggal Lahir</string>
     <string name="title_change_bod">Ubah Tanggal Lahir</string>
@@ -105,4 +104,17 @@
     <string name="success_change_bod">Tanggal lahir berhasil diubah</string>
     <string name="failed_add_bod">Tanggal lahir gagal ditambah</string>
     <string name="failed_change_bod">Tanggal lahir gagal diubah</string>
+
+    <!--ADD PIN-->
+    <string name="title_onboard_pin">Tambahkan keamanan ekstra dengan PIN Tokopedia</string>
+    <string name="subtitle_onboard_pin">Gunakan PIN Tokopedia ketika transaksi dan penarikan dana menggunakan Saldo Tokopedia</string>
+    <string name="create_pin">Buat PIN Tokopedia</string>
+    <string name="title_dialog_add_phone">Tambah Nomor Ponsel</string>
+    <string name="subtitle_dialog_add_phone">Tambah &amp; verifikasi nomor ponsel terlebih dahulu sebelum membuat PIN</string>
+    <string name="cancel_dialog_add_phone">Batal</string>
+    <string name="subtitle_create_pin">PIN Tokopedia digunakan untuk meningkatkan keamanan transaksi</string>
+    <string name="info_create_pin">Hindari menggunakan kombinasi angka yang mudah ditebak, seperti tanggal lahir atau nomor telepon.</string>
+    <string name="confirm_create_pin">Konfirmasi PIN Tokopedia</string>
+    <string name="subtitle_confirm_create_pin">Masukkan kembali PIN Tokopedia kamu</string>
+    <string name="error_wrong_pin">PIN yang Anda masukkan tidak sesuai</string>
 </resources>
