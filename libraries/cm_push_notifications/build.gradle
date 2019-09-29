@@ -26,33 +26,29 @@ buildscript {
 }
 
 dependencies {
-    implementation rootProject.ext.supportLibDependencies.kotlinSupport
-
-    api rootProject.ext.miscDependencies.coroutineCore
-
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation (rootProject.ext.playServicesDependencies.ads){
-        exclude group: 'com.android.support'
-    }
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation rootProject.ext.networkDependencies.glide
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.iris)
-    implementation rootProject.ext.firebase.messaging
-
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.features.common_promo)
 
-    /*Constraint dep for view creation*/
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-
-    /*Json Parsing*/
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.networkDependencies.glide
+    implementation (rootProject.ext.playServicesDependencies.ads){
+        exclude group: 'com.android.support'
+    }
+    implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.miscDependencies.gson
-
-    /*room lib*/
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting

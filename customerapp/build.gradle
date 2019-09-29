@@ -371,10 +371,7 @@ dependencies {
     implementation project(rootProject.ext.features.officialStore)
     implementation project(rootProject.ext.features.powerMerchantSubscribe)
     implementation project(rootProject.ext.features.digitalHomepage)
-
-
     implementation project(rootProject.ext.libraries.iris)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
@@ -383,14 +380,12 @@ dependencies {
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.oms)
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation project(rootProject.ext.libraries.fingerprint)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.videoRecorder)
     implementation project(rootProject.ext.features.productDraftDatabase)
-    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation project(rootProject.ext.libraries.travelCalendar)
     implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
@@ -402,53 +397,78 @@ dependencies {
     implementation project(rootProject.ext.libraries.locationmanager)
     implementation project(rootProject.ext.libraries.permissionchecker)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
-
-    implementation rootProject.ext.supportLibDependencies.kotlinSupport
-
-    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
-
-    implementation rootProject.ext.miscDependencies.lottie
-    implementation rootProject.ext.viewDependencies.appIntro
-    implementation rootProject.ext.miscDependencies.bcaxcoWidget
-
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.merchantVoucher)
+    implementation project(rootProject.ext.features.train)
+    implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.libraries.cpm)
+    implementation project(rootProject.ext.features.navigationCommon)
+    implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.libraries.linker)
+    implementation project(rootProject.ext.features.common_promo)
+    implementation project(rootProject.ext.features.challenges)
+    implementation project(rootProject.ext.features.saldodetails)
+    implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation rootProject.ext.serviceDependencies.anrWatchDogs
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.features.referral)
+    implementation project(rootProject.ext.features.kyc)
+    implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.libraries.logger)
+    implementation project(rootProject.ext.features.ovop2p)
+    implementation project(rootProject.ext.features.filter)
+    implementation project(rootProject.ext.features.tradeIn)
+    implementation project(rootProject.ext.features.expressCheckoutCommon)
+    implementation project(rootProject.ext.libraries.inappupdate)
+    implementation project(rootProject.ext.libraries.youtubeutil)
+    implementation project(rootProject.ext.features.tokopointsNotification)
+    implementation project(rootProject.ext.libraries.collapsingTabLayout)
+    implementation project(rootProject.ext.libraries.videoplayer)
+    implementation project(rootProject.ext.libraries.websocket)
+    implementation project(rootProject.ext.libraries.baseAdapter)
+    implementation project(rootProject.ext.features.csat_rating)
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.williamchart)
+    
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.banner
+    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.core
+    implementation rootProject.ext.playServicesDependencies.auth
+    implementation rootProject.ext.supportLibDependencies.kotlinSupport
+    implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
+    implementation rootProject.ext.miscDependencies.lottie
+    implementation rootProject.ext.viewDependencies.appIntro
+    implementation rootProject.ext.miscDependencies.bcaxcoWidget
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.performance
     implementation rootProject.ext.playServicesDependencies.location
-    implementation project(rootProject.ext.features.train)
-    implementation project(rootProject.ext.features.paymentSetting)
-    implementation project(rootProject.ext.features.profileCompletion)
-
-    implementation(rootProject.ext.debugToolsDependencies.chuck) {
-        exclude group: 'com.squareup.okhttp3'
-        exclude group: 'com.squareup.okio'
-        exclude group: 'com.android.support'
-    }
-
+    implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
-
     annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
-
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
     implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.glide
-    implementation project(rootProject.ext.libraries.cpm)
-
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.moengageSdk
     implementation rootProject.ext.analyticsDependencies.moengagePushbase
@@ -459,7 +479,50 @@ dependencies {
     implementation(rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
-
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.apacheLang
+    implementation rootProject.ext.viewDependencies.ahBottomNavigation
+    implementation rootProject.ext.viewDependencies.expandableTextview
+    implementation rootProject.ext.viewDependencies.recyclerMultiSelect
+    implementation project(rootProject.ext.libraries.cameraview)
+    implementation (rootProject.ext.miscDependencies.flexBoxLayout){
+        exclude group: 'com.android.support'
+    }
+    implementation (rootProject.ext.miscDependencies.ucrop){
+        exclude group: 'com.android.support'
+    }
+    implementation (rootProject.ext.miscDependencies.imagecropper){
+        exclude group: "com.android.support"
+    }
+    implementation rootProject.ext.miscDependencies.exoPlayerCore
+    implementation rootProject.ext.miscDependencies.exoPlayerUi
+    implementation rootProject.ext.miscDependencies.exoPlayerRtmp
+    implementation rootProject.ext.debugToolsDependencies.stetho
+    implementation rootProject.ext.firebase.appIndexing
+    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
+        exclude group: "com.android.support"
+    }
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
+    implementation (rootProject.ext.analyticsDependencies.branch) {
+        exclude module: 'answers-shim'
+    }
+    implementation rootProject.ext.supportLibDependencies.preferenceV7
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.codePushReactNative
+    implementation rootProject.ext.miscDependencies.reactNative
+    implementation 'com.facebook.fresco:fresco:1.10.0'
+    implementation 'com.facebook.fresco:imagepipeline-okhttp3:1.10.0'
+    implementation rootProject.ext.dbDependencies.dbRoomRuntime
+    annotationProcessor rootProject.ext.dbDependencies.dbRoomCompiler
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.reactNative
@@ -473,19 +536,26 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
-
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    implementation(rootProject.ext.miscDependencies.facebook) {
+        exclude group: 'com.android.support'
+    }
+    implementation 'com.facebook.soloader:soloader:0.6.0'
+    implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
+    implementation(rootProject.ext.debugToolsDependencies.timber) {
+        exclude group: 'org.jetbrains', module: 'annotations'
+    }
+    devImplementation project.ext.debugToolsDependencies.blockCanary
+    debugImplementation project.ext.debugToolsDependencies.leakCanary
 
     //[START] test and androidTest dependencies
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     testImplementation rootProject.ext.miscDependencies.rxJava
-
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
     androidTestImplementation rootProject.ext.testDependencies.uiautomator
     androidTestImplementation rootProject.ext.testDependencies.spoon
@@ -516,46 +586,13 @@ dependencies {
     androidTestImplementation(rootProject.ext.testDependencies.dexMakerMockito) {
         exclude group: 'org.hamcrest', module: 'hamcrest-core'
     }
-
     // Cloud testing
     androidTestImplementation(name: 'cloudtestingscreenshotter_lib', ext: 'aar')
-
     androidTestImplementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
-
-    implementation(rootProject.ext.miscDependencies.facebook) {
-        exclude group: 'com.android.support'
-    }
-
     androidTestImplementation rootProject.ext.supportLibDependencies.appCompactV7
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
-
-    implementation project(rootProject.ext.libraries.analytics)
-    implementation project(rootProject.ext.libraries.linker)
-    implementation project(rootProject.ext.features.common_promo)
-    implementation project(rootProject.ext.features.challenges)
-    implementation project(rootProject.ext.features.saldodetails)
-    implementation project(rootProject.ext.libraries.cmPushNotifications)
-    implementation rootProject.ext.serviceDependencies.anrWatchDogs
-
-    implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.features.referral)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation project(rootProject.ext.features.kyc)
-    implementation project(rootProject.ext.libraries.webview)
-    implementation project(rootProject.ext.libraries.logger)
-    implementation(rootProject.ext.debugToolsDependencies.timber) {
-        exclude group: 'org.jetbrains', module: 'annotations'
-    }
-    devImplementation project.ext.debugToolsDependencies.blockCanary
-    debugImplementation project.ext.debugToolsDependencies.leakCanary
-
-    implementation project(rootProject.ext.features.navigationCommon)
-    implementation 'com.facebook.soloader:soloader:0.6.0'
-
-    implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
-    implementation project(rootProject.ext.features.ovop2p)
 }
 
 

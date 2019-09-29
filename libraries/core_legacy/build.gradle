@@ -31,11 +31,11 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
-    implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.iris)
 
@@ -45,12 +45,13 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation project(rootProject.ext.features.transactionanalytics)
-
-    api (rootProject.ext.serviceDependencies.crashlytics) {
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }
-
     implementation rootProject.ext.analyticsDependencies.appsflyer
     implementation rootProject.ext.analyticsDependencies.installRef
     implementation rootProject.ext.analyticsDependencies.moengageFirebase
@@ -60,13 +61,11 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
         exclude group: 'com.android.support'
     }
-
     implementation rootProject.ext.firebase.appIndexing
     implementation rootProject.ext.firebase.core
     implementation rootProject.ext.firebase.messaging
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.performance
-
     implementation rootProject.ext.playServicesDependencies.plus
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.location

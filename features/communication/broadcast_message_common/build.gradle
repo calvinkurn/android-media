@@ -2,15 +2,23 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 
 dependencies {
-    testCompile rootProject.ext.testDependencies.junit
-    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    
+    implementation project(rootProject.ext.features.resourcesCommon)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
+
+    implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+
+    implementation rootProject.ext.supportLibDependencies.preferenceV7
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    testCompile rootProject.ext.testDependencies.junit
     androidTestCompile(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 project.ext {

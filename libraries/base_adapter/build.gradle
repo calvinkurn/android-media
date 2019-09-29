@@ -23,14 +23,18 @@ android {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
+
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
 }
 
 project.ext {
     artifactId = 'base-adapter'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "baseadapter-release"
+    artifactName = "base_adapter-release"
 }
 
 apply from: '../../publish_local.gradle'
