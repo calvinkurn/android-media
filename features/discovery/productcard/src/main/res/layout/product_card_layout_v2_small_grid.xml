@@ -292,6 +292,19 @@
             tools:visibility="gone"
             tools:text="Credibility Label" />
 
+        <com.tokopedia.unifycomponents.Label
+            android:id="@+id/labelOffers"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_8"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
+            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
+            tools:visibility="visible"
+            tools:text="Offers Label" />
+
         <ImageView
             android:id="@+id/imageFreeOngkirPromo"
             android:layout_width="wrap_content"
@@ -303,21 +316,8 @@
             android:scaleType="fitXY"
             android:visibility="gone"
             app:layout_constraintStart_toStartOf="@id/imageProduct"
-            app:layout_constraintTop_toBottomOf="@id/linearLayoutImageRating"
+            app:layout_constraintTop_toBottomOf="@id/labelOffers"
             tools:visibility="visible" />
-
-        <com.tokopedia.unifycomponents.Label
-            android:id="@+id/labelOffers"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_20"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/imageFreeOngkirPromo"
-            app:layout_constraintLeft_toLeftOf="@id/imageProduct"
-            tools:visibility="visible"
-            tools:text="Offers Label" />
 
         <ImageView
             android:id="@+id/imageTopAds"
@@ -327,7 +327,7 @@
             android:layout_marginEnd="@dimen/dp_8"
             android:scaleType="fitXY"
             android:visibility="gone"
-            app:layout_constraintTop_toTopOf="@id/labelOffers"
+            app:layout_constraintTop_toTopOf="@id/imageFreeOngkirPromo"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_v2_ic_topads"
             tools:visibility="visible" />
@@ -349,7 +349,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/labelOffers"
+            app:layout_constraintTop_toBottomOf="@+id/imageFreeOngkirPromo"
             app:typographyType="heading_6"
             tools:visibility="visible" />
 
