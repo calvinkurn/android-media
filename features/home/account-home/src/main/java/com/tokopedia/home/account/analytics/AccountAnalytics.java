@@ -394,4 +394,8 @@ public class AccountAnalytics {
             );
         }
     }
+
+    public void sendScreenName(String screenName) {
+        TrackApp.getInstance().getGTM().sendScreenAuthenticated(screenName);
+    }
 }
