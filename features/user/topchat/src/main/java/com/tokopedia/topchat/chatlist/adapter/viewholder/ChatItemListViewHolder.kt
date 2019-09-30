@@ -20,7 +20,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.listener.ChatListItemListener
 import com.tokopedia.topchat.chatlist.pojo.ItemChatListPojo
-import com.tokopedia.topchat.chatlist.pojo.MarkAsReadItem
+import com.tokopedia.topchat.chatlist.pojo.ChatStateItem
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -98,7 +98,7 @@ class ChatItemListViewHolder(
     private fun markAsRead(element: ItemChatListPojo) {
         listener.markChatAsRead(element.ids()) { result ->
             when (result) {
-                is Success -> successMarkAsRead(result.data.chatState.list, element)
+                is Success -> responseSuccessChangeStateRead(result.data.chatState.list, element)
                 is Fail -> failChangeChatState(result.throwable)
             }
         }
@@ -107,7 +107,7 @@ class ChatItemListViewHolder(
     private fun markAsUnRead(element: ItemChatListPojo) {
         listener.markChatAsUnread(element.ids()) { result ->
             when (result) {
-                is Success -> successMarkAsUnread(result.data.chatState.list, element)
+                is Success -> responseSuccessChangeStateUnread(result.data.chatState.list, element)
                 is Fail -> failChangeChatState(result.throwable)
             }
         }
@@ -118,7 +118,15 @@ class ChatItemListViewHolder(
         Toaster.showError(itemView, errorMessage, Snackbar.LENGTH_LONG)
     }
 
-    private fun successMarkAsRead(list: MarkAsReadItem, element: ItemChatListPojo) {
+    private fun responseSuccessChangeStateRead(list: List<ChatStateItem>, element: ItemChatListPojo) {
+        for (state in list) {
+            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+                changeStateMarkAsRead(element)
+            }
+        }
+    }
+
+    private fun changeStateMarkAsRead(element: ItemChatListPojo) {
         element.attributes?.let {
             with (it) {
                 readStatus = STATE_CHAT_READ
@@ -128,7 +136,15 @@ class ChatItemListViewHolder(
         }
     }
 
-    private fun successMarkAsUnread(list: MarkAsReadItem, element: ItemChatListPojo) {
+    private fun responseSuccessChangeStateUnread(list: List<ChatStateItem>, element: ItemChatListPojo) {
+        for (state in list) {
+            if (element.msgId == state.msgID.toString() && state.isSuccess == 1) {
+                changeStateMarkAsUnread(element)
+            }
+        }
+    }
+
+    private fun changeStateMarkAsUnread(element: ItemChatListPojo) {
         element.attributes?.let {
             with (it) {
                 readStatus = STATE_CHAT_UNREAD
