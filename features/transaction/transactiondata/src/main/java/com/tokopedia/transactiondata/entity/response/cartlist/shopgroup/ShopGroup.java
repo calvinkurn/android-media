@@ -43,8 +43,6 @@ public class ShopGroup {
     @SerializedName("checkbox_state")
     @Expose
     private boolean checkboxState;
-    @SerializedName("free_shipping")
-    private FreeShipping freeShipping;
 
     public int getUserAddressId() {
         return userAddressId;
@@ -82,7 +80,4 @@ public class ShopGroup {
         return checkboxState;
     }
 
-    public FreeShipping getFreeShipping() {
-        return freeShipping;
-    }
 }

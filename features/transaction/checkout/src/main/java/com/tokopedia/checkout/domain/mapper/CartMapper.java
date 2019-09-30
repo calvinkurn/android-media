@@ -228,6 +228,10 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setShopType(generateShopType(shopGroup.getShop()));
                 cartItemDataOrigin.setWishlisted(data.getProduct().isWishlisted());
                 cartItemDataOrigin.setWarehouseId(shopGroup.getWarehouse().getWarehouseId());
+                if (data.getProduct().getFreeShipping() != null) {
+                    cartItemDataOrigin.setFreeShipping(data.getProduct().getFreeShipping().getEligible());
+                    cartItemDataOrigin.setFreeShippingBadgeUrl(data.getProduct().getFreeShipping().getBadgeUrl());
+                }
                 if (data.getProduct().getWholesalePrice() != null) {
                     List<WholesalePrice> wholesalePrices = new ArrayList<>();
                     for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {

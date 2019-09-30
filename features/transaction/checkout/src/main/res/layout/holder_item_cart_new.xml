@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <include
+        tools:visibility="gone"
         android:id="@+id/ll_warning_and_error"
         layout="@layout/layout_item_warning_and_error" />
 
@@ -107,7 +108,18 @@
                         app:typographyType="body_3"
                         app:typographyWeight="bold"
                         android:visibility="gone"
+                        tools:text="Harga turun"
                         tools:visibility="visible"/>
+
+                    <ImageView
+                        android:id="@+id/img_free_shipping"
+                        android:layout_width="67dp"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_below="@id/product_properties"
+                        android:layout_marginLeft="@dimen/dp_4"
+                        android:layout_marginTop="@dimen/dp_4"
+                        android:layout_toRightOf="@+id/tv_price_changes"
+                        tools:background="@color/unify_N75" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/tv_product_price"
@@ -152,6 +164,7 @@
                         android:layout_marginBottom="@dimen/dp_8"
                         android:lineSpacingMultiplier="1.5"
                         android:textColor="@color/invenage_text_color"
+                        tools:text="Barang sudah dimasukkan ke kerangjang 5 orang lain"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"/>
 
