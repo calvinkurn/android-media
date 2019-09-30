@@ -119,7 +119,7 @@ object MentionTextHelper {
                         spanEnd,
                         ""
                 )
-                if (spanStart != text.indexOf(replacingText) ||
+                if (spanStart != text.indexOf(replacingText, spanStart) ||
                         replacingText.length != span.length - 1)
                     spannableStringBuilder.insert(spanStart, replacingText)
             }
