@@ -146,7 +146,6 @@ include "features:transaction:express_checkout_common"
 include "features:transaction:transactionanalytics"
 include "features:transaction:transactiondata"
 include "features:transaction:checkout"
-include "features:transaction:transactioninvoice"
 
 include "features:user:attachproduct"
 include "features:user:chat_common"
@@ -181,7 +180,6 @@ include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 
-include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'
 include 'tkpddiscovery'

@@ -14,6 +14,9 @@ public final class Option implements Parcelable {
     public static final String KEY_PRICE_MAX = "pmax";
     public static final String KEY_PRICE_MIN_MAX_RANGE = "pmin-pmax";
     public static final String KEY_PRICE_WHOLESALE = "wholesale";
+    public static final String KEY_PRICE_RANGE_1 = "price_range_1";
+    public static final String KEY_PRICE_RANGE_2 = "price_range_2";
+    public static final String KEY_PRICE_RANGE_3 = "price_range_3";
     public static final String KEY_CATEGORY = "sc";
     public static final String KEY_OFFICIAL = "official";
     public static final String KEY_RATING = "rt";
