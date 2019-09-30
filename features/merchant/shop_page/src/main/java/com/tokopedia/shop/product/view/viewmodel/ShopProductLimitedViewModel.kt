@@ -239,6 +239,8 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
                 it.isWishList = isWishlist
                 it.productUrl = uri
                 it.isShowWishList = !isMyOwnProduct
+                it.isShowFreeOngkir = freeOngkir.isActive
+                it.freeOngkirPromoIcon = freeOngkir.imgUrl
             }
 
     private fun ShopProduct.toProductViewModel(isMyOwnProduct: Boolean): ShopProductViewModel = ShopProductViewModel().also {
@@ -261,6 +263,8 @@ class ShopProductLimitedViewModel @Inject constructor(private val claimBenefitMe
         it.productUrl = productUrl
         it.isSoldOut = flags.isSold
         it.isShowWishList = !isMyOwnProduct
+        it.isShowFreeOngkir = freeOngkir.isActive
+        it.freeOngkirPromoIcon = freeOngkir.imgUrl
     }
 
     private fun ShopEtalaseModel.toViewModel(): ShopEtalaseViewModel {

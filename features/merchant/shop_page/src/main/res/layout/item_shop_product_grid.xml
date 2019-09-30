@@ -72,6 +72,13 @@
                 android:layout_height="wrap_content" />
 
             <include layout="@layout/partial_shop_product_item_badge" />
+
+            <include
+                layout="@layout/partial_shop_product_free_ongkir_banner"
+                android:layout_width="@dimen/dp_100"
+                android:layout_height="@dimen/dp_18"
+                android:layout_marginTop="@dimen/dp_8" />
+
         </LinearLayout>
     </LinearLayout>
 
@@ -81,5 +88,4 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true" />
-
 </RelativeLayout>
