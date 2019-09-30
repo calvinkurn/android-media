@@ -20,7 +20,8 @@ import kotlin.math.max
 class MentionEditText : MultiAutoCompleteTextView {
 
     companion object {
-        @ColorInt fun getMentionColor(context: Context): Int {
+        @ColorInt
+        fun getMentionColor(context: Context): Int {
             return ContextCompat.getColor(context, R.color.Green_G500)
         }
     }
@@ -52,11 +53,10 @@ class MentionEditText : MultiAutoCompleteTextView {
             val distanceFromEnd = prevLength - selEnd //calculate cursor distance from text end
 
             val spannedText = MentionTextHelper.spanText(text, color, onMentionClickedListener, true)
-            val allMentionSpans = MentionTextHelper.getAllMentionSpansFromText(spannedText).toList()
+            val allMentionSpans = MentionTextHelper.getRenewedMentionSpans(spannedText).toList()
             val newText = MentionTextHelper.stripInvalidMentionFromText(spannedText, allMentionSpans)
 
-            text.replace(0, text.length, "")
-                .replace(0, text.length, newText)
+            text.replace(0, text.length, newText)
 
             /**
              * Cursor positioning
@@ -86,7 +86,7 @@ class MentionEditText : MultiAutoCompleteTextView {
         var start = selStart
         var end = selEnd
 
-        val mentionSpanList = MentionTextHelper.getAllMentionSpansFromText(text, selStart, selEnd)
+        val mentionSpanList = MentionTextHelper.getRenewedMentionSpans(text, selStart, selEnd)
         for (span in mentionSpanList) {
             val spanStart = text.getSpanStart(span)
             val spanEnd = text.getSpanEnd(span)
@@ -98,8 +98,7 @@ class MentionEditText : MultiAutoCompleteTextView {
                 if (selEnd in (spanStart + 1) until spanEnd) {
                     end = spanEnd
                 }
-            }
-            else if (spanStart <= selStart && spanEnd > selEnd) {
+            } else if (spanStart <= selStart && spanEnd > selEnd) {
                 start = spanStart
                 end = spanEnd
             }
