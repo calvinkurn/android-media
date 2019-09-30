@@ -13,7 +13,7 @@ project.ext {
     artifactId = 'location-manager'
     groupId = 'com.tokopedia.library'
     versionName = "1.0.0"
-    artifactName = "librarylocationmanager-release"
+    artifactName = "locationmanager-release"
 }
 
 apply from: '../../publish_local.gradle'
