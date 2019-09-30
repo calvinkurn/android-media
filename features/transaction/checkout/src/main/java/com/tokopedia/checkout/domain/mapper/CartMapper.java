@@ -7,7 +7,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.TickerData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
@@ -27,7 +27,7 @@ import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddres
 import com.tokopedia.transactiondata.entity.response.cartlist.GlobalCouponAttr;
 import com.tokopedia.transactiondata.entity.response.cartlist.Message;
 import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
-import com.tokopedia.transactiondata.entity.response.cartlist.TickerData;
+import com.tokopedia.transactiondata.entity.response.cartlist.Ticker;
 import com.tokopedia.transactiondata.entity.response.cartlist.TrackingDetail;
 import com.tokopedia.transactiondata.entity.response.cartlist.VoucherOrdersItem;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.CartDetail;
@@ -98,8 +98,8 @@ public class CartMapper implements ICartMapper {
         cartListData.setDefaultPromoDialogTab(cartDataListResponse.getDefaultPromoDialogTab());
 
         if (!cartDataListResponse.getTickers().isEmpty()) {
-            TickerData tickerData = cartDataListResponse.getTickers().get(0);
-            cartListData.setTicker(new CartTickerData(tickerData.getId(), tickerData.getMessage(), tickerData.getPage()));
+            Ticker ticker = cartDataListResponse.getTickers().get(0);
+            cartListData.setTickerData(new TickerData(ticker.getId(), ticker.getMessage(), ticker.getPage()));
         }
 
         List<ShopGroupData> shopGroupDataList = new ArrayList<>();

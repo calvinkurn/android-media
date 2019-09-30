@@ -44,7 +44,7 @@ import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.TickerData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.AutoApplyStackData;
 import com.tokopedia.checkout.domain.datamodel.promostacking.MessageData;
@@ -53,6 +53,7 @@ import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.PromoActionListener;
+import com.tokopedia.checkout.view.common.TickerAnnouncementActionListener;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.common.utils.Utils;
@@ -73,7 +74,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecentViewItem
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartRecommendationItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartSectionHeaderHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartTickerHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.TickerAnnouncementHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartWishlistItemHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
@@ -131,7 +132,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener, PromoActionListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
-        ClashBottomSheetFragment.ActionListener {
+        ClashBottomSheetFragment.ActionListener, TickerAnnouncementActionListener {
 
     public static final int SHOP_INDEX_PROMO_GLOBAL = -1;
 
@@ -289,7 +290,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 .promoCheckoutModule(new PromoCheckoutModule())
                 .build();
         cartListComponent.inject(this);
-        cartAdapter = new CartAdapter(this, this, this);
+        cartAdapter = new CartAdapter(this, this, this, this);
     }
 
     @Override
@@ -1280,9 +1281,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
                 }
                 cartAdapter.addCartEmptyData();
 
-                CartTickerData tickerData = cartListData.getTicker();
+                TickerData tickerData = cartListData.getTickerData();
                 if (tickerData != null && tickerData.isValid(CART_PAGE)) {
-                    cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
+                    cartAdapter.addCartTicker(new TickerAnnouncementHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
                 }
 
                 cartAdapter.notifyDataSetChanged();
@@ -1290,9 +1291,9 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
             } else {
                 cartAdapter.removeCartEmptyData();
 
-                CartTickerData tickerData = cartListData.getTicker();
+                TickerData tickerData = cartListData.getTickerData();
                 if (tickerData != null && tickerData.isValid(CART_PAGE)) {
-                    cartAdapter.addCartTicker(new CartTickerHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
+                    cartAdapter.addCartTicker(new TickerAnnouncementHolderData(String.valueOf(tickerData.getId()), tickerData.getMessage()));
                 }
                 cartAdapter.addPromoStackingVoucherData(promoStackingData);
                 if (promoStackingData.getState() != TickerPromoStackingCheckoutView.State.FAILED) {
@@ -1480,7 +1481,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
     private void clearRecyclerView() {
         cartAdapter.unsubscribeSubscription();
         cartRecyclerView.setAdapter(null);
-        cartAdapter = new CartAdapter(null, null, null);
+        cartAdapter = new CartAdapter(null, null, null, null);
         cartRecyclerView.removeAllViews();
         cartRecyclerView.getRecycledViewPool().clear();
     }
@@ -1732,7 +1733,7 @@ public class CartFragment extends BaseCheckoutFragment implements ActionListener
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
         if (cartRecyclerView.getAdapter() == null) {
-            cartAdapter = new CartAdapter(this, this, this);
+            cartAdapter = new CartAdapter(this, this, this, this);
             cartRecyclerView.setAdapter(cartAdapter);
         }
         FLAG_SHOULD_CLEAR_RECYCLERVIEW = false;
