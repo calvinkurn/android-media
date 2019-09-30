@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.app.ProgressDialog
 import android.content.*
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -41,7 +42,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.core.router.productdetail.PdpRouter
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.ToasterError
@@ -106,6 +106,7 @@ import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
+import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_product_manage.*
 import java.util.*
@@ -602,6 +603,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
+        bulkCheckBox.isChecked = false
         productManageListAdapter.resetCheckedItemSet()
         itemsChecked.clear()
         renderCheckedView()
@@ -765,13 +767,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     private fun onPromoTopAdsClicked(productManageViewModel: ProductManageViewModel) {
-        activity?.let {
-            (it.application as PdpRouter).goToCreateTopadsPromo(it,
-                    productManageViewModel.itemId, userSession.userId,
-                    if (GlobalConfig.isSellerApp())
-                        TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
-                    else
-                        TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT)
+        context?.let{
+            val uri = Uri.parse(ApplinkConst.SellerApp.TOPADS_PRODUCT_CREATE).buildUpon()
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, userSession.shopId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, productManageViewModel.itemId)
+                    .appendQueryParameter(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE,
+                            if (GlobalConfig.isSellerApp())
+                                TopAdsSourceOption.SA_MANAGE_LIST_PRODUCT
+                            else
+                                TopAdsSourceOption.MA_MANAGE_LIST_PRODUCT).build().toString()
+
+            RouteManager.route(it, uri)
         }
     }
 
