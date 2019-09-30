@@ -107,6 +107,7 @@ import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
 import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_product_manage.*
 import java.util.*
 import javax.inject.Inject
 
@@ -145,9 +146,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var isOfficialStore: Boolean = false
     private var shopDomain: String = ""
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
-    lateinit var adapter: ProductManageListAdapter
+    lateinit var productManageListAdapter: ProductManageListAdapter
 
-    private var productManageViewModels: List<ProductManageViewModel> = listOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
     private var stockType = BulkBottomSheetType.StockType()
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
@@ -218,9 +218,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
 
         bulkCheckBox.setOnCheckedChangeListener { _, isChecked ->
-            productManageViewModels.forEachIndexed { index, _ ->
-                if (!isChecked || !adapter.isChecked(index)) {
-                    adapter.updateListByCheck(isChecked, index)
+            if (!isListEmpty) {
+                adapter.data.forEachIndexed { index, _ ->
+                    if (!isChecked || !productManageListAdapter.isChecked(index)) {
+                        productManageListAdapter.updateListByCheck(isChecked, index)
+                    }
                 }
             }
         }
@@ -300,8 +302,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun createAdapterInstance(): BaseListAdapter<ProductManageViewModel, ProductManageFragmentFactoryImpl> {
-        adapter = ProductManageListAdapter(adapterTypeFactory, this)
-        return adapter
+        productManageListAdapter = ProductManageListAdapter(adapterTypeFactory, this)
+        return productManageListAdapter
     }
 
     override fun getAdapterTypeFactory(): ProductManageFragmentFactoryImpl = ProductManageFragmentFactoryImpl(this, this)
@@ -340,8 +342,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             it.index
         }.toHashSet()
 
-        adapter.setCheckedPositionList(listPositionChecked)
-        adapter.notifyDataSetChanged()
+        productManageListAdapter.setCheckedPositionList(listPositionChecked)
+        productManageListAdapter.notifyDataSetChanged()
     }
 
     override fun onSearchSubmitted(text: String) {
@@ -349,18 +351,23 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         isLoadingInitialData = true
         val tempShopEtalaseViewModels = ArrayList<ProductManageViewModel>()
 
-        if (productManageViewModels.isNotEmpty()) {
+        if (adapter.data.isNotEmpty()) {
             val textLowerCase = text.toLowerCase()
 
-            for (data in productManageViewModels) {
+            for (data in adapter.data) {
                 if (data.productName.toLowerCase().contains(textLowerCase)) {
                     tempShopEtalaseViewModels.add(data)
                 }
             }
         }
 
+        if (tempShopEtalaseViewModels.size == 0) {
+            container_bulk_check_box.visibility = View.GONE
+        } else {
+            container_bulk_check_box.visibility = View.VISIBLE
+        }
+
         renderList(tempShopEtalaseViewModels, false)
-        showSearchViewWithDataSizeCheck()
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -372,7 +379,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onSuccessGetProductList(list: MutableList<ProductManageViewModel>, totalItem: Int, hasNextPage: Boolean) {
-        productManageViewModels = list
         renderList(list, hasNextPage)
     }
 
@@ -395,7 +401,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onSuccessEditPrice(productId: String?, price: String?, currencyId: String?, currencyText: String?) {
-        adapter.updatePrice(
+        productManageListAdapter.updatePrice(
                 productId ?: "",
                 price ?: "",
                 currencyId ?: "",
@@ -451,7 +457,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onSuccessSetCashback(productId: String, cashback: Int) {
-        adapter.updateCashback(productId, cashback)
+        productManageListAdapter.updateCashback(productId, cashback)
     }
 
     override fun onErrorMultipleDeleteProduct(e: Throwable?, listOfResponse: ProductUpdateV3SuccessFailedResponse?) {
@@ -586,7 +592,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             showToasterNormal(getString(R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()))
         }
 
-        adapter.resetCheckedItemSet()
+        productManageListAdapter.resetCheckedItemSet()
         itemsChecked.clear()
         renderCheckedView()
         loadInitialData()
@@ -677,9 +683,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
-    override fun isChecked(position: Int): Boolean = adapter.isChecked(position)
+    override fun isChecked(position: Int): Boolean = productManageListAdapter.isChecked(position)
 
-    override fun updateListByCheck(isChecked: Boolean, position: Int) = adapter.updateListByCheck(isChecked, position)
+    override fun updateListByCheck(isChecked: Boolean, position: Int) = productManageListAdapter.updateListByCheck(isChecked, position)
 
     override fun onClickOptionItem(productManageViewModel: ProductManageViewModel) {
         showActionProductDialog(productManageViewModel)
@@ -889,7 +895,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onProductClicked(productManageViewModel: ProductManageViewModel) {
-        adapter.notifyDataSetChanged()
+        productManageListAdapter.notifyDataSetChanged()
         goToPDP(productManageViewModel.productId)
         ProductManageTracking.eventProductManageClickDetail()
     }
