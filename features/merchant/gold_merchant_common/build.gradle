@@ -42,6 +42,8 @@ dependencies {
         exclude group: 'com.squareup.okio'
         exclude group: 'com.android.support'
     }
+    testImplementation rootProject.ext.testDependencies.mockk
+
 }
 
 apply from: '../../../publish_local.gradle'
