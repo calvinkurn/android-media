@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dist="http://schemas.android.com/apk/distribution"
+    package="com.tokopedia.imchallenges.customerapp">
+
+    <dist:module
+        dist:instant="false"
+        dist:onDemand="true"
+        dist:title="@string/title_im_challenges">
+<!--        <dist:delivery>-->
+<!--            <dist:on-demand/>-->
+<!--        </dist:delivery>-->
+        <dist:fusing dist:include="true" />
+    </dist:module>
+</manifest>
+

@@ -21,6 +21,29 @@ public class SubmitDetailActivity extends ChallengesBaseActivity implements Subm
         return new Intent(context, SubmitDetailActivity.class);
     }
 
+//    @DeepLink({ChallengesUrl.AppLink.SUBMISSION_DETAILS})
+//    public static TaskStackBuilder getInstanceIntentAppLink(Context context, Bundle extras) {
+//        String deepLink = extras.getString(DeepLink.URI);
+//        Intent destination;
+//
+//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+//
+//        Intent homeIntent = ((ChallengesModuleRouter) context.getApplicationContext()).getHomeIntent(context);
+//        taskStackBuilder.addNextIntent(homeIntent);
+//        taskStackBuilder.addNextIntent(new Intent(context, ChallengesHomeActivity.class));
+//
+//        Uri.Builder uri = Uri.parse(deepLink).buildUpon();
+//
+//        extras.putString(Utils.QUERY_PARAM_SUBMISSION_ID, extras.getString(Utils.QUERY_PARAM_SUBMISSION_ID));
+//        extras.putBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, extras.getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE));
+//        extras.putBoolean(Utils.QUERY_PARAM_IS_FROM_NOTIF, uri.build().getBooleanQueryParameter(Utils.QUERY_PARAM_IS_FROM_NOTIF,false));
+//        destination = new Intent(context, SubmitDetailActivity.class)
+//                .setData(uri.build())
+//                .putExtras(extras);
+//
+//        taskStackBuilder.addNextIntent(destination);
+//        return taskStackBuilder;
+//    }
 
     @Override
     protected Fragment getNewFragment() {
