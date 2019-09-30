@@ -38,6 +38,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyDashboardVi
 import com.tokopedia.affiliate.feature.explore.view.activity.ExploreActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.user.session.UserSession;
@@ -316,10 +317,10 @@ public class DashboardFragment
         RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
             if (userSession.hasShownSaldoIntroScreen()) {
-                openApplink(ApplinkConst.DEPOSIT);
+                openApplink(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
             } else {
                 userSession.setSaldoIntroPageStatus(true);
-                openApplink(ApplinkConst.SALDO_INTRO);
+                openApplink(ApplinkConstInternalGlobal.SALDO_INTRO);
             }
         } else {
             RouteManager.route(getContext(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,

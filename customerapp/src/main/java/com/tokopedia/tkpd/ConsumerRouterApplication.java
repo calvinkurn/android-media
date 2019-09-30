@@ -45,7 +45,7 @@ import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -73,7 +73,6 @@ import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.MaintenancePage;
 import com.tokopedia.core.Router;
-import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -87,7 +86,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -209,7 +207,6 @@ import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.logisticcart.cod.view.CodActivity;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
-import com.tokopedia.logisticaddaddress.features.pinpoint.GeolocationActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.broadcastreceiver.TokoPointDrawerBroadcastReceiver;
 import com.tokopedia.loyalty.common.PopUpNotif;
@@ -258,7 +255,6 @@ import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivation
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
 import com.tokopedia.product.detail.ProductDetailRouter;
-import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.ProfileActivity;
@@ -276,8 +272,6 @@ import com.tokopedia.referral.ReferralRouter;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
-//import com.tokopedia.saldodetails.router.SaldoDetailsInternalRouter;
-//import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -294,7 +288,6 @@ import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
-import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -374,7 +367,6 @@ import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.useridentification.view.activity.UserIdentificationFormActivity;
-import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -470,7 +462,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopAdsRouter,
         CMRouter,
         ReferralRouter,
-        SaldoDetailsRouter,
         ILoyaltyRouter,
         ChatbotRouter,
         ExpressCheckoutRouter,
@@ -480,7 +471,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProductDetailRouter,
         OvoPayWithQrRouter,
         OvoP2pRouter,
-        KYCRouter{
+        KYCRouter {
 
     private static final String EXTRA = "extra";
 
@@ -536,6 +527,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             tetraDebugger.init();
         }
     }
+
     private void setTetraUserId(String userId) {
         if (tetraDebugger != null) {
             tetraDebugger.setUserId(userId);
@@ -1567,7 +1559,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getOvoActivityIntent(Context context) {
-        return new Intent(context,PaymentQRSummaryActivity.class);
+        return new Intent(context, PaymentQRSummaryActivity.class);
     }
 
     @Override
@@ -1968,7 +1960,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .getGetMarketPlaceCartCounterUseCase()
                 .executeWithSubscriber(this, listener);
     }
-          
+
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
@@ -2050,6 +2042,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         context.startActivity(intent);
                     }
+
                     @Override
                     public void onError(LinkerError linkerError) {
 
@@ -2357,7 +2350,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void goToSaldo(Context context) {
 
         if (remoteConfig.getBoolean(APP_ENABLE_SALDO_SPLIT, false)) {
-            startSaldoDepositIntent(context);
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
         } else {
             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW,
                     ApplinkConst.WebViewUrl.SALDO_DETAIL));
@@ -2365,11 +2358,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
 //        AnalyticsEventTrackingHelper.homepageSaldoClick(getApplicationContext(), SaldoDetailsInternalRouter.getSaldoClassName());
     }
-
-    /*@Override
-    public void startSaldoDepositIntent(Context context) {
-        SaldoDetailsInternalRouter.startSaldoDepositIntent(context);
-    }*/
 
     public Intent getInboxChatIntent(Context context) {
         return InboxChatActivity.getCallingIntent(context);
@@ -2773,7 +2761,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @SuppressLint("MissingPermission")
     @Override
     public BaseDaggerFragment getKYCCameraFragment(ActionCreator<HashMap<String, Object>, Integer> actionCreator,
-                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType){
+                                                   ActionDataProvider<ArrayList<String>, Object> keysListProvider, int cameraType) {
         Bundle bundle = new Bundle();
         BaseDaggerFragment baseDaggerFragment = null;
         switch (cameraType) {
@@ -2782,7 +2770,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 bundle.putSerializable(FragmentCardIdCamera.ACTION_CREATOR_ARG, actionCreator);
                 bundle.putSerializable(FragmentCardIdCamera.ACTION_KEYS_PROVIDER_ARG, keysListProvider);
                 baseDaggerFragment.setArguments(bundle);
-            break;
+                break;
             case KYC_SELFIEID_CAMERA:
                 baseDaggerFragment = new FragmentSelfieIdCamera();
                 bundle.putSerializable(FragmentSelfieIdCamera.ACTION_CREATOR_ARG, actionCreator);

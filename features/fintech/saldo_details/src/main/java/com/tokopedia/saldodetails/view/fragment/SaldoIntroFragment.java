@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.commom.analytics.SaldoDetailsConstants;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -90,7 +91,7 @@ public class SaldoIntroFragment extends TkpdBaseV4Fragment {
         }
 
         gotoSaldoPage.setOnClickListener(v -> {
-            RouteManager.route(context, ApplinkConst.DEPOSIT);
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT);
             if (getActivity() != null) {
                 getActivity().finish();
             }

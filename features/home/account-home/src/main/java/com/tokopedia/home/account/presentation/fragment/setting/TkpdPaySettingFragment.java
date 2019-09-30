@@ -154,7 +154,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                             router.goToSaldo(getActivity());
                         } else {
                             pvtUserSession.setSaldoIntroPageStatus(true);
-                            RouteManager.route(getContext(), ApplinkConst.SALDO_INTRO);
+                            RouteManager.route(getContext(), ApplinkConstInternalGlobal.SALDO_INTRO);
                         }
                     } else {
                         RouteManager.route(getActivity(), String.format("%s?url=%s", ApplinkConst.WEBVIEW,

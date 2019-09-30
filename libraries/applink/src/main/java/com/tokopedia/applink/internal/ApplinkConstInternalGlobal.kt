@@ -152,6 +152,18 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/setting-bank
     @JvmField
     val ADD_BANK = "$INTERNAL_GLOBAL/add-bank"
+
+    // SaldoDepositActivity
+    // tokopedia-android-internal://global/saldo
+    @JvmField
+    val SALDO_DEPOSIT = "$INTERNAL_GLOBAL/saldo"
+
+    // SaldoIntroActivity
+    // tokopedia-android-internal://global/saldo-intro
+    @JvmField
+    val SALDO_INTRO = "$INTERNAL_GLOBAL/saldo-intro"
+
+
     @JvmField
     val PARAM_ACCOUNT_ID = "account_id"
     @JvmField

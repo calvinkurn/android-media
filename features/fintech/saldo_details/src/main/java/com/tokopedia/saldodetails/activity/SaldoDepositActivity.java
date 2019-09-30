@@ -1,7 +1,6 @@
 package com.tokopedia.saldodetails.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -14,11 +13,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
-import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
 import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
@@ -28,7 +27,13 @@ import com.tokopedia.user.session.UserSession;
 
 import javax.inject.Inject;
 
-@DeepLink(ApplinkConst.DEPOSIT)
+/**
+ * For navigating to this class
+ * {@link com.tokopedia.applink.internal.ApplinkConstInternalGlobal#SALDO_DEPOSIT}
+ */
+
+
+//@DeepLink(ApplinkConst.DEPOSIT)
 public class SaldoDepositActivity extends BaseSimpleActivity implements
         HasComponent<SaldoDetailsComponent> {
 
@@ -60,11 +65,6 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
     private void initInjector() {
         SaldoDetailsComponentInstance.getComponent(getApplication()).inject(this);
-    }
-
-    @DeepLink(ApplinkConst.DEPOSIT)
-    public static Intent createInstance(Context context) {
-        return new Intent(context, SaldoDepositActivity.class);
     }
 
     @Override
@@ -124,7 +124,7 @@ public class SaldoDepositActivity extends BaseSimpleActivity implements
 
         saldoHelp.setVisibility(View.VISIBLE);
         saldoHelp.setOnClickListener(v -> {
-            RouteManager.route(this, ApplinkConst.SALDO_INTRO);
+            RouteManager.route(this, ApplinkConstInternalGlobal.SALDO_INTRO);
         });
     }
 
