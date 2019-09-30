@@ -468,7 +468,9 @@ class ProductInfoFragment : BaseDaggerFragment() {
             minOrder = productDataModel.productDetailData.minOrder,
             location = "",
             badgesUrl = listOf(),
-            type = ""
+            type = "",
+            isFreeOngkirActive = false,
+            freeOngkirImageUrl = ""
     )
 
     /**

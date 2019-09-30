@@ -32,7 +32,7 @@ data class ProductCardModel (
     )
 
     data class ShopBadge(
-            val isShown: Boolean = false,
+            val isShown: Boolean = true,
             val imageUrl: String = ""
     )
 }

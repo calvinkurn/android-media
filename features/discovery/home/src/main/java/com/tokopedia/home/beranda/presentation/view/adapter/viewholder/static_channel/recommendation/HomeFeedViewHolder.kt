@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.presentation.presenter.HomeFeedContract
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.unifycomponents.Toaster
 
@@ -41,29 +42,28 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
 
     private fun setLayout(element: HomeFeedViewModel){
         productCardView.run{
-            removeAllShopBadges()
-            setImageProductVisible(true)
-            setProductNameVisible(true)
-            setPriceVisible(true)
-            setSlashedPriceVisible(element.discountPercentage > 0)
-            setLabelDiscountVisible(element.discountPercentage > 0)
-            setImageRatingVisible(element.rating > 0 && element.countReview > 0)
-            setReviewCountVisible(element.rating > 0 && element.countReview > 0)
-            setShopBadgesVisible(element.badges.isNotEmpty())
-            setShopLocationVisible(true)
-            setButtonWishlistVisible(true)
-            setButtonWishlistImage(element.isWishList)
-            setImageProductUrl(element.imageUrl)
-            setProductNameText(element.productName)
-            setPriceText(element.price)
-            setImageTopAdsVisible(element.isTopAds)
-            setSlashedPriceText(element.slashedPrice)
-            setLabelDiscountText(element.discountPercentage)
-            setRating(element.rating)
-            setReviewCount(element.countReview)
-            mapBadges(element.badges)
-            setShopLocationText(element.location)
-            setLabelGroup(element.labelGroups)
+            setProductModel(
+                    ProductCardModel(
+                            slashedPrice = element.slashedPrice,
+                            productName = element.productName,
+                            formattedPrice = element.price,
+                            productImageUrl = element.imageUrl,
+                            isTopAds = element.isTopAds,
+                            discountPercentage = element.discountPercentage.toString(),
+                            reviewCount = element.countReview,
+                            ratingCount = element.rating,
+                            shopLocation = element.location,
+                            isWishlistVisible = true,
+                            isWishlisted = element.isWishList,
+                            shopBadgeList = element.badges.map {
+                                ProductCardModel.ShopBadge(imageUrl = it.imageUrl?:"")
+                            },
+                            freeOngkir = ProductCardModel.FreeOngkir(
+                                    isActive = element.isFreeOngkirActive,
+                                    imageUrl = element.freeOngkirImageUrl
+                            )
+                    )
+            )
             setImageProductViewHintListener(element, object: ViewHintListener {
                 override fun onViewHint() {
                     homeFeedView.onProductImpression(element, adapterPosition)
