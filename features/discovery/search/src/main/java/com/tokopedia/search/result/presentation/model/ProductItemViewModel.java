@@ -368,24 +368,17 @@ public class ProductItemViewModel extends ImpressHolder implements Parcelable, V
                 "position", Integer.toString(getPosition()),
                 "userId", userId,
                 "shopId", getShopID(),
-                "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams
+                "dimension61", TextUtils.isEmpty(filterSortParams) ? "none / other" : filterSortParams,
+                "dimension83", isFreeOngkirViewModelActive() ? "Bebas Ongkir" : "none / other"
         );
+    }
+
+    private boolean isFreeOngkirViewModelActive() {
+        return freeOngkirViewModel != null && freeOngkirViewModel.isActive();
     }
 
     private String getActionFieldString(int pageNumber) {
         return ACTION_FIELD.replace("$1", Integer.toString(pageNumber));
-    }
-
-    public Object getProductAsObjectDataLayerForImageSearch(String userId) {
-        return DataLayer.mapOf(
-                "name", getProductName(),
-                "id", getProductID(),
-                "price", Integer.toString(CurrencyFormatHelper.convertRupiahToInt(getPrice())),
-                "category", "",
-                "list", String.format(imageClick, getPosition()),
-                "position", Integer.toString(getPosition()),
-                "userId", userId
-        );
     }
 
     @Override
