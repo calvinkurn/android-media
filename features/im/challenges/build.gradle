@@ -38,10 +38,13 @@ dependencies {
     }
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.networkDependencies.glide
+    implementation project(rootProject.ext.libraries.linker)
+    implementation rootProject.ext.tkpdInternalLibDependencies.usersession
+//    compile project(path: ':features:home:navigation')
+    implementation project(rootProject.ext.libraries.remoteConfig)
+    implementation project(rootProject.ext.features.loginregister)
 }
 
 project.ext {
