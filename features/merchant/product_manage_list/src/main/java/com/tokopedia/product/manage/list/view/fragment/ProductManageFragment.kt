@@ -108,7 +108,6 @@ import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_product_manage.*
 import java.util.*
 import javax.inject.Inject
 
@@ -364,9 +363,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
 
         if (tempShopEtalaseViewModels.size == 0) {
-            container_bulk_check_box.visibility = View.GONE
+            containerChechBoxBulk.visibility = View.GONE
         } else {
-            container_bulk_check_box.visibility = View.VISIBLE
+            containerChechBoxBulk.visibility = View.VISIBLE
         }
 
         renderList(tempShopEtalaseViewModels, false)
