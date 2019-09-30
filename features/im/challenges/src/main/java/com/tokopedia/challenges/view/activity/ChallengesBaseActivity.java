@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.challenges.ChallengesModuleRouterImpl;
+import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
 import com.tokopedia.user.session.UserSession;
@@ -25,6 +26,7 @@ public abstract class ChallengesBaseActivity extends BaseSimpleActivity implemen
         super.onCreate(savedInstanceState);
         UserSessionInterface userSession = new UserSession(this);
         if (!userSession.isLoggedIn()) {
+            new IndiSession(this.getApplicationContext()).doLogout();
             navigateToLoginPage();
         }
         if (!checkFirebaseEnable()) {

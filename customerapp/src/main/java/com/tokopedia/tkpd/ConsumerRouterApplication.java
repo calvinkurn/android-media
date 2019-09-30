@@ -2466,7 +2466,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
-        new IndiSession(activity).doLogout();
         refreshFCMTokenFromForegroundToCM();
 
         mIris.setUserId("");
