@@ -214,6 +214,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private TickerPromoStackingCheckoutView tvLogTicker;
     private Ticker tvLogPromoMsg;
     private TextView tvSelectedPriceOnly;
+    private View llCourierContainer;
 
     // order prioritas
     private CheckBox checkBoxPriority;
@@ -369,6 +370,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         llLogPromo = itemView.findViewById(R.id.layout_logistic_promo_stacking);
         tvLogTicker = itemView.findViewById(R.id.ticker_promo_logistic);
         tvLogPromoMsg = itemView.findViewById(R.id.tv_logistic_promo_msg);
+        llCourierContainer = itemView.findViewById(R.id.selected_courier_container);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -684,7 +686,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 }
             }
         });
-        tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.button_change_courier));
+        llCourierContainer.setVisibility(View.VISIBLE);
         tvCourierSelection.setOnClickListener(v -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION)
                 mActionListener.onChangeShippingCourier(
@@ -734,9 +736,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             boolean isRed = shipmentCartItemModel.getVoucherLogisticItemUiModel().getMessage().getState().equals("red");
             tvLogPromoMsg.setVisibility(isRed ? View.GONE : View.VISIBLE);
 
-            // disable courier selection
-            tvCourierSelection.setTextColor(ContextCompat.getColor(context, R.color.n_700_44));
-            tvCourierSelection.setOnClickListener(null);
+            // hide courier selection
+            llCourierContainer.setVisibility(View.GONE);
         } else {
             llLogPromo.setVisibility(View.GONE);
             tvLogTicker.setVisibility(View.GONE);
