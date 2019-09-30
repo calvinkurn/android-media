@@ -371,13 +371,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderList(tempShopEtalaseViewModels, false)
     }
 
-    override fun loadInitialData() {
-        super.loadInitialData()
-        productManageListAdapter.resetCheckedItemSet()
-        itemsChecked.clear()
-        renderCheckedView()
-    }
-
     override fun onSearchTextChanged(text: String?) {
         // NO OP
     }
@@ -601,7 +594,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             showToasterNormal(getString(R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()))
         }
 
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
         loadInitialData()
+    }
+
+    override fun onSwipeRefresh() {
+        super.onSwipeRefresh()
+        productManageListAdapter.resetCheckedItemSet()
+        itemsChecked.clear()
+        renderCheckedView()
     }
 
     override fun onErrorBulkUpdateProduct(e: Throwable?) {
