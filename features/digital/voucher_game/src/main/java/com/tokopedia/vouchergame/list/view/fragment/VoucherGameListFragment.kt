@@ -324,8 +324,8 @@ class VoucherGameListFragment: BaseSearchListFragment<Visitable<*>,
         return R.id.swipe_refresh_layout
     }
 
-    override fun getSearchInputView(view: View?): SearchInputView {
-        return view!!.findViewById(R.id.search_input_view)
+    override fun getSearchInputViewResourceId(): Int {
+        return R.id.search_input_view
     }
 
     companion object {
