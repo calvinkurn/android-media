@@ -54,7 +54,6 @@ public class WishlistRecomendationViewHolder extends AbstractViewHolder<Wishlist
                         item.isWishlist(),
                         false,
                         new ProductCardModel.Label(),
-                        freeOngkir,
                         "",
                         item.getShopName(),
                         item.getName(),
@@ -67,6 +66,7 @@ public class WishlistRecomendationViewHolder extends AbstractViewHolder<Wishlist
                         item.getCountReview(),
                         new ProductCardModel.Label(),
                         new ProductCardModel.Label(),
+                        freeOngkir,
                         item.isTopAds()
                 ), new BlankSpaceConfig()
         );
