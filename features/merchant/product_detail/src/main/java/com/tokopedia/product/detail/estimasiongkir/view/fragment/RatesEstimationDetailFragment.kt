@@ -27,6 +27,9 @@ import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesEstimation
 import com.tokopedia.product.detail.estimasiongkir.di.RatesEstimationComponent
 import com.tokopedia.product.detail.estimasiongkir.view.adapter.RatesEstimationServiceAdapter
 import com.tokopedia.product.detail.estimasiongkir.view.viewmodel.RatesEstimationDetailViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey.MAINAPP_FREE_ONGKIR_MSG
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -42,6 +45,8 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    lateinit var remoteConfig: RemoteConfig
 
     private var shopDomain: String = ""
     private var productWeightUnit: String = LABEL_GRAM
@@ -62,6 +67,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(RatesEstimationDetailViewModel::class.java)
+            remoteConfig = FirebaseRemoteConfigImpl(this)
         }
     }
 
@@ -136,6 +142,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
         val shop = ratesEstimationModel.shop
 
         if (isFreeOngkir) {
+            ticker_free_ongkir.setTextDescription(remoteConfig.getString(MAINAPP_FREE_ONGKIR_MSG, ""))
             ticker_free_ongkir.show()
         } else {
             ticker_free_ongkir.hide()
