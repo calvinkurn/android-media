@@ -37,28 +37,6 @@
                     android:host="@string/host_global"
                     android:path="@string/path_instant_loan_tab"/>
             </intent-filter>
-
-
-            <intent-filter >
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="tokopedia"
-                    android:host="loan"
-                    android:path="/category/*"/>
-            </intent-filter>
-
-            <intent-filter >
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data
-                    android:scheme="tokopedia"
-                    android:host="loan"/>
-            </intent-filter>
         </activity>
 
         <activity
