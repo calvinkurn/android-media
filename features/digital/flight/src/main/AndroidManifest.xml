@@ -18,6 +18,18 @@
                     android:host="@string/host_flight"
                     android:scheme="@string/tokopedia_scheme" />
             </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_flight"
+                    android:path="@string/path_flight_search"
+                    android:scheme="@string/tokopedia_scheme" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".dashboard.view.activity.FlightSelectPassengerActivity"
@@ -39,7 +51,8 @@
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
-        <activity android:name=".searchV3.presentation.activity.FlightSearchReturnActivity"
+        <activity
+            android:name=".searchV3.presentation.activity.FlightSearchReturnActivity"
             android:label="@string/search_flight"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
@@ -63,7 +76,8 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
 
-        <activity android:name=".bookingV2.presentation.activity.FlightBookingActivity"
+        <activity
+            android:name=".bookingV2.presentation.activity.FlightBookingActivity"
             android:label="@string/flight_booking_toolbar_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Flight" />
