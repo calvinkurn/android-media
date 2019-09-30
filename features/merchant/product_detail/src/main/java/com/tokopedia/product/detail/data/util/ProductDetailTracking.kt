@@ -334,7 +334,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
     }
 
     fun eventRecommendationImpression(position: Int, product: RecommendationItem, isSessionActive: Boolean, pageName: String, pageTitle: String) {
-        val listValue = LIST_DEFAULT + pageName  +
+        val listValue = LIST_DEFAULT + pageName +
                 (if (!isSessionActive) " - ${ProductTrackingConstant.USER_NON_LOGIN}" else "") +
                 LIST_RECOMMENDATION + product.recommendationType + (if (product.isTopAds) " - product topads" else "")
 
@@ -596,6 +596,13 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         else
             "false"
 
+        val dimension83 = productInfo?.freeOngkir?.let {
+            if (it.isFreeOngkirActive)
+                "Bebas Ongkir"
+            else
+                ""
+        }
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 "event", "viewProduct",
                 "eventCategory", "product page",
@@ -614,7 +621,8 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                         "variant", "none / other",
                         "dimension38", trackerAttribution ?: "none / other",
                         "dimension55", dimension55,
-                        "dimension54", getMultiOriginAttribution(multiOrigin)
+                        "dimension54", getMultiOriginAttribution(multiOrigin),
+                        "dimension83", dimension83
                 ))).apply {
             if (trackerListName?.isNotEmpty() == true) {
                 put("actionField", DataLayer.mapOf("list", trackerListName))
@@ -652,7 +660,8 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
             putString(FirebaseAnalytics.Param.ITEM_BRAND, "none / other")
             putString(FirebaseAnalytics.Param.ITEM_CATEGORY, getEnhanceCategoryFormatted(productInfo?.category?.detail))
             putString(FirebaseAnalytics.Param.ITEM_VARIANT, "none / other")
-            putDouble(FirebaseAnalytics.Param.PRICE, productInfo?.basic?.price?.toDouble() ?: 0.toDouble())
+            putDouble(FirebaseAnalytics.Param.PRICE, productInfo?.basic?.price?.toDouble()
+                    ?: 0.toDouble())
             putLong(FirebaseAnalytics.Param.INDEX, 1)
             putString("dimension38", trackerAttribution ?: "none / other")
             putString("dimension54", getMultiOriginAttribution(multiOrigin))
@@ -690,7 +699,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         }
     }
 
-    private fun createLinkerData(productInfo: ProductInfo, userId: String?): LinkerData{
+    private fun createLinkerData(productInfo: ProductInfo, userId: String?): LinkerData {
         val linkerData = LinkerData()
         linkerData.id = productInfo.basic.id.toString()
         linkerData.price = productInfo.basic.price.toInt().toString()
@@ -815,20 +824,20 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
         return CurrencyFormatUtil.getThousandSeparatorString(price.toDouble(), false, 0).formattedString
     }
 
-    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when(isMultiOrigin) {
+    private fun getMultiOriginAttribution(isMultiOrigin: Boolean): String = when (isMultiOrigin) {
         true -> "tokopedia"
         else -> "regular"
     }
 
-    private fun removeCurrencyPrice(priceFormatted: String): String{
+    private fun removeCurrencyPrice(priceFormatted: String): String {
         return try {
             priceFormatted.replace("[^\\d]".toRegex(), "")
-        } catch (t: Throwable){
+        } catch (t: Throwable) {
             "0"
         }
     }
 
-    fun eventClickApplyLeasing(productId: String, isVariant: Boolean){
+    fun eventClickApplyLeasing(productId: String, isVariant: Boolean) {
         TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                 ProductTrackingConstant.Category.PDP,
@@ -836,7 +845,7 @@ class ProductDetailTracking @Inject constructor(private val trackingQueue: Track
                 "$productId - $isVariant"
         )
     }
-    
+
     fun eventViewHelpPopUpWhenAtc() {
         TrackApp.getInstance().gtm.pushGeneralGtmV5(
                 ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
