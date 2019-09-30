@@ -29,7 +29,7 @@ class AuthHelper {
                 authKey: String,
                 dateFormat: String,
                 userId: String,
-                session: UserSessionInterface
+                accessToken: String
         ): MutableMap<String, String> {
             val date = generateDate(dateFormat)
             val contentMD5 = getMD5Hash(strParam)
@@ -46,7 +46,7 @@ class AuthHelper {
 
             headerMap.remove(HEADER_ACCOUNT_AUTHORIZATION)
 
-            headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "${HEADER_PARAM_BEARER} ${session.accessToken}"
+            headerMap[HEADER_ACCOUNT_AUTHORIZATION] = "$HEADER_PARAM_BEARER $accessToken"
             headerMap[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
             headerMap[HEADER_X_TKPD_APP_NAME] = GlobalConfig.getPackageApplicationName()
             headerMap[HEADER_X_TKPD_APP_VERSION] = "android-${GlobalConfig.VERSION_NAME}"
@@ -113,7 +113,7 @@ class AuthHelper {
                     method,
                     contentType ?: CONTENT_TYPE,
                     authKey,
-                    DATE_FORMAT, userId, userSessionInterface
+                    DATE_FORMAT, userId, userSessionInterface.accessToken
             )
             finalHeader[HEADER_X_APP_VERSION] = GlobalConfig.VERSION_CODE.toString(10)
 
@@ -228,7 +228,7 @@ class AuthHelper {
                     AuthKey.KEY_WSV4_NEW,
                     DATE_FORMAT,
                     session.userId,
-                    session
+                    session.accessToken
             ) as ArrayMap<String, String>
 
             headers[HEADER_SESSION_ID] = session.deviceId
